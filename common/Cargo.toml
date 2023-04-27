@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "uniffi-bindgen",
+    "ferrostar-core",
+]
+

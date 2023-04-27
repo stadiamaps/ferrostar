@@ -1,0 +1,23 @@
+[package]
+name = "ferrostar-core"
+version = "0.1.0"
+authors = ["Ian Wagner <ian@stadiamaps.com>", "Luke Seelenbinder <luke@stadiamaps.com>"]
+license = "BSD-3-Clause"
+repository = "https://github.com/stadiamaps/ferrostar"
+readme = "README.md"
+description = "The common core of Ferrostar, a modern mobile navigation SDK."
+keywords = ["navigation", "routing", "osrm"]
+categories = ["science::geo"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+uniffi = "0.23.0"
+
+[build-dependencies.uniffi]
+version = "0.23.0"
+features = ["build"]
+
+[lib]
+crate-type = ["cdylib", "staticlib"]

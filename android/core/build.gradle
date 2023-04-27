@@ -1,0 +1,64 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+// TODO: Publishing?
+
+android {
+    namespace 'com.stadiamaps.ferrostar.core'
+    compileSdk 33
+
+    defaultConfig {
+        minSdk 29
+        targetSdk 33
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    implementation "net.java.dev.jna:jna:5.9.0@aar"
+}
+
+android.libraryVariants.all { variant ->
+    def compileCore = tasks.register("compile${variant.name.capitalize()}Core", Exec) {
+        workingDir '../../common'
+        commandLine './build-android.sh'
+    }
+    def generateBindings = tasks.register("generate${variant.name.capitalize()}UniFFIBindings", Exec) {
+        workingDir '../../common'
+        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', 'ferrostar-core/src/ferrostar.udl', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
+    }
+
+    variant.javaCompileProvider.get().dependsOn(generateBindings)
+    variant.javaCompileProvider.get().dependsOn(compileCore)
+
+    def sourceSet = variant.sourceSets.find { it.name == variant.name }
+    sourceSet.java.srcDir new File(buildDir, "generated/source/uniffi/${variant.name}/java")
+    // UniFFI tutorial notes that they made several attempts like this but were unsuccessful coming
+    // to a good solution for forcing the directory to be marked as generated (short of checking in
+    // project files, I suppose).
+//    idea.module.generatedSourceDirs += file("${buildDir}/generated/source/uniffi/${variant.name}/java/uniffi")
+}
