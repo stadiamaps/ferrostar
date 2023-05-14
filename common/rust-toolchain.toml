@@ -1,0 +1,17 @@
+# See https://rust-lang.github.io/rustup/overrides.html for details on how this file works
+# and how you can override the choices made herein.
+#
+# Note that we UniFFI also sets their own toolchain (see https://github.com/mozilla/uniffi-rs/blob/main/rust-toolchain.toml).
+# Note that we will attempt to track stable unless we find that this breaks something.
+
+[toolchain]
+channel = "stable"
+targets = [
+    "aarch64-linux-android",
+    "armv7-linux-androideabi",
+    "i686-linux-android",
+    "x86_64-linux-android",
+    "aarch64-apple-ios",
+    "x86_64-apple-ios"
+]
+components = ["clippy", "rustfmt"]

@@ -1,4 +1,73 @@
+//
+// Namespace to encapsulate top-level functions
+//
+
 namespace ferrostar {
-  // TODO: Placeholder
-  u32 add(u32 a, u32 b);
+    RouteRequestGenerator create_valhalla_request_generator(string endpoint_url, string profile);
+    RouteResponseParser create_osrm_response_parser(u32 polyline_precision);
+};
+
+//
+// Error types
+//
+
+[Error]
+enum RoutingRequestGenerationError {
+    "NotEnoughWaypoints",
+    "JsonError",
+    "UnknownError"
+};
+
+[Error]
+interface RoutingResponseParseError {
+    ParseError(string error);
+    UnknownError();
+};
+
+//
+// Data structures
+//
+
+dictionary GeographicCoordinate {
+    double lat;
+    double lng;
+};
+
+dictionary Route {
+    sequence<GeographicCoordinate> geometry;
+};
+
+[Enum]
+interface RouteRequest {
+    HttpPost(string url, record<DOMString, string> headers, sequence<u8> body);
+};
+
+//
+// Callback interfaces (foreign code can implement these to extend functionality)
+//
+
+callback interface RouteRequestGenerator {
+    [Throws=RoutingRequestGenerationError]
+    RouteRequest generate_request(sequence<GeographicCoordinate> waypoints);
+};
+
+callback interface RouteResponseParser {
+    [Throws=RoutingResponseParseError]
+    sequence<Route> parse_response(sequence<u8> response);
+};
+
+interface RouteAdapter {
+    constructor(RouteRequestGenerator request_generator, RouteResponseParser response_parser);
+    [Name=new_valhalla_http]
+    constructor(string endpoint_url, string profile);
+};
+
+interface NavigationController {
+    constructor(RouteAdapter route_adapter, GeographicCoordinate user_location, sequence<GeographicCoordinate> waypoints);
+
+    [Throws=RoutingRequestGenerationError]
+    RouteRequest generate_route_request();
+
+    [Throws=RoutingResponseParseError]
+    sequence<Route> parse_route_response(sequence<u8> response);
 };

@@ -37,7 +37,8 @@ This is not intended to be a strict process but rather a guideline that will bui
 ### Rust
 
 The common core is written in Rust. If you don't already have this, you can grab it [here](https://www.rust-lang.org/).
-If possible, install `rustup` as this will let you keep up to date and easily install additional targets.
+If at all possible, install `rustup` as we use [rust-toolchain.yml](common/rust-toolchain.yml) to synchronize the toolchain and install
+targets automatically.
 
 ### iOS
 
@@ -46,11 +47,6 @@ If possible, install `rustup` as this will let you keep up to date and easily in
 ```bash
 # Install the Xcode Command Line Tools
 xcode-select --install
-```
-
-```shell
-# Install iOS cross-compilation targets
-rustup target add x86_64-apple-ios aarch64-apple-ios aarch64-apple-ios-sim
 ```
 
 **IMPORTANT:** every time you make changes to the common core, you will need to run [`build-ios.sh`](common/build-ios.sh)! It would be
@@ -68,11 +64,6 @@ repo root.
 
 * Install [Android Studio](https://developer.android.com/studio).
 * Ensure that the latest NDK is installed (refer to the version number in [`build-android.sh`](core/build-android.sh) and ensure you have the same version available; we try to track the latest stable).
-
-```shell
-# Install Android cross-compilation targets
-rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
-```
 
 Additionally, you will need to add something like this to your Cargo config (usually `~/.cargo/config.toml`).
 This is necessary to be able to link correctly, and will be machine-dependent based on the NDK you have installed and exact paths.

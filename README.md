@@ -4,6 +4,10 @@ Ferrostar is a FOSS navigation SDK built from the ground up for the future.
 
 [Why a new SDK?](https://stadiamaps.notion.site/Next-Gen-Navigation-SDK-f16f987bfa5a455296b0671636033cdb)
 
+Current state: Until we note otherwise, the project is under active development and the code is not ready for use in
+apps. We are still working out multiple elements of the high-level design and will post updates as interfaces and other
+pieces of the design start to stabilize.
+
 ## Project Goals
 
 - Modular (or one could even say hexagonal) architecture
@@ -48,10 +52,8 @@ stable.
 
 iOS developers should always build using the latest publicly available Xcode version. As far as OS support goes,
 we will initially target the current iOS major version (16.0). It is already run by 72% of devices, and iOS 16
-introduced many helpful changes. As new releases appear, we will support either one or two previous major versions
-(depending on the desirability of new features and adoption rate). This will minimize the amount of cruft build-up.
-iOS users are fairly quick to upgrade compared to other platforms, so supporting the latest 2 major versions
-typically results in 80% (shortly after release) to 90% (after around 6 months) device support.
+introduced many helpful changes. As new releases appear, we will eventually make some decisions on how far back to support
+(depending on the desirability of new features and adoption rate). Fortunately iOS users are fairy quick to upgrade.
 
 ### Android
 
