@@ -39,30 +39,23 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public weak var delegate: FerrostarCoreDelegate?
 
     private let routeAdapter: FFI.RouteAdapterProtocol
-    private let locationManager: CLLocationManager
+    private let locationManager: LocationManager
     private var navigationController: FFI.NavigationControllerProtocol?
 
-    public init(routeAdapter: FFI.RouteAdapter) {
+    public init(routeAdapter: FFI.RouteAdapter, locationManager: LocationManager) {
         self.routeAdapter = routeAdapter
-        self.locationManager = CLLocationManager()
+        self.locationManager = locationManager
 
         super.init()
 
         // Location manager setup
         self.locationManager.delegate = self
-        self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-
-        switch (self.locationManager.authorizationStatus) {
-        case .notDetermined:
-            self.locationManager.requestWhenInUseAuthorization()
-        default:
-            break  // No action
-        }
+        
     }
 
-    public convenience init(valhallaEndopointUrl: URL, profile: String) {
+    public convenience init(valhallaEndopointUrl: URL, profile: String, locationManager: LocationManager) {
         let routeAdapter = FFI.RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndopointUrl.absoluteString, profile: profile)
-        self.init(routeAdapter: routeAdapter)
+        self.init(routeAdapter: routeAdapter, locationManager: locationManager)
     }
 
     /// Tries to get routes visiting one or more waypoints starting from the user's location.
@@ -114,12 +107,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
         // and then somehow this property go nil again.
         guard let location = locationManager.location else {
             throw FerrostarCoreError.UserLocationUnknown
-        }
-
-        let authorizedStatuses = [CLAuthorizationStatus.authorizedWhenInUse, CLAuthorizationStatus.authorizedAlways]
-
-        guard authorizedStatuses.contains(locationManager.authorizationStatus) else {
-            throw FerrostarCoreError.LocationServicesDisabled
         }
 
         locationManager.startUpdatingLocation()
