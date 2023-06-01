@@ -1,6 +1,6 @@
 use super::{RouteRequest, RoutingRequestGenerationError};
 use crate::routing_adapters::RouteRequestGenerator;
-use crate::GeographicCoordinate;
+use crate::GeographicCoordinates;
 use serde_json::{json, Value as JsonValue};
 use std::collections::HashMap;
 
@@ -32,7 +32,7 @@ impl ValhallaHttpRequestGenerator {
 impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
     fn generate_request(
         &self,
-        waypoints: Vec<GeographicCoordinate>,
+        waypoints: Vec<GeographicCoordinates>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
         if waypoints.len() < 2 {
             Err(RoutingRequestGenerationError::NotEnoughWaypoints)
@@ -82,9 +82,9 @@ mod tests {
 
     const ENDPOINT_URL: &str = "https://api.stadiamaps.com/route/v1";
     const COSTING: &str = "bicycle";
-    const WAYPOINTS: [GeographicCoordinate; 2] = [
-        GeographicCoordinate { lat: 0.0, lng: 1.0 },
-        GeographicCoordinate { lat: 2.0, lng: 3.0 },
+    const WAYPOINTS: [GeographicCoordinates; 2] = [
+        GeographicCoordinates { lat: 0.0, lng: 1.0 },
+        GeographicCoordinates { lat: 2.0, lng: 3.0 },
     ];
 
     #[test]
@@ -98,7 +98,7 @@ mod tests {
             Err(RoutingRequestGenerationError::NotEnoughWaypoints)
         ));
         assert!(matches!(
-            generator.generate_request(vec![GeographicCoordinate { lat: 0.0, lng: 0.0 }]),
+            generator.generate_request(vec![GeographicCoordinates { lat: 0.0, lng: 0.0 }]),
             Err(RoutingRequestGenerationError::NotEnoughWaypoints)
         ));
     }

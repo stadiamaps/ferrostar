@@ -28,13 +28,25 @@ interface RoutingResponseParseError {
 // Data structures
 //
 
-dictionary GeographicCoordinate {
+dictionary GeographicCoordinates {
     double lat;
     double lng;
 };
 
+dictionary Course {
+    double degrees;
+    double accuracy;
+};
+
+dictionary UserLocation {
+    GeographicCoordinates coordinates;
+    double horizontal_accuracy;
+    Course? course;
+};
+
 dictionary Route {
-    sequence<GeographicCoordinate> geometry;
+    sequence<GeographicCoordinates> geometry;
+    sequence<GeographicCoordinates> waypoints;
 };
 
 [Enum]
@@ -48,7 +60,7 @@ interface RouteRequest {
 
 callback interface RouteRequestGenerator {
     [Throws=RoutingRequestGenerationError]
-    RouteRequest generate_request(sequence<GeographicCoordinate> waypoints);
+    RouteRequest generate_request(sequence<GeographicCoordinates> waypoints);
 };
 
 callback interface RouteResponseParser {
@@ -60,14 +72,16 @@ interface RouteAdapter {
     constructor(RouteRequestGenerator request_generator, RouteResponseParser response_parser);
     [Name=new_valhalla_http]
     constructor(string endpoint_url, string profile);
+
+    [Throws=RoutingRequestGenerationError]
+    RouteRequest generate_request(sequence<GeographicCoordinates> waypoints);
+
+    [Throws=RoutingResponseParseError]
+    sequence<Route> parse_response(sequence<u8> response);
 };
 
 interface NavigationController {
-    constructor(RouteAdapter route_adapter, GeographicCoordinate user_location, sequence<GeographicCoordinate> waypoints);
+    constructor(UserLocation last_user_location, Route route);
 
-    [Throws=RoutingRequestGenerationError]
-    RouteRequest generate_route_request();
-
-    [Throws=RoutingResponseParseError]
-    sequence<Route> parse_route_response(sequence<u8> response);
+    void update_user_location(UserLocation location);
 };

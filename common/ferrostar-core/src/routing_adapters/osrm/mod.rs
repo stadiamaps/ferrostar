@@ -2,7 +2,7 @@ pub(crate) mod models;
 
 use super::RouteResponseParser;
 use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
-use crate::GeographicCoordinate;
+use crate::GeographicCoordinates;
 use polyline::decode_polyline;
 
 /// A response parser for OSRM-compatible routing backends.
@@ -23,15 +23,24 @@ impl OsrmResponseParser {
 impl RouteResponseParser for OsrmResponseParser {
     fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, RoutingResponseParseError> {
         let res: RouteResponse = serde_json::from_slice(&response)?;
+        let waypoints: Vec<_> = res
+            .waypoints
+            .iter()
+            .map(|waypoint| GeographicCoordinates {
+                lat: waypoint.location.latitude(),
+                lng: waypoint.location.longitude(),
+            })
+            .collect();
         Ok(res.routes.iter().map(|route| {
             let geometry = decode_polyline(&route.geometry, self.polyline_precision)
                 .expect("As of v0.10.0, this method appears to be unable to fail based on its body; open an issue upstream.")
                 .coords()
-                .map(|coord| GeographicCoordinate::from(*coord))
+                .map(|coord| GeographicCoordinates::from(*coord))
                 .collect();
 
             Route {
-                geometry
+                geometry,
+                waypoints: waypoints.clone()
             }
         }).collect())
     }
@@ -53,75 +62,75 @@ mod tests {
 
         // Verify the geometry
         let expected_coords = vec![
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.517033,
                 lng: 13.388798,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.527168,
                 lng: 13.387228,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.528491,
                 lng: 13.393668,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.529432,
                 lng: 13.39763,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.529684,
                 lng: 13.403888,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.528326,
                 lng: 13.411389,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.527507,
                 lng: 13.41432,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.52677,
                 lng: 13.415657,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.528458,
                 lng: 13.417166,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.528728,
                 lng: 13.421348,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.528082,
                 lng: 13.424085,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.528068,
                 lng: 13.424993,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.527885,
                 lng: 13.425184,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.527043,
                 lng: 13.427263,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.525063,
                 lng: 13.43036,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.52479,
                 lng: 13.430413,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.523269,
                 lng: 13.429678,
             },
-            GeographicCoordinate {
+            GeographicCoordinates {
                 lat: 52.523239,
                 lng: 13.428554,
             },

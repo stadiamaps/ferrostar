@@ -21,6 +21,7 @@ pieces of the design start to stabilize.
 - UI components for searching for addresses or building a trip (left to the app developers).
 - Compatibility with ancient SDKs / API levels, except where it’s easy; this is a fresh start, so *we can and should leverage modern features and tools* as of 2023.
 - Route generation is a separate concern; there are many good cloud vendors (like [Stadia Maps](https://stadiamaps.com/products/navigation-routing/)) as well as self-hosting / local generation options. Further, we assume that the external route generator is responsible for things like text and voice prompt generation (ex: “In 500 feet, take exit 12”).
+- A "free roam" experience without any specific route (though it should be possible to plug Ferrostar into such an experience).
 
 ## Project Design and Structure
 

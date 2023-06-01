@@ -1,5 +1,5 @@
 use crate::{
-    create_osrm_response_parser, create_valhalla_request_generator, GeographicCoordinate, Route,
+    create_osrm_response_parser, create_valhalla_request_generator, GeographicCoordinates, Route,
 };
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
@@ -39,7 +39,7 @@ pub trait RouteRequestGenerator: Send + Sync + Debug {
     /// in some order.
     fn generate_request(
         &self,
-        waypoints: Vec<GeographicCoordinate>,
+        waypoints: Vec<GeographicCoordinates>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError>;
 
     // TODO: "Trace attributes" request method? Maybe in a separate trait?
@@ -59,10 +59,9 @@ pub trait RouteResponseParser: Send + Sync + Debug {
 ///
 /// This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
 /// traits, but it provides one further level of abstraction which is helpful to consumers.
-/// As there is nothing in the type system (for the moment) to signal compatibility between
-/// request generators and response parsers, the [RouteAdapter] provides convenience constructors
-/// which take the guesswork out of it, while still leaving consumers free to implement one or
-/// both halves.
+/// As there is no way to signal compatibility between request generators and response parsers,
+/// the [RouteAdapter] provides convenience constructors which take the guesswork out of it,
+/// while still leaving consumers free to implement one or both halves.
 ///
 /// In the future, we may provide additional methods or conveniences, and this
 /// indirection leaves the design open to such changes without necessarily breaking source
@@ -93,14 +92,14 @@ impl RouteAdapter {
     // Proxied implementation methods.
     //
 
-    pub(crate) fn generate_request(
+    pub fn generate_request(
         &self,
-        waypoints: Vec<GeographicCoordinate>,
+        waypoints: Vec<GeographicCoordinates>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
         self.request_generator.generate_request(waypoints)
     }
 
-    pub(crate) fn parse_response(
+    pub fn parse_response(
         &self,
         response: Vec<u8>,
     ) -> Result<Vec<Route>, RoutingResponseParseError> {

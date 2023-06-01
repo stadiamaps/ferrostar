@@ -1,5 +1,6 @@
 pub mod navigation_controller;
 pub mod routing_adapters;
+pub(crate) mod utils;
 
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
@@ -10,28 +11,58 @@ pub use routing_adapters::{
     RouteAdapter, RouteRequest, RouteRequestGenerator, RouteResponseParser,
 };
 
-/// TODO: Docstring
-///
-/// NOTE: This type is unstable and is still under active development and should be
-/// considered unstable.
-#[derive(Debug)]
-pub struct Route {
-    geometry: Vec<GeographicCoordinate>,
-}
-
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
-pub struct GeographicCoordinate {
-    lng: f64,
-    lat: f64,
+pub struct GeographicCoordinates {
+    pub lng: f64,
+    pub lat: f64,
 }
 
-impl From<Coord> for GeographicCoordinate {
+impl From<Coord> for GeographicCoordinates {
     fn from(value: Coord) -> Self {
         Self {
             lng: value.x,
             lat: value.y,
         }
     }
+}
+
+/// The direction in which the user/device is traveling.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+pub struct Course {
+    /// The direction in which the user's device is traveling, measured in clockwise degrees from
+    /// true north (N = 0, E = 90, S = 180, W = 270).
+    pub degrees: f64,
+    /// The accuracy of the course value, measured in degrees.
+    pub accuracy: f64,
+}
+
+impl Course {
+    pub fn new(degrees: f64, accuracy: f64) -> Self {
+        Self { degrees, accuracy }
+    }
+}
+
+/// The location of the user that is navigating.
+///
+/// In addition to coordinates, this includes estimated accuracy and course information,
+/// which can influence navigation logic and UI.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+pub struct UserLocation {
+    pub coordinates: GeographicCoordinates,
+    /// The estimated accuracy of the coordinate (in meters)
+    pub horizontal_accuracy: f64,
+    pub course: Option<Course>,
+}
+
+/// Information describing the series of maneuvers to travel between two or more points.
+///
+/// NOTE: This type is unstable and is still under active development and should be
+/// considered unstable.
+#[derive(Debug)]
+pub struct Route {
+    pub geometry: Vec<GeographicCoordinates>,
+    /// The ordered list of waypoints to visit, including the starting point.
+    pub waypoints: Vec<GeographicCoordinates>,
 }
 
 //
