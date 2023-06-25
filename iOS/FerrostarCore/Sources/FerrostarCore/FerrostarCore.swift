@@ -3,19 +3,43 @@ import Foundation
 import CoreLocation
 
 enum FerrostarCoreError: Error {
+    /// The user has disabled location services for this app.
     case LocationServicesDisabled
     case UserLocationUnknown
+    /// The route request from the route adapter has an invalid URL.
+    ///
+    /// This should never be encountered by end users of the library, and indicates a programming error
+    /// in the route adapter.
     case InvalidRequestUrl
+    /// The route adapter responded to our request without error, but with no routes.
+    case NoRoutesFromAdapter
 }
 
+/// Receives events from ``FerrostarCore``.
+///
+/// This is the central point responsible for relaying updates back to the UI layer.
 public protocol FerrostarCoreDelegate: AnyObject {
     /// Called whenever the user's location is updated.
     ///
-    /// Note that this location may be snapped to the route or road network.
+    /// This location *may* be snapped to the route or road network. (TBD: we have not made a final decision)
     func core(_ core: FerrostarCore, didUpdateLocation snappedLocation: CLLocation, andHeading heading: CLHeading?)
+
+    /// Called when the location manager failed to get the user's location.
+    ///
+    /// This is a serious error, and the UI layer should inform the user. They may need to check their settings
+    /// to enable location services.
     func core(_ core: FerrostarCore, locationManagerFailedWithError error: Error)
 
+    /// Called when the router found one or more candidate routes.
+    ///
+    /// This should most often result in either a UI for the user to select a route or a programmatic selection
+    /// of a route, followed by a call to `startNavigation(route:)`.
     func core(_ core: FerrostarCore, foundRoutes routes: [FFI.Route])
+
+    /// Called when no candidate routes could be retrieved from the router.
+    ///
+    /// Note that the error could be an underlying failure, such as an HTTP error, or even a case
+    /// where there was no obvious error, but the route adapter returns no routes.
     func core(_ core: FerrostarCore, routingFailedWithError error: Error)
 }
 
@@ -27,8 +51,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
 ///
 /// The usual flow is for callers to configure an instance of the core, set a ``delegate``,
 /// and reuse the core for as long as it makes sense (necessarily somewhat app-specific).
+/// Note that it is the responsibility of the caller to ensure that the location manager is authorized to get
+/// live user location with high precision.
 ///
-/// Users will first want to call ``getRoutes(waypoints:onCompletion:onError:)``
+/// Users will first want to call ``getRoutes(waypoints:userLocation:)``
 /// to fetch a list of possible routes asynchronously. Upon successfully computing a set of
 /// possible routes, one is selected, either interactively by the user, or programmatically.
 /// The particulars will vary by app; do what makes the most sense for your user experience.
@@ -38,34 +64,35 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
 
+    private let networkSession: URLRequestLoading
     private let routeAdapter: FFI.RouteAdapterProtocol
-    private let locationManager: LocationManager
+    private let locationProvider: LocationProviding
     private var navigationController: FFI.NavigationControllerProtocol?
 
-    public init(routeAdapter: FFI.RouteAdapter, locationManager: LocationManager) {
+    public init(routeAdapter: FFI.RouteAdapter, locationManager: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
-        self.locationManager = locationManager
+        self.locationProvider = locationManager
+        self.networkSession = networkSession
 
         super.init()
 
-        // Location manager setup
-        self.locationManager.delegate = self
+        // Location provider setup
+        self.locationProvider.delegate = self
         
     }
 
-    public convenience init(valhallaEndopointUrl: URL, profile: String, locationManager: LocationManager) {
-        let routeAdapter = FFI.RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndopointUrl.absoluteString, profile: profile)
-        self.init(routeAdapter: routeAdapter, locationManager: locationManager)
+    public convenience init(valhallaEndpointUrl: URL, profile: String, locationManager: LocationProviding, networkSession: URLRequestLoading = URLSession.shared) {
+        let routeAdapter = FFI.RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndpointUrl.absoluteString, profile: profile)
+        self.init(routeAdapter: routeAdapter, locationManager: locationManager, networkSession: networkSession)
     }
 
-    /// Tries to get routes visiting one or more waypoints starting from the user's location.
+    /// Tries to get routes visiting one or more waypoints starting from the initial location.
     ///
-    /// Success and failure are communicated via delegate methods.
-    public func getRoutes(waypoints: [CLLocationCoordinate2D], userLocation: CLLocation) {
+    /// Success and failure are communicated via ``delegate`` methods.
+    public func getRoutes(waypoints: [CLLocationCoordinate2D], initialLocation: CLLocation) {
         do {
-            let routeRequest = try routeAdapter.generateRequest(waypoints: [FFI.GeographicCoordinates(lat: userLocation.coordinate.latitude, lng: userLocation.coordinate.longitude)] + waypoints.map({ $0.geographicCoordinates }))
+            let routeRequest = try routeAdapter.generateRequest(waypoints: [FFI.GeographicCoordinates(lat: initialLocation.coordinate.latitude, lng: initialLocation.coordinate.longitude)] + waypoints.map({ $0.geographicCoordinates }))
 
-            // TODO: Make this more mockable
             switch (routeRequest) {
             case .httpPost(url: let url, headers: let headers, body: let body):
                 guard let url = URL(string: url) else {
@@ -79,7 +106,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 }
                 urlRequest.httpBody = Data(body)
 
-                let task = URLSession.shared.dataTask(with: urlRequest) { [self] data, response, error in
+                networkSession.loadData(with: urlRequest) { [self] data, response, error in
                     if let e = error {
                         delegate?.core(self, routingFailedWithError: e)
                     } else if let data = data {
@@ -87,13 +114,17 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         do {
                             let routes = try routeAdapter.parseResponse(response: uint8Data)
 
+                            guard (!routes.isEmpty) else {
+                                delegate?.core(self, routingFailedWithError: FerrostarCoreError.NoRoutesFromAdapter)
+                                return
+                            }
+
                             delegate?.core(self, foundRoutes: routes)
                         } catch {
                             delegate?.core(self, routingFailedWithError: error)
                         }
                     }
                 }
-                task.resume()
             }
         } catch {
             delegate?.core(self, routingFailedWithError: error)
@@ -105,12 +136,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
-        guard let location = locationManager.location else {
+        guard let location = locationProvider.location else {
             throw FerrostarCoreError.UserLocationUnknown
         }
 
-        locationManager.startUpdatingLocation()
-        locationManager.startUpdatingHeading()
+        locationProvider.startUpdatingLocation()
+        locationProvider.startUpdatingHeading()
 
         navigationController = NavigationController(lastUserLocation: location.userLocation, route: route)
     }
@@ -118,27 +149,29 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
         navigationController = nil
-        locationManager.stopUpdatingLocation()
-        locationManager.stopUpdatingHeading()
+        locationProvider.stopUpdatingLocation()
+        locationProvider.stopUpdatingHeading()
     }
 }
 
-extension FerrostarCore: CLLocationManagerDelegate {
-    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        delegate?.core(self, locationManagerFailedWithError: error)
-    }
-
-    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+extension FerrostarCore: LocationManagingDelegate {
+    public func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
 
         // TODO: Decide how/where we want to handle speed info.
 
         navigationController?.updateUserLocation(location: location.userLocation)
+
+        delegate?.core(self, didUpdateLocation: location, andHeading: manager.heading)
     }
 
-    public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+    public func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
         if let location = manager.location {
             delegate?.core(self, didUpdateLocation: location, andHeading: newHeading)
         }
+    }
+
+    public func locationManager(_ manager: LocationProviding, didFailWithError error: Error) {
+        delegate?.core(self, locationManagerFailedWithError: error)
     }
 }

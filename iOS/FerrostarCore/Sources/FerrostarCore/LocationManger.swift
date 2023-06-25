@@ -1,9 +1,9 @@
 import CoreLocation
 
-public protocol LocationManager: AnyObject {
-    // TODO: new delegate protocol?
-    var delegate: CLLocationManagerDelegate? { get set }
+public protocol LocationProviding: AnyObject {
+    var delegate: LocationManagingDelegate? { get set }
     var location: CLLocation? { get }
+    var heading: CLHeading? { get }
     
     func startUpdatingLocation()
     func stopUpdatingLocation()
@@ -12,10 +12,21 @@ public protocol LocationManager: AnyObject {
     func stopUpdatingHeading()
 }
 
-public class LiveLocationManager {
-    private let locationManager = CLLocationManager()
+/// All methods are analogues for equivalents on `CLLocationManagerDelegate`
+public protocol LocationManagingDelegate {
+    func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation])
+    func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading)
+    func locationManager(_ manager: LocationProviding, didFailWithError error: Error)
+}
+
+// TODO: Permissions are currently NOT handled and they should be!!!
+public class LiveLocationManager: NSObject {
+    public var delegate: LocationManagingDelegate?
+
+    private let locationManager: CLLocationManager
 
     public init(activityType: CLActivityType) {
+        locationManager = CLLocationManager()
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
 
         switch (locationManager.authorizationStatus) {
@@ -26,21 +37,19 @@ public class LiveLocationManager {
         }
 
         locationManager.activityType = activityType
+        super.init()
+
+        locationManager.delegate = self
     }
 }
 
-extension LiveLocationManager: LocationManager {
-    public var delegate: CLLocationManagerDelegate? {
-        get {
-            locationManager.delegate
-        }
-        set {
-            locationManager.delegate = newValue
-        }
-    }
-
+extension LiveLocationManager: LocationProviding {
     public var location: CLLocation? {
         locationManager.location
+    }
+
+    public var heading: CLHeading? {
+        locationManager.heading
     }
 
     public func startUpdatingLocation() {
@@ -60,4 +69,74 @@ extension LiveLocationManager: LocationManager {
     }
 }
 
-// TODO: Simulated location manager
+extension LiveLocationManager: CLLocationManagerDelegate {
+    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        delegate?.locationManager(self, didUpdateLocations: locations)
+    }
+
+    public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        delegate?.locationManager(self, didUpdateHeading: newHeading)
+    }
+
+    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        delegate?.locationManager(self, didFailWithError: error)
+    }
+}
+
+
+/// Location service for testing witohut relying on simulator location spoofing.
+///
+/// This allows for more granular unit tests.
+public class SimulatedLocationManager: LocationProviding {
+    public var delegate: LocationManagingDelegate?
+    public var location: CLLocation? {
+        didSet {
+            notifyDelegateOfLocation()
+        }
+    }
+    public var heading: CLHeading? {
+        didSet {
+            notifyDelegateOfHeading()
+        }
+    }
+
+    private var isUpdatingLocation = false {
+        didSet {
+            notifyDelegateOfLocation()
+        }
+    }
+    private var isUpdatingHeading = false {
+        didSet {
+            notifyDelegateOfHeading()
+        }
+    }
+
+    public func startUpdatingLocation() {
+        isUpdatingLocation = true
+    }
+
+    public func stopUpdatingLocation() {
+        isUpdatingLocation = false
+    }
+
+    public func startUpdatingHeading() {
+        isUpdatingHeading = true
+    }
+
+    public func stopUpdatingHeading() {
+        isUpdatingHeading = false
+    }
+
+    private func notifyDelegateOfLocation() {
+        if isUpdatingLocation, let location = location {
+            delegate?.locationManager(self, didUpdateLocations: [location])
+        }
+    }
+
+    private func notifyDelegateOfHeading() {
+        if isUpdatingHeading, let heading = heading {
+            delegate?.locationManager(self, didUpdateHeading: heading)
+        }
+    }
+}
+
