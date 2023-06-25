@@ -284,4 +284,5 @@ final class FerrostarCoreTests: XCTestCase {
     }
 
     // TODO: Various location services error cases (need special mocks)
+    // TODO: Unit test 401
 }

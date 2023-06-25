@@ -13,6 +13,8 @@ enum FerrostarCoreError: Error {
     case InvalidRequestUrl
     /// The route adapter responded to our request without error, but with no routes.
     case NoRoutesFromAdapter
+    /// Invalid (non-2xx) HTTP status
+    case HTTPStatusCode(Int)
 }
 
 /// Receives events from ``FerrostarCore``.
@@ -109,6 +111,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 networkSession.loadData(with: urlRequest) { [self] data, response, error in
                     if let e = error {
                         delegate?.core(self, routingFailedWithError: e)
+                    } else if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
+                        delegate?.core(self, routingFailedWithError: FerrostarCoreError.HTTPStatusCode(res.statusCode))
                     } else if let data = data {
                         let uint8Data = [UInt8](data)
                         do {
