@@ -161,7 +161,11 @@ pub struct Intersections {
     ///
     /// These describe all available roads at the intersection.
     pub bearings: Vec<u16>,
-    /// TODO
+    /// An array of strings signifying the classes (as specified in the profile) of the road
+    /// exiting the intersection.
+    ///
+    /// Note that Valhalla servers do not return this property.
+    #[serde(default)]
     pub classes: Vec<String>,
     /// A list of entry flags, corresponding 1:1 to the list of bearings.
     ///
@@ -174,17 +178,20 @@ pub struct Intersections {
     /// maneuver/passing the intersection.
     /// To get the bearing in the direction of driving, the bearing has to be rotated by
     /// 180 degrees. Not supplied for `depart` maneuvers.
+    #[serde(default)]
     #[serde(rename = "in")]
     pub intersection_in: usize,
     /// An index into the bearings/entry array used to calculate the bearing just before the turn.
     ///
     /// The clockwise angle from true north to the direction of travel immediately after the
     /// maneuver/passing the intersection.  Not supplied for `arrive` maneuvers.
+    #[serde(default)]
     #[serde(rename = "out")]
     pub intersection_out: usize,
     /// A list of turn [Lane]s available at the intersection (if info is available).
     ///
     /// Lanes are listed in left-to-right order.
+    #[serde(default)]
     pub lanes: Vec<Lane>,
 }
 

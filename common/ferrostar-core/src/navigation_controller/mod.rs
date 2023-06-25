@@ -1,6 +1,6 @@
+use crate::utils::snap_to_line;
 use crate::{GeographicCoordinates, Route, UserLocation};
 use std::sync::Mutex;
-use crate::utils::snap_to_line;
 
 /// Representation of the current state of the navigation controller.
 enum TripState {
@@ -70,7 +70,6 @@ impl NavigationController {
                         //
                         // Navigation logic (rough draft)
                         //
-
 
                         // Find the nearest point on the route line
                         snapped_user_location = snap_to_line(location, &route.geometry);
