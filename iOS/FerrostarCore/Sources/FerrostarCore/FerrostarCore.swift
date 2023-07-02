@@ -2,7 +2,7 @@ import FFI
 import Foundation
 import CoreLocation
 
-enum FerrostarCoreError: Error {
+enum FerrostarCoreError: Error, Equatable {
     /// The user has disabled location services for this app.
     case LocationServicesDisabled
     case UserLocationUnknown
@@ -23,7 +23,7 @@ enum FerrostarCoreError: Error {
 public protocol FerrostarCoreDelegate: AnyObject {
     /// Called whenever the user's location is updated.
     ///
-    /// This location *may* be snapped to the route or road network. (TBD: we have not made a final decision)
+    /// This location *may* be snapped to the route or road network.
     func core(_ core: FerrostarCore, didUpdateLocation snappedLocation: CLLocation, andHeading heading: CLHeading?)
 
     /// Called when the location manager failed to get the user's location.
@@ -71,7 +71,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private let locationProvider: LocationProviding
     private var navigationController: FFI.NavigationControllerProtocol?
 
-    public init(routeAdapter: FFI.RouteAdapter, locationManager: LocationProviding, networkSession: URLRequestLoading) {
+    public init(routeAdapter: FFI.RouteAdapterProtocol, locationManager: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
         self.locationProvider = locationManager
         self.networkSession = networkSession
