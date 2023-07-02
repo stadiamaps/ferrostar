@@ -1,8 +1,8 @@
 use crate::utils::snap_to_line;
-use crate::{GeographicCoordinates, Route, UserLocation};
+use crate::{GeographicCoordinates, Route, SpokenInstruction, UserLocation};
 use std::sync::Mutex;
 
-/// Representation of the current state of the navigation controller.
+/// Internal state of the navigation controller.
 enum TripState {
     Navigating {
         last_user_location: UserLocation,
@@ -13,6 +13,21 @@ enum TripState {
         remaining_waypoints: Vec<GeographicCoordinates>,
     },
     Complete,
+}
+
+/// Public updates pushed up to the direct user of the NavigationController.
+pub enum NavigationStateUpdate {
+    Navigating {
+        snapped_user_location: UserLocation,
+        /// The ordered list of waypoints remaining to visit on this trip. Intermediate waypoints on
+        /// the route to the final destination are discarded as they are visited.
+        remaining_waypoints: Vec<GeographicCoordinates>,
+        spoken_instruction: Option<SpokenInstruction>,
+        // TODO: Communicate off-route and other state info
+    },
+    Arrived {
+        spoken_instruction: Option<SpokenInstruction>,
+    },
 }
 
 /// Manages the navigation lifecycle of a single trip, requesting the initial route and updating
@@ -54,7 +69,7 @@ impl NavigationController {
         }
     }
 
-    pub fn update_user_location(&self, location: UserLocation) {
+    pub fn update_user_location(&self, location: UserLocation) -> NavigationStateUpdate {
         match self.state.lock() {
             Ok(mut guard) => {
                 match *guard {
@@ -80,11 +95,23 @@ impl NavigationController {
 
                         if remaining_waypoints.is_empty() {
                             *guard = TripState::Complete;
+
+                            // TODO: Better info
+                            NavigationStateUpdate::Arrived {
+                                spoken_instruction: None
+                            }
+                        } else {
+                            // TODO: Instructions, banners, etc.
+                            NavigationStateUpdate::Navigating {
+                                snapped_user_location,
+                                remaining_waypoints: remaining_waypoints.clone(),
+                                spoken_instruction: None,
+                            }
                         }
                     }
                     // It's tempting to throw an error here, since the caller should know better, but
                     // a mistake like this is technically harmless.
-                    TripState::Complete => {}
+                    TripState::Complete => NavigationStateUpdate::Arrived { spoken_instruction: None }
                 }
             }
             Err(_) => {

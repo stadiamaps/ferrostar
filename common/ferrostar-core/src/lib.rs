@@ -5,7 +5,7 @@ pub(crate) mod utils;
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
 use geo_types::Coord;
-pub use navigation_controller::NavigationController;
+pub use navigation_controller::{NavigationController, NavigationStateUpdate};
 pub use routing_adapters::{
     error::{RoutingRequestGenerationError, RoutingResponseParseError},
     RouteAdapter, RouteRequest, RouteRequestGenerator, RouteResponseParser,
@@ -63,6 +63,13 @@ pub struct Route {
     pub geometry: Vec<GeographicCoordinates>,
     /// The ordered list of waypoints to visit, including the starting point.
     pub waypoints: Vec<GeographicCoordinates>,
+}
+
+pub struct SpokenInstruction {
+    /// Plain-text instruction which can be synthesized with a TTS engine.
+    pub text: String,
+    /// Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
+    pub ssml: Option<String>,
 }
 
 //

@@ -19,7 +19,7 @@ enum FerrostarCoreError: Error, Equatable {
 
 /// Receives events from ``FerrostarCore``.
 ///
-/// This is the central point responsible for relaying updates back to the UI layer.
+/// This is the central point responsible for relaying updates back to the application.
 public protocol FerrostarCoreDelegate: AnyObject {
     /// Called whenever the user's location is updated.
     ///
@@ -43,6 +43,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Note that the error could be an underlying failure, such as an HTTP error, or even a case
     /// where there was no obvious error, but the route adapter returns no routes.
     func core(_ core: FerrostarCore, routingFailedWithError error: Error)
+
+    /// Called when the core gives us an updated navigation state.
+    ///
+    /// This method will be called whenever the user's location changes significantly enough to have an effect
+    /// on the navigation state that is important enough to require a decision or UI update (quite often in the
+    /// case of a moving vehicle).
+    ///
+    /// This is *probably* not the final interface for this function but it's something to start with.
+    func core(_ core: FerrostarCore, didUpdateNavigationState update: NavigationStateUpdate)
 }
 
 
@@ -164,7 +173,9 @@ extension FerrostarCore: LocationManagingDelegate {
 
         // TODO: Decide how/where we want to handle speed info.
 
-        navigationController?.updateUserLocation(location: location.userLocation)
+        if let update = navigationController?.updateUserLocation(location: location.userLocation) {
+            delegate?.core(self, didUpdateNavigationState: update)
+        }
 
         delegate?.core(self, didUpdateLocation: location, andHeading: manager.heading)
     }

@@ -276,6 +276,9 @@ final class ValhallaCoreTests: XCTestCase {
                 XCTFail(error.localizedDescription)
             }
 
+            func core(_ core: FerrostarCore, didUpdateNavigationState update: NavigationStateUpdate) {
+                XCTFail("No state updates expected")
+            }
         }
 
         let core = FerrostarCore(valhallaEndpointUrl: valhallaEndpointUrl, profile: "auto", locationManager: SimulatedLocationManager(), networkSession: mockSession)

@@ -63,6 +63,10 @@ final class FerrostarCoreTests: XCTestCase {
 
                 expectation.fulfill()
             }
+
+            func core(_ core: FerrostarCore, didUpdateNavigationState update: NavigationStateUpdate) {
+                XCTFail("No state updates expected")
+            }
         }
 
         let core = FerrostarCore(routeAdapter: DummyRouteAdapter(routes: []), locationManager: SimulatedLocationManager(), networkSession: mockSession)

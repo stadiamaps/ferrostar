@@ -49,9 +49,20 @@ dictionary Route {
     sequence<GeographicCoordinates> waypoints;
 };
 
+dictionary SpokenInstruction {
+    string text;
+    string? ssml;
+};
+
 [Enum]
 interface RouteRequest {
     HttpPost(string url, record<DOMString, string> headers, sequence<u8> body);
+};
+
+[Enum]
+interface NavigationStateUpdate {
+    Navigating(UserLocation snapped_user_location, sequence<GeographicCoordinates> remaining_waypoints, SpokenInstruction? spoken_instruction);
+    Arrived(SpokenInstruction? spoken_instruction);
 };
 
 //
@@ -83,5 +94,5 @@ interface RouteAdapter {
 interface NavigationController {
     constructor(UserLocation last_user_location, Route route);
 
-    void update_user_location(UserLocation location);
+    NavigationStateUpdate update_user_location(UserLocation location);
 };
