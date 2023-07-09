@@ -98,7 +98,7 @@ impl NavigationController {
 
                             // TODO: Better info
                             NavigationStateUpdate::Arrived {
-                                spoken_instruction: None
+                                spoken_instruction: None,
                             }
                         } else {
                             // TODO: Instructions, banners, etc.
@@ -111,7 +111,9 @@ impl NavigationController {
                     }
                     // It's tempting to throw an error here, since the caller should know better, but
                     // a mistake like this is technically harmless.
-                    TripState::Complete => NavigationStateUpdate::Arrived { spoken_instruction: None }
+                    TripState::Complete => NavigationStateUpdate::Arrived {
+                        spoken_instruction: None,
+                    },
                 }
             }
             Err(_) => {

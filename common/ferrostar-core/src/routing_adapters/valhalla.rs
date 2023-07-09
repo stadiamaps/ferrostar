@@ -1,6 +1,6 @@
 use super::{RouteRequest, RoutingRequestGenerationError};
 use crate::routing_adapters::RouteRequestGenerator;
-use crate::GeographicCoordinates;
+use crate::{GeographicCoordinates, UserLocation};
 use serde_json::{json, Value as JsonValue};
 use std::collections::HashMap;
 
@@ -32,21 +32,31 @@ impl ValhallaHttpRequestGenerator {
 impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
     fn generate_request(
         &self,
+        user_location: UserLocation,
         waypoints: Vec<GeographicCoordinates>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
-        if waypoints.len() < 2 {
+        if waypoints.is_empty() {
             Err(RoutingRequestGenerationError::NotEnoughWaypoints)
         } else {
             let headers =
                 HashMap::from([("Content-Type".to_string(), "application/json".to_string())]);
-            let locations: Vec<JsonValue> = waypoints
-                .iter()
-                .map(|waypoint| {
+            let mut start = json!({
+                "lat": user_location.coordinates.lat,
+                "lon": user_location.coordinates.lng,
+                "street_side_tolerance": core::cmp::max(5, user_location.horizontal_accuracy as u16),
+            });
+            if let Some(course) = user_location.course {
+                start["heading"] = course.degrees.into();
+                start["heading_tolerance"] = course.accuracy.into();
+            }
+
+            let locations: Vec<JsonValue> = std::iter::once(start)
+                .chain(waypoints.iter().map(|waypoint| {
                     json!({
                         "lat": waypoint.lat,
                         "lon": waypoint.lng,
                     })
-                })
+                }))
                 .collect();
             // TODO: Figure out if we can use PBF?
             // TODO: Trace attributes as we go rather than pulling a fat payload upfront that we might ditch later?
@@ -79,9 +89,23 @@ mod tests {
     use super::*;
     use assert_json_diff::assert_json_include;
     use serde_json::{from_slice, json};
+    use crate::Course;
 
     const ENDPOINT_URL: &str = "https://api.stadiamaps.com/route/v1";
     const COSTING: &str = "bicycle";
+    const USER_LOCATION: UserLocation = UserLocation {
+        coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
+        horizontal_accuracy: 6.0,
+        course: None,
+    };
+    const USER_LOCATION_WITH_COURSE: UserLocation = UserLocation {
+        coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
+        horizontal_accuracy: 6.0,
+        course: Some(Course {
+            degrees: 42,
+            accuracy: 12,
+        }),
+    };
     const WAYPOINTS: [GeographicCoordinates; 2] = [
         GeographicCoordinates { lat: 0.0, lng: 1.0 },
         GeographicCoordinates { lat: 2.0, lng: 3.0 },
@@ -94,17 +118,13 @@ mod tests {
 
         // At least two locations are required
         assert!(matches!(
-            generator.generate_request(Vec::new()),
-            Err(RoutingRequestGenerationError::NotEnoughWaypoints)
-        ));
-        assert!(matches!(
-            generator.generate_request(vec![GeographicCoordinates { lat: 0.0, lng: 0.0 }]),
+            generator.generate_request(USER_LOCATION, Vec::new()),
             Err(RoutingRequestGenerationError::NotEnoughWaypoints)
         ));
     }
 
     #[test]
-    fn test_request_properties() {
+    fn test_request_body_without_course() {
         let generator =
             ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
 
@@ -112,7 +132,7 @@ mod tests {
             url: request_url,
             headers,
             body,
-        } = generator.generate_request(WAYPOINTS.to_vec()).unwrap();
+        } = generator.generate_request(USER_LOCATION, WAYPOINTS.to_vec()).unwrap();
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());
@@ -124,6 +144,96 @@ mod tests {
             expected: json!({
                 "costing": COSTING,
                 "locations": [
+                    {
+                        "lat": 0.0,
+                        "lon": 0.0,
+                        "street_side_tolerance": 6,
+                    },
+                    {
+                        "lat": 0.0,
+                        "lon": 1.0
+                    },
+                    {
+                        "lat": 2.0,
+                        "lon": 3.0,
+                    }
+                ]
+            })
+        );
+    }
+
+    #[test]
+    fn test_request_body_with_course() {
+        let generator =
+            ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
+
+        let RouteRequest::HttpPost {
+            url: request_url,
+            headers,
+            body,
+        } = generator.generate_request(USER_LOCATION_WITH_COURSE, WAYPOINTS.to_vec()).unwrap();
+
+        assert_eq!(ENDPOINT_URL, request_url);
+        assert_eq!(headers["Content-Type"], "application/json".to_string());
+
+        let body_json: JsonValue = from_slice(&body).expect("Failed to parse request body as JSON");
+
+        assert_json_include!(
+            actual: body_json,
+            expected: json!({
+                "costing": COSTING,
+                "locations": [
+                    {
+                        "lat": 0.0,
+                        "lon": 0.0,
+                        "street_side_tolerance": 6,
+                        "heading": 42,
+                        "heading_tolerance": 12,
+                    },
+                    {
+                        "lat": 0.0,
+                        "lon": 1.0
+                    },
+                    {
+                        "lat": 2.0,
+                        "lon": 3.0,
+                    }
+                ]
+            })
+        );
+    }
+
+    #[test]
+    fn test_request_body_with_invalid_horizontal_accuracy() {
+        let generator =
+            ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
+        let location = UserLocation {
+            coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
+            horizontal_accuracy: -6.0,
+            course: None,
+        };
+
+        let RouteRequest::HttpPost {
+            url: request_url,
+            headers,
+            body,
+        } = generator.generate_request(location, WAYPOINTS.to_vec()).unwrap();
+
+        assert_eq!(ENDPOINT_URL, request_url);
+        assert_eq!(headers["Content-Type"], "application/json".to_string());
+
+        let body_json: JsonValue = from_slice(&body).expect("Failed to parse request body as JSON");
+
+        assert_json_include!(
+            actual: body_json,
+            expected: json!({
+                "costing": COSTING,
+                "locations": [
+                    {
+                        "lat": 0.0,
+                        "lon": 0.0,
+                        "street_side_tolerance": 5,
+                    },
                     {
                         "lat": 0.0,
                         "lon": 1.0

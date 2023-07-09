@@ -1,5 +1,6 @@
 use crate::{
     create_osrm_response_parser, create_valhalla_request_generator, GeographicCoordinates, Route,
+    UserLocation,
 };
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
@@ -34,11 +35,10 @@ pub trait RouteRequestGenerator: Send + Sync + Debug {
     /// Generates a routing backend request given the set of locations.
     ///
     /// While most implementations will treat the locations as an ordered sequence, this is not
-    /// guaranteed (ex: an optimized router). In general though, callers can assume that the route
-    /// will start at the first waypoint and end at the last, visiting the in-between locations
-    /// in some order.
+    /// guaranteed (ex: an optimized router)..
     fn generate_request(
         &self,
+        user_location: UserLocation,
         waypoints: Vec<GeographicCoordinates>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError>;
 
@@ -99,9 +99,11 @@ impl RouteAdapter {
 
     pub fn generate_request(
         &self,
+        user_location: UserLocation,
         waypoints: Vec<GeographicCoordinates>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
-        self.request_generator.generate_request(waypoints)
+        self.request_generator
+            .generate_request(user_location, waypoints)
     }
 
     pub fn parse_response(

@@ -85,7 +85,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// Success and failure are communicated via ``delegate`` methods.
     public func getRoutes(waypoints: [CLLocationCoordinate2D], initialLocation: CLLocation) async throws -> [Route] {
-        let routeRequest = try routeAdapter.generateRequest(waypoints: [FFI.GeographicCoordinates(lat: initialLocation.coordinate.latitude, lng: initialLocation.coordinate.longitude)] + waypoints.map { $0.geographicCoordinates })
+        let routeRequest = try routeAdapter.generateRequest(userLocation: initialLocation.userLocation, waypoints: waypoints.map { $0.geographicCoordinates })
 
         switch routeRequest {
         case let .httpPost(url: url, headers: headers, body: body):

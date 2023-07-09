@@ -31,13 +31,13 @@ impl From<Coord> for GeographicCoordinates {
 pub struct Course {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
     /// true north (N = 0, E = 90, S = 180, W = 270).
-    pub degrees: f64,
+    pub degrees: u16,
     /// The accuracy of the course value, measured in degrees.
-    pub accuracy: f64,
+    pub accuracy: u16,
 }
 
 impl Course {
-    pub fn new(degrees: f64, accuracy: f64) -> Self {
+    pub fn new(degrees: u16, accuracy: u16) -> Self {
         Self { degrees, accuracy }
     }
 }

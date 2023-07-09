@@ -12,7 +12,7 @@ extension CLLocation {
         let ffiCourse: FFI.Course?
 
         if course >= 0 && courseAccuracy >= 0 {
-            ffiCourse = FFI.Course(degrees: course, accuracy: courseAccuracy)
+            ffiCourse = FFI.Course(degrees: UInt16(course), accuracy: UInt16(courseAccuracy))
         } else {
             ffiCourse = nil
         }

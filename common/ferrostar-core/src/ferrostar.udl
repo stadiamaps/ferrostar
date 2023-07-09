@@ -34,8 +34,8 @@ dictionary GeographicCoordinates {
 };
 
 dictionary Course {
-    double degrees;
-    double accuracy;
+    u16 degrees;
+    u16 accuracy;
 };
 
 dictionary UserLocation {
@@ -71,7 +71,7 @@ interface NavigationStateUpdate {
 
 callback interface RouteRequestGenerator {
     [Throws=RoutingRequestGenerationError]
-    RouteRequest generate_request(sequence<GeographicCoordinates> waypoints);
+    RouteRequest generate_request(UserLocation user_location, sequence<GeographicCoordinates> waypoints);
 };
 
 callback interface RouteResponseParser {
@@ -85,7 +85,7 @@ interface RouteAdapter {
     constructor(string endpoint_url, string profile);
 
     [Throws=RoutingRequestGenerationError]
-    RouteRequest generate_request(sequence<GeographicCoordinates> waypoints);
+    RouteRequest generate_request(UserLocation user_location, sequence<GeographicCoordinates> waypoints);
 
     [Throws=RoutingResponseParseError]
     sequence<Route> parse_response(sequence<u8> response);

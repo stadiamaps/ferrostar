@@ -11,14 +11,15 @@ let errorBody = Data("""
 """.utf8)
 let errorResponse = HTTPURLResponse(url: backendUrl, statusCode: 401, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!
 
-private class DummyRouteAdapter: RouteAdapterProtocol {
+private class MockRouteAdapter: RouteAdapterProtocol {
+
     private let routes: [Route]
 
     init(routes: [Route]) {
         self.routes = routes
     }
 
-    func generateRequest(waypoints _: [FFI.GeographicCoordinates]) throws -> FFI.RouteRequest {
+    func generateRequest(userLocation: FFI.UserLocation, waypoints: [FFI.GeographicCoordinates]) throws -> FFI.RouteRequest {
         return FFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: [])
     }
 
@@ -32,7 +33,7 @@ final class FerrostarCoreTests: XCTestCase {
         let mockSession = MockURLSession()
         mockSession.registerMock(forURL: backendUrl, withData: errorBody, andResponse: errorResponse)
 
-        let core = FerrostarCore(routeAdapter: DummyRouteAdapter(routes: []), locationManager: SimulatedLocationManager(), networkSession: mockSession)
+        let core = FerrostarCore(routeAdapter: MockRouteAdapter(routes: []), locationManager: SimulatedLocationManager(), networkSession: mockSession)
 
         do {
             _ = try await core.getRoutes(waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)],
