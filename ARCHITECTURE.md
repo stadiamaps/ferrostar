@@ -2,6 +2,11 @@
 
 NOTE: This is intentionally hand-wavy in some parts, and will be formalized more as design and development progress.
 
+## Repo Structure
+
+Monorepo-ish.... It would be pointless to split up the core repos to be honest. Unfortunately, the iOS UI will probably have
+to be split out because of the "feature" of Swift packages being tied to the root of a git repo.
+
 ## Common core
 
 These components will be standardized and cross-platform. We chose to write this in Rust as it lacks most of the headaches

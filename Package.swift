@@ -24,19 +24,22 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .binaryTarget(
             name: "FerrostarCoreRS",
-            path: "../../common/target/ios/ferrostar-rs.xcframework"
+            path: "common/target/ios/ferrostar-rs.xcframework"
         ),
         .target(
             name: "FerrostarCore",
-            dependencies: [.target(name: "FFI")]
+            dependencies: [.target(name: "FFI")],
+            path: "SwiftCore/Sources/FerrostarCore"
         ),
         .target(
             name: "FFI",
-            dependencies: [.target(name: "FerrostarCoreRS")]
+            dependencies: [.target(name: "FerrostarCoreRS")],
+            path: "SwiftCore/Sources/FFI"
         ),
         .testTarget(
             name: "FerrostarCoreTests",
-            dependencies: ["FerrostarCore"]
+            dependencies: ["FerrostarCore"],
+            path: "SwiftCore/Tests/FerrostarCoreTests"
         ),
     ]
 )
