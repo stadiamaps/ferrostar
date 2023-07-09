@@ -13,7 +13,7 @@ public protocol LocationProviding: AnyObject {
 }
 
 /// All methods are analogues for equivalents on `CLLocationManagerDelegate`
-public protocol LocationManagingDelegate {
+public protocol LocationManagingDelegate: AnyObject {
     func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation])
     func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading)
     func locationManager(_ manager: LocationProviding, didFailWithError error: Error)

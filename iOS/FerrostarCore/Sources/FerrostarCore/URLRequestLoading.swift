@@ -16,9 +16,9 @@ extension URLSession: URLRequestLoading {
 
 enum MockURLSessionError: Error {
     /// The URLRequest has no URL
-    case MissingURL
+    case missingURL
     /// No response has been mocked for the given URL
-    case NoResponseMockForURL
+    case noResponseMockForURL
 }
 
 /// Mocks network responses by URL. Super quick-and-dirty for testing with mocks.
@@ -29,11 +29,11 @@ public class MockURLSession: URLRequestLoading {
 
     public func loadData(with urlRequest: URLRequest) async throws -> (Data, URLResponse) {
         guard let url = urlRequest.url else {
-            throw MockURLSessionError.MissingURL
+            throw MockURLSessionError.missingURL
         }
 
         guard let (data, response) = urlResponseMap[url] else {
-            throw MockURLSessionError.NoResponseMockForURL
+            throw MockURLSessionError.noResponseMockForURL
         }
 
         return (data, response)

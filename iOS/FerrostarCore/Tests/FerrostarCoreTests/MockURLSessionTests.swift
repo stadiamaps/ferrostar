@@ -5,9 +5,9 @@ final class MockURLSessionTests: XCTestCase {
     func testUninitializedSession() async throws {
         let session = MockURLSession()
         do {
-            let _ = try await session.loadData(with: URLRequest(url: URL(string: "https://example.com/")!))
+            _ = try await session.loadData(with: URLRequest(url: URL(string: "https://example.com/")!))
             XCTFail("Expected an error")
-        } catch MockURLSessionError.NoResponseMockForURL {
+        } catch MockURLSessionError.noResponseMockForURL {
             // Expected failure
         }
     }
@@ -26,9 +26,9 @@ final class MockURLSessionTests: XCTestCase {
         XCTAssertEqual(response, mockResponse)
 
         do {
-            let _ = try await session.loadData(with: URLRequest(url: URL(string: "https://example.com/unregistered")!))
+            _ = try await session.loadData(with: URLRequest(url: URL(string: "https://example.com/unregistered")!))
             XCTFail("Expected an error")
-        } catch MockURLSessionError.NoResponseMockForURL {
+        } catch MockURLSessionError.noResponseMockForURL {
             // Expected failure
         }
     }

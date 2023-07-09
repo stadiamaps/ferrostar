@@ -4,17 +4,15 @@ import Foundation
 
 enum FerrostarCoreError: Error, Equatable {
     /// The user has disabled location services for this app.
-    case LocationServicesDisabled
-    case UserLocationUnknown
+    case locationServicesDisabled
+    case userLocationUnknown
     /// The route request from the route adapter has an invalid URL.
     ///
     /// This should never be encountered by end users of the library, and indicates a programming error
     /// in the route adapter.
-    case InvalidRequestUrl
-    /// The route adapter responded to our request without error, but with no routes.
-    case NoRoutesFromAdapter
+    case invalidRequestUrl
     /// Invalid (non-2xx) HTTP status
-    case HTTPStatusCode(Int)
+    case httpStatusCode(Int)
 }
 
 /// Receives events from ``FerrostarCore``.
@@ -92,7 +90,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         switch routeRequest {
         case let .httpPost(url: url, headers: headers, body: body):
             guard let url = URL(string: url) else {
-                throw FerrostarCoreError.InvalidRequestUrl
+                throw FerrostarCoreError.invalidRequestUrl
             }
 
             var urlRequest = URLRequest(url: url)
@@ -105,14 +103,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
             let (data, response) = try await networkSession.loadData(with: urlRequest)
 
             if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
-                throw FerrostarCoreError.HTTPStatusCode(res.statusCode)
+                throw FerrostarCoreError.httpStatusCode(res.statusCode)
             } else {
                 let uint8Data = [UInt8](data)
                 let routes = try routeAdapter.parseResponse(response: uint8Data)
-
-                guard !routes.isEmpty else {
-                    throw FerrostarCoreError.NoRoutesFromAdapter
-                }
 
                 return routes
             }
@@ -125,7 +119,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
         guard let location = locationProvider.location else {
-            throw FerrostarCoreError.UserLocationUnknown
+            throw FerrostarCoreError.userLocationUnknown
         }
 
         locationProvider.startUpdatingLocation()
