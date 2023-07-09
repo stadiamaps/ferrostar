@@ -66,6 +66,11 @@ pub trait RouteResponseParser: Send + Sync + Debug {
 /// In the future, we may provide additional methods or conveniences, and this
 /// indirection leaves the design open to such changes without necessarily breaking source
 /// compatibility.
+///
+/// Ideas  welcome re: how to signal compatibility between request generators and response parsers.
+/// I don't think we can do this in the type system, since one of the reasons for the split design
+/// is modularity, including the possibility of user-provided implementations, and these will not
+/// always be of a "known" type to the Rust side.
 pub struct RouteAdapter {
     request_generator: Box<dyn RouteRequestGenerator>,
     response_parser: Box<dyn RouteResponseParser>,
