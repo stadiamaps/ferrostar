@@ -32,18 +32,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// to enable location services.
     func core(_ core: FerrostarCore, locationManagerFailedWithError error: Error)
 
-    /// Called when the router found one or more candidate routes.
-    ///
-    /// This should most often result in either a UI for the user to select a route or a programmatic selection
-    /// of a route, followed by a call to `startNavigation(route:)`.
-    func core(_ core: FerrostarCore, foundRoutes routes: [FFI.Route])
-
-    /// Called when no candidate routes could be retrieved from the router.
-    ///
-    /// Note that the error could be an underlying failure, such as an HTTP error, or even a case
-    /// where there was no obvious error, but the route adapter returns no routes.
-    func core(_ core: FerrostarCore, routingFailedWithError error: Error)
-
     /// Called when the core gives us an updated navigation state.
     ///
     /// This method will be called whenever the user's location changes significantly enough to have an effect
@@ -100,47 +88,36 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Tries to get routes visiting one or more waypoints starting from the initial location.
     ///
     /// Success and failure are communicated via ``delegate`` methods.
-    public func getRoutes(waypoints: [CLLocationCoordinate2D], initialLocation: CLLocation) {
-        do {
-            let routeRequest = try routeAdapter.generateRequest(waypoints: [FFI.GeographicCoordinates(lat: initialLocation.coordinate.latitude, lng: initialLocation.coordinate.longitude)] + waypoints.map({ $0.geographicCoordinates }))
+    public func getRoutes(waypoints: [CLLocationCoordinate2D], initialLocation: CLLocation) async throws -> [Route] {
+        let routeRequest = try routeAdapter.generateRequest(waypoints: [FFI.GeographicCoordinates(lat: initialLocation.coordinate.latitude, lng: initialLocation.coordinate.longitude)] + waypoints.map({ $0.geographicCoordinates }))
 
-            switch (routeRequest) {
-            case .httpPost(url: let url, headers: let headers, body: let body):
-                guard let url = URL(string: url) else {
-                    delegate?.core(self, routingFailedWithError: FerrostarCoreError.InvalidRequestUrl)
-                    return
-                }
-                var urlRequest = URLRequest(url: url)
-                urlRequest.httpMethod = "POST"
-                for (header, value) in headers {
-                    urlRequest.setValue(value, forHTTPHeaderField: header)
-                }
-                urlRequest.httpBody = Data(body)
-
-                networkSession.loadData(with: urlRequest) { [self] data, response, error in
-                    if let e = error {
-                        delegate?.core(self, routingFailedWithError: e)
-                    } else if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
-                        delegate?.core(self, routingFailedWithError: FerrostarCoreError.HTTPStatusCode(res.statusCode))
-                    } else if let data = data {
-                        let uint8Data = [UInt8](data)
-                        do {
-                            let routes = try routeAdapter.parseResponse(response: uint8Data)
-
-                            guard (!routes.isEmpty) else {
-                                delegate?.core(self, routingFailedWithError: FerrostarCoreError.NoRoutesFromAdapter)
-                                return
-                            }
-
-                            delegate?.core(self, foundRoutes: routes)
-                        } catch {
-                            delegate?.core(self, routingFailedWithError: error)
-                        }
-                    }
-                }
+        switch (routeRequest) {
+        case .httpPost(url: let url, headers: let headers, body: let body):
+            guard let url = URL(string: url) else {
+                throw FerrostarCoreError.InvalidRequestUrl
             }
-        } catch {
-            delegate?.core(self, routingFailedWithError: error)
+
+            var urlRequest = URLRequest(url: url)
+            urlRequest.httpMethod = "POST"
+            for (header, value) in headers {
+                urlRequest.setValue(value, forHTTPHeaderField: header)
+            }
+            urlRequest.httpBody = Data(body)
+
+            let (data, response) = try await networkSession.loadData(with: urlRequest)
+
+            if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
+                throw FerrostarCoreError.HTTPStatusCode(res.statusCode)
+            } else {
+                let uint8Data = [UInt8](data)
+                let routes = try routeAdapter.parseResponse(response: uint8Data)
+
+                guard (!routes.isEmpty) else {
+                    throw FerrostarCoreError.NoRoutesFromAdapter
+                }
+
+                return routes
+            }
         }
     }
 

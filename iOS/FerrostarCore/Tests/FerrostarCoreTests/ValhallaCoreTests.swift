@@ -8,7 +8,7 @@ import FFI
 
 
 private let valhallaEndpointUrl = URL(string: "https://api.stadiamaps.com/route/v1")!
-private let simpleRoute = """
+private let simpleRoute = Data("""
 {
   "routes": [
     {
@@ -207,86 +207,51 @@ private let simpleRoute = """
   ],
   "code": "Ok"
 }
-""".data(using: .utf8)
+""".utf8)
 private let successfulResponse = HTTPURLResponse(url: valhallaEndpointUrl, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!
 
 final class ValhallaCoreTests: XCTestCase {
-    func testValhallaRouteParsing() throws {
-        let exp = expectation(description: "We should receive at least one valid route back")
-
+    func testValhallaRouteParsing() async throws {
         let mockSession = MockURLSession()
         mockSession.registerMock(forURL: valhallaEndpointUrl, withData: simpleRoute, andResponse: successfulResponse)
 
-        class CoreDelegate: FerrostarCoreDelegate {
-            private let expectation: XCTestExpectation
-
-            init(expectation: XCTestExpectation) {
-                self.expectation = expectation
-            }
-
-            func core(_ core: FerrostarCore, didUpdateLocation snappedLocation: CLLocation, andHeading heading: CLHeading?) {
-                // No-op
-            }
-
-            func core(_ core: FerrostarCore, locationManagerFailedWithError error: Error) {
-                XCTFail(error.localizedDescription)
-            }
-
-            func core(_ core: FerrostarCore, foundRoutes routes: [FFI.Route]) {
-                XCTAssertEqual(routes.count, 1)
-
-                // Test polyline decoding.
-                XCTAssertEqual(routes.first!.geometry, [
-                    GeographicCoordinates(
-                        lat: 60.534716, lng: -149.543469
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.534782, lng: -149.543879
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.534829, lng: -149.544134
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.534856, lng: -149.5443
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.534887, lng: -149.544533
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.534941, lng: -149.544976
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.534971, lng: -149.545485
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.535003, lng: -149.546177
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.535008, lng: -149.546937
-                    ),
-                    GeographicCoordinates(
-                        lat: 60.534991, lng: -149.548581
-                    )
-                ])
-
-                expectation.fulfill()
-            }
-
-            func core(_ core: FerrostarCore, routingFailedWithError error: Error) {
-                XCTFail(error.localizedDescription)
-            }
-
-            func core(_ core: FerrostarCore, didUpdateNavigationState update: NavigationStateUpdate) {
-                XCTFail("No state updates expected")
-            }
-        }
-
         let core = FerrostarCore(valhallaEndpointUrl: valhallaEndpointUrl, profile: "auto", locationManager: SimulatedLocationManager(), networkSession: mockSession)
-        let delegate = CoreDelegate(expectation: exp)
-        core.delegate = delegate
+        let routes = try await core.getRoutes(waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)], initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469))
 
-        core.getRoutes(waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)], initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469))
+        XCTAssertEqual(routes.count, 1)
 
-        wait(for: [exp], timeout: 1.0)
+        // Test polyline decoding.
+        XCTAssertEqual(routes.first!.geometry, [
+            GeographicCoordinates(
+                lat: 60.534716, lng: -149.543469
+            ),
+            GeographicCoordinates(
+                lat: 60.534782, lng: -149.543879
+            ),
+            GeographicCoordinates(
+                lat: 60.534829, lng: -149.544134
+            ),
+            GeographicCoordinates(
+                lat: 60.534856, lng: -149.5443
+            ),
+            GeographicCoordinates(
+                lat: 60.534887, lng: -149.544533
+            ),
+            GeographicCoordinates(
+                lat: 60.534941, lng: -149.544976
+            ),
+            GeographicCoordinates(
+                lat: 60.534971, lng: -149.545485
+            ),
+            GeographicCoordinates(
+                lat: 60.535003, lng: -149.546177
+            ),
+            GeographicCoordinates(
+                lat: 60.535008, lng: -149.546937
+            ),
+            GeographicCoordinates(
+                lat: 60.534991, lng: -149.548581
+            )
+        ])
     }
 }
