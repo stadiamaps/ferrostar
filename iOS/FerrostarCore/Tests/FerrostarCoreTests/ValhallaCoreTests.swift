@@ -1,11 +1,10 @@
 // Integration tests of the core using the Valhalla backend with mocked
 // responses
 
-import XCTest
 import CoreLocation
-import FFI
 @testable import FerrostarCore
-
+import FFI
+import XCTest
 
 private let valhallaEndpointUrl = URL(string: "https://api.stadiamaps.com/route/v1")!
 private let simpleRoute = Data("""
@@ -251,7 +250,7 @@ final class ValhallaCoreTests: XCTestCase {
             ),
             GeographicCoordinates(
                 lat: 60.534991, lng: -149.548581
-            )
+            ),
         ])
     }
 }

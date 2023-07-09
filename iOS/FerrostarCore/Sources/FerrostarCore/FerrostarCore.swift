@@ -1,6 +1,6 @@
+import CoreLocation
 import FFI
 import Foundation
-import CoreLocation
 
 enum FerrostarCoreError: Error, Equatable {
     /// The user has disabled location services for this app.
@@ -42,7 +42,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
     func core(_ core: FerrostarCore, didUpdateNavigationState update: NavigationStateUpdate)
 }
 
-
 /// The Ferrostar core.
 ///
 /// This is the entrypoint for end users of Ferrostar, and is responsible
@@ -70,14 +69,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     public init(routeAdapter: FFI.RouteAdapterProtocol, locationManager: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
-        self.locationProvider = locationManager
+        locationProvider = locationManager
         self.networkSession = networkSession
 
         super.init()
 
         // Location provider setup
-        self.locationProvider.delegate = self
-        
+        locationProvider.delegate = self
     }
 
     public convenience init(valhallaEndpointUrl: URL, profile: String, locationManager: LocationProviding, networkSession: URLRequestLoading = URLSession.shared) {
@@ -89,10 +87,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// Success and failure are communicated via ``delegate`` methods.
     public func getRoutes(waypoints: [CLLocationCoordinate2D], initialLocation: CLLocation) async throws -> [Route] {
-        let routeRequest = try routeAdapter.generateRequest(waypoints: [FFI.GeographicCoordinates(lat: initialLocation.coordinate.latitude, lng: initialLocation.coordinate.longitude)] + waypoints.map({ $0.geographicCoordinates }))
+        let routeRequest = try routeAdapter.generateRequest(waypoints: [FFI.GeographicCoordinates(lat: initialLocation.coordinate.latitude, lng: initialLocation.coordinate.longitude)] + waypoints.map { $0.geographicCoordinates })
 
-        switch (routeRequest) {
-        case .httpPost(url: let url, headers: let headers, body: let body):
+        switch routeRequest {
+        case let .httpPost(url: url, headers: headers, body: body):
             guard let url = URL(string: url) else {
                 throw FerrostarCoreError.InvalidRequestUrl
             }
@@ -112,7 +110,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 let uint8Data = [UInt8](data)
                 let routes = try routeAdapter.parseResponse(response: uint8Data)
 
-                guard (!routes.isEmpty) else {
+                guard !routes.isEmpty else {
                     throw FerrostarCoreError.NoRoutesFromAdapter
                 }
 
@@ -163,7 +161,7 @@ extension FerrostarCore: LocationManagingDelegate {
         }
     }
 
-    public func locationManager(_ manager: LocationProviding, didFailWithError error: Error) {
+    public func locationManager(_: LocationProviding, didFailWithError error: Error) {
         delegate?.core(self, locationManagerFailedWithError: error)
     }
 }

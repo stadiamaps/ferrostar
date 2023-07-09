@@ -12,7 +12,8 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "FerrostarCore",
-            targets: ["FerrostarCore"]),
+            targets: ["FerrostarCore"]
+        ),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -23,15 +24,19 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .binaryTarget(
             name: "FerrostarCoreRS",
-            path: "../../common/target/ios/ferrostar-rs.xcframework"),
+            path: "../../common/target/ios/ferrostar-rs.xcframework"
+        ),
         .target(
             name: "FerrostarCore",
-            dependencies: [.target(name: "FFI")]),
+            dependencies: [.target(name: "FFI")]
+        ),
         .target(
             name: "FFI",
-            dependencies: [.target(name: "FerrostarCoreRS")]),
+            dependencies: [.target(name: "FerrostarCoreRS")]
+        ),
         .testTarget(
             name: "FerrostarCoreTests",
-            dependencies: ["FerrostarCore"]),
+            dependencies: ["FerrostarCore"]
+        ),
     ]
 )

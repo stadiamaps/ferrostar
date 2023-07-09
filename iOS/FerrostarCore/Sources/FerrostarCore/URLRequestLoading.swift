@@ -25,7 +25,7 @@ enum MockURLSessionError: Error {
 ///
 /// By default, it will return an error for all requests. Register a mock by URL with ``registerMock(forURL:withData:andResponse:)``
 public class MockURLSession: URLRequestLoading {
-    private var urlResponseMap = Dictionary<URL, (Data, URLResponse)>()
+    private var urlResponseMap = [URL: (Data, URLResponse)]()
 
     public func loadData(with urlRequest: URLRequest) async throws -> (Data, URLResponse) {
         guard let url = urlRequest.url else {

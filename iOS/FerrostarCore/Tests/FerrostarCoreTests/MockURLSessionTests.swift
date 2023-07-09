@@ -1,5 +1,5 @@
-import XCTest
 @testable import FerrostarCore
+import XCTest
 
 final class MockURLSessionTests: XCTestCase {
     func testUninitializedSession() async throws {

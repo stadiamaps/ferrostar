@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Ian Wagner on 2023-06-01.
-//
-
 import CoreLocation
 import FFI
 
@@ -18,7 +11,7 @@ extension CLLocation {
     var userLocation: FFI.UserLocation {
         let ffiCourse: FFI.Course?
 
-        if (course >= 0 && courseAccuracy >= 0) {
+        if course >= 0 && courseAccuracy >= 0 {
             ffiCourse = FFI.Course(degrees: course, accuracy: courseAccuracy)
         } else {
             ffiCourse = nil

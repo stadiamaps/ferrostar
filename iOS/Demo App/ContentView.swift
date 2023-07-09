@@ -5,14 +5,13 @@
 //  Created by Ian Wagner on 2023-04-28.
 //
 
-import SwiftUI
-import FFI
-import FerrostarCore
 import CoreLocation
+import FerrostarCore
+import FFI
+import SwiftUI
 
 struct ContentView: View {
     @Environment(\.stadiaMapsApiKey) var stadiaMapsApiKey
-
 
     var body: some View {
         let valhallaUrl = URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(stadiaMapsApiKey)")!

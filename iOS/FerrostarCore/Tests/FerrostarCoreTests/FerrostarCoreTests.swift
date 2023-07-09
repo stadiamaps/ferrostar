@@ -1,7 +1,7 @@
-import XCTest
 import CoreLocation
-import FFI
 @testable import FerrostarCore
+import FFI
+import XCTest
 
 private let backendUrl = URL(string: "https://api.stadiamaps.com/route/v1")!
 let errorBody = Data("""
@@ -18,11 +18,11 @@ private class DummyRouteAdapter: RouteAdapterProtocol {
         self.routes = routes
     }
 
-    func generateRequest(waypoints: [FFI.GeographicCoordinates]) throws -> FFI.RouteRequest {
+    func generateRequest(waypoints _: [FFI.GeographicCoordinates]) throws -> FFI.RouteRequest {
         return FFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: [])
     }
 
-    func parseResponse(response: [UInt8]) throws -> [FFI.Route] {
+    func parseResponse(response _: [UInt8]) throws -> [FFI.Route] {
         return routes
     }
 }
@@ -37,7 +37,7 @@ final class FerrostarCoreTests: XCTestCase {
         do {
             let _ = try await core.getRoutes(waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)], initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469))
             XCTFail("Expected an error")
-        } catch FerrostarCoreError.HTTPStatusCode(let statusCode) {
+        } catch let FerrostarCoreError.HTTPStatusCode(statusCode) {
             XCTAssertEqual(statusCode, 401)
         }
     }

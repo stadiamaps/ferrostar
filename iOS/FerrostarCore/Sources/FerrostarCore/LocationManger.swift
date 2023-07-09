@@ -4,7 +4,7 @@ public protocol LocationProviding: AnyObject {
     var delegate: LocationManagingDelegate? { get set }
     var location: CLLocation? { get }
     var heading: CLHeading? { get }
-    
+
     func startUpdatingLocation()
     func stopUpdatingLocation()
 
@@ -29,11 +29,11 @@ public class LiveLocationManager: NSObject {
         locationManager = CLLocationManager()
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
 
-        switch (locationManager.authorizationStatus) {
+        switch locationManager.authorizationStatus {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
         default:
-            break  // No action
+            break // No action
         }
 
         locationManager.activityType = activityType
@@ -70,19 +70,18 @@ extension LiveLocationManager: LocationProviding {
 }
 
 extension LiveLocationManager: CLLocationManagerDelegate {
-    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         delegate?.locationManager(self, didUpdateLocations: locations)
     }
 
-    public func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+    public func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         delegate?.locationManager(self, didUpdateHeading: newHeading)
     }
 
-    public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    public func locationManager(_: CLLocationManager, didFailWithError error: Error) {
         delegate?.locationManager(self, didFailWithError: error)
     }
 }
-
 
 /// Location service for testing witohut relying on simulator location spoofing.
 ///
@@ -94,6 +93,7 @@ public class SimulatedLocationManager: LocationProviding {
             notifyDelegateOfLocation()
         }
     }
+
     public var heading: CLHeading? {
         didSet {
             notifyDelegateOfHeading()
@@ -105,6 +105,7 @@ public class SimulatedLocationManager: LocationProviding {
             notifyDelegateOfLocation()
         }
     }
+
     private var isUpdatingHeading = false {
         didSet {
             notifyDelegateOfHeading()
@@ -139,4 +140,3 @@ public class SimulatedLocationManager: LocationProviding {
         }
     }
 }
-

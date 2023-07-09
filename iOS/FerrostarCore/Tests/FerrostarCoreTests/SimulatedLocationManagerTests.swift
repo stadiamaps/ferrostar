@@ -1,6 +1,6 @@
 import CoreLocation
-import XCTest
 @testable import FerrostarCore
+import XCTest
 
 private class MockHeading: CLHeading {
     let value: CLLocationDirection
@@ -22,7 +22,8 @@ private class MockHeading: CLHeading {
         super.init()
     }
 
-    required init?(coder: NSCoder) {
+    @available(*, unavailable)
+    required init?(coder _: NSCoder) {
         fatalError("You aren't supposted to call this")
     }
 }
@@ -65,16 +66,16 @@ final class SimulatedLocationManagerTests: XCTestCase {
                 self.expectedLocations = expectedLocations
             }
 
-            func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation]) {
+            func locationManager(_: LocationProviding, didUpdateLocations locations: [CLLocation]) {
                 XCTAssertEqual(locations.last, expectedLocations.removeFirst())
                 expectation.fulfill()
             }
 
-            func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
+            func locationManager(_: LocationProviding, didUpdateHeading _: CLHeading) {
                 XCTFail("Unexpected heading update")
             }
 
-            func locationManager(_ manager: LocationProviding, didFailWithError error: Error) {
+            func locationManager(_: LocationProviding, didFailWithError _: Error) {
                 XCTFail("Unexpected failure")
             }
         }
@@ -104,16 +105,16 @@ final class SimulatedLocationManagerTests: XCTestCase {
                 self.expectedHeadings = expectedHeadings
             }
 
-            func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation]) {
+            func locationManager(_: LocationProviding, didUpdateLocations _: [CLLocation]) {
                 XCTFail("Unexpected location update")
             }
 
-            func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
+            func locationManager(_: LocationProviding, didUpdateHeading newHeading: CLHeading) {
                 XCTAssertEqual(newHeading, expectedHeadings.removeFirst())
                 expectation.fulfill()
             }
 
-            func locationManager(_ manager: LocationProviding, didFailWithError error: Error) {
+            func locationManager(_: LocationProviding, didFailWithError _: Error) {
                 XCTFail("Unexpected failure")
             }
         }
