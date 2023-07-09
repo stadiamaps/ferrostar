@@ -44,8 +44,9 @@ targets automatically.
 
 * Install the latest version of Xcode (from the App Store is usually easiest)
 
+* Install the Xcode Command Line Tools
+
 ```bash
-# Install the Xcode Command Line Tools
 xcode-select --install
 ```
 
@@ -54,8 +55,7 @@ great to integrate this into the Xcode build flow in the future, but at the time
 flow. Further, the "normal" Xcode build flow always assumes xcframeworks can't change during build, so it processes them before any other
 build rules. So we use a shell script.
 
-If Xcode is not behaving well (it often caches Swift packages too), a quick restart of Xcode or resetting the package graph usually
-clears it up.
+If Xcode is not behaving well, a quick restart of Xcode or resetting the package graph usually clears it up.
 
 TODO: Decide on how to publish the Swift package. Probably something convoluted like MapLibre does, since SPM is so picky about owning the
 repo root.
@@ -92,9 +92,9 @@ After the initial setup, Gradle should be able to handle rebuilding the core for
 
 * Run `cargo test -p ferrostar-core` from within the `common` directory to run tests.
 * We should strive to keep the core well-tested, using unit tests and/or integration tests as appropriate. Please write tests before submitting most PRs.
+* For iOS, run unit tests as usual from within Xcode.
 
 TODO:
-* For iOS, run unit tests as usual from within Xcode.
 * `gradle test` or something for Android.
 
 ## Code Conventions
@@ -102,7 +102,7 @@ TODO:
 * Format all Rust code using `cargo fmt`
 * Run `cargo clippy` and either fix any warnings or document clearly why you think the linter should be ignored (it's usually correct)
 * All iOS code must be written in Swift
-* TODO: Swiftlint and swift-format
+* TODO: Swiftlint and swift-format?
 * All Android code must be written in Kotlin
 * TODO: Android linter + formatter?
 

@@ -27,8 +27,8 @@ we can translate the concepts to Android and iterate on the core in parallel.
 
 - UI components for searching for addresses or building a trip (left to the app developers).
 - Compatibility with ancient SDKs / API levels, except where it’s easy; this is a fresh start, so *we can and should leverage modern features and tools* as of 2023.
-- Route generation is a separate concern; there are many good cloud vendors (like [Stadia Maps](https://stadiamaps.com/products/navigation-routing/)) as well as self-hosting / local generation options. Further, we assume that the external route generator is responsible for things like text and voice prompt generation (ex: “In 500 feet, take exit 12”).
-- A "free roam" experience without any specific route (though it should be possible to plug Ferrostar into such an experience).
+- Route generation will be handled separately; there are many good cloud vendors (like [Stadia Maps](https://stadiamaps.com/products/navigation-routing/)) as well as self-hosting / local generation options.
+- A "free roam" experience without any specific route (though it *should* be possible to plug Ferrostar into such an experience).
 
 ## Project Design and Structure
 
@@ -56,12 +56,15 @@ The project should always be developed using the latest stable Rust release. Whi
 *intend* to use new language features the day they land, there really isn't any reason to lag behind the latest
 stable.
 
+### Swift
+
+Our initial Swift compiler requirement will be set at 5.5, since we will be leveraging async/await.
+
 ### iOS
 
-iOS developers should always build using the latest publicly available Xcode version. As far as OS support goes,
-we will initially target the current iOS major version (16.0). It is already run by 72% of devices, and iOS 16
-introduced many helpful changes. As new releases appear, we will eventually make some decisions on how far back to support
-(depending on the desirability of new features and adoption rate). Fortunately iOS users are fairy quick to upgrade.
+We will initially target the current iOS major version (16.0). It is already run by 72% of devices, and iOS 16 introduced many helpful changes.
+As new releases appear, we will eventually make some decisions on how far back to support (depending on the desirability
+of new features and adoption rate). Fortunately iOS users are fairy quick to upgrade.
 
 ### Android
 
