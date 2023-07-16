@@ -16,25 +16,24 @@ let package = Package(
         ),
     ],
     dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
+        // TODO: This needs to point at an artifact on GitHub or something
         .binaryTarget(
             name: "FerrostarCoreRS",
-            path: "common/target/ios/ferrostar-rs.xcframework"
+            path: "common/target/ios/ferrostar-rs.xcframework.zip"
         ),
         .target(
             name: "FerrostarCore",
-            dependencies: [.target(name: "FFI")],
+            dependencies: [.target(name: "UniFFI")],
             path: "SwiftCore/Sources/FerrostarCore"
         ),
         .target(
-            name: "FFI",
+            name: "UniFFI",
             dependencies: [.target(name: "FerrostarCoreRS")],
-            path: "SwiftCore/Sources/FFI"
+            path: "SwiftCore/Sources/UniFFI"
         ),
         .testTarget(
             name: "FerrostarCoreTests",

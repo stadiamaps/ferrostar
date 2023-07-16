@@ -1,5 +1,5 @@
 import CoreLocation
-import FFI
+import UniFFI
 import Foundation
 
 enum FerrostarCoreError: Error, Equatable {
@@ -61,11 +61,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public weak var delegate: FerrostarCoreDelegate?
 
     private let networkSession: URLRequestLoading
-    private let routeAdapter: FFI.RouteAdapterProtocol
+    private let routeAdapter: UniFFI.RouteAdapterProtocol
     private let locationProvider: LocationProviding
-    private var navigationController: FFI.NavigationControllerProtocol?
+    private var navigationController: UniFFI.NavigationControllerProtocol?
 
-    public init(routeAdapter: FFI.RouteAdapterProtocol, locationManager: LocationProviding, networkSession: URLRequestLoading) {
+    public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationManager: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
         locationProvider = locationManager
         self.networkSession = networkSession
@@ -77,7 +77,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     public convenience init(valhallaEndpointUrl: URL, profile: String, locationManager: LocationProviding, networkSession: URLRequestLoading = URLSession.shared) {
-        let routeAdapter = FFI.RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndpointUrl.absoluteString, profile: profile)
+        let routeAdapter = UniFFI.RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndpointUrl.absoluteString, profile: profile)
         self.init(routeAdapter: routeAdapter, locationManager: locationManager, networkSession: networkSession)
     }
 

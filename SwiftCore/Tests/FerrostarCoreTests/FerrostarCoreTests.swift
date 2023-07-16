@@ -1,6 +1,6 @@
 import CoreLocation
 @testable import FerrostarCore
-import FFI
+import UniFFI
 import XCTest
 
 private let backendUrl = URL(string: "https://api.stadiamaps.com/route/v1")!
@@ -19,11 +19,11 @@ private class MockRouteAdapter: RouteAdapterProtocol {
         self.routes = routes
     }
 
-    func generateRequest(userLocation: FFI.UserLocation, waypoints: [FFI.GeographicCoordinates]) throws -> FFI.RouteRequest {
-        return FFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: [])
+    func generateRequest(userLocation: UniFFI.UserLocation, waypoints: [UniFFI.GeographicCoordinates]) throws -> UniFFI.RouteRequest {
+        return UniFFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: [])
     }
 
-    func parseResponse(response _: [UInt8]) throws -> [FFI.Route] {
+    func parseResponse(response _: [UInt8]) throws -> [UniFFI.Route] {
         return routes
     }
 }

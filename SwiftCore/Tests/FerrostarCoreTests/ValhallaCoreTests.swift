@@ -3,7 +3,7 @@
 
 import CoreLocation
 @testable import FerrostarCore
-import FFI
+import UniFFI
 import XCTest
 
 private let valhallaEndpointUrl = URL(string: "https://api.stadiamaps.com/route/v1")!
