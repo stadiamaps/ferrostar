@@ -34,6 +34,8 @@ build_xcframework() {
     -library target/ios-simulator-fat/release/$1.a -headers target/uniffi-xcframework-staging-$2 \
     -output target/ios/$2-rs.xcframework
   zip -r target/ios/$2-rs.xcframework.zip target/ios/$2-rs.xcframework
+  echo "Computing checksum. Add this to Package.swift (TODO: Automate this)."
+  swift package compute-checksum target/ios/$2-rs.xcframework.zip
 }
 
 cargo build --lib --release --target x86_64-apple-ios
