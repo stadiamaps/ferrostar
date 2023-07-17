@@ -6,6 +6,24 @@ set -u
 # NOTE: You MUST run this every time you make changes to the core. Unfortunately, calling this from Xcode directly
 # does not work so well.
 
+# In release mode, we create a ZIP archive of the xcframework and update Package.swift with the computed checksum.
+# This is only needed when cutting a new release, not for local development.
+release=false
+
+for arg in "$@"
+do
+    case $arg in
+        --release)
+            release=true
+            shift # Remove --release from processing
+            ;;
+        *)
+            shift # Ignore other argument from processing
+            ;;
+    esac
+done
+
+
 # Potential optimizations for the future:
 #
 # * Only build one simulator arch for local development (we build both since many still use Intel Macs)
@@ -33,9 +51,13 @@ build_xcframework() {
     -library target/aarch64-apple-ios/release/$1.a -headers target/uniffi-xcframework-staging-$2 \
     -library target/ios-simulator-fat/release/$1.a -headers target/uniffi-xcframework-staging-$2 \
     -output target/ios/$2-rs.xcframework
-  zip -r target/ios/$2-rs.xcframework.zip target/ios/$2-rs.xcframework
-  echo "Computing checksum. Add this to Package.swift (TODO: Automate this)."
-  swift package compute-checksum target/ios/$2-rs.xcframework.zip
+
+  if $release; then
+    echo "Building xcframework archive"
+    zip -r target/ios/$2-rs.xcframework.zip target/ios/$2-rs.xcframework
+    checksum=$(swift package compute-checksum target/ios/$2-rs.xcframework.zip)
+    sed -i "" -E "s/(let releaseChecksum = \")[^\"]+(\")/\1$checksum\2/g" ../Package.swift
+  fi
 }
 
 cargo build --lib --release --target x86_64-apple-ios

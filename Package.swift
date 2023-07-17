@@ -4,20 +4,23 @@
 import PackageDescription
 
 let binaryTarget: Target
-let localDevelopment = false
+// TODO: Define this via an env variable that doesn't need to be checked in?
+let useLocalFramework = false
 
-if localDevelopment {
+if useLocalFramework {
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
-        path: "common/target/ios/ferrostar-rs.xcframework.zip"
+        // IMPORTANT: Swift packages importing this locally will not be able to
+        // import Ferrostar core unless you specify this as a relative path!
+        path: "./common/target/ios/ferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "v0.1.0"
-    let checksum = "24d0efe06948dce7d0b2ffc5ebeb3dcb014a20b71b59642a5bdf2764b6fbc910"
+    let releaseTag = "0.1.0"
+    let releaseChecksum = "24d0efe06948dce7d0b2ffc5ebeb3dcb014a20b71b59642a5bdf2764b6fbc910"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/ferrostar-rs.xcframework.zip",
-        checksum: checksum
+        checksum: releaseChecksum
     )
 }
 
