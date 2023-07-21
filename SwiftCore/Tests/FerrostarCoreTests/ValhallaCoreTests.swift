@@ -220,37 +220,44 @@ final class ValhallaCoreTests: XCTestCase {
         XCTAssertEqual(routes.count, 1)
 
         // Test polyline decoding.
-        XCTAssertEqual(routes.first!.geometry, [
-            GeographicCoordinates(
-                lat: 60.534716, lng: -149.543469
+        let expectedGeometry = [
+            CLLocationCoordinate2D(
+                latitude: 60.534716, longitude: -149.543469
             ),
-            GeographicCoordinates(
-                lat: 60.534782, lng: -149.543879
+            CLLocationCoordinate2D(
+                latitude: 60.534782, longitude: -149.543879
             ),
-            GeographicCoordinates(
-                lat: 60.534829, lng: -149.544134
+            CLLocationCoordinate2D(
+                latitude: 60.534829, longitude: -149.544134
             ),
-            GeographicCoordinates(
-                lat: 60.534856, lng: -149.5443
+            CLLocationCoordinate2D(
+                latitude: 60.534856, longitude: -149.5443
             ),
-            GeographicCoordinates(
-                lat: 60.534887, lng: -149.544533
+            CLLocationCoordinate2D(
+                latitude: 60.534887, longitude: -149.544533
             ),
-            GeographicCoordinates(
-                lat: 60.534941, lng: -149.544976
+            CLLocationCoordinate2D(
+                latitude: 60.534941, longitude: -149.544976
             ),
-            GeographicCoordinates(
-                lat: 60.534971, lng: -149.545485
+            CLLocationCoordinate2D(
+                latitude: 60.534971, longitude: -149.545485
             ),
-            GeographicCoordinates(
-                lat: 60.535003, lng: -149.546177
+            CLLocationCoordinate2D(
+                latitude: 60.535003, longitude: -149.546177
             ),
-            GeographicCoordinates(
-                lat: 60.535008, lng: -149.546937
+            CLLocationCoordinate2D(
+                latitude: 60.535008, longitude: -149.546937
             ),
-            GeographicCoordinates(
-                lat: 60.534991, lng: -149.548581
+            CLLocationCoordinate2D(
+                latitude: 60.534991, longitude: -149.548581
             ),
-        ])
+        ]
+        XCTAssertEqual(routes.first!.geometry.count, expectedGeometry.count)
+
+        // Can't compare as double is not equatable
+        for (result, expected) in zip(routes.first!.geometry, expectedGeometry) {
+            XCTAssertEqual(result.latitude, expected.latitude, accuracy: 0.000001)
+            XCTAssertEqual(result.longitude, expected.longitude, accuracy: 0.000001)
+        }
     }
 }

@@ -13,9 +13,9 @@ let errorResponse = HTTPURLResponse(url: backendUrl, statusCode: 401, httpVersio
 
 private class MockRouteAdapter: RouteAdapterProtocol {
 
-    private let routes: [Route]
+    private let routes: [UniFFI.Route]
 
-    init(routes: [Route]) {
+    init(routes: [UniFFI.Route]) {
         self.routes = routes
     }
 
