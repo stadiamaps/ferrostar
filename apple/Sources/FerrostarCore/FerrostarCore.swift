@@ -124,7 +124,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.startUpdatingLocation()
         locationProvider.startUpdatingHeading()
 
-        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.heading, remainingWaypoints: route.geometry)
+        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.heading, fullRoute: route.geometry)
         navigationController = NavigationController(lastUserLocation: location.userLocation, route: route.inner)
     }
 

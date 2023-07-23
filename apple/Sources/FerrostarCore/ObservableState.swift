@@ -7,21 +7,23 @@ import UniFFI
 /// While the core generally does not include UI, this is purely at the model layer and should be implemented
 /// the same for all frontends.
 public class FerrostarObservableState: ObservableObject {
-    @Published var snappedLocation: CLLocation
-    @Published var heading: CLHeading?
-    @Published var remainingWaypoints: [CLLocationCoordinate2D]
+    @Published public internal(set) var snappedLocation: CLLocation
+    @Published public internal(set) var heading: CLHeading?
+    @Published public internal(set) var fullRoute: [CLLocationCoordinate2D]
+    @Published public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
     // TODO: This is not yet finalized. We need to decide on and document semantics
     // (ex: should we observe all changes to this and then queue the instruction?)
-    @Published var spokenInstruction: UniFFI.SpokenInstruction?
+    @Published public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
 
-    init(snappedLocation: CLLocation, heading: CLHeading? = nil, remainingWaypoints: [CLLocationCoordinate2D]) {
+    init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D]) {
         self.snappedLocation = snappedLocation
         self.heading = heading
-        self.remainingWaypoints = remainingWaypoints
+        self.fullRoute = fullRoute
+        self.remainingWaypoints = fullRoute
         self.spokenInstruction = nil
     }
 
-    public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), remainingWaypoints: samplePedestrianWaypoints)
+    public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints)
 }
 
 // Derived from the Stadia Maps map matching example

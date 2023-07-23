@@ -28,7 +28,7 @@ if useLocalFramework {
 let package = Package(
     name: "FerrostarCore",
     platforms: [
-        .iOS(.v14),
+        .iOS(.v16),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -36,8 +36,13 @@ let package = Package(
             name: "FerrostarCore",
             targets: ["FerrostarCore"]
         ),
+        .library(
+            name: "FerrostarMapLibreUI",
+            targets: ["FerrostarMapLibreUI"]
+        ),
     ],
     dependencies: [
+        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -46,17 +51,25 @@ let package = Package(
         .target(
             name: "FerrostarCore",
             dependencies: [.target(name: "UniFFI")],
-            path: "SwiftCore/Sources/FerrostarCore"
+            path: "apple/Sources/FerrostarCore"
+        ),
+        .target(
+            name: "FerrostarMapLibreUI",
+            dependencies: [
+                .target(name: "FerrostarCore"),
+                .product(name: "Mapbox", package: "maplibre-gl-native-distribution"),
+            ],
+            path: "apple/Sources/FerrostarMapLibreUI"
         ),
         .target(
             name: "UniFFI",
             dependencies: [.target(name: "FerrostarCoreRS")],
-            path: "SwiftCore/Sources/UniFFI"
+            path: "apple/Sources/UniFFI"
         ),
         .testTarget(
             name: "FerrostarCoreTests",
             dependencies: ["FerrostarCore"],
-            path: "SwiftCore/Tests/FerrostarCoreTests"
+            path: "apple/Tests/FerrostarCoreTests"
         ),
     ]
 )
