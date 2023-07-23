@@ -15,26 +15,6 @@ enum FerrostarCoreError: Error, Equatable {
     case httpStatusCode(Int)
 }
 
-/// A route.
-///
-/// This type exports a nice Swift-y version of the route with some convenience properties.
-///
-/// This wrapper approach is unfortunaetly necessary beacuse Swift packages cannot yet
-/// re-export inner modules. The types used in signatures have the information available, and values
-/// returned from functions can be inspected, but the type name cannot be explicitly used in variable or
-/// function signatures. So to work around the issue, we export a wrapper type that *can* be
-/// referenced in other packages (like the UI) which need to hang on to the route without getting the whole
-/// FFI.
-public struct Route {
-    let inner: UniFFI.Route
-
-    var geometry: [CLLocationCoordinate2D] {
-        inner.geometry.map { point in
-            CLLocationCoordinate2D(latitude: point.lat, longitude: point.lng)
-        }
-    }
-}
-
 /// Receives events from ``FerrostarCore``.
 ///
 /// This is the central point responsible for relaying updates back to the application.
@@ -163,7 +143,7 @@ extension FerrostarCore: LocationManagingDelegate {
         // TODO: Decide how/where we want to handle speed info.
 
         if let update = navigationController?.updateUserLocation(location: location.userLocation) {
-            delegate?.core(self, didUpdateNavigationState: update)
+            delegate?.core(self, didUpdateNavigationState: NavigationStateUpdate(inner: update))
         }
 
         delegate?.core(self, didUpdateLocation: location, andHeading: manager.heading)
