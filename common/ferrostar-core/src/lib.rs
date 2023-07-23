@@ -10,6 +10,7 @@ pub use routing_adapters::{
     error::{RoutingRequestGenerationError, RoutingResponseParseError},
     RouteAdapter, RouteRequest, RouteRequestGenerator, RouteResponseParser,
 };
+use std::time::SystemTime;
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct GeographicCoordinates {
@@ -52,6 +53,7 @@ pub struct UserLocation {
     /// The estimated accuracy of the coordinate (in meters)
     pub horizontal_accuracy: f64,
     pub course: Option<Course>,
+    pub timestamp: SystemTime,
 }
 
 /// Information describing the series of maneuvers to travel between two or more points.

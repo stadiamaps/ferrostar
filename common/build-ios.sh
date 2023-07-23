@@ -56,6 +56,8 @@ build_xcframework() {
     echo "Building xcframework archive"
     zip -r target/ios/$2-rs.xcframework.zip target/ios/$2-rs.xcframework
     checksum=$(swift package compute-checksum target/ios/$2-rs.xcframework.zip)
+    version=$(cargo metadata --format-version 1 | jq -r '.packages[] | select(.name=="ferrostar-core") .version')
+    sed -i "" -E "s/(let releaseTag = \")[^\"]+(\")/\1$version\2/g" ../Package.swift
     sed -i "" -E "s/(let releaseChecksum = \")[^\"]+(\")/\1$checksum\2/g" ../Package.swift
   fi
 }

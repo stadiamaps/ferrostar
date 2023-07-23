@@ -384,6 +384,41 @@ private struct FfiConverterString: FfiConverter {
     }
 }
 
+private struct FfiConverterTimestamp: FfiConverterRustBuffer {
+    typealias SwiftType = Date
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Date {
+        let seconds: Int64 = try readInt(&buf)
+        let nanoseconds: UInt32 = try readInt(&buf)
+        if seconds >= 0 {
+            let delta = Double(seconds) + (Double(nanoseconds) / 1.0e9)
+            return Date(timeIntervalSince1970: delta)
+        } else {
+            let delta = Double(seconds) - (Double(nanoseconds) / 1.0e9)
+            return Date(timeIntervalSince1970: delta)
+        }
+    }
+
+    public static func write(_ value: Date, into buf: inout [UInt8]) {
+        var delta = value.timeIntervalSince1970
+        var sign: Int64 = 1
+        if delta < 0 {
+            // The nanoseconds portion of the epoch offset must always be
+            // positive, to simplify the calculation we will use the absolute
+            // value of the offset.
+            sign = -1
+            delta = -delta
+        }
+        if delta.rounded(.down) > Double(Int64.max) {
+            fatalError("Timestamp overflow, exceeds max bounds supported by Uniffi")
+        }
+        let seconds = Int64(delta)
+        let nanoseconds = UInt32((delta - Double(seconds)) * 1.0e9)
+        writeInt(&buf, sign * seconds)
+        writeInt(&buf, nanoseconds)
+    }
+}
+
 public protocol NavigationControllerProtocol {
     func updateUserLocation(location: UserLocation) -> NavigationStateUpdate
 }
@@ -763,13 +798,15 @@ public struct UserLocation {
     public var coordinates: GeographicCoordinates
     public var horizontalAccuracy: Double
     public var course: Course?
+    public var timestamp: Date
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(coordinates: GeographicCoordinates, horizontalAccuracy: Double, course: Course?) {
+    public init(coordinates: GeographicCoordinates, horizontalAccuracy: Double, course: Course?, timestamp: Date) {
         self.coordinates = coordinates
         self.horizontalAccuracy = horizontalAccuracy
         self.course = course
+        self.timestamp = timestamp
     }
 }
 
@@ -784,6 +821,9 @@ extension UserLocation: Equatable, Hashable {
         if lhs.course != rhs.course {
             return false
         }
+        if lhs.timestamp != rhs.timestamp {
+            return false
+        }
         return true
     }
 
@@ -791,6 +831,7 @@ extension UserLocation: Equatable, Hashable {
         hasher.combine(coordinates)
         hasher.combine(horizontalAccuracy)
         hasher.combine(course)
+        hasher.combine(timestamp)
     }
 }
 
@@ -799,7 +840,8 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
         return try UserLocation(
             coordinates: FfiConverterTypeGeographicCoordinates.read(from: &buf),
             horizontalAccuracy: FfiConverterDouble.read(from: &buf),
-            course: FfiConverterOptionTypeCourse.read(from: &buf)
+            course: FfiConverterOptionTypeCourse.read(from: &buf),
+            timestamp: FfiConverterTimestamp.read(from: &buf)
         )
     }
 
@@ -807,6 +849,7 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
         FfiConverterTypeGeographicCoordinates.write(value.coordinates, into: &buf)
         FfiConverterDouble.write(value.horizontalAccuracy, into: &buf)
         FfiConverterOptionTypeCourse.write(value.course, into: &buf)
+        FfiConverterTimestamp.write(value.timestamp, into: &buf)
     }
 }
 

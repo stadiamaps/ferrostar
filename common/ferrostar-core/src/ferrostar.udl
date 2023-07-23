@@ -42,6 +42,7 @@ dictionary UserLocation {
     GeographicCoordinates coordinates;
     double horizontal_accuracy;
     Course? course;
+    timestamp timestamp;
 };
 
 dictionary Route {

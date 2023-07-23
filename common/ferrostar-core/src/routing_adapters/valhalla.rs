@@ -87,9 +87,10 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::Course;
     use assert_json_diff::assert_json_include;
     use serde_json::{from_slice, json};
-    use crate::Course;
+    use std::time::SystemTime;
 
     const ENDPOINT_URL: &str = "https://api.stadiamaps.com/route/v1";
     const COSTING: &str = "bicycle";
@@ -97,6 +98,7 @@ mod tests {
         coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
         horizontal_accuracy: 6.0,
         course: None,
+        timestamp: SystemTime::UNIX_EPOCH,
     };
     const USER_LOCATION_WITH_COURSE: UserLocation = UserLocation {
         coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
@@ -105,6 +107,7 @@ mod tests {
             degrees: 42,
             accuracy: 12,
         }),
+        timestamp: SystemTime::UNIX_EPOCH,
     };
     const WAYPOINTS: [GeographicCoordinates; 2] = [
         GeographicCoordinates { lat: 0.0, lng: 1.0 },
@@ -132,7 +135,9 @@ mod tests {
             url: request_url,
             headers,
             body,
-        } = generator.generate_request(USER_LOCATION, WAYPOINTS.to_vec()).unwrap();
+        } = generator
+            .generate_request(USER_LOCATION, WAYPOINTS.to_vec())
+            .unwrap();
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());
@@ -171,7 +176,9 @@ mod tests {
             url: request_url,
             headers,
             body,
-        } = generator.generate_request(USER_LOCATION_WITH_COURSE, WAYPOINTS.to_vec()).unwrap();
+        } = generator
+            .generate_request(USER_LOCATION_WITH_COURSE, WAYPOINTS.to_vec())
+            .unwrap();
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());
@@ -211,13 +218,16 @@ mod tests {
             coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
             horizontal_accuracy: -6.0,
             course: None,
+            timestamp: SystemTime::now(),
         };
 
         let RouteRequest::HttpPost {
             url: request_url,
             headers,
             body,
-        } = generator.generate_request(location, WAYPOINTS.to_vec()).unwrap();
+        } = generator
+            .generate_request(location, WAYPOINTS.to_vec())
+            .unwrap();
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());

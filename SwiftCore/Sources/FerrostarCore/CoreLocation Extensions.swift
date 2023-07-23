@@ -21,6 +21,22 @@ extension CLLocation {
             ffiCourse = nil
         }
 
-        return UniFFI.UserLocation(coordinates: coordinate.geographicCoordinates, horizontalAccuracy: horizontalAccuracy, course: ffiCourse)
+        return UniFFI.UserLocation(coordinates: coordinate.geographicCoordinates, horizontalAccuracy: horizontalAccuracy, course: ffiCourse, timestamp: timestamp)
+    }
+
+    convenience init(userLocation: UniFFI.UserLocation) {
+        let invalid: Double = -1.0
+
+        let courseDegrees : CLLocationDirection
+        let courseAccuracy: CLLocationDirectionAccuracy
+        if let course = userLocation.course {
+            courseDegrees = CLLocationDirection(course.degrees)
+            courseAccuracy = CLLocationDirectionAccuracy(course.accuracy)
+        } else {
+            courseDegrees = invalid
+            courseAccuracy = invalid
+        }
+
+        self.init(coordinate: CLLocationCoordinate2D(geographicCoordinates: userLocation.coordinates), altitude: invalid, horizontalAccuracy: userLocation.horizontalAccuracy, verticalAccuracy: invalid, course: courseDegrees, courseAccuracy: courseAccuracy, speed: invalid, speedAccuracy: invalid, timestamp: userLocation.timestamp)
     }
 }
