@@ -35,26 +35,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
     func core(_ core: FerrostarCore, didUpdateNavigationState update: NavigationStateUpdate)
 }
 
-/// An observable state object, to make binding easier for SwiftUI applications.
-///
-/// While the core generally does not include UI, this is purely at the model layer and should be implemented
-/// the same for all frontends.
-public class FerrostarObservableState: ObservableObject {
-    @Published var snappedLocation: CLLocation
-    @Published var heading: CLHeading?
-    @Published var remainingWaypoints: [CLLocationCoordinate2D]
-    // TODO: This is not yet finalized. We need to decide on and document semantics
-    // (ex: should we observe all changes to this and then queue the instruction?)
-    @Published var spokenInstruction: SpokenInstruction?
-
-    init(snappedLocation: CLLocation, heading: CLHeading? = nil, remainingWaypoints: [CLLocationCoordinate2D]) {
-        self.snappedLocation = snappedLocation
-        self.heading = heading
-        self.remainingWaypoints = remainingWaypoints
-        self.spokenInstruction = nil
-    }
-}
-
 
 /// The Ferrostar core.
 ///
