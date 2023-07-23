@@ -143,7 +143,7 @@ extension FerrostarCore: LocationManagingDelegate {
         // TODO: Decide how/where we want to handle speed info.
 
         if let update = navigationController?.updateUserLocation(location: location.userLocation) {
-            delegate?.core(self, didUpdateNavigationState: NavigationStateUpdate(inner: update))
+            delegate?.core(self, didUpdateNavigationState: NavigationStateUpdate(update))
         }
 
         delegate?.core(self, didUpdateLocation: location, andHeading: manager.heading)

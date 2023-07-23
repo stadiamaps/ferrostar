@@ -5,6 +5,10 @@ extension CLLocationCoordinate2D {
     var geographicCoordinates: UniFFI.GeographicCoordinates {
         UniFFI.GeographicCoordinates(lat: latitude, lng: longitude)
     }
+
+    init(geographicCoordinates: GeographicCoordinates) {
+        self.init(latitude: geographicCoordinates.lat, longitude: geographicCoordinates.lng)
+    }
 }
 
 extension CLLocation {
