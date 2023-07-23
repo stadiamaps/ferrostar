@@ -19,11 +19,6 @@ enum FerrostarCoreError: Error, Equatable {
 ///
 /// This is the central point responsible for relaying updates back to the application.
 public protocol FerrostarCoreDelegate: AnyObject {
-    /// Called whenever the user's location is updated.
-    ///
-    /// This location *may* be snapped to the route or road network.
-    func core(_ core: FerrostarCore, didUpdateLocation snappedLocation: CLLocation, andHeading heading: CLHeading?)
-
     /// Called when the location manager failed to get the user's location.
     ///
     /// This is a serious error, and the UI layer should inform the user. They may need to check their settings
@@ -39,6 +34,27 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This is *probably* not the final interface for this function but it's something to start with.
     func core(_ core: FerrostarCore, didUpdateNavigationState update: NavigationStateUpdate)
 }
+
+/// An observable state object, to make binding easier for SwiftUI applications.
+///
+/// While the core generally does not include UI, this is purely at the model layer and should be implemented
+/// the same for all frontends.
+public class FerrostarObservableState: ObservableObject {
+    @Published var snappedLocation: CLLocation
+    @Published var heading: CLHeading?
+    @Published var remainingWaypoints: [CLLocationCoordinate2D]
+    // TODO: This is not yet finalized. We need to decide on and document semantics
+    // (ex: should we observe all changes to this and then queue the instruction?)
+    @Published var spokenInstruction: SpokenInstruction?
+
+    init(snappedLocation: CLLocation, heading: CLHeading? = nil, remainingWaypoints: [CLLocationCoordinate2D]) {
+        self.snappedLocation = snappedLocation
+        self.heading = heading
+        self.remainingWaypoints = remainingWaypoints
+        self.spokenInstruction = nil
+    }
+}
+
 
 /// The Ferrostar core.
 ///
@@ -59,6 +75,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
 @objc public class FerrostarCore: NSObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
+
+    /// The observable state of the model (for easy binding in SwiftUI views).
+    public private(set) var observableState: FerrostarObservableState?
 
     private let networkSession: URLRequestLoading
     private let routeAdapter: UniFFI.RouteAdapterProtocol
@@ -125,12 +144,14 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.startUpdatingLocation()
         locationProvider.startUpdatingHeading()
 
+        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.heading, remainingWaypoints: route.geometry)
         navigationController = NavigationController(lastUserLocation: location.userLocation, route: route.inner)
     }
 
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
         navigationController = nil
+        observableState = nil
         locationProvider.stopUpdatingLocation()
         locationProvider.stopUpdatingHeading()
     }
@@ -143,16 +164,23 @@ extension FerrostarCore: LocationManagingDelegate {
         // TODO: Decide how/where we want to handle speed info.
 
         if let update = navigationController?.updateUserLocation(location: location.userLocation) {
+            switch (update) {
+            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, spokenInstruction: let spokenInstruction):
+                observableState?.snappedLocation = CLLocation(userLocation: userLocation)
+                observableState?.remainingWaypoints = remainingWaypoints.map { waypoint in
+                    CLLocationCoordinate2D(geographicCoordinates: waypoint)
+                }
+                observableState?.spokenInstruction = spokenInstruction
+            case .arrived(spokenInstruction: let spokenInstruction):
+                observableState?.snappedLocation = location  // We arrived; no more snapping needed
+                observableState?.spokenInstruction = spokenInstruction
+            }
             delegate?.core(self, didUpdateNavigationState: NavigationStateUpdate(update))
         }
-
-        delegate?.core(self, didUpdateLocation: location, andHeading: manager.heading)
     }
 
     public func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
-        if let location = manager.location {
-            delegate?.core(self, didUpdateLocation: location, andHeading: newHeading)
-        }
+        observableState?.heading = newHeading
     }
 
     public func locationManager(_: LocationProviding, didFailWithError error: Error) {
