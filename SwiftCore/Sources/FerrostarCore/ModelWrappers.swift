@@ -24,13 +24,13 @@ public struct Route {
 
 /// A swifty `NavigationStateUpdate`.
 public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [CLLocationCoordinate2D], spokenInstruction: SpokenInstruction?)
+    case navigating(snappedUserLocation: CLLocation, remainingWaypoints: [CLLocationCoordinate2D], spokenInstruction: SpokenInstruction?)
     case arrived(spokenInstruction: UniFFI.SpokenInstruction?)
 
     init(_ update: UniFFI.NavigationStateUpdate) {
         switch (update) {
         case .navigating(snappedUserLocation: let location, remainingWaypoints: let waypoints, spokenInstruction: let instruction):
-            self = .navigating(snappedUserLocation: location, remainingWaypoints: waypoints.map { CLLocationCoordinate2D(geographicCoordinates: $0)}, spokenInstruction: instruction)
+            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingWaypoints: waypoints.map { CLLocationCoordinate2D(geographicCoordinates: $0)}, spokenInstruction: instruction)
         case .arrived(spokenInstruction: let instruction):
             self = .arrived(spokenInstruction: instruction)
         }
