@@ -45,7 +45,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 "lon": user_location.coordinates.lng,
                 "street_side_tolerance": core::cmp::max(5, user_location.horizontal_accuracy as u16),
             });
-            if let Some(course) = user_location.course {
+            if let Some(course) = user_location.course_over_ground {
                 start["heading"] = course.degrees.into();
                 start["heading_tolerance"] = course.accuracy.into();
             }
@@ -87,7 +87,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::Course;
+    use crate::CourseOverGround;
     use assert_json_diff::assert_json_include;
     use serde_json::{from_slice, json};
     use std::time::SystemTime;
@@ -97,13 +97,13 @@ mod tests {
     const USER_LOCATION: UserLocation = UserLocation {
         coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
         horizontal_accuracy: 6.0,
-        course: None,
+        course_over_ground: None,
         timestamp: SystemTime::UNIX_EPOCH,
     };
     const USER_LOCATION_WITH_COURSE: UserLocation = UserLocation {
         coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
         horizontal_accuracy: 6.0,
-        course: Some(Course {
+        course_over_ground: Some(CourseOverGround {
             degrees: 42,
             accuracy: 12,
         }),
@@ -217,7 +217,7 @@ mod tests {
         let location = UserLocation {
             coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
             horizontal_accuracy: -6.0,
-            course: None,
+            course_over_ground: None,
             timestamp: SystemTime::now(),
         };
 

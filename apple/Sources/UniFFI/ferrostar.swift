@@ -590,7 +590,7 @@ public func FfiConverterTypeRouteAdapter_lower(_ value: RouteAdapter) -> UnsafeM
     return FfiConverterTypeRouteAdapter.lower(value)
 }
 
-public struct Course {
+public struct CourseOverGround {
     public var degrees: UInt16
     public var accuracy: UInt16
 
@@ -602,8 +602,8 @@ public struct Course {
     }
 }
 
-extension Course: Equatable, Hashable {
-    public static func == (lhs: Course, rhs: Course) -> Bool {
+extension CourseOverGround: Equatable, Hashable {
+    public static func == (lhs: CourseOverGround, rhs: CourseOverGround) -> Bool {
         if lhs.degrees != rhs.degrees {
             return false
         }
@@ -619,26 +619,26 @@ extension Course: Equatable, Hashable {
     }
 }
 
-public struct FfiConverterTypeCourse: FfiConverterRustBuffer {
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Course {
-        return try Course(
+public struct FfiConverterTypeCourseOverGround: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CourseOverGround {
+        return try CourseOverGround(
             degrees: FfiConverterUInt16.read(from: &buf),
             accuracy: FfiConverterUInt16.read(from: &buf)
         )
     }
 
-    public static func write(_ value: Course, into buf: inout [UInt8]) {
+    public static func write(_ value: CourseOverGround, into buf: inout [UInt8]) {
         FfiConverterUInt16.write(value.degrees, into: &buf)
         FfiConverterUInt16.write(value.accuracy, into: &buf)
     }
 }
 
-public func FfiConverterTypeCourse_lift(_ buf: RustBuffer) throws -> Course {
-    return try FfiConverterTypeCourse.lift(buf)
+public func FfiConverterTypeCourseOverGround_lift(_ buf: RustBuffer) throws -> CourseOverGround {
+    return try FfiConverterTypeCourseOverGround.lift(buf)
 }
 
-public func FfiConverterTypeCourse_lower(_ value: Course) -> RustBuffer {
-    return FfiConverterTypeCourse.lower(value)
+public func FfiConverterTypeCourseOverGround_lower(_ value: CourseOverGround) -> RustBuffer {
+    return FfiConverterTypeCourseOverGround.lower(value)
 }
 
 public struct GeographicCoordinates {
@@ -797,15 +797,15 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
 public struct UserLocation {
     public var coordinates: GeographicCoordinates
     public var horizontalAccuracy: Double
-    public var course: Course?
+    public var courseOverGround: CourseOverGround?
     public var timestamp: Date
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(coordinates: GeographicCoordinates, horizontalAccuracy: Double, course: Course?, timestamp: Date) {
+    public init(coordinates: GeographicCoordinates, horizontalAccuracy: Double, courseOverGround: CourseOverGround?, timestamp: Date) {
         self.coordinates = coordinates
         self.horizontalAccuracy = horizontalAccuracy
-        self.course = course
+        self.courseOverGround = courseOverGround
         self.timestamp = timestamp
     }
 }
@@ -818,7 +818,7 @@ extension UserLocation: Equatable, Hashable {
         if lhs.horizontalAccuracy != rhs.horizontalAccuracy {
             return false
         }
-        if lhs.course != rhs.course {
+        if lhs.courseOverGround != rhs.courseOverGround {
             return false
         }
         if lhs.timestamp != rhs.timestamp {
@@ -830,7 +830,7 @@ extension UserLocation: Equatable, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(coordinates)
         hasher.combine(horizontalAccuracy)
-        hasher.combine(course)
+        hasher.combine(courseOverGround)
         hasher.combine(timestamp)
     }
 }
@@ -840,7 +840,7 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
         return try UserLocation(
             coordinates: FfiConverterTypeGeographicCoordinates.read(from: &buf),
             horizontalAccuracy: FfiConverterDouble.read(from: &buf),
-            course: FfiConverterOptionTypeCourse.read(from: &buf),
+            courseOverGround: FfiConverterOptionTypeCourseOverGround.read(from: &buf),
             timestamp: FfiConverterTimestamp.read(from: &buf)
         )
     }
@@ -848,7 +848,7 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
     public static func write(_ value: UserLocation, into buf: inout [UInt8]) {
         FfiConverterTypeGeographicCoordinates.write(value.coordinates, into: &buf)
         FfiConverterDouble.write(value.horizontalAccuracy, into: &buf)
-        FfiConverterOptionTypeCourse.write(value.course, into: &buf)
+        FfiConverterOptionTypeCourseOverGround.write(value.courseOverGround, into: &buf)
         FfiConverterTimestamp.write(value.timestamp, into: &buf)
     }
 }
@@ -1356,8 +1356,8 @@ private struct FfiConverterOptionString: FfiConverterRustBuffer {
     }
 }
 
-private struct FfiConverterOptionTypeCourse: FfiConverterRustBuffer {
-    typealias SwiftType = Course?
+private struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
+    typealias SwiftType = CourseOverGround?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
         guard let value = value else {
@@ -1365,13 +1365,13 @@ private struct FfiConverterOptionTypeCourse: FfiConverterRustBuffer {
             return
         }
         writeInt(&buf, Int8(1))
-        FfiConverterTypeCourse.write(value, into: &buf)
+        FfiConverterTypeCourseOverGround.write(value, into: &buf)
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
-        case 1: return try FfiConverterTypeCourse.read(from: &buf)
+        case 1: return try FfiConverterTypeCourseOverGround.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }

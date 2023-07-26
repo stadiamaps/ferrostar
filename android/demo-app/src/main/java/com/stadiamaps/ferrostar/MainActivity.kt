@@ -3,7 +3,6 @@ package com.stadiamaps.ferrostar
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
-import uniffi.ferrostar.add
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +33,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name! 🦀 says 2 + 2 = ${add(2u, 2u)}",
+        text = "Hello $name! 🦀 says 2 + 2 = 4",
         modifier = modifier,
         textAlign = TextAlign.Center,
     )

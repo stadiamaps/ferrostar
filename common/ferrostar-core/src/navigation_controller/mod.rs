@@ -101,7 +101,7 @@ impl NavigationController {
                                 spoken_instruction: None,
                             }
                         } else {
-                            // TODO: Instructions, banners, etc.
+                            // TODO: Maneuver instructions, banners, etc.
                             NavigationStateUpdate::Navigating {
                                 snapped_user_location,
                                 remaining_waypoints: remaining_waypoints.clone(),

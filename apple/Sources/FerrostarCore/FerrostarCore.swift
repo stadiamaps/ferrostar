@@ -117,14 +117,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
-        guard let location = locationProvider.location else {
+        guard let location = locationProvider.lastLocation else {
             throw FerrostarCoreError.userLocationUnknown
         }
 
-        locationProvider.startUpdatingLocation()
-        locationProvider.startUpdatingHeading()
+        locationProvider.startUpdating()
 
-        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.heading, fullRoute: route.geometry)
+        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry)
         navigationController = NavigationController(lastUserLocation: location.userLocation, route: route.inner)
     }
 
@@ -132,8 +131,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public func stopNavigation() {
         navigationController = nil
         observableState = nil
-        locationProvider.stopUpdatingLocation()
-        locationProvider.stopUpdatingHeading()
+        locationProvider.stopUpdating()
     }
 }
 

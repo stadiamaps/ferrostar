@@ -13,15 +13,15 @@ extension CLLocationCoordinate2D {
 
 extension CLLocation {
     var userLocation: UniFFI.UserLocation {
-        let ffiCourse: UniFFI.Course?
+        let ffiCourse: UniFFI.CourseOverGround?
 
         if course >= 0 && courseAccuracy >= 0 {
-            ffiCourse = UniFFI.Course(degrees: UInt16(course), accuracy: UInt16(courseAccuracy))
+            ffiCourse = UniFFI.CourseOverGround(degrees: UInt16(course), accuracy: UInt16(courseAccuracy))
         } else {
             ffiCourse = nil
         }
 
-        return UniFFI.UserLocation(coordinates: coordinate.geographicCoordinates, horizontalAccuracy: horizontalAccuracy, course: ffiCourse, timestamp: timestamp)
+        return UniFFI.UserLocation(coordinates: coordinate.geographicCoordinates, horizontalAccuracy: horizontalAccuracy, courseOverGround: ffiCourse, timestamp: timestamp)
     }
 
     convenience init(userLocation: UniFFI.UserLocation) {
@@ -29,7 +29,7 @@ extension CLLocation {
 
         let courseDegrees : CLLocationDirection
         let courseAccuracy: CLLocationDirectionAccuracy
-        if let course = userLocation.course {
+        if let course = userLocation.courseOverGround {
             courseDegrees = CLLocationDirection(course.degrees)
             courseAccuracy = CLLocationDirectionAccuracy(course.accuracy)
         } else {

@@ -31,26 +31,26 @@ private class MockHeading: CLHeading {
 final class SimulatedLocationManagerTests: XCTestCase {
     func testInitialValuesAreNull() {
         let locationManager = SimulatedLocationManager()
-        XCTAssertNil(locationManager.location, "Initial location must be nil")
-        XCTAssertNil(locationManager.heading, "Initial heading must be nil")
+        XCTAssertNil(locationManager.lastLocation, "Initial location must be nil")
+        XCTAssertNil(locationManager.lastHeading, "Initial heading must be nil")
     }
 
     func testSetLocation() {
         let locationManager = SimulatedLocationManager()
 
         let location = CLLocation(latitude: 42, longitude: 24)
-        locationManager.location = location
+        locationManager.lastLocation = location
 
-        XCTAssertEqual(locationManager.location, location)
+        XCTAssertEqual(locationManager.lastLocation, location)
     }
 
     func testSetHeading() {
         let locationManager = SimulatedLocationManager()
 
         let heading = MockHeading(value: 42)
-        locationManager.heading = heading
+        locationManager.lastHeading = heading
 
-        XCTAssertEqual(locationManager.heading, heading)
+        XCTAssertEqual(locationManager.lastHeading, heading)
     }
 
     func testDelegateSetLocation() {
@@ -84,10 +84,10 @@ final class SimulatedLocationManagerTests: XCTestCase {
 
         let locationManager = SimulatedLocationManager()
         locationManager.delegate = LocationDelegate(expectation: exp, expectedLocations: locations)
-        locationManager.startUpdatingLocation()
+        locationManager.startUpdating()
 
-        locationManager.location = locations.removeFirst()
-        locationManager.location = locations.removeFirst()
+        locationManager.lastLocation = locations.removeFirst()
+        locationManager.lastLocation = locations.removeFirst()
 
         wait(for: [exp], timeout: 1.0)
     }
@@ -123,10 +123,10 @@ final class SimulatedLocationManagerTests: XCTestCase {
 
         let locationManager = SimulatedLocationManager()
         locationManager.delegate = LocationDelegate(expectation: exp, expectedHeadings: headings)
-        locationManager.startUpdatingHeading()
+        locationManager.startUpdating()
 
-        locationManager.heading = headings.removeFirst()
-        locationManager.heading = headings.removeFirst()
+        locationManager.lastHeading = headings.removeFirst()
+        locationManager.lastHeading = headings.removeFirst()
 
         wait(for: [exp], timeout: 1.0)
     }

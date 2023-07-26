@@ -33,7 +33,7 @@ dictionary GeographicCoordinates {
     double lng;
 };
 
-dictionary Course {
+dictionary CourseOverGround {
     u16 degrees;
     u16 accuracy;
 };
@@ -41,7 +41,7 @@ dictionary Course {
 dictionary UserLocation {
     GeographicCoordinates coordinates;
     double horizontal_accuracy;
-    Course? course;
+    CourseOverGround? course_over_ground;
     timestamp timestamp;
 };
 

@@ -27,9 +27,9 @@ impl From<Coord> for GeographicCoordinates {
     }
 }
 
-/// The direction in which the user/device is traveling.
+/// The direction in which the user/device is observed to be traveling.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
-pub struct Course {
+pub struct CourseOverGround {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
     /// true north (N = 0, E = 90, S = 180, W = 270).
     pub degrees: u16,
@@ -37,7 +37,7 @@ pub struct Course {
     pub accuracy: u16,
 }
 
-impl Course {
+impl CourseOverGround {
     pub fn new(degrees: u16, accuracy: u16) -> Self {
         Self { degrees, accuracy }
     }
@@ -52,7 +52,8 @@ pub struct UserLocation {
     pub coordinates: GeographicCoordinates,
     /// The estimated accuracy of the coordinate (in meters)
     pub horizontal_accuracy: f64,
-    pub course: Option<Course>,
+    pub course_over_ground: Option<CourseOverGround>,
+    // TODO: Decide if we want to include heading in the user location, if/how we should factor it in, and how to handle it on Android
     pub timestamp: SystemTime,
 }
 

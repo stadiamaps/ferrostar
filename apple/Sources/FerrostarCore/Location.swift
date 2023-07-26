@@ -2,17 +2,13 @@ import CoreLocation
 
 public protocol LocationProviding: AnyObject {
     var delegate: LocationManagingDelegate? { get set }
-    var location: CLLocation? { get }
-    var heading: CLHeading? { get }
+    var lastLocation: CLLocation? { get }
+    var lastHeading: CLHeading? { get }
 
-    func startUpdatingLocation()
-    func stopUpdatingLocation()
-
-    func startUpdatingHeading()
-    func stopUpdatingHeading()
+    func startUpdating()
+    func stopUpdating()
 }
 
-/// All methods are analogues for equivalents on `CLLocationManagerDelegate`
 public protocol LocationManagingDelegate: AnyObject {
     func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation])
     func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading)
@@ -44,27 +40,21 @@ public class LiveLocationManager: NSObject {
 }
 
 extension LiveLocationManager: LocationProviding {
-    public var location: CLLocation? {
+    public var lastLocation: CLLocation? {
         locationManager.location
     }
 
-    public var heading: CLHeading? {
+    public var lastHeading: CLHeading? {
         locationManager.heading
     }
 
-    public func startUpdatingLocation() {
+    public func startUpdating() {
         locationManager.startUpdatingLocation()
-    }
-
-    public func stopUpdatingLocation() {
-        locationManager.stopUpdatingLocation()
-    }
-
-    public func startUpdatingHeading() {
         locationManager.startUpdatingHeading()
     }
 
-    public func stopUpdatingHeading() {
+    public func stopUpdating() {
+        locationManager.stopUpdatingLocation()
         locationManager.stopUpdatingHeading()
     }
 }
@@ -83,59 +73,46 @@ extension LiveLocationManager: CLLocationManagerDelegate {
     }
 }
 
-/// Location service for testing witohut relying on simulator location spoofing.
+/// Location provider for testing without relying on simulator location spoofing.
 ///
 /// This allows for more granular unit tests.
 public class SimulatedLocationManager: LocationProviding {
     public var delegate: LocationManagingDelegate?
-    public var location: CLLocation? {
+    public var lastLocation: CLLocation? {
         didSet {
             notifyDelegateOfLocation()
         }
     }
 
-    public var heading: CLHeading? {
+    public var lastHeading: CLHeading? {
         didSet {
             notifyDelegateOfHeading()
         }
     }
 
-    private var isUpdatingLocation = false {
+    private var isUpdating = false {
         didSet {
             notifyDelegateOfLocation()
-        }
-    }
-
-    private var isUpdatingHeading = false {
-        didSet {
             notifyDelegateOfHeading()
         }
     }
 
-    public func startUpdatingLocation() {
-        isUpdatingLocation = true
+    public func startUpdating() {
+        isUpdating = true
     }
 
-    public func stopUpdatingLocation() {
-        isUpdatingLocation = false
-    }
-
-    public func startUpdatingHeading() {
-        isUpdatingHeading = true
-    }
-
-    public func stopUpdatingHeading() {
-        isUpdatingHeading = false
+    public func stopUpdating() {
+        isUpdating = false
     }
 
     private func notifyDelegateOfLocation() {
-        if isUpdatingLocation, let location = location {
+        if isUpdating, let location = lastLocation {
             delegate?.locationManager(self, didUpdateLocations: [location])
         }
     }
 
     private func notifyDelegateOfHeading() {
-        if isUpdatingHeading, let heading = heading {
+        if isUpdating, let heading = lastHeading {
             delegate?.locationManager(self, didUpdateHeading: heading)
         }
     }
