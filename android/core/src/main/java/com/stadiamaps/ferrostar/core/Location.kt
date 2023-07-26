@@ -15,6 +15,7 @@ data class SimulatedLocation(
     override val courseOverGround: CourseOverGround?
 ) : Location
 
+// TODO: Decide if we want to have a compile-time dependency on Android
 data class AndroidLocation(
     override val coordinates: GeographicCoordinates,
     override val horizontalAccuracy: Float,
