@@ -36,8 +36,7 @@ final class FerrostarCoreTests: XCTestCase {
         let core = FerrostarCore(routeAdapter: MockRouteAdapter(routes: []), locationManager: SimulatedLocationManager(), networkSession: mockSession)
 
         do {
-            _ = try await core.getRoutes(waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)],
-                                         initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469))
+            _ = try await core.getRoutes(initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469), waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
             XCTFail("Expected an error")
         } catch let FerrostarCoreError.httpStatusCode(statusCode) {
             XCTAssertEqual(statusCode, 401)

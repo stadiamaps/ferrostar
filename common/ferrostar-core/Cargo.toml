@@ -18,10 +18,10 @@ polyline = "0.10.0"
 serde = "1.0.162"
 serde_json = "1.0.96"
 thiserror = "1.0.40"
-uniffi = "0.24.1"
+uniffi = "0.24.2"
 
 [build-dependencies.uniffi]
-version = "0.24.1"
+version = "0.24.2"
 features = ["build"]
 
 [dev-dependencies]

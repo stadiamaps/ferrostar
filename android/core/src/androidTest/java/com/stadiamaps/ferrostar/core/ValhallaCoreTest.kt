@@ -1,13 +1,32 @@
-// Integration tests of the core using the Valhalla backend with mocked
-// responses
+/**
+ * FIXME: This file should move out of Android Tests ASAP.
+ * It only exists here because I haven't yet figured out how to build and link the platform-native
+ * binaries via JNI just yet and this works.
+ *
+ * This solution is STUPIDLY INEFFICIENT and will probably contribute to global climate change since
+ * an idle Android emulator uses like two whole CPU cores when idling.
+ */
+package com.stadiamaps.ferrostar.core
 
-import CoreLocation
-@testable import FerrostarCore
-import UniFFI
-import XCTest
+import kotlinx.coroutines.test.TestResult
+import kotlinx.coroutines.test.runTest
+import okhttp3.OkHttpClient
+import okhttp3.mock.MediaTypes.MEDIATYPE_JSON
+import okhttp3.mock.MockInterceptor
+import okhttp3.mock.eq
+import okhttp3.mock.get
+import okhttp3.mock.post
+import okhttp3.mock.respond
+import okhttp3.mock.rule
+import okhttp3.mock.url
+import org.junit.Assert.assertEquals
+import org.junit.Test
+import uniffi.ferrostar.GeographicCoordinates
+import uniffi.ferrostar.UserLocation
+import java.net.URL
+import java.time.Instant
 
-private let valhallaEndpointUrl = URL(string: "https://api.stadiamaps.com/navigate")!
-private let simpleRoute = Data("""
+val simpleRoute = """
 {
   "routes": [
     {
@@ -206,58 +225,72 @@ private let simpleRoute = Data("""
   ],
   "code": "Ok"
 }
-""".utf8)
-private let successfulResponse = HTTPURLResponse(url: valhallaEndpointUrl, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!
+"""
 
-final class ValhallaCoreTests: XCTestCase {
-    func testValhallaRouteParsing() async throws {
-        let mockSession = MockURLSession()
-        mockSession.registerMock(forURL: valhallaEndpointUrl, withData: simpleRoute, andResponse: successfulResponse)
+class ValhallaCoreTest {
+    private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate"
 
-        let core = FerrostarCore(valhallaEndpointUrl: valhallaEndpointUrl, profile: "auto", locationManager: SimulatedLocationManager(), networkSession: mockSession)
-        let routes = try await core.getRoutes(initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469), waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
+    @Test
+    fun parseValhallaRouteResponse(): TestResult {
+        val interceptor = MockInterceptor().apply {
+            rule(post, url eq valhallaEndpointUrl) {
+                respond(simpleRoute, MEDIATYPE_JSON)
+            }
 
-        XCTAssertEqual(routes.count, 1)
+            rule(get) {
+                respond {
+                    throw IllegalStateException("an IO error")
+                }
+            }
+        }
+        val core = FerrostarCore(
+            valhallaEndpointURL = URL(valhallaEndpointUrl),
+            profile = "auto",
+            locationProvider = SimulatedLocationProvider(),
+            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        )
 
-        // Test polyline decoding.
-        let expectedGeometry = [
-            CLLocationCoordinate2D(
-                latitude: 60.534716, longitude: -149.543469
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.534782, longitude: -149.543879
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.534829, longitude: -149.544134
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.534856, longitude: -149.5443
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.534887, longitude: -149.544533
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.534941, longitude: -149.544976
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.534971, longitude: -149.545485
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.535003, longitude: -149.546177
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.535008, longitude: -149.546937
-            ),
-            CLLocationCoordinate2D(
-                latitude: 60.534991, longitude: -149.548581
-            ),
-        ]
-        XCTAssertEqual(routes.first!.geometry.count, expectedGeometry.count)
+        return runTest {
+            val routes = core.getRoutes(
+                UserLocation(
+                    GeographicCoordinates(60.5347155, -149.543469), 12.0, null, Instant.now()
+                ), waypoints = listOf(GeographicCoordinates(60.5349908, -149.5485806))
+            )
 
-        // Can't compare as double is not equatable
-        for (result, expected) in zip(routes.first!.geometry, expectedGeometry) {
-            XCTAssertEqual(result.latitude, expected.latitude, accuracy: 0.000001)
-            XCTAssertEqual(result.longitude, expected.longitude, accuracy: 0.000001)
+            assertEquals(routes.count(), 1)
+            assertEquals(
+                listOf(
+                    GeographicCoordinates(
+                        60.534716, -149.543469
+                    ),
+                    GeographicCoordinates(
+                        60.534782, -149.543879
+                    ),
+                    GeographicCoordinates(
+                        60.534829, -149.544134
+                    ),
+                    GeographicCoordinates(
+                        60.534856, -149.5443
+                    ),
+                    GeographicCoordinates(
+                        60.534887, -149.544533
+                    ),
+                    GeographicCoordinates(
+                        60.534941, -149.544976
+                    ),
+                    GeographicCoordinates(
+                        60.534971, -149.545485
+                    ),
+                    GeographicCoordinates(
+                        60.535003, -149.546177
+                    ),
+                    GeographicCoordinates(
+                        60.535008, -149.546937
+                    ),
+                    GeographicCoordinates(
+                        60.534991, -149.548581
+                    ),
+            ), routes.first().geometry)
         }
     }
 }

@@ -83,7 +83,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Tries to get routes visiting one or more waypoints starting from the initial location.
     ///
     /// Success and failure are communicated via ``delegate`` methods.
-    public func getRoutes(waypoints: [CLLocationCoordinate2D], initialLocation: CLLocation) async throws -> [Route] {
+    public func getRoutes(initialLocation: CLLocation, waypoints: [CLLocationCoordinate2D]) async throws -> [Route] {
         let routeRequest = try routeAdapter.generateRequest(userLocation: initialLocation.userLocation, waypoints: waypoints.map { $0.geographicCoordinates })
 
         switch routeRequest {

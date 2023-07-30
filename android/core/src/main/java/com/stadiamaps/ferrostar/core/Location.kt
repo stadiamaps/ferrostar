@@ -2,6 +2,7 @@ package com.stadiamaps.ferrostar.core
 
 import uniffi.ferrostar.CourseOverGround
 import uniffi.ferrostar.GeographicCoordinates
+import java.util.concurrent.Executor
 
 interface Location {
     val coordinates: GeographicCoordinates
@@ -37,10 +38,11 @@ data class AndroidLocation(
 
 interface LocationProvider {
     val lastLocation: Location?
+    // TODO: Decide how to handle this on Android
     val lastHeading: Float?
 
-    fun startUpdating()
-    fun stopUpdating()
+    fun addListener(listener: LocationUpdateListener, executor: Executor)
+    fun removeListener(listener: LocationUpdateListener)
 }
 
 interface LocationUpdateListener {
@@ -65,39 +67,37 @@ class SimulatedLocationProvider : LocationProvider {
             onHeadingUpdated()
         }
 
-    private var listeners: List<LocationUpdateListener> = listOf()
-
-    private var isUpdating = false
-        set(value) {
-            field = value
-
-            onLocationUpdated()
-            onHeadingUpdated()
-        }
-
-    override fun startUpdating() {
-        isUpdating = true
+    override fun addListener(listener: LocationUpdateListener, executor: Executor) {
+        listeners.add(listener to executor)
     }
 
-    override fun stopUpdating() {
-        isUpdating = false
+    override fun removeListener(listener: LocationUpdateListener) {
+        listeners.removeIf { it.first == listener }
     }
+
+    private var listeners: MutableList<Pair<LocationUpdateListener, Executor>> = mutableListOf()
 
     private fun onLocationUpdated() {
         val location = lastLocation
-        if (isUpdating && location != null) {
-            for (listener in listeners) {
-                listener.onLocationUpdated(location)
+        if (location != null) {
+            for ((listener, executor) in listeners) {
+                executor.execute {
+                    listener.onLocationUpdated(location)
+                }
             }
         }
     }
 
     private fun onHeadingUpdated() {
         val heading = lastHeading
-        if (isUpdating && heading != null) {
-            for (listener in listeners) {
-                listener.onHeadingUpdated(heading)
+        if (heading != null) {
+            for ((listener, executor) in listeners) {
+                executor.execute {
+                    listener.onHeadingUpdated(heading)
+                }
             }
         }
     }
 }
+
+// TODO: Real implementation
