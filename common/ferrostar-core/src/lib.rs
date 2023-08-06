@@ -6,11 +6,13 @@ use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
 use geo_types::Coord;
 pub use navigation_controller::{NavigationController, NavigationStateUpdate};
+use polyline::decode_polyline;
 pub use routing_adapters::{
     error::{RoutingRequestGenerationError, RoutingResponseParseError},
     RouteAdapter, RouteRequest, RouteRequestGenerator, RouteResponseParser,
 };
 use std::time::SystemTime;
+use crate::RoutingResponseParseError::ParseError;
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct GeographicCoordinates {
@@ -57,7 +59,7 @@ pub struct UserLocation {
     pub timestamp: SystemTime,
 }
 
-/// Information describing the series of maneuvers to travel between two or more points.
+/// Information describing the series of steps needed to travel between two or more points.
 ///
 /// NOTE: This type is unstable and is still under active development and should be
 /// considered unstable.
@@ -65,7 +67,43 @@ pub struct UserLocation {
 pub struct Route {
     pub geometry: Vec<GeographicCoordinates>,
     /// The ordered list of waypoints to visit, including the starting point.
+    /// Note that this is distinct from the *geometry* which includes all points visited.
+    /// A waypoint represents a start/end point for a route leg.
     pub waypoints: Vec<GeographicCoordinates>,
+    pub steps: Vec<RouteStep>,
+}
+
+/// A maneuver (such as a turn or merge) followed by travel of a certain distance until reaching
+/// the next step.
+///
+/// NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
+/// but we will intentionally define this somewhat looser unless/until it becomes clear something
+/// stricter is needed.
+#[derive(Clone, Copy, Debug)]
+pub struct RouteStep {
+    /// The starting location of the step (start of the maneuver).
+    pub start_location: GeographicCoordinates,
+    // TODO: Do we need to also include the end location?
+    /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
+    pub distance: f64,
+    // TODO: Maneuver details
+}
+
+impl RouteStep {
+    fn from_osrm(
+        value: &routing_adapters::osrm::models::RouteStep,
+        polyline_precision: u32,
+    ) -> Result<Self, RoutingResponseParseError> {
+        let start_location = decode_polyline(&value.geometry, polyline_precision)
+            .map_err(|error| RoutingResponseParseError::ParseError { error })?
+            .coords()
+            .map(|coord| GeographicCoordinates::from(*coord))
+            .take(1).next().ok_or(ParseError { error: "No coordinates in geometry".to_string() })?;
+        Ok(RouteStep {
+            start_location,
+            distance: value.distance,
+        })
+    }
 }
 
 pub struct SpokenInstruction {

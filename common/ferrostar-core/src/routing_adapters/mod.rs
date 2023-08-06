@@ -21,7 +21,7 @@ pub enum RouteRequest {
     // TODO: Generic case for cases like local/offline route generation or other arbitrary foreign code
 }
 
-// TODO: Conventions on constructors arguments? Setter methods??
+// TODO: Conventions on constructor arguments? Setter methods??
 /// A trait describing any object capable of generating [RouteRequest]s.
 ///
 /// The interface is intentionally generic. Every routing backend has its own set of
@@ -36,6 +36,7 @@ pub trait RouteRequestGenerator: Send + Sync + Debug {
     ///
     /// While most implementations will treat the locations as an ordered sequence, this is not
     /// guaranteed (ex: an optimized router)..
+    /// TODO: Option for whether we should account for course over ground or heading.
     fn generate_request(
         &self,
         user_location: UserLocation,

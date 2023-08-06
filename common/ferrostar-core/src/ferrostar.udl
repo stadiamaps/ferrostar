@@ -48,6 +48,12 @@ dictionary UserLocation {
 dictionary Route {
     sequence<GeographicCoordinates> geometry;
     sequence<GeographicCoordinates> waypoints;
+    sequence<RouteStep> steps;
+};
+
+dictionary RouteStep {
+    GeographicCoordinates start_location;
+    double distance;
 };
 
 dictionary SpokenInstruction {
@@ -62,7 +68,7 @@ interface RouteRequest {
 
 [Enum]
 interface NavigationStateUpdate {
-    Navigating(UserLocation snapped_user_location, sequence<GeographicCoordinates> remaining_waypoints, SpokenInstruction? spoken_instruction);
+    Navigating(UserLocation snapped_user_location, sequence<GeographicCoordinates> remaining_waypoints, sequence<RouteStep> remaining_steps, SpokenInstruction? spoken_instruction);
     Arrived(SpokenInstruction? spoken_instruction);
 };
 

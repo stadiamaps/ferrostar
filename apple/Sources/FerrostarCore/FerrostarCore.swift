@@ -123,7 +123,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         locationProvider.startUpdating()
 
-        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry)
+        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
         navigationController = NavigationController(lastUserLocation: location.userLocation, route: route.inner)
     }
 
@@ -143,7 +143,7 @@ extension FerrostarCore: LocationManagingDelegate {
 
         if let update = navigationController?.updateUserLocation(location: location.userLocation) {
             switch (update) {
-            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, spokenInstruction: let spokenInstruction):
+            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, remainingSteps: let remainingSteps, spokenInstruction: let spokenInstruction):
                 observableState?.snappedLocation = CLLocation(userLocation: userLocation)
                 observableState?.remainingWaypoints = remainingWaypoints.map { waypoint in
                     CLLocationCoordinate2D(geographicCoordinates: waypoint)

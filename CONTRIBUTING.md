@@ -57,9 +57,6 @@ build rules. So we use a shell script.
 
 If Xcode is not behaving well, a quick restart of Xcode or resetting the package graph usually clears it up.
 
-TODO: Decide on how to publish the Swift package. Probably something convoluted like MapLibre does, since SPM is so picky about owning the
-repo root.
-
 ### Android
 
 * Install [Android Studio](https://developer.android.com/studio).
@@ -93,9 +90,7 @@ After the initial setup, Gradle should be able to handle rebuilding the core for
 * Run `cargo test -p ferrostar-core` from within the `common` directory to run tests.
 * We should strive to keep the core well-tested, using unit tests and/or integration tests as appropriate. Please write tests before submitting most PRs.
 * For iOS, run unit tests as usual from within Xcode.
-
-TODO:
-* `gradle test` or something for Android.
+* For Android, run `gradle test` *as well as* the Android Tests within Android Studio. (TODO: CLI info)
 
 ## Code Conventions
 
@@ -117,6 +112,8 @@ Here is a recommended way to get setup:
 7. If you need to rebase your fork's PR branch onto main to resolve conflicts: `git fetch upstream`, `git rebase upstream/main` and force push to Github `git push --force origin your-branch`
 
 ## Changelog Conventions
+
+NOTE: We'll be *extremely* loose with this till we get closer to a minimally usable state.
 
 What warrants a changelog entry?
 

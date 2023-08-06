@@ -2,7 +2,7 @@ pub(crate) mod models;
 
 use super::RouteResponseParser;
 use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
-use crate::GeographicCoordinates;
+use crate::{GeographicCoordinates, RouteStep};
 use polyline::decode_polyline;
 
 /// A response parser for OSRM-compatible routing backends.
@@ -31,18 +31,32 @@ impl RouteResponseParser for OsrmResponseParser {
                 lng: waypoint.location.longitude(),
             })
             .collect();
-        Ok(res.routes.iter().map(|route| {
+
+        // This isn't the most functional in style, but it's a bit difficult to construct a pipeline
+        // today. Stabilization of try_collect may help.
+        let mut routes = vec![];
+        for route in res.routes {
             let geometry = decode_polyline(&route.geometry, self.polyline_precision)
-                .expect("As of v0.10.0, this method appears to be unable to fail based on its body; open an issue upstream.")
+                .map_err(|error| RoutingResponseParseError::ParseError { error: error.clone() })?
                 .coords()
                 .map(|coord| GeographicCoordinates::from(*coord))
                 .collect();
 
-            Route {
-                geometry,
-                waypoints: waypoints.clone()
+            let mut steps = vec![];
+            for leg in route.legs {
+                for step in leg.steps {
+                    steps.push(RouteStep::from_osrm(&step, self.polyline_precision)?);
+                }
             }
-        }).collect())
+
+            routes.push(Route {
+                geometry,
+                waypoints: waypoints.clone(),
+                steps,
+            })
+        }
+
+        Ok(routes)
     }
 }
 

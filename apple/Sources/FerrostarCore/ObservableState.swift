@@ -9,21 +9,24 @@ import UniFFI
 public class FerrostarObservableState: ObservableObject {
     @Published public internal(set) var snappedLocation: CLLocation
     @Published public internal(set) var heading: CLHeading?
-    @Published public internal(set) var fullRoute: [CLLocationCoordinate2D]
+    @Published public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
     @Published public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
+    @Published public internal(set) var remainingSteps: [RouteStep]
+    // TODO: Banners
     // TODO: This is not yet finalized. We need to decide on and document semantics
     // (ex: should we observe all changes to this and then queue the instruction?)
     @Published public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
 
-    init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D]) {
+    init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
         self.snappedLocation = snappedLocation
         self.heading = heading
-        self.fullRoute = fullRoute
+        self.fullRouteShape = fullRoute
         self.remainingWaypoints = fullRoute
+        self.remainingSteps = steps
         self.spokenInstruction = nil
     }
 
-    public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints)
+    public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])
 }
 
 // Derived from the Stadia Maps map matching example

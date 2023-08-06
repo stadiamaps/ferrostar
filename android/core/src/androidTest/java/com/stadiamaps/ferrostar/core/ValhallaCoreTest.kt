@@ -4,7 +4,7 @@
  * binaries via JNI just yet and this works.
  *
  * This solution is STUPIDLY INEFFICIENT and will probably contribute to global climate change since
- * an idle Android emulator uses like two whole CPU cores when idling.
+ * an Android emulator uses like two whole CPU cores when idling.
  */
 package com.stadiamaps.ferrostar.core
 
@@ -26,7 +26,7 @@ import uniffi.ferrostar.UserLocation
 import java.net.URL
 import java.time.Instant
 
-val simpleRoute = """
+const val simpleRoute = """
 {
   "routes": [
     {

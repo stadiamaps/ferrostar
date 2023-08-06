@@ -695,12 +695,14 @@ public func FfiConverterTypeGeographicCoordinates_lower(_ value: GeographicCoord
 public struct Route {
     public var geometry: [GeographicCoordinates]
     public var waypoints: [GeographicCoordinates]
+    public var steps: [RouteStep]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinates], waypoints: [GeographicCoordinates]) {
+    public init(geometry: [GeographicCoordinates], waypoints: [GeographicCoordinates], steps: [RouteStep]) {
         self.geometry = geometry
         self.waypoints = waypoints
+        self.steps = steps
     }
 }
 
@@ -712,12 +714,16 @@ extension Route: Equatable, Hashable {
         if lhs.waypoints != rhs.waypoints {
             return false
         }
+        if lhs.steps != rhs.steps {
+            return false
+        }
         return true
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(geometry)
         hasher.combine(waypoints)
+        hasher.combine(steps)
     }
 }
 
@@ -725,13 +731,15 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Route {
         return try Route(
             geometry: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
-            waypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf)
+            waypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
+            steps: FfiConverterSequenceTypeRouteStep.read(from: &buf)
         )
     }
 
     public static func write(_ value: Route, into buf: inout [UInt8]) {
         FfiConverterSequenceTypeGeographicCoordinates.write(value.geometry, into: &buf)
         FfiConverterSequenceTypeGeographicCoordinates.write(value.waypoints, into: &buf)
+        FfiConverterSequenceTypeRouteStep.write(value.steps, into: &buf)
     }
 }
 
@@ -741,6 +749,57 @@ public func FfiConverterTypeRoute_lift(_ buf: RustBuffer) throws -> Route {
 
 public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
     return FfiConverterTypeRoute.lower(value)
+}
+
+public struct RouteStep {
+    public var startLocation: GeographicCoordinates
+    public var distance: Double
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(startLocation: GeographicCoordinates, distance: Double) {
+        self.startLocation = startLocation
+        self.distance = distance
+    }
+}
+
+extension RouteStep: Equatable, Hashable {
+    public static func == (lhs: RouteStep, rhs: RouteStep) -> Bool {
+        if lhs.startLocation != rhs.startLocation {
+            return false
+        }
+        if lhs.distance != rhs.distance {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(startLocation)
+        hasher.combine(distance)
+    }
+}
+
+public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteStep {
+        return try RouteStep(
+            startLocation: FfiConverterTypeGeographicCoordinates.read(from: &buf),
+            distance: FfiConverterDouble.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: RouteStep, into buf: inout [UInt8]) {
+        FfiConverterTypeGeographicCoordinates.write(value.startLocation, into: &buf)
+        FfiConverterDouble.write(value.distance, into: &buf)
+    }
+}
+
+public func FfiConverterTypeRouteStep_lift(_ buf: RustBuffer) throws -> RouteStep {
+    return try FfiConverterTypeRouteStep.lift(buf)
+}
+
+public func FfiConverterTypeRouteStep_lower(_ value: RouteStep) -> RustBuffer {
+    return FfiConverterTypeRouteStep.lower(value)
 }
 
 public struct SpokenInstruction {
@@ -864,7 +923,7 @@ public func FfiConverterTypeUserLocation_lower(_ value: UserLocation) -> RustBuf
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinates], spokenInstruction: SpokenInstruction?)
+    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinates], remainingSteps: [RouteStep], spokenInstruction: SpokenInstruction?)
     case arrived(spokenInstruction: SpokenInstruction?)
 }
 
@@ -877,6 +936,7 @@ public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
         case 1: return try .navigating(
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
+                remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
             )
 
@@ -890,10 +950,11 @@ public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
 
     public static func write(_ value: NavigationStateUpdate, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingWaypoints, spokenInstruction):
+        case let .navigating(snappedUserLocation, remainingWaypoints, remainingSteps, spokenInstruction):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeGeographicCoordinates.write(remainingWaypoints, into: &buf)
+            FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
 
         case let .arrived(spokenInstruction):
@@ -1459,6 +1520,28 @@ private struct FfiConverterSequenceTypeRoute: FfiConverterRustBuffer {
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             try seq.append(FfiConverterTypeRoute.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+private struct FfiConverterSequenceTypeRouteStep: FfiConverterRustBuffer {
+    typealias SwiftType = [RouteStep]
+
+    public static func write(_ value: [RouteStep], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeRouteStep.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [RouteStep] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [RouteStep]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            try seq.append(FfiConverterTypeRouteStep.read(from: &buf))
         }
         return seq
     }

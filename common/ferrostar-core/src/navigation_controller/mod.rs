@@ -1,5 +1,5 @@
 use crate::utils::snap_to_line;
-use crate::{GeographicCoordinates, Route, SpokenInstruction, UserLocation};
+use crate::{GeographicCoordinates, Route, RouteStep, SpokenInstruction, UserLocation};
 use std::sync::Mutex;
 
 /// Internal state of the navigation controller.
@@ -10,7 +10,9 @@ enum TripState {
         route: Route,
         /// The ordered list of waypoints remaining to visit on this trip. Intermediate waypoints on
         /// the route to the final destination are discarded as they are visited.
+        /// TODO: Do these need additional details like a name/label?
         remaining_waypoints: Vec<GeographicCoordinates>,
+        remaining_steps: Vec<RouteStep>,
     },
     Complete,
 }
@@ -22,7 +24,11 @@ pub enum NavigationStateUpdate {
         /// The ordered list of waypoints remaining to visit on this trip. Intermediate waypoints on
         /// the route to the final destination are discarded as they are visited.
         remaining_waypoints: Vec<GeographicCoordinates>,
+        /// The ordered list of steps to complete during the rest of the trip. Steps are discarded
+        /// as they are completed.
+        remaining_steps: Vec<RouteStep>,
         spoken_instruction: Option<SpokenInstruction>,
+        // TODO: Banners
         // TODO: Communicate off-route and other state info
     },
     Arrived {
@@ -59,12 +65,14 @@ impl NavigationController {
     /// Creates a new trip navigation controller given the user's last known location and a route.
     pub fn new(last_user_location: UserLocation, route: Route) -> Self {
         let remaining_waypoints = route.waypoints.clone();
+        let remaining_steps = route.steps.clone();
         Self {
             state: Mutex::new(TripState::Navigating {
                 last_user_location,
                 snapped_user_location: snap_to_line(last_user_location, &route.geometry),
                 route,
                 remaining_waypoints,
+                remaining_steps,
             }),
         }
     }
@@ -78,6 +86,7 @@ impl NavigationController {
                         mut snapped_user_location,
                         ref route,
                         ref remaining_waypoints,
+                        ref remaining_steps,
                         ..
                     } => {
                         last_user_location = location;
@@ -91,7 +100,10 @@ impl NavigationController {
 
                         // TODO: Check if the user's distance is > some threshold, possibly accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
-                        // TODO: If on track, update the set of remaining waypoints. IIUC these should always appear within the route itself, which simplifies the logic a bit. TBD: Are disjoint routes possible at all?
+
+                        // TODO: If on track, update the set of remaining waypoints and steps.
+                        // IIUC these should always appear within the route itself, which simplifies the logic a bit.
+                        // TBD: Do we want to support disjoint routes?
 
                         if remaining_waypoints.is_empty() {
                             *guard = TripState::Complete;
@@ -105,6 +117,7 @@ impl NavigationController {
                             NavigationStateUpdate::Navigating {
                                 snapped_user_location,
                                 remaining_waypoints: remaining_waypoints.clone(),
+                                remaining_steps: remaining_steps.clone(),
                                 spoken_instruction: None,
                             }
                         }
