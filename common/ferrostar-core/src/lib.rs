@@ -4,7 +4,8 @@ pub(crate) mod utils;
 
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
-use geo_types::Coord;
+use crate::RoutingResponseParseError::ParseError;
+use geo::Coord;
 pub use navigation_controller::{NavigationController, NavigationStateUpdate};
 use polyline::decode_polyline;
 pub use routing_adapters::{
@@ -12,7 +13,6 @@ pub use routing_adapters::{
     RouteAdapter, RouteRequest, RouteRequestGenerator, RouteResponseParser,
 };
 use std::time::SystemTime;
-use crate::RoutingResponseParseError::ParseError;
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 pub struct GeographicCoordinates {
@@ -98,7 +98,11 @@ impl RouteStep {
             .map_err(|error| RoutingResponseParseError::ParseError { error })?
             .coords()
             .map(|coord| GeographicCoordinates::from(*coord))
-            .take(1).next().ok_or(ParseError { error: "No coordinates in geometry".to_string() })?;
+            .take(1)
+            .next()
+            .ok_or(ParseError {
+                error: "No coordinates in geometry".to_string(),
+            })?;
         Ok(RouteStep {
             start_location,
             distance: value.distance,

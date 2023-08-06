@@ -1,5 +1,6 @@
 use crate::utils::snap_to_line;
 use crate::{GeographicCoordinates, Route, RouteStep, SpokenInstruction, UserLocation};
+use geo::{Coord, LineString};
 use std::sync::Mutex;
 
 /// Internal state of the navigation controller.
@@ -8,6 +9,8 @@ enum TripState {
         last_user_location: UserLocation,
         snapped_user_location: UserLocation,
         route: Route,
+        /// LineString (derived from route geometry) used for calculations like snapping.
+        route_line_string: LineString,
         /// The ordered list of waypoints remaining to visit on this trip. Intermediate waypoints on
         /// the route to the final destination are discarded as they are visited.
         /// TODO: Do these need additional details like a name/label?
@@ -66,11 +69,18 @@ impl NavigationController {
     pub fn new(last_user_location: UserLocation, route: Route) -> Self {
         let remaining_waypoints = route.waypoints.clone();
         let remaining_steps = route.steps.clone();
+        let route_line_string = route
+            .geometry
+            .iter()
+            .map(|c| Coord { x: c.lng, y: c.lat })
+            .collect();
+
         Self {
             state: Mutex::new(TripState::Navigating {
                 last_user_location,
-                snapped_user_location: snap_to_line(last_user_location, &route.geometry),
+                snapped_user_location: snap_to_line(last_user_location, &route_line_string),
                 route,
+                route_line_string,
                 remaining_waypoints,
                 remaining_steps,
             }),
@@ -85,6 +95,7 @@ impl NavigationController {
                         mut last_user_location,
                         mut snapped_user_location,
                         ref route,
+                        ref route_line_string,
                         ref remaining_waypoints,
                         ref remaining_steps,
                         ..
@@ -96,12 +107,12 @@ impl NavigationController {
                         //
 
                         // Find the nearest point on the route line
-                        snapped_user_location = snap_to_line(location, &route.geometry);
+                        snapped_user_location = snap_to_line(location, &route_line_string);
 
                         // TODO: Check if the user's distance is > some threshold, possibly accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
 
-                        // TODO: If on track, update the set of remaining waypoints and steps.
+                        // TODO: If on track, update the set of remaining waypoints and steps (drop from the list).
                         // IIUC these should always appear within the route itself, which simplifies the logic a bit.
                         // TBD: Do we want to support disjoint routes?
 

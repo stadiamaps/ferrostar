@@ -13,15 +13,15 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-geo-types = "0.7.9"
+geo = "0.26.0"
 polyline = "0.10.0"
 serde = "1.0.162"
 serde_json = "1.0.96"
 thiserror = "1.0.40"
-uniffi = "0.24.2"
+uniffi = "0.24.3"
 
 [build-dependencies.uniffi]
-version = "0.24.2"
+version = "0.24.3"
 features = ["build"]
 
 [dev-dependencies]

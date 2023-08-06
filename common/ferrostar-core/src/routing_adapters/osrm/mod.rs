@@ -37,7 +37,9 @@ impl RouteResponseParser for OsrmResponseParser {
         let mut routes = vec![];
         for route in res.routes {
             let geometry = decode_polyline(&route.geometry, self.polyline_precision)
-                .map_err(|error| RoutingResponseParseError::ParseError { error: error.clone() })?
+                .map_err(|error| RoutingResponseParseError::ParseError {
+                    error: error.clone(),
+                })?
                 .coords()
                 .map(|coord| GeographicCoordinates::from(*coord))
                 .collect();
