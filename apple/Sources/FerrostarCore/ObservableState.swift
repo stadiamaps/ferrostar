@@ -27,6 +27,13 @@ public class FerrostarObservableState: ObservableObject {
     }
 
     public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])
+    public static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> FerrostarObservableState {
+        let result = FerrostarObservableState.pedestrianExample
+
+        result.remainingWaypoints = Array(result.remainingWaypoints.dropFirst(n))
+
+        return result
+    }
 }
 
 // Derived from the Stadia Maps map matching example

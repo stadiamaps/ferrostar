@@ -8,6 +8,15 @@
         "revision" : "ffda61e298c1490d4860d5184e80d618aaadc089",
         "version" : "5.13.0"
       }
+    },
+    {
+      "identity" : "maplibre-swiftui-dsl-playground",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
+      "state" : {
+        "branch" : "main",
+        "revision" : "9101372f30336409a4ef36f38389e8a1859e22c4"
+      }
     }
   ],
   "version" : 2

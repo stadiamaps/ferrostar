@@ -91,6 +91,7 @@ impl NavigationController {
         match self.state.lock() {
             Ok(mut guard) => {
                 match *guard {
+                    // TODO: Determine current step + mode of travel
                     TripState::Navigating {
                         mut last_user_location,
                         mut snapped_user_location,
@@ -109,7 +110,7 @@ impl NavigationController {
                         // Find the nearest point on the route line
                         snapped_user_location = snap_to_line(location, &route_line_string);
 
-                        // TODO: Check if the user's distance is > some threshold, possibly accounting for GPS error, mode of travel, etc.
+                        // TODO: Check if the user's distance is > some threshold, accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
 
                         // TODO: If on track, update the set of remaining waypoints and steps (drop from the list).

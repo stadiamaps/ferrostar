@@ -43,6 +43,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
+        .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -58,6 +59,7 @@ let package = Package(
             dependencies: [
                 .target(name: "FerrostarCore"),
                 .product(name: "Mapbox", package: "maplibre-gl-native-distribution"),
+                .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
             ],
             path: "apple/Sources/FerrostarMapLibreUI"
         ),
