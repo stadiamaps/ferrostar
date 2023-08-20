@@ -4,10 +4,10 @@ import Mapbox
 
 extension FerrostarObservableState {
     var routePolyline: MGLPolyline {
-        return MGLPolyline(coordinates: fullRouteShape, count: UInt(fullRouteShape.count))
+        return MGLPolylineFeature(coordinates: fullRouteShape)
     }
 
     var remainingRoutePolyline: MGLPolyline {
-        return MGLPolyline(coordinates: remainingWaypoints, count: UInt(remainingWaypoints.count))
+        return MGLPolylineFeature(coordinates: remainingWaypoints)
     }
 }

@@ -27,8 +27,9 @@ public class FerrostarObservableState: ObservableObject {
     }
 
     public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])
+
     public static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> FerrostarObservableState {
-        let result = FerrostarObservableState.pedestrianExample
+        let result = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])
 
         result.remainingWaypoints = Array(result.remainingWaypoints.dropFirst(n))
 

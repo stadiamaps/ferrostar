@@ -59,6 +59,7 @@ let package = Package(
             dependencies: [
                 .target(name: "FerrostarCore"),
                 .product(name: "Mapbox", package: "maplibre-gl-native-distribution"),
+                .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
                 .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
             ],
             path: "apple/Sources/FerrostarMapLibreUI"

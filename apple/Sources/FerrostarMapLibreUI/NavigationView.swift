@@ -1,5 +1,6 @@
 import SwiftUI
 import FerrostarCore
+import MapLibreSwiftDSL
 import MapLibreSwiftUI
 
 struct NavigationView: View {
@@ -17,31 +18,6 @@ struct NavigationView: View {
         lightStyleURL: URL,
         darkStyleURL: URL,
         navigationState: FerrostarObservableState
-        // TODO: Remove once the DSL supports complex expressions
-//        routeCasingInitialLayerConfig: InitialLayerConfiguration = InitialLayerConfiguration(position: .onTopOfOthers) { newLayer in
-//            let stops = NSExpression(forConstantValue: [14: 6,
-//                                                        18: 24])
-//            newLayer.lineWidth = NSExpression(forMGLInterpolating: .zoomLevelVariable,
-//                                                        curveType: .exponential,
-//                                                        parameters: NSExpression(forConstantValue: 1.5),
-//                                                        stops: stops)
-//        },
-//        routeInitialLayerConfig:  InitialLayerConfiguration = InitialLayerConfiguration(position: .onTopOfOthers) { newLayer in
-//            let stops = NSExpression(forConstantValue: [14: 5,
-//                                                        18: 20])
-//            newLayer.lineWidth = NSExpression(forMGLInterpolating: .zoomLevelVariable,
-//                                                        curveType: .exponential,
-//                                                        parameters: NSExpression(forConstantValue: 1.5),
-//                                                        stops: stops)
-//        },
-//        remainingRouteInitialLayerConfig: InitialLayerConfiguration = InitialLayerConfiguration(position: .onTopOfOthers) { newLayer in
-//            let stops = NSExpression(forConstantValue: [14: 5,
-//                                                        18: 20])
-//            newLayer.lineWidth = NSExpression(forMGLInterpolating: .zoomLevelVariable,
-//                                                        curveType: .exponential,
-//                                                        parameters: NSExpression(forConstantValue: 1.5),
-//                                                        stops: stops)
-//        }
     ) {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
@@ -52,11 +28,11 @@ struct NavigationView: View {
         MapView(
             styleURL: useDarkStyle ? darkStyleURL : lightStyleURL
         ) {
-            let routePolylineSource = ShapeSource(identifier: "route-polyline") {
+            let routePolylineSource = ShapeSource(identifier: "route-polyline-source") {
                 navigationState.routePolyline
             }
 
-            let remainingRoutePolylineSource = ShapeSource(identifier: "remaining-route-polyline") {
+            let remainingRoutePolylineSource = ShapeSource(identifier: "remaining-route-polyline-source") {
                 navigationState.remainingRoutePolyline
             }
 
@@ -65,24 +41,33 @@ struct NavigationView: View {
                 .lineCap(constant: .round)
                 .lineJoin(constant: .round)
                 .lineColor(constant: .white)
-                .lineWidth(constant: 8)
+                .lineWidth(interpolatedBy: .zoomLevel,
+                           curveType: .exponential,
+                           parameters: NSExpression(forConstantValue: 1.5),
+                           stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
 
             // TODO: Make this configurable via a modifier
             LineStyleLayer(identifier: "route-polyline", source: routePolylineSource)
                 .lineCap(constant: .round)
                 .lineJoin(constant: .round)
                 .lineColor(constant: .lightGray)
-                .lineWidth(constant: 5)
+                .lineWidth(interpolatedBy: .zoomLevel,
+                           curveType: .exponential,
+                           parameters: NSExpression(forConstantValue: 1.5),
+                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
 
             // TODO: Make this configurable via a modifier
             LineStyleLayer(identifier: "route-polyline-remaining", source: remainingRoutePolylineSource)
                 .lineCap(constant: .round)
                 .lineJoin(constant: .round)
                 .lineColor(constant: .systemBlue)
-                .lineWidth(constant: 5)
+                .lineWidth(interpolatedBy: .zoomLevel,
+                           curveType: .exponential,
+                           parameters: NSExpression(forConstantValue: 1.5),
+                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
 
         }
-        .initialCenter(center: navigationState.fullRouteShape.first!, zoom: 13)
+        .initialCenter(center: navigationState.fullRouteShape.first!, zoom: 14)
         .edgesIgnoringSafeArea(.all)
     }
 }
