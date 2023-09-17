@@ -6,14 +6,17 @@ Ferrostar is a FOSS navigation SDK built from the ground up for the future.
 
 ## Current status
 
-The project is under active development and the code is not yet ready for use in apps in any way, shape, or form.
+The project is under active development and the code is not yet ready for use in apps yet.
 We are still working out multiple elements of the high-level design and will post updates as interfaces and other
-pieces of the design start to stabilize.
+pieces of the design start to stabilize. You can track the road to something _usable_ in the
+[Proof of Concept Milestone](https://github.com/stadiamaps/ferrostar/milestone/1).
 
 That said, we are coming quickly to a point where we can actually iterate on concepts, and we are already able
 to run end-to-end unit tests that call Rust code from an idiomatic wrapper on iOS. We are focusing on
 iterating on the design with iOS first, and once we feel we have answered the important design questions,
 we can translate the concepts to Android and iterate on the core in parallel.
+
+![A screenshot of the current status](screenshot.png)
 
 ## Project Goals
 

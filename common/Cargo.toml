@@ -4,4 +4,4 @@ members = [
     "uniffi-bindgen",
     "ferrostar-core",
 ]
-
+resolver = "2"

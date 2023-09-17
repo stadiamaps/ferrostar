@@ -32,6 +32,8 @@ public class FerrostarObservableState: ObservableObject {
         let result = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])
 
         result.remainingWaypoints = Array(result.remainingWaypoints.dropFirst(n))
+        let lastUserLocation = result.remainingWaypoints.first!
+        result.snappedLocation = CLLocation(latitude: lastUserLocation.latitude, longitude: lastUserLocation.longitude)
 
         return result
     }

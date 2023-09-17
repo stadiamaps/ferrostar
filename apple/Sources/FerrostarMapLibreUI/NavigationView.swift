@@ -1,5 +1,6 @@
 import SwiftUI
 import FerrostarCore
+import Mapbox
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
 
@@ -8,6 +9,8 @@ struct NavigationView: View {
     let darkStyleURL: URL
 
     @ObservedObject var navigationState: FerrostarObservableState
+
+    @State private var camera: MapView.Camera
 
     // TODO: Determine this automatically
     private var useDarkStyle: Bool {
@@ -22,11 +25,16 @@ struct NavigationView: View {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
+
+        _camera = State(initialValue: MapView.Camera.centerAndZoom(navigationState.fullRouteShape.first!, 14))
+
+        // TODO: Set up following of the user
     }
 
     var body: some View {
         MapView(
-            styleURL: useDarkStyle ? darkStyleURL : lightStyleURL
+            styleURL: useDarkStyle ? darkStyleURL : lightStyleURL,
+            camera: $camera
         ) {
             let routePolylineSource = ShapeSource(identifier: "route-polyline-source") {
                 navigationState.routePolyline
@@ -34,6 +42,10 @@ struct NavigationView: View {
 
             let remainingRoutePolylineSource = ShapeSource(identifier: "remaining-route-polyline-source") {
                 navigationState.remainingRoutePolyline
+            }
+
+            let userLocationSource = ShapeSource(identifier: "user-location-source") {
+                MGLPointFeature(coordinate: navigationState.snappedLocation.coordinate)
             }
 
             // TODO: Make this configurable via a modifier
@@ -66,8 +78,10 @@ struct NavigationView: View {
                            parameters: NSExpression(forConstantValue: 1.5),
                            stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
 
+            SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
+                .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
+                .iconRotation(constant: navigationState.heading?.trueHeading.magnitude ?? 0)
         }
-        .initialCenter(center: navigationState.fullRouteShape.first!, zoom: 14)
         .edgesIgnoringSafeArea(.all)
     }
 }
@@ -78,8 +92,8 @@ struct NavigationView_Previews: PreviewProvider {
     private static let apiKey = "YOUR-API-KEY"
     static var previews: some View {
         NavigationView(
-            lightStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=\(apiKey)")!,
-            darkStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=\(apiKey)")!,
+            lightStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,
+            darkStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,
             navigationState: .modifiedPedestrianExample(droppingNWaypoints: 10)
         )
     }
