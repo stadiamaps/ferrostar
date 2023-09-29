@@ -83,6 +83,11 @@ struct NavigationView: View {
                 .iconRotation(constant: navigationState.heading?.trueHeading.magnitude ?? 0)
         }
         .edgesIgnoringSafeArea(.all)
+        .overlay(alignment: .top, content: {
+            if let visualInstructions = navigationState.visualInstructions {
+                BannerView(instructions: visualInstructions)
+            }
+        })
     }
 }
 
@@ -94,7 +99,7 @@ struct NavigationView_Previews: PreviewProvider {
         NavigationView(
             lightStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,
             darkStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,
-            navigationState: .modifiedPedestrianExample(droppingNWaypoints: 10)
+            navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4)
         )
     }
 }

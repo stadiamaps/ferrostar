@@ -28,13 +28,13 @@ public struct Route {
 
 /// A swifty `NavigationStateUpdate`.
 public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: CLLocation, remainingWaypoints: [CLLocationCoordinate2D], remainingSteps: [UniFFI.RouteStep], visualInstructions: UniFFI.VisualInstructions?, spokenInstruction: UniFFI.SpokenInstruction?)
+    case navigating(snappedUserLocation: CLLocation, remainingWaypoints: [CLLocationCoordinate2D], currentStep: UniFFI.RouteStep, visualInstructions: UniFFI.VisualInstructions?, spokenInstruction: UniFFI.SpokenInstruction?)
     case arrived(visualInstructions: UniFFI.VisualInstructions?, spokenInstruction: UniFFI.SpokenInstruction?)
 
     init(_ update: UniFFI.NavigationStateUpdate) {
         switch (update) {
-        case .navigating(snappedUserLocation: let location, remainingWaypoints: let waypoints, remainingSteps: let remainingSteps, visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
-            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingWaypoints: waypoints.map { CLLocationCoordinate2D(geographicCoordinates: $0)}, remainingSteps: remainingSteps, visualInstructions: visualInstructions, spokenInstruction: spokenInstruction)
+        case .navigating(snappedUserLocation: let location, remainingWaypoints: let waypoints, currentStep: let currentStep, visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
+            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingWaypoints: waypoints.map { CLLocationCoordinate2D(geographicCoordinates: $0)}, currentStep: currentStep, visualInstructions: visualInstructions, spokenInstruction: spokenInstruction)
         case .arrived(visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
             self = .arrived(visualInstructions: visualInstructions, spokenInstruction: spokenInstruction)
         }

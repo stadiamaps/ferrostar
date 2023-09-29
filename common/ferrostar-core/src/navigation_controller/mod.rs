@@ -31,7 +31,7 @@ pub enum NavigationStateUpdate {
         remaining_waypoints: Vec<GeographicCoordinates>,
         /// The ordered list of steps to complete during the rest of the trip. Steps are discarded
         /// as they are completed.
-        remaining_steps: Vec<RouteStep>,
+        current_step: RouteStep,
         visual_instructions: Option<VisualInstructions>,
         spoken_instruction: Option<SpokenInstruction>,
         // TODO: Communicate off-route and other state info
@@ -106,8 +106,15 @@ impl NavigationController {
                     } => {
                         last_user_location = location;
 
+                        let Some(current_step) = remaining_steps.first() else {
+                            return NavigationStateUpdate::Arrived {
+                                spoken_instruction: None,
+                                visual_instructions: None,
+                            };
+                        };
+
                         //
-                        // Navigation logic (rough draft)
+                        // Core navigation logic
                         //
 
                         // Find the nearest point on the route line
@@ -129,11 +136,10 @@ impl NavigationController {
                                 visual_instructions: None,
                             }
                         } else {
-                            // TODO: Maneuver instructions, banners, etc.
                             NavigationStateUpdate::Navigating {
                                 snapped_user_location,
                                 remaining_waypoints: remaining_waypoints.clone(),
-                                remaining_steps: remaining_steps.clone(),
+                                current_step: current_step.clone(),
                                 spoken_instruction: None,
                                 visual_instructions: None,
                             }

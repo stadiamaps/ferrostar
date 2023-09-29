@@ -99,7 +99,7 @@ pub struct SpokenInstruction {
 
 pub struct VisualInstructions {
     pub primary_content: VisualInstructionContent,
-    pub secondary_content: VisualInstructionContent,
+    pub secondary_content: Option<VisualInstructionContent>,
     trigger_at: GeographicCoordinates,
 }
 
