@@ -4,14 +4,13 @@ pub(crate) mod utils;
 
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
-use crate::RoutingResponseParseError::ParseError;
 use geo::Coord;
 pub use navigation_controller::{NavigationController, NavigationStateUpdate};
-use polyline::decode_polyline;
 pub use routing_adapters::{
     error::{RoutingRequestGenerationError, RoutingResponseParseError},
     RouteAdapter, RouteRequest, RouteRequestGenerator, RouteResponseParser,
 };
+use serde::Deserialize;
 use std::time::SystemTime;
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
@@ -79,35 +78,15 @@ pub struct Route {
 /// NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
 /// but we will intentionally define this somewhat looser unless/until it becomes clear something
 /// stricter is needed.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct RouteStep {
     /// The starting location of the step (start of the maneuver).
     pub start_location: GeographicCoordinates,
     // TODO: Do we need to also include the end location?
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
-    // TODO: Maneuver details
-}
-
-impl RouteStep {
-    fn from_osrm(
-        value: &routing_adapters::osrm::models::RouteStep,
-        polyline_precision: u32,
-    ) -> Result<Self, RoutingResponseParseError> {
-        let start_location = decode_polyline(&value.geometry, polyline_precision)
-            .map_err(|error| RoutingResponseParseError::ParseError { error })?
-            .coords()
-            .map(|coord| GeographicCoordinates::from(*coord))
-            .take(1)
-            .next()
-            .ok_or(ParseError {
-                error: "No coordinates in geometry".to_string(),
-            })?;
-        Ok(RouteStep {
-            start_location,
-            distance: value.distance,
-        })
-    }
+    pub road_name: Option<String>,
+    pub instruction: String,
 }
 
 pub struct SpokenInstruction {
@@ -115,6 +94,54 @@ pub struct SpokenInstruction {
     pub text: String,
     /// Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
     pub ssml: Option<String>,
+    trigger_at: GeographicCoordinates,
+}
+
+pub struct VisualInstructions {
+    pub primary_content: VisualInstructionContent,
+    pub secondary_content: VisualInstructionContent,
+    trigger_at: GeographicCoordinates,
+}
+
+/// Indicates the type of maneuver to perform.
+///
+/// Frequently used in conjunction with [ManeuverModifier].
+#[derive(Deserialize, Debug, Eq, PartialEq)]
+#[serde(rename_all = "lowercase")]
+pub enum ManeuverType {
+    Turn,
+    Merge,
+    Depart,
+    Arrive,
+    Fork,
+    #[serde(rename = "off ramp")]
+    OffRamp,
+    Roundabout,
+}
+
+/// Specifies additional information about a [ManeuverType]
+#[derive(Deserialize, Debug, Eq, PartialEq)]
+#[serde(rename_all = "lowercase")]
+pub enum ManeuverModifier {
+    UTurn,
+    #[serde(rename = "sharp right")]
+    SharpRight,
+    Right,
+    #[serde(rename = "slight right")]
+    SlightRight,
+    Straight,
+    #[serde(rename = "slight left")]
+    SlightLeft,
+    Left,
+    #[serde(rename = "sharp left")]
+    SharpLeft,
+}
+
+pub struct VisualInstructionContent {
+    pub text: String,
+    pub maneuver_type: Option<ManeuverType>,
+    pub maneuver_modifier: Option<ManeuverModifier>,
+    pub degrees: Option<i16>,
 }
 
 //

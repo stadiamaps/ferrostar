@@ -6,16 +6,15 @@ import UniFFI
 ///
 /// While the core generally does not include UI, this is purely at the model layer and should be implemented
 /// the same for all frontends.
-public class FerrostarObservableState: ObservableObject {
-    @Published public internal(set) var snappedLocation: CLLocation
-    @Published public internal(set) var heading: CLHeading?
-    @Published public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
-    @Published public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
-    @Published public internal(set) var remainingSteps: [RouteStep]
-    // TODO: Banners
-    // TODO: This is not yet finalized. We need to decide on and document semantics
-    // (ex: should we observe all changes to this and then queue the instruction?)
-    @Published public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
+@Observable
+public class FerrostarObservableState {
+    public internal(set) var snappedLocation: CLLocation
+    public internal(set) var heading: CLHeading?
+    public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
+    public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
+    public internal(set) var remainingSteps: [RouteStep]
+    public internal(set) var visualInstructions: UniFFI.VisualInstructions?
+    public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
 
     init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
         self.snappedLocation = snappedLocation

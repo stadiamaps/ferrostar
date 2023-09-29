@@ -1,13 +1,13 @@
 import Foundation
 import FerrostarCore
-import Mapbox
+import MapLibre
 
 extension FerrostarObservableState {
-    var routePolyline: MGLPolyline {
-        return MGLPolylineFeature(coordinates: fullRouteShape)
+    var routePolyline: MLNPolyline {
+        return MLNPolylineFeature(coordinates: fullRouteShape)
     }
 
-    var remainingRoutePolyline: MGLPolyline {
-        return MGLPolylineFeature(coordinates: remainingWaypoints)
+    var remainingRoutePolyline: MLNPolyline {
+        return MLNPolylineFeature(coordinates: remainingWaypoints)
     }
 }

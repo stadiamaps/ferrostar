@@ -1,5 +1,7 @@
 use crate::utils::snap_to_line;
-use crate::{GeographicCoordinates, Route, RouteStep, SpokenInstruction, UserLocation};
+use crate::{
+    GeographicCoordinates, Route, RouteStep, SpokenInstruction, UserLocation, VisualInstructions,
+};
 use geo::{Coord, LineString};
 use std::sync::Mutex;
 
@@ -30,11 +32,12 @@ pub enum NavigationStateUpdate {
         /// The ordered list of steps to complete during the rest of the trip. Steps are discarded
         /// as they are completed.
         remaining_steps: Vec<RouteStep>,
+        visual_instructions: Option<VisualInstructions>,
         spoken_instruction: Option<SpokenInstruction>,
-        // TODO: Banners
         // TODO: Communicate off-route and other state info
     },
     Arrived {
+        visual_instructions: Option<VisualInstructions>,
         spoken_instruction: Option<SpokenInstruction>,
     },
 }
@@ -110,7 +113,7 @@ impl NavigationController {
                         // Find the nearest point on the route line
                         snapped_user_location = snap_to_line(location, &route_line_string);
 
-                        // TODO: Check if the user's distance is > some threshold, accounting for GPS error, mode of travel, etc.
+                        // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
 
                         // TODO: If on track, update the set of remaining waypoints and steps (drop from the list).
@@ -123,6 +126,7 @@ impl NavigationController {
                             // TODO: Better info
                             NavigationStateUpdate::Arrived {
                                 spoken_instruction: None,
+                                visual_instructions: None,
                             }
                         } else {
                             // TODO: Maneuver instructions, banners, etc.
@@ -131,6 +135,7 @@ impl NavigationController {
                                 remaining_waypoints: remaining_waypoints.clone(),
                                 remaining_steps: remaining_steps.clone(),
                                 spoken_instruction: None,
+                                visual_instructions: None,
                             }
                         }
                     }
@@ -138,6 +143,7 @@ impl NavigationController {
                     // a mistake like this is technically harmless.
                     TripState::Complete => NavigationStateUpdate::Arrived {
                         spoken_instruction: None,
+                        visual_instructions: None,
                     },
                 }
             }

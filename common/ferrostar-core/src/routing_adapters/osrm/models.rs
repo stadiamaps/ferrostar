@@ -4,6 +4,7 @@
 //! by others which are now pseudo-standardized (ex: Mapbox). We omit some fields which are not
 //! needed for navigation.
 
+use crate::{ManeuverModifier, ManeuverType};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -110,8 +111,8 @@ pub struct RouteStep {
     /// The mode of transportation.
     pub mode: Option<String>,
     /// The maneuver for this step
-    pub maneuver: Option<StepManeuver>,
-    /// TODO
+    pub maneuver: StepManeuver,
+    /// TODO: docs
     pub intersections: Vec<Intersections>,
 
     /// A list of exits (name or number), separated by semicolons.
@@ -128,6 +129,27 @@ pub struct RouteStep {
     // Mapbox and Valhalla extensions that might be useful later
     // pub rotary_name: Option<String>,
     // pub rotary_pronunciation: Option<String>,
+    /// Textual instructions that are displayed as a banner; supported by Mapbox and Valhalla
+    #[serde(rename = "bannerInstructions")]
+    pub banner_instructions: Option<Vec<BannerInstruction>>,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct BannerInstruction {
+    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    pub distance_along_geometry: f64,
+    pub primary: BannerContent,
+    pub secondary: Option<BannerContent>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct BannerContent {
+    pub text: String,
+    #[serde(rename = "type")]
+    pub maneuver_type: Option<ManeuverType>,
+    #[serde(rename = "modifier")]
+    pub maneuver_modifier: Option<ManeuverModifier>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -151,6 +173,23 @@ pub struct StepManeuver {
     /// An optional string indicating the direction change of the maneuver.
     /// TODO: Model this as an enum.
     pub modifier: Option<String>,
+    /// Non-standard extension in Mapbox and Valhalla where the instruction is computed server-side
+    instruction: Option<String>,
+}
+
+impl StepManeuver {
+    // TODO: This is a placeholder implementation.
+    // The backends that the developers are working with all do instruction synthesis from
+    // components server-side.
+    fn synthesize_instruction(&self, locale: &str) -> String {
+        String::from("TODO: OSRM instruction synthesis")
+    }
+
+    pub fn get_instruction(&self) -> String {
+        self.instruction
+            .clone()
+            .unwrap_or_else(|| self.synthesize_instruction("en-US"))
+    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -329,5 +368,107 @@ mod tests {
             annotation.speed,
             vec![4.3, 4.2, 2.8, 4.1, 4.1, 4.2, 4.2, 4.2]
         );
+    }
+
+    #[test]
+    fn test_deserialize_banner_instruction() {
+        // Example from Mapbox's public docs
+        let data = r#"
+        {
+          "distanceAlongGeometry": 100,
+          "primary": {
+            "type": "turn",
+            "modifier": "left",
+            "text": "I 495 North / I 95",
+            "components": [
+              {
+                "text": "I 495",
+                "imageBaseURL": "https://s3.amazonaws.com/mapbox/shields/v3/i-495",
+                "type": "icon"
+              },
+              {
+                "text": "North",
+                "type": "text",
+                "abbr": "N",
+                "abbr_priority": 0
+              },
+              {
+                "text": "/",
+                "type": "delimiter"
+              },
+              {
+                "text": "I 95",
+                "imageBaseURL": "https://s3.amazonaws.com/mapbox/shields/v3/i-95",
+                "type": "icon"
+              }
+            ]
+          },
+          "secondary": {
+            "type": "turn",
+            "modifier": "left",
+            "text": "Baltimore / Northern Virginia",
+            "components": [
+              {
+                "text": "Baltimore",
+                "type": "text"
+              },
+              {
+                "text": "/",
+                "type": "text"
+              },
+              {
+                "text": "Northern Virginia",
+                "type": "text"
+              }
+            ]
+          },
+          "sub": {
+            "text": "",
+            "components": [
+              {
+                "text": "",
+                "type": "lane",
+                "directions": [
+                  "left"
+                ],
+                "active": true
+              },
+              {
+                "text": "",
+                "type": "lane",
+                "directions": [
+                  "left",
+                  "straight"
+                ],
+                "active": true
+              },
+              {
+                "text": "",
+                "type": "lane",
+                "directions": [
+                  "right"
+                ],
+                "active": false
+              }
+            ]
+          }
+        }
+        "#;
+
+        let instruction: BannerInstruction =
+            serde_json::from_str(data).expect("Failed to parse Annotation");
+
+        assert_eq!(instruction.distance_along_geometry, 100.0);
+        assert_eq!(instruction.primary.text, "I 495 North / I 95");
+        assert_eq!(instruction.primary.maneuver_type, Some(ManeuverType::Turn));
+        assert_eq!(
+            instruction.primary.maneuver_modifier,
+            Some(ManeuverModifier::Left)
+        );
+
+        let secondary = instruction.secondary.expect("Expected secondary content");
+        assert_eq!(secondary.text, "Baltimore / Northern Virginia");
+        assert_eq!(secondary.maneuver_type, Some(ManeuverType::Turn));
+        assert_eq!(secondary.maneuver_modifier, Some(ManeuverModifier::Left));
     }
 }

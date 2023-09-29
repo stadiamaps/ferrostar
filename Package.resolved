@@ -1,21 +1,21 @@
 {
   "pins" : [
     {
-      "identity" : "maplibre-gl-native-distribution",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/maplibre/maplibre-gl-native-distribution",
-      "state" : {
-        "revision" : "ffda61e298c1490d4860d5184e80d618aaadc089",
-        "version" : "5.13.0"
-      }
-    },
-    {
       "identity" : "maplibre-swiftui-dsl-playground",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
       "state" : {
         "branch" : "main",
-        "revision" : "e5776f9f8b99c85b690d317fd5649b5453c7b02a"
+        "revision" : "c818b257b1e57743c7b8c26b18f693a2efe86ff2"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "74203046135342e4a4a627476dd6caf8b28fe11b",
+        "version" : "509.0.0"
       }
     }
   ],

@@ -2,6 +2,7 @@ pub(crate) mod models;
 
 use super::RouteResponseParser;
 use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
+use crate::RoutingResponseParseError::ParseError;
 use crate::{GeographicCoordinates, RouteStep};
 use polyline::decode_polyline;
 
@@ -59,6 +60,29 @@ impl RouteResponseParser for OsrmResponseParser {
         }
 
         Ok(routes)
+    }
+}
+
+impl RouteStep {
+    fn from_osrm(
+        value: &models::RouteStep,
+        polyline_precision: u32,
+    ) -> Result<Self, RoutingResponseParseError> {
+        let start_location = decode_polyline(&value.geometry, polyline_precision)
+            .map_err(|error| RoutingResponseParseError::ParseError { error })?
+            .coords()
+            .map(|coord| GeographicCoordinates::from(*coord))
+            .take(1)
+            .next()
+            .ok_or(ParseError {
+                error: "No coordinates in geometry".to_string(),
+            })?;
+        Ok(RouteStep {
+            start_location,
+            distance: value.distance,
+            road_name: value.name.clone(),
+            instruction: value.maneuver.get_instruction(),
+        })
     }
 }
 

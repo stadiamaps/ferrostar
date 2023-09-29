@@ -54,11 +54,48 @@ dictionary Route {
 dictionary RouteStep {
     GeographicCoordinates start_location;
     double distance;
+    string? road_name;
+    string instruction;
 };
 
 dictionary SpokenInstruction {
     string text;
     string? ssml;
+    GeographicCoordinates trigger_at;
+};
+
+dictionary VisualInstructions {
+    VisualInstructionContent primary_content;
+    VisualInstructionContent secondary_content;
+    GeographicCoordinates trigger_at;
+};
+
+dictionary VisualInstructionContent {
+    string text;
+    ManeuverType? maneuver_type;
+    ManeuverModifier? maneuver_modifier;
+    i16? degrees;
+};
+
+enum ManeuverType {
+    "Turn",
+    "Merge",
+    "Depart",
+    "Arrive",
+    "Fork",
+    "OffRamp",
+    "Roundabout",
+};
+
+enum ManeuverModifier {
+    "UTurn",
+    "SharpRight",
+    "Right",
+    "SlightRight",
+    "Straight",
+    "SlightLeft",
+    "Left",
+    "SharpLeft",
 };
 
 [Enum]
@@ -68,8 +105,8 @@ interface RouteRequest {
 
 [Enum]
 interface NavigationStateUpdate {
-    Navigating(UserLocation snapped_user_location, sequence<GeographicCoordinates> remaining_waypoints, sequence<RouteStep> remaining_steps, SpokenInstruction? spoken_instruction);
-    Arrived(SpokenInstruction? spoken_instruction);
+    Navigating(UserLocation snapped_user_location, sequence<GeographicCoordinates> remaining_waypoints, sequence<RouteStep> remaining_steps, VisualInstructions? visual_instructions, SpokenInstruction? spoken_instruction);
+    Arrived(VisualInstructions? visual_instructions, SpokenInstruction? spoken_instruction);
 };
 
 //

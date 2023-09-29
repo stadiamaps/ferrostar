@@ -1,6 +1,6 @@
 import SwiftUI
 import FerrostarCore
-import Mapbox
+import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
 
@@ -8,7 +8,7 @@ struct NavigationView: View {
     let lightStyleURL: URL
     let darkStyleURL: URL
 
-    @ObservedObject var navigationState: FerrostarObservableState
+    var navigationState: FerrostarObservableState
 
     @State private var camera: MapView.Camera
 
@@ -45,7 +45,7 @@ struct NavigationView: View {
             }
 
             let userLocationSource = ShapeSource(identifier: "user-location-source") {
-                MGLPointFeature(coordinate: navigationState.snappedLocation.coordinate)
+                MLNPointFeature(coordinate: navigationState.snappedLocation.coordinate)
             }
 
             // TODO: Make this configurable via a modifier

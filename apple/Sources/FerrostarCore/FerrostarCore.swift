@@ -143,13 +143,16 @@ extension FerrostarCore: LocationManagingDelegate {
 
         if let update = navigationController?.updateUserLocation(location: location.userLocation) {
             switch (update) {
-            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, remainingSteps: let remainingSteps, spokenInstruction: let spokenInstruction):
+            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, remainingSteps: let remainingSteps, visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
                 observableState?.snappedLocation = CLLocation(userLocation: userLocation)
                 observableState?.remainingWaypoints = remainingWaypoints.map { waypoint in
                     CLLocationCoordinate2D(geographicCoordinates: waypoint)
                 }
+                observableState?.remainingSteps = remainingSteps
+                observableState?.visualInstructions = visualInstructions
                 observableState?.spokenInstruction = spokenInstruction
-            case .arrived(spokenInstruction: let spokenInstruction):
+            case .arrived(visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
+                observableState?.visualInstructions = visualInstructions
                 observableState?.snappedLocation = location  // We arrived; no more snapping needed
                 observableState?.spokenInstruction = spokenInstruction
             }
