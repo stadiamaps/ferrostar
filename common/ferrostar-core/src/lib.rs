@@ -8,7 +8,7 @@ use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
 
 // For UniFFI, which requires everything to be visible at the root
 pub use models::*;
-pub use navigation_controller::{NavigationController, NavigationStateUpdate};
+pub use navigation_controller::{NavigationController, models::NavigationStateUpdate};
 pub use routing_adapters::{
     error::{RoutingRequestGenerationError, RoutingResponseParseError},
     RouteAdapter, RouteRequest, RouteRequestGenerator, RouteResponseParser,

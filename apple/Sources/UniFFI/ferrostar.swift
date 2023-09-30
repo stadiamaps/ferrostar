@@ -766,14 +766,16 @@ public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
 
 public struct RouteStep {
     public var startLocation: GeographicCoordinates
+    public var endLocation: GeographicCoordinates
     public var distance: Double
     public var roadName: String?
     public var instruction: String
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(startLocation: GeographicCoordinates, distance: Double, roadName: String?, instruction: String) {
+    public init(startLocation: GeographicCoordinates, endLocation: GeographicCoordinates, distance: Double, roadName: String?, instruction: String) {
         self.startLocation = startLocation
+        self.endLocation = endLocation
         self.distance = distance
         self.roadName = roadName
         self.instruction = instruction
@@ -783,6 +785,9 @@ public struct RouteStep {
 extension RouteStep: Equatable, Hashable {
     public static func == (lhs: RouteStep, rhs: RouteStep) -> Bool {
         if lhs.startLocation != rhs.startLocation {
+            return false
+        }
+        if lhs.endLocation != rhs.endLocation {
             return false
         }
         if lhs.distance != rhs.distance {
@@ -799,6 +804,7 @@ extension RouteStep: Equatable, Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(startLocation)
+        hasher.combine(endLocation)
         hasher.combine(distance)
         hasher.combine(roadName)
         hasher.combine(instruction)
@@ -809,6 +815,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteStep {
         return try RouteStep(
             startLocation: FfiConverterTypeGeographicCoordinates.read(from: &buf),
+            endLocation: FfiConverterTypeGeographicCoordinates.read(from: &buf),
             distance: FfiConverterDouble.read(from: &buf),
             roadName: FfiConverterOptionString.read(from: &buf),
             instruction: FfiConverterString.read(from: &buf)
@@ -817,6 +824,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
 
     public static func write(_ value: RouteStep, into buf: inout [UInt8]) {
         FfiConverterTypeGeographicCoordinates.write(value.startLocation, into: &buf)
+        FfiConverterTypeGeographicCoordinates.write(value.endLocation, into: &buf)
         FfiConverterDouble.write(value.distance, into: &buf)
         FfiConverterOptionString.write(value.roadName, into: &buf)
         FfiConverterString.write(value.instruction, into: &buf)

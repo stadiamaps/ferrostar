@@ -31,7 +31,7 @@ public class FerrostarObservableState {
         let remainingWaypoints = Array(samplePedestrianWaypoints.dropFirst(n))
         let lastUserLocation = remainingWaypoints.first!
 
-        let result = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [UniFFI.RouteStep(startLocation: lastUserLocation.geographicCoordinates, distance: 100, roadName: "Jefferson St.", instruction: "Walk west on Jefferson St.")])
+        let result = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [UniFFI.RouteStep(startLocation: lastUserLocation.geographicCoordinates, endLocation: lastUserLocation.geographicCoordinates, distance: 100, roadName: "Jefferson St.", instruction: "Walk west on Jefferson St.")])
 
         result.remainingWaypoints = remainingWaypoints
         result.snappedLocation = CLLocation(latitude: lastUserLocation.latitude, longitude: lastUserLocation.longitude)

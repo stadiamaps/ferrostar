@@ -68,17 +68,18 @@ impl RouteStep {
         value: &models::RouteStep,
         polyline_precision: u32,
     ) -> Result<Self, RoutingResponseParseError> {
-        let start_location = decode_polyline(&value.geometry, polyline_precision)
-            .map_err(|error| RoutingResponseParseError::ParseError { error })?
-            .coords()
-            .map(|coord| GeographicCoordinates::from(*coord))
-            .take(1)
-            .next()
-            .ok_or(ParseError {
-                error: "No coordinates in geometry".to_string(),
-            })?;
+        let linestring = decode_polyline(&value.geometry, polyline_precision)
+            .map_err(|error| RoutingResponseParseError::ParseError { error })?;
+        let mut geometry = linestring.coords();
+
+        let start_location = geometry.next().map(|coord| GeographicCoordinates::from(*coord)).ok_or(ParseError {
+            error: "No coordinates in geometry".to_string(),
+        })?;
+        let end_location = geometry.last().map_or(start_location, |coord| GeographicCoordinates::from(*coord));
+
         Ok(RouteStep {
             start_location,
+            end_location,
             distance: value.distance,
             road_name: value.name.clone(),
             instruction: value.maneuver.get_instruction(),

@@ -71,7 +71,8 @@ pub struct Route {
 pub struct RouteStep {
     /// The starting location of the step (start of the maneuver).
     pub start_location: GeographicCoordinates,
-    // TODO: Do we need to also include the end location?
+    /// The ending location of the step (end of the maneuver).
+    pub end_location: GeographicCoordinates,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
     pub road_name: Option<String>,

@@ -53,6 +53,7 @@ dictionary Route {
 
 dictionary RouteStep {
     GeographicCoordinates start_location;
+    GeographicCoordinates end_location;
     double distance;
     string? road_name;
     string instruction;
