@@ -1,6 +1,6 @@
 use crate::{
-    create_osrm_response_parser, create_valhalla_request_generator, GeographicCoordinates, Route,
-    UserLocation,
+    create_osrm_response_parser, create_valhalla_request_generator,
+    models::{GeographicCoordinates, Route, UserLocation},
 };
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;

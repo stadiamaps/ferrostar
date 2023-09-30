@@ -1,7 +1,7 @@
-use crate::utils::snap_to_line;
-use crate::{
+use crate::models::{
     GeographicCoordinates, Route, RouteStep, SpokenInstruction, UserLocation, VisualInstructions,
 };
+use crate::utils::snap_to_line;
 use geo::{Coord, LineString};
 use std::sync::Mutex;
 
@@ -123,9 +123,12 @@ impl NavigationController {
                         // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
 
-                        // TODO: If on track, update the set of remaining waypoints and steps (drop from the list).
+                        // TODO: If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
                         // IIUC these should always appear within the route itself, which simplifies the logic a bit.
                         // TBD: Do we want to support disjoint routes?
+
+                        // TODO: Calculate distance to the next step
+                        // TODO: Advance to the next step when close enough
 
                         if remaining_waypoints.is_empty() {
                             *guard = TripState::Complete;

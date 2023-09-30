@@ -1,6 +1,6 @@
 use super::{RouteRequest, RoutingRequestGenerationError};
+use crate::models::{GeographicCoordinates, UserLocation};
 use crate::routing_adapters::RouteRequestGenerator;
-use crate::{GeographicCoordinates, UserLocation};
 use serde_json::{json, Value as JsonValue};
 use std::collections::HashMap;
 
@@ -87,7 +87,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::CourseOverGround;
+    use crate::models::CourseOverGround;
     use assert_json_diff::assert_json_include;
     use serde_json::{from_slice, json};
     use std::time::SystemTime;

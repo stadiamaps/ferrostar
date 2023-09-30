@@ -1,4 +1,4 @@
-use crate::{GeographicCoordinates, UserLocation};
+use crate::models::{GeographicCoordinates, UserLocation};
 use geo::{Closest, HaversineClosestPoint, LineString, Point};
 
 /// Snaps a user location to the closest point on a route line.

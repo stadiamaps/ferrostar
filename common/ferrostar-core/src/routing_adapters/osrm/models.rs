@@ -4,7 +4,7 @@
 //! by others which are now pseudo-standardized (ex: Mapbox). We omit some fields which are not
 //! needed for navigation.
 
-use crate::{ManeuverModifier, ManeuverType};
+use crate::models::{ManeuverModifier, ManeuverType};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
