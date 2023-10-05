@@ -16,9 +16,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build
+    - name: Cargo Build
       run: cargo build --verbose
       working-directory: common
     - name: Run tests
       run: cargo test --verbose
+      working-directory: common
+    - name: Build iOS XCFramework
+      run: ./build-ios.sh
+      working-directory: common
+    - name: Build Android Shared Library
+      run: ./build-ios.sh
       working-directory: common
