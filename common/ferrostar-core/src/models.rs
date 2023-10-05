@@ -1,4 +1,4 @@
-use geo::Coord;
+use geo::{Coord, Point};
 use serde::Deserialize;
 use std::time::SystemTime;
 
@@ -14,6 +14,21 @@ impl From<Coord> for GeographicCoordinates {
             lng: value.x,
             lat: value.y,
         }
+    }
+}
+
+impl From<GeographicCoordinates> for Coord {
+    fn from(value: GeographicCoordinates) -> Self {
+        Self {
+            x: value.lng,
+            y: value.lat,
+        }
+    }
+}
+
+impl From<GeographicCoordinates> for Point {
+    fn from(value: GeographicCoordinates) -> Self {
+        Self { 0: value.into() }
     }
 }
 
@@ -66,7 +81,7 @@ pub struct Route {
 ///
 /// NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
 /// but we will intentionally define this somewhat looser unless/until it becomes clear something
-/// stricter is needed.
+///
 #[derive(Clone, Debug)]
 pub struct RouteStep {
     /// The starting location of the step (start of the maneuver).

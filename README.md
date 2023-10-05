@@ -43,6 +43,9 @@ See the [ARCHITECTURE](ARCHITECTURE.md) document.
 
 See our [CONTRIBUTING](CONTRIBUTING.md) guide for info on expectations and dev environment setup.
 
+NOTE: The Android project will probably be broken for a few weeks, and you'll definitely want to be building with
+`useLocalFramework = true` in Package.swift.
+
 ### As a User
 
 TODO: Write this once we have something useful.

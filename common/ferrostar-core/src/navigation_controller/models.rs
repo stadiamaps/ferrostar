@@ -1,5 +1,7 @@
+use crate::{
+    GeographicCoordinates, Route, RouteStep, SpokenInstruction, UserLocation, VisualInstructions,
+};
 use geo::LineString;
-use crate::{GeographicCoordinates, Route, RouteStep, SpokenInstruction, UserLocation, VisualInstructions};
 
 /// Internal state of the navigation controller.
 pub(super) enum TripState {

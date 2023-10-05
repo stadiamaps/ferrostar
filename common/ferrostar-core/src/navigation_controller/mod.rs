@@ -1,12 +1,12 @@
 pub mod models;
+mod utils;
 
-use crate::models::{
-    Route, UserLocation,
-};
-use crate::utils::snap_to_line;
-use geo::{Coord};
-use std::sync::Mutex;
+use crate::models::{Route, UserLocation};
+use crate::navigation_controller::utils::has_completed_step;
+use geo::Coord;
 use models::*;
+use std::sync::Mutex;
+use utils::snap_to_line;
 
 /// Manages the navigation lifecycle of a single trip, requesting the initial route and updating
 /// internal state based on inputs like user location updates.
@@ -67,7 +67,7 @@ impl NavigationController {
                         ref route,
                         ref route_line_string,
                         ref remaining_waypoints,
-                        ref remaining_steps,
+                        ref mut remaining_steps,
                         ..
                     } => {
                         last_user_location = location;
@@ -93,22 +93,34 @@ impl NavigationController {
                         // IIUC these should always appear within the route itself, which simplifies the logic a bit.
                         // TBD: Do we want to support disjoint routes?
 
-                        // TODO: Calculate distance to the next step
-                        // TODO: Advance to the next step when close enough
+                        let current_step = if has_completed_step(current_step, &last_user_location)
+                        {
+                            // Advance to the next step
+                            if !remaining_steps.is_empty() {
+                                // NOTE: this would be much more efficient if we used a VecDeque, but
+                                // that isn't bridged by UniFFI. Revisit later.
+                                Some(remaining_steps.remove(0))
+                            } else {
+                                None
+                            }
+                        } else {
+                            Some(current_step.clone())
+                        };
 
-                        if remaining_waypoints.is_empty() {
-                            *guard = TripState::Complete;
 
-                            // TODO: Better info
-                            NavigationStateUpdate::Arrived {
+                        if let Some(step) = current_step {
+                            NavigationStateUpdate::Navigating {
+                                snapped_user_location,
+                                remaining_waypoints: remaining_waypoints.clone(),
+                                current_step: step,
                                 spoken_instruction: None,
                                 visual_instructions: None,
                             }
                         } else {
-                            NavigationStateUpdate::Navigating {
-                                snapped_user_location,
-                                remaining_waypoints: remaining_waypoints.clone(),
-                                current_step: current_step.clone(),
+                            *guard = TripState::Complete;
+
+                            // TODO: Better info
+                            NavigationStateUpdate::Arrived {
                                 spoken_instruction: None,
                                 visual_instructions: None,
                             }

@@ -1,14 +1,13 @@
 pub mod models;
 pub mod navigation_controller;
 pub mod routing_adapters;
-pub(crate) mod utils;
 
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
 
 // For UniFFI, which requires everything to be visible at the root
 pub use models::*;
-pub use navigation_controller::{NavigationController, models::NavigationStateUpdate};
+pub use navigation_controller::{models::NavigationStateUpdate, NavigationController};
 pub use routing_adapters::{
     error::{RoutingRequestGenerationError, RoutingResponseParseError},
     RouteAdapter, RouteRequest, RouteRequestGenerator, RouteResponseParser,

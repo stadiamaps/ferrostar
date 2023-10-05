@@ -72,10 +72,15 @@ impl RouteStep {
             .map_err(|error| RoutingResponseParseError::ParseError { error })?;
         let mut geometry = linestring.coords();
 
-        let start_location = geometry.next().map(|coord| GeographicCoordinates::from(*coord)).ok_or(ParseError {
-            error: "No coordinates in geometry".to_string(),
-        })?;
-        let end_location = geometry.last().map_or(start_location, |coord| GeographicCoordinates::from(*coord));
+        let start_location = geometry
+            .next()
+            .map(|coord| GeographicCoordinates::from(*coord))
+            .ok_or(ParseError {
+                error: "No coordinates in geometry".to_string(),
+            })?;
+        let end_location = geometry
+            .last()
+            .map_or(start_location, |coord| GeographicCoordinates::from(*coord));
 
         Ok(RouteStep {
             start_location,
