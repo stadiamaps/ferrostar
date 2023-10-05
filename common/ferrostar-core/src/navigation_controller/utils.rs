@@ -1,5 +1,7 @@
 use crate::models::{GeographicCoordinates, RouteStep, UserLocation};
 use geo::{Closest, HaversineClosestPoint, HaversineDistance, LineString, Point};
+
+#[cfg(test)]
 use proptest::prelude::*;
 
 #[cfg(test)]
@@ -38,6 +40,7 @@ pub fn has_completed_step(route_step: &RouteStep, user_location: &UserLocation) 
     return distance_to_end < 5.0;
 }
 
+#[cfg(test)]
 proptest! {
     #[test]
     fn test_has_completed_step_exact_position(x1 in -180f64..180f64, y1 in -90f64..90f64,
