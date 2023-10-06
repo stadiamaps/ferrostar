@@ -139,5 +139,6 @@ interface RouteAdapter {
 interface NavigationController {
     constructor(UserLocation last_user_location, Route route);
 
+    NavigationStateUpdate advance_to_next_step();
     NavigationStateUpdate update_user_location(UserLocation location);
 };

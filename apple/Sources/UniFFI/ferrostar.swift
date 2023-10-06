@@ -433,6 +433,7 @@ private struct FfiConverterTimestamp: FfiConverterRustBuffer {
 }
 
 public protocol NavigationControllerProtocol {
+    func advanceToNextStep() -> NavigationStateUpdate
     func updateUserLocation(location: UserLocation) -> NavigationStateUpdate
 }
 
@@ -457,6 +458,15 @@ public class NavigationController: NavigationControllerProtocol {
 
     deinit {
         try! rustCall { uniffi_ferrostar_fn_free_navigationcontroller(pointer, $0) }
+    }
+
+    public func advanceToNextStep() -> NavigationStateUpdate {
+        return try! FfiConverterTypeNavigationStateUpdate.lift(
+            try!
+                rustCall {
+                    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.pointer, $0)
+                }
+        )
     }
 
     public func updateUserLocation(location: UserLocation) -> NavigationStateUpdate {
@@ -2047,6 +2057,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 353 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 26674 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 55838 {

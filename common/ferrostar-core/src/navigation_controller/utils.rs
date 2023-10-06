@@ -6,9 +6,11 @@ use proptest::prelude::*;
 
 #[cfg(test)]
 use std::time::SystemTime;
+use super::ARRIVED_EOT;
+use crate::NavigationStateUpdate;
 
 /// Snaps a user location to the closest point on a route line.
-pub fn snap_to_line(location: UserLocation, line: &LineString) -> UserLocation {
+pub fn snap_to_line(location: &UserLocation, line: &LineString) -> UserLocation {
     let original_point = Point::new(location.coordinates.lng, location.coordinates.lat);
 
     match line.haversine_closest_point(&original_point) {
@@ -17,9 +19,9 @@ pub fn snap_to_line(location: UserLocation, line: &LineString) -> UserLocation {
                 lng: snapped.x(),
                 lat: snapped.y(),
             },
-            ..location
+            ..*location
         },
-        Closest::Indeterminate => location,
+        Closest::Indeterminate => *location,
     }
 }
 
@@ -39,6 +41,38 @@ pub fn has_completed_step(route_step: &RouteStep, user_location: &UserLocation) 
 
     return distance_to_end < 5.0;
 }
+
+pub fn do_advance_to_next_step(
+        snapped_user_location: &UserLocation,
+        remaining_waypoints: &Vec<GeographicCoordinates>,
+        remaining_steps: &mut Vec<RouteStep>,
+    ) -> NavigationStateUpdate {
+        if remaining_steps.is_empty() {
+            return ARRIVED_EOT;
+        };
+
+        // Advance to the next step
+        let current_step = if !remaining_steps.is_empty() {
+            // NOTE: this would be much more efficient if we used a VecDeque, but
+            // that isn't bridged by UniFFI. Revisit later.
+            remaining_steps.remove(0);
+            remaining_steps.first()
+        } else {
+            None
+        };
+
+        if let Some(step) = current_step {
+            NavigationStateUpdate::Navigating {
+                snapped_user_location: *snapped_user_location,
+                remaining_waypoints: remaining_waypoints.clone(),
+                current_step: step.clone(),
+                spoken_instruction: None,
+                visual_instructions: None,
+            }
+        } else {
+            ARRIVED_EOT
+        }
+    }
 
 #[cfg(test)]
 proptest! {

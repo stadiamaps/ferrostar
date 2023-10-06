@@ -15,6 +15,8 @@ pub(super) enum TripState {
         /// the route to the final destination are discarded as they are visited.
         /// TODO: Do these need additional details like a name/label?
         remaining_waypoints: Vec<GeographicCoordinates>,
+        /// The ordered list of steps that remain in the trip.
+        /// The step at the front of the list is always the current step.
         remaining_steps: Vec<RouteStep>,
     },
     Complete,
@@ -27,8 +29,7 @@ pub enum NavigationStateUpdate {
         /// The ordered list of waypoints remaining to visit on this trip. Intermediate waypoints on
         /// the route to the final destination are discarded as they are visited.
         remaining_waypoints: Vec<GeographicCoordinates>,
-        /// The ordered list of steps to complete during the rest of the trip. Steps are discarded
-        /// as they are completed.
+        /// The current/active maneuver. Properties such as the distance will be updated live.
         current_step: RouteStep,
         visual_instructions: Option<VisualInstructions>,
         spoken_instruction: Option<SpokenInstruction>,

@@ -2,11 +2,17 @@ pub mod models;
 mod utils;
 
 use crate::models::{Route, UserLocation};
-use crate::navigation_controller::utils::has_completed_step;
+use crate::navigation_controller::utils::{do_advance_to_next_step, has_completed_step};
 use geo::Coord;
 use models::*;
 use std::sync::Mutex;
 use utils::snap_to_line;
+
+// This may be improved eventually, but is essentially a sentinel value that we reached the end.
+const ARRIVED_EOT: NavigationStateUpdate = NavigationStateUpdate::Arrived {
+    spoken_instruction: None,
+    visual_instructions: None,
+};
 
 /// Manages the navigation lifecycle of a single trip, requesting the initial route and updating
 /// internal state based on inputs like user location updates.
@@ -31,6 +37,8 @@ pub struct NavigationController {
     /// very well. Others like [core::cell::RefCell] are not enough as the entire object is required to be both
     /// [Send] and [Sync], and [core::cell::RefCell] is explicitly `!Sync`.
     state: Mutex<TripState>,
+    // TODO: Configuration options
+    // - Strategy for advancing to the next step (simple threshold, manually, custom app logic via interface? ...?)
 }
 
 impl NavigationController {
@@ -47,7 +55,7 @@ impl NavigationController {
         Self {
             state: Mutex::new(TripState::Navigating {
                 last_user_location,
-                snapped_user_location: snap_to_line(last_user_location, &route_line_string),
+                snapped_user_location: snap_to_line(&last_user_location, &route_line_string),
                 route,
                 route_line_string,
                 remaining_waypoints,
@@ -56,6 +64,46 @@ impl NavigationController {
         }
     }
 
+    /// Advances navigation to the next step.
+    ///
+    /// Depending on the advancement strategy, this may be automatic.
+    /// For other cases, it is desirable to advance to the next step manually (ex: walking in an
+    /// urban tunnel). We leave this decision to the app developer.
+    pub fn advance_to_next_step(&self) -> NavigationStateUpdate {
+        match self.state.lock() {
+            Ok(mut guard) => {
+                match *guard {
+                    // TODO: Determine current step + mode of travel
+                    TripState::Navigating {
+                        ref snapped_user_location,
+                        ref remaining_waypoints,
+                        ref mut remaining_steps,
+                        ..
+                    } => {
+                        let update = do_advance_to_next_step(
+                            snapped_user_location,
+                            remaining_waypoints,
+                            remaining_steps,
+                        );
+                        if matches!(update, NavigationStateUpdate::Arrived { .. }) {
+                            *guard = TripState::Complete;
+                        }
+                        update
+                    }
+                    // It's tempting to throw an error here, since the caller should know better, but
+                    // a mistake like this is technically harmless.
+                    TripState::Complete => ARRIVED_EOT,
+                }
+            }
+            Err(_) => {
+                // The only way the mutex can become poisoned is if another caller panicked while
+                // holding the mutex. In which case, there is no point in continuing.
+                unreachable!("Poisoned mutex. This should never happen.");
+            }
+        }
+    }
+
+    /// Updates the user's current location and updates the navigation state accordingly.
     pub fn update_user_location(&self, location: UserLocation) -> NavigationStateUpdate {
         match self.state.lock() {
             Ok(mut guard) => {
@@ -84,7 +132,7 @@ impl NavigationController {
                         //
 
                         // Find the nearest point on the route line
-                        snapped_user_location = snap_to_line(location, &route_line_string);
+                        snapped_user_location = snap_to_line(&location, &route_line_string);
 
                         // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
@@ -92,26 +140,37 @@ impl NavigationController {
                         // TODO: If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
                         // IIUC these should always appear within the route itself, which simplifies the logic a bit.
                         // TBD: Do we want to support disjoint routes?
+                        let remaining_waypoints = remaining_waypoints.clone();
 
                         let current_step = if has_completed_step(current_step, &last_user_location)
                         {
                             // Advance to the next step
-                            if !remaining_steps.is_empty() {
-                                // NOTE: this would be much more efficient if we used a VecDeque, but
-                                // that isn't bridged by UniFFI. Revisit later.
-                                Some(remaining_steps.remove(0))
-                            } else {
-                                None
+                            let update = do_advance_to_next_step(
+                                &snapped_user_location,
+                                &remaining_waypoints,
+                                remaining_steps,
+                            );
+                            match update {
+                                NavigationStateUpdate::Navigating { current_step, .. } => {
+                                    Some(current_step)
+                                }
+                                NavigationStateUpdate::Arrived { .. } => {
+                                    *guard = TripState::Complete;
+                                    None
+                                }
                             }
                         } else {
                             Some(current_step.clone())
                         };
 
+                        // TODO: Calculate distance to the next step
+                        // Hmm... We don't currently store the LineString for the current step...
+                        // let fraction_along_line = route_line_string.line_locate_point(&point!(x: snapped_user_location.coordinates.lng, y: snapped_user_location.coordinates.lat));
 
                         if let Some(step) = current_step {
                             NavigationStateUpdate::Navigating {
                                 snapped_user_location,
-                                remaining_waypoints: remaining_waypoints.clone(),
+                                remaining_waypoints,
                                 current_step: step,
                                 spoken_instruction: None,
                                 visual_instructions: None,
