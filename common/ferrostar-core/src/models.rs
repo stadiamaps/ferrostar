@@ -82,7 +82,7 @@ pub struct Route {
 /// NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
 /// but we will intentionally define this somewhat looser unless/until it becomes clear something
 ///
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct RouteStep {
     /// The starting location of the step (start of the maneuver).
     pub start_location: GeographicCoordinates,
@@ -96,6 +96,7 @@ pub struct RouteStep {
 
 // TODO: trigger_at doesn't really have to live in the public interface; figure out if we want to have a separate FFI vs internal type
 
+#[derive(Debug, PartialEq)]
 pub struct SpokenInstruction {
     /// Plain-text instruction which can be synthesized with a TTS engine.
     pub text: String,
@@ -104,6 +105,7 @@ pub struct SpokenInstruction {
     pub trigger_at: GeographicCoordinates,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct VisualInstructions {
     pub primary_content: VisualInstructionContent,
     pub secondary_content: Option<VisualInstructionContent>,
@@ -144,6 +146,7 @@ pub enum ManeuverModifier {
     SharpLeft,
 }
 
+#[derive(Debug, Eq, PartialEq)]
 pub struct VisualInstructionContent {
     pub text: String,
     pub maneuver_type: Option<ManeuverType>,

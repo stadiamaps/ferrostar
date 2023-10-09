@@ -264,7 +264,7 @@ mod tests {
     // TODO: RouteLeg
 
     #[test]
-    fn test_deserialize_annotation() {
+    fn deserialize_annotation() {
         // Example from Mapbox's public docs, which include several annotations not supported at
         // the time of this writing.
         let data = r#"{
@@ -371,7 +371,7 @@ mod tests {
     }
 
     #[test]
-    fn test_deserialize_banner_instruction() {
+    fn deserialize_banner_instruction() {
         // Example from Mapbox's public docs
         let data = r#"
         {

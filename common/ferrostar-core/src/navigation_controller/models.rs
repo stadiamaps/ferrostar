@@ -23,6 +23,7 @@ pub(super) enum TripState {
 }
 
 /// Public updates pushed up to the direct user of the NavigationController.
+#[derive(Debug, PartialEq)]
 pub enum NavigationStateUpdate {
     Navigating {
         snapped_user_location: UserLocation,

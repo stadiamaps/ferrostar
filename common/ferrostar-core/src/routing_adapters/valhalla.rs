@@ -115,7 +115,7 @@ mod tests {
     ];
 
     #[test]
-    fn test_not_enough_locations() {
+    fn not_enough_locations() {
         let generator =
             ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
 
@@ -127,7 +127,7 @@ mod tests {
     }
 
     #[test]
-    fn test_request_body_without_course() {
+    fn request_body_without_course() {
         let generator =
             ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
 
@@ -168,7 +168,7 @@ mod tests {
     }
 
     #[test]
-    fn test_request_body_with_course() {
+    fn request_body_with_course() {
         let generator =
             ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
 
@@ -211,7 +211,7 @@ mod tests {
     }
 
     #[test]
-    fn test_request_body_with_invalid_horizontal_accuracy() {
+    fn request_body_with_invalid_horizontal_accuracy() {
         let generator =
             ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
         let location = UserLocation {

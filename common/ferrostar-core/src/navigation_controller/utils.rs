@@ -1,5 +1,5 @@
 use crate::models::{GeographicCoordinates, RouteStep, UserLocation};
-use geo::{Closest, HaversineClosestPoint, HaversineDistance, LineString, Point};
+use geo::{Closest, ClosestPoint, HaversineDistance, LineString, Point};
 
 #[cfg(test)]
 use proptest::prelude::*;
@@ -13,7 +13,7 @@ use std::time::SystemTime;
 pub fn snap_to_line(location: &UserLocation, line: &LineString) -> UserLocation {
     let original_point = Point::new(location.coordinates.lng, location.coordinates.lat);
 
-    match line.haversine_closest_point(&original_point) {
+    match line.closest_point(&original_point) {
         Closest::Intersection(snapped) | Closest::SinglePoint(snapped) => UserLocation {
             coordinates: GeographicCoordinates {
                 lng: snapped.x(),
@@ -92,10 +92,10 @@ pub fn do_advance_to_next_step(
 #[cfg(test)]
 proptest! {
     #[test]
-    fn test_should_advance_exact_position(x1 in -180f64..180f64, y1 in -90f64..90f64,
-                                          x2 in -180f64..180f64, y2 in -90f64..90f64,
-                                          distance: u16, minimum_horizontal_accuracy: u16,
-                                          excess_inaccuracy in 0f64..65535f64) {
+    fn should_advance_exact_position(x1 in -180f64..180f64, y1 in -90f64..90f64,
+                                     x2 in -180f64..180f64, y2 in -90f64..90f64,
+                                     distance: u16, minimum_horizontal_accuracy: u16,
+                                     excess_inaccuracy in 0f64..65535f64) {
         let route_step = RouteStep {
             start_location: GeographicCoordinates { lng: x1, lat: y1 },
             end_location: GeographicCoordinates { lng: x2, lat: y2 },
