@@ -8,6 +8,7 @@ extension FerrostarObservableState {
     }
 
     var remainingRoutePolyline: MLNPolyline {
-        return MLNPolylineFeature(coordinates: remainingWaypoints)
+        // FIXME
+        return MLNPolylineFeature(coordinates: fullRouteShape)
     }
 }
