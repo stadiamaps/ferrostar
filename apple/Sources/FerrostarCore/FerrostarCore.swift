@@ -52,6 +52,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 /// The particulars will vary by app; do what makes the most sense for your user experience.
 ///
 /// Finally, with a route selected, call ``startNavigation(route:)`` to start a session.
+@Observable
 @objc public class FerrostarCore: NSObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
