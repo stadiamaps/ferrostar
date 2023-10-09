@@ -4,7 +4,7 @@ import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
 
-struct NavigationView: View {
+struct NavigationMapView: View {
     let lightStyleURL: URL
     let darkStyleURL: URL
 
@@ -94,9 +94,9 @@ struct NavigationView: View {
 
 struct NavigationView_Previews: PreviewProvider {
     // TODO: Move to environment
-    private static let apiKey = "YOUR-API-KEY"
+    private static let apiKey = "e60944cf-3ccd-4fbc-892f-73f45da31486"
     static var previews: some View {
-        NavigationView(
+        NavigationMapView(
             lightStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,
             darkStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,
             navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4)
