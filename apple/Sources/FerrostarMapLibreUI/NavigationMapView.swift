@@ -94,7 +94,7 @@ public struct NavigationMapView: View {
 
 struct NavigationView_Previews: PreviewProvider {
     // TODO: Move to environment
-    private static let apiKey = "e60944cf-3ccd-4fbc-892f-73f45da31486"
+    private static let apiKey = "YOUR-API-KEY"
     static var previews: some View {
         NavigationMapView(
             lightStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,

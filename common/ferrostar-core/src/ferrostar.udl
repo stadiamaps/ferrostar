@@ -76,7 +76,7 @@ dictionary VisualInstructionContent {
     string text;
     ManeuverType? maneuver_type;
     ManeuverModifier? maneuver_modifier;
-    i16? degrees;
+    u16? roundabout_exit_degrees;
 };
 
 enum ManeuverType {

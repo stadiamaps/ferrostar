@@ -150,6 +150,11 @@ pub struct BannerContent {
     pub maneuver_type: Option<ManeuverType>,
     #[serde(rename = "modifier")]
     pub maneuver_modifier: Option<ManeuverModifier>,
+    /// The degree at which the maneuver exits the roundabout.
+    /// 180 indicates that the effect of exiting will be to continue in the same direction as
+    /// the original travel.
+    #[serde(rename = "degrees")]
+    pub roundabout_exit_degrees: Option<u16>,
 }
 
 #[derive(Deserialize, Debug)]

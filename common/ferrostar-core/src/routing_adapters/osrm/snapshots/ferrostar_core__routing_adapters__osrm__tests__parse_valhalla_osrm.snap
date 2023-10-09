@@ -303,7 +303,7 @@ expression: routes
             text: Turn left onto the walkway.
             maneuver_type: turn
             maneuver_modifier: left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.76345391237654
@@ -322,7 +322,7 @@ expression: routes
             text: Laeva
             maneuver_type: turn
             maneuver_modifier: right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.76342396120828
@@ -341,7 +341,7 @@ expression: routes
             text: Bear right.
             maneuver_type: turn
             maneuver_modifier: slight right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.763155
@@ -360,7 +360,7 @@ expression: routes
             text: Bear left onto the walkway.
             maneuver_type: turn
             maneuver_modifier: slight left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.763003405561822
@@ -379,7 +379,7 @@ expression: routes
             text: Continue.
             maneuver_type: new name
             maneuver_modifier: straight
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.762356578081025
@@ -398,7 +398,7 @@ expression: routes
             text: Admiralisild; Admiral Bridge
             maneuver_type: turn
             maneuver_modifier: right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.76223731615461
@@ -417,7 +417,7 @@ expression: routes
             text: Continue on the walkway.
             maneuver_type: new name
             maneuver_modifier: straight
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.7617704569302
@@ -436,7 +436,7 @@ expression: routes
             text: Turn left onto the walkway.
             maneuver_type: turn
             maneuver_modifier: left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.761432
@@ -455,7 +455,7 @@ expression: routes
             text: Turn right onto the walkway.
             maneuver_type: turn
             maneuver_modifier: right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.759273
@@ -474,7 +474,7 @@ expression: routes
             text: Turn left onto the walkway.
             maneuver_type: turn
             maneuver_modifier: left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.75913442423788
@@ -493,7 +493,7 @@ expression: routes
             text: Logi
             maneuver_type: turn
             maneuver_modifier: right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.758854097996792
@@ -512,7 +512,7 @@ expression: routes
             text: Turn left onto the walkway.
             maneuver_type: turn
             maneuver_modifier: left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.758392
@@ -531,7 +531,7 @@ expression: routes
             text: Turn right onto the walkway.
             maneuver_type: turn
             maneuver_modifier: right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.7582540509761
@@ -550,7 +550,7 @@ expression: routes
             text: Kultuurikilomeeter
             maneuver_type: turn
             maneuver_modifier: slight left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.757636
@@ -569,7 +569,7 @@ expression: routes
             text: Turn right onto the walkway.
             maneuver_type: turn
             maneuver_modifier: right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.739543
@@ -588,7 +588,7 @@ expression: routes
             text: Turn left onto the walkway.
             maneuver_type: turn
             maneuver_modifier: left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.739675
@@ -607,7 +607,7 @@ expression: routes
             text: Turn left onto the crosswalk.
             maneuver_type: turn
             maneuver_modifier: left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.739455128357065
@@ -626,7 +626,7 @@ expression: routes
             text: Turn right onto the walkway.
             maneuver_type: turn
             maneuver_modifier: right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.733721
@@ -645,7 +645,7 @@ expression: routes
             text: Turn left onto the walkway.
             maneuver_type: turn
             maneuver_modifier: left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.733717743619955
@@ -664,7 +664,7 @@ expression: routes
             text: Allveelaeva
             maneuver_type: turn
             maneuver_modifier: slight left
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.730259
@@ -683,7 +683,7 @@ expression: routes
             text: Peetri
             maneuver_type: turn
             maneuver_modifier: right
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.729829
@@ -702,7 +702,7 @@ expression: routes
             text: You have arrived at your destination.
             maneuver_type: arrive
             maneuver_modifier: ~
-            degrees: ~
+            roundabout_exit_degrees: ~
           secondary_content: ~
           trigger_at:
             lng: 24.730033812627255

@@ -95,14 +95,14 @@ impl RouteStep {
                             text: banner.primary.text.clone(),
                             maneuver_type: banner.primary.maneuver_type,
                             maneuver_modifier: banner.primary.maneuver_modifier,
-                            degrees: None, // TODO: degrees
+                            roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
                         },
                         secondary_content: banner.secondary.as_ref().map(|secondary| {
                             VisualInstructionContent {
                                 text: secondary.text.clone(),
                                 maneuver_type: secondary.maneuver_type,
                                 maneuver_modifier: secondary.maneuver_modifier,
-                                degrees: None, // TODO: degrees
+                                roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
                             }
                         }),
                         trigger_at: GeographicCoordinates {

@@ -177,5 +177,5 @@ pub struct VisualInstructionContent {
     pub text: String,
     pub maneuver_type: Option<ManeuverType>,
     pub maneuver_modifier: Option<ManeuverModifier>,
-    pub degrees: Option<i16>,
+    pub roundabout_exit_degrees: Option<u16>,
 }
