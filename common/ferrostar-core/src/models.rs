@@ -119,13 +119,28 @@ pub struct VisualInstructions {
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverType {
     Turn,
-    Merge,
+    #[serde(rename = "new name")]
+    NewName,
     Depart,
     Arrive,
-    Fork,
+    Merge,
+    #[serde(rename = "on ramp")]
+    OnRamp,
     #[serde(rename = "off ramp")]
     OffRamp,
+    Fork,
+    #[serde(rename = "end of road")]
+    EndOfRoad,
+    Continue,
     Roundabout,
+    Rotary,
+    #[serde(rename = "roundabout turn")]
+    RoundaboutTurn,
+    Notification,
+    #[serde(rename = "exit roundabout")]
+    ExitRoundabout,
+    #[serde(rename = "exit rotary")]
+    ExitRotary,
 }
 
 /// Specifies additional information about a [ManeuverType]

@@ -1227,12 +1227,21 @@ extension ManeuverModifier: Equatable, Hashable {}
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum ManeuverType {
     case turn
-    case merge
+    case newName
     case depart
     case arrive
-    case fork
+    case merge
+    case onRamp
     case offRamp
+    case fork
+    case endOfRoad
+    case `continue`
     case roundabout
+    case rotary
+    case roundaboutTurn
+    case notification
+    case exitRoundabout
+    case exitRotary
 }
 
 public struct FfiConverterTypeManeuverType: FfiConverterRustBuffer {
@@ -1243,17 +1252,35 @@ public struct FfiConverterTypeManeuverType: FfiConverterRustBuffer {
         switch variant {
         case 1: return .turn
 
-        case 2: return .merge
+        case 2: return .newName
 
         case 3: return .depart
 
         case 4: return .arrive
 
-        case 5: return .fork
+        case 5: return .merge
 
-        case 6: return .offRamp
+        case 6: return .onRamp
 
-        case 7: return .roundabout
+        case 7: return .offRamp
+
+        case 8: return .fork
+
+        case 9: return .endOfRoad
+
+        case 10: return .continue
+
+        case 11: return .roundabout
+
+        case 12: return .rotary
+
+        case 13: return .roundaboutTurn
+
+        case 14: return .notification
+
+        case 15: return .exitRoundabout
+
+        case 16: return .exitRotary
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -1264,7 +1291,7 @@ public struct FfiConverterTypeManeuverType: FfiConverterRustBuffer {
         case .turn:
             writeInt(&buf, Int32(1))
 
-        case .merge:
+        case .newName:
             writeInt(&buf, Int32(2))
 
         case .depart:
@@ -1273,14 +1300,41 @@ public struct FfiConverterTypeManeuverType: FfiConverterRustBuffer {
         case .arrive:
             writeInt(&buf, Int32(4))
 
-        case .fork:
+        case .merge:
             writeInt(&buf, Int32(5))
 
-        case .offRamp:
+        case .onRamp:
             writeInt(&buf, Int32(6))
 
-        case .roundabout:
+        case .offRamp:
             writeInt(&buf, Int32(7))
+
+        case .fork:
+            writeInt(&buf, Int32(8))
+
+        case .endOfRoad:
+            writeInt(&buf, Int32(9))
+
+        case .continue:
+            writeInt(&buf, Int32(10))
+
+        case .roundabout:
+            writeInt(&buf, Int32(11))
+
+        case .rotary:
+            writeInt(&buf, Int32(12))
+
+        case .roundaboutTurn:
+            writeInt(&buf, Int32(13))
+
+        case .notification:
+            writeInt(&buf, Int32(14))
+
+        case .exitRoundabout:
+            writeInt(&buf, Int32(15))
+
+        case .exitRotary:
+            writeInt(&buf, Int32(16))
         }
     }
 }

@@ -80,12 +80,21 @@ dictionary VisualInstructionContent {
 
 enum ManeuverType {
     "Turn",
-    "Merge",
+    "NewName",
     "Depart",
     "Arrive",
-    "Fork",
+    "Merge",
+    "OnRamp",
     "OffRamp",
+    "Fork",
+    "EndOfRoad",
+    "Continue",
     "Roundabout",
+    "Rotary",
+    "RoundaboutTurn",
+    "Notification",
+    "ExitRoundabout",
+    "ExitRotary",
 };
 
 enum ManeuverModifier {
