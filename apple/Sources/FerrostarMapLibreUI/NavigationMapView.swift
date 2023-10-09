@@ -4,7 +4,7 @@ import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
 
-struct NavigationMapView: View {
+public struct NavigationMapView: View {
     let lightStyleURL: URL
     let darkStyleURL: URL
 
@@ -17,7 +17,7 @@ struct NavigationMapView: View {
         return false
     }
 
-    init(
+    public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
         navigationState: FerrostarObservableState
@@ -31,7 +31,7 @@ struct NavigationMapView: View {
         // TODO: Set up following of the user
     }
 
-    var body: some View {
+    public var body: some View {
         MapView(
             styleURL: useDarkStyle ? darkStyleURL : lightStyleURL,
             camera: $camera
