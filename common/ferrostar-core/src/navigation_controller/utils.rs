@@ -40,7 +40,7 @@ pub fn should_advance_to_next_step(
 
     match step_advance_mode {
         StepAdvanceMode::Manual => false,
-        StepAdvanceMode::DistanceToLastWaypoint {
+        StepAdvanceMode::DistanceToEndOfStep {
             distance,
             minimum_horizontal_accuracy,
         } => {
@@ -51,7 +51,7 @@ pub fn should_advance_to_next_step(
                 let current_position: Point = user_location.coordinates.into();
                 let distance_to_end = end.haversine_distance(&current_position);
 
-                distance_to_end < 5.0
+                distance_to_end <= distance as f64
             }
         }
     }
@@ -116,12 +116,12 @@ proptest! {
         };
 
         // Always succeeds in the base case
-        assert!(should_advance_to_next_step(&route_step, &exact_user_location, StepAdvanceMode::DistanceToLastWaypoint {
+        assert!(should_advance_to_next_step(&route_step, &exact_user_location, StepAdvanceMode::DistanceToEndOfStep {
             distance, minimum_horizontal_accuracy
         }));
 
         // Should always fail since the min horizontal accuracy is > than the desired amount
-        assert_eq!(should_advance_to_next_step(&route_step, &inaccurate_user_location, StepAdvanceMode::DistanceToLastWaypoint {
+        assert_eq!(should_advance_to_next_step(&route_step, &inaccurate_user_location, StepAdvanceMode::DistanceToEndOfStep {
             distance, minimum_horizontal_accuracy
         }), excess_inaccuracy == 0.0, "Expected that the navigation would not advance to the next step except when excess_inaccuracy == 0.");
 

@@ -447,11 +447,12 @@ public class NavigationController: NavigationControllerProtocol {
         self.pointer = pointer
     }
 
-    public convenience init(lastUserLocation: UserLocation, route: Route) {
+    public convenience init(lastUserLocation: UserLocation, route: Route, config: NavigationControllerConfig) {
         self.init(unsafeFromRawPointer: try! rustCall {
             uniffi_ferrostar_fn_constructor_navigationcontroller_new(
                 FfiConverterTypeUserLocation.lower(lastUserLocation),
-                FfiConverterTypeRoute.lower(route), $0
+                FfiConverterTypeRoute.lower(route),
+                FfiConverterTypeNavigationControllerConfig.lower(config), $0
             )
         })
     }
@@ -713,6 +714,49 @@ public func FfiConverterTypeGeographicCoordinates_lift(_ buf: RustBuffer) throws
 
 public func FfiConverterTypeGeographicCoordinates_lower(_ value: GeographicCoordinates) -> RustBuffer {
     return FfiConverterTypeGeographicCoordinates.lower(value)
+}
+
+public struct NavigationControllerConfig {
+    public var stepAdvance: StepAdvanceMode
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(stepAdvance: StepAdvanceMode) {
+        self.stepAdvance = stepAdvance
+    }
+}
+
+extension NavigationControllerConfig: Equatable, Hashable {
+    public static func == (lhs: NavigationControllerConfig, rhs: NavigationControllerConfig) -> Bool {
+        if lhs.stepAdvance != rhs.stepAdvance {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(stepAdvance)
+    }
+}
+
+public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
+        return try NavigationControllerConfig(
+            stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
+        FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
+    }
+}
+
+public func FfiConverterTypeNavigationControllerConfig_lift(_ buf: RustBuffer) throws -> NavigationControllerConfig {
+    return try FfiConverterTypeNavigationControllerConfig.lift(buf)
+}
+
+public func FfiConverterTypeNavigationControllerConfig_lower(_ value: NavigationControllerConfig) -> RustBuffer {
+    return FfiConverterTypeNavigationControllerConfig.lower(value)
 }
 
 public struct Route {
@@ -1445,6 +1489,53 @@ extension RoutingResponseParseError: Equatable, Hashable {}
 
 extension RoutingResponseParseError: Error {}
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+public enum StepAdvanceMode {
+    case manual
+    case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16)
+}
+
+public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
+    typealias SwiftType = StepAdvanceMode
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> StepAdvanceMode {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .manual
+
+        case 2: return try .distanceToEndOfStep(
+                distance: FfiConverterUInt16.read(from: &buf),
+                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf)
+            )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: StepAdvanceMode, into buf: inout [UInt8]) {
+        switch value {
+        case .manual:
+            writeInt(&buf, Int32(1))
+
+        case let .distanceToEndOfStep(distance, minimumHorizontalAccuracy):
+            writeInt(&buf, Int32(2))
+            FfiConverterUInt16.write(distance, into: &buf)
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+        }
+    }
+}
+
+public func FfiConverterTypeStepAdvanceMode_lift(_ buf: RustBuffer) throws -> StepAdvanceMode {
+    return try FfiConverterTypeStepAdvanceMode.lift(buf)
+}
+
+public func FfiConverterTypeStepAdvanceMode_lower(_ value: StepAdvanceMode) -> RustBuffer {
+    return FfiConverterTypeStepAdvanceMode.lower(value)
+}
+
+extension StepAdvanceMode: Equatable, Hashable {}
+
 private extension NSLock {
     func withLock<T>(f: () throws -> T) rethrows -> T {
         lock()
@@ -2071,7 +2162,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 17857 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 22735 {
+    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 58966 {
         return InitializationResult.apiChecksumMismatch
     }
 

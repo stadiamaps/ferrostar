@@ -113,7 +113,7 @@ fn simple_route_state_machine_advances_with_location_change() {
         NavigationControllerConfig {
             // NOTE: We will use an exact location to trigger the update;
             // this is not testing the thresholds.
-            step_advance: StepAdvanceMode::DistanceToLastWaypoint { distance: 0, minimum_horizontal_accuracy: 0 },
+            step_advance: StepAdvanceMode::DistanceToEndOfStep { distance: 0, minimum_horizontal_accuracy: 0 },
         },
     );
 

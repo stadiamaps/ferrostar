@@ -113,7 +113,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     /// Starts navigation with the given route. Any previous navigation session is dropped.
-    public func startNavigation(route: Route) throws {
+    public func startNavigation(route: Route, stepAdvance: StepAdvanceMode) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
@@ -124,7 +124,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.startUpdating()
 
         observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
-        navigationController = NavigationController(lastUserLocation: location.userLocation, route: route.inner)
+        navigationController = NavigationController(lastUserLocation: location.userLocation, route: route.inner, config: NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue))
     }
 
     /// Stops navigation and stops requesting location updates (to save battery).

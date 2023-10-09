@@ -44,9 +44,11 @@ pub enum NavigationStateUpdate {
 
 #[derive(Debug, Copy, Clone)]
 pub enum StepAdvanceMode {
+    /// Never advances to the next step automatically
     Manual,
-    DistanceToLastWaypoint {
-        /// Distance to the last waypoint, measured in meters, at which to advance to the next step
+    /// Automatically advances when the user's location is close enough to the end of the step
+    DistanceToEndOfStep {
+        /// Distance to the last waypoint in the step, measured in meters, at which to advance
         distance: u16,
         /// The minimum required horizontal accuracy of the user location.
         /// Values larger than this will be ignored.
