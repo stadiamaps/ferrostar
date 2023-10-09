@@ -57,6 +57,7 @@ dictionary RouteStep {
     double distance;
     string? road_name;
     string instruction;
+    sequence<VisualInstructions> visual_instructions;
 };
 
 dictionary SpokenInstruction {

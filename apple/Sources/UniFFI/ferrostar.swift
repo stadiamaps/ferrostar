@@ -824,15 +824,17 @@ public struct RouteStep {
     public var distance: Double
     public var roadName: String?
     public var instruction: String
+    public var visualInstructions: [VisualInstructions]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(startLocation: GeographicCoordinates, endLocation: GeographicCoordinates, distance: Double, roadName: String?, instruction: String) {
+    public init(startLocation: GeographicCoordinates, endLocation: GeographicCoordinates, distance: Double, roadName: String?, instruction: String, visualInstructions: [VisualInstructions]) {
         self.startLocation = startLocation
         self.endLocation = endLocation
         self.distance = distance
         self.roadName = roadName
         self.instruction = instruction
+        self.visualInstructions = visualInstructions
     }
 }
 
@@ -853,6 +855,9 @@ extension RouteStep: Equatable, Hashable {
         if lhs.instruction != rhs.instruction {
             return false
         }
+        if lhs.visualInstructions != rhs.visualInstructions {
+            return false
+        }
         return true
     }
 
@@ -862,6 +867,7 @@ extension RouteStep: Equatable, Hashable {
         hasher.combine(distance)
         hasher.combine(roadName)
         hasher.combine(instruction)
+        hasher.combine(visualInstructions)
     }
 }
 
@@ -872,7 +878,8 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
             endLocation: FfiConverterTypeGeographicCoordinates.read(from: &buf),
             distance: FfiConverterDouble.read(from: &buf),
             roadName: FfiConverterOptionString.read(from: &buf),
-            instruction: FfiConverterString.read(from: &buf)
+            instruction: FfiConverterString.read(from: &buf),
+            visualInstructions: FfiConverterSequenceTypeVisualInstructions.read(from: &buf)
         )
     }
 
@@ -882,6 +889,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
         FfiConverterDouble.write(value.distance, into: &buf)
         FfiConverterOptionString.write(value.roadName, into: &buf)
         FfiConverterString.write(value.instruction, into: &buf)
+        FfiConverterSequenceTypeVisualInstructions.write(value.visualInstructions, into: &buf)
     }
 }
 
@@ -2127,6 +2135,28 @@ private struct FfiConverterSequenceTypeRouteStep: FfiConverterRustBuffer {
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             try seq.append(FfiConverterTypeRouteStep.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+private struct FfiConverterSequenceTypeVisualInstructions: FfiConverterRustBuffer {
+    typealias SwiftType = [VisualInstructions]
+
+    public static func write(_ value: [VisualInstructions], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeVisualInstructions.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [VisualInstructions] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [VisualInstructions]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            try seq.append(FfiConverterTypeVisualInstructions.read(from: &buf))
         }
         return seq
     }

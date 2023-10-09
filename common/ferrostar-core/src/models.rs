@@ -1,8 +1,12 @@
 use geo::{Coord, Point};
-use serde::Deserialize;
+use serde::{Deserialize};
 use std::time::SystemTime;
 
+#[cfg(test)]
+use serde::Serialize;
+
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(test, derive(Serialize))]
 pub struct GeographicCoordinates {
     pub lng: f64,
     pub lat: f64,
@@ -67,6 +71,7 @@ pub struct UserLocation {
 /// NOTE: This type is unstable and is still under active development and should be
 /// considered unstable.
 #[derive(Debug)]
+#[cfg_attr(test, derive(Serialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinates>,
     /// The ordered list of waypoints to visit, including the starting point.
@@ -83,6 +88,7 @@ pub struct Route {
 /// but we will intentionally define this somewhat looser unless/until it becomes clear something
 ///
 #[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(test, derive(Serialize))]
 pub struct RouteStep {
     /// The starting location of the step (start of the maneuver).
     pub start_location: GeographicCoordinates,
@@ -92,6 +98,7 @@ pub struct RouteStep {
     pub distance: f64,
     pub road_name: Option<String>,
     pub instruction: String,
+    pub visual_instructions: Vec<VisualInstructions>,
 }
 
 // TODO: trigger_at doesn't really have to live in the public interface; figure out if we want to have a separate FFI vs internal type
@@ -105,7 +112,8 @@ pub struct SpokenInstruction {
     pub trigger_at: GeographicCoordinates,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(test, derive(Serialize))]
 pub struct VisualInstructions {
     pub primary_content: VisualInstructionContent,
     pub secondary_content: Option<VisualInstructionContent>,
@@ -115,7 +123,8 @@ pub struct VisualInstructions {
 /// Indicates the type of maneuver to perform.
 ///
 /// Frequently used in conjunction with [ManeuverModifier].
-#[derive(Deserialize, Debug, Eq, PartialEq)]
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverType {
     Turn,
@@ -144,7 +153,8 @@ pub enum ManeuverType {
 }
 
 /// Specifies additional information about a [ManeuverType]
-#[derive(Deserialize, Debug, Eq, PartialEq)]
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverModifier {
     UTurn,
@@ -161,7 +171,8 @@ pub enum ManeuverModifier {
     SharpLeft,
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
+#[cfg_attr(test, derive(Serialize))]
 pub struct VisualInstructionContent {
     pub text: String,
     pub maneuver_type: Option<ManeuverType>,

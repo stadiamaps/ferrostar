@@ -175,12 +175,15 @@ impl NavigationController {
                         // let fraction_along_line = route_line_string.line_locate_point(&point!(x: snapped_user_location.coordinates.lng, y: snapped_user_location.coordinates.lat));
 
                         if let Some(step) = current_step {
+                            // TODO: Calculate which instruction, if any, to show.
+                            let visual_instructions = step.visual_instructions.last().cloned();
+
                             NavigationStateUpdate::Navigating {
                                 snapped_user_location,
                                 remaining_waypoints,
                                 current_step: step,
                                 spoken_instruction: None,
-                                visual_instructions: None,
+                                visual_instructions,
                             }
                         } else {
                             *guard = TripState::Complete;

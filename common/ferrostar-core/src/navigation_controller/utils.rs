@@ -102,6 +102,7 @@ proptest! {
             distance: 0.0,
             road_name: None,
             instruction: "".to_string(),
+            visual_instructions: vec![],
         };
         let exact_user_location = UserLocation {
             coordinates: route_step.end_location, // Exactly at the end location

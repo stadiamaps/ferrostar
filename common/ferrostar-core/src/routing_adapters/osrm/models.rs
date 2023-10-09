@@ -130,8 +130,8 @@ pub struct RouteStep {
     // pub rotary_name: Option<String>,
     // pub rotary_pronunciation: Option<String>,
     /// Textual instructions that are displayed as a banner; supported by Mapbox and Valhalla
-    #[serde(rename = "bannerInstructions")]
-    pub banner_instructions: Option<Vec<BannerInstruction>>,
+    #[serde(default, rename = "bannerInstructions")]
+    pub banner_instructions: Vec<BannerInstruction>,
 }
 
 #[derive(Deserialize, Debug)]
