@@ -16,13 +16,20 @@ public protocol LocationManagingDelegate: AnyObject {
 }
 
 // TODO: Permissions are currently NOT handled and they should be!!!
+@Observable
 public class LiveLocationManager: NSObject {
     public var delegate: LocationManagingDelegate?
+    public private(set) var authorizationStatus: CLAuthorizationStatus
 
     private let locationManager: CLLocationManager
 
     public init(activityType: CLActivityType) {
         locationManager = CLLocationManager()
+        authorizationStatus = locationManager.authorizationStatus
+
+        super.init()
+
+        locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
 
         switch locationManager.authorizationStatus {
@@ -33,9 +40,6 @@ public class LiveLocationManager: NSObject {
         }
 
         locationManager.activityType = activityType
-        super.init()
-
-        locationManager.delegate = self
     }
 }
 
@@ -70,6 +74,10 @@ extension LiveLocationManager: CLLocationManagerDelegate {
 
     public func locationManager(_: CLLocationManager, didFailWithError error: Error) {
         delegate?.locationManager(self, didFailWithError: error)
+    }
+
+    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        authorizationStatus = locationManager.authorizationStatus
     }
 }
 
