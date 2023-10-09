@@ -110,6 +110,16 @@ interface NavigationStateUpdate {
     Arrived(VisualInstructions? visual_instructions, SpokenInstruction? spoken_instruction);
 };
 
+[Enum]
+interface StepAdvanceMode {
+    Manual();
+    DistanceToLastWaypoint(u16 distance, u16 minimum_horizontal_accuracy);
+};
+
+dictionary NavigationControllerConfig {
+    StepAdvanceMode step_advance;
+};
+
 //
 // Callback interfaces (foreign code can implement these to extend functionality)
 //
@@ -137,7 +147,7 @@ interface RouteAdapter {
 };
 
 interface NavigationController {
-    constructor(UserLocation last_user_location, Route route);
+    constructor(UserLocation last_user_location, Route route, NavigationControllerConfig config);
 
     NavigationStateUpdate advance_to_next_step();
     NavigationStateUpdate update_user_location(UserLocation location);

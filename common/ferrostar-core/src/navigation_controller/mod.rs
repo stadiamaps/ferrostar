@@ -2,7 +2,7 @@ pub mod models;
 mod utils;
 
 use crate::models::{Route, UserLocation};
-use crate::navigation_controller::utils::{do_advance_to_next_step, has_completed_step};
+use crate::navigation_controller::utils::{do_advance_to_next_step, should_advance_to_next_step};
 use geo::Coord;
 use models::*;
 use std::sync::Mutex;
@@ -37,13 +37,16 @@ pub struct NavigationController {
     /// very well. Others like [core::cell::RefCell] are not enough as the entire object is required to be both
     /// [Send] and [Sync], and [core::cell::RefCell] is explicitly `!Sync`.
     state: Mutex<TripState>,
-    // TODO: Configuration options
-    // - Strategy for advancing to the next step (simple threshold, manually, custom app logic via interface? ...?)
+    config: NavigationControllerConfig,
 }
 
 impl NavigationController {
     /// Creates a new trip navigation controller given the user's last known location and a route.
-    pub fn new(last_user_location: UserLocation, route: Route) -> Self {
+    pub fn new(
+        last_user_location: UserLocation,
+        route: Route,
+        config: NavigationControllerConfig,
+    ) -> Self {
         let remaining_waypoints = route.waypoints.clone();
         let remaining_steps = route.steps.clone();
         let route_line_string = route
@@ -61,6 +64,7 @@ impl NavigationController {
                 remaining_waypoints,
                 remaining_steps,
             }),
+            config,
         }
     }
 
@@ -142,8 +146,11 @@ impl NavigationController {
                         // TBD: Do we want to support disjoint routes?
                         let remaining_waypoints = remaining_waypoints.clone();
 
-                        let current_step = if has_completed_step(current_step, &last_user_location)
-                        {
+                        let current_step = if should_advance_to_next_step(
+                            current_step,
+                            &last_user_location,
+                            self.config.step_advance,
+                        ) {
                             // Advance to the next step
                             let update = do_advance_to_next_step(
                                 &snapped_user_location,

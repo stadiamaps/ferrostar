@@ -40,3 +40,20 @@ pub enum NavigationStateUpdate {
         spoken_instruction: Option<SpokenInstruction>,
     },
 }
+
+#[derive(Debug, Copy, Clone)]
+pub enum StepAdvanceMode {
+    Manual,
+    DistanceToLastWaypoint {
+        /// Distance to the last waypoint, measured in meters, at which to advance to the next step
+        distance: u16,
+        /// The minimum required horizontal accuracy of the user location.
+        /// Values larger than this will be ignored.
+        minimum_horizontal_accuracy: u16,
+    },
+}
+
+#[derive(Debug, Copy, Clone)]
+pub struct NavigationControllerConfig {
+    pub step_advance: StepAdvanceMode,
+}

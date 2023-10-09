@@ -7,7 +7,7 @@ import UniFFI
 /// While the core generally does not include UI, this is purely at the model layer and should be implemented
 /// the same for all frontends.
 @Observable
-public class FerrostarObservableState {
+public final class FerrostarObservableState {
     public internal(set) var snappedLocation: CLLocation
     public internal(set) var heading: CLHeading?
     public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
