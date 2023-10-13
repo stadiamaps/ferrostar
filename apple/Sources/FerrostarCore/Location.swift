@@ -35,8 +35,10 @@ public class LiveLocationProvider: NSObject {
         switch locationManager.authorizationStatus {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager.requestLocation()
         default:
-            break // No action
+            break
         }
 
         locationManager.activityType = activityType
@@ -76,6 +78,12 @@ extension LiveLocationProvider: CLLocationManagerDelegate {
 
     public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         authorizationStatus = locationManager.authorizationStatus
+
+        switch authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse: 
+            locationManager.requestLocation()
+        default: break
+        }
     }
 }
 
