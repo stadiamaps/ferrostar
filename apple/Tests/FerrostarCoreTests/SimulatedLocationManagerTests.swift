@@ -30,13 +30,13 @@ private class MockHeading: CLHeading {
 
 final class SimulatedLocationManagerTests: XCTestCase {
     func testInitialValuesAreNull() {
-        let locationManager = SimulatedLocationManager()
+        let locationManager = SimulatedLocationProvider()
         XCTAssertNil(locationManager.lastLocation, "Initial location must be nil")
         XCTAssertNil(locationManager.lastHeading, "Initial heading must be nil")
     }
 
     func testSetLocation() {
-        let locationManager = SimulatedLocationManager()
+        let locationManager = SimulatedLocationProvider()
 
         let location = CLLocation(latitude: 42, longitude: 24)
         locationManager.lastLocation = location
@@ -45,7 +45,7 @@ final class SimulatedLocationManagerTests: XCTestCase {
     }
 
     func testSetHeading() {
-        let locationManager = SimulatedLocationManager()
+        let locationManager = SimulatedLocationProvider()
 
         let heading = MockHeading(value: 42)
         locationManager.lastHeading = heading
@@ -82,7 +82,7 @@ final class SimulatedLocationManagerTests: XCTestCase {
 
         var locations = [CLLocation(latitude: 42, longitude: 24), CLLocation(latitude: 24, longitude: 42)]
 
-        let locationManager = SimulatedLocationManager()
+        let locationManager = SimulatedLocationProvider()
         locationManager.delegate = LocationDelegate(expectation: exp, expectedLocations: locations)
         locationManager.startUpdating()
 
@@ -121,7 +121,7 @@ final class SimulatedLocationManagerTests: XCTestCase {
 
         var headings = [MockHeading(value: 42), MockHeading(value: 24)]
 
-        let locationManager = SimulatedLocationManager()
+        let locationManager = SimulatedLocationProvider()
         locationManager.delegate = LocationDelegate(expectation: exp, expectedHeadings: headings)
         locationManager.startUpdating()
 

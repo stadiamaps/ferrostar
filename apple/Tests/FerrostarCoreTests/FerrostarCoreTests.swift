@@ -33,7 +33,7 @@ final class FerrostarCoreTests: XCTestCase {
         let mockSession = MockURLSession()
         mockSession.registerMock(forURL: backendUrl, withData: errorBody, andResponse: errorResponse)
 
-        let core = FerrostarCore(routeAdapter: MockRouteAdapter(routes: []), locationManager: SimulatedLocationManager(), networkSession: mockSession)
+        let core = FerrostarCore(routeAdapter: MockRouteAdapter(routes: []), locationManager: SimulatedLocationProvider(), networkSession: mockSession)
 
         do {
             _ = try await core.getRoutes(initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469), waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])

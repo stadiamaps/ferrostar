@@ -17,7 +17,7 @@ public protocol LocationManagingDelegate: AnyObject {
 
 // TODO: Permissions are currently NOT handled and they should be!!!
 @Observable
-public class LiveLocationManager: NSObject, LocationProviding {
+public class LiveLocationProvider: NSObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
@@ -42,14 +42,12 @@ public class LiveLocationManager: NSObject, LocationProviding {
         locationManager.activityType = activityType
     }
 
-    public var lastLocation: CLLocation? {
-        locationManager.location
-    }
+    public private(set) var lastLocation: CLLocation?
 
-    public var lastHeading: CLHeading? {
-        locationManager.heading
-    }
+    public private(set) var lastHeading: CLHeading?
+}
 
+extension LiveLocationProvider: LocationProviding {
     public func startUpdating() {
         locationManager.startUpdatingLocation()
         locationManager.startUpdatingHeading()
@@ -61,12 +59,14 @@ public class LiveLocationManager: NSObject, LocationProviding {
     }
 }
 
-extension LiveLocationManager: CLLocationManagerDelegate {
+extension LiveLocationProvider: CLLocationManagerDelegate {
     public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        self.lastLocation = locations.last
         delegate?.locationManager(self, didUpdateLocations: locations)
     }
 
     public func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        self.lastHeading = newHeading
         delegate?.locationManager(self, didUpdateHeading: newHeading)
     }
 
@@ -83,7 +83,7 @@ extension LiveLocationManager: CLLocationManagerDelegate {
 ///
 /// This allows for more granular unit tests.
 @Observable
-public class SimulatedLocationManager: LocationProviding {
+public class SimulatedLocationProvider: LocationProviding {
     public var delegate: LocationManagingDelegate?
     public var lastLocation: CLLocation? {
         didSet {

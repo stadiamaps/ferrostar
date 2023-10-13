@@ -214,7 +214,7 @@ final class ValhallaCoreTests: XCTestCase {
         let mockSession = MockURLSession()
         mockSession.registerMock(forURL: valhallaEndpointUrl, withData: simpleRoute, andResponse: successfulResponse)
 
-        let core = FerrostarCore(valhallaEndpointUrl: valhallaEndpointUrl, profile: "auto", locationManager: SimulatedLocationManager(), networkSession: mockSession)
+        let core = FerrostarCore(valhallaEndpointUrl: valhallaEndpointUrl, profile: "auto", locationManager: SimulatedLocationProvider(), networkSession: mockSession)
         let routes = try await core.getRoutes(initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469), waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
 
         XCTAssertEqual(routes.count, 1)
