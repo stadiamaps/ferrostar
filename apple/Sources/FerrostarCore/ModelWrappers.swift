@@ -51,6 +51,9 @@ public enum StepAdvanceMode {
     ///
     /// Distance and horizontal accuracy are measured  in meters.
     case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16)
+    /// Automatically advances when the user's distance to the *next* step's linestring  is less
+    /// than or equal to the distance to the current step's linestring.
+    case relativeLineStringDistance(minimumHorizontalAccuracy: UInt16)
 
     var ffiValue: UniFFI.StepAdvanceMode {
         switch self {
@@ -58,6 +61,8 @@ public enum StepAdvanceMode {
             return .manual
         case .distanceToEndOfStep(distance: let distance, minimumHorizontalAccuracy: let minimumHorizontalAccuracy):
             return .distanceToEndOfStep(distance: distance, minimumHorizontalAccuracy: minimumHorizontalAccuracy)
+        case .relativeLineStringDistance(minimumHorizontalAccuracy: let minimumHorizontalAccuracy):
+            return .relativeLineStringDistance(minimumHorizontalAccuracy: minimumHorizontalAccuracy)
         }
     }
 }
