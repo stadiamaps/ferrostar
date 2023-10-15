@@ -51,7 +51,14 @@ pub enum StepAdvanceMode {
         /// Distance to the last waypoint in the step, measured in meters, at which to advance
         distance: u16,
         /// The minimum required horizontal accuracy of the user location.
-        /// Values larger than this will be ignored.
+        /// Values larger than this cannot trigger a step advance.
+        minimum_horizontal_accuracy: u16,
+    },
+    /// Automatically advances when the user's distance to the *next* step's linestring  is less
+    /// than the distance to the current step's linestring.
+    RelativeLineStringDistance {
+        /// The minimum required horizontal accuracy of the user location.
+        /// Values larger than this cannot trigger a step advance.
         minimum_horizontal_accuracy: u16,
     },
 }

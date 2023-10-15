@@ -6,7 +6,7 @@ use crate::navigation_controller::utils::{do_advance_to_next_step, should_advanc
 use geo::Coord;
 use models::*;
 use std::sync::Mutex;
-use utils::snap_to_line;
+use utils::snap_user_location_to_line;
 
 // This may be improved eventually, but is essentially a sentinel value that we reached the end.
 const ARRIVED_EOT: NavigationStateUpdate = NavigationStateUpdate::Arrived {
@@ -58,7 +58,10 @@ impl NavigationController {
         Self {
             state: Mutex::new(TripState::Navigating {
                 last_user_location,
-                snapped_user_location: snap_to_line(&last_user_location, &route_line_string),
+                snapped_user_location: snap_user_location_to_line(
+                    &last_user_location,
+                    &route_line_string,
+                ),
                 route,
                 route_line_string,
                 remaining_waypoints,
@@ -136,7 +139,8 @@ impl NavigationController {
                         //
 
                         // Find the nearest point on the route line
-                        snapped_user_location = snap_to_line(&location, &route_line_string);
+                        snapped_user_location =
+                            snap_user_location_to_line(&location, &route_line_string);
 
                         // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
@@ -148,6 +152,7 @@ impl NavigationController {
 
                         let current_step = if should_advance_to_next_step(
                             current_step,
+                            remaining_steps.get(1),
                             &last_user_location,
                             self.config.step_advance,
                         ) {
