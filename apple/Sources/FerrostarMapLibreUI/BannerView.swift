@@ -72,7 +72,7 @@ struct BannerView: View {
 
 #Preview {
     let location = GeographicCoordinates(lat: 0, lng: 0)
-    let instructions = UniFFI.VisualInstructions(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, degrees: nil), secondaryContent: nil, triggerAt: location)
+    let instructions = UniFFI.VisualInstructions(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerAt: location)
 
     return BannerView(instructions: instructions)
 }

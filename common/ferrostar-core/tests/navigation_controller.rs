@@ -26,13 +26,13 @@ fn get_route_with_two_steps() -> Route {
 fn simple_route_state_machine_manual_advance() {
     let route = get_route_with_two_steps();
     let initial_user_location = UserLocation {
-        coordinates: route.steps[0].start_location,
+        coordinates: route.steps[0].geometry[0],
         horizontal_accuracy: 0.0,
         course_over_ground: None,
         timestamp: SystemTime::now(),
     };
     let user_location_end_of_first_step = UserLocation {
-        coordinates: route.steps[0].end_location,
+        coordinates: *route.steps[0].geometry.last().unwrap(),
         horizontal_accuracy: 0.0,
         course_over_ground: None,
         timestamp: SystemTime::now(),
@@ -68,7 +68,7 @@ fn simple_route_state_machine_manual_advance() {
     assert!(matches!(
         controller.update_user_location(user_location_end_of_first_step),
         NavigationStateUpdate::Navigating {
-            current_step: first_step,
+            current_step: _first_step,
             ..
         }
     ));
@@ -95,13 +95,13 @@ fn simple_route_state_machine_manual_advance() {
 fn simple_route_state_machine_advances_with_location_change() {
     let route = get_route_with_two_steps();
     let initial_user_location = UserLocation {
-        coordinates: route.steps[0].start_location,
+        coordinates: route.steps[0].geometry[0],
         horizontal_accuracy: 0.0,
         course_over_ground: None,
         timestamp: SystemTime::now(),
     };
     let user_location_end_of_first_step = UserLocation {
-        coordinates: route.steps[0].end_location,
+        coordinates: *route.steps[0].geometry.last().unwrap(),
         horizontal_accuracy: 0.0,
         course_over_ground: None,
         timestamp: SystemTime::now(),

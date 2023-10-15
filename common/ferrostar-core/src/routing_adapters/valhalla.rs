@@ -43,8 +43,10 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
             let mut start = json!({
                 "lat": user_location.coordinates.lat,
                 "lon": user_location.coordinates.lng,
+                // TODO: Street side tolerance as a tunable
                 "street_side_tolerance": core::cmp::max(5, user_location.horizontal_accuracy as u16),
             });
+            // TODO: Tunable to decide whether we care about course over ground
             if let Some(course) = user_location.course_over_ground {
                 start["heading"] = course.degrees.into();
                 start["heading_tolerance"] = course.accuracy.into();

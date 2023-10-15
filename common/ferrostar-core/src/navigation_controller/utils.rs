@@ -46,12 +46,16 @@ pub fn should_advance_to_next_step(
         } => {
             if user_location.horizontal_accuracy > minimum_horizontal_accuracy.into() {
                 false
-            } else {
-                let end: Point = route_step.end_location.into();
+            } else if let Some(end_coord) = route_step.geometry.last() {
+                let end_point: Point = (*end_coord).into();
                 let current_position: Point = user_location.coordinates.into();
-                let distance_to_end = end.haversine_distance(&current_position);
+                let distance_to_end = end_point.haversine_distance(&current_position);
 
                 distance_to_end <= distance as f64
+            } else {
+                false
+            }
+        }
             }
         }
     }
@@ -97,15 +101,14 @@ proptest! {
                                      distance: u16, minimum_horizontal_accuracy: u16,
                                      excess_inaccuracy in 0f64..65535f64) {
         let route_step = RouteStep {
-            start_location: GeographicCoordinates { lng: x1, lat: y1 },
-            end_location: GeographicCoordinates { lng: x2, lat: y2 },
+            geometry: vec![GeographicCoordinates { lng: x1, lat: y1 }, GeographicCoordinates { lng: x2, lat: y2 }],
             distance: 0.0,
             road_name: None,
             instruction: "".to_string(),
             visual_instructions: vec![],
         };
         let exact_user_location = UserLocation {
-            coordinates: route_step.end_location, // Exactly at the end location
+            coordinates: *route_step.geometry.last().unwrap(), // Exactly at the end location
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),

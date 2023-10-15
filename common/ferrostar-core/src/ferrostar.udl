@@ -52,8 +52,7 @@ dictionary Route {
 };
 
 dictionary RouteStep {
-    GeographicCoordinates start_location;
-    GeographicCoordinates end_location;
+    sequence<GeographicCoordinates> geometry;
     double distance;
     string? road_name;
     string instruction;
@@ -143,6 +142,10 @@ callback interface RouteResponseParser {
     [Throws=RoutingResponseParseError]
     sequence<Route> parse_response(sequence<u8> response);
 };
+
+//
+// Concrete core objects
+//
 
 interface RouteAdapter {
     constructor(RouteRequestGenerator request_generator, RouteResponseParser response_parser);

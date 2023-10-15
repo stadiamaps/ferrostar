@@ -1,5 +1,5 @@
 use geo::{Coord, Point};
-use serde::{Deserialize};
+use serde::Deserialize;
 use std::time::SystemTime;
 
 #[cfg(test)]
@@ -90,10 +90,7 @@ pub struct Route {
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct RouteStep {
-    /// The starting location of the step (start of the maneuver).
-    pub start_location: GeographicCoordinates,
-    /// The ending location of the step (end of the maneuver).
-    pub end_location: GeographicCoordinates,
+    pub geometry: Vec<GeographicCoordinates>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
     pub road_name: Option<String>,

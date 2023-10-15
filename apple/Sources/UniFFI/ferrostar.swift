@@ -320,19 +320,6 @@ private struct FfiConverterUInt16: FfiConverterPrimitive {
     }
 }
 
-private struct FfiConverterInt16: FfiConverterPrimitive {
-    typealias FfiType = Int16
-    typealias SwiftType = Int16
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Int16 {
-        return try lift(readInt(&buf))
-    }
-
-    public static func write(_ value: Int16, into buf: inout [UInt8]) {
-        writeInt(&buf, lower(value))
-    }
-}
-
 private struct FfiConverterUInt32: FfiConverterPrimitive {
     typealias FfiType = UInt32
     typealias SwiftType = UInt32
@@ -819,8 +806,7 @@ public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
 }
 
 public struct RouteStep {
-    public var startLocation: GeographicCoordinates
-    public var endLocation: GeographicCoordinates
+    public var geometry: [GeographicCoordinates]
     public var distance: Double
     public var roadName: String?
     public var instruction: String
@@ -828,9 +814,8 @@ public struct RouteStep {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(startLocation: GeographicCoordinates, endLocation: GeographicCoordinates, distance: Double, roadName: String?, instruction: String, visualInstructions: [VisualInstructions]) {
-        self.startLocation = startLocation
-        self.endLocation = endLocation
+    public init(geometry: [GeographicCoordinates], distance: Double, roadName: String?, instruction: String, visualInstructions: [VisualInstructions]) {
+        self.geometry = geometry
         self.distance = distance
         self.roadName = roadName
         self.instruction = instruction
@@ -840,10 +825,7 @@ public struct RouteStep {
 
 extension RouteStep: Equatable, Hashable {
     public static func == (lhs: RouteStep, rhs: RouteStep) -> Bool {
-        if lhs.startLocation != rhs.startLocation {
-            return false
-        }
-        if lhs.endLocation != rhs.endLocation {
+        if lhs.geometry != rhs.geometry {
             return false
         }
         if lhs.distance != rhs.distance {
@@ -862,8 +844,7 @@ extension RouteStep: Equatable, Hashable {
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(startLocation)
-        hasher.combine(endLocation)
+        hasher.combine(geometry)
         hasher.combine(distance)
         hasher.combine(roadName)
         hasher.combine(instruction)
@@ -874,8 +855,7 @@ extension RouteStep: Equatable, Hashable {
 public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteStep {
         return try RouteStep(
-            startLocation: FfiConverterTypeGeographicCoordinates.read(from: &buf),
-            endLocation: FfiConverterTypeGeographicCoordinates.read(from: &buf),
+            geometry: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
             distance: FfiConverterDouble.read(from: &buf),
             roadName: FfiConverterOptionString.read(from: &buf),
             instruction: FfiConverterString.read(from: &buf),
@@ -884,8 +864,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
     }
 
     public static func write(_ value: RouteStep, into buf: inout [UInt8]) {
-        FfiConverterTypeGeographicCoordinates.write(value.startLocation, into: &buf)
-        FfiConverterTypeGeographicCoordinates.write(value.endLocation, into: &buf)
+        FfiConverterSequenceTypeGeographicCoordinates.write(value.geometry, into: &buf)
         FfiConverterDouble.write(value.distance, into: &buf)
         FfiConverterOptionString.write(value.roadName, into: &buf)
         FfiConverterString.write(value.instruction, into: &buf)
@@ -1031,15 +1010,15 @@ public struct VisualInstructionContent {
     public var text: String
     public var maneuverType: ManeuverType?
     public var maneuverModifier: ManeuverModifier?
-    public var degrees: Int16?
+    public var roundaboutExitDegrees: UInt16?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(text: String, maneuverType: ManeuverType?, maneuverModifier: ManeuverModifier?, degrees: Int16?) {
+    public init(text: String, maneuverType: ManeuverType?, maneuverModifier: ManeuverModifier?, roundaboutExitDegrees: UInt16?) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
-        self.degrees = degrees
+        self.roundaboutExitDegrees = roundaboutExitDegrees
     }
 }
 
@@ -1054,7 +1033,7 @@ extension VisualInstructionContent: Equatable, Hashable {
         if lhs.maneuverModifier != rhs.maneuverModifier {
             return false
         }
-        if lhs.degrees != rhs.degrees {
+        if lhs.roundaboutExitDegrees != rhs.roundaboutExitDegrees {
             return false
         }
         return true
@@ -1064,7 +1043,7 @@ extension VisualInstructionContent: Equatable, Hashable {
         hasher.combine(text)
         hasher.combine(maneuverType)
         hasher.combine(maneuverModifier)
-        hasher.combine(degrees)
+        hasher.combine(roundaboutExitDegrees)
     }
 }
 
@@ -1074,7 +1053,7 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
             text: FfiConverterString.read(from: &buf),
             maneuverType: FfiConverterOptionTypeManeuverType.read(from: &buf),
             maneuverModifier: FfiConverterOptionTypeManeuverModifier.read(from: &buf),
-            degrees: FfiConverterOptionInt16.read(from: &buf)
+            roundaboutExitDegrees: FfiConverterOptionUInt16.read(from: &buf)
         )
     }
 
@@ -1082,7 +1061,7 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
         FfiConverterString.write(value.text, into: &buf)
         FfiConverterOptionTypeManeuverType.write(value.maneuverType, into: &buf)
         FfiConverterOptionTypeManeuverModifier.write(value.maneuverModifier, into: &buf)
-        FfiConverterOptionInt16.write(value.degrees, into: &buf)
+        FfiConverterOptionUInt16.write(value.roundaboutExitDegrees, into: &buf)
     }
 }
 
@@ -1556,6 +1535,7 @@ extension RoutingResponseParseError: Error {}
 public enum StepAdvanceMode {
     case manual
     case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16)
+    case relativeLineStringDistance(minimumHorizontalAccuracy: UInt16)
 }
 
 public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
@@ -1571,6 +1551,10 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
                 minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf)
             )
 
+        case 3: return try .relativeLineStringDistance(
+                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf)
+            )
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -1583,6 +1567,10 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
         case let .distanceToEndOfStep(distance, minimumHorizontalAccuracy):
             writeInt(&buf, Int32(2))
             FfiConverterUInt16.write(distance, into: &buf)
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+
+        case let .relativeLineStringDistance(minimumHorizontalAccuracy):
+            writeInt(&buf, Int32(3))
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
         }
     }
@@ -1670,59 +1658,58 @@ public protocol RouteRequestGenerator: AnyObject {
 }
 
 // The ForeignCallback that is passed to Rust.
-private let foreignCallbackCallbackInterfaceRouteRequestGenerator: ForeignCallback =
-    { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
+private let foreignCallbackCallbackInterfaceRouteRequestGenerator: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
 
-        func invokeGenerateRequest(_ swiftCallbackInterface: RouteRequestGenerator, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
-            var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
-            func makeCall() throws -> Int32 {
-                let result = try swiftCallbackInterface.generateRequest(
-                    userLocation: FfiConverterTypeUserLocation.read(from: &reader),
-                    waypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &reader)
-                )
-                var writer = [UInt8]()
-                FfiConverterTypeRouteRequest.write(result, into: &writer)
-                out_buf.pointee = RustBuffer(bytes: writer)
-                return UNIFFI_CALLBACK_SUCCESS
-            }
-            do {
-                return try makeCall()
-            } catch let error as RoutingRequestGenerationError {
-                out_buf.pointee = FfiConverterTypeRoutingRequestGenerationError.lower(error)
-                return UNIFFI_CALLBACK_ERROR
-            }
-        }
-
-        switch method {
-        case IDX_CALLBACK_FREE:
-            FfiConverterCallbackInterfaceRouteRequestGenerator.drop(handle: handle)
-            // Sucessful return
-            // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+    func invokeGenerateRequest(_ swiftCallbackInterface: RouteRequestGenerator, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
+        var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
+        func makeCall() throws -> Int32 {
+            let result = try swiftCallbackInterface.generateRequest(
+                userLocation: FfiConverterTypeUserLocation.read(from: &reader),
+                waypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &reader)
+            )
+            var writer = [UInt8]()
+            FfiConverterTypeRouteRequest.write(result, into: &writer)
+            out_buf.pointee = RustBuffer(bytes: writer)
             return UNIFFI_CALLBACK_SUCCESS
-        case 1:
-            let cb: RouteRequestGenerator
-            do {
-                cb = try FfiConverterCallbackInterfaceRouteRequestGenerator.lift(handle)
-            } catch {
-                out_buf.pointee = FfiConverterString.lower("RouteRequestGenerator: Invalid handle")
-                return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-            }
-            do {
-                return try invokeGenerateRequest(cb, argsData, argsLen, out_buf)
-            } catch {
-                out_buf.pointee = FfiConverterString.lower(String(describing: error))
-                return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-            }
-
-        // This should never happen, because an out of bounds method index won't
-        // ever be used. Once we can catch errors, we should return an InternalError.
-        // https://github.com/mozilla/uniffi-rs/issues/351
-        default:
-            // An unexpected error happened.
-            // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
-            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+        do {
+            return try makeCall()
+        } catch let error as RoutingRequestGenerationError {
+            out_buf.pointee = FfiConverterTypeRoutingRequestGenerationError.lower(error)
+            return UNIFFI_CALLBACK_ERROR
         }
     }
+
+    switch method {
+    case IDX_CALLBACK_FREE:
+        FfiConverterCallbackInterfaceRouteRequestGenerator.drop(handle: handle)
+        // Sucessful return
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_SUCCESS
+    case 1:
+        let cb: RouteRequestGenerator
+        do {
+            cb = try FfiConverterCallbackInterfaceRouteRequestGenerator.lift(handle)
+        } catch {
+            out_buf.pointee = FfiConverterString.lower("RouteRequestGenerator: Invalid handle")
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+        do {
+            return try invokeGenerateRequest(cb, argsData, argsLen, out_buf)
+        } catch {
+            out_buf.pointee = FfiConverterString.lower(String(describing: error))
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+
+    // This should never happen, because an out of bounds method index won't
+    // ever be used. Once we can catch errors, we should return an InternalError.
+    // https://github.com/mozilla/uniffi-rs/issues/351
+    default:
+        // An unexpected error happened.
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+    }
+}
 
 // FfiConverter protocol for callback interfaces
 private enum FfiConverterCallbackInterfaceRouteRequestGenerator {
@@ -1781,58 +1768,57 @@ public protocol RouteResponseParser: AnyObject {
 }
 
 // The ForeignCallback that is passed to Rust.
-private let foreignCallbackCallbackInterfaceRouteResponseParser: ForeignCallback =
-    { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
+private let foreignCallbackCallbackInterfaceRouteResponseParser: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
 
-        func invokeParseResponse(_ swiftCallbackInterface: RouteResponseParser, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
-            var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
-            func makeCall() throws -> Int32 {
-                let result = try swiftCallbackInterface.parseResponse(
-                    response: FfiConverterSequenceUInt8.read(from: &reader)
-                )
-                var writer = [UInt8]()
-                FfiConverterSequenceTypeRoute.write(result, into: &writer)
-                out_buf.pointee = RustBuffer(bytes: writer)
-                return UNIFFI_CALLBACK_SUCCESS
-            }
-            do {
-                return try makeCall()
-            } catch let error as RoutingResponseParseError {
-                out_buf.pointee = FfiConverterTypeRoutingResponseParseError.lower(error)
-                return UNIFFI_CALLBACK_ERROR
-            }
-        }
-
-        switch method {
-        case IDX_CALLBACK_FREE:
-            FfiConverterCallbackInterfaceRouteResponseParser.drop(handle: handle)
-            // Sucessful return
-            // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+    func invokeParseResponse(_ swiftCallbackInterface: RouteResponseParser, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
+        var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
+        func makeCall() throws -> Int32 {
+            let result = try swiftCallbackInterface.parseResponse(
+                response: FfiConverterSequenceUInt8.read(from: &reader)
+            )
+            var writer = [UInt8]()
+            FfiConverterSequenceTypeRoute.write(result, into: &writer)
+            out_buf.pointee = RustBuffer(bytes: writer)
             return UNIFFI_CALLBACK_SUCCESS
-        case 1:
-            let cb: RouteResponseParser
-            do {
-                cb = try FfiConverterCallbackInterfaceRouteResponseParser.lift(handle)
-            } catch {
-                out_buf.pointee = FfiConverterString.lower("RouteResponseParser: Invalid handle")
-                return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-            }
-            do {
-                return try invokeParseResponse(cb, argsData, argsLen, out_buf)
-            } catch {
-                out_buf.pointee = FfiConverterString.lower(String(describing: error))
-                return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-            }
-
-        // This should never happen, because an out of bounds method index won't
-        // ever be used. Once we can catch errors, we should return an InternalError.
-        // https://github.com/mozilla/uniffi-rs/issues/351
-        default:
-            // An unexpected error happened.
-            // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
-            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+        do {
+            return try makeCall()
+        } catch let error as RoutingResponseParseError {
+            out_buf.pointee = FfiConverterTypeRoutingResponseParseError.lower(error)
+            return UNIFFI_CALLBACK_ERROR
         }
     }
+
+    switch method {
+    case IDX_CALLBACK_FREE:
+        FfiConverterCallbackInterfaceRouteResponseParser.drop(handle: handle)
+        // Sucessful return
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_SUCCESS
+    case 1:
+        let cb: RouteResponseParser
+        do {
+            cb = try FfiConverterCallbackInterfaceRouteResponseParser.lift(handle)
+        } catch {
+            out_buf.pointee = FfiConverterString.lower("RouteResponseParser: Invalid handle")
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+        do {
+            return try invokeParseResponse(cb, argsData, argsLen, out_buf)
+        } catch {
+            out_buf.pointee = FfiConverterString.lower(String(describing: error))
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+
+    // This should never happen, because an out of bounds method index won't
+    // ever be used. Once we can catch errors, we should return an InternalError.
+    // https://github.com/mozilla/uniffi-rs/issues/351
+    default:
+        // An unexpected error happened.
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+    }
+}
 
 // FfiConverter protocol for callback interfaces
 private enum FfiConverterCallbackInterfaceRouteResponseParser {
@@ -1884,8 +1870,8 @@ extension FfiConverterCallbackInterfaceRouteResponseParser: FfiConverter {
     }
 }
 
-private struct FfiConverterOptionInt16: FfiConverterRustBuffer {
-    typealias SwiftType = Int16?
+private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
+    typealias SwiftType = UInt16?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
         guard let value = value else {
@@ -1893,13 +1879,13 @@ private struct FfiConverterOptionInt16: FfiConverterRustBuffer {
             return
         }
         writeInt(&buf, Int8(1))
-        FfiConverterInt16.write(value, into: &buf)
+        FfiConverterUInt16.write(value, into: &buf)
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
-        case 1: return try FfiConverterInt16.read(from: &buf)
+        case 1: return try FfiConverterUInt16.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
