@@ -66,6 +66,12 @@ pub struct UserLocation {
     pub timestamp: SystemTime,
 }
 
+impl Into<Point> for UserLocation {
+    fn into(self) -> Point {
+        Point::new(self.coordinates.lng, self.coordinates.lat)
+    }
+}
+
 /// Information describing the series of steps needed to travel between two or more points.
 ///
 /// NOTE: This type is unstable and is still under active development and should be

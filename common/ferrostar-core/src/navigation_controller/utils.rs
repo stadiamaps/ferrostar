@@ -1,7 +1,5 @@
 use crate::models::{GeographicCoordinates, RouteStep, UserLocation};
-use geo::{
-    Closest, Coord, HaversineClosestPoint, HaversineDistance, Intersects, LineString, Point,
-};
+use geo::{Closest, ClosestPoint, Coord, HaversineDistance, LineString, Point};
 
 #[cfg(test)]
 use proptest::prelude::*;
@@ -49,10 +47,6 @@ pub fn should_advance_to_next_step(
     user_location: &UserLocation,
     step_advance_mode: StepAdvanceMode,
 ) -> bool {
-    // Future room for improvement:
-    //   - Coping with poor GPS accuracy
-    //   - Expecting a turn (analyze buffer of recent GPS readings/compass) when the route is supposed to turn
-
     let current_position: Point = user_location.coordinates.into();
 
     match step_advance_mode {
@@ -158,29 +152,38 @@ pub fn do_advance_to_next_step(
 }
 
 #[cfg(test)]
+fn gen_dummy_route_step(start_lng: f64, start_lat: f64, end_lng: f64, end_lat: f64) -> RouteStep {
+    RouteStep {
+        geometry: vec![
+            GeographicCoordinates {
+                lng: start_lng,
+                lat: start_lat,
+            },
+            GeographicCoordinates {
+                lng: end_lng,
+                lat: end_lat,
+            },
+        ],
+        distance: 0.0,
+        road_name: None,
+        instruction: "".to_string(),
+        visual_instructions: vec![],
+    }
+}
+
+#[cfg(test)]
 proptest! {
     #[test]
-    fn should_advance_exact_position(x1 in -180f64..180f64, y1 in -90f64..90f64,
-                                     x2 in -180f64..180f64, y2 in -90f64..90f64,
-                                     x3 in -180f64..180f64, y3 in -90f64..90f64,
-                                     has_next_step: bool,
-                                     distance: u16, minimum_horizontal_accuracy: u16,
-                                     excess_inaccuracy in 0f64..65535f64) {
-        let current_route_step = RouteStep {
-            geometry: vec![GeographicCoordinates { lng: x1, lat: y1 }, GeographicCoordinates { lng: x2, lat: y2 }],
-            distance: 0.0,
-            road_name: None,
-            instruction: "".to_string(),
-            visual_instructions: vec![],
-        };
+    fn should_advance_exact_position(
+        x1 in -180f64..180f64, y1 in -90f64..90f64,
+        x2 in -180f64..180f64, y2 in -90f64..90f64,
+        x3 in -180f64..180f64, y3 in -90f64..90f64,
+        has_next_step: bool,
+        distance: u16, minimum_horizontal_accuracy: u16, excess_inaccuracy in 0f64..65535f64
+    ) {
+        let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
         let next_route_step = if has_next_step {
-            Some(RouteStep {
-                geometry: vec![GeographicCoordinates { lng: x2, lat: y2 }, GeographicCoordinates { lng: x3, lat: y3 }],
-                distance: 0.0,
-                road_name: None,
-                instruction: "".to_string(),
-                visual_instructions: vec![],
-            })
+            Some(gen_dummy_route_step(x2, y2, x3, y3))
         } else {
             None
         };
@@ -196,6 +199,10 @@ proptest! {
             ..exact_user_location
         };
 
+        // Never advance to the next step when StepAdvanceMode is Manual
+        assert!(!should_advance_to_next_step(&current_route_step, next_route_step.as_ref(), &exact_user_location, StepAdvanceMode::Manual));
+        assert!(!should_advance_to_next_step(&current_route_step, next_route_step.as_ref(), &inaccurate_user_location, StepAdvanceMode::Manual));
+
         // Always succeeds in the base case in distance to end of step mode
         assert!(should_advance_to_next_step(&current_route_step, next_route_step.as_ref(), &exact_user_location, StepAdvanceMode::DistanceToEndOfStep {
             distance, minimum_horizontal_accuracy
@@ -206,15 +213,56 @@ proptest! {
             minimum_horizontal_accuracy
         }));
 
-        // Should always fail since the min horizontal accuracy is > than the desired amount
+        // Should always fail (unless excess_inaccuracy is zero), as the horizontal accuracy is worse than (>) than the desired error threshold
         assert_eq!(should_advance_to_next_step(&current_route_step, next_route_step.as_ref(), &inaccurate_user_location, StepAdvanceMode::DistanceToEndOfStep {
             distance, minimum_horizontal_accuracy
         }), excess_inaccuracy == 0.0, "Expected that the navigation would not advance to the next step except when excess_inaccuracy is 0");
         assert_eq!(should_advance_to_next_step(&current_route_step, next_route_step.as_ref(), &inaccurate_user_location, StepAdvanceMode::RelativeLineStringDistance {
             minimum_horizontal_accuracy
         }), excess_inaccuracy == 0.0, "Expected that the navigation would not advance to the next step except when excess_inaccuracy is 0");
+    }
+
+    #[test]
+    fn should_advance_inexact_position(
+        x1 in -180f64..180f64, y1 in -90f64..90f64,
+        x2 in -180f64..180f64, y2 in -90f64..90f64,
+        x3 in -180f64..180f64, y3 in -90f64..90f64,
+        error in -0.003f64..0.003f64, has_next_step: bool,
+        distance: u16, minimum_horizontal_accuracy in 0u16..250u16
+    ) {
+        let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
+        let next_route_step = if has_next_step {
+            Some(gen_dummy_route_step(x2, y2, x3, y3))
+        } else {
+            None
+        };
+
+        // Construct a user location that's slightly offset from the transition point with perfect accuracy
+        let end_of_step = *current_route_step.geometry.last().unwrap();
+        let user_location = UserLocation {
+            coordinates: GeographicCoordinates {
+                lng: end_of_step.lng + error,
+                lat: end_of_step.lat + error,
+            },
+            horizontal_accuracy: 0.0,
+            course_over_ground: None,
+            timestamp: SystemTime::now(),
+        };
+        let user_location_point: Point = user_location.into();
+        // let distance_from_end_of_current_step = user_location.into().
 
         // Never advance to the next step when StepAdvanceMode is Manual
-        assert!(!should_advance_to_next_step(&current_route_step, next_route_step.as_ref(), &exact_user_location, StepAdvanceMode::Manual));
+        assert!(!should_advance_to_next_step(&current_route_step, next_route_step.as_ref(), &user_location, StepAdvanceMode::Manual));
+
+        // Assumes that haversine_distance is correct
+        assert_eq!(should_advance_to_next_step(&current_route_step, next_route_step.as_ref(), &user_location, StepAdvanceMode::DistanceToEndOfStep {
+            distance, minimum_horizontal_accuracy
+        }), user_location_point.haversine_distance(&end_of_step.into()) <= distance.into(), "Expected that the step should advance in this case as we are closer to the end of the step than the threshold.");
+
+        // We can use snap_to_line and, assuming that snap_to_line works and haversine_distance works, we have a valid end to end test
     }
 }
+
+// TODO: Unit tests
+// - Under and over distance accuracy thresholds
+// - Equator and extreme latitude
