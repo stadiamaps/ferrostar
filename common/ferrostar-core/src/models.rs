@@ -32,7 +32,7 @@ impl From<GeographicCoordinates> for Coord {
 
 impl From<GeographicCoordinates> for Point {
     fn from(value: GeographicCoordinates) -> Self {
-        Self { 0: value.into() }
+        Self(value.into())
     }
 }
 
@@ -66,9 +66,9 @@ pub struct UserLocation {
     pub timestamp: SystemTime,
 }
 
-impl Into<Point> for UserLocation {
-    fn into(self) -> Point {
-        Point::new(self.coordinates.lng, self.coordinates.lat)
+impl From<UserLocation> for Point {
+    fn from(val: UserLocation) -> Point {
+        Point::new(val.coordinates.lng, val.coordinates.lat)
     }
 }
 

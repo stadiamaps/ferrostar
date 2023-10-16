@@ -140,7 +140,7 @@ impl NavigationController {
 
                         // Find the nearest point on the route line
                         snapped_user_location =
-                            snap_user_location_to_line(location, &route_line_string);
+                            snap_user_location_to_line(location, route_line_string);
 
                         // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired

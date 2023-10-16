@@ -11,7 +11,7 @@ use std::time::SystemTime;
 
 /// Snaps a user location to the closest point on a route line.
 pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> UserLocation {
-    let original_point: Point = location.into();
+    let original_point = Point::from(location);
 
     snap_point_to_line(&original_point, line).map_or_else(
         || location,
@@ -42,7 +42,7 @@ pub fn should_advance_to_next_step(
     user_location: &UserLocation,
     step_advance_mode: StepAdvanceMode,
 ) -> bool {
-    let current_position: Point = user_location.coordinates.into();
+    let current_position = Point::from(user_location.coordinates);
 
     match step_advance_mode {
         StepAdvanceMode::Manual => false,
@@ -53,7 +53,7 @@ pub fn should_advance_to_next_step(
             if user_location.horizontal_accuracy > minimum_horizontal_accuracy.into() {
                 false
             } else if let Some(end_coord) = current_route_step.geometry.last() {
-                let end_point: Point = (*end_coord).into();
+                let end_point = Point::from(*end_coord);
                 let distance_to_end = end_point.haversine_distance(&current_position);
 
                 distance_to_end <= distance as f64
@@ -116,7 +116,7 @@ pub fn should_advance_to_next_step(
 
 pub fn do_advance_to_next_step(
     snapped_user_location: &UserLocation,
-    remaining_waypoints: &Vec<GeographicCoordinates>,
+    remaining_waypoints: &[GeographicCoordinates],
     remaining_steps: &mut Vec<RouteStep>,
 ) -> NavigationStateUpdate {
     if remaining_steps.is_empty() {
@@ -136,7 +136,7 @@ pub fn do_advance_to_next_step(
     if let Some(step) = current_step {
         NavigationStateUpdate::Navigating {
             snapped_user_location: *snapped_user_location,
-            remaining_waypoints: remaining_waypoints.clone(),
+            remaining_waypoints: remaining_waypoints.to_owned(),
             current_step: step.clone(),
             spoken_instruction: None,
             visual_instructions: None,
@@ -243,7 +243,7 @@ proptest! {
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        let user_location_point: Point = user_location.into();
+        let user_location_point = Point::from(user_location);
         // let distance_from_end_of_current_step = user_location.into().
 
         // Never advance to the next step when StepAdvanceMode is Manual
