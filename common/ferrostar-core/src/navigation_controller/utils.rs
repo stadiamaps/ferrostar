@@ -10,30 +10,25 @@ use crate::{NavigationStateUpdate, StepAdvanceMode};
 use std::time::SystemTime;
 
 /// Snaps a user location to the closest point on a route line.
-pub fn snap_user_location_to_line(location: &UserLocation, line: &LineString) -> UserLocation {
-    let original_point = Point::new(location.coordinates.lng, location.coordinates.lat);
+pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> UserLocation {
+    let original_point: Point = location.into();
 
     snap_point_to_line(&original_point, line).map_or_else(
-        || *location,
+        || location,
         |snapped| UserLocation {
             coordinates: GeographicCoordinates {
                 lng: snapped.x(),
                 lat: snapped.y(),
             },
-            ..*location
+            ..location
         },
     )
 }
 
 fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
-    if point.intersects(line) {
-        // This branch is necessary for the moment due to https://github.com/georust/geo/issues/1084
-        Some(*point)
-    } else {
-        match line.haversine_closest_point(point) {
-            Closest::Intersection(snapped) | Closest::SinglePoint(snapped) => Some(snapped),
-            Closest::Indeterminate => None,
-        }
+    match line.closest_point(point) {
+        Closest::Intersection(snapped) | Closest::SinglePoint(snapped) => Some(snapped),
+        Closest::Indeterminate => None,
     }
 }
 
