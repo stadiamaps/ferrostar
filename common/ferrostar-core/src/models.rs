@@ -114,7 +114,8 @@ pub struct SpokenInstruction {
     pub text: String,
     /// Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
     pub ssml: Option<String>,
-    pub trigger_at: GeographicCoordinates,
+    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    pub trigger_distance_before_maneuver: f64,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -122,7 +123,8 @@ pub struct SpokenInstruction {
 pub struct VisualInstructions {
     pub primary_content: VisualInstructionContent,
     pub secondary_content: Option<VisualInstructionContent>,
-    pub trigger_at: GeographicCoordinates,
+    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    pub trigger_distance_before_maneuver: f64,
 }
 
 /// Indicates the type of maneuver to perform.

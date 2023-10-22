@@ -83,31 +83,22 @@ impl RouteStep {
         let visual_instructions = value
             .banner_instructions
             .iter()
-            .filter_map(|banner| {
-                linestring
-                    .line_interpolate_point(
-                        banner.distance_along_geometry / linestring.haversine_length(),
-                    )
-                    .map(|trigger| VisualInstructions {
-                        primary_content: VisualInstructionContent {
-                            text: banner.primary.text.clone(),
-                            maneuver_type: banner.primary.maneuver_type,
-                            maneuver_modifier: banner.primary.maneuver_modifier,
-                            roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
-                        },
-                        secondary_content: banner.secondary.as_ref().map(|secondary| {
-                            VisualInstructionContent {
-                                text: secondary.text.clone(),
-                                maneuver_type: secondary.maneuver_type,
-                                maneuver_modifier: secondary.maneuver_modifier,
-                                roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
-                            }
-                        }),
-                        trigger_at: GeographicCoordinates {
-                            lng: trigger.x(),
-                            lat: trigger.y(),
-                        },
-                    })
+            .map(|banner| VisualInstructions {
+                primary_content: VisualInstructionContent {
+                    text: banner.primary.text.clone(),
+                    maneuver_type: banner.primary.maneuver_type,
+                    maneuver_modifier: banner.primary.maneuver_modifier,
+                    roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
+                },
+                secondary_content: banner.secondary.as_ref().map(|secondary| {
+                    VisualInstructionContent {
+                        text: secondary.text.clone(),
+                        maneuver_type: secondary.maneuver_type,
+                        maneuver_modifier: secondary.maneuver_modifier,
+                        roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
+                    }
+                }),
+                trigger_distance_before_maneuver: banner.distance_along_geometry,
             })
             .collect();
 

@@ -63,13 +63,13 @@ dictionary RouteStep {
 dictionary SpokenInstruction {
     string text;
     string? ssml;
-    GeographicCoordinates trigger_at;
+    f64 trigger_distance_before_maneuver;
 };
 
 dictionary VisualInstructions {
     VisualInstructionContent primary_content;
     VisualInstructionContent? secondary_content;
-    GeographicCoordinates trigger_at;
+    f64 trigger_distance_before_maneuver;
 };
 
 dictionary VisualInstructionContent {
