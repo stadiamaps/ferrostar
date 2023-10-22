@@ -153,6 +153,11 @@ extension FerrostarCore: LocationManagingDelegate {
                 observableState?.visualInstructions = currentStep.visualInstructions.last(where: { instruction in
                     distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
+                observableState?.distanceToNextManeuver = distanceToNextManeuver
+                // TODO
+//                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
+//                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
+//                })
             case .arrived:
                 // TODO: "You have arrived"?
                 observableState?.visualInstructions = nil
