@@ -1,6 +1,6 @@
 ---
 source: ferrostar-core/src/routing_adapters/osrm/mod.rs
-expression: response
+expression: routes
 ---
 - geometry:
     - lng: 13.388798
@@ -39,6 +39,7 @@ expression: response
       lat: 52.523269
     - lng: 13.428554
       lat: 52.523239
+  distance: 4731.8
   waypoints:
     - lng: 13.388798
       lat: 52.517033

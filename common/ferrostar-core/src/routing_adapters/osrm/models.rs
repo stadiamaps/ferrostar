@@ -36,9 +36,9 @@ pub struct RouteResponse {
 /// A route between two or more waypoints.
 #[derive(Deserialize, Debug)]
 pub struct Route {
-    /// The distance traveled by the route, in meters.
-    pub duration: f64,
     /// The estimated travel time, in seconds.
+    pub duration: f64,
+    /// The distance traveled by the route, in meters.
     pub distance: f64,
     /// The geometry of the route.
     ///

@@ -48,7 +48,7 @@ pub enum StepAdvanceMode {
     Manual,
     /// Automatically advances when the user's location is close enough to the end of the step
     DistanceToEndOfStep {
-        /// Distance to the last waypoint in the step, measured in meters, at which to advance
+        /// Distance to the last waypoint in the step, measured in meters, at which to advance.
         distance: u16,
         /// The minimum required horizontal accuracy of the user location.
         /// Values larger than this cannot trigger a step advance.

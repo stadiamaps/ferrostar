@@ -38,10 +38,13 @@ impl RouteResponseParser for OsrmResponseParser {
         // today. Stabilization of try_collect may help.
         let mut routes = vec![];
         for route in res.routes {
-            let geometry = decode_polyline(&route.geometry, self.polyline_precision)
-                .map_err(|error| RoutingResponseParseError::ParseError {
-                    error: error.clone(),
-                })?
+            let linestring =
+                decode_polyline(&route.geometry, self.polyline_precision).map_err(|error| {
+                    RoutingResponseParseError::ParseError {
+                        error: error.clone(),
+                    }
+                })?;
+            let geometry = linestring
                 .coords()
                 .map(|coord| GeographicCoordinates::from(*coord))
                 .collect();
@@ -55,6 +58,7 @@ impl RouteResponseParser for OsrmResponseParser {
 
             routes.push(Route {
                 geometry,
+                distance: route.distance,
                 waypoints: waypoints.clone(),
                 steps,
             })
@@ -109,6 +113,8 @@ impl RouteStep {
 
         Ok(RouteStep {
             geometry,
+            // TODO: Investigate using the haversine distance or geodesics to normalize.
+            // Valhalla in particular is a bit nonstandard. See https://github.com/valhalla/valhalla/issues/1717
             distance: value.distance,
             road_name: value.name.clone(),
             instruction: value.maneuver.get_instruction(),

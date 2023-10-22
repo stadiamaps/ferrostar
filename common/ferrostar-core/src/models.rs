@@ -80,6 +80,8 @@ impl From<UserLocation> for Point {
 #[cfg_attr(test, derive(Serialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinates>,
+    /// The total route distance, in meters.
+    pub distance: f64,
     /// The ordered list of waypoints to visit, including the starting point.
     /// Note that this is distinct from the *geometry* which includes all points visited.
     /// A waypoint represents a start/end point for a route leg.

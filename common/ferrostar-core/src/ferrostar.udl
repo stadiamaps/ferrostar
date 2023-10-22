@@ -47,6 +47,7 @@ dictionary UserLocation {
 
 dictionary Route {
     sequence<GeographicCoordinates> geometry;
+    double distance;
     sequence<GeographicCoordinates> waypoints;
     sequence<RouteStep> steps;
 };
