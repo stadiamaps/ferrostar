@@ -144,18 +144,20 @@ extension FerrostarCore: LocationManagingDelegate {
 
         if let update = navigationController?.updateUserLocation(location: location.userLocation) {
             switch (update) {
-            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, currentStep: let currentStep, visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
+            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, currentStep: let currentStep, currentStepRemainingDistance: let currentStepRemainingDistance):
                 observableState?.snappedLocation = CLLocation(userLocation: userLocation)
                 observableState?.remainingWaypoints = remainingWaypoints.map { waypoint in
                     CLLocationCoordinate2D(geographicCoordinates: waypoint)
                 }
                 observableState?.currentStep = currentStep
-                observableState?.visualInstructions = visualInstructions
-                observableState?.spokenInstruction = spokenInstruction
-            case .arrived(visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
-                observableState?.visualInstructions = visualInstructions
+                observableState?.visualInstructions = currentStep.visualInstructions.last(where: { instruction in
+                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
+                })
+            case .arrived:
+                // TODO: "You have arrived"?
+                observableState?.visualInstructions = nil
                 observableState?.snappedLocation = location  // We arrived; no more snapping needed
-                observableState?.spokenInstruction = spokenInstruction
+                observableState?.spokenInstruction = nil
             }
             delegate?.core(self, didUpdateNavigationState: NavigationStateUpdate(update))
         }

@@ -30,15 +30,15 @@ public struct Route {
 
 /// A Swift wrapper around `UniFFI.NavigationStateUpdate`.
 public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: CLLocation, remainingWaypoints: [CLLocationCoordinate2D], currentStep: UniFFI.RouteStep, visualInstructions: UniFFI.VisualInstructions?, spokenInstruction: UniFFI.SpokenInstruction?)
-    case arrived(visualInstructions: UniFFI.VisualInstructions?, spokenInstruction: UniFFI.SpokenInstruction?)
+    case navigating(snappedUserLocation: CLLocation, remainingWaypoints: [CLLocationCoordinate2D], currentStep: UniFFI.RouteStep?, currentStepRemainingDistance: Double)
+    case arrived
 
     init(_ update: UniFFI.NavigationStateUpdate) {
         switch (update) {
-        case .navigating(snappedUserLocation: let location, remainingWaypoints: let waypoints, currentStep: let currentStep, visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
-            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingWaypoints: waypoints.map { CLLocationCoordinate2D(geographicCoordinates: $0)}, currentStep: currentStep, visualInstructions: visualInstructions, spokenInstruction: spokenInstruction)
-        case .arrived(visualInstructions: let visualInstructions, spokenInstruction: let spokenInstruction):
-            self = .arrived(visualInstructions: visualInstructions, spokenInstruction: spokenInstruction)
+        case .navigating(snappedUserLocation: let location, remainingWaypoints: let waypoints, currentStep: let currentStep, currentStepRemainingDistance: let currentStepRemainingDistance):
+            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingWaypoints: waypoints.map { CLLocationCoordinate2D(geographicCoordinates: $0)}, currentStep: currentStep, currentStepRemainingDistance: currentStepRemainingDistance)
+        case .arrived:
+            self = .arrived
         }
     }
 }

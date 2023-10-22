@@ -1,4 +1,4 @@
-use geo::{Coord, Point};
+use geo::{Coord, LineString, Point};
 use serde::Deserialize;
 use std::time::SystemTime;
 
@@ -104,6 +104,16 @@ pub struct RouteStep {
     pub road_name: Option<String>,
     pub instruction: String,
     pub visual_instructions: Vec<VisualInstructions>,
+}
+
+impl RouteStep {
+    // TODO: Memoize or something later; would also let us drop storage from internal nav state
+    pub(crate) fn get_linestring(&self) -> LineString {
+        LineString::from_iter(self.geometry.iter().map(|coord| Coord {
+            x: coord.lng,
+            y: coord.lat,
+        }))
+    }
 }
 
 // TODO: trigger_at doesn't really have to live in the public interface; figure out if we want to have a separate FFI vs internal type

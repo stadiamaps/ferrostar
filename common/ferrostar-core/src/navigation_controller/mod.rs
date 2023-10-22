@@ -2,17 +2,11 @@ pub mod models;
 mod utils;
 
 use crate::models::{Route, UserLocation};
-use crate::navigation_controller::utils::{do_advance_to_next_step, should_advance_to_next_step};
+use crate::navigation_controller::utils::{advance_step, should_advance_to_next_step};
 use geo::Coord;
 use models::*;
 use std::sync::Mutex;
 use utils::snap_user_location_to_line;
-
-// This may be improved eventually, but is essentially a sentinel value that we reached the end.
-const ARRIVED_EOT: NavigationStateUpdate = NavigationStateUpdate::Arrived {
-    spoken_instruction: None,
-    visual_instructions: None,
-};
 
 /// Manages the navigation lifecycle of a single trip, requesting the initial route and updating
 /// internal state based on inputs like user location updates.
@@ -49,23 +43,34 @@ impl NavigationController {
     ) -> Self {
         let remaining_waypoints = route.waypoints.clone();
         let remaining_steps = route.steps.clone();
-        let route_line_string = route
+        let route_linestring = route
             .geometry
             .iter()
             .map(|c| Coord { x: c.lng, y: c.lat })
             .collect();
+
+        let Some(current_route_step) = remaining_steps.first() else {
+            // Bail early; if we don't have any steps, this is a useless route
+            return Self {
+                state: Mutex::new(TripState::Complete),
+                config,
+            };
+        };
+
+        let current_step_linestring = current_route_step.get_linestring();
 
         Self {
             state: Mutex::new(TripState::Navigating {
                 last_user_location,
                 snapped_user_location: snap_user_location_to_line(
                     last_user_location,
-                    &route_line_string,
+                    &route_linestring,
                 ),
                 route,
-                route_line_string,
+                route_linestring,
                 remaining_waypoints,
                 remaining_steps,
+                current_step_linestring,
             }),
             config,
         }
@@ -84,32 +89,36 @@ impl NavigationController {
                         snapped_user_location,
                         ref remaining_waypoints,
                         ref mut remaining_steps,
+                        ref mut current_step_linestring,
                         ..
                     } => {
-                        let update = do_advance_to_next_step(remaining_steps);
+                        let update = advance_step(remaining_steps);
                         // TODO: Anything with remaining_waypoints?
                         match update {
-                            StepUpdate::NewStep { step } => {
+                            StepAdvanceStatus::Advanced { step, linestring } => {
+                                // Apply the updates
+                                // TODO: Figure out an elegant way to factor this out as it appears in two places
+                                remaining_steps.remove(0);
+                                *current_step_linestring = linestring;
+
+                                // TODO: Compute this
                                 let current_step_remaining_distance = step.distance;
                                 NavigationStateUpdate::Navigating {
                                     snapped_user_location,
                                     remaining_waypoints: remaining_waypoints.clone(),
-                                    current_step: step,
-                                    // TODO: Instructions
-                                    visual_instructions: None,
-                                    spoken_instruction: None,
+                                    current_step: step.clone(),
                                     current_step_remaining_distance,
                                 }
                             }
-                            StepUpdate::Arrived => {
+                            StepAdvanceStatus::EndOfRoute => {
                                 *guard = TripState::Complete;
-                                ARRIVED_EOT
+                                NavigationStateUpdate::Arrived
                             }
                         }
                     }
                     // It's tempting to throw an error here, since the caller should know better, but
                     // a mistake like this is technically harmless.
-                    TripState::Complete => ARRIVED_EOT,
+                    TripState::Complete => NavigationStateUpdate::Arrived,
                 }
             }
             Err(_) => {
@@ -128,18 +137,16 @@ impl NavigationController {
                     TripState::Navigating {
                         mut last_user_location,
                         mut snapped_user_location,
-                        ref route_line_string,
+                        ref route_linestring,
                         ref remaining_waypoints,
                         ref mut remaining_steps,
+                        ref mut current_step_linestring,
                         ..
                     } => {
                         last_user_location = location;
 
                         let Some(current_step) = remaining_steps.first() else {
-                            return NavigationStateUpdate::Arrived {
-                                spoken_instruction: None,
-                                visual_instructions: None,
-                            };
+                            return NavigationStateUpdate::Arrived;
                         };
 
                         //
@@ -148,7 +155,7 @@ impl NavigationController {
 
                         // Find the nearest point on the route line
                         snapped_user_location =
-                            snap_user_location_to_line(location, route_line_string);
+                            snap_user_location_to_line(location, route_linestring);
 
                         // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
@@ -160,18 +167,25 @@ impl NavigationController {
                         let remaining_waypoints = remaining_waypoints.clone();
 
                         let current_step = if should_advance_to_next_step(
-                            current_step,
+                            current_step_linestring,
                             remaining_steps.get(1),
                             &last_user_location,
                             self.config.step_advance,
                         ) {
                             // Advance to the next step
-                            let update = do_advance_to_next_step(remaining_steps);
+                            let update = advance_step(remaining_steps);
                             match update {
-                                StepUpdate::NewStep { step, .. } => Some(step),
-                                StepUpdate::Arrived => {
+                                StepAdvanceStatus::Advanced { step, linestring } => {
+                                    // Apply the updates
+                                    // TODO: Figure out an elegant way to factor this out as it appears in two places
+                                    remaining_steps.remove(0);
+                                    *current_step_linestring = linestring;
+
+                                    Some(step.clone())
+                                }
+                                StepAdvanceStatus::EndOfRoute => {
                                     *guard = TripState::Complete;
-                                    return ARRIVED_EOT;
+                                    return NavigationStateUpdate::Arrived;
                                 }
                             }
                         } else {
@@ -180,35 +194,26 @@ impl NavigationController {
 
                         // TODO: Calculate distance to the next step
                         // Hmm... We don't currently store the LineString for the current step...
-                        // let fraction_along_line = route_line_string.line_locate_point(&point!(x: snapped_user_location.coordinates.lng, y: snapped_user_location.coordinates.lat));
+                        // let fraction_along_line = route_linestring.line_locate_point(&point!(x: snapped_user_location.coordinates.lng, y: snapped_user_location.coordinates.lat));
 
                         if let Some(step) = current_step {
-                            // TODO: Calculate which instruction, if any, to show.
-                            let visual_instructions = step.visual_instructions.last().cloned();
+                            let current_step_remaining_distance = 0.0; // TODO: Calculate this!
 
                             NavigationStateUpdate::Navigating {
                                 snapped_user_location,
                                 remaining_waypoints,
                                 current_step: step,
-                                spoken_instruction: None,
-                                visual_instructions,
+                                current_step_remaining_distance,
                             }
                         } else {
                             *guard = TripState::Complete;
 
-                            // TODO: Better info
-                            NavigationStateUpdate::Arrived {
-                                spoken_instruction: None,
-                                visual_instructions: None,
-                            }
+                            NavigationStateUpdate::Arrived
                         }
                     }
                     // It's tempting to throw an error here, since the caller should know better, but
                     // a mistake like this is technically harmless.
-                    TripState::Complete => NavigationStateUpdate::Arrived {
-                        spoken_instruction: None,
-                        visual_instructions: None,
-                    },
+                    TripState::Complete => NavigationStateUpdate::Arrived,
                 }
             }
             Err(_) => {

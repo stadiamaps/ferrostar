@@ -74,6 +74,7 @@ impl RouteStep {
     ) -> Result<Self, RoutingResponseParseError> {
         let linestring = decode_polyline(&value.geometry, polyline_precision)
             .map_err(|error| RoutingResponseParseError::ParseError { error })?;
+        // TODO: Trait for this common pattern?
         let geometry = linestring
             .coords()
             .map(|coord| GeographicCoordinates::from(*coord))
