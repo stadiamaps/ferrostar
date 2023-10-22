@@ -748,13 +748,15 @@ public func FfiConverterTypeNavigationControllerConfig_lower(_ value: Navigation
 
 public struct Route {
     public var geometry: [GeographicCoordinates]
+    public var distance: Double
     public var waypoints: [GeographicCoordinates]
     public var steps: [RouteStep]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinates], waypoints: [GeographicCoordinates], steps: [RouteStep]) {
+    public init(geometry: [GeographicCoordinates], distance: Double, waypoints: [GeographicCoordinates], steps: [RouteStep]) {
         self.geometry = geometry
+        self.distance = distance
         self.waypoints = waypoints
         self.steps = steps
     }
@@ -763,6 +765,9 @@ public struct Route {
 extension Route: Equatable, Hashable {
     public static func == (lhs: Route, rhs: Route) -> Bool {
         if lhs.geometry != rhs.geometry {
+            return false
+        }
+        if lhs.distance != rhs.distance {
             return false
         }
         if lhs.waypoints != rhs.waypoints {
@@ -776,6 +781,7 @@ extension Route: Equatable, Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(geometry)
+        hasher.combine(distance)
         hasher.combine(waypoints)
         hasher.combine(steps)
     }
@@ -785,6 +791,7 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Route {
         return try Route(
             geometry: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
+            distance: FfiConverterDouble.read(from: &buf),
             waypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
             steps: FfiConverterSequenceTypeRouteStep.read(from: &buf)
         )
@@ -792,6 +799,7 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
 
     public static func write(_ value: Route, into buf: inout [UInt8]) {
         FfiConverterSequenceTypeGeographicCoordinates.write(value.geometry, into: &buf)
+        FfiConverterDouble.write(value.distance, into: &buf)
         FfiConverterSequenceTypeGeographicCoordinates.write(value.waypoints, into: &buf)
         FfiConverterSequenceTypeRouteStep.write(value.steps, into: &buf)
     }
@@ -883,14 +891,14 @@ public func FfiConverterTypeRouteStep_lower(_ value: RouteStep) -> RustBuffer {
 public struct SpokenInstruction {
     public var text: String
     public var ssml: String?
-    public var triggerAt: GeographicCoordinates
+    public var triggerDistanceBeforeManeuver: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(text: String, ssml: String?, triggerAt: GeographicCoordinates) {
+    public init(text: String, ssml: String?, triggerDistanceBeforeManeuver: Double) {
         self.text = text
         self.ssml = ssml
-        self.triggerAt = triggerAt
+        self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
     }
 }
 
@@ -902,7 +910,7 @@ extension SpokenInstruction: Equatable, Hashable {
         if lhs.ssml != rhs.ssml {
             return false
         }
-        if lhs.triggerAt != rhs.triggerAt {
+        if lhs.triggerDistanceBeforeManeuver != rhs.triggerDistanceBeforeManeuver {
             return false
         }
         return true
@@ -911,7 +919,7 @@ extension SpokenInstruction: Equatable, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(text)
         hasher.combine(ssml)
-        hasher.combine(triggerAt)
+        hasher.combine(triggerDistanceBeforeManeuver)
     }
 }
 
@@ -920,14 +928,14 @@ public struct FfiConverterTypeSpokenInstruction: FfiConverterRustBuffer {
         return try SpokenInstruction(
             text: FfiConverterString.read(from: &buf),
             ssml: FfiConverterOptionString.read(from: &buf),
-            triggerAt: FfiConverterTypeGeographicCoordinates.read(from: &buf)
+            triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf)
         )
     }
 
     public static func write(_ value: SpokenInstruction, into buf: inout [UInt8]) {
         FfiConverterString.write(value.text, into: &buf)
         FfiConverterOptionString.write(value.ssml, into: &buf)
-        FfiConverterTypeGeographicCoordinates.write(value.triggerAt, into: &buf)
+        FfiConverterDouble.write(value.triggerDistanceBeforeManeuver, into: &buf)
     }
 }
 
@@ -1076,14 +1084,14 @@ public func FfiConverterTypeVisualInstructionContent_lower(_ value: VisualInstru
 public struct VisualInstructions {
     public var primaryContent: VisualInstructionContent
     public var secondaryContent: VisualInstructionContent?
-    public var triggerAt: GeographicCoordinates
+    public var triggerDistanceBeforeManeuver: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(primaryContent: VisualInstructionContent, secondaryContent: VisualInstructionContent?, triggerAt: GeographicCoordinates) {
+    public init(primaryContent: VisualInstructionContent, secondaryContent: VisualInstructionContent?, triggerDistanceBeforeManeuver: Double) {
         self.primaryContent = primaryContent
         self.secondaryContent = secondaryContent
-        self.triggerAt = triggerAt
+        self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
     }
 }
 
@@ -1095,7 +1103,7 @@ extension VisualInstructions: Equatable, Hashable {
         if lhs.secondaryContent != rhs.secondaryContent {
             return false
         }
-        if lhs.triggerAt != rhs.triggerAt {
+        if lhs.triggerDistanceBeforeManeuver != rhs.triggerDistanceBeforeManeuver {
             return false
         }
         return true
@@ -1104,7 +1112,7 @@ extension VisualInstructions: Equatable, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(primaryContent)
         hasher.combine(secondaryContent)
-        hasher.combine(triggerAt)
+        hasher.combine(triggerDistanceBeforeManeuver)
     }
 }
 
@@ -1113,14 +1121,14 @@ public struct FfiConverterTypeVisualInstructions: FfiConverterRustBuffer {
         return try VisualInstructions(
             primaryContent: FfiConverterTypeVisualInstructionContent.read(from: &buf),
             secondaryContent: FfiConverterOptionTypeVisualInstructionContent.read(from: &buf),
-            triggerAt: FfiConverterTypeGeographicCoordinates.read(from: &buf)
+            triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf)
         )
     }
 
     public static func write(_ value: VisualInstructions, into buf: inout [UInt8]) {
         FfiConverterTypeVisualInstructionContent.write(value.primaryContent, into: &buf)
         FfiConverterOptionTypeVisualInstructionContent.write(value.secondaryContent, into: &buf)
-        FfiConverterTypeGeographicCoordinates.write(value.triggerAt, into: &buf)
+        FfiConverterDouble.write(value.triggerDistanceBeforeManeuver, into: &buf)
     }
 }
 
@@ -1339,8 +1347,8 @@ extension ManeuverType: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinates], currentStep: RouteStep, visualInstructions: VisualInstructions?, spokenInstruction: SpokenInstruction?)
-    case arrived(visualInstructions: VisualInstructions?, spokenInstruction: SpokenInstruction?)
+    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinates], currentStep: RouteStep, currentStepRemainingDistance: Double)
+    case arrived
 }
 
 public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
@@ -1353,14 +1361,10 @@ public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
                 currentStep: FfiConverterTypeRouteStep.read(from: &buf),
-                visualInstructions: FfiConverterOptionTypeVisualInstructions.read(from: &buf),
-                spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
+                currentStepRemainingDistance: FfiConverterDouble.read(from: &buf)
             )
 
-        case 2: return try .arrived(
-                visualInstructions: FfiConverterOptionTypeVisualInstructions.read(from: &buf),
-                spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
-            )
+        case 2: return .arrived
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -1368,18 +1372,15 @@ public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
 
     public static func write(_ value: NavigationStateUpdate, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingWaypoints, currentStep, visualInstructions, spokenInstruction):
+        case let .navigating(snappedUserLocation, remainingWaypoints, currentStep, currentStepRemainingDistance):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeGeographicCoordinates.write(remainingWaypoints, into: &buf)
             FfiConverterTypeRouteStep.write(currentStep, into: &buf)
-            FfiConverterOptionTypeVisualInstructions.write(visualInstructions, into: &buf)
-            FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
+            FfiConverterDouble.write(currentStepRemainingDistance, into: &buf)
 
-        case let .arrived(visualInstructions, spokenInstruction):
+        case .arrived:
             writeInt(&buf, Int32(2))
-            FfiConverterOptionTypeVisualInstructions.write(visualInstructions, into: &buf)
-            FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
         }
     }
 }
@@ -1933,27 +1934,6 @@ private struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
     }
 }
 
-private struct FfiConverterOptionTypeSpokenInstruction: FfiConverterRustBuffer {
-    typealias SwiftType = SpokenInstruction?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterTypeSpokenInstruction.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterTypeSpokenInstruction.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
 private struct FfiConverterOptionTypeVisualInstructionContent: FfiConverterRustBuffer {
     typealias SwiftType = VisualInstructionContent?
 
@@ -1970,27 +1950,6 @@ private struct FfiConverterOptionTypeVisualInstructionContent: FfiConverterRustB
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeVisualInstructionContent.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-private struct FfiConverterOptionTypeVisualInstructions: FfiConverterRustBuffer {
-    typealias SwiftType = VisualInstructions?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterTypeVisualInstructions.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterTypeVisualInstructions.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }

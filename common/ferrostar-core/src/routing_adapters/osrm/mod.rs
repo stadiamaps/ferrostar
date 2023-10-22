@@ -4,7 +4,6 @@ use super::RouteResponseParser;
 use crate::models::{GeographicCoordinates, RouteStep};
 use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
 use crate::{VisualInstructionContent, VisualInstructions};
-use geo::{HaversineLength, LineInterpolatePoint};
 use polyline::decode_polyline;
 
 /// A response parser for OSRM-compatible routing backends.

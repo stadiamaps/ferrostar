@@ -116,7 +116,7 @@ interface RouteRequest {
 
 [Enum]
 interface NavigationStateUpdate {
-    Navigating(UserLocation snapped_user_location, sequence<GeographicCoordinates> remaining_waypoints, RouteStep current_step, VisualInstructions? visual_instructions, SpokenInstruction? spoken_instruction);
+    Navigating(UserLocation snapped_user_location, sequence<GeographicCoordinates> remaining_waypoints, RouteStep current_step, VisualInstructions? visual_instructions, SpokenInstruction? spoken_instruction, double current_step_remaining_distance);
     Arrived(VisualInstructions? visual_instructions, SpokenInstruction? spoken_instruction);
 };
 

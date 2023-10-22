@@ -1,13 +1,14 @@
 use crate::models::{GeographicCoordinates, RouteStep, UserLocation};
 use geo::{Closest, ClosestPoint, Coord, HaversineDistance, LineString, Point};
 
-#[cfg(test)]
-use proptest::prelude::*;
+use super::models::{StepAdvanceMode, StepUpdate};
+use crate::navigation_controller::models::StepUpdate::{Arrived, NewStep};
 
-use super::ARRIVED_EOT;
-use crate::{NavigationStateUpdate, StepAdvanceMode};
 #[cfg(test)]
 use std::time::SystemTime;
+
+#[cfg(test)]
+use proptest::prelude::*;
 
 /// Snaps a user location to the closest point on a route line.
 pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> UserLocation {
@@ -114,17 +115,17 @@ pub fn should_advance_to_next_step(
     }
 }
 
-pub fn do_advance_to_next_step(
-    snapped_user_location: &UserLocation,
-    remaining_waypoints: &[GeographicCoordinates],
-    remaining_steps: &mut Vec<RouteStep>,
-) -> NavigationStateUpdate {
+/// Advances to the next step, and returns an enum indicating the new state.
+///
+/// This function is safe and idempotent in the case that it is accidentally
+/// invoked with no remaining steps.
+pub fn do_advance_to_next_step(remaining_steps: &mut Vec<RouteStep>) -> StepUpdate {
     if remaining_steps.is_empty() {
-        return ARRIVED_EOT;
+        return Arrived;
     };
 
     // Advance to the next step
-    let current_step = if !remaining_steps.is_empty() {
+    let new_step = if !remaining_steps.is_empty() {
         // NOTE: this would be much more efficient if we used a VecDeque, but
         // that isn't bridged by UniFFI. Revisit later.
         remaining_steps.remove(0);
@@ -133,16 +134,10 @@ pub fn do_advance_to_next_step(
         None
     };
 
-    if let Some(step) = current_step {
-        NavigationStateUpdate::Navigating {
-            snapped_user_location: *snapped_user_location,
-            remaining_waypoints: remaining_waypoints.to_owned(),
-            current_step: step.clone(),
-            spoken_instruction: None,
-            visual_instructions: None,
-        }
+    if let Some(step) = new_step {
+        NewStep { step: step.clone() }
     } else {
-        ARRIVED_EOT
+        Arrived
     }
 }
 

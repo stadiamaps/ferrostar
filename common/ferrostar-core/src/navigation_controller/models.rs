@@ -18,6 +18,9 @@ pub(super) enum TripState {
         /// The ordered list of steps that remain in the trip.
         /// The step at the front of the list is always the current step.
         remaining_steps: Vec<RouteStep>,
+        /// The distance remaining till the end of the current step (taking the line geometry
+        /// into account), measured in meters.
+        current_step_remaining_distance: f64,
     },
     Complete,
 }
@@ -40,6 +43,11 @@ pub enum NavigationStateUpdate {
         visual_instructions: Option<VisualInstructions>,
         spoken_instruction: Option<SpokenInstruction>,
     },
+}
+
+pub enum StepUpdate {
+    NewStep { step: RouteStep },
+    Arrived,
 }
 
 #[derive(Debug, Copy, Clone)]

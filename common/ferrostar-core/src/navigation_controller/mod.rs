@@ -80,22 +80,32 @@ impl NavigationController {
         match self.state.lock() {
             Ok(mut guard) => {
                 match *guard {
-                    // TODO: Determine current step + mode of travel
                     TripState::Navigating {
-                        ref snapped_user_location,
+                        snapped_user_location,
                         ref remaining_waypoints,
                         ref mut remaining_steps,
                         ..
                     } => {
-                        let update = do_advance_to_next_step(
-                            snapped_user_location,
-                            remaining_waypoints,
-                            remaining_steps,
-                        );
-                        if matches!(update, NavigationStateUpdate::Arrived { .. }) {
-                            *guard = TripState::Complete;
+                        let update = do_advance_to_next_step(remaining_steps);
+                        // TODO: Anything with remaining_waypoints?
+                        match update {
+                            StepUpdate::NewStep { step } => {
+                                let current_step_remaining_distance = step.distance;
+                                NavigationStateUpdate::Navigating {
+                                    snapped_user_location,
+                                    remaining_waypoints: remaining_waypoints.clone(),
+                                    current_step: step,
+                                    // TODO: Instructions
+                                    visual_instructions: None,
+                                    spoken_instruction: None,
+                                    current_step_remaining_distance,
+                                }
+                            }
+                            StepUpdate::Arrived => {
+                                *guard = TripState::Complete;
+                                ARRIVED_EOT
+                            }
                         }
-                        update
                     }
                     // It's tempting to throw an error here, since the caller should know better, but
                     // a mistake like this is technically harmless.
@@ -115,11 +125,9 @@ impl NavigationController {
         match self.state.lock() {
             Ok(mut guard) => {
                 match *guard {
-                    // TODO: Determine current step + mode of travel
                     TripState::Navigating {
                         mut last_user_location,
                         mut snapped_user_location,
-                        ref route,
                         ref route_line_string,
                         ref remaining_waypoints,
                         ref mut remaining_steps,
@@ -148,6 +156,7 @@ impl NavigationController {
                         // TODO: If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
                         // IIUC these should always appear within the route itself, which simplifies the logic a bit.
                         // TBD: Do we want to support disjoint routes?
+                        // TBD: Do we even need this? I'm still a bit fuzzy on the use cases TBH.
                         let remaining_waypoints = remaining_waypoints.clone();
 
                         let current_step = if should_advance_to_next_step(
@@ -157,18 +166,12 @@ impl NavigationController {
                             self.config.step_advance,
                         ) {
                             // Advance to the next step
-                            let update = do_advance_to_next_step(
-                                &snapped_user_location,
-                                &remaining_waypoints,
-                                remaining_steps,
-                            );
+                            let update = do_advance_to_next_step(remaining_steps);
                             match update {
-                                NavigationStateUpdate::Navigating { current_step, .. } => {
-                                    Some(current_step)
-                                }
-                                NavigationStateUpdate::Arrived { .. } => {
+                                StepUpdate::NewStep { step, .. } => Some(step),
+                                StepUpdate::Arrived => {
                                     *guard = TripState::Complete;
-                                    None
+                                    return ARRIVED_EOT;
                                 }
                             }
                         } else {
