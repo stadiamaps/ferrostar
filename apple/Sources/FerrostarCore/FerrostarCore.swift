@@ -144,14 +144,14 @@ extension FerrostarCore: LocationManagingDelegate {
 
         if let update = navigationController?.updateUserLocation(location: location.userLocation) {
             switch (update) {
-            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, currentStep: let currentStep, currentStepRemainingDistance: let currentStepRemainingDistance):
+            case .navigating(snappedUserLocation: let userLocation, remainingWaypoints: let remainingWaypoints, currentStep: let currentStep, distanceToNextManeuver: let distanceToNextManeuver):
                 observableState?.snappedLocation = CLLocation(userLocation: userLocation)
                 observableState?.remainingWaypoints = remainingWaypoints.map { waypoint in
                     CLLocationCoordinate2D(geographicCoordinates: waypoint)
                 }
                 observableState?.currentStep = currentStep
                 observableState?.visualInstructions = currentStep.visualInstructions.last(where: { instruction in
-                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
+                    distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
             case .arrived:
                 // TODO: "You have arrived"?

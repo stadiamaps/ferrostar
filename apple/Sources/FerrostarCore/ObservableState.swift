@@ -15,6 +15,7 @@ public final class FerrostarObservableState {
     public internal(set) var currentStep: UniFFI.RouteStep
     public internal(set) var visualInstructions: UniFFI.VisualInstructions?
     public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
+    public internal(set) var distanceToNextManeuver: CLLocationDistance?
 
     init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
         self.snappedLocation = snappedLocation
@@ -22,7 +23,6 @@ public final class FerrostarObservableState {
         self.fullRouteShape = fullRoute
         self.remainingWaypoints = fullRoute
         self.currentStep = steps.first!
-        self.spokenInstruction = nil
     }
 
     public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])

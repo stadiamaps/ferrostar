@@ -36,7 +36,7 @@ pub enum NavigationStateUpdate {
         current_step: RouteStep,
         /// The distance remaining till the end of the current step (taking the line geometry
         /// into account), measured in meters.
-        current_step_remaining_distance: f64,
+        distance_to_next_maneuver: f64,
         // TODO: Communicate off-route and other state info
     },
     Arrived,

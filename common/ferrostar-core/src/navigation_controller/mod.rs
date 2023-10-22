@@ -2,7 +2,7 @@ pub mod models;
 mod utils;
 
 use crate::models::{Route, UserLocation};
-use crate::navigation_controller::utils::{advance_step, should_advance_to_next_step};
+use crate::navigation_controller::utils::{advance_step, distance_to_end_of_step, should_advance_to_next_step};
 use geo::Coord;
 use models::*;
 use std::sync::Mutex;
@@ -102,12 +102,12 @@ impl NavigationController {
                                 *current_step_linestring = linestring;
 
                                 // TODO: Compute this
-                                let current_step_remaining_distance = step.distance;
+                                let distance_to_next_maneuver = step.distance;
                                 NavigationStateUpdate::Navigating {
                                     snapped_user_location,
                                     remaining_waypoints: remaining_waypoints.clone(),
                                     current_step: step.clone(),
-                                    current_step_remaining_distance,
+                                    distance_to_next_maneuver,
                                 }
                             }
                             StepAdvanceStatus::EndOfRoute => {
@@ -197,13 +197,13 @@ impl NavigationController {
                         // let fraction_along_line = route_linestring.line_locate_point(&point!(x: snapped_user_location.coordinates.lng, y: snapped_user_location.coordinates.lat));
 
                         if let Some(step) = current_step {
-                            let current_step_remaining_distance = 0.0; // TODO: Calculate this!
+                            let distance_to_next_maneuver = distance_to_end_of_step(&snapped_user_location.into(), current_step_linestring);
 
                             NavigationStateUpdate::Navigating {
                                 snapped_user_location,
                                 remaining_waypoints,
                                 current_step: step,
-                                current_step_remaining_distance,
+                                distance_to_next_maneuver,
                             }
                         } else {
                             *guard = TripState::Complete;

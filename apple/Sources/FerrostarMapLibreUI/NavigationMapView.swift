@@ -85,7 +85,7 @@ public struct NavigationMapView: View {
         .edgesIgnoringSafeArea(.all)
         .overlay(alignment: .top, content: {
             if let visualInstructions = navigationState.visualInstructions {
-                BannerView(instructions: visualInstructions)
+                BannerView(instructions: visualInstructions, distanceToNextManeuver: navigationState.distanceToNextManeuver)
             }
         })
     }

@@ -1347,7 +1347,7 @@ extension ManeuverType: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinates], currentStep: RouteStep, currentStepRemainingDistance: Double)
+    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinates], currentStep: RouteStep, distanceToNextManeuver: Double)
     case arrived
 }
 
@@ -1361,7 +1361,7 @@ public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
                 currentStep: FfiConverterTypeRouteStep.read(from: &buf),
-                currentStepRemainingDistance: FfiConverterDouble.read(from: &buf)
+                distanceToNextManeuver: FfiConverterDouble.read(from: &buf)
             )
 
         case 2: return .arrived
@@ -1372,12 +1372,12 @@ public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
 
     public static func write(_ value: NavigationStateUpdate, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingWaypoints, currentStep, currentStepRemainingDistance):
+        case let .navigating(snappedUserLocation, remainingWaypoints, currentStep, distanceToNextManeuver):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeGeographicCoordinates.write(remainingWaypoints, into: &buf)
             FfiConverterTypeRouteStep.write(currentStep, into: &buf)
-            FfiConverterDouble.write(currentStepRemainingDistance, into: &buf)
+            FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
 
         case .arrived:
             writeInt(&buf, Int32(2))

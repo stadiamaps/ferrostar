@@ -1,6 +1,8 @@
 
 import SwiftUI
 import UniFFI
+import CoreLocation
+import MapKit
 
 extension UniFFI.VisualInstructionContent {
     // Stand-in art using SFSymbols for now. Ideally look for some
@@ -44,18 +46,25 @@ extension UniFFI.VisualInstructionContent {
 
 struct BannerView: View {
     let instructions: VisualInstructions
-    // TODO: Distance to next maneuver
+    let distanceToNextManeuver: CLLocationDistance?
+    let formatter = MKDistanceFormatter()
 
     var body: some View {
         VStack {
             HStack {
-                if let maneuverIcon = instructions.primaryContent.maneuverIcon {
-                    Image(systemName: maneuverIcon)
-                        .font(.title)
-                        .foregroundColor(.white)
+                VStack {
+                    if let maneuverIcon = instructions.primaryContent.maneuverIcon {
+                        Image(systemName: maneuverIcon)
+                            .font(.title)
+                            .foregroundColor(.white)
+                    }
+                    if let distanceToNextManeuver {
+                        Text("\(formatter.string(fromDistance: distanceToNextManeuver))")
+                            .foregroundStyle(.white)
+                    }
                 }
                 Text(instructions.primaryContent.text)
-                    .font(.title)
+                    .font(.largeTitle)
                     .foregroundStyle(.white)
             }
 
@@ -74,5 +83,5 @@ struct BannerView: View {
     let location = GeographicCoordinates(lat: 0, lng: 0)
     let instructions = UniFFI.VisualInstructions(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
 
-    return BannerView(instructions: instructions)
+    return BannerView(instructions: instructions, distanceToNextManeuver: 42)
 }
