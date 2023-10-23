@@ -66,7 +66,7 @@ impl NavigationController {
                 last_user_location,
                 snapped_user_location: snap_user_location_to_line(
                     last_user_location,
-                    &route_linestring,
+                    &current_step_linestring,
                 ),
                 route,
                 route_linestring,
@@ -139,7 +139,6 @@ impl NavigationController {
                     TripState::Navigating {
                         mut last_user_location,
                         mut snapped_user_location,
-                        ref route_linestring,
                         ref remaining_waypoints,
                         ref mut remaining_steps,
                         ref mut current_step_linestring,
@@ -157,7 +156,7 @@ impl NavigationController {
 
                         // Find the nearest point on the route line
                         snapped_user_location =
-                            snap_user_location_to_line(location, route_linestring);
+                            snap_user_location_to_line(location, current_step_linestring);
 
                         // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                         // TODO: If so, flag that the user is off route so higher levels can recalculate if desired

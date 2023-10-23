@@ -43,7 +43,7 @@ fn is_close_enough_to_end_of_step(
 ) -> bool {
     if let Some(end_coord) = current_step_linestring.coords().last() {
         let end_point = Point::from(*end_coord);
-        let distance_to_end = end_point.haversine_distance(&current_position);
+        let distance_to_end = end_point.haversine_distance(current_position);
 
         distance_to_end <= threshold
     } else {
@@ -104,7 +104,7 @@ pub fn should_advance_to_next_step(
                     // Try to snap the user's current location to the current step
                     // and next step geometries
                     if let (Some(current_step_closest_point), Some(next_step_closest_point)) = (
-                        snap_point_to_line(&current_position, &current_step_linestring),
+                        snap_point_to_line(&current_position, current_step_linestring),
                         snap_point_to_line(&current_position, &next_step_linestring),
                     ) {
                         // If the user's distance to the snapped location on the *next* step is <=
