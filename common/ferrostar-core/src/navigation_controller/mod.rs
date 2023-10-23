@@ -1,12 +1,14 @@
+mod algorithms;
 pub mod models;
-mod utils;
 
 use crate::models::{Route, UserLocation};
-use crate::navigation_controller::utils::{advance_step, distance_to_end_of_step, should_advance_to_next_step};
+use crate::navigation_controller::algorithms::{
+    advance_step, distance_to_end_of_step, should_advance_to_next_step,
+};
+use algorithms::snap_user_location_to_line;
 use geo::Coord;
 use models::*;
 use std::sync::Mutex;
-use utils::snap_user_location_to_line;
 
 /// Manages the navigation lifecycle of a single trip, requesting the initial route and updating
 /// internal state based on inputs like user location updates.
@@ -197,7 +199,10 @@ impl NavigationController {
                         // let fraction_along_line = route_linestring.line_locate_point(&point!(x: snapped_user_location.coordinates.lng, y: snapped_user_location.coordinates.lat));
 
                         if let Some(step) = current_step {
-                            let distance_to_next_maneuver = distance_to_end_of_step(&snapped_user_location.into(), current_step_linestring);
+                            let distance_to_next_maneuver = distance_to_end_of_step(
+                                &snapped_user_location.into(),
+                                current_step_linestring,
+                            );
 
                             NavigationStateUpdate::Navigating {
                                 snapped_user_location,

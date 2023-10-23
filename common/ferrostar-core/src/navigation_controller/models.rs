@@ -68,6 +68,9 @@ pub enum StepAdvanceMode {
         /// The minimum required horizontal accuracy of the user location.
         /// Values larger than this cannot trigger a step advance.
         minimum_horizontal_accuracy: u16,
+        /// At this (optional) distance, navigation should advance to the next step regardless
+        /// of which LineString appears closer.
+        automatic_advance_distance: Option<u16>,
     },
 }
 

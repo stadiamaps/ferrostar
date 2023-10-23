@@ -1536,7 +1536,7 @@ extension RoutingResponseParseError: Error {}
 public enum StepAdvanceMode {
     case manual
     case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16)
-    case relativeLineStringDistance(minimumHorizontalAccuracy: UInt16)
+    case relativeLineStringDistance(minimumHorizontalAccuracy: UInt16, automaticAdvanceDistance: UInt16?)
 }
 
 public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
@@ -1553,7 +1553,8 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
             )
 
         case 3: return try .relativeLineStringDistance(
-                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf)
+                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf),
+                automaticAdvanceDistance: FfiConverterOptionUInt16.read(from: &buf)
             )
 
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -1570,9 +1571,10 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
             FfiConverterUInt16.write(distance, into: &buf)
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
 
-        case let .relativeLineStringDistance(minimumHorizontalAccuracy):
+        case let .relativeLineStringDistance(minimumHorizontalAccuracy, automaticAdvanceDistance):
             writeInt(&buf, Int32(3))
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+            FfiConverterOptionUInt16.write(automaticAdvanceDistance, into: &buf)
         }
     }
 }

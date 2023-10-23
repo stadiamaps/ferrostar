@@ -124,7 +124,7 @@ interface NavigationStateUpdate {
 interface StepAdvanceMode {
     Manual();
     DistanceToEndOfStep(u16 distance, u16 minimum_horizontal_accuracy);
-    RelativeLineStringDistance(u16 minimum_horizontal_accuracy);
+    RelativeLineStringDistance(u16 minimum_horizontal_accuracy, u16? automatic_advance_distance);
 };
 
 dictionary NavigationControllerConfig {
