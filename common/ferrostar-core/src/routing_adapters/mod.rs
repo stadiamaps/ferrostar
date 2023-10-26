@@ -5,6 +5,7 @@ use crate::{
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
 use std::fmt::Debug;
+use std::sync::Arc;
 
 pub mod error;
 pub mod osrm;
@@ -73,14 +74,14 @@ pub trait RouteResponseParser: Send + Sync + Debug {
 /// is modularity, including the possibility of user-provided implementations, and these will not
 /// always be of a "known" type to the Rust side.
 pub struct RouteAdapter {
-    request_generator: Box<dyn RouteRequestGenerator>,
-    response_parser: Box<dyn RouteResponseParser>,
+    request_generator: Arc<dyn RouteRequestGenerator>,
+    response_parser: Arc<dyn RouteResponseParser>,
 }
 
 impl RouteAdapter {
     pub fn new(
-        request_generator: Box<dyn RouteRequestGenerator>,
-        response_parser: Box<dyn RouteResponseParser>,
+        request_generator: Arc<dyn RouteRequestGenerator>,
+        response_parser: Arc<dyn RouteResponseParser>,
     ) -> Self {
         Self {
             request_generator,

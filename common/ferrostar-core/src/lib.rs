@@ -2,6 +2,7 @@ pub mod models;
 pub mod navigation_controller;
 pub mod routing_adapters;
 
+use std::sync::Arc;
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
 
@@ -27,12 +28,12 @@ pub use routing_adapters::{
 fn create_valhalla_request_generator(
     endpoint_url: String,
     profile: String,
-) -> Box<dyn RouteRequestGenerator> {
-    Box::new(ValhallaHttpRequestGenerator::new(endpoint_url, profile))
+) -> Arc<dyn RouteRequestGenerator> {
+    Arc::new(ValhallaHttpRequestGenerator::new(endpoint_url, profile))
 }
 
-fn create_osrm_response_parser(polyline_precision: u32) -> Box<dyn RouteResponseParser> {
-    Box::new(OsrmResponseParser::new(polyline_precision))
+fn create_osrm_response_parser(polyline_precision: u32) -> Arc<dyn RouteResponseParser> {
+    Arc::new(OsrmResponseParser::new(polyline_precision))
 }
 
 uniffi::include_scaffolding!("ferrostar");

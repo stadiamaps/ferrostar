@@ -135,12 +135,14 @@ dictionary NavigationControllerConfig {
 // Callback interfaces (foreign code can implement these to extend functionality)
 //
 
-callback interface RouteRequestGenerator {
+[Trait]
+interface RouteRequestGenerator {
     [Throws=RoutingRequestGenerationError]
     RouteRequest generate_request(UserLocation user_location, sequence<GeographicCoordinates> waypoints);
 };
 
-callback interface RouteResponseParser {
+[Trait]
+interface RouteResponseParser {
     [Throws=RoutingResponseParseError]
     sequence<Route> parse_response(sequence<u8> response);
 };
