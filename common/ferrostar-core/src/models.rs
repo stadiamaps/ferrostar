@@ -5,7 +5,7 @@ use std::time::SystemTime;
 #[cfg(test)]
 use serde::Serialize;
 
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct GeographicCoordinates {
     pub lng: f64,
@@ -37,7 +37,7 @@ impl From<GeographicCoordinates> for Point {
 }
 
 /// The direction in which the user/device is observed to be traveling.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct CourseOverGround {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
     /// true north (N = 0, E = 90, S = 180, W = 270).
@@ -56,7 +56,7 @@ impl CourseOverGround {
 ///
 /// In addition to coordinates, this includes estimated accuracy and course information,
 /// which can influence navigation logic and UI.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct UserLocation {
     pub coordinates: GeographicCoordinates,
     /// The estimated accuracy of the coordinate (in meters)
@@ -76,7 +76,7 @@ impl From<UserLocation> for Point {
 ///
 /// NOTE: This type is unstable and is still under active development and should be
 /// considered unstable.
-#[derive(Debug)]
+#[derive(Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinates>,
@@ -95,7 +95,7 @@ pub struct Route {
 /// NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
 /// but we will intentionally define this somewhat looser unless/until it becomes clear something
 ///
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct RouteStep {
     pub geometry: Vec<GeographicCoordinates>,
@@ -118,7 +118,7 @@ impl RouteStep {
 
 // TODO: trigger_at doesn't really have to live in the public interface; figure out if we want to have a separate FFI vs internal type
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, uniffi::Record)]
 pub struct SpokenInstruction {
     /// Plain-text instruction which can be synthesized with a TTS engine.
     pub text: String,
@@ -128,19 +128,10 @@ pub struct SpokenInstruction {
     pub trigger_distance_before_maneuver: f64,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-#[cfg_attr(test, derive(Serialize))]
-pub struct VisualInstructions {
-    pub primary_content: VisualInstructionContent,
-    pub secondary_content: Option<VisualInstructionContent>,
-    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
-    pub trigger_distance_before_maneuver: f64,
-}
-
 /// Indicates the type of maneuver to perform.
 ///
 /// Frequently used in conjunction with [ManeuverModifier].
-#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, uniffi::Enum)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverType {
@@ -170,7 +161,7 @@ pub enum ManeuverType {
 }
 
 /// Specifies additional information about a [ManeuverType]
-#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, uniffi::Enum)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverModifier {
@@ -188,11 +179,20 @@ pub enum ManeuverModifier {
     SharpLeft,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct VisualInstructionContent {
     pub text: String,
     pub maneuver_type: Option<ManeuverType>,
     pub maneuver_modifier: Option<ManeuverModifier>,
     pub roundabout_exit_degrees: Option<u16>,
+}
+
+#[derive(Debug, Clone, PartialEq, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
+pub struct VisualInstructions {
+    pub primary_content: VisualInstructionContent,
+    pub secondary_content: Option<VisualInstructionContent>,
+    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    pub trigger_distance_before_maneuver: f64,
 }

@@ -3,7 +3,7 @@ use uniffi::UnexpectedUniFFICallbackError;
 // TODO: This implementation seems less than ideal. In particular, it hides what sort of JSON error occurred due to an apparent bug in UniFFI.
 // The trouble appears to be with generating "flat" enum bindings that are used with callback
 // interfaces when the underlying actually has fields.
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, thiserror::Error, uniffi::Error)]
 pub enum RoutingRequestGenerationError {
     #[error("Too few waypoints were provided to compute a route.")]
     NotEnoughWaypoints,
@@ -25,7 +25,7 @@ impl From<serde_json::Error> for RoutingRequestGenerationError {
     }
 }
 
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, thiserror::Error, uniffi::Error)]
 pub enum RoutingResponseParseError {
     // TODO: Unable to find route and other common errors
     #[error("Failed to parse route response: {error}.")]

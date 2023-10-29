@@ -3,7 +3,7 @@ import UniFFI
 
 extension CLLocationCoordinate2D {
     var geographicCoordinates: UniFFI.GeographicCoordinates {
-        UniFFI.GeographicCoordinates(lat: latitude, lng: longitude)
+        UniFFI.GeographicCoordinates(lng: longitude, lat: latitude)
     }
 
     init(geographicCoordinates: GeographicCoordinates) {

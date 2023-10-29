@@ -8,7 +8,7 @@ use crate::navigation_controller::algorithms::{
 use algorithms::snap_user_location_to_line;
 use geo::Coord;
 use models::*;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
 /// Manages the navigation lifecycle of a single trip, requesting the initial route and updating
 /// internal state based on inputs like user location updates.
@@ -25,6 +25,7 @@ use std::sync::Mutex;
 ///
 /// This is intentionally impossible to construct without a user location, so tasks like
 /// waiting for a fix (or determining if a cached fix is good enough), are left to higher levels.
+#[derive(uniffi::Object)]
 pub struct NavigationController {
     /// The last known location of the user. For all intents and purposes, the "user" is assumed
     /// to be at the location reported by their device (phone, car, etc.)
@@ -36,13 +37,15 @@ pub struct NavigationController {
     config: NavigationControllerConfig,
 }
 
+#[uniffi::export]
 impl NavigationController {
     /// Creates a new trip navigation controller given the user's last known location and a route.
+    #[uniffi::constructor]
     pub fn new(
         last_user_location: UserLocation,
         route: Route,
         config: NavigationControllerConfig,
-    ) -> Self {
+    ) -> Arc<Self> {
         let remaining_waypoints = route.waypoints.clone();
         let remaining_steps = route.steps.clone();
         let route_linestring = route
@@ -53,15 +56,15 @@ impl NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return Self {
+            return Arc::new(Self {
                 state: Mutex::new(TripState::Complete),
                 config,
-            };
+            });
         };
 
         let current_step_linestring = current_route_step.get_linestring();
 
-        Self {
+        Arc::new(Self {
             state: Mutex::new(TripState::Navigating {
                 last_user_location,
                 snapped_user_location: snap_user_location_to_line(
@@ -75,7 +78,7 @@ impl NavigationController {
                 current_step_linestring,
             }),
             config,
-        }
+        })
     }
 
     /// Advances navigation to the next step.

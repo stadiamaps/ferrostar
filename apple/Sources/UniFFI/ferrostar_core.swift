@@ -5,8 +5,8 @@ import Foundation
 // Depending on the consumer's build setup, the low-level FFI code
 // might be in a separate module, or it might be compiled inline into
 // this module. This is a bit of light hackery to work with both.
-#if canImport(ferrostarFFI)
-    import ferrostarFFI
+#if canImport(ferrostar_coreFFI)
+    import ferrostar_coreFFI
 #endif
 
 private extension RustBuffer {
@@ -298,19 +298,6 @@ private func uniffiCheckCallStatus(
 
 // Public interface members begin here.
 
-private struct FfiConverterUInt8: FfiConverterPrimitive {
-    typealias FfiType = UInt8
-    typealias SwiftType = UInt8
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UInt8 {
-        return try lift(readInt(&buf))
-    }
-
-    public static func write(_ value: UInt8, into buf: inout [UInt8]) {
-        writeInt(&buf, lower(value))
-    }
-}
-
 private struct FfiConverterUInt16: FfiConverterPrimitive {
     typealias FfiType = UInt16
     typealias SwiftType = UInt16
@@ -385,6 +372,21 @@ private struct FfiConverterString: FfiConverter {
         let len = Int32(value.utf8.count)
         writeInt(&buf, len)
         writeBytes(&buf, value.utf8)
+    }
+}
+
+private struct FfiConverterData: FfiConverterRustBuffer {
+    typealias SwiftType = Data
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Data {
+        let len: Int32 = try readInt(&buf)
+        return try Data(readBytes(&buf, count: Int(len)))
+    }
+
+    public static func write(_ value: Data, into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        writeBytes(&buf, value)
     }
 }
 
@@ -512,7 +514,7 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 
 public protocol RouteAdapterProtocol {
     func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest
-    func parseResponse(response: [UInt8]) throws -> [Route]
+    func parseResponse(response: Data) throws -> [Route]
 }
 
 public class RouteAdapter: RouteAdapterProtocol {
@@ -557,11 +559,11 @@ public class RouteAdapter: RouteAdapterProtocol {
         )
     }
 
-    public func parseResponse(response: [UInt8]) throws -> [Route] {
+    public func parseResponse(response: Data) throws -> [Route] {
         return try FfiConverterSequenceTypeRoute.lift(
             rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
                 uniffi_ferrostar_core_fn_method_routeadapter_parse_response(self.pointer,
-                                                                            FfiConverterSequenceUInt8.lower(response), $0)
+                                                                            FfiConverterData.lower(response), $0)
             }
         )
     }
@@ -673,7 +675,7 @@ public func FfiConverterTypeRouteRequestGenerator_lower(_ value: RouteRequestGen
 }
 
 public protocol RouteResponseParserProtocol {
-    func parseResponse(response: [UInt8]) throws -> [Route]
+    func parseResponse(response: Data) throws -> [Route]
 }
 
 public class RouteResponseParser: RouteResponseParserProtocol {
@@ -690,11 +692,11 @@ public class RouteResponseParser: RouteResponseParserProtocol {
         try! rustCall { uniffi_ferrostar_core_fn_free_routeresponseparser(pointer, $0) }
     }
 
-    public func parseResponse(response: [UInt8]) throws -> [Route] {
+    public func parseResponse(response: Data) throws -> [Route] {
         return try FfiConverterSequenceTypeRoute.lift(
             rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
                 uniffi_ferrostar_core_fn_method_routeresponseparser_parse_response(self.pointer,
-                                                                                   FfiConverterSequenceUInt8.lower(response), $0)
+                                                                                   FfiConverterData.lower(response), $0)
             }
         )
     }
@@ -790,45 +792,45 @@ public func FfiConverterTypeCourseOverGround_lower(_ value: CourseOverGround) ->
 }
 
 public struct GeographicCoordinates {
-    public var lat: Double
     public var lng: Double
+    public var lat: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(lat: Double, lng: Double) {
-        self.lat = lat
+    public init(lng: Double, lat: Double) {
         self.lng = lng
+        self.lat = lat
     }
 }
 
 extension GeographicCoordinates: Equatable, Hashable {
     public static func == (lhs: GeographicCoordinates, rhs: GeographicCoordinates) -> Bool {
-        if lhs.lat != rhs.lat {
+        if lhs.lng != rhs.lng {
             return false
         }
-        if lhs.lng != rhs.lng {
+        if lhs.lat != rhs.lat {
             return false
         }
         return true
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(lat)
         hasher.combine(lng)
+        hasher.combine(lat)
     }
 }
 
 public struct FfiConverterTypeGeographicCoordinates: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> GeographicCoordinates {
         return try GeographicCoordinates(
-            lat: FfiConverterDouble.read(from: &buf),
-            lng: FfiConverterDouble.read(from: &buf)
+            lng: FfiConverterDouble.read(from: &buf),
+            lat: FfiConverterDouble.read(from: &buf)
         )
     }
 
     public static func write(_ value: GeographicCoordinates, into buf: inout [UInt8]) {
-        FfiConverterDouble.write(value.lat, into: &buf)
         FfiConverterDouble.write(value.lng, into: &buf)
+        FfiConverterDouble.write(value.lat, into: &buf)
     }
 }
 
@@ -1535,7 +1537,7 @@ extension NavigationStateUpdate: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum RouteRequest {
-    case httpPost(url: String, headers: [String: String], body: [UInt8])
+    case httpPost(url: String, headers: [String: String], body: Data)
 }
 
 public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
@@ -1547,7 +1549,7 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
         case 1: return try .httpPost(
                 url: FfiConverterString.read(from: &buf),
                 headers: FfiConverterDictionaryStringString.read(from: &buf),
-                body: FfiConverterSequenceUInt8.read(from: &buf)
+                body: FfiConverterData.read(from: &buf)
             )
 
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -1560,7 +1562,7 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
             FfiConverterString.write(url, into: &buf)
             FfiConverterDictionaryStringString.write(headers, into: &buf)
-            FfiConverterSequenceUInt8.write(body, into: &buf)
+            FfiConverterData.write(body, into: &buf)
         }
     }
 }
@@ -1576,14 +1578,9 @@ public func FfiConverterTypeRouteRequest_lower(_ value: RouteRequest) -> RustBuf
 extension RouteRequest: Equatable, Hashable {}
 
 public enum RoutingRequestGenerationError {
-    // Simple error enums only carry a message
-    case NotEnoughWaypoints(message: String)
-
-    // Simple error enums only carry a message
-    case JsonError(message: String)
-
-    // Simple error enums only carry a message
-    case UnknownError(message: String)
+    case NotEnoughWaypoints
+    case JsonError
+    case UnknownError
 
     fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
         return try FfiConverterTypeRoutingRequestGenerationError.lift(error)
@@ -1596,17 +1593,9 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RoutingRequestGenerationError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        case 1: return try .NotEnoughWaypoints(
-                message: FfiConverterString.read(from: &buf)
-            )
-
-        case 2: return try .JsonError(
-                message: FfiConverterString.read(from: &buf)
-            )
-
-        case 3: return try .UnknownError(
-                message: FfiConverterString.read(from: &buf)
-            )
+        case 1: return .NotEnoughWaypoints
+        case 2: return .JsonError
+        case 3: return .UnknownError
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -1614,11 +1603,13 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
 
     public static func write(_ value: RoutingRequestGenerationError, into buf: inout [UInt8]) {
         switch value {
-        case .NotEnoughWaypoints(_ /* message is ignored*/ ):
+        case .NotEnoughWaypoints:
             writeInt(&buf, Int32(1))
-        case .JsonError(_ /* message is ignored*/ ):
+
+        case .JsonError:
             writeInt(&buf, Int32(2))
-        case .UnknownError(_ /* message is ignored*/ ):
+
+        case .UnknownError:
             writeInt(&buf, Int32(3))
         }
     }
@@ -1852,28 +1843,6 @@ private struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
     }
 }
 
-private struct FfiConverterSequenceUInt8: FfiConverterRustBuffer {
-    typealias SwiftType = [UInt8]
-
-    public static func write(_ value: [UInt8], into buf: inout [UInt8]) {
-        let len = Int32(value.count)
-        writeInt(&buf, len)
-        for item in value {
-            FfiConverterUInt8.write(item, into: &buf)
-        }
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [UInt8] {
-        let len: Int32 = try readInt(&buf)
-        var seq = [UInt8]()
-        seq.reserveCapacity(Int(len))
-        for _ in 0 ..< len {
-            try seq.append(FfiConverterUInt8.read(from: &buf))
-        }
-        return seq
-    }
-}
-
 private struct FfiConverterSequenceTypeGeographicCoordinates: FfiConverterRustBuffer {
     typealias SwiftType = [GeographicCoordinates]
 
@@ -2022,37 +1991,37 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if uniffi_ferrostar_core_checksum_func_create_osrm_response_parser() != 50895 {
+    if uniffi_ferrostar_core_checksum_func_create_osrm_response_parser() != 13999 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_func_create_valhalla_request_generator() != 62930 {
+    if uniffi_ferrostar_core_checksum_func_create_valhalla_request_generator() != 29123 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_navigationcontroller_advance_to_next_step() != 53731 {
+    if uniffi_ferrostar_core_checksum_method_navigationcontroller_advance_to_next_step() != 1041 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_navigationcontroller_update_user_location() != 4353 {
+    if uniffi_ferrostar_core_checksum_method_navigationcontroller_update_user_location() != 64701 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_routeadapter_generate_request() != 46269 {
+    if uniffi_ferrostar_core_checksum_method_routeadapter_generate_request() != 61210 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_routeadapter_parse_response() != 11562 {
+    if uniffi_ferrostar_core_checksum_method_routeadapter_parse_response() != 49628 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_routerequestgenerator_generate_request() != 65091 {
+    if uniffi_ferrostar_core_checksum_method_routerequestgenerator_generate_request() != 10361 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_routeresponseparser_parse_response() != 27004 {
+    if uniffi_ferrostar_core_checksum_method_routeresponseparser_parse_response() != 54334 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_constructor_navigationcontroller_new() != 55587 {
+    if uniffi_ferrostar_core_checksum_constructor_navigationcontroller_new() != 12876 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_constructor_routeadapter_new() != 17242 {
+    if uniffi_ferrostar_core_checksum_constructor_routeadapter_new() != 32286 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_constructor_routeadapter_new_valhalla_http() != 148 {
+    if uniffi_ferrostar_core_checksum_constructor_routeadapter_new_valhalla_http() != 17926 {
         return InitializationResult.apiChecksumMismatch
     }
 

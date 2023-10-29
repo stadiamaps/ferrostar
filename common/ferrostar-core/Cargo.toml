@@ -1,6 +1,6 @@
 [package]
 name = "ferrostar-core"
-version = "0.0.9"
+version = "0.0.10"
 authors = ["Ian Wagner <ian@stadiamaps.com>", "Luke Seelenbinder <luke@stadiamaps.com>"]
 license = "BSD-3-Clause"
 repository = "https://github.com/stadiamaps/ferrostar"

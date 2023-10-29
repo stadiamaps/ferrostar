@@ -25,7 +25,7 @@ pub(super) enum TripState {
 }
 
 /// Public updates pushed up to the direct user of the NavigationController.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, uniffi::Enum)]
 pub enum NavigationStateUpdate {
     Navigating {
         snapped_user_location: UserLocation,
@@ -50,7 +50,7 @@ pub enum StepAdvanceStatus {
     EndOfRoute,
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, uniffi::Enum)]
 pub enum StepAdvanceMode {
     /// Never advances to the next step automatically
     Manual,
@@ -74,7 +74,7 @@ pub enum StepAdvanceMode {
     },
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, uniffi::Record)]
 pub struct NavigationControllerConfig {
     pub step_advance: StepAdvanceMode,
 }

@@ -20,10 +20,10 @@ private class MockRouteAdapter: RouteAdapterProtocol {
     }
 
     func generateRequest(userLocation: UniFFI.UserLocation, waypoints: [UniFFI.GeographicCoordinates]) throws -> UniFFI.RouteRequest {
-        return UniFFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: [])
+        return UniFFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: Data())
     }
 
-    func parseResponse(response _: [UInt8]) throws -> [UniFFI.Route] {
+    func parseResponse(response _: Data) throws -> [UniFFI.Route] {
         return routes
     }
 }

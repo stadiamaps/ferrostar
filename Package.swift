@@ -12,14 +12,14 @@ if useLocalFramework {
         name: "FerrostarCoreRS",
         // IMPORTANT: Swift packages importing this locally will not be able to
         // import Ferrostar core unless you specify this as a relative path!
-        path: "./common/target/ios/ferrostar-rs.xcframework"
+        path: "./common/target/ios/libferrostar_core-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.0.9"
-    let releaseChecksum = "96c50c1e27733e9d88cecb337aa2ee86797d2ba07461f20b76f6577a4c3c66b5"
+    let releaseTag = "0.0.10"
+    let releaseChecksum = "fedb1818ae0da6cfac9d0004ad4fc32f77673e831a1c84a18a7233accf15427c"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
-        url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/ferrostar-rs.xcframework.zip",
+        url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar_core-rs.xcframework.zip",
         checksum: releaseChecksum
     )
 }
