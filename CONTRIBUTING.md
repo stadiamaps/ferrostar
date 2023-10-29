@@ -55,6 +55,7 @@ and install targets automatically.
 xcode-select --install
 ```
 
+* Since you're developing locally, set `let useLocalFramework = true` in `Package.swift`. 
 * Run the iOS build script
 
 ```shell
@@ -70,9 +71,6 @@ it is not possible with the Swift package flow.
 Further, the "normal" Xcode build flow always assumes xcframeworks can't change during build,
 so it processes them before any other build rules.
 Given these limitations, we opted for a shell script until further notice.
-
-If Xcode is not behaving well,
-a quick restart of Xcode or resetting the package graph usually clears it up.
 
 ### Android
 
