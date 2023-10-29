@@ -2,9 +2,9 @@ pub mod models;
 pub mod navigation_controller;
 pub mod routing_adapters;
 
-use std::sync::Arc;
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
+use std::sync::Arc;
 
 // For UniFFI, which requires everything to be visible at the root
 pub use models::*;
