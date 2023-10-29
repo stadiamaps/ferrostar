@@ -19,13 +19,13 @@ private extension RustBuffer {
     }
 
     static func from(_ ptr: UnsafeBufferPointer<UInt8>) -> RustBuffer {
-        try! rustCall { ffi_ferrostar_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
+        try! rustCall { ffi_ferrostar_core_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
     }
 
     // Frees the buffer in place.
     // The buffer must not be used after this is called.
     func deallocate() {
-        try! rustCall { ffi_ferrostar_rustbuffer_free(self, $0) }
+        try! rustCall { ffi_ferrostar_core_rustbuffer_free(self, $0) }
     }
 }
 
@@ -224,6 +224,7 @@ private enum UniffiInternalError: LocalizedError {
 private let CALL_SUCCESS: Int8 = 0
 private let CALL_ERROR: Int8 = 1
 private let CALL_PANIC: Int8 = 2
+private let CALL_CANCELLED: Int8 = 3
 
 private extension RustCallStatus {
     init() {
@@ -286,6 +287,9 @@ private func uniffiCheckCallStatus(
             callStatus.errorBuf.deallocate()
             throw UniffiInternalError.rustPanic("Rust panic")
         }
+
+    case CALL_CANCELLED:
+        throw CancellationError()
 
     default:
         throw UniffiInternalError.unexpectedRustCallStatusCode
@@ -436,7 +440,7 @@ public class NavigationController: NavigationControllerProtocol {
 
     public convenience init(lastUserLocation: UserLocation, route: Route, config: NavigationControllerConfig) {
         self.init(unsafeFromRawPointer: try! rustCall {
-            uniffi_ferrostar_fn_constructor_navigationcontroller_new(
+            uniffi_ferrostar_core_fn_constructor_navigationcontroller_new(
                 FfiConverterTypeUserLocation.lower(lastUserLocation),
                 FfiConverterTypeRoute.lower(route),
                 FfiConverterTypeNavigationControllerConfig.lower(config), $0
@@ -445,14 +449,14 @@ public class NavigationController: NavigationControllerProtocol {
     }
 
     deinit {
-        try! rustCall { uniffi_ferrostar_fn_free_navigationcontroller(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_core_fn_free_navigationcontroller(pointer, $0) }
     }
 
     public func advanceToNextStep() -> NavigationStateUpdate {
         return try! FfiConverterTypeNavigationStateUpdate.lift(
             try!
                 rustCall {
-                    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.pointer, $0)
+                    uniffi_ferrostar_core_fn_method_navigationcontroller_advance_to_next_step(self.pointer, $0)
                 }
         )
     }
@@ -461,8 +465,8 @@ public class NavigationController: NavigationControllerProtocol {
         return try! FfiConverterTypeNavigationStateUpdate.lift(
             try!
                 rustCall {
-                    uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.pointer,
-                                                                                         FfiConverterTypeUserLocation.lower(location), $0)
+                    uniffi_ferrostar_core_fn_method_navigationcontroller_update_user_location(self.pointer,
+                                                                                              FfiConverterTypeUserLocation.lower(location), $0)
                 }
         )
     }
@@ -523,20 +527,20 @@ public class RouteAdapter: RouteAdapterProtocol {
 
     public convenience init(requestGenerator: RouteRequestGenerator, responseParser: RouteResponseParser) {
         self.init(unsafeFromRawPointer: try! rustCall {
-            uniffi_ferrostar_fn_constructor_routeadapter_new(
-                FfiConverterCallbackInterfaceRouteRequestGenerator.lower(requestGenerator),
-                FfiConverterCallbackInterfaceRouteResponseParser.lower(responseParser), $0
+            uniffi_ferrostar_core_fn_constructor_routeadapter_new(
+                FfiConverterTypeRouteRequestGenerator.lower(requestGenerator),
+                FfiConverterTypeRouteResponseParser.lower(responseParser), $0
             )
         })
     }
 
     deinit {
-        try! rustCall { uniffi_ferrostar_fn_free_routeadapter(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_core_fn_free_routeadapter(pointer, $0) }
     }
 
     public static func newValhallaHttp(endpointUrl: String, profile: String) -> RouteAdapter {
         return RouteAdapter(unsafeFromRawPointer: try! rustCall {
-            uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
+            uniffi_ferrostar_core_fn_constructor_routeadapter_new_valhalla_http(
                 FfiConverterString.lower(endpointUrl),
                 FfiConverterString.lower(profile), $0
             )
@@ -546,9 +550,9 @@ public class RouteAdapter: RouteAdapterProtocol {
     public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
             rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
-                uniffi_ferrostar_fn_method_routeadapter_generate_request(self.pointer,
-                                                                         FfiConverterTypeUserLocation.lower(userLocation),
-                                                                         FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
+                uniffi_ferrostar_core_fn_method_routeadapter_generate_request(self.pointer,
+                                                                              FfiConverterTypeUserLocation.lower(userLocation),
+                                                                              FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
             }
         )
     }
@@ -556,8 +560,8 @@ public class RouteAdapter: RouteAdapterProtocol {
     public func parseResponse(response: [UInt8]) throws -> [Route] {
         return try FfiConverterSequenceTypeRoute.lift(
             rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
-                uniffi_ferrostar_fn_method_routeadapter_parse_response(self.pointer,
-                                                                       FfiConverterSequenceUInt8.lower(response), $0)
+                uniffi_ferrostar_core_fn_method_routeadapter_parse_response(self.pointer,
+                                                                            FfiConverterSequenceUInt8.lower(response), $0)
             }
         )
     }
@@ -599,6 +603,139 @@ public func FfiConverterTypeRouteAdapter_lift(_ pointer: UnsafeMutableRawPointer
 
 public func FfiConverterTypeRouteAdapter_lower(_ value: RouteAdapter) -> UnsafeMutableRawPointer {
     return FfiConverterTypeRouteAdapter.lower(value)
+}
+
+public protocol RouteRequestGeneratorProtocol {
+    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest
+}
+
+public class RouteRequestGenerator: RouteRequestGeneratorProtocol {
+    fileprivate let pointer: UnsafeMutableRawPointer
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    deinit {
+        try! rustCall { uniffi_ferrostar_core_fn_free_routerequestgenerator(pointer, $0) }
+    }
+
+    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest {
+        return try FfiConverterTypeRouteRequest.lift(
+            rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
+                uniffi_ferrostar_core_fn_method_routerequestgenerator_generate_request(self.pointer,
+                                                                                       FfiConverterTypeUserLocation.lower(userLocation),
+                                                                                       FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
+            }
+        )
+    }
+}
+
+public struct FfiConverterTypeRouteRequestGenerator: FfiConverter {
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = RouteRequestGenerator
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteRequestGenerator {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if ptr == nil {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: RouteRequestGenerator, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteRequestGenerator {
+        return RouteRequestGenerator(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: RouteRequestGenerator) -> UnsafeMutableRawPointer {
+        return value.pointer
+    }
+}
+
+public func FfiConverterTypeRouteRequestGenerator_lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteRequestGenerator {
+    return try FfiConverterTypeRouteRequestGenerator.lift(pointer)
+}
+
+public func FfiConverterTypeRouteRequestGenerator_lower(_ value: RouteRequestGenerator) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeRouteRequestGenerator.lower(value)
+}
+
+public protocol RouteResponseParserProtocol {
+    func parseResponse(response: [UInt8]) throws -> [Route]
+}
+
+public class RouteResponseParser: RouteResponseParserProtocol {
+    fileprivate let pointer: UnsafeMutableRawPointer
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    deinit {
+        try! rustCall { uniffi_ferrostar_core_fn_free_routeresponseparser(pointer, $0) }
+    }
+
+    public func parseResponse(response: [UInt8]) throws -> [Route] {
+        return try FfiConverterSequenceTypeRoute.lift(
+            rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
+                uniffi_ferrostar_core_fn_method_routeresponseparser_parse_response(self.pointer,
+                                                                                   FfiConverterSequenceUInt8.lower(response), $0)
+            }
+        )
+    }
+}
+
+public struct FfiConverterTypeRouteResponseParser: FfiConverter {
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = RouteResponseParser
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteResponseParser {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if ptr == nil {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: RouteResponseParser, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteResponseParser {
+        return RouteResponseParser(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: RouteResponseParser) -> UnsafeMutableRawPointer {
+        return value.pointer
+    }
+}
+
+public func FfiConverterTypeRouteResponseParser_lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteResponseParser {
+    return try FfiConverterTypeRouteResponseParser.lift(pointer)
+}
+
+public func FfiConverterTypeRouteResponseParser_lower(_ value: RouteResponseParser) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeRouteResponseParser.lower(value)
 }
 
 public struct CourseOverGround {
@@ -1477,11 +1614,11 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
 
     public static func write(_ value: RoutingRequestGenerationError, into buf: inout [UInt8]) {
         switch value {
-        case let .NotEnoughWaypoints(message):
+        case .NotEnoughWaypoints(_ /* message is ignored*/ ):
             writeInt(&buf, Int32(1))
-        case let .JsonError(message):
+        case .JsonError(_ /* message is ignored*/ ):
             writeInt(&buf, Int32(2))
-        case let .UnknownError(message):
+        case .UnknownError(_ /* message is ignored*/ ):
             writeInt(&buf, Int32(3))
         }
     }
@@ -1588,290 +1725,6 @@ public func FfiConverterTypeStepAdvanceMode_lower(_ value: StepAdvanceMode) -> R
 }
 
 extension StepAdvanceMode: Equatable, Hashable {}
-
-private extension NSLock {
-    func withLock<T>(f: () throws -> T) rethrows -> T {
-        lock()
-        defer { self.unlock() }
-        return try f()
-    }
-}
-
-private typealias UniFFICallbackHandle = UInt64
-private class UniFFICallbackHandleMap<T> {
-    private var leftMap: [UniFFICallbackHandle: T] = [:]
-    private var counter: [UniFFICallbackHandle: UInt64] = [:]
-    private var rightMap: [ObjectIdentifier: UniFFICallbackHandle] = [:]
-
-    private let lock = NSLock()
-    private var currentHandle: UniFFICallbackHandle = 0
-    private let stride: UniFFICallbackHandle = 1
-
-    func insert(obj: T) -> UniFFICallbackHandle {
-        lock.withLock {
-            let id = ObjectIdentifier(obj as AnyObject)
-            let handle = rightMap[id] ?? {
-                currentHandle += stride
-                let handle = currentHandle
-                leftMap[handle] = obj
-                rightMap[id] = handle
-                return handle
-            }()
-            counter[handle] = (counter[handle] ?? 0) + 1
-            return handle
-        }
-    }
-
-    func get(handle: UniFFICallbackHandle) -> T? {
-        lock.withLock {
-            leftMap[handle]
-        }
-    }
-
-    func delete(handle: UniFFICallbackHandle) {
-        remove(handle: handle)
-    }
-
-    @discardableResult
-    func remove(handle: UniFFICallbackHandle) -> T? {
-        lock.withLock {
-            defer { counter[handle] = (counter[handle] ?? 1) - 1 }
-            guard counter[handle] == 1 else { return leftMap[handle] }
-            let obj = leftMap.removeValue(forKey: handle)
-            if let obj = obj {
-                rightMap.removeValue(forKey: ObjectIdentifier(obj as AnyObject))
-            }
-            return obj
-        }
-    }
-}
-
-// Magic number for the Rust proxy to call using the same mechanism as every other method,
-// to free the callback once it's dropped by Rust.
-private let IDX_CALLBACK_FREE: Int32 = 0
-// Callback return codes
-private let UNIFFI_CALLBACK_SUCCESS: Int32 = 0
-private let UNIFFI_CALLBACK_ERROR: Int32 = 1
-private let UNIFFI_CALLBACK_UNEXPECTED_ERROR: Int32 = 2
-
-// Declaration and FfiConverters for RouteRequestGenerator Callback Interface
-
-public protocol RouteRequestGenerator: AnyObject {
-    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest
-}
-
-// The ForeignCallback that is passed to Rust.
-private let foreignCallbackCallbackInterfaceRouteRequestGenerator: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
-
-    func invokeGenerateRequest(_ swiftCallbackInterface: RouteRequestGenerator, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
-        var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
-        func makeCall() throws -> Int32 {
-            let result = try swiftCallbackInterface.generateRequest(
-                userLocation: FfiConverterTypeUserLocation.read(from: &reader),
-                waypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &reader)
-            )
-            var writer = [UInt8]()
-            FfiConverterTypeRouteRequest.write(result, into: &writer)
-            out_buf.pointee = RustBuffer(bytes: writer)
-            return UNIFFI_CALLBACK_SUCCESS
-        }
-        do {
-            return try makeCall()
-        } catch let error as RoutingRequestGenerationError {
-            out_buf.pointee = FfiConverterTypeRoutingRequestGenerationError.lower(error)
-            return UNIFFI_CALLBACK_ERROR
-        }
-    }
-
-    switch method {
-    case IDX_CALLBACK_FREE:
-        FfiConverterCallbackInterfaceRouteRequestGenerator.drop(handle: handle)
-        // Sucessful return
-        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
-        return UNIFFI_CALLBACK_SUCCESS
-    case 1:
-        let cb: RouteRequestGenerator
-        do {
-            cb = try FfiConverterCallbackInterfaceRouteRequestGenerator.lift(handle)
-        } catch {
-            out_buf.pointee = FfiConverterString.lower("RouteRequestGenerator: Invalid handle")
-            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-        }
-        do {
-            return try invokeGenerateRequest(cb, argsData, argsLen, out_buf)
-        } catch {
-            out_buf.pointee = FfiConverterString.lower(String(describing: error))
-            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-        }
-
-    // This should never happen, because an out of bounds method index won't
-    // ever be used. Once we can catch errors, we should return an InternalError.
-    // https://github.com/mozilla/uniffi-rs/issues/351
-    default:
-        // An unexpected error happened.
-        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
-        return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-    }
-}
-
-// FfiConverter protocol for callback interfaces
-private enum FfiConverterCallbackInterfaceRouteRequestGenerator {
-    private static let initCallbackOnce: () = {
-        // Swift ensures this initializer code will once run once, even when accessed by multiple threads.
-        try! rustCall { (err: UnsafeMutablePointer<RustCallStatus>) in
-            uniffi_ferrostar_fn_init_callback_routerequestgenerator(foreignCallbackCallbackInterfaceRouteRequestGenerator, err)
-        }
-    }()
-
-    private static func ensureCallbackinitialized() {
-        _ = initCallbackOnce
-    }
-
-    static func drop(handle: UniFFICallbackHandle) {
-        handleMap.remove(handle: handle)
-    }
-
-    private static var handleMap = UniFFICallbackHandleMap<RouteRequestGenerator>()
-}
-
-extension FfiConverterCallbackInterfaceRouteRequestGenerator: FfiConverter {
-    typealias SwiftType = RouteRequestGenerator
-    // We can use Handle as the FfiType because it's a typealias to UInt64
-    typealias FfiType = UniFFICallbackHandle
-
-    public static func lift(_ handle: UniFFICallbackHandle) throws -> SwiftType {
-        ensureCallbackinitialized()
-        guard let callback = handleMap.get(handle: handle) else {
-            throw UniffiInternalError.unexpectedStaleHandle
-        }
-        return callback
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        ensureCallbackinitialized()
-        let handle: UniFFICallbackHandle = try readInt(&buf)
-        return try lift(handle)
-    }
-
-    public static func lower(_ v: SwiftType) -> UniFFICallbackHandle {
-        ensureCallbackinitialized()
-        return handleMap.insert(obj: v)
-    }
-
-    public static func write(_ v: SwiftType, into buf: inout [UInt8]) {
-        ensureCallbackinitialized()
-        writeInt(&buf, lower(v))
-    }
-}
-
-// Declaration and FfiConverters for RouteResponseParser Callback Interface
-
-public protocol RouteResponseParser: AnyObject {
-    func parseResponse(response: [UInt8]) throws -> [Route]
-}
-
-// The ForeignCallback that is passed to Rust.
-private let foreignCallbackCallbackInterfaceRouteResponseParser: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
-
-    func invokeParseResponse(_ swiftCallbackInterface: RouteResponseParser, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
-        var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
-        func makeCall() throws -> Int32 {
-            let result = try swiftCallbackInterface.parseResponse(
-                response: FfiConverterSequenceUInt8.read(from: &reader)
-            )
-            var writer = [UInt8]()
-            FfiConverterSequenceTypeRoute.write(result, into: &writer)
-            out_buf.pointee = RustBuffer(bytes: writer)
-            return UNIFFI_CALLBACK_SUCCESS
-        }
-        do {
-            return try makeCall()
-        } catch let error as RoutingResponseParseError {
-            out_buf.pointee = FfiConverterTypeRoutingResponseParseError.lower(error)
-            return UNIFFI_CALLBACK_ERROR
-        }
-    }
-
-    switch method {
-    case IDX_CALLBACK_FREE:
-        FfiConverterCallbackInterfaceRouteResponseParser.drop(handle: handle)
-        // Sucessful return
-        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
-        return UNIFFI_CALLBACK_SUCCESS
-    case 1:
-        let cb: RouteResponseParser
-        do {
-            cb = try FfiConverterCallbackInterfaceRouteResponseParser.lift(handle)
-        } catch {
-            out_buf.pointee = FfiConverterString.lower("RouteResponseParser: Invalid handle")
-            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-        }
-        do {
-            return try invokeParseResponse(cb, argsData, argsLen, out_buf)
-        } catch {
-            out_buf.pointee = FfiConverterString.lower(String(describing: error))
-            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-        }
-
-    // This should never happen, because an out of bounds method index won't
-    // ever be used. Once we can catch errors, we should return an InternalError.
-    // https://github.com/mozilla/uniffi-rs/issues/351
-    default:
-        // An unexpected error happened.
-        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
-        return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-    }
-}
-
-// FfiConverter protocol for callback interfaces
-private enum FfiConverterCallbackInterfaceRouteResponseParser {
-    private static let initCallbackOnce: () = {
-        // Swift ensures this initializer code will once run once, even when accessed by multiple threads.
-        try! rustCall { (err: UnsafeMutablePointer<RustCallStatus>) in
-            uniffi_ferrostar_fn_init_callback_routeresponseparser(foreignCallbackCallbackInterfaceRouteResponseParser, err)
-        }
-    }()
-
-    private static func ensureCallbackinitialized() {
-        _ = initCallbackOnce
-    }
-
-    static func drop(handle: UniFFICallbackHandle) {
-        handleMap.remove(handle: handle)
-    }
-
-    private static var handleMap = UniFFICallbackHandleMap<RouteResponseParser>()
-}
-
-extension FfiConverterCallbackInterfaceRouteResponseParser: FfiConverter {
-    typealias SwiftType = RouteResponseParser
-    // We can use Handle as the FfiType because it's a typealias to UInt64
-    typealias FfiType = UniFFICallbackHandle
-
-    public static func lift(_ handle: UniFFICallbackHandle) throws -> SwiftType {
-        ensureCallbackinitialized()
-        guard let callback = handleMap.get(handle: handle) else {
-            throw UniffiInternalError.unexpectedStaleHandle
-        }
-        return callback
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        ensureCallbackinitialized()
-        let handle: UniFFICallbackHandle = try readInt(&buf)
-        return try lift(handle)
-    }
-
-    public static func lower(_ v: SwiftType) -> UniFFICallbackHandle {
-        ensureCallbackinitialized()
-        return handleMap.insert(obj: v)
-    }
-
-    public static func write(_ v: SwiftType, into buf: inout [UInt8]) {
-        ensureCallbackinitialized()
-        writeInt(&buf, lower(v))
-    }
-}
 
 private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     typealias SwiftType = UInt16?
@@ -2132,22 +1985,22 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
     }
 }
 
-public func createValhallaRequestGenerator(endpointUrl: String, profile: String) -> RouteRequestGenerator {
-    return try! FfiConverterCallbackInterfaceRouteRequestGenerator.lift(
+public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponseParser {
+    return try! FfiConverterTypeRouteResponseParser.lift(
         try! rustCall {
-            uniffi_ferrostar_fn_func_create_valhalla_request_generator(
-                FfiConverterString.lower(endpointUrl),
-                FfiConverterString.lower(profile), $0
+            uniffi_ferrostar_core_fn_func_create_osrm_response_parser(
+                FfiConverterUInt32.lower(polylinePrecision), $0
             )
         }
     )
 }
 
-public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponseParser {
-    return try! FfiConverterCallbackInterfaceRouteResponseParser.lift(
+public func createValhallaRequestGenerator(endpointUrl: String, profile: String) -> RouteRequestGenerator {
+    return try! FfiConverterTypeRouteRequestGenerator.lift(
         try! rustCall {
-            uniffi_ferrostar_fn_func_create_osrm_response_parser(
-                FfiConverterUInt32.lower(polylinePrecision), $0
+            uniffi_ferrostar_core_fn_func_create_valhalla_request_generator(
+                FfiConverterString.lower(endpointUrl),
+                FfiConverterString.lower(profile), $0
             )
         }
     )
@@ -2163,37 +2016,43 @@ private enum InitializationResult {
 // the code inside is only computed once.
 private var initializationResult: InitializationResult {
     // Get the bindings contract version from our ComponentInterface
-    let bindings_contract_version = 22
+    let bindings_contract_version = 24
     // Get the scaffolding contract version by calling the into the dylib
-    let scaffolding_contract_version = ffi_ferrostar_uniffi_contract_version()
+    let scaffolding_contract_version = ffi_ferrostar_core_uniffi_contract_version()
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 12795 {
+    if uniffi_ferrostar_core_checksum_func_create_osrm_response_parser() != 50895 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 7507 {
+    if uniffi_ferrostar_core_checksum_func_create_valhalla_request_generator() != 62930 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 55640 {
+    if uniffi_ferrostar_core_checksum_method_navigationcontroller_advance_to_next_step() != 53731 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 353 {
+    if uniffi_ferrostar_core_checksum_method_navigationcontroller_update_user_location() != 4353 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 26674 {
+    if uniffi_ferrostar_core_checksum_method_routeadapter_generate_request() != 46269 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 55838 {
+    if uniffi_ferrostar_core_checksum_method_routeadapter_parse_response() != 11562 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 40865 {
+    if uniffi_ferrostar_core_checksum_method_routerequestgenerator_generate_request() != 65091 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 17857 {
+    if uniffi_ferrostar_core_checksum_method_routeresponseparser_parse_response() != 27004 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 58966 {
+    if uniffi_ferrostar_core_checksum_constructor_navigationcontroller_new() != 55587 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_core_checksum_constructor_routeadapter_new() != 17242 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_core_checksum_constructor_routeadapter_new_valhalla_http() != 148 {
         return InitializationResult.apiChecksumMismatch
     }
 
