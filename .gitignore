@@ -72,3 +72,9 @@ xcuserdata/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/rust,xcode,android
+
+# Swift Package Manager
+.build/
+
+# Mac OS Ignores
+.DS_Store
