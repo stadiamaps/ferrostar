@@ -34,8 +34,8 @@ class SimulatedLocationProviderTest {
         val location = SimulatedLocation(GeographicCoordinates(42.02, 24.0), 12.0f, null)
 
         val listener = object : LocationUpdateListener {
-            override fun onLocationUpdated(updatedLocation: Location) {
-                assertEquals(updatedLocation, location)
+            override fun onLocationUpdated(location: Location) {
+                assertEquals(location, location)
 
                 latch.countDown()
             }

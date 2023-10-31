@@ -59,12 +59,15 @@ cargo {
     module  = "../../common"  // Directory containing Cargo.toml
     libname = "ferrostar"     // [package] name from Cargo.toml
     targets = ["arm", "arm64", "x86", "x86_64", "darwin-aarch64"]  // See https://github.com/mozilla/rust-android-gradle for a longer list of options
+    // TODO: Set profile to release for release builds!
 }
 
 android.libraryVariants.all { variant ->
     def generateBindings = tasks.register("generate${variant.name.capitalize()}UniFFIBindings", Exec) {
         workingDir '../../common'
         commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', 'target/aarch64-linux-android/release/libferrostar.so', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
+
+        dependsOn 'cargoBuild'
     }
 
     variant.javaCompileProvider.get().dependsOn('cargoBuild')
