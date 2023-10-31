@@ -11,9 +11,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.stadiamaps.ferrostar.core.FerrostarCore
+import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
+import okhttp3.OkHttpClient
+import java.net.URL
 
 class MainActivity : ComponentActivity() {
+    val locationProvider = SimulatedLocationProvider()
+    val httpClient = OkHttpClient.Builder().build()
+    // TODO: Something useful. This is just a placeholder that essentially checks our ability to load the Rust library
+    val core = FerrostarCore(
+        valhallaEndpointURL = URL("https://api.stadiamaps.com/navigate/v1?api_key=YOUR-KEY-HERE"),
+        profile = "pedestrian",
+        locationProvider = locationProvider,
+        httpClient = httpClient
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

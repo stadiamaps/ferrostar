@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.mozilla.rust-android-gradle.rust-android'
 }
 
 // TODO: Publishing?
@@ -8,6 +9,7 @@ plugins {
 android {
     namespace 'com.stadiamaps.ferrostar.core'
     compileSdk 33
+    ndkVersion "25.2.9519653"
 
     defaultConfig {
         minSdk 29
@@ -53,18 +55,20 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
+cargo {
+    module  = "../../common"  // Directory containing Cargo.toml
+    libname = "ferrostar"     // [package] name from Cargo.toml
+    targets = ["arm", "arm64", "x86", "x86_64", "darwin-aarch64"]  // See https://github.com/mozilla/rust-android-gradle for a longer list of options
+}
+
 android.libraryVariants.all { variant ->
-    def compileCore = tasks.register("compile${variant.name.capitalize()}Core", Exec) {
-        workingDir '../../common'
-        commandLine './build-android.sh'
-    }
     def generateBindings = tasks.register("generate${variant.name.capitalize()}UniFFIBindings", Exec) {
         workingDir '../../common'
-        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', 'ferrostar-core/src/ferrostar.udl', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
+        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', 'target/aarch64-linux-android/release/libferrostar.so', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
     }
 
+    variant.javaCompileProvider.get().dependsOn('cargoBuild')
     variant.javaCompileProvider.get().dependsOn(generateBindings)
-    variant.javaCompileProvider.get().dependsOn(compileCore)
 
     def sourceSet = variant.sourceSets.find { it.name == variant.name }
     sourceSet.java.srcDir new File(buildDir, "generated/source/uniffi/${variant.name}/java")

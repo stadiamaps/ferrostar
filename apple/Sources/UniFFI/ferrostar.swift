@@ -5,8 +5,8 @@ import Foundation
 // Depending on the consumer's build setup, the low-level FFI code
 // might be in a separate module, or it might be compiled inline into
 // this module. This is a bit of light hackery to work with both.
-#if canImport(ferrostar_coreFFI)
-    import ferrostar_coreFFI
+#if canImport(ferrostarFFI)
+    import ferrostarFFI
 #endif
 
 private extension RustBuffer {
@@ -19,13 +19,13 @@ private extension RustBuffer {
     }
 
     static func from(_ ptr: UnsafeBufferPointer<UInt8>) -> RustBuffer {
-        try! rustCall { ffi_ferrostar_core_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
+        try! rustCall { ffi_ferrostar_rustbuffer_from_bytes(ForeignBytes(bufferPointer: ptr), $0) }
     }
 
     // Frees the buffer in place.
     // The buffer must not be used after this is called.
     func deallocate() {
-        try! rustCall { ffi_ferrostar_core_rustbuffer_free(self, $0) }
+        try! rustCall { ffi_ferrostar_rustbuffer_free(self, $0) }
     }
 }
 
@@ -442,7 +442,7 @@ public class NavigationController: NavigationControllerProtocol {
 
     public convenience init(lastUserLocation: UserLocation, route: Route, config: NavigationControllerConfig) {
         self.init(unsafeFromRawPointer: try! rustCall {
-            uniffi_ferrostar_core_fn_constructor_navigationcontroller_new(
+            uniffi_ferrostar_fn_constructor_navigationcontroller_new(
                 FfiConverterTypeUserLocation.lower(lastUserLocation),
                 FfiConverterTypeRoute.lower(route),
                 FfiConverterTypeNavigationControllerConfig.lower(config), $0
@@ -451,14 +451,14 @@ public class NavigationController: NavigationControllerProtocol {
     }
 
     deinit {
-        try! rustCall { uniffi_ferrostar_core_fn_free_navigationcontroller(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_fn_free_navigationcontroller(pointer, $0) }
     }
 
     public func advanceToNextStep() -> NavigationStateUpdate {
         return try! FfiConverterTypeNavigationStateUpdate.lift(
             try!
                 rustCall {
-                    uniffi_ferrostar_core_fn_method_navigationcontroller_advance_to_next_step(self.pointer, $0)
+                    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.pointer, $0)
                 }
         )
     }
@@ -467,8 +467,8 @@ public class NavigationController: NavigationControllerProtocol {
         return try! FfiConverterTypeNavigationStateUpdate.lift(
             try!
                 rustCall {
-                    uniffi_ferrostar_core_fn_method_navigationcontroller_update_user_location(self.pointer,
-                                                                                              FfiConverterTypeUserLocation.lower(location), $0)
+                    uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.pointer,
+                                                                                         FfiConverterTypeUserLocation.lower(location), $0)
                 }
         )
     }
@@ -529,7 +529,7 @@ public class RouteAdapter: RouteAdapterProtocol {
 
     public convenience init(requestGenerator: RouteRequestGenerator, responseParser: RouteResponseParser) {
         self.init(unsafeFromRawPointer: try! rustCall {
-            uniffi_ferrostar_core_fn_constructor_routeadapter_new(
+            uniffi_ferrostar_fn_constructor_routeadapter_new(
                 FfiConverterTypeRouteRequestGenerator.lower(requestGenerator),
                 FfiConverterTypeRouteResponseParser.lower(responseParser), $0
             )
@@ -537,12 +537,12 @@ public class RouteAdapter: RouteAdapterProtocol {
     }
 
     deinit {
-        try! rustCall { uniffi_ferrostar_core_fn_free_routeadapter(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_fn_free_routeadapter(pointer, $0) }
     }
 
     public static func newValhallaHttp(endpointUrl: String, profile: String) -> RouteAdapter {
         return RouteAdapter(unsafeFromRawPointer: try! rustCall {
-            uniffi_ferrostar_core_fn_constructor_routeadapter_new_valhalla_http(
+            uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
                 FfiConverterString.lower(endpointUrl),
                 FfiConverterString.lower(profile), $0
             )
@@ -552,9 +552,9 @@ public class RouteAdapter: RouteAdapterProtocol {
     public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
             rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
-                uniffi_ferrostar_core_fn_method_routeadapter_generate_request(self.pointer,
-                                                                              FfiConverterTypeUserLocation.lower(userLocation),
-                                                                              FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
+                uniffi_ferrostar_fn_method_routeadapter_generate_request(self.pointer,
+                                                                         FfiConverterTypeUserLocation.lower(userLocation),
+                                                                         FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
             }
         )
     }
@@ -562,8 +562,8 @@ public class RouteAdapter: RouteAdapterProtocol {
     public func parseResponse(response: Data) throws -> [Route] {
         return try FfiConverterSequenceTypeRoute.lift(
             rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
-                uniffi_ferrostar_core_fn_method_routeadapter_parse_response(self.pointer,
-                                                                            FfiConverterData.lower(response), $0)
+                uniffi_ferrostar_fn_method_routeadapter_parse_response(self.pointer,
+                                                                       FfiConverterData.lower(response), $0)
             }
         )
     }
@@ -622,15 +622,15 @@ public class RouteRequestGenerator: RouteRequestGeneratorProtocol {
     }
 
     deinit {
-        try! rustCall { uniffi_ferrostar_core_fn_free_routerequestgenerator(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_fn_free_routerequestgenerator(pointer, $0) }
     }
 
     public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
             rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
-                uniffi_ferrostar_core_fn_method_routerequestgenerator_generate_request(self.pointer,
-                                                                                       FfiConverterTypeUserLocation.lower(userLocation),
-                                                                                       FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
+                uniffi_ferrostar_fn_method_routerequestgenerator_generate_request(self.pointer,
+                                                                                  FfiConverterTypeUserLocation.lower(userLocation),
+                                                                                  FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
             }
         )
     }
@@ -689,14 +689,14 @@ public class RouteResponseParser: RouteResponseParserProtocol {
     }
 
     deinit {
-        try! rustCall { uniffi_ferrostar_core_fn_free_routeresponseparser(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_fn_free_routeresponseparser(pointer, $0) }
     }
 
     public func parseResponse(response: Data) throws -> [Route] {
         return try FfiConverterSequenceTypeRoute.lift(
             rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
-                uniffi_ferrostar_core_fn_method_routeresponseparser_parse_response(self.pointer,
-                                                                                   FfiConverterData.lower(response), $0)
+                uniffi_ferrostar_fn_method_routeresponseparser_parse_response(self.pointer,
+                                                                              FfiConverterData.lower(response), $0)
             }
         )
     }
@@ -1957,7 +1957,7 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
 public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponseParser {
     return try! FfiConverterTypeRouteResponseParser.lift(
         try! rustCall {
-            uniffi_ferrostar_core_fn_func_create_osrm_response_parser(
+            uniffi_ferrostar_fn_func_create_osrm_response_parser(
                 FfiConverterUInt32.lower(polylinePrecision), $0
             )
         }
@@ -1967,7 +1967,7 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
 public func createValhallaRequestGenerator(endpointUrl: String, profile: String) -> RouteRequestGenerator {
     return try! FfiConverterTypeRouteRequestGenerator.lift(
         try! rustCall {
-            uniffi_ferrostar_core_fn_func_create_valhalla_request_generator(
+            uniffi_ferrostar_fn_func_create_valhalla_request_generator(
                 FfiConverterString.lower(endpointUrl),
                 FfiConverterString.lower(profile), $0
             )
@@ -1987,41 +1987,41 @@ private var initializationResult: InitializationResult {
     // Get the bindings contract version from our ComponentInterface
     let bindings_contract_version = 24
     // Get the scaffolding contract version by calling the into the dylib
-    let scaffolding_contract_version = ffi_ferrostar_core_uniffi_contract_version()
+    let scaffolding_contract_version = ffi_ferrostar_uniffi_contract_version()
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if uniffi_ferrostar_core_checksum_func_create_osrm_response_parser() != 13999 {
+    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 37676 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_func_create_valhalla_request_generator() != 29123 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 42515 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_navigationcontroller_advance_to_next_step() != 1041 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 2009 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_navigationcontroller_update_user_location() != 64701 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 18868 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_routeadapter_generate_request() != 61210 {
+    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 57178 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_routeadapter_parse_response() != 49628 {
+    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 29808 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_routerequestgenerator_generate_request() != 10361 {
+    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 55969 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_method_routeresponseparser_parse_response() != 54334 {
+    if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 30875 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_constructor_navigationcontroller_new() != 12876 {
+    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 48478 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_constructor_routeadapter_new() != 32286 {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 22742 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_core_checksum_constructor_routeadapter_new_valhalla_http() != 17926 {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 34303 {
         return InitializationResult.apiChecksumMismatch
     }
 

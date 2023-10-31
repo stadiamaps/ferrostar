@@ -74,38 +74,15 @@ Given these limitations, we opted for a shell script until further notice.
 
 ### Android
 
-NOTE: Android is probably broken at the moment!
-This should be fixed in November.
-If not, bug Ian.
+NOTE: Android is not as far along as iOS,
+but the core is expected to build at this time.
 
 * Install [Android Studio](https://developer.android.com/studio).
 * Ensure that the latest NDK is installed
-  (refer to the version number in [`build-android.sh`](core/build-android.sh)
-  and ensure you have the same version available;
-  we try to track the latest stable).
+  (refer to the `ndkVersion` number in [`core/build.gradle`](android/core/build.gradle)
+  and ensure you have the same version available).
 
-Additionally, you will need to add something like this to your Cargo config (usually `~/.cargo/config.toml`).
-This is necessary to be able to link correctly,
-and will be machine-dependent based on the NDK you have installed and exact paths.
-**NOTE**: You *must* use absolute paths.
-Refer to the version number in [`build-android.sh`](core/build-android.sh)
-to ensure you have the correct API level available.
-
-```toml
-[target.aarch64-linux-android]
-linker = "/Users/ianthetechie/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android33-clang"
-
-[target.armv7-linux-androideabi]
-linker = "/Users/ianthetechie/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi33-clang"
-
-[target.i686-linux-android]
-linker = "/Users/ianthetechie/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android33-clang"
-
-[target.x86_64-linux-android]
-linker = "/Users/ianthetechie/Library/Android/sdk/ndk/25.2.9519653/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android33-clang"
-```
-
-After the initial setup, Gradle should be able to handle rebuilding the core for Android as-needed.
+After the initial setup, Gradle should be able to handle rebuilding the core for Android automatically.
 
 ## Writing & Running Tests
 
@@ -129,7 +106,7 @@ Run `gradle test` *as well as* the Android Tests within Android Studio.
 * All iOS code must be written in Swift
 * TODO: Swiftlint and swift-format?
 * All Android code must be written in Kotlin
-* TODO: Android linter + formatter?
+* TODO: ktlint
 
 ## Changelog Conventions
 

@@ -1,7 +1,7 @@
-extern crate ferrostar_core;
+extern crate ferrostar;
 
-use ferrostar_core::routing_adapters::osrm::OsrmResponseParser;
-use ferrostar_core::{
+use ferrostar::routing_adapters::osrm::OsrmResponseParser;
+use ferrostar::{
     NavigationController, NavigationControllerConfig, NavigationStateUpdate, Route,
     RouteResponseParser, StepAdvanceMode, UserLocation,
 };

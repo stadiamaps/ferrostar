@@ -1,5 +1,5 @@
 ---
-source: ferrostar-core/src/routing_adapters/osrm/mod.rs
+source: ferrostar/src/routing_adapters/osrm/mod.rs
 expression: routes
 ---
 - geometry:

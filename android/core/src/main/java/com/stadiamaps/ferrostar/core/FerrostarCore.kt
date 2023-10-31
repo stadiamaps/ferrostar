@@ -2,7 +2,6 @@ package com.stadiamaps.ferrostar.core
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import uniffi.ferrostar.GeographicCoordinates
 import uniffi.ferrostar.NavigationController
@@ -48,14 +47,14 @@ class FerrostarCore(
                     .build()
 
                 val res = httpClient.newCall(httpRequest).await()
-                val bodyBytes = res.body?.bytes()?.toUByteArray()
+                val bodyBytes = res.body?.bytes()
                 if (!res.isSuccessful) {
                     TODO("Throw a useful exception")
                 } else if (bodyBytes == null) {
                     TODO("Throw a useful exception")
                 }
 
-                return routeAdapter.parseResponse(bodyBytes.toList())
+                return routeAdapter.parseResponse(bodyBytes)
             }
         }
     }

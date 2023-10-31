@@ -4,7 +4,7 @@ This is the common core of Ferrostar, which is shared across all platforms. The 
 logic are kept internal wherever possible, with a public interface exposed to platform-specific code
 via FFI bindings. Bindings are generated using [UniFFI](https://mozilla.github.io/uniffi-rs/).
 
-## `ferrostar-core`
+## `ferrostar`
 
 This is the main crate. At a high level, this defines two critical pieces: the navigation controller
 and routing backends, which are described in detail in [ARCHITECTURE ](../ARCHITECTURE.md).

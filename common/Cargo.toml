@@ -2,7 +2,7 @@
 
 members = [
     "uniffi-bindgen",
-    "ferrostar-core",
+    "ferrostar",
 ]
 resolver = "2"
 

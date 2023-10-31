@@ -261,36 +261,37 @@ class ValhallaCoreTest {
             assertEquals(
                 listOf(
                     GeographicCoordinates(
-                        60.534716, -149.543469
+                        -149.543469, 60.534716
                     ),
                     GeographicCoordinates(
-                        60.534782, -149.543879
+                        -149.543879, 60.534782
                     ),
                     GeographicCoordinates(
-                        60.534829, -149.544134
+                        -149.544134, 60.534829
                     ),
                     GeographicCoordinates(
-                        60.534856, -149.5443
+                        -149.5443, 60.534856
                     ),
                     GeographicCoordinates(
-                        60.534887, -149.544533
+                        -149.544533, 60.534887
                     ),
                     GeographicCoordinates(
-                        60.534941, -149.544976
+                        -149.544976, 60.534941
                     ),
                     GeographicCoordinates(
-                        60.534971, -149.545485
+                        -149.545485, 60.534971
                     ),
                     GeographicCoordinates(
-                        60.535003, -149.546177
+                        -149.546177, 60.535003
                     ),
                     GeographicCoordinates(
-                        60.535008, -149.546937
+                        -149.546937, 60.535008
                     ),
                     GeographicCoordinates(
-                        60.534991, -149.548581
+                        -149.548581, 60.534991
                     ),
-            ), routes.first().geometry)
+                ), routes.first().geometry
+            )
         }
     }
 }

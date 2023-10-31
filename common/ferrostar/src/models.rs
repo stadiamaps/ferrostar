@@ -104,6 +104,7 @@ pub struct RouteStep {
     pub road_name: Option<String>,
     pub instruction: String,
     pub visual_instructions: Vec<VisualInstructions>,
+    // TODO: Spoken instruction
 }
 
 impl RouteStep {

@@ -12,7 +12,7 @@ if useLocalFramework {
         name: "FerrostarCoreRS",
         // IMPORTANT: Swift packages importing this locally will not be able to
         // import Ferrostar core unless you specify this as a relative path!
-        path: "./common/target/ios/libferrostar_core-rs.xcframework"
+        path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
     let releaseTag = "0.0.10"
