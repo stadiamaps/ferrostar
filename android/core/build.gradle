@@ -73,6 +73,16 @@ android.libraryVariants.all { variant ->
     variant.javaCompileProvider.get().dependsOn('cargoBuild')
     variant.javaCompileProvider.get().dependsOn(generateBindings)
 
+    // Some stuff here is broken, since Android Tests don't run after running gradle build,
+    // but do otherwise. Also CI is funky.
+    tasks.named("compile${variant.name.capitalize()}Kotlin").configure {
+        dependsOn generateBindings
+    }
+
+    tasks.named("connectedDebugAndroidTest").configure {
+        dependsOn generateBindings
+    }
+
     def sourceSet = variant.sourceSets.find { it.name == variant.name }
     sourceSet.java.srcDir new File(buildDir, "generated/source/uniffi/${variant.name}/java")
 
