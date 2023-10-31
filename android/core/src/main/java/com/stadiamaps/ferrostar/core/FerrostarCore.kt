@@ -38,7 +38,7 @@ class FerrostarCore(
             is RouteRequest.HttpPost -> {
                 val httpRequest = Request.Builder()
                     .url(request.url)
-                    .post(request.body.toUByteArray().toByteArray().toRequestBody())
+                    .post(request.body.toRequestBody())
                     .apply {
                         request.headers.map { (name, value) ->
                             header(name, value)
