@@ -75,9 +75,9 @@ and it leverages macros.
 
 ### iOS
 
-We will initially target the current iOS major version (17.0).
-We will eventually support at least the previous major version,
-but iOS 17 brought many SwiftUI updates that dramatically simplify the code.
+After some discussion, we plan to start iOS support at version 16.
+We will roll back the use of features requiring iOS 17 over the coming weeks.
+Our general policy will be to support the current and previous major version.
 
 ### Android
 
