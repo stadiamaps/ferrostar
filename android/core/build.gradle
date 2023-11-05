@@ -64,7 +64,7 @@ cargoNdk {
 android.libraryVariants.all { variant ->
     def generateBindings = tasks.register("generate${variant.name.capitalize()}UniFFIBindings", Exec) {
         workingDir '../../common'
-        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', 'target/aarch64-linux-android/release/libferrostar.so', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
+        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', '../android/core/src/main/jniLibs/arm64-v8a/libferrostar.so', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
 
         dependsOn "buildCargoNdk${variant.name.capitalize()}"
     }
