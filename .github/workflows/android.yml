@@ -20,6 +20,12 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
+    - name: Create an Android Virtual Device
+      run: android create avd -n emulator -t 33
+
+    - name: Launch the emulator
+      run: emulator -avd emulator
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       working-directory: android
