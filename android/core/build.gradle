@@ -93,3 +93,11 @@ android.libraryVariants.all { variant ->
 
     sourceSet.java.srcDir 'src/main/java'
 }
+
+// Fixes a bug(?) with certain AGP versions that results in UnsatisfiedLinkErrors in some conditions.
+// See https://github.com/mozilla/rust-android-gradle/issues/118#issuecomment-1778332125
+
+tasks.matching { it.name.matches(/merge.*JniLibFolders/) }.configureEach {
+    it.inputs.dir(new File(buildDir, "rustJniLibs/android"))
+    it.dependsOn("cargoBuild")
+}
