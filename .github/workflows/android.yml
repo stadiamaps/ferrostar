@@ -21,7 +21,7 @@ jobs:
         cache: gradle
 
     - name: Create an Android Virtual Device
-      run: android create avd -n emulator -t 33
+      run: avdmanager create avd -n emulator -k "system-images;android-33;google_apis;x86_64"
 
     - name: Launch the emulator
       run: emulator -avd emulator
