@@ -54,8 +54,8 @@ pub trait RouteRequestGenerator: Send + Sync + Debug {
 pub trait RouteResponseParser: Send + Sync + Debug {
     /// Parses a raw response from the routing backend into a route.
     ///
-    /// As we need to assume some sort of type, a sequence of octets is a reasonable interchange
-    /// format for all known responses so far (JSON, PBF, etc.).
+    /// We use a sequence of octets as a common interchange format.
+    /// as this works for all currently conceivable formats (JSON, PBF, etc.).
     fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, RoutingResponseParseError>;
 }
 

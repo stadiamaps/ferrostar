@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'org.mozilla.rust-android-gradle.rust-android'
+    id 'com.github.willir.rust.cargo-ndk-android'
 }
 
 // TODO: Publishing?
@@ -55,11 +55,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
-cargo {
-    module  = "../../common"  // Directory containing Cargo.toml
-    libname = "ferrostar"     // [package] name from Cargo.toml
-    targets = ["arm", "arm64", "x86", "x86_64", "darwin-aarch64"]  // See https://github.com/mozilla/rust-android-gradle for a longer list of options
-    // TODO: Set profile to release for release builds!
+cargoNdk {
+    module  = "../common"  // Directory containing Cargo.toml
+    librariesNames = ["libferrostar.so"]
+    verbose = true
 }
 
 android.libraryVariants.all { variant ->
@@ -67,10 +66,9 @@ android.libraryVariants.all { variant ->
         workingDir '../../common'
         commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', 'target/aarch64-linux-android/release/libferrostar.so', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
 
-        dependsOn 'cargoBuild'
+        dependsOn "buildCargoNdk${variant.name.capitalize()}"
     }
 
-    variant.javaCompileProvider.get().dependsOn('cargoBuild')
     variant.javaCompileProvider.get().dependsOn(generateBindings)
 
     // Some stuff here is broken, since Android Tests don't run after running gradle build,
@@ -92,12 +90,4 @@ android.libraryVariants.all { variant ->
 //    idea.module.generatedSourceDirs += file("${buildDir}/generated/source/uniffi/${variant.name}/java/uniffi")
 
     sourceSet.java.srcDir 'src/main/java'
-}
-
-// Fixes a bug(?) with certain AGP versions that results in UnsatisfiedLinkErrors in some conditions.
-// See https://github.com/mozilla/rust-android-gradle/issues/118#issuecomment-1778332125
-
-tasks.matching { it.name.matches(/merge.*JniLibFolders/) }.configureEach {
-    it.inputs.dir(new File(buildDir, "rustJniLibs/android"))
-    it.dependsOn("cargoBuild")
 }

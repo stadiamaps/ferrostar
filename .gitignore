@@ -76,5 +76,8 @@ xcuserdata/
 # Swift Package Manager
 .build/
 
-# Mac OS Ignores
+# macOS Ignores
 .DS_Store
+
+# Android (cargo-ndk outputs; they end up in the Android source tree)
+*.so
