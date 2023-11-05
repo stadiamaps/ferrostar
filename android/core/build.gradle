@@ -58,7 +58,6 @@ dependencies {
 cargoNdk {
     module  = "../common"  // Directory containing Cargo.toml
     librariesNames = ["libferrostar.so"]
-    verbose = true
 }
 
 android.libraryVariants.all { variant ->

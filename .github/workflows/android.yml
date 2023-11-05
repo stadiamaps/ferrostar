@@ -34,3 +34,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
       working-directory: android
+
+    - name: Run Android Tests
+      run: ./gradlew connectedAndroidTest
+      working-directory: android
