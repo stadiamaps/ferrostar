@@ -11,29 +11,33 @@ let errorBody = Data("""
 """.utf8)
 let errorResponse = HTTPURLResponse(url: backendUrl, statusCode: 401, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!
 
-private class MockRouteAdapter: RouteAdapterProtocol {
+private class MockRouteRequestGenerator: RouteRequestGenerator {
+    func generateRequest(userLocation: UniFFI.UserLocation, waypoints: [UniFFI.GeographicCoordinates]) throws -> UniFFI.RouteRequest {
+        return UniFFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: Data())
+    }
+}
 
+private class MockRouteResponseParser: RouteResponseParser {
     private let routes: [UniFFI.Route]
 
     init(routes: [UniFFI.Route]) {
         self.routes = routes
     }
 
-    func generateRequest(userLocation: UniFFI.UserLocation, waypoints: [UniFFI.GeographicCoordinates]) throws -> UniFFI.RouteRequest {
-        return UniFFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: Data())
-    }
-
-    func parseResponse(response _: Data) throws -> [UniFFI.Route] {
+    func parseResponse(response: Data) throws -> [UniFFI.Route] {
         return routes
     }
 }
+
 
 final class FerrostarCoreTests: XCTestCase {
     func test401UnauthorizedRouteResponse() async throws {
         let mockSession = MockURLSession()
         mockSession.registerMock(forURL: backendUrl, withData: errorBody, andResponse: errorResponse)
 
-        let core = FerrostarCore(routeAdapter: MockRouteAdapter(routes: []), locationManager: SimulatedLocationProvider(), networkSession: mockSession)
+        let routeAdapter = RouteAdapter(requestGenerator: MockRouteRequestGenerator(), responseParser: MockRouteResponseParser(routes: []))
+
+        let core = FerrostarCore(routeAdapter: routeAdapter, locationManager: SimulatedLocationProvider(), networkSession: mockSession)
 
         do {
             _ = try await core.getRoutes(initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469), waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
