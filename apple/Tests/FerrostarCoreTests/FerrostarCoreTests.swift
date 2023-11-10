@@ -11,6 +11,8 @@ let errorBody = Data("""
 """.utf8)
 let errorResponse = HTTPURLResponse(url: backendUrl, statusCode: 401, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!
 
+// NOTE: you can also implement RouteAdapterProtocol directly.
+
 private class MockRouteRequestGenerator: RouteRequestGenerator {
     func generateRequest(userLocation: UniFFI.UserLocation, waypoints: [UniFFI.GeographicCoordinates]) throws -> UniFFI.RouteRequest {
         return UniFFI.RouteRequest.httpPost(url: backendUrl.absoluteString, headers: [:], body: Data())

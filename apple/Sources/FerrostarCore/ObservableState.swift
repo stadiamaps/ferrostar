@@ -10,6 +10,7 @@ import UniFFI
 public final class FerrostarObservableState {
     public internal(set) var snappedLocation: CLLocation
     public internal(set) var heading: CLHeading?
+    public internal(set) var courseOverGround: CLLocationDirection?
     public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
     public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
     public internal(set) var currentStep: UniFFI.RouteStep
@@ -20,6 +21,7 @@ public final class FerrostarObservableState {
     init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
         self.snappedLocation = snappedLocation
         self.heading = heading
+        self.courseOverGround = snappedLocation.course
         self.fullRouteShape = fullRoute
         self.remainingWaypoints = fullRoute
         self.currentStep = steps.first!

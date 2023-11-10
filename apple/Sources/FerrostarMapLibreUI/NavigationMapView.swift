@@ -7,6 +7,7 @@ import MapLibreSwiftUI
 public struct NavigationMapView: View {
     let lightStyleURL: URL
     let darkStyleURL: URL
+    // TODO: Configurable camera and user "puck" rotation modes
 
     var navigationState: FerrostarObservableState
 
@@ -17,6 +18,9 @@ public struct NavigationMapView: View {
         return false
     }
 
+    /// Creates a new instance of the default navigation map.
+    ///
+    /// `lightStyleURL` and `darkStyleURL` are yet to be implemented.
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
@@ -80,7 +84,7 @@ public struct NavigationMapView: View {
 
             SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
                 .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
-                .iconRotation(constant: navigationState.heading?.trueHeading.magnitude ?? 0)
+                .iconRotation(constant: navigationState.courseOverGround?.magnitude ?? 0)
         }
         .edgesIgnoringSafeArea(.all)
         .overlay(alignment: .top, content: {

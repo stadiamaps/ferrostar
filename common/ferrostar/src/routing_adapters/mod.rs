@@ -33,7 +33,7 @@ pub enum RouteRequest {
 /// Implementations may be either in Rust (most popular engines should eventually have Rust
 /// implementations) or foreign code.
 #[uniffi::export]
-pub trait RouteRequestGenerator: Send + Sync + Debug {
+pub trait RouteRequestGenerator: Send + Sync {
     /// Generates a routing backend request given the set of locations.
     ///
     /// While most implementations will treat the locations as an ordered sequence, this is not
@@ -51,7 +51,7 @@ pub trait RouteRequestGenerator: Send + Sync + Debug {
 /// A generic interface describing any object capable of parsing a response from a routing
 /// backend into one or more [Route]s.
 #[uniffi::export]
-pub trait RouteResponseParser: Send + Sync + Debug {
+pub trait RouteResponseParser: Send + Sync {
     /// Parses a raw response from the routing backend into a route.
     ///
     /// We use a sequence of octets as a common interchange format.
