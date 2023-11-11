@@ -52,12 +52,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
 /// The particulars will vary by app; do what makes the most sense for your user experience.
 ///
 /// Finally, with a route selected, call ``startNavigation(route:)`` to start a session.
-@objc public class FerrostarCore: NSObject {
+@objc public class FerrostarCore: NSObject, ObservableObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
 
     /// The observable state of the model (for easy binding in SwiftUI views).
-    public private(set) var observableState: FerrostarObservableState?
+    @Published public private(set) var observableState: FerrostarObservableState?
 
     private let networkSession: URLRequestLoading
     private let routeAdapter: UniFFI.RouteAdapterProtocol

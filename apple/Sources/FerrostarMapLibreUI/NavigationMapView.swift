@@ -84,7 +84,7 @@ public struct NavigationMapView: View {
 
             SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
                 .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
-                .iconRotation(constant: navigationState.courseOverGround?.magnitude ?? 0)
+                .iconRotation(constant: navigationState.heading?.trueHeading.magnitude ?? 0)
         }
         .edgesIgnoringSafeArea(.all)
         .overlay(alignment: .top, content: {
