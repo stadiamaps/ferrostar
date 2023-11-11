@@ -1,0 +1,34 @@
+name: iOS CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-13
+    strategy:
+      matrix:
+        scheme: [
+          FerrostarCore-Package
+        ]
+        destination: [
+          # TODO: Add more destinations
+          'platform=iOS Simulator,name=iPhone 15,OS=17.0.1'
+        ]
+
+    steps:
+    - name: Install xcbeautify
+      run: brew install xcbeautify
+    
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.0'
+
+    - name: Checkout repo
+      uses: actions/checkout@v3
+    
+    - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
+      run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
