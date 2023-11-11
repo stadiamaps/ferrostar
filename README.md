@@ -75,9 +75,9 @@ and it leverages macros.
 
 ### iOS
 
-After some discussion, we plan to start iOS support at version 16.
-We will roll back the use of features requiring iOS 17 over the coming weeks.
-Our general policy will be to support the current and previous major version.
+We plan to start iOS support at version 16.
+Our general policy will be to support the current and at least the previous major version,
+extending to two major versions if possible.
 
 ### Android
 

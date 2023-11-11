@@ -6,17 +6,16 @@ import UniFFI
 ///
 /// While the core generally does not include UI, this is purely at the model layer and should be implemented
 /// the same for all frontends.
-@Observable
-public final class FerrostarObservableState {
-    public internal(set) var snappedLocation: CLLocation
-    public internal(set) var heading: CLHeading?
-    public internal(set) var courseOverGround: CLLocationDirection?
-    public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
-    public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
-    public internal(set) var currentStep: UniFFI.RouteStep
-    public internal(set) var visualInstructions: UniFFI.VisualInstructions?
-    public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
-    public internal(set) var distanceToNextManeuver: CLLocationDistance?
+public final class FerrostarObservableState: ObservableObject {
+    @Published public internal(set) var snappedLocation: CLLocation
+    @Published public internal(set) var heading: CLHeading?
+    @Published public internal(set) var courseOverGround: CLLocationDirection?
+    @Published public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
+    @Published public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
+    @Published public internal(set) var currentStep: UniFFI.RouteStep
+    @Published public internal(set) var visualInstructions: UniFFI.VisualInstructions?
+    @Published public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
+    @Published public internal(set) var distanceToNextManeuver: CLLocationDistance?
 
     init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
         self.snappedLocation = snappedLocation

@@ -9,7 +9,7 @@ public struct NavigationMapView: View {
     let darkStyleURL: URL
     // TODO: Configurable camera and user "puck" rotation modes
 
-    var navigationState: FerrostarObservableState
+    @ObservedObject var navigationState: FerrostarObservableState
 
     @State private var camera: MapView.Camera
 

@@ -74,7 +74,7 @@ struct BannerView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.all, 8)
-        .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+        .background(Color.black.opacity(0.7).clipShape(.rect(cornerRadius: 10), style: FillStyle()))
         .padding(.horizontal, 16)
     }
 }
