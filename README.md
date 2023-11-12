@@ -47,18 +47,20 @@ See the [ARCHITECTURE](ARCHITECTURE.md) document.
 
 ### As a Contributor
 
-See our [CONTRIBUTING](CONTRIBUTING.md) guide for info on expectations and dev environment setup.
+See our [CONTRIBUTING](CONTRIBUTING.md) guide
+for info on expectations and dev environment setup.
 
-NOTE: The Android project will probably be broken for a few weeks, and you'll definitely want to be building with
-`useLocalFramework = true` in Package.swift.
+NOTE: The Android project is still in its very early stages; check back soon.
 
 ### As a User
 
-TODO: Write this once we have something useful.
+#### iOS
 
-#### TODO: iOS
+Coming Soon: get the iOS example project into git.
 
-#### TODO: Android
+#### Android
+
+TODO after we have something useful
 
 ## Platform Support Targets
 

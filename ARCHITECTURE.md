@@ -33,30 +33,34 @@ by the platform-specific layer, not this crate. These are adapters in the "ports
 
 ### Platform core
 
-A platform-native wrapper will be essential. This will be the public interface to the common framework from the
-perspective of app code. The platform core code will not be used directly by *most* users of the SDK; it is mostly
-for developers and advanced users that want to build their own navigation UI or bring their own proprietary routing.
+A platform-native wrapper is essential to keep the dev experience sane.
+This is the public interface to the common framework
+from the perspective of app code.
 
 **Key responsibilities**
 
 - Wrap core constructs and in some cases own them (navigation controller for example)
 - Make network requests
-- Ensure that operations are executed in the right context and that long-running ops are returned to user in a platform-native async manner
-- Interface with the platform-native location services and pass updates back to the core navigation controller (also functionality to simulate!)
-- Enable extensibility (ex: route generation using Swift/Kotlin code, deciding whether to recalculate, etc.)
+- Ensure that operations are executed in the right context
+  and that long-running ops are returned to user in accordance with platform norms
+  (ex: async functions, callbacks, etc.)
+- Interface with the platform-native location services
+  and pass updates back to the core navigation controller
+- Provide simulated/mocked location and network for testing where appropriate
+- Enable extensibility (ex: local route generation, deciding whether to recalculate, etc.)
 
 ### Navigation UI
 
-A default navigation UI (backed by a MapLibre map) will be available which attempts to provide a complete experience
-for the vast majority of use cases. It is assumed that most devs will want this.
+Ferrostar seeks to provide a default navigation UI for major platforms
+at the discretion of the core team.
+Default navigation UI implementations seek to provide a sensible experience
+which could be used for the majority of common routing use cases.
+We assume that most devs will want this,
+that it should be customizable within reason,
+and will strive to make the implementation modular (ex: via SwiftUI controls)
+so that devs may compose default implementations with their own.
 
-In the usual case, this will create (and own) the core instance until its lifecycle is complete, and *most*
-users won't need to interact with the core directly.
+Current platforms for which the core team maintains a UI:
 
-**Tunables**
-
-- Map style (ex: URL or raw style to pass to MapLibre)?
-- Hooks for customizing styling (with sensible defaults for OMT)
-    - Route line layer - where to insert it in the style, and how to style it
-    - Road name layer?
-- TBD definitely more
+* iOS (SwiftUI + MapLibre)
+* Android (Jetpack Compose + MapLibre)
