@@ -2,29 +2,41 @@ package com.stadiamaps.ferrostar.core
 
 import uniffi.ferrostar.CourseOverGround
 import uniffi.ferrostar.GeographicCoordinates
+import uniffi.ferrostar.UserLocation
+import java.time.Instant
 import java.util.concurrent.Executor
 
 interface Location {
     val coordinates: GeographicCoordinates
-    val horizontalAccuracy: Float
+    val horizontalAccuracy: Double
     val courseOverGround: CourseOverGround?
+    val timestamp: Instant
+
+    fun userLocation(): UserLocation = UserLocation(
+        coordinates = coordinates,
+        horizontalAccuracy = horizontalAccuracy,
+        courseOverGround,
+        timestamp = timestamp
+    )
 }
 
 data class SimulatedLocation(
     override val coordinates: GeographicCoordinates,
-    override val horizontalAccuracy: Float,
-    override val courseOverGround: CourseOverGround?
+    override val horizontalAccuracy: Double,
+    override val courseOverGround: CourseOverGround?,
+    override val timestamp: Instant
 ) : Location
 
 // TODO: Decide if we want to have a compile-time dependency on Android
 data class AndroidLocation(
     override val coordinates: GeographicCoordinates,
-    override val horizontalAccuracy: Float,
-    override val courseOverGround: CourseOverGround?
+    override val horizontalAccuracy: Double,
+    override val courseOverGround: CourseOverGround?,
+    override val timestamp: Instant
 ) : Location {
     constructor(location: android.location.Location) : this(
         GeographicCoordinates(location.latitude, location.longitude),
-        location.accuracy,
+        location.accuracy.toDouble(),
         if (location.hasBearing() && location.hasBearingAccuracy()) {
             CourseOverGround(
                 location.bearing.toInt().toUShort(),
@@ -32,12 +44,14 @@ data class AndroidLocation(
             )
         } else {
             null
-        }
+        },
+        Instant.ofEpochMilli(location.time)
     )
 }
 
 interface LocationProvider {
     val lastLocation: Location?
+
     // TODO: Decide how to handle this on Android
     val lastHeading: Float?
 
