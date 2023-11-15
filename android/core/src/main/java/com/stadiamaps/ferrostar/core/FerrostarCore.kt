@@ -8,21 +8,25 @@ import uniffi.ferrostar.NavigationController
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
+import uniffi.ferrostar.RouteAdapterInterface
 import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import java.net.URL
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-class FerrostarCoreException : Exception {
+open class FerrostarCoreException : Exception {
     constructor(message: String) : super(message)
     constructor(message: String, cause: Throwable) : super(message, cause)
     constructor(cause: Throwable) : super(cause)
 }
 
+class InvalidStatusCodeException(val statusCode: Int): FerrostarCoreException("Route request failed with status code $statusCode")
+
+class NoResponseBodyException: FerrostarCoreException("Route request was successful but had no body bytes")
+
 public class FerrostarCore(
-    val routeAdapter: RouteAdapter,
+    val routeAdapter: RouteAdapterInterface,
     val locationProvider: LocationProvider,
     val httpClient: OkHttpClient
 ) : LocationUpdateListener {
@@ -59,9 +63,9 @@ public class FerrostarCore(
                 val res = httpClient.newCall(httpRequest).await()
                 val bodyBytes = res.body?.bytes()
                 if (!res.isSuccessful) {
-                    throw FerrostarCoreException("Route request failed with status code ${res.code}")
+                    throw InvalidStatusCodeException(res.code)
                 } else if (bodyBytes == null) {
-                    throw FerrostarCoreException("Route request was successful but had no body bytes")
+                    throw NoResponseBodyException()
                 }
 
                 return routeAdapter.parseResponse(bodyBytes)

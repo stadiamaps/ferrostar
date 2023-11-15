@@ -1,0 +1,42 @@
+▿ 1 element
+  ▿ Route
+    ▿ inner: Route
+      - distance: 1.0
+      ▿ geometry: 2 elements
+        ▿ GeographicCoordinates
+          - lat: 0.0
+          - lng: 0.0
+        ▿ GeographicCoordinates
+          - lat: 1.0
+          - lng: 1.0
+      ▿ steps: 1 element
+        ▿ RouteStep
+          - distance: 1.0
+          ▿ geometry: 2 elements
+            ▿ GeographicCoordinates
+              - lat: 0.0
+              - lng: 0.0
+            ▿ GeographicCoordinates
+              - lat: 1.0
+              - lng: 1.0
+          - instruction: "Sail straight"
+          ▿ roadName: Optional<String>
+            - some: "foo road"
+          ▿ visualInstructions: 1 element
+            ▿ VisualInstructions
+              ▿ primaryContent: VisualInstructionContent
+                ▿ maneuverModifier: Optional<ManeuverModifier>
+                  - some: ManeuverModifier.straight
+                ▿ maneuverType: Optional<ManeuverType>
+                  - some: ManeuverType.depart
+                - roundaboutExitDegrees: Optional<UInt16>.none
+                - text: "Sail straight"
+              - secondaryContent: Optional<VisualInstructionContent>.none
+              - triggerDistanceBeforeManeuver: 42.0
+      ▿ waypoints: 2 elements
+        ▿ GeographicCoordinates
+          - lat: 0.0
+          - lng: 0.0
+        ▿ GeographicCoordinates
+          - lat: 1.0
+          - lng: 1.0

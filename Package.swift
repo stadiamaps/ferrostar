@@ -15,8 +15,8 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.0.12"
-    let releaseChecksum = "11a0edc5f3a8c912091cdd7cecc867dfba0cad1867d97e3c6227349fe903ccc8"
+    let releaseTag = "0.0.13"
+    let releaseChecksum = "041951f5c8aaf44bd60d5a90861d24cba4821a4601d1b091a9b7a64d739e01c4"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar-rs.xcframework.zip",
@@ -28,7 +28,7 @@ if useLocalFramework {
 let package = Package(
     name: "FerrostarCore",
     platforms: [
-        .iOS(.v16),
+        .iOS(.v15),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -42,8 +42,11 @@ let package = Package(
         ),
     ],
     dependencies: [
-//        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
         .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
+        .package(
+            url: "https://github.com/pointfreeco/swift-snapshot-testing",
+            from: "1.15.0"
+          ),
     ],
     targets: [
         binaryTarget,
@@ -69,7 +72,10 @@ let package = Package(
         ),
         .testTarget(
             name: "FerrostarCoreTests",
-            dependencies: ["FerrostarCore"],
+            dependencies: [
+                "FerrostarCore",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
             path: "apple/Tests/FerrostarCoreTests"
         ),
     ]

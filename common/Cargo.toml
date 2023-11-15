@@ -11,4 +11,4 @@ insta.opt-level = 3
 similar.opt-level = 3
 
 [workspace.dependencies]
-uniffi = { git = "https://github.com/mozilla/uniffi-rs/", rev = "b369e7c15b1b7ebca34de9028209db11b7ff353d" }
+uniffi = { git = "https://github.com/mozilla/uniffi-rs/", rev = "41e3f953ed6e3d8e10cde262dd269b683ac49f0e" }

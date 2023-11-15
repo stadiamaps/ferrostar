@@ -77,7 +77,7 @@ and it leverages macros.
 
 ### iOS
 
-We plan to start iOS support at version 16.
+We plan to start iOS support at version 15.
 Our general policy will be to support the current and at least the previous major version,
 extending to two major versions if possible.
 
