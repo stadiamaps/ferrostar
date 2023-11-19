@@ -3,27 +3,28 @@
     ▿ inner: Route
       - distance: 1.0
       ▿ geometry: 2 elements
-        ▿ GeographicCoordinates
+        ▿ GeographicCoordinate
           - lat: 0.0
           - lng: 0.0
-        ▿ GeographicCoordinates
+        ▿ GeographicCoordinate
           - lat: 1.0
           - lng: 1.0
       ▿ steps: 1 element
         ▿ RouteStep
           - distance: 1.0
           ▿ geometry: 2 elements
-            ▿ GeographicCoordinates
+            ▿ GeographicCoordinate
               - lat: 0.0
               - lng: 0.0
-            ▿ GeographicCoordinates
+            ▿ GeographicCoordinate
               - lat: 1.0
               - lng: 1.0
           - instruction: "Sail straight"
           ▿ roadName: Optional<String>
             - some: "foo road"
+          - spokenInstructions: 0 elements
           ▿ visualInstructions: 1 element
-            ▿ VisualInstructions
+            ▿ VisualInstruction
               ▿ primaryContent: VisualInstructionContent
                 ▿ maneuverModifier: Optional<ManeuverModifier>
                   - some: ManeuverModifier.straight
@@ -34,9 +35,9 @@
               - secondaryContent: Optional<VisualInstructionContent>.none
               - triggerDistanceBeforeManeuver: 42.0
       ▿ waypoints: 2 elements
-        ▿ GeographicCoordinates
+        ▿ GeographicCoordinate
           - lat: 0.0
           - lng: 0.0
-        ▿ GeographicCoordinates
+        ▿ GeographicCoordinate
           - lat: 1.0
           - lng: 1.0
