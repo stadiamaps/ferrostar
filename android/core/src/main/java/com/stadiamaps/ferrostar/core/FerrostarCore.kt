@@ -3,7 +3,7 @@ package com.stadiamaps.ferrostar.core
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import uniffi.ferrostar.GeographicCoordinates
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationController
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.Route
@@ -46,7 +46,7 @@ public class FerrostarCore(
     )
 
     suspend fun getRoutes(
-        initialLocation: UserLocation, waypoints: List<GeographicCoordinates>
+        initialLocation: UserLocation, waypoints: List<GeographicCoordinate>
     ): List<Route> {
         when (val request = routeAdapter.generateRequest(initialLocation, waypoints)) {
             is RouteRequest.HttpPost -> {

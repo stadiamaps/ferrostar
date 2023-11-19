@@ -14,7 +14,7 @@ import okhttp3.mock.url
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
-import uniffi.ferrostar.GeographicCoordinates
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteRequest
@@ -30,7 +30,7 @@ private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
 class MockRouteRequestGenerator: RouteRequestGenerator {
     override fun generateRequest(
         userLocation: UserLocation,
-        waypoints: List<GeographicCoordinates>
+        waypoints: List<GeographicCoordinate>
     ): RouteRequest = RouteRequest.HttpPost(valhallaEndpointUrl, mapOf(), byteArrayOf())
 
 }
@@ -69,8 +69,8 @@ class FerrostarCoreTest {
         try {
             // Tests that the core generates a request and attempts to process it, but throws due to the mocked network layer
             core.getRoutes(
-                initialLocation = UserLocation(coordinates = GeographicCoordinates(-149.543469, 60.5347155), 0.0, null, Instant.now()),
-                waypoints = listOf(GeographicCoordinates(-149.5485806, 60.5349908))
+                initialLocation = UserLocation(coordinates = GeographicCoordinate(-149.543469, 60.5347155), 0.0, null, Instant.now()),
+                waypoints = listOf(GeographicCoordinate(-149.5485806, 60.5349908))
             )
             fail("Expected the request to fail")
         } catch (e: InvalidStatusCodeException) {

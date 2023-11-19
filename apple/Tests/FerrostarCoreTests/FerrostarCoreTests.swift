@@ -15,7 +15,7 @@ let errorResponse = HTTPURLResponse(url: valhallaEndpointUrl, statusCode: 401, h
 
 
 private class MockRouteRequestGenerator: RouteRequestGenerator {
-    func generateRequest(userLocation: UniFFI.UserLocation, waypoints: [UniFFI.GeographicCoordinates]) throws -> UniFFI.RouteRequest {
+    func generateRequest(userLocation: UniFFI.UserLocation, waypoints: [UniFFI.GeographicCoordinate]) throws -> UniFFI.RouteRequest {
         return UniFFI.RouteRequest.httpPost(url: valhallaEndpointUrl.absoluteString, headers: [:], body: Data())
     }
 }
@@ -56,9 +56,9 @@ final class FerrostarCoreTests: XCTestCase {
         let mockSession = MockURLSession()
         mockSession.registerMock(forURL: valhallaEndpointUrl, withData: Data(), andResponse: successfulJSONResponse)
 
-        let geom = [GeographicCoordinates(lng: 0, lat: 0), GeographicCoordinates(lng: 1, lat: 1)]
+        let geom = [GeographicCoordinate(lng: 0, lat: 0), GeographicCoordinate(lng: 1, lat: 1)]
         let instructionContent = VisualInstructionContent(text: "Sail straight", maneuverType: .depart, maneuverModifier: .straight, roundaboutExitDegrees: nil)
-        let mockRoute = UniFFI.Route(geometry: geom, distance: 1, waypoints: geom, steps: [RouteStep(geometry: geom, distance: 1, roadName: "foo road", instruction: "Sail straight", visualInstructions: [VisualInstructions(primaryContent: instructionContent, secondaryContent: nil, triggerDistanceBeforeManeuver: 42)])])
+        let mockRoute = UniFFI.Route(geometry: geom, distance: 1, waypoints: geom, steps: [RouteStep(geometry: geom, distance: 1, roadName: "foo road", instruction: "Sail straight", visualInstructions: [VisualInstruction(primaryContent: instructionContent, secondaryContent: nil, triggerDistanceBeforeManeuver: 42)], spokenInstructions: [])])
 
         let routeAdapter = RouteAdapter(requestGenerator: MockRouteRequestGenerator(), responseParser: MockRouteResponseParser(routes: [mockRoute]))
 

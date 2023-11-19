@@ -1,13 +1,13 @@
 package com.stadiamaps.ferrostar.core
 
 import uniffi.ferrostar.CourseOverGround
-import uniffi.ferrostar.GeographicCoordinates
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.UserLocation
 import java.time.Instant
 import java.util.concurrent.Executor
 
 interface Location {
-    val coordinates: GeographicCoordinates
+    val coordinates: GeographicCoordinate
     val horizontalAccuracy: Double
     val courseOverGround: CourseOverGround?
     val timestamp: Instant
@@ -21,7 +21,7 @@ interface Location {
 }
 
 data class SimulatedLocation(
-    override val coordinates: GeographicCoordinates,
+    override val coordinates: GeographicCoordinate,
     override val horizontalAccuracy: Double,
     override val courseOverGround: CourseOverGround?,
     override val timestamp: Instant
@@ -29,13 +29,13 @@ data class SimulatedLocation(
 
 // TODO: Decide if we want to have a compile-time dependency on Android
 data class AndroidLocation(
-    override val coordinates: GeographicCoordinates,
+    override val coordinates: GeographicCoordinate,
     override val horizontalAccuracy: Double,
     override val courseOverGround: CourseOverGround?,
     override val timestamp: Instant
 ) : Location {
     constructor(location: android.location.Location) : this(
-        GeographicCoordinates(location.latitude, location.longitude),
+        GeographicCoordinate(location.latitude, location.longitude),
         location.accuracy.toDouble(),
         if (location.hasBearing() && location.hasBearingAccuracy()) {
             CourseOverGround(

@@ -2,11 +2,11 @@ import CoreLocation
 import UniFFI
 
 extension CLLocationCoordinate2D {
-    var geographicCoordinates: UniFFI.GeographicCoordinates {
-        UniFFI.GeographicCoordinates(lng: longitude, lat: latitude)
+    var geographicCoordinates: UniFFI.GeographicCoordinate {
+        UniFFI.GeographicCoordinate(lng: longitude, lat: latitude)
     }
 
-    init(geographicCoordinates: GeographicCoordinates) {
+    init(geographicCoordinates: GeographicCoordinate) {
         self.init(latitude: geographicCoordinates.lat, longitude: geographicCoordinates.lng)
     }
 }

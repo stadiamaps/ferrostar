@@ -1,9 +1,9 @@
 pub(crate) mod models;
 
 use super::RouteResponseParser;
-use crate::models::{GeographicCoordinates, RouteStep};
+use crate::models::{GeographicCoordinate, RouteStep};
 use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
-use crate::{VisualInstructionContent, VisualInstructions};
+use crate::{VisualInstructionContent, VisualInstruction, SpokenInstruction};
 use polyline::decode_polyline;
 
 /// A response parser for OSRM-compatible routing backends.
@@ -27,7 +27,7 @@ impl RouteResponseParser for OsrmResponseParser {
         let waypoints: Vec<_> = res
             .waypoints
             .iter()
-            .map(|waypoint| GeographicCoordinates {
+            .map(|waypoint| GeographicCoordinate {
                 lat: waypoint.location.latitude(),
                 lng: waypoint.location.longitude(),
             })
@@ -45,7 +45,7 @@ impl RouteResponseParser for OsrmResponseParser {
                 })?;
             let geometry = linestring
                 .coords()
-                .map(|coord| GeographicCoordinates::from(*coord))
+                .map(|coord| GeographicCoordinate::from(*coord))
                 .collect();
 
             let mut steps = vec![];
@@ -77,13 +77,13 @@ impl RouteStep {
         // TODO: Trait for this common pattern?
         let geometry = linestring
             .coords()
-            .map(|coord| GeographicCoordinates::from(*coord))
+            .map(|coord| GeographicCoordinate::from(*coord))
             .collect();
 
         let visual_instructions = value
             .banner_instructions
             .iter()
-            .map(|banner| VisualInstructions {
+            .map(|banner| VisualInstruction {
                 primary_content: VisualInstructionContent {
                     text: banner.primary.text.clone(),
                     maneuver_type: banner.primary.maneuver_type,
@@ -102,6 +102,16 @@ impl RouteStep {
             })
             .collect();
 
+        let spoken_instructions = value
+            .voice_instructions
+            .iter()
+            .map(|instruction| SpokenInstruction {
+                text: instruction.announcement.clone(),
+                ssml: instruction.ssml_announcement.clone(),
+                trigger_distance_before_maneuver: instruction.distance_along_geometry,
+            })
+            .collect();
+
         Ok(RouteStep {
             geometry,
             // TODO: Investigate using the haversine distance or geodesics to normalize.
@@ -110,6 +120,7 @@ impl RouteStep {
             road_name: value.name.clone(),
             instruction: value.maneuver.get_instruction(),
             visual_instructions,
+            spoken_instructions,
         })
     }
 }

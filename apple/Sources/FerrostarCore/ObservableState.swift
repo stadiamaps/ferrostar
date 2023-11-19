@@ -13,7 +13,7 @@ public final class FerrostarObservableState: ObservableObject {
     @Published public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
     @Published public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
     @Published public internal(set) var currentStep: UniFFI.RouteStep
-    @Published public internal(set) var visualInstructions: UniFFI.VisualInstructions?
+    @Published public internal(set) var visualInstructions: UniFFI.VisualInstruction?
     @Published public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
     @Published public internal(set) var distanceToNextManeuver: CLLocationDistance?
 
@@ -32,7 +32,7 @@ public final class FerrostarObservableState: ObservableObject {
         let remainingWaypoints = Array(samplePedestrianWaypoints.dropFirst(n))
         let lastUserLocation = remainingWaypoints.first!
 
-        let result = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [UniFFI.RouteStep(geometry: [lastUserLocation.geographicCoordinates], distance: 100, roadName: "Jefferson St.", instruction: "Walk west on Jefferson St.", visualInstructions: [UniFFI.VisualInstructions(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)])])
+        let result = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [UniFFI.RouteStep(geometry: [lastUserLocation.geographicCoordinates], distance: 100, roadName: "Jefferson St.", instruction: "Walk west on Jefferson St.", visualInstructions: [UniFFI.VisualInstruction(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)], spokenInstructions: [])])
 
         result.remainingWaypoints = remainingWaypoints
         result.snappedLocation = CLLocation(latitude: lastUserLocation.latitude, longitude: lastUserLocation.longitude)

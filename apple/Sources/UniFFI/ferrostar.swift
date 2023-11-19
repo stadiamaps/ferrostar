@@ -515,7 +515,7 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 }
 
 public protocol RouteAdapterProtocol: AnyObject {
-    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest
+    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
     func parseResponse(response: Data) throws -> [Route]
 }
 
@@ -553,12 +553,12 @@ public class RouteAdapter:
         })
     }
 
-    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest {
+    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
             rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
                 uniffi_ferrostar_fn_method_routeadapter_generate_request(self.pointer,
                                                                          FfiConverterTypeUserLocation.lower(userLocation),
-                                                                         FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
+                                                                         FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
             }
         )
     }
@@ -612,7 +612,7 @@ public func FfiConverterTypeRouteAdapter_lower(_ value: RouteAdapter) -> UnsafeM
 }
 
 public protocol RouteRequestGenerator: AnyObject {
-    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest
+    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
 }
 
 public class RouteRequestGeneratorImpl:
@@ -631,12 +631,12 @@ public class RouteRequestGeneratorImpl:
         try! rustCall { uniffi_ferrostar_fn_free_routerequestgenerator(pointer, $0) }
     }
 
-    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinates]) throws -> RouteRequest {
+    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
             rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
                 uniffi_ferrostar_fn_method_routerequestgenerator_generate_request(self.pointer,
                                                                                   FfiConverterTypeUserLocation.lower(userLocation),
-                                                                                  FfiConverterSequenceTypeGeographicCoordinates.lower(waypoints), $0)
+                                                                                  FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
             }
         )
     }
@@ -716,7 +716,7 @@ private let uniffiCallbackInterfaceRouteRequestGenerator: ForeignCallback = { (h
         func makeCall() throws -> Int32 {
             let result = try swiftCallbackInterface.generateRequest(
                 userLocation: FfiConverterTypeUserLocation.read(from: &reader),
-                waypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &reader)
+                waypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &reader)
             )
             var writer = [UInt8]()
             FfiConverterTypeRouteRequest.write(result, into: &writer)
@@ -986,7 +986,7 @@ public func FfiConverterTypeCourseOverGround_lower(_ value: CourseOverGround) ->
     return FfiConverterTypeCourseOverGround.lower(value)
 }
 
-public struct GeographicCoordinates {
+public struct GeographicCoordinate {
     public var lng: Double
     public var lat: Double
 
@@ -998,8 +998,8 @@ public struct GeographicCoordinates {
     }
 }
 
-extension GeographicCoordinates: Equatable, Hashable {
-    public static func == (lhs: GeographicCoordinates, rhs: GeographicCoordinates) -> Bool {
+extension GeographicCoordinate: Equatable, Hashable {
+    public static func == (lhs: GeographicCoordinate, rhs: GeographicCoordinate) -> Bool {
         if lhs.lng != rhs.lng {
             return false
         }
@@ -1015,27 +1015,27 @@ extension GeographicCoordinates: Equatable, Hashable {
     }
 }
 
-public struct FfiConverterTypeGeographicCoordinates: FfiConverterRustBuffer {
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> GeographicCoordinates {
+public struct FfiConverterTypeGeographicCoordinate: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> GeographicCoordinate {
         return
-            try GeographicCoordinates(
+            try GeographicCoordinate(
                 lng: FfiConverterDouble.read(from: &buf),
                 lat: FfiConverterDouble.read(from: &buf)
             )
     }
 
-    public static func write(_ value: GeographicCoordinates, into buf: inout [UInt8]) {
+    public static func write(_ value: GeographicCoordinate, into buf: inout [UInt8]) {
         FfiConverterDouble.write(value.lng, into: &buf)
         FfiConverterDouble.write(value.lat, into: &buf)
     }
 }
 
-public func FfiConverterTypeGeographicCoordinates_lift(_ buf: RustBuffer) throws -> GeographicCoordinates {
-    return try FfiConverterTypeGeographicCoordinates.lift(buf)
+public func FfiConverterTypeGeographicCoordinate_lift(_ buf: RustBuffer) throws -> GeographicCoordinate {
+    return try FfiConverterTypeGeographicCoordinate.lift(buf)
 }
 
-public func FfiConverterTypeGeographicCoordinates_lower(_ value: GeographicCoordinates) -> RustBuffer {
-    return FfiConverterTypeGeographicCoordinates.lower(value)
+public func FfiConverterTypeGeographicCoordinate_lower(_ value: GeographicCoordinate) -> RustBuffer {
+    return FfiConverterTypeGeographicCoordinate.lower(value)
 }
 
 public struct NavigationControllerConfig {
@@ -1083,14 +1083,14 @@ public func FfiConverterTypeNavigationControllerConfig_lower(_ value: Navigation
 }
 
 public struct Route {
-    public var geometry: [GeographicCoordinates]
+    public var geometry: [GeographicCoordinate]
     public var distance: Double
-    public var waypoints: [GeographicCoordinates]
+    public var waypoints: [GeographicCoordinate]
     public var steps: [RouteStep]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinates], distance: Double, waypoints: [GeographicCoordinates], steps: [RouteStep]) {
+    public init(geometry: [GeographicCoordinate], distance: Double, waypoints: [GeographicCoordinate], steps: [RouteStep]) {
         self.geometry = geometry
         self.distance = distance
         self.waypoints = waypoints
@@ -1127,17 +1127,17 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Route {
         return
             try Route(
-                geometry: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
+                geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 distance: FfiConverterDouble.read(from: &buf),
-                waypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
+                waypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 steps: FfiConverterSequenceTypeRouteStep.read(from: &buf)
             )
     }
 
     public static func write(_ value: Route, into buf: inout [UInt8]) {
-        FfiConverterSequenceTypeGeographicCoordinates.write(value.geometry, into: &buf)
+        FfiConverterSequenceTypeGeographicCoordinate.write(value.geometry, into: &buf)
         FfiConverterDouble.write(value.distance, into: &buf)
-        FfiConverterSequenceTypeGeographicCoordinates.write(value.waypoints, into: &buf)
+        FfiConverterSequenceTypeGeographicCoordinate.write(value.waypoints, into: &buf)
         FfiConverterSequenceTypeRouteStep.write(value.steps, into: &buf)
     }
 }
@@ -1151,20 +1151,22 @@ public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
 }
 
 public struct RouteStep {
-    public var geometry: [GeographicCoordinates]
+    public var geometry: [GeographicCoordinate]
     public var distance: Double
     public var roadName: String?
     public var instruction: String
-    public var visualInstructions: [VisualInstructions]
+    public var visualInstructions: [VisualInstruction]
+    public var spokenInstructions: [SpokenInstruction]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinates], distance: Double, roadName: String?, instruction: String, visualInstructions: [VisualInstructions]) {
+    public init(geometry: [GeographicCoordinate], distance: Double, roadName: String?, instruction: String, visualInstructions: [VisualInstruction], spokenInstructions: [SpokenInstruction]) {
         self.geometry = geometry
         self.distance = distance
         self.roadName = roadName
         self.instruction = instruction
         self.visualInstructions = visualInstructions
+        self.spokenInstructions = spokenInstructions
     }
 }
 
@@ -1185,6 +1187,9 @@ extension RouteStep: Equatable, Hashable {
         if lhs.visualInstructions != rhs.visualInstructions {
             return false
         }
+        if lhs.spokenInstructions != rhs.spokenInstructions {
+            return false
+        }
         return true
     }
 
@@ -1194,6 +1199,7 @@ extension RouteStep: Equatable, Hashable {
         hasher.combine(roadName)
         hasher.combine(instruction)
         hasher.combine(visualInstructions)
+        hasher.combine(spokenInstructions)
     }
 }
 
@@ -1201,20 +1207,22 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteStep {
         return
             try RouteStep(
-                geometry: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
+                geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 distance: FfiConverterDouble.read(from: &buf),
                 roadName: FfiConverterOptionString.read(from: &buf),
                 instruction: FfiConverterString.read(from: &buf),
-                visualInstructions: FfiConverterSequenceTypeVisualInstructions.read(from: &buf)
+                visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf),
+                spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf)
             )
     }
 
     public static func write(_ value: RouteStep, into buf: inout [UInt8]) {
-        FfiConverterSequenceTypeGeographicCoordinates.write(value.geometry, into: &buf)
+        FfiConverterSequenceTypeGeographicCoordinate.write(value.geometry, into: &buf)
         FfiConverterDouble.write(value.distance, into: &buf)
         FfiConverterOptionString.write(value.roadName, into: &buf)
         FfiConverterString.write(value.instruction, into: &buf)
-        FfiConverterSequenceTypeVisualInstructions.write(value.visualInstructions, into: &buf)
+        FfiConverterSequenceTypeVisualInstruction.write(value.visualInstructions, into: &buf)
+        FfiConverterSequenceTypeSpokenInstruction.write(value.spokenInstructions, into: &buf)
     }
 }
 
@@ -1287,14 +1295,14 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
 }
 
 public struct UserLocation {
-    public var coordinates: GeographicCoordinates
+    public var coordinates: GeographicCoordinate
     public var horizontalAccuracy: Double
     public var courseOverGround: CourseOverGround?
     public var timestamp: Date
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(coordinates: GeographicCoordinates, horizontalAccuracy: Double, courseOverGround: CourseOverGround?, timestamp: Date) {
+    public init(coordinates: GeographicCoordinate, horizontalAccuracy: Double, courseOverGround: CourseOverGround?, timestamp: Date) {
         self.coordinates = coordinates
         self.horizontalAccuracy = horizontalAccuracy
         self.courseOverGround = courseOverGround
@@ -1331,7 +1339,7 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UserLocation {
         return
             try UserLocation(
-                coordinates: FfiConverterTypeGeographicCoordinates.read(from: &buf),
+                coordinates: FfiConverterTypeGeographicCoordinate.read(from: &buf),
                 horizontalAccuracy: FfiConverterDouble.read(from: &buf),
                 courseOverGround: FfiConverterOptionTypeCourseOverGround.read(from: &buf),
                 timestamp: FfiConverterTimestamp.read(from: &buf)
@@ -1339,7 +1347,7 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
     }
 
     public static func write(_ value: UserLocation, into buf: inout [UInt8]) {
-        FfiConverterTypeGeographicCoordinates.write(value.coordinates, into: &buf)
+        FfiConverterTypeGeographicCoordinate.write(value.coordinates, into: &buf)
         FfiConverterDouble.write(value.horizontalAccuracy, into: &buf)
         FfiConverterOptionTypeCourseOverGround.write(value.courseOverGround, into: &buf)
         FfiConverterTimestamp.write(value.timestamp, into: &buf)
@@ -1352,6 +1360,66 @@ public func FfiConverterTypeUserLocation_lift(_ buf: RustBuffer) throws -> UserL
 
 public func FfiConverterTypeUserLocation_lower(_ value: UserLocation) -> RustBuffer {
     return FfiConverterTypeUserLocation.lower(value)
+}
+
+public struct VisualInstruction {
+    public var primaryContent: VisualInstructionContent
+    public var secondaryContent: VisualInstructionContent?
+    public var triggerDistanceBeforeManeuver: Double
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(primaryContent: VisualInstructionContent, secondaryContent: VisualInstructionContent?, triggerDistanceBeforeManeuver: Double) {
+        self.primaryContent = primaryContent
+        self.secondaryContent = secondaryContent
+        self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
+    }
+}
+
+extension VisualInstruction: Equatable, Hashable {
+    public static func == (lhs: VisualInstruction, rhs: VisualInstruction) -> Bool {
+        if lhs.primaryContent != rhs.primaryContent {
+            return false
+        }
+        if lhs.secondaryContent != rhs.secondaryContent {
+            return false
+        }
+        if lhs.triggerDistanceBeforeManeuver != rhs.triggerDistanceBeforeManeuver {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(primaryContent)
+        hasher.combine(secondaryContent)
+        hasher.combine(triggerDistanceBeforeManeuver)
+    }
+}
+
+public struct FfiConverterTypeVisualInstruction: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> VisualInstruction {
+        return
+            try VisualInstruction(
+                primaryContent: FfiConverterTypeVisualInstructionContent.read(from: &buf),
+                secondaryContent: FfiConverterOptionTypeVisualInstructionContent.read(from: &buf),
+                triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf)
+            )
+    }
+
+    public static func write(_ value: VisualInstruction, into buf: inout [UInt8]) {
+        FfiConverterTypeVisualInstructionContent.write(value.primaryContent, into: &buf)
+        FfiConverterOptionTypeVisualInstructionContent.write(value.secondaryContent, into: &buf)
+        FfiConverterDouble.write(value.triggerDistanceBeforeManeuver, into: &buf)
+    }
+}
+
+public func FfiConverterTypeVisualInstruction_lift(_ buf: RustBuffer) throws -> VisualInstruction {
+    return try FfiConverterTypeVisualInstruction.lift(buf)
+}
+
+public func FfiConverterTypeVisualInstruction_lower(_ value: VisualInstruction) -> RustBuffer {
+    return FfiConverterTypeVisualInstruction.lower(value)
 }
 
 public struct VisualInstructionContent {
@@ -1420,66 +1488,6 @@ public func FfiConverterTypeVisualInstructionContent_lift(_ buf: RustBuffer) thr
 
 public func FfiConverterTypeVisualInstructionContent_lower(_ value: VisualInstructionContent) -> RustBuffer {
     return FfiConverterTypeVisualInstructionContent.lower(value)
-}
-
-public struct VisualInstructions {
-    public var primaryContent: VisualInstructionContent
-    public var secondaryContent: VisualInstructionContent?
-    public var triggerDistanceBeforeManeuver: Double
-
-    // Default memberwise initializers are never public by default, so we
-    // declare one manually.
-    public init(primaryContent: VisualInstructionContent, secondaryContent: VisualInstructionContent?, triggerDistanceBeforeManeuver: Double) {
-        self.primaryContent = primaryContent
-        self.secondaryContent = secondaryContent
-        self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
-    }
-}
-
-extension VisualInstructions: Equatable, Hashable {
-    public static func == (lhs: VisualInstructions, rhs: VisualInstructions) -> Bool {
-        if lhs.primaryContent != rhs.primaryContent {
-            return false
-        }
-        if lhs.secondaryContent != rhs.secondaryContent {
-            return false
-        }
-        if lhs.triggerDistanceBeforeManeuver != rhs.triggerDistanceBeforeManeuver {
-            return false
-        }
-        return true
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(primaryContent)
-        hasher.combine(secondaryContent)
-        hasher.combine(triggerDistanceBeforeManeuver)
-    }
-}
-
-public struct FfiConverterTypeVisualInstructions: FfiConverterRustBuffer {
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> VisualInstructions {
-        return
-            try VisualInstructions(
-                primaryContent: FfiConverterTypeVisualInstructionContent.read(from: &buf),
-                secondaryContent: FfiConverterOptionTypeVisualInstructionContent.read(from: &buf),
-                triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf)
-            )
-    }
-
-    public static func write(_ value: VisualInstructions, into buf: inout [UInt8]) {
-        FfiConverterTypeVisualInstructionContent.write(value.primaryContent, into: &buf)
-        FfiConverterOptionTypeVisualInstructionContent.write(value.secondaryContent, into: &buf)
-        FfiConverterDouble.write(value.triggerDistanceBeforeManeuver, into: &buf)
-    }
-}
-
-public func FfiConverterTypeVisualInstructions_lift(_ buf: RustBuffer) throws -> VisualInstructions {
-    return try FfiConverterTypeVisualInstructions.lift(buf)
-}
-
-public func FfiConverterTypeVisualInstructions_lower(_ value: VisualInstructions) -> RustBuffer {
-    return FfiConverterTypeVisualInstructions.lower(value)
 }
 
 // Note that we don't yet support `indirect` for enums.
@@ -1689,7 +1697,7 @@ extension ManeuverType: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinates], currentStep: RouteStep, distanceToNextManeuver: Double)
+    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinate], currentStep: RouteStep, distanceToNextManeuver: Double)
     case arrived
 }
 
@@ -1701,7 +1709,7 @@ public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
         switch variant {
         case 1: return try .navigating(
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
-                remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinates.read(from: &buf),
+                remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 currentStep: FfiConverterTypeRouteStep.read(from: &buf),
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf)
             )
@@ -1717,7 +1725,7 @@ public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
         case let .navigating(snappedUserLocation, remainingWaypoints, currentStep, distanceToNextManeuver):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
-            FfiConverterSequenceTypeGeographicCoordinates.write(remainingWaypoints, into: &buf)
+            FfiConverterSequenceTypeGeographicCoordinate.write(remainingWaypoints, into: &buf)
             FfiConverterTypeRouteStep.write(currentStep, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
 
@@ -2046,23 +2054,23 @@ private struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
     }
 }
 
-private struct FfiConverterSequenceTypeGeographicCoordinates: FfiConverterRustBuffer {
-    typealias SwiftType = [GeographicCoordinates]
+private struct FfiConverterSequenceTypeGeographicCoordinate: FfiConverterRustBuffer {
+    typealias SwiftType = [GeographicCoordinate]
 
-    public static func write(_ value: [GeographicCoordinates], into buf: inout [UInt8]) {
+    public static func write(_ value: [GeographicCoordinate], into buf: inout [UInt8]) {
         let len = Int32(value.count)
         writeInt(&buf, len)
         for item in value {
-            FfiConverterTypeGeographicCoordinates.write(item, into: &buf)
+            FfiConverterTypeGeographicCoordinate.write(item, into: &buf)
         }
     }
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [GeographicCoordinates] {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [GeographicCoordinate] {
         let len: Int32 = try readInt(&buf)
-        var seq = [GeographicCoordinates]()
+        var seq = [GeographicCoordinate]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            try seq.append(FfiConverterTypeGeographicCoordinates.read(from: &buf))
+            try seq.append(FfiConverterTypeGeographicCoordinate.read(from: &buf))
         }
         return seq
     }
@@ -2112,23 +2120,45 @@ private struct FfiConverterSequenceTypeRouteStep: FfiConverterRustBuffer {
     }
 }
 
-private struct FfiConverterSequenceTypeVisualInstructions: FfiConverterRustBuffer {
-    typealias SwiftType = [VisualInstructions]
+private struct FfiConverterSequenceTypeSpokenInstruction: FfiConverterRustBuffer {
+    typealias SwiftType = [SpokenInstruction]
 
-    public static func write(_ value: [VisualInstructions], into buf: inout [UInt8]) {
+    public static func write(_ value: [SpokenInstruction], into buf: inout [UInt8]) {
         let len = Int32(value.count)
         writeInt(&buf, len)
         for item in value {
-            FfiConverterTypeVisualInstructions.write(item, into: &buf)
+            FfiConverterTypeSpokenInstruction.write(item, into: &buf)
         }
     }
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [VisualInstructions] {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [SpokenInstruction] {
         let len: Int32 = try readInt(&buf)
-        var seq = [VisualInstructions]()
+        var seq = [SpokenInstruction]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            try seq.append(FfiConverterTypeVisualInstructions.read(from: &buf))
+            try seq.append(FfiConverterTypeSpokenInstruction.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+private struct FfiConverterSequenceTypeVisualInstruction: FfiConverterRustBuffer {
+    typealias SwiftType = [VisualInstruction]
+
+    public static func write(_ value: [VisualInstruction], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeVisualInstruction.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [VisualInstruction] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [VisualInstruction]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            try seq.append(FfiConverterTypeVisualInstruction.read(from: &buf))
         }
         return seq
     }
@@ -2206,13 +2236,13 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 18868 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 57178 {
+    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 35986 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 29808 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 55969 {
+    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 34771 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 30875 {

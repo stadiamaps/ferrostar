@@ -1,4 +1,4 @@
-use crate::models::{GeographicCoordinates, RouteStep, UserLocation};
+use crate::models::{GeographicCoordinate, RouteStep, UserLocation};
 use geo::{
     Closest, ClosestPoint, EuclideanDistance, HaversineDistance, HaversineLength, LineLocatePoint,
     LineString, Point,
@@ -20,7 +20,7 @@ pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> 
     snap_point_to_line(&original_point, line).map_or_else(
         || location,
         |snapped| UserLocation {
-            coordinates: GeographicCoordinates {
+            coordinates: GeographicCoordinate {
                 lng: snapped.x(),
                 lat: snapped.y(),
             },
@@ -194,11 +194,11 @@ pub fn distance_to_end_of_step(
 fn gen_dummy_route_step(start_lng: f64, start_lat: f64, end_lng: f64, end_lat: f64) -> RouteStep {
     RouteStep {
         geometry: vec![
-            GeographicCoordinates {
+            GeographicCoordinate {
                 lng: start_lng,
                 lat: start_lat,
             },
-            GeographicCoordinates {
+            GeographicCoordinate {
                 lng: end_lng,
                 lat: end_lat,
             },
@@ -207,6 +207,7 @@ fn gen_dummy_route_step(start_lng: f64, start_lat: f64, end_lng: f64, end_lat: f
         road_name: None,
         instruction: "".to_string(),
         visual_instructions: vec![],
+        spoken_instructions: vec![],
     }
 }
 
@@ -283,7 +284,7 @@ proptest! {
         // Construct a user location that's slightly offset from the transition point with perfect accuracy
         let end_of_step = *current_route_step.geometry.last().unwrap();
         let user_location = UserLocation {
-            coordinates: GeographicCoordinates {
+            coordinates: GeographicCoordinate {
                 lng: end_of_step.lng + error,
                 lat: end_of_step.lat + error,
             },

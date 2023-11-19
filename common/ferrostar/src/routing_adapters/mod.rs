@@ -1,6 +1,6 @@
 use crate::{
     create_osrm_response_parser, create_valhalla_request_generator,
-    models::{GeographicCoordinates, Route, UserLocation},
+    models::{GeographicCoordinate, Route, UserLocation},
 };
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
@@ -22,7 +22,6 @@ pub enum RouteRequest {
     // TODO: Generic case for cases like local/offline route generation or other arbitrary foreign code
 }
 
-// TODO: Conventions on constructor arguments? Setter methods??
 /// A trait describing any object capable of generating [RouteRequest]s.
 ///
 /// The interface is intentionally generic. Every routing backend has its own set of
@@ -42,7 +41,7 @@ pub trait RouteRequestGenerator: Send + Sync {
     fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinates>,
+        waypoints: Vec<GeographicCoordinate>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError>;
 
     // TODO: "Trace attributes" request method? Maybe in a separate trait?
@@ -108,7 +107,7 @@ impl RouteAdapter {
     pub fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinates>,
+        waypoints: Vec<GeographicCoordinate>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
         self.request_generator
             .generate_request(user_location, waypoints)

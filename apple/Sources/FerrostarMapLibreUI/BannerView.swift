@@ -45,7 +45,7 @@ extension UniFFI.VisualInstructionContent {
 }
 
 struct BannerView: View {
-    let instructions: VisualInstructions
+    let instructions: VisualInstruction
     let distanceToNextManeuver: CLLocationDistance?
     let formatter = MKDistanceFormatter()
 
@@ -80,8 +80,8 @@ struct BannerView: View {
 }
 
 #Preview {
-    let location = GeographicCoordinates(lng: 0, lat: 0)
-    let instructions = UniFFI.VisualInstructions(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
+    let location = GeographicCoordinate(lng: 0, lat: 0)
+    let instructions = UniFFI.VisualInstruction(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
 
     return BannerView(instructions: instructions, distanceToNextManeuver: 42)
 }

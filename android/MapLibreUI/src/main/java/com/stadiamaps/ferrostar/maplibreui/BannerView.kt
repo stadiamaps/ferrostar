@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.VisualInstructionContent
-import uniffi.ferrostar.VisualInstructions
+import uniffi.ferrostar.VisualInstruction
 
 val VisualInstructionContent.maneuverIcon: ImageVector?
     get() {
@@ -47,7 +47,7 @@ val VisualInstructionContent.maneuverIcon: ImageVector?
 
 
 @Composable
-fun BannerView(instructions: VisualInstructions, distanceToNextManeuver: Double?) {
+fun BannerView(instructions: VisualInstruction, distanceToNextManeuver: Double?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,7 +85,7 @@ fun BannerView(instructions: VisualInstructions, distanceToNextManeuver: Double?
 @Preview()
 @Composable
 fun PreviewBannerView() {
-    val instructions = VisualInstructions(
+    val instructions = VisualInstruction(
         primaryContent = VisualInstructionContent(
             text = "Hyde Street",
             maneuverType = ManeuverType.TURN,

@@ -22,7 +22,7 @@ import okhttp3.mock.rule
 import okhttp3.mock.url
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import uniffi.ferrostar.GeographicCoordinates
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.UserLocation
 import java.net.URL
 import java.time.Instant
@@ -254,41 +254,41 @@ class ValhallaCoreTest {
         return runTest {
             val routes = core.getRoutes(
                 UserLocation(
-                    GeographicCoordinates(60.5347155, -149.543469), 12.0, null, Instant.now()
-                ), waypoints = listOf(GeographicCoordinates(60.5349908, -149.5485806))
+                    GeographicCoordinate(60.5347155, -149.543469), 12.0, null, Instant.now()
+                ), waypoints = listOf(GeographicCoordinate(60.5349908, -149.5485806))
             )
 
             assertEquals(routes.count(), 1)
             assertEquals(
                 listOf(
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.543469, 60.534716
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.543879, 60.534782
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.544134, 60.534829
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.5443, 60.534856
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.544533, 60.534887
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.544976, 60.534941
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.545485, 60.534971
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.546177, 60.535003
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.546937, 60.535008
                     ),
-                    GeographicCoordinates(
+                    GeographicCoordinate(
                         -149.548581, 60.534991
                     ),
                 ), routes.first().geometry

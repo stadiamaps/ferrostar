@@ -196,10 +196,6 @@ impl NavigationController {
                             Some(current_step.clone())
                         };
 
-                        // TODO: Calculate distance to the next step
-                        // Hmm... We don't currently store the LineString for the current step...
-                        // let fraction_along_line = route_linestring.line_locate_point(&point!(x: snapped_user_location.coordinates.lng, y: snapped_user_location.coordinates.lat));
-
                         if let Some(step) = current_step {
                             let distance_to_next_maneuver = distance_to_end_of_step(
                                 &snapped_user_location.into(),

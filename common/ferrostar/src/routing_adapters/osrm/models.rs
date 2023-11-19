@@ -132,6 +132,9 @@ pub struct RouteStep {
     /// Textual instructions that are displayed as a banner; supported by Mapbox and Valhalla
     #[serde(default, rename = "bannerInstructions")]
     pub banner_instructions: Vec<BannerInstruction>,
+    /// Textual instructions that are displayed as a banner; supported by Mapbox and Stadia Maps
+    #[serde(default, rename = "voiceInstructions")]
+    pub voice_instructions: Vec<VoiceInstruction>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -141,6 +144,15 @@ pub struct BannerInstruction {
     pub distance_along_geometry: f64,
     pub primary: BannerContent,
     pub secondary: Option<BannerContent>,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct VoiceInstruction {
+    pub announcement: String,
+    pub ssml_announcement: Option<String>,
+    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    pub distance_along_geometry: f64,
 }
 
 #[derive(Deserialize, Debug)]
@@ -184,8 +196,9 @@ pub struct StepManeuver {
 
 impl StepManeuver {
     // TODO: This is a placeholder implementation.
-    // The backends that the developers are working with all do instruction synthesis from
-    // components server-side.
+    // Most commercial offerings offer server-side synthesis of voice instructions.
+    // However, we might consider synthesizing these locally too.
+    // This will be rather cumbersome with localization though.
     fn synthesize_instruction(&self, locale: &str) -> String {
         String::from("TODO: OSRM instruction synthesis")
     }
