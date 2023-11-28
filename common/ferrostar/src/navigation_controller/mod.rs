@@ -33,6 +33,7 @@ pub struct NavigationController {
     /// NOTE: [Mutex] is used because UniFFI doesn't handle mutating struct operations
     /// very well. Others like [core::cell::RefCell] are not enough as the entire object is required to be both
     /// [Send] and [Sync], and [core::cell::RefCell] is explicitly `!Sync`.
+    // TODO: Consider rearchitecting this to be fully pure. Dropping the mutex is a prerequisite for no_std support
     state: Mutex<TripState>,
     config: NavigationControllerConfig,
 }
