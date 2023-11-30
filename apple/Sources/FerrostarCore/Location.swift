@@ -35,6 +35,7 @@ public class LiveLocationProvider: NSObject, ObservableObject {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
         case .authorizedAlways, .authorizedWhenInUse:
+            lastLocation = locationManager.location
             locationManager.requestLocation()
         default:
             break
