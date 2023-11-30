@@ -56,11 +56,12 @@ NOTE: The Android project is still in its very early stages; check back soon.
 
 #### iOS
 
-Coming Soon: get the iOS example project into git.
+See the [ferrostar-ios-demo](https://github.com/stadiamaps/ferrostar-ios-demo) repo
+for a demonstration of the current status.
 
 #### Android
 
-TODO after we have something useful
+Coming soon: We're working on the UI components for Jetpack Compose right now!
 
 ## Platform Support Targets
 
