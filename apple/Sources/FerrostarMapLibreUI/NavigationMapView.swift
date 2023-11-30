@@ -96,14 +96,12 @@ public struct NavigationMapView: View {
 }
 
 
-struct NavigationView_Previews: PreviewProvider {
-    // TODO: Move to environment
-    private static let apiKey = "YOUR-API-KEY"
-    static var previews: some View {
+#Preview {
+    // TODO: Make map URL configurable but gitignored
+    return
         NavigationMapView(
-            lightStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,
-            darkStyleURL: URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(apiKey)")!,
+            lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+            darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
             navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4)
         )
-    }
 }
