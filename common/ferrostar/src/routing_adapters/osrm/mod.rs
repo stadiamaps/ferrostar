@@ -3,7 +3,7 @@ pub(crate) mod models;
 use super::RouteResponseParser;
 use crate::models::{GeographicCoordinate, RouteStep};
 use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
-use crate::{VisualInstructionContent, VisualInstruction, SpokenInstruction};
+use crate::{SpokenInstruction, VisualInstruction, VisualInstructionContent};
 use polyline::decode_polyline;
 
 /// A response parser for OSRM-compatible routing backends.

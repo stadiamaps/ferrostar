@@ -1,5 +1,5 @@
 use crate::{GeographicCoordinate, RouteStep, UserLocation};
-use geo::{LineString};
+use geo::LineString;
 
 /// Internal state of the navigation controller.
 #[derive(Debug, Clone, PartialEq, uniffi::Enum)]

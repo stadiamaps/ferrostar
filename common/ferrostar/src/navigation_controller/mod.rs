@@ -26,14 +26,8 @@ pub struct NavigationController {
 impl NavigationController {
     // TODO: A method for returning the initial trip state given a starting location
     #[uniffi::constructor]
-    pub fn new(
-        route: Route,
-        config: NavigationControllerConfig,
-    ) -> Arc<Self> {
-        Arc::new(Self {
-            config,
-            route,
-        })
+    pub fn new(route: Route, config: NavigationControllerConfig) -> Arc<Self> {
+        Arc::new(Self { config, route })
     }
 
     /// Returns initial trip state as if the user had just started the route with no progress.
@@ -43,24 +37,19 @@ impl NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return TripState::Complete
+            return TripState::Complete;
         };
 
         let current_step_linestring = current_route_step.get_linestring();
-        let snapped_user_location = snap_user_location_to_line(
-            location,
-            &current_step_linestring,
-        );
-        let distance_to_next_maneuver = distance_to_end_of_step(
-            &snapped_user_location.into(),
-            &current_step_linestring,
-        );
+        let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
+        let distance_to_next_maneuver =
+            distance_to_end_of_step(&snapped_user_location.into(), &current_step_linestring);
 
         TripState::Navigating {
             snapped_user_location,
             remaining_waypoints,
             remaining_steps: remaining_steps.clone(),
-            distance_to_next_maneuver
+            distance_to_next_maneuver,
         }
     }
 
@@ -80,15 +69,16 @@ impl NavigationController {
                 let update = advance_step(remaining_steps);
                 // TODO: Anything with remaining_waypoints?
                 match update {
-                    StepAdvanceStatus::Advanced { step: _, linestring } => {
+                    StepAdvanceStatus::Advanced {
+                        step: _,
+                        linestring,
+                    } => {
                         // Apply the updates
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
 
-                        let distance_to_next_maneuver = distance_to_end_of_step(
-                            &(*snapped_user_location).into(),
-                            &linestring,
-                        );
+                        let distance_to_next_maneuver =
+                            distance_to_end_of_step(&(*snapped_user_location).into(), &linestring);
                         TripState::Navigating {
                             snapped_user_location: *snapped_user_location,
                             remaining_waypoints: remaining_waypoints.clone(),
@@ -96,9 +86,7 @@ impl NavigationController {
                             distance_to_next_maneuver,
                         }
                     }
-                    StepAdvanceStatus::EndOfRoute => {
-                        TripState::Complete
-                    }
+                    StepAdvanceStatus::EndOfRoute => TripState::Complete,
                 }
             }
             // It's tempting to throw an error here, since the caller should know better, but
