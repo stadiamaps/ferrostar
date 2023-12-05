@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,14 +34,14 @@ val VisualInstructionContent.maneuverIcon: ImageVector?
         // Ideally look for some iconography licensed under CC or similar
         // that we can use on all platforms.
         return when (this.maneuverModifier) {
-            ManeuverModifier.U_TURN -> Icons.Filled.Warning
-            ManeuverModifier.SHARP_RIGHT -> Icons.Filled.Warning
-            ManeuverModifier.RIGHT -> Icons.Filled.Warning
-            ManeuverModifier.SLIGHT_RIGHT -> Icons.Filled.Warning
-            ManeuverModifier.STRAIGHT -> Icons.Filled.Warning
-            ManeuverModifier.SLIGHT_LEFT -> Icons.Filled.Warning
-            ManeuverModifier.LEFT -> Icons.Filled.Warning
-            ManeuverModifier.SHARP_LEFT -> Icons.Filled.Warning
+            ManeuverModifier.U_TURN -> Icons.Filled.Info
+            ManeuverModifier.SHARP_RIGHT -> Icons.Filled.Info
+            ManeuverModifier.RIGHT -> Icons.Filled.Info
+            ManeuverModifier.SLIGHT_RIGHT -> Icons.Filled.Info
+            ManeuverModifier.STRAIGHT -> Icons.Filled.Info
+            ManeuverModifier.SLIGHT_LEFT -> Icons.Filled.Info
+            ManeuverModifier.LEFT -> Icons.Filled.Info
+            ManeuverModifier.SHARP_LEFT -> Icons.Filled.Info
             else -> null
         }
     }

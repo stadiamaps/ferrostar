@@ -426,8 +426,9 @@ private struct FfiConverterTimestamp: FfiConverterRustBuffer {
 }
 
 public protocol NavigationControllerProtocol: AnyObject {
-    func advanceToNextStep() -> NavigationStateUpdate
-    func updateUserLocation(location: UserLocation) -> NavigationStateUpdate
+    func advanceToNextStep(state: TripState) -> TripState
+    func getInitialState(location: UserLocation) -> TripState
+    func updateUserLocation(location: UserLocation, state: TripState) -> TripState
 }
 
 public class NavigationController:
@@ -442,10 +443,9 @@ public class NavigationController:
         self.pointer = pointer
     }
 
-    public convenience init(lastUserLocation: UserLocation, route: Route, config: NavigationControllerConfig) {
+    public convenience init(route: Route, config: NavigationControllerConfig) {
         self.init(unsafeFromRawPointer: try! rustCall {
             uniffi_ferrostar_fn_constructor_navigationcontroller_new(
-                FfiConverterTypeUserLocation.lower(lastUserLocation),
                 FfiConverterTypeRoute.lower(route),
                 FfiConverterTypeNavigationControllerConfig.lower(config), $0
             )
@@ -456,21 +456,33 @@ public class NavigationController:
         try! rustCall { uniffi_ferrostar_fn_free_navigationcontroller(pointer, $0) }
     }
 
-    public func advanceToNextStep() -> NavigationStateUpdate {
-        return try! FfiConverterTypeNavigationStateUpdate.lift(
+    public func advanceToNextStep(state: TripState) -> TripState {
+        return try! FfiConverterTypeTripState.lift(
             try!
                 rustCall {
-                    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.pointer, $0)
+                    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.pointer,
+                                                                                         FfiConverterTypeTripState.lower(state), $0)
                 }
         )
     }
 
-    public func updateUserLocation(location: UserLocation) -> NavigationStateUpdate {
-        return try! FfiConverterTypeNavigationStateUpdate.lift(
+    public func getInitialState(location: UserLocation) -> TripState {
+        return try! FfiConverterTypeTripState.lift(
+            try!
+                rustCall {
+                    uniffi_ferrostar_fn_method_navigationcontroller_get_initial_state(self.pointer,
+                                                                                      FfiConverterTypeUserLocation.lower(location), $0)
+                }
+        )
+    }
+
+    public func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
+        return try! FfiConverterTypeTripState.lift(
             try!
                 rustCall {
                     uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.pointer,
-                                                                                         FfiConverterTypeUserLocation.lower(location), $0)
+                                                                                         FfiConverterTypeUserLocation.lower(location),
+                                                                                         FfiConverterTypeTripState.lower(state), $0)
                 }
         )
     }
@@ -1696,57 +1708,6 @@ extension ManeuverType: Equatable, Hashable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
-public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinate], currentStep: RouteStep, distanceToNextManeuver: Double)
-    case arrived
-}
-
-public struct FfiConverterTypeNavigationStateUpdate: FfiConverterRustBuffer {
-    typealias SwiftType = NavigationStateUpdate
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationStateUpdate {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        case 1: return try .navigating(
-                snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
-                remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
-                currentStep: FfiConverterTypeRouteStep.read(from: &buf),
-                distanceToNextManeuver: FfiConverterDouble.read(from: &buf)
-            )
-
-        case 2: return .arrived
-
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: NavigationStateUpdate, into buf: inout [UInt8]) {
-        switch value {
-        case let .navigating(snappedUserLocation, remainingWaypoints, currentStep, distanceToNextManeuver):
-            writeInt(&buf, Int32(1))
-            FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
-            FfiConverterSequenceTypeGeographicCoordinate.write(remainingWaypoints, into: &buf)
-            FfiConverterTypeRouteStep.write(currentStep, into: &buf)
-            FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
-
-        case .arrived:
-            writeInt(&buf, Int32(2))
-        }
-    }
-}
-
-public func FfiConverterTypeNavigationStateUpdate_lift(_ buf: RustBuffer) throws -> NavigationStateUpdate {
-    return try FfiConverterTypeNavigationStateUpdate.lift(buf)
-}
-
-public func FfiConverterTypeNavigationStateUpdate_lower(_ value: NavigationStateUpdate) -> RustBuffer {
-    return FfiConverterTypeNavigationStateUpdate.lower(value)
-}
-
-extension NavigationStateUpdate: Equatable, Hashable {}
-
-// Note that we don't yet support `indirect` for enums.
-// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum RouteRequest {
     case httpPost(url: String, headers: [String: String], body: Data)
 }
@@ -1927,6 +1888,57 @@ public func FfiConverterTypeStepAdvanceMode_lower(_ value: StepAdvanceMode) -> R
 }
 
 extension StepAdvanceMode: Equatable, Hashable {}
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+public enum TripState {
+    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinate], remainingSteps: [RouteStep], distanceToNextManeuver: Double)
+    case complete
+}
+
+public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
+    typealias SwiftType = TripState
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TripState {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return try .navigating(
+                snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
+                remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
+                remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
+                distanceToNextManeuver: FfiConverterDouble.read(from: &buf)
+            )
+
+        case 2: return .complete
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: TripState, into buf: inout [UInt8]) {
+        switch value {
+        case let .navigating(snappedUserLocation, remainingWaypoints, remainingSteps, distanceToNextManeuver):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
+            FfiConverterSequenceTypeGeographicCoordinate.write(remainingWaypoints, into: &buf)
+            FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
+            FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
+
+        case .complete:
+            writeInt(&buf, Int32(2))
+        }
+    }
+}
+
+public func FfiConverterTypeTripState_lift(_ buf: RustBuffer) throws -> TripState {
+    return try FfiConverterTypeTripState.lift(buf)
+}
+
+public func FfiConverterTypeTripState_lower(_ value: TripState) -> RustBuffer {
+    return FfiConverterTypeTripState.lower(value)
+}
+
+extension TripState: Equatable, Hashable {}
 
 private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     typealias SwiftType = UInt16?
@@ -2230,10 +2242,13 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 42515 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 2009 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 5714 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 18868 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 22778 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 19022 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 35986 {
@@ -2248,7 +2263,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 30875 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 48478 {
+    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 26294 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 22742 {

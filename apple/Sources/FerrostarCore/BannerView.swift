@@ -44,12 +44,17 @@ extension UniFFI.VisualInstructionContent {
     }
 }
 
-struct BannerView: View {
+public struct BannerView: View {
     let instructions: VisualInstruction
     let distanceToNextManeuver: CLLocationDistance?
     let formatter = MKDistanceFormatter()
 
-    var body: some View {
+    public init(instructions: VisualInstruction, distanceToNextManeuver: CLLocationDistance?) {
+        self.instructions = instructions
+        self.distanceToNextManeuver = distanceToNextManeuver
+    }
+
+    public var body: some View {
         VStack {
             HStack {
                 VStack {

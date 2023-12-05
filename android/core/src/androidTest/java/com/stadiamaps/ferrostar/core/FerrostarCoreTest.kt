@@ -62,7 +62,6 @@ class FerrostarCoreTest {
 
         val core = FerrostarCore(
             routeAdapter = RouteAdapter(requestGenerator = MockRouteRequestGenerator(), responseParser = MockRouteResponseParser(routes = listOf())),
-            locationProvider = SimulatedLocationProvider(),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
         )
 

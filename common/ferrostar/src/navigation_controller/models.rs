@@ -1,14 +1,11 @@
-use crate::{GeographicCoordinate, Route, RouteStep, UserLocation};
-use geo::LineString;
+use crate::{GeographicCoordinate, RouteStep, UserLocation};
+use geo::{LineString};
 
 /// Internal state of the navigation controller.
-pub(super) enum TripState {
+#[derive(Debug, Clone, PartialEq, uniffi::Enum)]
+pub enum TripState {
     Navigating {
-        last_user_location: UserLocation,
         snapped_user_location: UserLocation,
-        route: Route,
-        /// LineString (derived from route geometry) used for calculations like snapping.
-        route_linestring: LineString,
         /// The ordered list of waypoints remaining to visit on this trip. Intermediate waypoints on
         /// the route to the final destination are discarded as they are visited.
         /// TODO: Do these need additional details like a name/label?
@@ -17,29 +14,10 @@ pub(super) enum TripState {
         /// The step at the front of the list is always the current step.
         /// We currently assume that you cannot move backward to a previous step.
         remaining_steps: Vec<RouteStep>,
-        /// Cached LineString for the current step
-        /// (for doing calculations like distance remaining and snapping).
-        current_step_linestring: LineString,
-    },
-    Complete,
-}
-
-/// Public updates pushed up to the direct user of the NavigationController.
-#[derive(Debug, PartialEq, uniffi::Enum)]
-pub enum NavigationStateUpdate {
-    Navigating {
-        snapped_user_location: UserLocation,
-        /// The ordered list of waypoints remaining to visit on this trip. Intermediate waypoints on
-        /// the route to the final destination are discarded as they are visited.
-        remaining_waypoints: Vec<GeographicCoordinate>,
-        /// The current/active maneuver. Properties such as the distance will be updated live.
-        current_step: RouteStep,
-        /// The distance remaining till the end of the current step (taking the line geometry
-        /// into account), measured in meters.
         distance_to_next_maneuver: f64,
         // TODO: Communicate off-route and other state info
     },
-    Arrived,
+    Complete,
 }
 
 pub enum StepAdvanceStatus {

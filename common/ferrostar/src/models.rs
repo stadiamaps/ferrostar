@@ -107,7 +107,7 @@ pub struct RouteStep {
 }
 
 impl RouteStep {
-    // TODO: Memoize or something later; would also let us drop storage from internal nav state
+    // TODO: Memoize or something later
     pub(crate) fn get_linestring(&self) -> LineString {
         LineString::from_iter(self.geometry.iter().map(|coord| Coord {
             x: coord.lng,

@@ -17,6 +17,10 @@ associated with C++, has interoperability with just about every platform. Recent
 idiomatic binding generation for Swift and Kotlin (see [UniFFI](https://github.com/mozilla/uniffi-rs) from Mozilla),
 and Rust has some of the most loved build tooling of any programming language.
 
+At the moment, we are attempting to keep the core purely functional.
+This decision is not completely set in stone yet,
+but it seems like an extremely logical choice in terms of testability.
+
 ### Navigation Controller
 
 This manages the lifecycle of the navigation (TODO: define this more precisely).

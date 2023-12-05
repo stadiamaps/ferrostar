@@ -70,4 +70,6 @@ final class FerrostarCoreTests: XCTestCase {
     }
 
     // TODO: Various location services failure modes (need special mocks to simulate these)
+
+    // TODO: Test that state changes are picked up by the core when the user's location changes
 }

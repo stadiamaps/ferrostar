@@ -247,7 +247,6 @@ class ValhallaCoreTest {
         val core = FerrostarCore(
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
-            locationProvider = SimulatedLocationProvider(),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
         )
 

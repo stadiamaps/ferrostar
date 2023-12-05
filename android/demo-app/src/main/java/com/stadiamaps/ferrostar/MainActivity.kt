@@ -18,13 +18,13 @@ import okhttp3.OkHttpClient
 import java.net.URL
 
 class MainActivity : ComponentActivity() {
+    // TODO: Create a view model instead
     val locationProvider = SimulatedLocationProvider()
     val httpClient = OkHttpClient.Builder().build()
     // TODO: Something useful. This is just a placeholder that essentially checks our ability to load the Rust library
     val core = FerrostarCore(
         valhallaEndpointURL = URL("https://api.stadiamaps.com/navigate/v1?api_key=YOUR-KEY-HERE"),
         profile = "pedestrian",
-        locationProvider = locationProvider,
         httpClient = httpClient
     )
 

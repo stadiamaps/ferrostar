@@ -12,7 +12,7 @@ public final class FerrostarObservableState: ObservableObject {
     @Published public internal(set) var courseOverGround: CLLocationDirection?
     @Published public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
     @Published public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
-    @Published public internal(set) var currentStep: UniFFI.RouteStep
+    @Published public internal(set) var currentStep: UniFFI.RouteStep?
     @Published public internal(set) var visualInstructions: UniFFI.VisualInstruction?
     @Published public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
     @Published public internal(set) var distanceToNextManeuver: CLLocationDistance?
