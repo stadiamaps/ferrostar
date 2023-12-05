@@ -125,6 +125,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
         navigationController = NavigationController(route: route.inner, config: NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue))
+        tripState = navigationController?.getInitialState(location: location.userLocation)
     }
 
     /// Stops navigation and stops requesting location updates (to save battery).
