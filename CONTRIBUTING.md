@@ -40,49 +40,57 @@ For minor or straightforward bug fixes, feel free to proceed directly to a PR.
 
 ### Rust
 
-The common core is written in Rust.
-If you don't already have Rust, you can grab it following the instructions [here](https://www.rust-lang.org/).
-If at all possible, install `rustup`.
-We use [rust-toolchain.yml](common/rust-toolchain.yml) to synchronize the toolchain
-and install targets automatically.
+1. Install [Rust](https://www.rust-lang.org/).
+   If at all possible, install `rustup`.
+   We use [rust-toolchain.yml](common/rust-toolchain.yml)
+   to synchronize the toolchain and install targets automatically.
+2. Open the cargo workspace (`common/`) in your preferred editing environment. 
+
+The Rust project is a cargo workspace,
+and nothing beyond the above is requried should be needed to start hacking. 
 
 ### iOS
 
-* Install the latest version of Xcode
-* Install the Xcode Command Line Tools
+1. Install the latest version of Xcode.
+2. Install the Xcode Command Line Tools.
 
 ```shell
 xcode-select --install
 ```
 
-* Since you're developing locally, set `let useLocalFramework = true` in `Package.swift`. 
-* Run the iOS build script
+3. Since you're developing locally, set `let useLocalFramework = true` in `Package.swift`.
+   (TODO: Figure out a way to extract this so it doesn't get accidentally committed.) 
+4. Run the iOS build script:
 
 ```shell
-cd ./common
+cd apple/common
 ./build-ios.sh
 ```
 
 **IMPORTANT:** every time you make changes to the common core,
 you will need to run [`build-ios.sh`](common/build-ios.sh) to see your changes on iOS!
-It would be great to integrate this into the Xcode build flow in the future,
+We want to integrate this into the Xcode build flow in the future,
 but at the time of this writing,
 it is not possible with the Swift package flow.
 Further, the "normal" Xcode build flow always assumes xcframeworks can't change during build,
 so it processes them before any other build rules.
 Given these limitations, we opted for a shell script until further notice.
 
+5. Open the Swift package in Xcode.
+   (NOTE: Due to the quirks of how SPM is designed,
+   Package.swift must live in the repo root.
+   This makes the project view in Xcode slightly more cluttered,
+   but there isn't much we can do about this given how SPM works.)
+
 ### Android
 
-NOTE: Android is not as far along as iOS,
-but the core is expected to build at this time.
-
-* Install [Android Studio](https://developer.android.com/studio).
-* Ensure that the latest NDK is installed
-  (refer to the `ndkVersion` number in [`core/build.gradle`](android/core/build.gradle)
-  and ensure you have the same version available).
-
-After the initial setup, Gradle should be able to handle rebuilding the core for Android automatically.
+1. Install [Android Studio](https://developer.android.com/studio).
+2. Ensure that the latest NDK is installed
+   (refer to the `ndkVersion` number in [`core/build.gradle`](android/core/build.gradle)
+   and ensure you have the same version available).
+3. Open the Gradle workspace ('android/') in Android Studio.
+   Gradle builds automatically ensure the core is built,
+   so there are no funky scripts needed as on iOS.
 
 ## Writing & Running Tests
 
@@ -96,8 +104,9 @@ Run unit tests as usual from within Xcode.
 
 ### Android
 
-Run `gradle test` *as well as* the Android Tests within Android Studio.
-(TODO: CLI info)
+At the moment, we need to use Android tests,
+but want to remove this requirement in the future as it is extremely expensive.
+So, the recommended way to run all tests is `./gradlew connectedCheck`. 
 
 ## Code Conventions
 
@@ -110,7 +119,8 @@ Run `gradle test` *as well as* the Android Tests within Android Studio.
 
 ## Changelog Conventions
 
-NOTE: We'll be *extremely* loose with this till we get closer to a minimally usable state.
+NOTE: We'll be *extremely* loose with this
+until we have solid beta quality releases for both iOS and Android.
 
 What warrants a changelog entry?
 
@@ -119,7 +129,7 @@ What warrants a changelog entry?
 - Any contribution from a community member *may* have a changelog entry, no matter how small
 - Any documentation related changes *should not* have a changelog entry
 - Any regression change introduced and fixed within the same release *should not* have a changelog entry
-- Any internal refactoring, technical debt reduction, render test, unit test or benchmark related change *should not* have a changelog entry
+- Any internal refactoring, technical debt reduction, test, or benchmark related change *should not* have a changelog entry
 
 How to add your changelog?
 

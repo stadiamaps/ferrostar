@@ -9,7 +9,7 @@ use std::sync::Arc;
 // For UniFFI, which requires everything to be visible at the root
 pub use models::*;
 pub use navigation_controller::{
-    models::{NavigationControllerConfig, NavigationStateUpdate, StepAdvanceMode},
+    models::{NavigationControllerConfig, StepAdvanceMode},
     NavigationController,
 };
 pub use routing_adapters::{

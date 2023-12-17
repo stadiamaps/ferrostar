@@ -15,11 +15,11 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.0.10"
-    let releaseChecksum = "fedb1818ae0da6cfac9d0004ad4fc32f77673e831a1c84a18a7233accf15427c"
+    let releaseTag = "0.0.16"
+    let releaseChecksum = "908d64c25414b30aec22a07a615a871d952babf3153f39569aa402b37dcc4a6a"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
-        url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar_core-rs.xcframework.zip",
+        url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar-rs.xcframework.zip",
         checksum: releaseChecksum
     )
 }
@@ -28,7 +28,7 @@ if useLocalFramework {
 let package = Package(
     name: "FerrostarCore",
     platforms: [
-        .iOS(.v17),
+        .iOS(.v15),
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -44,7 +44,13 @@ let package = Package(
     dependencies: [
 //        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
 //        .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
-        .package(path: "../maplibre-swiftui-dsl-playground")
+        .package(
+            path: "../maplibre-swiftui-dsl-playground"
+        ),
+        .package(
+            url: "https://github.com/pointfreeco/swift-snapshot-testing",
+            from: "1.15.0"
+        ),
     ],
     targets: [
         binaryTarget,
@@ -70,7 +76,10 @@ let package = Package(
         ),
         .testTarget(
             name: "FerrostarCoreTests",
-            dependencies: ["FerrostarCore"],
+            dependencies: [
+                "FerrostarCore",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
             path: "apple/Tests/FerrostarCoreTests"
         ),
     ]

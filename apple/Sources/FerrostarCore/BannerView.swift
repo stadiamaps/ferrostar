@@ -44,12 +44,17 @@ extension UniFFI.VisualInstructionContent {
     }
 }
 
-struct BannerView: View {
-    let instructions: VisualInstructions
+public struct BannerView: View {
+    let instructions: VisualInstruction
     let distanceToNextManeuver: CLLocationDistance?
     let formatter = MKDistanceFormatter()
 
-    var body: some View {
+    public init(instructions: VisualInstruction, distanceToNextManeuver: CLLocationDistance?) {
+        self.instructions = instructions
+        self.distanceToNextManeuver = distanceToNextManeuver
+    }
+
+    public var body: some View {
         VStack {
             HStack {
                 VStack {
@@ -74,14 +79,14 @@ struct BannerView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.all, 8)
-        .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+        .background(Color.black.opacity(0.7).clipShape(.rect(cornerRadius: 10), style: FillStyle()))
         .padding(.horizontal, 16)
     }
 }
 
 #Preview {
-    let location = GeographicCoordinates(lng: 0, lat: 0)
-    let instructions = UniFFI.VisualInstructions(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
+    let location = GeographicCoordinate(lng: 0, lat: 0)
+    let instructions = UniFFI.VisualInstruction(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
 
     return BannerView(instructions: instructions, distanceToNextManeuver: 42)
 }

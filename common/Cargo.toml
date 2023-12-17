@@ -10,5 +10,9 @@ resolver = "2"
 insta.opt-level = 3
 similar.opt-level = 3
 
+[profile.release]
+lto = "thin"
+opt-level = "s"
+
 [workspace.dependencies]
-uniffi = { git = "https://github.com/mozilla/uniffi-rs/", rev = "46c06003261c9ce769afff735f8d29d4282f445c" }
+uniffi = { git = "https://github.com/mozilla/uniffi-rs/", rev = "fbc6631953a889c7af6e5f1af94de9242589b75b" }

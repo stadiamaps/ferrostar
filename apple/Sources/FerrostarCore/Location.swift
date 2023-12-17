@@ -16,7 +16,7 @@ public protocol LocationManagingDelegate: AnyObject {
 }
 
 // TODO: Permissions are currently NOT handled and they should be!!!
-@Observable public class LiveLocationProvider: NSObject {
+public class LiveLocationProvider: NSObject, ObservableObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
@@ -35,6 +35,7 @@ public protocol LocationManagingDelegate: AnyObject {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
         case .authorizedAlways, .authorizedWhenInUse:
+            lastLocation = locationManager.location
             locationManager.requestLocation()
         default:
             break
@@ -43,9 +44,9 @@ public protocol LocationManagingDelegate: AnyObject {
         locationManager.activityType = activityType
     }
 
-    public private(set) var lastLocation: CLLocation?
+    @Published public private(set) var lastLocation: CLLocation?
 
-    public private(set) var lastHeading: CLHeading?
+    @Published public private(set) var lastHeading: CLHeading?
 }
 
 extension LiveLocationProvider: LocationProviding {
@@ -89,16 +90,15 @@ extension LiveLocationProvider: CLLocationManagerDelegate {
 /// Location provider for testing without relying on simulator location spoofing.
 ///
 /// This allows for more granular unit tests.
-@Observable
-public class SimulatedLocationProvider: LocationProviding {
+public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     public var delegate: LocationManagingDelegate?
-    public var lastLocation: CLLocation? {
+    @Published public var lastLocation: CLLocation? {
         didSet {
             notifyDelegateOfLocation()
         }
     }
 
-    public var lastHeading: CLHeading? {
+    @Published public var lastHeading: CLHeading? {
         didSet {
             notifyDelegateOfHeading()
         }

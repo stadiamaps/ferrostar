@@ -7,12 +7,12 @@ use serde::Serialize;
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
-pub struct GeographicCoordinates {
+pub struct GeographicCoordinate {
     pub lng: f64,
     pub lat: f64,
 }
 
-impl From<Coord> for GeographicCoordinates {
+impl From<Coord> for GeographicCoordinate {
     fn from(value: Coord) -> Self {
         Self {
             lng: value.x,
@@ -21,8 +21,8 @@ impl From<Coord> for GeographicCoordinates {
     }
 }
 
-impl From<GeographicCoordinates> for Coord {
-    fn from(value: GeographicCoordinates) -> Self {
+impl From<GeographicCoordinate> for Coord {
+    fn from(value: GeographicCoordinate) -> Self {
         Self {
             x: value.lng,
             y: value.lat,
@@ -30,8 +30,8 @@ impl From<GeographicCoordinates> for Coord {
     }
 }
 
-impl From<GeographicCoordinates> for Point {
-    fn from(value: GeographicCoordinates) -> Self {
+impl From<GeographicCoordinate> for Point {
+    fn from(value: GeographicCoordinate) -> Self {
         Self(value.into())
     }
 }
@@ -58,11 +58,10 @@ impl CourseOverGround {
 /// which can influence navigation logic and UI.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct UserLocation {
-    pub coordinates: GeographicCoordinates,
+    pub coordinates: GeographicCoordinate,
     /// The estimated accuracy of the coordinate (in meters)
     pub horizontal_accuracy: f64,
     pub course_over_ground: Option<CourseOverGround>,
-    // TODO: Decide if we want to include heading in the user location, if/how we should factor it in, and how to handle it on Android
     pub timestamp: SystemTime,
 }
 
@@ -79,13 +78,13 @@ impl From<UserLocation> for Point {
 #[derive(Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct Route {
-    pub geometry: Vec<GeographicCoordinates>,
+    pub geometry: Vec<GeographicCoordinate>,
     /// The total route distance, in meters.
     pub distance: f64,
     /// The ordered list of waypoints to visit, including the starting point.
     /// Note that this is distinct from the *geometry* which includes all points visited.
     /// A waypoint represents a start/end point for a route leg.
-    pub waypoints: Vec<GeographicCoordinates>,
+    pub waypoints: Vec<GeographicCoordinate>,
     pub steps: Vec<RouteStep>,
 }
 
@@ -98,17 +97,17 @@ pub struct Route {
 #[derive(Clone, Debug, PartialEq, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct RouteStep {
-    pub geometry: Vec<GeographicCoordinates>,
+    pub geometry: Vec<GeographicCoordinate>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
     pub road_name: Option<String>,
     pub instruction: String,
-    pub visual_instructions: Vec<VisualInstructions>,
-    // TODO: Spoken instruction
+    pub visual_instructions: Vec<VisualInstruction>,
+    pub spoken_instructions: Vec<SpokenInstruction>,
 }
 
 impl RouteStep {
-    // TODO: Memoize or something later; would also let us drop storage from internal nav state
+    // TODO: Memoize or something later
     pub(crate) fn get_linestring(&self) -> LineString {
         LineString::from_iter(self.geometry.iter().map(|coord| Coord {
             x: coord.lng,
@@ -117,9 +116,8 @@ impl RouteStep {
     }
 }
 
-// TODO: trigger_at doesn't really have to live in the public interface; figure out if we want to have a separate FFI vs internal type
-
-#[derive(Debug, PartialEq, uniffi::Record)]
+#[derive(Debug, Clone, PartialEq, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
 pub struct SpokenInstruction {
     /// Plain-text instruction which can be synthesized with a TTS engine.
     pub text: String,
@@ -191,7 +189,7 @@ pub struct VisualInstructionContent {
 
 #[derive(Debug, Clone, PartialEq, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
-pub struct VisualInstructions {
+pub struct VisualInstruction {
     pub primary_content: VisualInstructionContent,
     pub secondary_content: Option<VisualInstructionContent>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed

@@ -73,5 +73,14 @@ xcuserdata/
 
 # End of https://www.toptal.com/developers/gitignore/api/rust,xcode,android
 
-# SwiftPM 
+# Swift Package Manager
 .build/
+
+# macOS Ignores
+.DS_Store
+
+# Android (cargo-ndk outputs; they end up in the Android source tree)
+*.so
+
+# Example App
+API-Keys.plist

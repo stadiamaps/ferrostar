@@ -1,0 +1,95 @@
+▿ 1 element
+  ▿ Route
+    ▿ inner: Route
+      - distance: 284.0
+      ▿ geometry: 10 elements
+        ▿ GeographicCoordinate
+          - lat: 60.534716
+          - lng: -149.543469
+        ▿ GeographicCoordinate
+          - lat: 60.534782
+          - lng: -149.543879
+        ▿ GeographicCoordinate
+          - lat: 60.534829
+          - lng: -149.544134
+        ▿ GeographicCoordinate
+          - lat: 60.534856
+          - lng: -149.5443
+        ▿ GeographicCoordinate
+          - lat: 60.534887
+          - lng: -149.544533
+        ▿ GeographicCoordinate
+          - lat: 60.534941
+          - lng: -149.544976
+        ▿ GeographicCoordinate
+          - lat: 60.534971
+          - lng: -149.545485
+        ▿ GeographicCoordinate
+          - lat: 60.535003
+          - lng: -149.546177
+        ▿ GeographicCoordinate
+          - lat: 60.535008
+          - lng: -149.546937
+        ▿ GeographicCoordinate
+          - lat: 60.534991
+          - lng: -149.548581
+      ▿ steps: 2 elements
+        ▿ RouteStep
+          - distance: 284.0
+          ▿ geometry: 10 elements
+            ▿ GeographicCoordinate
+              - lat: 60.534716
+              - lng: -149.543469
+            ▿ GeographicCoordinate
+              - lat: 60.534782
+              - lng: -149.543879
+            ▿ GeographicCoordinate
+              - lat: 60.534829
+              - lng: -149.544134
+            ▿ GeographicCoordinate
+              - lat: 60.534856
+              - lng: -149.5443
+            ▿ GeographicCoordinate
+              - lat: 60.534887
+              - lng: -149.544533
+            ▿ GeographicCoordinate
+              - lat: 60.534941
+              - lng: -149.544976
+            ▿ GeographicCoordinate
+              - lat: 60.534971
+              - lng: -149.545485
+            ▿ GeographicCoordinate
+              - lat: 60.535003
+              - lng: -149.546177
+            ▿ GeographicCoordinate
+              - lat: 60.535008
+              - lng: -149.546937
+            ▿ GeographicCoordinate
+              - lat: 60.534991
+              - lng: -149.548581
+          - instruction: "Drive west on AK 1/Seward Highway."
+          ▿ roadName: Optional<String>
+            - some: "Seward Highway"
+          - spokenInstructions: 0 elements
+          - visualInstructions: 0 elements
+        ▿ RouteStep
+          - distance: 0.0
+          ▿ geometry: 2 elements
+            ▿ GeographicCoordinate
+              - lat: 60.534991
+              - lng: -149.548581
+            ▿ GeographicCoordinate
+              - lat: 60.534991
+              - lng: -149.548581
+          - instruction: "You have arrived at your destination."
+          ▿ roadName: Optional<String>
+            - some: "Seward Highway"
+          - spokenInstructions: 0 elements
+          - visualInstructions: 0 elements
+      ▿ waypoints: 2 elements
+        ▿ GeographicCoordinate
+          - lat: 60.534715
+          - lng: -149.543469
+        ▿ GeographicCoordinate
+          - lat: 60.534991
+          - lng: -149.548581

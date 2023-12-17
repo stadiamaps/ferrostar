@@ -28,17 +28,17 @@ public struct Route {
     }
 }
 
-/// A Swift wrapper around `UniFFI.NavigationStateUpdate`.
-public enum NavigationStateUpdate {
-    case navigating(snappedUserLocation: CLLocation, remainingWaypoints: [CLLocationCoordinate2D], currentStep: UniFFI.RouteStep?, distanceToNextManeuver: Double)
-    case arrived
+/// A Swift wrapper around `UniFFI.TripState`.
+public enum TripState {
+    case navigating(snappedUserLocation: CLLocation, remainingWaypoints: [CLLocationCoordinate2D], remainingSteps: [UniFFI.RouteStep], distanceToNextManeuver: Double)
+    case complete
 
-    init(_ update: UniFFI.NavigationStateUpdate) {
+    init(_ update: UniFFI.TripState) {
         switch (update) {
-        case .navigating(snappedUserLocation: let location, remainingWaypoints: let waypoints, currentStep: let currentStep, distanceToNextManeuver: let distanceToNextManeuver):
-            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingWaypoints: waypoints.map { CLLocationCoordinate2D(geographicCoordinates: $0)}, currentStep: currentStep, distanceToNextManeuver: distanceToNextManeuver)
-        case .arrived:
-            self = .arrived
+        case .navigating(snappedUserLocation: let location, remainingWaypoints: let waypoints, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
+            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingWaypoints: waypoints.map { CLLocationCoordinate2D(geographicCoordinates: $0)}, remainingSteps: remainingSteps, distanceToNextManeuver: distanceToNextManeuver)
+        case .complete:
+            self = .complete
         }
     }
 }

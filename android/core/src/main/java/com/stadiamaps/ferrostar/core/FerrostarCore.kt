@@ -3,37 +3,42 @@ package com.stadiamaps.ferrostar.core
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import uniffi.ferrostar.GeographicCoordinates
-import uniffi.ferrostar.NavigationController
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
+import uniffi.ferrostar.RouteAdapterInterface
 import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.UserLocation
 import java.net.URL
 
+open class FerrostarCoreException : Exception {
+    constructor(message: String) : super(message)
+    constructor(message: String, cause: Throwable) : super(message, cause)
+    constructor(cause: Throwable) : super(cause)
+}
+
+class InvalidStatusCodeException(val statusCode: Int): FerrostarCoreException("Route request failed with status code $statusCode")
+
+class NoResponseBodyException: FerrostarCoreException("Route request was successful but had no body bytes")
+
 class FerrostarCore(
-    val routeAdapter: RouteAdapter,
-    val locationProvider: LocationProvider,
+    val routeAdapter: RouteAdapterInterface,
     val httpClient: OkHttpClient
 ) {
-    private var navigationController: NavigationController? = null
-
     constructor(
         valhallaEndpointURL: URL,
         profile: String,
-        locationProvider: LocationProvider,
         httpClient: OkHttpClient,
     ) : this(
         RouteAdapter.newValhallaHttp(
             valhallaEndpointURL.toString(), profile
         ),
-        locationProvider,
         httpClient,
     )
 
     suspend fun getRoutes(
-        initialLocation: UserLocation, waypoints: List<GeographicCoordinates>
-    ): List<Route> {
+        initialLocation: UserLocation, waypoints: List<GeographicCoordinate>
+    ): List<Route> =
         when (val request = routeAdapter.generateRequest(initialLocation, waypoints)) {
             is RouteRequest.HttpPost -> {
                 val httpRequest = Request.Builder()
@@ -49,13 +54,12 @@ class FerrostarCore(
                 val res = httpClient.newCall(httpRequest).await()
                 val bodyBytes = res.body?.bytes()
                 if (!res.isSuccessful) {
-                    TODO("Throw a useful exception")
+                    throw InvalidStatusCodeException(res.code)
                 } else if (bodyBytes == null) {
-                    TODO("Throw a useful exception")
+                    throw NoResponseBodyException()
                 }
 
-                return routeAdapter.parseResponse(bodyBytes)
+                routeAdapter.parseResponse(bodyBytes)
             }
         }
-    }
 }

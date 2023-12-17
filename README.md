@@ -7,20 +7,16 @@ Ferrostar is a FOSS navigation SDK built from the ground up for the future.
 ## Current status
 
 The project is under active development
-and the code is not yet ready for use in apps yet.
+and the code is not yet ready for use in production yet.
 Many parts of the design are still in flux,
 so there are no API stability guarantees.
 
-That said, things are now in a solid alpha state on iOS,
-and you can actually build a useful, if extremely rough,
-proof of concept apps on iOS
-You can track the road to something _usable_ in the
-[Proof of Concept Milestone](https://github.com/stadiamaps/ferrostar/milestone/1).
+That said, things are now in a solid alpha state,
+including a minimum usable UI for iOS.
+While there are certainly rough edges, it is indeed usable.
+See the getting started section below.
 
-We are focusing on iterating on the design with iOS first,
-and once we feel we have answered the important design questions,
-we can translate the concepts to Android and iterate on the core in parallel.
-Android has a theoretically working core, but no UI work has been done.
+Our next priority is a first pass of the Android UI.
 
 ![A screenshot of the current status](screenshot.png)
 
@@ -47,24 +43,26 @@ See the [ARCHITECTURE](ARCHITECTURE.md) document.
 
 ### As a Contributor
 
-See our [CONTRIBUTING](CONTRIBUTING.md) guide for info on expectations and dev environment setup.
-
-NOTE: The Android project will probably be broken for a few weeks, and you'll definitely want to be building with
-`useLocalFramework = true` in Package.swift.
+See our [CONTRIBUTING](CONTRIBUTING.md) guide
+for info on expectations and dev environment setup.
 
 ### As a User
 
-TODO: Write this once we have something useful.
+#### iOS
 
-#### TODO: iOS
+See the [ferrostar-ios-demo](https://github.com/stadiamaps/ferrostar-ios-demo) repo
+for a demonstration of the current status.
 
-#### TODO: Android
+#### Android
+
+Coming soon: We're working on the UI components for Jetpack Compose right now!
 
 ## Platform Support Targets
 
 ### Rust
 
-The project should always be developed using the latest stable Rust release. While we don't intend to use every new language features the day it lands,
+The project should always be developed using the latest stable Rust release.
+While we don't intend to use every new language features the day it lands,
 there isn't any reason to lag behind the latest stable.
 
 ### Swift
@@ -75,15 +73,13 @@ and it leverages macros.
 
 ### iOS
 
-We will initially target the current iOS major version (17.0).
-We will eventually support at least the previous major version,
-but iOS 17 brought many SwiftUI updates that dramatically simplify the code.
+We plan to start iOS support at version 15.
+Our general policy will be to support the current and at least the previous major version,
+extending to two major versions if possible.
 
 ### Android
 
 Android developers should always build using the latest publicly available Android Studio version.
-Android users are generally much slower to get new OS major versions due to a variety of factors, so
-our Android support will initially stretch back to API level 29 (Android 10 / Q). This will similarly cover around 70%
-of devices to start.
+Android users are generally much slower to get new OS major versions due to a variety of factors.
 
-TODO: Long term, what is a reasonable Android support target? 90%?
+TODO: Determine a reasonable Android support target

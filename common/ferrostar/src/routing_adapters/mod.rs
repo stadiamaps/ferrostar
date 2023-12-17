@@ -1,6 +1,6 @@
 use crate::{
     create_osrm_response_parser, create_valhalla_request_generator,
-    models::{GeographicCoordinates, Route, UserLocation},
+    models::{GeographicCoordinate, Route, UserLocation},
 };
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
@@ -22,7 +22,6 @@ pub enum RouteRequest {
     // TODO: Generic case for cases like local/offline route generation or other arbitrary foreign code
 }
 
-// TODO: Conventions on constructor arguments? Setter methods??
 /// A trait describing any object capable of generating [RouteRequest]s.
 ///
 /// The interface is intentionally generic. Every routing backend has its own set of
@@ -33,7 +32,7 @@ pub enum RouteRequest {
 /// Implementations may be either in Rust (most popular engines should eventually have Rust
 /// implementations) or foreign code.
 #[uniffi::export]
-pub trait RouteRequestGenerator: Send + Sync + Debug {
+pub trait RouteRequestGenerator: Send + Sync {
     /// Generates a routing backend request given the set of locations.
     ///
     /// While most implementations will treat the locations as an ordered sequence, this is not
@@ -42,7 +41,7 @@ pub trait RouteRequestGenerator: Send + Sync + Debug {
     fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinates>,
+        waypoints: Vec<GeographicCoordinate>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError>;
 
     // TODO: "Trace attributes" request method? Maybe in a separate trait?
@@ -51,11 +50,11 @@ pub trait RouteRequestGenerator: Send + Sync + Debug {
 /// A generic interface describing any object capable of parsing a response from a routing
 /// backend into one or more [Route]s.
 #[uniffi::export]
-pub trait RouteResponseParser: Send + Sync + Debug {
+pub trait RouteResponseParser: Send + Sync {
     /// Parses a raw response from the routing backend into a route.
     ///
-    /// As we need to assume some sort of type, a sequence of octets is a reasonable interchange
-    /// format for all known responses so far (JSON, PBF, etc.).
+    /// We use a sequence of octets as a common interchange format.
+    /// as this works for all currently conceivable formats (JSON, PBF, etc.).
     fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, RoutingResponseParseError>;
 }
 
@@ -108,7 +107,7 @@ impl RouteAdapter {
     pub fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinates>,
+        waypoints: Vec<GeographicCoordinate>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
         self.request_generator
             .generate_request(user_location, waypoints)

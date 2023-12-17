@@ -1,5 +1,5 @@
 use super::{RouteRequest, RoutingRequestGenerationError};
-use crate::models::{GeographicCoordinates, UserLocation};
+use crate::models::{GeographicCoordinate, UserLocation};
 use crate::routing_adapters::RouteRequestGenerator;
 use serde_json::{json, Value as JsonValue};
 use std::collections::HashMap;
@@ -33,7 +33,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
     fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinates>,
+        waypoints: Vec<GeographicCoordinate>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
         if waypoints.is_empty() {
             Err(RoutingRequestGenerationError::NotEnoughWaypoints)
@@ -73,6 +73,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                       "shape_attributes.length"
                     ]
                 },
+                "banner_instructions": true,
                 "costing": &self.profile,
                 "locations": locations,
             });
@@ -97,13 +98,13 @@ mod tests {
     const ENDPOINT_URL: &str = "https://api.stadiamaps.com/route/v1";
     const COSTING: &str = "bicycle";
     const USER_LOCATION: UserLocation = UserLocation {
-        coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
+        coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
         horizontal_accuracy: 6.0,
         course_over_ground: None,
         timestamp: SystemTime::UNIX_EPOCH,
     };
     const USER_LOCATION_WITH_COURSE: UserLocation = UserLocation {
-        coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
+        coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
         horizontal_accuracy: 6.0,
         course_over_ground: Some(CourseOverGround {
             degrees: 42,
@@ -111,9 +112,9 @@ mod tests {
         }),
         timestamp: SystemTime::UNIX_EPOCH,
     };
-    const WAYPOINTS: [GeographicCoordinates; 2] = [
-        GeographicCoordinates { lat: 0.0, lng: 1.0 },
-        GeographicCoordinates { lat: 2.0, lng: 3.0 },
+    const WAYPOINTS: [GeographicCoordinate; 2] = [
+        GeographicCoordinate { lat: 0.0, lng: 1.0 },
+        GeographicCoordinate { lat: 2.0, lng: 3.0 },
     ];
 
     #[test]
@@ -217,7 +218,7 @@ mod tests {
         let generator =
             ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
         let location = UserLocation {
-            coordinates: GeographicCoordinates { lat: 0.0, lng: 0.0 },
+            coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
             horizontal_accuracy: -6.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),

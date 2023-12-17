@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'org.mozilla.rust-android-gradle.rust-android'
+    id 'com.github.willir.rust.cargo-ndk-android'
 }
 
 // TODO: Publishing?
@@ -55,22 +55,19 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
-cargo {
-    module  = "../../common"  // Directory containing Cargo.toml
-    libname = "ferrostar"     // [package] name from Cargo.toml
-    targets = ["arm", "arm64", "x86", "x86_64", "darwin-aarch64"]  // See https://github.com/mozilla/rust-android-gradle for a longer list of options
-    // TODO: Set profile to release for release builds!
+cargoNdk {
+    module  = "../common"  // Directory containing Cargo.toml
+    librariesNames = ["libferrostar.so"]
 }
 
 android.libraryVariants.all { variant ->
     def generateBindings = tasks.register("generate${variant.name.capitalize()}UniFFIBindings", Exec) {
         workingDir '../../common'
-        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', 'target/aarch64-linux-android/release/libferrostar.so', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
+        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', '../android/core/src/main/jniLibs/arm64-v8a/libferrostar.so', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
 
-        dependsOn 'cargoBuild'
+        dependsOn "buildCargoNdk${variant.name.capitalize()}"
     }
 
-    variant.javaCompileProvider.get().dependsOn('cargoBuild')
     variant.javaCompileProvider.get().dependsOn(generateBindings)
 
     // Some stuff here is broken, since Android Tests don't run after running gradle build,

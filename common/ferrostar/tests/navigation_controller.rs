@@ -1,9 +1,10 @@
 extern crate ferrostar;
 
+use ferrostar::navigation_controller::models::TripState;
 use ferrostar::routing_adapters::osrm::OsrmResponseParser;
 use ferrostar::{
-    NavigationController, NavigationControllerConfig, NavigationStateUpdate, Route,
-    RouteResponseParser, StepAdvanceMode, UserLocation,
+    NavigationController, NavigationControllerConfig, Route, RouteResponseParser, StepAdvanceMode,
+    UserLocation,
 };
 use std::time::SystemTime;
 
@@ -23,6 +24,33 @@ fn get_route_with_two_steps() -> Route {
 }
 
 #[test]
+fn same_location_results_in_identical_state() {
+    let route = get_route_with_two_steps();
+    let initial_user_location = UserLocation {
+        coordinates: route.steps[0].geometry[0],
+        horizontal_accuracy: 0.0,
+        course_over_ground: None,
+        timestamp: SystemTime::now(),
+    };
+
+    let controller = NavigationController::new(
+        route,
+        NavigationControllerConfig {
+            step_advance: StepAdvanceMode::Manual,
+        },
+    );
+
+    let initial_state = controller.get_initial_state(initial_user_location);
+    assert!(matches!(initial_state, TripState::Navigating { .. }));
+
+    // Nothing should happen if given the exact same user location update
+    assert_eq!(
+        controller.update_user_location(initial_user_location, &initial_state),
+        initial_state
+    );
+}
+
+#[test]
 fn simple_route_state_machine_manual_advance() {
     let route = get_route_with_two_steps();
     let initial_user_location = UserLocation {
@@ -39,7 +67,6 @@ fn simple_route_state_machine_manual_advance() {
     };
 
     let controller = NavigationController::new(
-        initial_user_location,
         route,
         NavigationControllerConfig {
             step_advance: StepAdvanceMode::Manual,
@@ -47,47 +74,46 @@ fn simple_route_state_machine_manual_advance() {
     );
 
     // The first update is meaningless in this test, except to get the state
-    let initial_state = controller.update_user_location(initial_user_location);
-    let NavigationStateUpdate::Navigating {
+    let initial_state = controller.get_initial_state(initial_user_location);
+    let TripState::Navigating {
         snapped_user_location,
-        current_step: first_step,
+        remaining_steps: initial_remaining_steps,
         ..
-    } = controller.update_user_location(initial_user_location)
+    } = initial_state.clone()
     else {
         panic!("Expected state to be navigating");
     };
+    // Assumption: our floating point epsilon doesn't create false positives here
     assert_eq!(initial_user_location, snapped_user_location);
 
-    // Nothing should happen if given the exact same user location update
-    assert_eq!(
-        controller.update_user_location(initial_user_location),
-        initial_state
-    );
-
     // The current step should not advance until we specifically trigger an advance
-    assert!(matches!(
-        controller.update_user_location(user_location_end_of_first_step),
-        NavigationStateUpdate::Navigating {
-            current_step: _first_step,
-            ..
-        }
-    ));
-
-    // Jump to the next step
-    let NavigationStateUpdate::Navigating {
-        current_step: second_step,
+    let intermediate_state =
+        controller.update_user_location(user_location_end_of_first_step, &initial_state);
+    let TripState::Navigating {
+        snapped_user_location,
         ..
-    } = controller.advance_to_next_step()
+    } = intermediate_state.clone()
     else {
         panic!("Expected state to be navigating");
     };
 
-    assert_ne!(first_step, second_step);
+    assert_eq!(snapped_user_location, user_location_end_of_first_step);
+
+    // Jump to the next step
+    let terminal_state = controller.advance_to_next_step(&intermediate_state);
+    let TripState::Navigating {
+        remaining_steps, ..
+    } = terminal_state.clone()
+    else {
+        panic!("Expected state to be navigating");
+    };
+
+    assert_ne!(initial_remaining_steps, remaining_steps);
 
     // There are only two steps, so advancing to the next step should put us in the "arrived" state
     assert!(matches!(
-        controller.advance_to_next_step(),
-        NavigationStateUpdate::Arrived { .. }
+        controller.advance_to_next_step(&terminal_state),
+        TripState::Complete { .. }
     ));
 }
 
@@ -108,7 +134,6 @@ fn simple_route_state_machine_advances_with_location_change() {
     };
 
     let controller = NavigationController::new(
-        initial_user_location,
         route,
         NavigationControllerConfig {
             // NOTE: We will use an exact location to trigger the update;
@@ -121,29 +146,22 @@ fn simple_route_state_machine_advances_with_location_change() {
     );
 
     // The first update is meaningless in this test, except to get the state
-    let initial_state = controller.update_user_location(initial_user_location);
-    let NavigationStateUpdate::Navigating {
-        current_step: first_step,
+    let initial_state = controller.get_initial_state(initial_user_location);
+    let TripState::Navigating {
+        remaining_steps: initial_remaining_steps,
         ..
-    } = controller.update_user_location(initial_user_location)
+    } = initial_state.clone()
     else {
         panic!("Expected state to be navigating");
     };
-
-    // Nothing should happen if given the exact same user location update
-    assert_eq!(
-        controller.update_user_location(initial_user_location),
-        initial_state
-    );
 
     // The current step should change when we jump to the end location
-    let NavigationStateUpdate::Navigating {
-        current_step: second_step,
-        ..
-    } = controller.update_user_location(user_location_end_of_first_step)
+    let TripState::Navigating {
+        remaining_steps, ..
+    } = controller.update_user_location(user_location_end_of_first_step, &initial_state)
     else {
         panic!("Expected state to be navigating");
     };
 
-    assert_ne!(first_step, second_step);
+    assert_ne!(remaining_steps, initial_remaining_steps);
 }

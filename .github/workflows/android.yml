@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v3
@@ -23,6 +23,21 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       working-directory: android
+
+    - name: Install cargo-ndk
+      run: cargo install cargo-ndk
+
+    - name: Touch local.properties (required for cargo-ndk)
+      run: touch local.properties
+      working-directory: android
+      
     - name: Build with Gradle
       run: ./gradlew build
       working-directory: android
+
+    - name: Run Connected Checks
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        script: ./gradlew connectedCheck
+        working-directory: android

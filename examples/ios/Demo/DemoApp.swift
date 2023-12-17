@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-let stadiaMapsAPIKey = Bundle.main.infoDictionary!["STADIAMAPS_API_KEY"] as! String
-
 @main
 struct DemoApp: App {
     var body: some Scene {
