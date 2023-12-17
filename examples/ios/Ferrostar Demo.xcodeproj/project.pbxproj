@@ -12,6 +12,7 @@
 		1611A55C2B2E6E98006B131D /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5572B2E6E98006B131D /* ConfigurationView.swift */; };
 		1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5582B2E6E98006B131D /* DemoApp.swift */; };
 		1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679C2B2F6F85008BFF1F /* APIKeys.swift */; };
+		1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */; };
 		168ECA7A2B2E8C42007B11DE /* API-Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 168ECA792B2E8C42007B11DE /* API-Keys.plist */; };
 		169A1D562B2E8280006CE59E /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 169A1D552B2E8280006CE59E /* FerrostarCore */; };
 		169A1D582B2E8280006CE59E /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */; };
@@ -28,9 +29,10 @@
 		1611A5572B2E6E98006B131D /* ConfigurationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
 		1611A5582B2E6E98006B131D /* DemoApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		1663679C2B2F6F85008BFF1F /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
+		1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationData.swift; sourceTree = "<group>"; };
 		168ECA792B2E8C42007B11DE /* API-Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "API-Keys.plist"; sourceTree = "<group>"; };
-		168ECA7B2B2F6A1E007B11DE /* Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Demo-Info.plist"; sourceTree = "<group>"; };
-		E9505FB72AD449700016BF0A /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		168ECA7B2B2F6A1E007B11DE /* Ferrostar Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ferrostar Demo-Info.plist"; sourceTree = "<group>"; };
+		E9505FB72AD449700016BF0A /* Ferrostar Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ferrostar Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9DD18E42B18EE7A00CAF29A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E9DD18E52B18F4BD00CAF29A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +79,7 @@
 			isa = PBXGroup;
 			children = (
 				1663679C2B2F6F85008BFF1F /* APIKeys.swift */,
+				1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -85,7 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				168ECA792B2E8C42007B11DE /* API-Keys.plist */,
-				168ECA7B2B2F6A1E007B11DE /* Demo-Info.plist */,
+				168ECA7B2B2F6A1E007B11DE /* Ferrostar Demo-Info.plist */,
 				1611A5522B2E6E98006B131D /* Demo */,
 				E9DD18E52B18F4BD00CAF29A /* LICENSE */,
 				E9DD18E42B18EE7A00CAF29A /* README.md */,
@@ -96,7 +99,7 @@
 		E9505FB82AD449700016BF0A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E9505FB72AD449700016BF0A /* Demo.app */,
+				E9505FB72AD449700016BF0A /* Ferrostar Demo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -104,9 +107,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		E9505FB62AD449700016BF0A /* Demo */ = {
+		E9505FB62AD449700016BF0A /* Ferrostar Demo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E9505FC52AD449710016BF0A /* Build configuration list for PBXNativeTarget "Demo" */;
+			buildConfigurationList = E9505FC52AD449710016BF0A /* Build configuration list for PBXNativeTarget "Ferrostar Demo" */;
 			buildPhases = (
 				E9505FB32AD449700016BF0A /* Sources */,
 				E9505FB42AD449700016BF0A /* Frameworks */,
@@ -116,7 +119,7 @@
 			);
 			dependencies = (
 			);
-			name = Demo;
+			name = "Ferrostar Demo";
 			packageProductDependencies = (
 				E9505FC92AD449B30016BF0A /* FerrostarCore */,
 				E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */,
@@ -126,7 +129,7 @@
 				169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */,
 			);
 			productName = "iOS Demo";
-			productReference = E9505FB72AD449700016BF0A /* Demo.app */;
+			productReference = E9505FB72AD449700016BF0A /* Ferrostar Demo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -144,7 +147,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E9505FB22AD449700016BF0A /* Build configuration list for PBXProject "Demo" */;
+			buildConfigurationList = E9505FB22AD449700016BF0A /* Build configuration list for PBXProject "Ferrostar Demo" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -160,7 +163,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E9505FB62AD449700016BF0A /* Demo */,
+				E9505FB62AD449700016BF0A /* Ferrostar Demo */,
 			);
 		};
 /* End PBXProject section */
@@ -185,6 +188,7 @@
 				1611A55B2B2E6E98006B131D /* NavigationView.swift in Sources */,
 				1611A55C2B2E6E98006B131D /* ConfigurationView.swift in Sources */,
 				1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */,
+				1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */,
 				1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -322,7 +326,7 @@
 				DEVELOPMENT_TEAM = W4C54KHWZ6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Demo-Info.plist";
+				INFOPLIST_FILE = "Ferrostar Demo-Info.plist";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs your location to offer turn-by-turn navigation";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -354,7 +358,7 @@
 				DEVELOPMENT_TEAM = W4C54KHWZ6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Demo-Info.plist";
+				INFOPLIST_FILE = "Ferrostar Demo-Info.plist";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs your location to offer turn-by-turn navigation";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -378,7 +382,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E9505FB22AD449700016BF0A /* Build configuration list for PBXProject "Demo" */ = {
+		E9505FB22AD449700016BF0A /* Build configuration list for PBXProject "Ferrostar Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E9505FC32AD449710016BF0A /* Debug */,
@@ -387,7 +391,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E9505FC52AD449710016BF0A /* Build configuration list for PBXNativeTarget "Demo" */ = {
+		E9505FC52AD449710016BF0A /* Build configuration list for PBXNativeTarget "Ferrostar Demo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E9505FC62AD449710016BF0A /* Debug */,

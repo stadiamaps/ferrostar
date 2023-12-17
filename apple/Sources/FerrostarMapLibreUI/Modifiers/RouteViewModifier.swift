@@ -22,7 +22,6 @@ extension MapView {
         }
         
         let layers: [StyleLayerDefinition] = [
-            // TODO: Make this configurable via a modifier
             LineStyleLayer(identifier: "route-polyline-casing", source: routePolylineSource)
                 .lineCap(constant: .round)
                 .lineJoin(constant: .round)
@@ -32,7 +31,6 @@ extension MapView {
                            parameters: NSExpression(forConstantValue: 1.5),
                            stops: NSExpression(forConstantValue: [14: 6, 18: 24])),
 
-            // TODO: Make this configurable via a modifier
             LineStyleLayer(identifier: "route-polyline", source: routePolylineSource)
                 .lineCap(constant: .round)
                 .lineJoin(constant: .round)

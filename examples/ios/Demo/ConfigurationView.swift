@@ -1,6 +1,6 @@
 //
-//  SetupView.swift
-//  iOS Demo
+//  ConfigurationView.swift
+//  Ferrostar Demo
 //
 //  Created by Jacob Fielding on 12/6/23.
 //
@@ -42,6 +42,7 @@ struct ConfigurationView: View {
 //                }
 //            }
         }
+        .navigationTitle("Config")
     }
 }
 

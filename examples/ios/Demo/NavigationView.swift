@@ -1,6 +1,6 @@
 //
 //  NavigationView.swift
-//  iOS Demo
+//  Ferrostar Demo
 //
 //  Created by Ian Wagner on 2023-10-09.
 //
@@ -12,33 +12,24 @@ import FerrostarMapLibreUI
 
 let style = URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!
 
-struct LocationIdentifier : Identifiable, Equatable, Hashable {
-    static func == (lhs: LocationIdentifier, rhs: LocationIdentifier) -> Bool {
-        lhs.id == rhs.id
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-
-    let id = UUID()
-    let name: String
-    let location: CLLocationCoordinate2D
-}
-
-let locations = [
-    LocationIdentifier(name: "Cupertino HS", location: CLLocationCoordinate2D(latitude: 37.31910, longitude: -122.01018)),
-]
-
 struct NavigationView: View {
     
     private let locationManager: LiveLocationProvider
     private let ferrostarCore: FerrostarCore
+    
 //    @StateObject private var locationManager = LiveLocationProvider(activityType: .otherNavigation)
 //    @State private var ferrostarCore: FerrostarCore =
+    
     @State private var isFetchingRoutes = false
     @State private var routes: [Route]?
-    @State private var errorMessage: String?
+    @State private var errorMessage: String? {
+        didSet {
+            Task {
+                try await Task.sleep(nanoseconds: 10 * NSEC_PER_SEC)
+                errorMessage = nil
+            }
+        }
+    }
 
     init() {
         locationManager = LiveLocationProvider(activityType: .otherNavigation)
@@ -49,39 +40,44 @@ struct NavigationView: View {
     }
     
     var body: some View {
-        let locationServicesEnabled = locationManager.authorizationStatus == .authorizedAlways 
+        let locationServicesEnabled = locationManager.authorizationStatus == .authorizedAlways
             || locationManager.authorizationStatus == .authorizedWhenInUse
 
         NavigationStack {
-            
-            
-            // TODO: Make navigationState optional on NavigationMapView
-            NavigationMapView(lightStyleURL: style,
-                              darkStyleURL: style,
-                              navigationState: ferrostarCore.observableState)
+            NavigationMapView(
+                lightStyleURL: style,
+                darkStyleURL: style,
+                navigationState: ferrostarCore.observableState,
+                initialCamera: .center(locations.first!.coordinate, zoom: 14)
+            )
             .overlay(alignment: .bottomLeading) {
                 VStack {
-                    NavigationLink("Settings") {
-                        Text("Settings")
-                    }
-                    
-                    Spacer()
-                    
-                    if let location = locationManager.lastLocation {
+                    HStack {
+                        if isFetchingRoutes {
+                            Text("Loading route...")
+                                .font(.caption)
+                                .padding(.all, 8)
+                                .foregroundColor(.white)
+                                .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+                        }
                         
-                        Text("±\(Int(location.horizontalAccuracy))m accuracy")
-                            .foregroundColor(.white)
-                            .padding(.all, 8)
-                            .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
-                    
-                        Button("Start Navigation") {
-                            Task {
-                                do {
-                                    try await startNavigation()
-                                } catch {
-                                    print("Error starting navigation: \(error)")
+                        if let errorMessage {
+                            Text(errorMessage)
+                                .font(.caption)
+                                .padding(.all, 8)
+                                .foregroundColor(.white)
+                                .background(Color.red.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+                                .onTapGesture {
+                                    self.errorMessage = nil
                                 }
-                            }
+                        }
+                        
+                        Spacer()
+                        
+                        NavigationLink {
+                            ConfigurationView()
+                        } label: {
+                            Image(systemName: "gear")
                         }
                         .padding(.all, 8)
                         .background(
@@ -89,31 +85,79 @@ struct NavigationView: View {
                                 .clipShape(.buttonBorder, style: FillStyle())
                                 .shadow(radius: 4)
                         )
-                    } else {
-                        // TODO: No location - enable location services.
-                        Button("Enable Location Services") {
-                            // TODO:
+                    }
+                    
+                    Spacer()
+                    
+                    HStack {
+                        Text(locationLabel)
+                            .font(.caption)
+                            .padding(.all, 8)
+                            .foregroundColor(.white)
+                            .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+                        
+                        Spacer()
+                        
+                        if locationServicesEnabled {
+                            Button("Start Navigation") {
+                                Task {
+                                    do {
+                                        isFetchingRoutes = true
+                                        try await startNavigation()
+                                        isFetchingRoutes = false
+                                    } catch {
+                                        isFetchingRoutes = false
+                                        errorMessage = "\(error.localizedDescription)"
+                                    }
+                                }
+                            }
+                            .disabled(routes?.isEmpty == true)
+                            .padding(.all, 8)
+                            .background(
+                                Color.white
+                                    .clipShape(.buttonBorder, style: FillStyle())
+                                    .shadow(radius: 4)
+                            )
+                        } else {
+                            Button("Enable Location Services") {
+                                // TODO: enable location services.
+                            }
+                            .padding(.all, 8)
+                            .background(
+                                Color.white
+                                    .clipShape(.buttonBorder, style: FillStyle())
+                                    .shadow(radius: 4)
+                            )
                         }
                     }
                 }
                 .padding()
+                .padding(.bottom, 32)
+                .task {
+                    do {
+                        try await getRoutes()
+                    } catch {
+                        errorMessage = "\(error)"
+                    }
+                }
             }
         }
     }
     
-    func startNavigation() async throws {
+    // MARK: Conveniences
+    
+    func getRoutes() async throws {
         guard let userLocation = locationManager.lastLocation else {
             print("No user location")
             return
         }
         
-        let waypoints = locations.map {
-            CLLocationCoordinate2D(latitude: $0.location.latitude,
-                                   longitude: $0.location.longitude)
-        }
+        let waypoints = locations.map { $0.coordinate }
         
         routes = try await ferrostarCore.getRoutes(initialLocation: userLocation, waypoints: waypoints)
-        
+    }
+    
+    func startNavigation() async throws {
         guard let route = routes?.first else {
             print("No route")
             return
@@ -124,6 +168,14 @@ struct NavigationView: View {
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10))
     }
     
+    var locationLabel: String {
+        guard let userLocation = locationManager.lastLocation else {
+            return "No location - authed as \(locationManager.authorizationStatus)"
+        }
+        
+        return "±\(Int(userLocation.horizontalAccuracy))m accuracy"
+    }
+
 }
 
 #Preview {
