@@ -5,7 +5,7 @@ import PackageDescription
 
 let binaryTarget: Target
 // TODO: Define this via an env variable that doesn't need to be checked in?
-let useLocalFramework = false
+let useLocalFramework = true
 
 if useLocalFramework {
     binaryTarget = .binaryTarget(
@@ -43,7 +43,8 @@ let package = Package(
     ],
     dependencies: [
 //        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
-        .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
+//        .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
+        .package(path: "../maplibre-swiftui-dsl-playground")
     ],
     targets: [
         binaryTarget,

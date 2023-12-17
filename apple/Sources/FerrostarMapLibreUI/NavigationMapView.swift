@@ -5,87 +5,43 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 
 public struct NavigationMapView: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
     let lightStyleURL: URL
     let darkStyleURL: URL
 
-    var navigationState: FerrostarObservableState
+    var navigationState: FerrostarObservableState?
 
-    @State private var camera: MapView.Camera
-
-    // TODO: Determine this automatically
-    private var useDarkStyle: Bool {
-        return false
-    }
+    @State private var camera: MapViewCamera
 
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
-        navigationState: FerrostarObservableState
+        navigationState: FerrostarObservableState?,
+        initialCamera: MapViewCamera = .backup()
     ) {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
 
-        _camera = State(initialValue: MapView.Camera.centerAndZoom(navigationState.fullRouteShape.first!, 14))
+        _camera = State(initialValue: initialCamera)
 
         // TODO: Set up following of the user
     }
 
     public var body: some View {
         MapView(
-            styleURL: useDarkStyle ? darkStyleURL : lightStyleURL,
+            styleURL: colorScheme == .dark ? darkStyleURL : lightStyleURL,
             camera: $camera
-        ) {
-            let routePolylineSource = ShapeSource(identifier: "route-polyline-source") {
-                navigationState.routePolyline
-            }
-
-            let remainingRoutePolylineSource = ShapeSource(identifier: "remaining-route-polyline-source") {
-                navigationState.remainingRoutePolyline
-            }
-
-            let userLocationSource = ShapeSource(identifier: "user-location-source") {
-                MLNPointFeature(coordinate: navigationState.snappedLocation.coordinate)
-            }
-
-            // TODO: Make this configurable via a modifier
-            LineStyleLayer(identifier: "route-polyline-casing", source: routePolylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .white)
-                .lineWidth(interpolatedBy: .zoomLevel,
-                           curveType: .exponential,
-                           parameters: NSExpression(forConstantValue: 1.5),
-                           stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
-
-            // TODO: Make this configurable via a modifier
-            LineStyleLayer(identifier: "route-polyline", source: routePolylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .lightGray)
-                .lineWidth(interpolatedBy: .zoomLevel,
-                           curveType: .exponential,
-                           parameters: NSExpression(forConstantValue: 1.5),
-                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
-
-            // TODO: Make this configurable via a modifier
-            LineStyleLayer(identifier: "route-polyline-remaining", source: remainingRoutePolylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .systemBlue)
-                .lineWidth(interpolatedBy: .zoomLevel,
-                           curveType: .exponential,
-                           parameters: NSExpression(forConstantValue: 1.5),
-                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
-
-            SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
-                .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
-                .iconRotation(constant: navigationState.heading?.trueHeading.magnitude ?? 0)
-        }
+        )
+        .routePolyline(navigationState?.routePolyline)
         .edgesIgnoringSafeArea(.all)
         .overlay(alignment: .top, content: {
-            if let visualInstructions = navigationState.visualInstructions {
-                BannerView(instructions: visualInstructions, distanceToNextManeuver: navigationState.distanceToNextManeuver)
+            if let navigationState,
+               let visualInstructions = navigationState.visualInstructions {
+                BannerView(instructions: visualInstructions,
+                           distanceToNextManeuver: navigationState.distanceToNextManeuver)
             }
         })
     }

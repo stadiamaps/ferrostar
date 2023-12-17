@@ -16,8 +16,7 @@ public protocol LocationManagingDelegate: AnyObject {
 }
 
 // TODO: Permissions are currently NOT handled and they should be!!!
-@Observable
-public class LiveLocationProvider: NSObject {
+@Observable public class LiveLocationProvider: NSObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
