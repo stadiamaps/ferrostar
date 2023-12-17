@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.maplibreui
+package com.stadiamaps.ferrostar.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -83,7 +82,7 @@ fun BannerView(instructions: VisualInstruction, distanceToNextManeuver: Double?)
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun PreviewBannerView() {
     val instructions = VisualInstruction(

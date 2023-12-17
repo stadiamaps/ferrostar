@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import uniffi.ferrostar.Disposable
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerInterface
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
@@ -13,7 +14,8 @@ import java.util.concurrent.Executors
 
 data class NavigationUiState(
     val snappedLocation: UserLocation,
-    val heading: Float?
+    val heading: Float?,
+    val routeGeometry: List<GeographicCoordinate>
 )
 
 /**
@@ -29,12 +31,20 @@ class NavigationViewModel(
     private val navigationController: NavigationControllerInterface,
     private val locationProvider: LocationProvider,
     initialUserLocation: Location,
+    routeGeometry: List<GeographicCoordinate>,
 ) : ViewModel(), LocationUpdateListener {
     // TODO: Is this the best executor?
     private val _executor = Executors.newSingleThreadExecutor()
     private var _state = navigationController.getInitialState(initialUserLocation.userLocation())
-    // TODO: UI state flow?
-    private val _uiState = MutableStateFlow(NavigationUiState(snappedLocation = initialUserLocation.userLocation(), heading = null))
+
+    private val _uiState = MutableStateFlow(
+        NavigationUiState(
+            snappedLocation = initialUserLocation.userLocation(),
+            // TODO: Heading/course over ground
+            heading = null,
+            routeGeometry = routeGeometry
+        )
+    )
     val uiState: StateFlow<NavigationUiState> = _uiState.asStateFlow()
 
     init {
@@ -51,7 +61,12 @@ class NavigationViewModel(
     }
 
     override fun onLocationUpdated(location: Location) {
-        update(newState = navigationController.updateUserLocation(location = location.userLocation(), state = _state), location = location)
+        update(
+            newState = navigationController.updateUserLocation(
+                location = location.userLocation(),
+                state = _state
+            ), location = location
+        )
     }
 
     override fun onHeadingUpdated(heading: Float) {
