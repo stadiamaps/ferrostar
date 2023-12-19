@@ -13,6 +13,7 @@ public struct NavigationMapView: View {
     // TODO: Configurable camera and user "puck" rotation modes
     
     @State private var navigationState: FerrostarObservableState?
+    private var previewRoutes: [Route]?
     @State private var camera: MapViewCamera
 
     /// Creates a new instance of the default navigation map.
@@ -22,11 +23,14 @@ public struct NavigationMapView: View {
         lightStyleURL: URL,
         darkStyleURL: URL,
         navigationState: FerrostarObservableState?,
+        previewRoutes routes: [Route]? = nil,
         initialCamera: MapViewCamera = .backup()
     ) {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         _navigationState = State(initialValue: navigationState)
+//        _previewRoutes = State(initialValue: routes)
+        previewRoutes = routes
         _camera = State(initialValue: initialCamera)
 
         // TODO: Set up following of the user
@@ -37,7 +41,7 @@ public struct NavigationMapView: View {
             styleURL: colorScheme == .dark ? darkStyleURL : lightStyleURL,
             camera: $camera
         )
-        .routePolyline(navigationState?.routePolyline)
+        .mapOverlayRoute(previewRoutes?.first)
         // ) {
         //     let routePolylineSource = ShapeSource(identifier: "route-polyline-source") {
         //         navigationState.routePolyline

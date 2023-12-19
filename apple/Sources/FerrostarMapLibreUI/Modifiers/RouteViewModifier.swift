@@ -1,40 +1,44 @@
-//
-//  File.swift
-//  
-//
-//  Created by Jacob Fielding on 12/16/23.
-//
-
 import SwiftUI
 import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
+import FerrostarCore
 
 extension MapView {
     
-    public func routePolyline(_ polyline: MLNPolyline?) -> MapView {
-        guard let polyline else {
+    public func mapOverlayRoute(_ route: Route?,
+                                style: any RouteStyle = ActiveRouteStyle(),
+                                identifierPrefix: String = "route-polyline") -> MapView {
+        
+        guard let route else {
             return self
         }
         
-        let routePolylineSource = ShapeSource(identifier: "route-polyline-source") {
+        let polyline = MLNPolyline(coordinates: route.geometry)
+        
+        // TODO: Update if the source is already in the `self.userLayers`
+        let existingIdentifiers = self.userLayers.map { $0.identifier }
+        
+        print("Existing \(existingIdentifiers)")
+        
+        let routePolylineSource = ShapeSource(identifier: "\(identifierPrefix)-source") {
             polyline
         }
         
-        let layers: [StyleLayerDefinition] = [
-            LineStyleLayer(identifier: "route-polyline-casing", source: routePolylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .white)
+        let newLayers: [StyleLayerDefinition] = [
+            LineStyleLayer(identifier: "\(identifierPrefix)-casing", source: routePolylineSource)
+                .lineCap(constant: style.lineCap)
+                .lineJoin(constant: style.lineJoin)
+                .lineColor(constant: style.casingColor)
                 .lineWidth(interpolatedBy: .zoomLevel,
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
                            stops: NSExpression(forConstantValue: [14: 6, 18: 24])),
 
-            LineStyleLayer(identifier: "route-polyline", source: routePolylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .lightGray)
+            LineStyleLayer(identifier: identifierPrefix, source: routePolylineSource)
+                .lineCap(constant: style.lineCap)
+                .lineJoin(constant: style.lineJoin)
+                .lineColor(constant: style.color)
                 .lineWidth(interpolatedBy: .zoomLevel,
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
@@ -46,7 +50,7 @@ extension MapView {
         case .url(let styleUrl):
             return MapView(styleURL: styleUrl,
                            camera: self.camera) {
-                return layers
+                return self.userLayers + newLayers
             }
         }
     }

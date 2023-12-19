@@ -21,7 +21,7 @@ import UniFFI
 public struct Route {
     let inner: UniFFI.Route
 
-    var geometry: [CLLocationCoordinate2D] {
+    public var geometry: [CLLocationCoordinate2D] {
         inner.geometry.map { point in
             CLLocationCoordinate2D(geographicCoordinates: point)
         }

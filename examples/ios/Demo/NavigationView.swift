@@ -48,6 +48,7 @@ struct NavigationView: View {
                 lightStyleURL: style,
                 darkStyleURL: style,
                 navigationState: ferrostarCore.observableState,
+                previewRoutes: routes,
                 initialCamera: .center(locations.first!.coordinate, zoom: 14)
             )
             .overlay(alignment: .bottomLeading) {
@@ -134,11 +135,7 @@ struct NavigationView: View {
                 .padding()
                 .padding(.bottom, 32)
                 .task {
-                    do {
-                        try await getRoutes()
-                    } catch {
-                        errorMessage = "\(error)"
-                    }
+                    await getRoutes()
                 }
             }
         }
@@ -146,20 +143,27 @@ struct NavigationView: View {
     
     // MARK: Conveniences
     
-    func getRoutes() async throws {
+    func getRoutes() async {
         guard let userLocation = locationManager.lastLocation else {
             print("No user location")
             return
         }
         
-        let waypoints = locations.map { $0.coordinate }
-        
-        routes = try await ferrostarCore.getRoutes(initialLocation: userLocation, waypoints: waypoints)
+        do {
+            let waypoints = locations.map { $0.coordinate }
+            routes = try await ferrostarCore.getRoutes(initialLocation: userLocation,
+                                                       waypoints: waypoints)
+            
+            print("DemoApp: successfully fetched a route")
+        } catch {
+            print("DemoApp: error fetching route: \(error)")
+            errorMessage = "\(error)"
+        }
     }
     
     func startNavigation() async throws {
         guard let route = routes?.first else {
-            print("No route")
+            print("DemoApp: No route")
             return
         }
         
