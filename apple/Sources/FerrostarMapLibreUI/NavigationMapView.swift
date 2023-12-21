@@ -51,6 +51,8 @@ public struct NavigationMapView: View {
             styleURL: colorScheme == .dark ? darkStyleURL : lightStyleURL,
             camera: $camera
         ) {
+            // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
+            
             if let routePolyline = navigationState?.routePolyline {
                 RouteStyleLayer(polyline: routePolyline,
                                 identifier: "route-polyline",
