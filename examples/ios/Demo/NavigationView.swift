@@ -14,11 +14,8 @@ let style = URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_k
 
 struct NavigationView: View {
     
-    private let locationManager: LiveLocationProvider
-    private let ferrostarCore: FerrostarCore
-    
-//    @StateObject private var locationManager = LiveLocationProvider(activityType: .otherNavigation)
-//    @State private var ferrostarCore: FerrostarCore =
+    private var locationManager: LiveLocationProvider
+    @ObservedObject private var ferrostarCore: FerrostarCore
     
     @State private var isFetchingRoutes = false
     @State private var routes: [Route]?
@@ -33,10 +30,13 @@ struct NavigationView: View {
 
     init() {
         locationManager = LiveLocationProvider(activityType: .otherNavigation)
-        ferrostarCore = FerrostarCore(
-            valhallaEndpointUrl: URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!,
-            profile: "pedestrian",
-            locationManager: locationManager)
+        _ferrostarCore = ObservedObject(
+            wrappedValue: FerrostarCore(
+                valhallaEndpointUrl: URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!,
+                profile: "pedestrian",
+                locationManager: locationManager
+            )
+        )
     }
     
     var body: some View {
@@ -48,8 +48,8 @@ struct NavigationView: View {
                 lightStyleURL: style,
                 darkStyleURL: style,
                 navigationState: ferrostarCore.observableState,
-                previewRoutes: routes,
-                initialCamera: .center(locations.first!.coordinate, zoom: 14)
+                initialCamera: .center(locations.first!.coordinate, zoom: 14),
+                previewRoutes: routes
             )
             .overlay(alignment: .bottomLeading) {
                 VStack {
@@ -86,6 +86,7 @@ struct NavigationView: View {
                                 .clipShape(.buttonBorder, style: FillStyle())
                                 .shadow(radius: 4)
                         )
+                        .padding(.top, 56)
                     }
                     
                     Spacer()
