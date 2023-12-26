@@ -57,6 +57,19 @@ for a demonstration of the current status.
 
 Coming soon: We're working on the UI components for Jetpack Compose right now!
 
+## Routing and Basemap Integrations
+
+Ferrostar needs data to be of any use.
+In particular, it needs routes to navigate over, and a basemap to be very useful.
+We are initially targeting MapLibre and Valhalla for maximum choice and neutrality.
+
+The example applications utilize [MapLibre](https://maplibre.org/) demo tiles for the basemap,
+but you'll probably need a more detailed basemap for any sort of real-world use.
+We also use the [FOSSGIS e.V. Valhalla server](https://gis-ops.com/global-open-valhalla-server-online/)
+as it provides easy access without an API key.
+Please respect the fair use policy and limitations of this public service,
+and be sure to [find a vendor](VENDORS.md) or run your own service(s) before shipping your app!
+
 ## Platform Support Targets
 
 ### Rust

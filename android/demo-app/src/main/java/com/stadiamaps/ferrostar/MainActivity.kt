@@ -42,8 +42,13 @@ class MainActivity : ComponentActivity() {
     private val httpClient = OkHttpClient.Builder().build()
 
     // TODO: Something useful. This is just a placeholder that essentially checks our ability to load the Rust library
+    // NOTE: This is a public instance which is suitable for development, but not for heavy use.
+    // This server is suitable for testing and building your app, but once you are ready to go live,
+    // YOU MUST USE ANOTHER SERVER.
+    //
+    // See https://github.com/stadiamaps/ferrostar/blob/main/VENDORS.md for options
     val core = FerrostarCore(
-        valhallaEndpointURL = URL("https://api.stadiamaps.com/route/v1?api_key=YOUR-KEY-HERE"),
+        valhallaEndpointURL = URL("https://valhalla1.openstreetmap.de/route"),
         profile = "pedestrian",
         httpClient = httpClient
     )
