@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.stadiamaps.ferrostar.core.NavigationViewModel
+import org.ramani.compose.CameraPosition
 import org.ramani.compose.Circle
 import org.ramani.compose.MapLibre
 import org.ramani.compose.Polyline
@@ -16,7 +17,16 @@ fun NavigationMapView(
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
-    MapLibre(modifier = Modifier.fillMaxSize()) {
+    MapLibre(
+        modifier = Modifier.fillMaxSize(),
+        cameraPosition = CameraPosition(
+            target = LatLng(
+                uiState.value.snappedLocation.coordinates.lat,
+                uiState.value.snappedLocation.coordinates.lng
+            ),
+            zoom = 13.0
+        )
+    ) {
         Circle(
             center = LatLng(
                 uiState.value.snappedLocation.coordinates.lat,

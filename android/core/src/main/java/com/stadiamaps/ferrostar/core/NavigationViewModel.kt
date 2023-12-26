@@ -33,7 +33,6 @@ class NavigationViewModel(
     initialUserLocation: Location,
     routeGeometry: List<GeographicCoordinate>,
 ) : ViewModel(), LocationUpdateListener {
-    // TODO: Is this the best executor?
     private val _executor = Executors.newSingleThreadExecutor()
     private var _state = navigationController.getInitialState(initialUserLocation.userLocation())
 
@@ -55,7 +54,7 @@ class NavigationViewModel(
         _state = newState
         _uiState.update { currentValue ->
             currentValue.copy(
-                // TODO: Update the state
+                snappedLocation = location.userLocation(),
             )
         }
     }
