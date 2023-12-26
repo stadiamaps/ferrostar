@@ -151,6 +151,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 CLLocationCoordinate2D(geographicCoordinates: waypoint)
             }
             observableState?.currentStep = remainingSteps.first
+            // TODO: This isn't great; the core should probably just tell us which instruction to display
             observableState?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
                 distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
             })

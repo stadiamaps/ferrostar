@@ -26,6 +26,7 @@ import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.VisualInstructionContent
 import uniffi.ferrostar.VisualInstruction
+import kotlin.math.roundToInt
 
 val VisualInstructionContent.maneuverIcon: ImageVector?
     get() {
@@ -63,7 +64,7 @@ fun BannerView(instructions: VisualInstruction, distanceToNextManeuver: Double?)
                 distanceToNextManeuver?.let {
                     // TODO: Format the text; Android appears to lack standard text styling!
                     Text(
-                        text = "$it m",  // TODO: Replace with proper localized formatting
+                        text = "${it.roundToInt()} m",  // TODO: Replace with proper localized formatting
                         color = Color.White
                     )
                 }

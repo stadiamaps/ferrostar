@@ -8,14 +8,19 @@ import kotlinx.coroutines.flow.update
 import uniffi.ferrostar.Disposable
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerInterface
+import uniffi.ferrostar.SpokenInstruction
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.VisualInstruction
 import java.util.concurrent.Executors
 
 data class NavigationUiState(
     val snappedLocation: UserLocation,
     val heading: Float?,
-    val routeGeometry: List<GeographicCoordinate>
+    val routeGeometry: List<GeographicCoordinate>,
+    val visualInstruction: VisualInstruction?,
+    val spokenInstruction: SpokenInstruction?,
+    val distanceToNextManeuver: Double?,
 )
 
 /**
@@ -41,7 +46,10 @@ class NavigationViewModel(
             snappedLocation = initialUserLocation.userLocation(),
             // TODO: Heading/course over ground
             heading = null,
-            routeGeometry = routeGeometry
+            routeGeometry = routeGeometry,
+            visualInstruction = visualInstructionForState(_state),
+            spokenInstruction = null,
+            distanceToNextManeuver = distanceForState(_state)
         )
     )
     val uiState: StateFlow<NavigationUiState> = _uiState.asStateFlow()
@@ -55,8 +63,29 @@ class NavigationViewModel(
         _uiState.update { currentValue ->
             currentValue.copy(
                 snappedLocation = location.userLocation(),
+                // TODO: Heading/course over ground
+                visualInstruction = visualInstructionForState(newState),
+                distanceToNextManeuver = distanceForState(newState)
             )
         }
+    }
+
+    private fun distanceForState(newState: TripState) = when (newState) {
+        is TripState.Navigating -> newState.distanceToNextManeuver
+        is TripState.Complete -> null
+    }
+
+    private fun visualInstructionForState(newState: TripState) = try {
+        when (newState) {
+            // TODO: This isn't great; the core should probably just tell us which instruction to display
+            is TripState.Navigating -> newState.remainingSteps.first().visualInstructions.last {
+                newState.distanceToNextManeuver <= it.triggerDistanceBeforeManeuver
+            }
+
+            is TripState.Complete -> null
+        }
+    } catch (_: NoSuchElementException) {
+        null
     }
 
     override fun onLocationUpdated(location: Location) {

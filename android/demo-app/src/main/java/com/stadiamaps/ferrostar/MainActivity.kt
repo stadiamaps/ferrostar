@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         )
                     )
 
-                    // TODO: Non-toy route simulation
+                    // TODO: Non-toy route simulation (should have a loose wrapper with the real stuff written in Rust)
                     val delayBetweenSteps = 1.toDuration(DurationUnit.SECONDS)
                     for (coord in route!!.geometry) {
                         delay(delayBetweenSteps)

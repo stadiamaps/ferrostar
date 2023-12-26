@@ -50,6 +50,7 @@ dependencies {
     implementation 'org.ramani-maps:ramani-maplibre:0.2.0'
 
     implementation project(':core')
+    implementation project(':compose-ui')
 
     testImplementation 'junit:junit:4.13.2'
 
