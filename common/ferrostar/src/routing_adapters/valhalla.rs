@@ -17,7 +17,7 @@ pub struct ValhallaHttpRequestGenerator {
     /// Users *may* include a query string with an API key.
     endpoint_url: String,
     profile: String,
-    // TODO: more tunable parameters; a dict that gets inserted at a bare minimum
+    // TODO: more tunable parameters; a dict that gets inserted seems like a bare minimum; we can also allow higher level ones
 }
 
 impl ValhallaHttpRequestGenerator {

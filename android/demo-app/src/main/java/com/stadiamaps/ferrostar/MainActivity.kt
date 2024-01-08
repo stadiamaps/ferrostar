@@ -64,8 +64,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            var route by remember { mutableStateOf<Route?>(null) }
-            var navigationController by remember { mutableStateOf<NavigationController?>(null) }
+            var navigationViewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
 
             LaunchedEffect(savedInstanceState) {
                 // Fetch a route in the background
@@ -76,20 +75,22 @@ class MainActivity : ComponentActivity() {
                         )
                     )
 
-                    route = routes.first()
-                    navigationController = NavigationController(
-                        route!!,
-                        NavigationControllerConfig(
+                    val route = routes.first()
+                    navigationViewModel = core.startNavigation(
+                        route = route,
+                        config = NavigationControllerConfig(
                             StepAdvanceMode.RelativeLineStringDistance(
                                 minimumHorizontalAccuracy = 25U,
                                 automaticAdvanceDistance = 10U
                             )
-                        )
+                        ),
+                        locationProvider = locationProvider,
+                        startingLocation = initialSimulatedLocation
                     )
 
                     // TODO: Non-toy route simulation (should have a loose wrapper with the real stuff written in Rust)
                     val delayBetweenSteps = 1.toDuration(DurationUnit.SECONDS)
-                    for (coord in route!!.geometry) {
+                    for (coord in route.geometry) {
                         delay(delayBetweenSteps)
                         locationProvider.lastLocation = SimulatedLocation(
                             coord,
@@ -107,18 +108,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val controller = navigationController
-                    val r = route
-                    if (controller != null && r != null) {
+                    val viewModel = navigationViewModel
+                    if (viewModel != null) {
                         NavigationMapView(
-                            // TODO: This constructor pattern is pretty whack. It's also probably the wrong way to create the ViewModel.
-                            // Maybe the core should create the view model and/or controller?
-                            viewModel = NavigationViewModel(
-                                controller,
-                                locationProvider,
-                                initialSimulatedLocation,
-                                r.geometry
-                            )
+                            viewModel = viewModel
                         )
                     } else {
                         // Loading indicator
