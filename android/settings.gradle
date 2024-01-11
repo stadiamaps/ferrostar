@@ -14,5 +14,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Ferrostar"
 include ':core'
+include ':compose-ui'
 include ':demo-app'
 include ':MapLibreUI'

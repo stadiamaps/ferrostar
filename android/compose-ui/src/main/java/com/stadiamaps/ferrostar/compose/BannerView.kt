@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.maplibreui
+package com.stadiamaps.ferrostar.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +26,7 @@ import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.VisualInstructionContent
 import uniffi.ferrostar.VisualInstruction
+import kotlin.math.roundToInt
 
 val VisualInstructionContent.maneuverIcon: ImageVector?
     get() {
@@ -64,7 +64,7 @@ fun BannerView(instructions: VisualInstruction, distanceToNextManeuver: Double?)
                 distanceToNextManeuver?.let {
                     // TODO: Format the text; Android appears to lack standard text styling!
                     Text(
-                        text = "$it m",  // TODO: Replace with proper localized formatting
+                        text = "${it.roundToInt()} m",  // TODO: Replace with proper localized formatting
                         color = Color.White
                     )
                 }
@@ -83,7 +83,7 @@ fun BannerView(instructions: VisualInstruction, distanceToNextManeuver: Double?)
     }
 }
 
-@Preview()
+@Preview
 @Composable
 fun PreviewBannerView() {
     val instructions = VisualInstruction(

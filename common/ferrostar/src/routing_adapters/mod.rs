@@ -69,6 +69,8 @@ pub trait RouteResponseParser: Send + Sync {
 /// In the future, we may provide additional methods or conveniences, and this
 /// indirection leaves the design open to such changes without necessarily breaking source
 /// compatibility.
+/// One such possible extension would be the ability to fetch more detailed attributes in real time.
+/// This is supported by the Valhalla stack, among others.
 ///
 /// Ideas  welcome re: how to signal compatibility between request generators and response parsers.
 /// I don't think we can do this in the type system, since one of the reasons for the split design

@@ -1,73 +1,69 @@
 package com.stadiamaps.ferrostar.core
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import uniffi.ferrostar.Disposable
-import uniffi.ferrostar.NavigationControllerInterface
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import uniffi.ferrostar.GeographicCoordinate
+import uniffi.ferrostar.SpokenInstruction
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
-import java.util.concurrent.Executors
+import uniffi.ferrostar.VisualInstruction
 
 data class NavigationUiState(
     val snappedLocation: UserLocation,
-    val heading: Float?
+    val heading: Float?,
+    val routeGeometry: List<GeographicCoordinate>,
+    val visualInstruction: VisualInstruction?,
+    val spokenInstruction: SpokenInstruction?,
+    val distanceToNextManeuver: Double?,
 )
 
-/**
- * A view model for integrating state into an Android application.
- *
- * Uses [androidx.lifecycle.ViewModel].
- * Note that it is assumed that the passed in [navigationController]
- * either requires no finalization OR that it conforms to [Disposable].
- * In the case that it conforms to [Disposable],
- * the [navigationController] will be automatically destroyed in [onCleared].
- */
 class NavigationViewModel(
-    private val navigationController: NavigationControllerInterface,
-    private val locationProvider: LocationProvider,
+    tripStateFlow: StateFlow<TripState>,
     initialUserLocation: Location,
-) : ViewModel(), LocationUpdateListener {
-    // TODO: Is this the best executor?
-    private val _executor = Executors.newSingleThreadExecutor()
-    private var _state = navigationController.getInitialState(initialUserLocation.userLocation())
-    // TODO: UI state flow?
-    private val _uiState = MutableStateFlow(NavigationUiState(snappedLocation = initialUserLocation.userLocation(), heading = null))
-    val uiState: StateFlow<NavigationUiState> = _uiState.asStateFlow()
+    private val routeGeometry: List<GeographicCoordinate>,
+) : ViewModel() {
+    private var lastLocation: UserLocation = initialUserLocation.userLocation()
 
-    init {
-        locationProvider.addListener(this, _executor)
-    }
-
-    private fun update(newState: TripState, location: Location) {
-        _state = newState
-        _uiState.update { currentValue ->
-            currentValue.copy(
-                // TODO: Update the state
-            )
+    val uiState = tripStateFlow.map { tripState ->
+        lastLocation = when (tripState) {
+            is TripState.Navigating -> tripState.snappedUserLocation
+            is TripState.Complete -> lastLocation
         }
-    }
 
-    override fun onLocationUpdated(location: Location) {
-        update(newState = navigationController.updateUserLocation(location = location.userLocation(), state = _state), location = location)
-    }
+        uiStateForTripState(tripState, lastLocation)
+        // This awkward dance is required because Kotlin doesn't have a way to map over StateFlows
+        // without converting to a generic Flow in the process.
+    }.stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(), initialValue = uiStateForTripState(tripStateFlow.value, initialUserLocation.userLocation()))
 
-    override fun onHeadingUpdated(heading: Float) {
-        _uiState.update { currentValue ->
-            currentValue.copy(
-                heading = heading
-            )
+    private fun uiStateForTripState(tripState: TripState, location: UserLocation) = NavigationUiState(
+        snappedLocation = location,
+        // TODO: Heading/course over ground
+        heading = null,
+        routeGeometry = routeGeometry,
+        visualInstruction = visualInstructionForState(tripState),
+        spokenInstruction = null,
+        distanceToNextManeuver = distanceForState(tripState)
+    )
+}
+
+private fun distanceForState(newState: TripState) = when (newState) {
+    is TripState.Navigating -> newState.distanceToNextManeuver
+    is TripState.Complete -> null
+}
+
+private fun visualInstructionForState(newState: TripState) = try {
+    when (newState) {
+        // TODO: This isn't great; the core should probably just tell us which instruction to display
+        is TripState.Navigating -> newState.remainingSteps.first().visualInstructions.last {
+            newState.distanceToNextManeuver <= it.triggerDistanceBeforeManeuver
         }
-    }
 
-    override fun onCleared() {
-        locationProvider.removeListener(this)
-        _executor.shutdown()
-
-        if (navigationController is Disposable) {
-            navigationController.destroy()
-        }
+        is TripState.Complete -> null
     }
+} catch (_: NoSuchElementException) {
+    null
 }

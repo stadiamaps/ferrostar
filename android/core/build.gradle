@@ -8,12 +8,12 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar.core'
-    compileSdk 33
+    compileSdk 34
     ndkVersion "25.2.9519653"
 
     defaultConfig {
         minSdk 29
-        targetSdk 33
+        targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -41,6 +41,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.squareup.okhttp3:okhttp'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
 
     implementation "net.java.dev.jna:jna:5.9.0@aar"
 
