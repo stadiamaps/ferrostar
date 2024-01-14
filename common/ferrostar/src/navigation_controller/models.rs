@@ -1,4 +1,4 @@
-use crate::{RouteStep, UserLocation};
+use crate::models::{RouteStep, UserLocation};
 use geo::LineString;
 
 /// Internal state of the navigation controller.

@@ -112,12 +112,7 @@ impl NavigationController {
                 // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                 // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
 
-                // TODO: If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
-                // IIUC these should always appear within the route itself, which simplifies the logic a bit.
-                // TBD: Do we want to support disjoint routes?
-                // TBD: Do we even need this? I'm still a bit fuzzy on the use cases TBH.
-                let remaining_waypoints = remaining_waypoints.clone();
-
+                // If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
                 let mut remaining_steps = remaining_steps.clone();
                 let current_step = if should_advance_to_next_step(
                     &current_step_linestring,
