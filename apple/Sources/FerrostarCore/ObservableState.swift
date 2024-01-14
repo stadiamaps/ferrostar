@@ -6,35 +6,32 @@ import UniFFI
 ///
 /// While the core generally does not include UI, this is purely at the model layer and should be implemented
 /// the same for all frontends.
-public struct FerrostarObservableState {
-    public internal(set) var snappedLocation: CLLocation
-    public internal(set) var heading: CLHeading?
-    public internal(set) var courseOverGround: CLLocationDirection?
-    public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
-    public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]
-    public internal(set) var currentStep: UniFFI.RouteStep?
-    public internal(set) var visualInstructions: UniFFI.VisualInstruction?
-    public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
-    public internal(set) var distanceToNextManeuver: CLLocationDistance?
+public final class FerrostarObservableState: ObservableObject {
+    @Published public internal(set) var snappedLocation: CLLocation
+    @Published public internal(set) var heading: CLHeading?
+    @Published public internal(set) var courseOverGround: CLLocationDirection?
+    @Published public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
+    @Published public internal(set) var currentStep: UniFFI.RouteStep?
+    @Published public internal(set) var visualInstructions: UniFFI.VisualInstruction?
+    @Published public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
+    @Published public internal(set) var distanceToNextManeuver: CLLocationDistance?
 
     init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
         self.snappedLocation = snappedLocation
         self.heading = heading
         self.courseOverGround = snappedLocation.course
         self.fullRouteShape = fullRoute
-        self.remainingWaypoints = fullRoute
         self.currentStep = steps.first!
     }
 
     public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])
 
     public static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> FerrostarObservableState {
-        let remainingWaypoints = Array(samplePedestrianWaypoints.dropFirst(n))
-        let lastUserLocation = remainingWaypoints.first!
+        let remainingLocations = Array(samplePedestrianWaypoints.dropFirst(n))
+        let lastUserLocation = remainingLocations.first!
 
         var result = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [UniFFI.RouteStep(geometry: [lastUserLocation.geographicCoordinates], distance: 100, roadName: "Jefferson St.", instruction: "Walk west on Jefferson St.", visualInstructions: [UniFFI.VisualInstruction(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)], spokenInstructions: [])])
 
-        result.remainingWaypoints = remainingWaypoints
         result.snappedLocation = CLLocation(latitude: lastUserLocation.latitude, longitude: lastUserLocation.longitude)
 
         return result

@@ -1,4 +1,4 @@
-use crate::{GeographicCoordinate, RouteStep, UserLocation};
+use crate::models::{RouteStep, UserLocation};
 use geo::LineString;
 
 /// Internal state of the navigation controller.
@@ -6,10 +6,6 @@ use geo::LineString;
 pub enum TripState {
     Navigating {
         snapped_user_location: UserLocation,
-        /// The ordered list of waypoints remaining to visit on this trip. Intermediate waypoints on
-        /// the route to the final destination are discarded as they are visited.
-        /// TODO: Do these need additional details like a name/label?
-        remaining_waypoints: Vec<GeographicCoordinate>,
         /// The ordered list of steps that remain in the trip.
         /// The step at the front of the list is always the current step.
         /// We currently assume that you cannot move backward to a previous step.

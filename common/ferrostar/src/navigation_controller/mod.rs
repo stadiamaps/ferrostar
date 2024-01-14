@@ -24,7 +24,6 @@ pub struct NavigationController {
 
 #[uniffi::export]
 impl NavigationController {
-    // TODO: A method for returning the initial trip state given a starting location
     #[uniffi::constructor]
     pub fn new(route: Route, config: NavigationControllerConfig) -> Arc<Self> {
         Arc::new(Self { config, route })
@@ -32,7 +31,6 @@ impl NavigationController {
 
     /// Returns initial trip state as if the user had just started the route with no progress.
     pub fn get_initial_state(&self, location: UserLocation) -> TripState {
-        let remaining_waypoints = self.route.waypoints.clone();
         let remaining_steps = self.route.steps.clone();
 
         let Some(current_route_step) = remaining_steps.first() else {
@@ -47,7 +45,6 @@ impl NavigationController {
 
         TripState::Navigating {
             snapped_user_location,
-            remaining_waypoints,
             remaining_steps: remaining_steps.clone(),
             distance_to_next_maneuver,
         }
@@ -62,12 +59,10 @@ impl NavigationController {
         match state {
             TripState::Navigating {
                 snapped_user_location,
-                ref remaining_waypoints,
                 ref remaining_steps,
                 ..
             } => {
                 let update = advance_step(remaining_steps);
-                // TODO: Anything with remaining_waypoints?
                 match update {
                     StepAdvanceStatus::Advanced {
                         step: _,
@@ -81,7 +76,6 @@ impl NavigationController {
                             distance_to_end_of_step(&(*snapped_user_location).into(), &linestring);
                         TripState::Navigating {
                             snapped_user_location: *snapped_user_location,
-                            remaining_waypoints: remaining_waypoints.clone(),
                             remaining_steps,
                             distance_to_next_maneuver,
                         }
@@ -99,7 +93,6 @@ impl NavigationController {
     pub fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
         match state {
             TripState::Navigating {
-                ref remaining_waypoints,
                 ref remaining_steps,
                 ..
             } => {
@@ -119,12 +112,7 @@ impl NavigationController {
                 // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
                 // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
 
-                // TODO: If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
-                // IIUC these should always appear within the route itself, which simplifies the logic a bit.
-                // TBD: Do we want to support disjoint routes?
-                // TBD: Do we even need this? I'm still a bit fuzzy on the use cases TBH.
-                let remaining_waypoints = remaining_waypoints.clone();
-
+                // If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
                 let mut remaining_steps = remaining_steps.clone();
                 let current_step = if should_advance_to_next_step(
                     &current_step_linestring,
@@ -159,7 +147,6 @@ impl NavigationController {
 
                     TripState::Navigating {
                         snapped_user_location,
-                        remaining_waypoints,
                         remaining_steps,
                         distance_to_next_maneuver,
                     }

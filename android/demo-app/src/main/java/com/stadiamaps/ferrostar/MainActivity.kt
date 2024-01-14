@@ -30,10 +30,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.NavigationController
+import uniffi.ferrostar.LocationSimulationState
 import uniffi.ferrostar.NavigationControllerConfig
-import uniffi.ferrostar.Route
+import uniffi.ferrostar.SimulationSpeed
 import uniffi.ferrostar.StepAdvanceMode
+import uniffi.ferrostar.advanceLocationSimulation
+import uniffi.ferrostar.locationSimulationFromRoute
 import java.net.URL
 import java.time.Instant
 import kotlin.time.DurationUnit
@@ -88,12 +90,13 @@ class MainActivity : ComponentActivity() {
                         startingLocation = initialSimulatedLocation
                     )
 
-                    // TODO: Non-toy route simulation (should have a loose wrapper with the real stuff written in Rust)
                     val delayBetweenSteps = 1.toDuration(DurationUnit.SECONDS)
-                    for (coord in route.geometry) {
+                    var simulationState = locationSimulationFromRoute(route)
+                    while (true) {
                         delay(delayBetweenSteps)
+                        simulationState = advanceLocationSimulation(simulationState, SimulationSpeed.JUMP_TO_NEXT_LOCATION)
                         locationProvider.lastLocation = SimulatedLocation(
-                            coord,
+                            simulationState.currentLocation,
                             6.0,
                             null,
                             Instant.now()

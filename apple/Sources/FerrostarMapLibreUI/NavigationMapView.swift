@@ -93,6 +93,6 @@ public struct NavigationMapView: View {
             lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
             darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
             navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4),
-            initialCamera: .backup()
+            initialCamera: .default()
         )
 }

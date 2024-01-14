@@ -144,12 +144,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
         tripState = newState
 
         switch (newState) {
-        case .navigating(snappedUserLocation: let snappedLocation, remainingWaypoints: let remainingWaypoints, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
+        case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
             observableState?.snappedLocation = CLLocation(userLocation: snappedLocation)
             observableState?.courseOverGround = location.course
-            observableState?.remainingWaypoints = remainingWaypoints.map { waypoint in
-                CLLocationCoordinate2D(geographicCoordinates: waypoint)
-            }
             observableState?.currentStep = remainingSteps.first
             // TODO: This isn't great; the core should probably just tell us which instruction to display
             observableState?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in

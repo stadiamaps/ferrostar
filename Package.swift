@@ -4,8 +4,10 @@
 import PackageDescription
 
 let binaryTarget: Target
+let maplibreSwiftUIDSLPackage: Package.Dependency
 // TODO: Define this via an env variable that doesn't need to be checked in?
 let useLocalFramework = true
+let useLocalMapLibreSwiftUIDSL = true
 
 if useLocalFramework {
     binaryTarget = .binaryTarget(
@@ -15,8 +17,8 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.0.16"
-    let releaseChecksum = "908d64c25414b30aec22a07a615a871d952babf3153f39569aa402b37dcc4a6a"
+    let releaseTag = "0.0.17"
+    let releaseChecksum = "bd4f11f91deb132b8cfce679ef3bc238f761800bed9a3071d147b53c9a57ce59"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar-rs.xcframework.zip",
@@ -24,6 +26,11 @@ if useLocalFramework {
     )
 }
 
+if useLocalMapLibreSwiftUIDSL {
+    maplibreSwiftUIDSLPackage = .package(path: "../maplibre-swiftui-dsl-playground")
+} else {
+    maplibreSwiftUIDSLPackage = .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main")
+}
 
 let package = Package(
     name: "FerrostarCore",
@@ -42,11 +49,7 @@ let package = Package(
         ),
     ],
     dependencies: [
-//        .package(url: "https://github.com/maplibre/maplibre-gl-native-distribution", .upToNextMajor(from: "5.13.0")),
-//        .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
-        .package(
-            path: "../maplibre-swiftui-dsl-playground"
-        ),
+        maplibreSwiftUIDSLPackage,
         .package(
             url: "https://github.com/pointfreeco/swift-snapshot-testing",
             from: "1.15.0"
@@ -63,7 +66,6 @@ let package = Package(
             name: "FerrostarMapLibreUI",
             dependencies: [
                 .target(name: "FerrostarCore"),
-                .product(name: "MapLibre", package: "maplibre-swiftui-dsl-playground"),
                 .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
                 .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
             ],
