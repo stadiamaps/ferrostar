@@ -1050,6 +1050,58 @@ public func FfiConverterTypeGeographicCoordinate_lower(_ value: GeographicCoordi
     return FfiConverterTypeGeographicCoordinate.lower(value)
 }
 
+public struct LocationSimulationState {
+    public var currentLocation: GeographicCoordinate
+    public var remainingLocations: [GeographicCoordinate]
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(currentLocation: GeographicCoordinate, remainingLocations: [GeographicCoordinate]) {
+        self.currentLocation = currentLocation
+        self.remainingLocations = remainingLocations
+    }
+}
+
+extension LocationSimulationState: Equatable, Hashable {
+    public static func == (lhs: LocationSimulationState, rhs: LocationSimulationState) -> Bool {
+        if lhs.currentLocation != rhs.currentLocation {
+            return false
+        }
+        if lhs.remainingLocations != rhs.remainingLocations {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(currentLocation)
+        hasher.combine(remainingLocations)
+    }
+}
+
+public struct FfiConverterTypeLocationSimulationState: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LocationSimulationState {
+        return
+            try LocationSimulationState(
+                currentLocation: FfiConverterTypeGeographicCoordinate.read(from: &buf),
+                remainingLocations: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf)
+            )
+    }
+
+    public static func write(_ value: LocationSimulationState, into buf: inout [UInt8]) {
+        FfiConverterTypeGeographicCoordinate.write(value.currentLocation, into: &buf)
+        FfiConverterSequenceTypeGeographicCoordinate.write(value.remainingLocations, into: &buf)
+    }
+}
+
+public func FfiConverterTypeLocationSimulationState_lift(_ buf: RustBuffer) throws -> LocationSimulationState {
+    return try FfiConverterTypeLocationSimulationState.lift(buf)
+}
+
+public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimulationState) -> RustBuffer {
+    return FfiConverterTypeLocationSimulationState.lower(value)
+}
+
 public struct NavigationControllerConfig {
     public var stepAdvance: StepAdvanceMode
 
@@ -1831,6 +1883,82 @@ extension RoutingResponseParseError: Equatable, Hashable {}
 
 extension RoutingResponseParseError: Error {}
 
+public enum SimulationError {
+    case PolylineError(error: String)
+    case NotEnoughPoints
+
+    fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
+        return try FfiConverterTypeSimulationError.lift(error)
+    }
+}
+
+public struct FfiConverterTypeSimulationError: FfiConverterRustBuffer {
+    typealias SwiftType = SimulationError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SimulationError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return try .PolylineError(
+                error: FfiConverterString.read(from: &buf)
+            )
+        case 2: return .NotEnoughPoints
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: SimulationError, into buf: inout [UInt8]) {
+        switch value {
+        case let .PolylineError(error):
+            writeInt(&buf, Int32(1))
+            FfiConverterString.write(error, into: &buf)
+
+        case .NotEnoughPoints:
+            writeInt(&buf, Int32(2))
+        }
+    }
+}
+
+extension SimulationError: Equatable, Hashable {}
+
+extension SimulationError: Error {}
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+public enum SimulationSpeed {
+    case jumpToNextLocation
+}
+
+public struct FfiConverterTypeSimulationSpeed: FfiConverterRustBuffer {
+    typealias SwiftType = SimulationSpeed
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SimulationSpeed {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .jumpToNextLocation
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: SimulationSpeed, into buf: inout [UInt8]) {
+        switch value {
+        case .jumpToNextLocation:
+            writeInt(&buf, Int32(1))
+        }
+    }
+}
+
+public func FfiConverterTypeSimulationSpeed_lift(_ buf: RustBuffer) throws -> SimulationSpeed {
+    return try FfiConverterTypeSimulationSpeed.lift(buf)
+}
+
+public func FfiConverterTypeSimulationSpeed_lower(_ value: SimulationSpeed) -> RustBuffer {
+    return FfiConverterTypeSimulationSpeed.lower(value)
+}
+
+extension SimulationSpeed: Equatable, Hashable {}
+
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum StepAdvanceMode {
@@ -2197,6 +2325,17 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
     }
 }
 
+public func advanceLocationSimulation(state: LocationSimulationState, speed: SimulationSpeed) -> LocationSimulationState {
+    return try! FfiConverterTypeLocationSimulationState.lift(
+        try! rustCall {
+            uniffi_ferrostar_fn_func_advance_location_simulation(
+                FfiConverterTypeLocationSimulationState.lower(state),
+                FfiConverterTypeSimulationSpeed.lower(speed), $0
+            )
+        }
+    )
+}
+
 public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponseParser {
     return try! FfiConverterTypeRouteResponseParser.lift(
         try! rustCall {
@@ -2218,6 +2357,37 @@ public func createValhallaRequestGenerator(endpointUrl: String, profile: String)
     )
 }
 
+public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate]) throws -> LocationSimulationState {
+    return try FfiConverterTypeLocationSimulationState.lift(
+        rustCallWithError(FfiConverterTypeSimulationError.lift) {
+            uniffi_ferrostar_fn_func_location_simulation_from_coordinates(
+                FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates), $0
+            )
+        }
+    )
+}
+
+public func locationSimulationFromPolyline(polyline: String, precision: UInt32) throws -> LocationSimulationState {
+    return try FfiConverterTypeLocationSimulationState.lift(
+        rustCallWithError(FfiConverterTypeSimulationError.lift) {
+            uniffi_ferrostar_fn_func_location_simulation_from_polyline(
+                FfiConverterString.lower(polyline),
+                FfiConverterUInt32.lower(precision), $0
+            )
+        }
+    )
+}
+
+public func locationSimulationFromRoute(route: Route) throws -> LocationSimulationState {
+    return try FfiConverterTypeLocationSimulationState.lift(
+        rustCallWithError(FfiConverterTypeSimulationError.lift) {
+            uniffi_ferrostar_fn_func_location_simulation_from_route(
+                FfiConverterTypeRoute.lower(route), $0
+            )
+        }
+    )
+}
+
 private enum InitializationResult {
     case ok
     case contractVersionMismatch
@@ -2234,10 +2404,22 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
+    if uniffi_ferrostar_checksum_func_advance_location_simulation() != 31818 {
+        return InitializationResult.apiChecksumMismatch
+    }
     if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 37676 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 42515 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 32668 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 33402 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 52353 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 5714 {
