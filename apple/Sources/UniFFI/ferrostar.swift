@@ -1892,7 +1892,7 @@ extension StepAdvanceMode: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum TripState {
-    case navigating(snappedUserLocation: UserLocation, remainingWaypoints: [GeographicCoordinate], remainingSteps: [RouteStep], distanceToNextManeuver: Double)
+    case navigating(snappedUserLocation: UserLocation, remainingSteps: [RouteStep], distanceToNextManeuver: Double)
     case complete
 }
 
@@ -1904,7 +1904,6 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         switch variant {
         case 1: return try .navigating(
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
-                remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf)
             )
@@ -1917,10 +1916,9 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
 
     public static func write(_ value: TripState, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingWaypoints, remainingSteps, distanceToNextManeuver):
+        case let .navigating(snappedUserLocation, remainingSteps, distanceToNextManeuver):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
-            FfiConverterSequenceTypeGeographicCoordinate.write(remainingWaypoints, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
 
