@@ -14,7 +14,10 @@ let style = URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_k
 
 struct NavigationView: View {
     
-    private var locationManager: LiveLocationProvider
+    private let initialLocation = CLLocation(latitude: 37.332726,
+                                             longitude: -122.031790)
+    
+    private var locationManager: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
     
     @State private var isFetchingRoutes = false
@@ -29,7 +32,7 @@ struct NavigationView: View {
     }
 
     init() {
-        locationManager = LiveLocationProvider(activityType: .otherNavigation)
+        locationManager = SimulatedLocationProvider(location: initialLocation)
         _ferrostarCore = ObservedObject(
             wrappedValue: FerrostarCore(
                 valhallaEndpointUrl: URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!,
@@ -48,7 +51,7 @@ struct NavigationView: View {
                 lightStyleURL: style,
                 darkStyleURL: style,
                 navigationState: ferrostarCore.observableState,
-                initialCamera: .center(locations.first!.coordinate, zoom: 14),
+                initialCamera: .center(initialLocation.coordinate, zoom: 14),
                 previewRoutes: routes
             )
             .overlay(alignment: .bottomLeading) {
@@ -171,6 +174,11 @@ struct NavigationView: View {
         try ferrostarCore.startNavigation(
             route: route,
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10))
+        
+        if let simulated = locationManager as? SimulatedLocationProvider {
+            try simulated.start(route: route)
+            print("DemoApp: starting route simulation")
+        }
     }
     
     var locationLabel: String {

@@ -13,6 +13,8 @@
 		1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5582B2E6E98006B131D /* DemoApp.swift */; };
 		1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679C2B2F6F85008BFF1F /* APIKeys.swift */; };
 		1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */; };
+		167FD69B2B54B55A00CB4445 /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 167FD69A2B54B55A00CB4445 /* FerrostarCore */; };
+		167FD69D2B54B55A00CB4445 /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 167FD69C2B54B55A00CB4445 /* FerrostarMapLibreUI */; };
 		168ECA7A2B2E8C42007B11DE /* API-Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 168ECA792B2E8C42007B11DE /* API-Keys.plist */; };
 		169A1D562B2E8280006CE59E /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 169A1D552B2E8280006CE59E /* FerrostarCore */; };
 		169A1D582B2E8280006CE59E /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */; };
@@ -44,8 +46,10 @@
 			files = (
 				E9505FCA2AD449B30016BF0A /* FerrostarCore in Frameworks */,
 				169B50152B2E46800008EBB7 /* FerrostarMapLibreUI in Frameworks */,
+				167FD69B2B54B55A00CB4445 /* FerrostarCore in Frameworks */,
 				E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */,
 				169A1D582B2E8280006CE59E /* FerrostarMapLibreUI in Frameworks */,
+				167FD69D2B54B55A00CB4445 /* FerrostarMapLibreUI in Frameworks */,
 				169B50132B2E46800008EBB7 /* FerrostarCore in Frameworks */,
 				169A1D562B2E8280006CE59E /* FerrostarCore in Frameworks */,
 			);
@@ -127,6 +131,8 @@
 				169B50142B2E46800008EBB7 /* FerrostarMapLibreUI */,
 				169A1D552B2E8280006CE59E /* FerrostarCore */,
 				169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */,
+				167FD69A2B54B55A00CB4445 /* FerrostarCore */,
+				167FD69C2B54B55A00CB4445 /* FerrostarMapLibreUI */,
 			);
 			productName = "iOS Demo";
 			productReference = E9505FB72AD449700016BF0A /* Ferrostar Demo.app */;
@@ -157,7 +163,7 @@
 			);
 			mainGroup = E9505FAE2AD449700016BF0A;
 			packageReferences = (
-				169A1D542B2E8280006CE59E /* XCLocalSwiftPackageReference "../.." */,
+				167FD6992B54B55A00CB4445 /* XCLocalSwiftPackageReference "../.." */,
 			);
 			productRefGroup = E9505FB82AD449700016BF0A /* Products */;
 			projectDirPath = "";
@@ -403,13 +409,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		169A1D542B2E8280006CE59E /* XCLocalSwiftPackageReference "../.." */ = {
+		167FD6992B54B55A00CB4445 /* XCLocalSwiftPackageReference "../.." */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		167FD69A2B54B55A00CB4445 /* FerrostarCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarCore;
+		};
+		167FD69C2B54B55A00CB4445 /* FerrostarMapLibreUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarMapLibreUI;
+		};
 		169A1D552B2E8280006CE59E /* FerrostarCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FerrostarCore;

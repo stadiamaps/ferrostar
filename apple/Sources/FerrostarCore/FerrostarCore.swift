@@ -126,7 +126,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
         observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
         let controller = NavigationController(route: route.inner, config: NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue))
         navigationController = controller
-        update(newState: controller.getInitialState(location: location.userLocation), location: location)
+        DispatchQueue.main.async {
+            self.update(newState: controller.getInitialState(location: location.userLocation), location: location)
+        }
     }
 
     /// Stops navigation and stops requesting location updates (to save battery).
@@ -177,7 +179,9 @@ extension FerrostarCore: LocationManagingDelegate {
             return
         }
 
-        update(newState: newState, location: location)
+        DispatchQueue.main.async {
+            self.update(newState: newState, location: location)
+        }
     }
 
     public func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {

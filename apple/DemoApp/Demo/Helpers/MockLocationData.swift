@@ -25,5 +25,3 @@ struct LocationIdentifier : Identifiable, Equatable, Hashable {
 let locations = [
     LocationIdentifier(name: "Cupertino HS", coordinate: CLLocationCoordinate2D(latitude: 37.31910, longitude: -122.01018)),
 ]
-
-

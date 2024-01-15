@@ -1,7 +1,9 @@
 import CoreLocation
+import UniFFI
 
 public protocol LocationProviding: AnyObject {
     var delegate: LocationManagingDelegate? { get set }
+    var authorizationStatus: CLAuthorizationStatus { get }
     var lastLocation: CLLocation? { get }
     var lastHeading: CLHeading? { get }
 
@@ -87,11 +89,13 @@ extension LiveLocationProvider: CLLocationManagerDelegate {
     }
 }
 
-/// Location provider for testing without relying on simulator location spoofing.
-///
-/// This allows for more granular unit tests.
 public class SimulatedLocationProvider: LocationProviding, ObservableObject {
+    
     public var delegate: LocationManagingDelegate?
+    public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
+    
+    public private(set) var simulationState: LocationSimulationState?
+    
     @Published public var lastLocation: CLLocation? {
         didSet {
             notifyDelegateOfLocation()
@@ -110,9 +114,27 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             notifyDelegateOfHeading()
         }
     }
+    
+    public init() {
+        
+    }
 
+    public init(coordinate: CLLocationCoordinate2D) {
+        lastLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+    }
+    
+    public init(location: CLLocation) {
+        lastLocation = location
+    }
+    
+    public func start(route: Route) throws {
+        simulationState = try locationSimulationFromRoute(route: route.inner)
+        startUpdating()
+    }
+    
     public func startUpdating() {
         isUpdating = true
+        updateLocation()
     }
 
     public func stopUpdating() {
@@ -128,6 +150,28 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     private func notifyDelegateOfHeading() {
         if isUpdating, let heading = lastHeading {
             delegate?.locationManager(self, didUpdateHeading: heading)
+        }
+    }
+    
+    private func updateLocation() {
+        Task {
+            guard isUpdating, let lastState = self.simulationState else {
+                return
+            }
+            
+            try await Task.sleep(nanoseconds: 50 * NSEC_PER_MSEC)
+            let newState = advanceLocationSimulation(state: lastState, speed: .jumpToNextLocation)
+            
+            if simulationState?.currentLocation == newState.currentLocation {
+                stopUpdating()
+                return
+            }
+            
+            lastLocation = CLLocation(latitude: newState.currentLocation.lat, longitude: newState.currentLocation.lng)
+            simulationState = newState
+            
+            updateLocation()
+            return
         }
     }
 }
