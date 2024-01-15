@@ -179,7 +179,7 @@ struct NavigationView: View {
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10))
         
         if let simulated = locationManager as? SimulatedLocationProvider {
-            try simulated.start(route: route)
+            try simulated.startSimulating(route: route)
             print("DemoApp: starting route simulation")
         }
     }
