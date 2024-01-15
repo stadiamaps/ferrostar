@@ -89,12 +89,16 @@ extension LiveLocationProvider: CLLocationManagerDelegate {
     }
 }
 
+/// Location provider for testing without relying on simulator location spoofing.
+///
+/// This allows for more granular unit tests.
 public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
     
     public private(set) var simulationState: LocationSimulationState?
+    public var warpFactor: UInt64 = 1
     
     @Published public var lastLocation: CLLocation? {
         didSet {
@@ -127,7 +131,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
         lastLocation = location
     }
     
-    public func start(route: Route) throws {
+    public func startSimulating(route: Route) throws {
         simulationState = try locationSimulationFromRoute(route: route.inner)
         startUpdating()
     }
@@ -159,7 +163,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
                 return
             }
             
-            try await Task.sleep(nanoseconds: 50 * NSEC_PER_MSEC)
+            try await Task.sleep(nanoseconds: NSEC_PER_SEC / self.warpFactor)
             let newState = advanceLocationSimulation(state: lastState, speed: .jumpToNextLocation)
             
             if simulationState?.currentLocation == newState.currentLocation {

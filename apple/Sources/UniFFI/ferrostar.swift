@@ -6,10 +6,10 @@ import Foundation
 // might be in a separate module, or it might be compiled inline into
 // this module. This is a bit of light hackery to work with both.
 #if canImport(ferrostarFFI)
-import ferrostarFFI
+    import ferrostarFFI
 #endif
 
-fileprivate extension RustBuffer {
+private extension RustBuffer {
     // Allocate a new buffer, copying the contents of a `UInt8` array.
     init(bytes: [UInt8]) {
         let rbuf = bytes.withUnsafeBufferPointer { ptr in
@@ -29,7 +29,7 @@ fileprivate extension RustBuffer {
     }
 }
 
-fileprivate extension ForeignBytes {
+private extension ForeignBytes {
     init(bufferPointer: UnsafeBufferPointer<UInt8>) {
         self.init(len: Int32(bufferPointer.count), data: bufferPointer.baseAddress)
     }
@@ -42,7 +42,7 @@ fileprivate extension ForeignBytes {
 // Helper classes/extensions that don't change.
 // Someday, this will be in a library of its own.
 
-fileprivate extension Data {
+private extension Data {
     init(rustBuffer: RustBuffer) {
         // TODO: This copies the buffer. Can we read directly from a
         // Rust buffer?
@@ -64,15 +64,15 @@ fileprivate extension Data {
 //
 // Instead, the read() method and these helper functions input a tuple of data
 
-fileprivate func createReader(data: Data) -> (data: Data, offset: Data.Index) {
+private func createReader(data: Data) -> (data: Data, offset: Data.Index) {
     (data: data, offset: 0)
 }
 
 // Reads an integer at the current offset, in big-endian order, and advances
 // the offset on success. Throws if reading the integer would move the
 // offset past the end of the buffer.
-fileprivate func readInt<T: FixedWidthInteger>(_ reader: inout (data: Data, offset: Data.Index)) throws -> T {
-    let range = reader.offset..<reader.offset + MemoryLayout<T>.size
+private func readInt<T: FixedWidthInteger>(_ reader: inout (data: Data, offset: Data.Index)) throws -> T {
+    let range = reader.offset ..< reader.offset + MemoryLayout<T>.size
     guard reader.data.count >= range.upperBound else {
         throw UniffiInternalError.bufferOverflow
     }
@@ -82,38 +82,38 @@ fileprivate func readInt<T: FixedWidthInteger>(_ reader: inout (data: Data, offs
         return value as! T
     }
     var value: T = 0
-    let _ = withUnsafeMutableBytes(of: &value, { reader.data.copyBytes(to: $0, from: range)})
+    let _ = withUnsafeMutableBytes(of: &value) { reader.data.copyBytes(to: $0, from: range) }
     reader.offset = range.upperBound
     return value.bigEndian
 }
 
 // Reads an arbitrary number of bytes, to be used to read
 // raw bytes, this is useful when lifting strings
-fileprivate func readBytes(_ reader: inout (data: Data, offset: Data.Index), count: Int) throws -> Array<UInt8> {
-    let range = reader.offset..<(reader.offset+count)
+private func readBytes(_ reader: inout (data: Data, offset: Data.Index), count: Int) throws -> [UInt8] {
+    let range = reader.offset ..< (reader.offset + count)
     guard reader.data.count >= range.upperBound else {
         throw UniffiInternalError.bufferOverflow
     }
     var value = [UInt8](repeating: 0, count: count)
-    value.withUnsafeMutableBufferPointer({ buffer in
+    value.withUnsafeMutableBufferPointer { buffer in
         reader.data.copyBytes(to: buffer, from: range)
-    })
+    }
     reader.offset = range.upperBound
     return value
 }
 
 // Reads a float at the current offset.
-fileprivate func readFloat(_ reader: inout (data: Data, offset: Data.Index)) throws -> Float {
-    return Float(bitPattern: try readInt(&reader))
+private func readFloat(_ reader: inout (data: Data, offset: Data.Index)) throws -> Float {
+    return try Float(bitPattern: readInt(&reader))
 }
 
 // Reads a float at the current offset.
-fileprivate func readDouble(_ reader: inout (data: Data, offset: Data.Index)) throws -> Double {
-    return Double(bitPattern: try readInt(&reader))
+private func readDouble(_ reader: inout (data: Data, offset: Data.Index)) throws -> Double {
+    return try Double(bitPattern: readInt(&reader))
 }
 
 // Indicates if the offset has reached the end of the buffer.
-fileprivate func hasRemaining(_ reader: (data: Data, offset: Data.Index)) -> Bool {
+private func hasRemaining(_ reader: (data: Data, offset: Data.Index)) -> Bool {
     return reader.offset < reader.data.count
 }
 
@@ -121,11 +121,11 @@ fileprivate func hasRemaining(_ reader: (data: Data, offset: Data.Index)) -> Boo
 // struct, but we use standalone functions instead in order to make external
 // types work.  See the above discussion on Readers for details.
 
-fileprivate func createWriter() -> [UInt8] {
+private func createWriter() -> [UInt8] {
     return []
 }
 
-fileprivate func writeBytes<S>(_ writer: inout [UInt8], _ byteArr: S) where S: Sequence, S.Element == UInt8 {
+private func writeBytes<S>(_ writer: inout [UInt8], _ byteArr: S) where S: Sequence, S.Element == UInt8 {
     writer.append(contentsOf: byteArr)
 }
 
@@ -133,22 +133,22 @@ fileprivate func writeBytes<S>(_ writer: inout [UInt8], _ byteArr: S) where S: S
 //
 // Warning: make sure what you are trying to write
 // is in the correct type!
-fileprivate func writeInt<T: FixedWidthInteger>(_ writer: inout [UInt8], _ value: T) {
+private func writeInt<T: FixedWidthInteger>(_ writer: inout [UInt8], _ value: T) {
     var value = value.bigEndian
     withUnsafeBytes(of: &value) { writer.append(contentsOf: $0) }
 }
 
-fileprivate func writeFloat(_ writer: inout [UInt8], _ value: Float) {
+private func writeFloat(_ writer: inout [UInt8], _ value: Float) {
     writeInt(&writer, value.bitPattern)
 }
 
-fileprivate func writeDouble(_ writer: inout [UInt8], _ value: Double) {
+private func writeDouble(_ writer: inout [UInt8], _ value: Double) {
     writeInt(&writer, value.bitPattern)
 }
 
 // Protocol for types that transfer other types across the FFI. This is
 // analogous go the Rust trait of the same name.
-fileprivate protocol FfiConverter {
+private protocol FfiConverter {
     associatedtype FfiType
     associatedtype SwiftType
 
@@ -159,7 +159,7 @@ fileprivate protocol FfiConverter {
 }
 
 // Types conforming to `Primitive` pass themselves directly over the FFI.
-fileprivate protocol FfiConverterPrimitive: FfiConverter where FfiType == SwiftType { }
+private protocol FfiConverterPrimitive: FfiConverter where FfiType == SwiftType {}
 
 extension FfiConverterPrimitive {
     public static func lift(_ value: FfiType) throws -> SwiftType {
@@ -173,7 +173,7 @@ extension FfiConverterPrimitive {
 
 // Types conforming to `FfiConverterRustBuffer` lift and lower into a `RustBuffer`.
 // Used for complex types where it's hard to write a custom lift/lower.
-fileprivate protocol FfiConverterRustBuffer: FfiConverter where FfiType == RustBuffer {}
+private protocol FfiConverterRustBuffer: FfiConverter where FfiType == RustBuffer {}
 
 extension FfiConverterRustBuffer {
     public static func lift(_ buf: RustBuffer) throws -> SwiftType {
@@ -187,14 +187,15 @@ extension FfiConverterRustBuffer {
     }
 
     public static func lower(_ value: SwiftType) -> RustBuffer {
-          var writer = createWriter()
-          write(value, into: &writer)
-          return RustBuffer(bytes: writer)
+        var writer = createWriter()
+        write(value, into: &writer)
+        return RustBuffer(bytes: writer)
     }
 }
+
 // An error type for FFI errors. These errors occur at the UniFFI level, not
 // the library level.
-fileprivate enum UniffiInternalError: LocalizedError {
+private enum UniffiInternalError: LocalizedError {
     case bufferOverflow
     case incompleteData
     case unexpectedOptionalTag
@@ -220,16 +221,16 @@ fileprivate enum UniffiInternalError: LocalizedError {
     }
 }
 
-fileprivate let CALL_SUCCESS: Int8 = 0
-fileprivate let CALL_ERROR: Int8 = 1
-fileprivate let CALL_PANIC: Int8 = 2
-fileprivate let CALL_CANCELLED: Int8 = 3
+private let CALL_SUCCESS: Int8 = 0
+private let CALL_ERROR: Int8 = 1
+private let CALL_PANIC: Int8 = 2
+private let CALL_CANCELLED: Int8 = 3
 
-fileprivate extension RustCallStatus {
+private extension RustCallStatus {
     init() {
         self.init(
             code: CALL_SUCCESS,
-            errorBuf: RustBuffer.init(
+            errorBuf: RustBuffer(
                 capacity: 0,
                 len: 0,
                 data: nil
@@ -244,7 +245,8 @@ private func rustCall<T>(_ callback: (UnsafeMutablePointer<RustCallStatus>) -> T
 
 private func rustCallWithError<T>(
     _ errorHandler: @escaping (RustBuffer) throws -> Error,
-    _ callback: (UnsafeMutablePointer<RustCallStatus>) -> T) throws -> T {
+    _ callback: (UnsafeMutablePointer<RustCallStatus>) -> T
+) throws -> T {
     try makeRustCall(callback, errorHandler: errorHandler)
 }
 
@@ -253,7 +255,7 @@ private func makeRustCall<T>(
     errorHandler: ((RustBuffer) throws -> Error)?
 ) throws -> T {
     uniffiEnsureInitialized()
-    var callStatus = RustCallStatus.init()
+    var callStatus = RustCallStatus()
     let returnedVal = callback(&callStatus)
     try uniffiCheckCallStatus(callStatus: callStatus, errorHandler: errorHandler)
     return returnedVal
@@ -264,40 +266,39 @@ private func uniffiCheckCallStatus(
     errorHandler: ((RustBuffer) throws -> Error)?
 ) throws {
     switch callStatus.code {
-        case CALL_SUCCESS:
-            return
+    case CALL_SUCCESS:
+        return
 
-        case CALL_ERROR:
-            if let errorHandler = errorHandler {
-                throw try errorHandler(callStatus.errorBuf)
-            } else {
-                callStatus.errorBuf.deallocate()
-                throw UniffiInternalError.unexpectedRustCallError
-            }
+    case CALL_ERROR:
+        if let errorHandler = errorHandler {
+            throw try errorHandler(callStatus.errorBuf)
+        } else {
+            callStatus.errorBuf.deallocate()
+            throw UniffiInternalError.unexpectedRustCallError
+        }
 
-        case CALL_PANIC:
-            // When the rust code sees a panic, it tries to construct a RustBuffer
-            // with the message.  But if that code panics, then it just sends back
-            // an empty buffer.
-            if callStatus.errorBuf.len > 0 {
-                throw UniffiInternalError.rustPanic(try FfiConverterString.lift(callStatus.errorBuf))
-            } else {
-                callStatus.errorBuf.deallocate()
-                throw UniffiInternalError.rustPanic("Rust panic")
-            }
+    case CALL_PANIC:
+        // When the rust code sees a panic, it tries to construct a RustBuffer
+        // with the message.  But if that code panics, then it just sends back
+        // an empty buffer.
+        if callStatus.errorBuf.len > 0 {
+            throw try UniffiInternalError.rustPanic(FfiConverterString.lift(callStatus.errorBuf))
+        } else {
+            callStatus.errorBuf.deallocate()
+            throw UniffiInternalError.rustPanic("Rust panic")
+        }
 
-        case CALL_CANCELLED:
-            fatalError("Cancellation not supported yet")
+    case CALL_CANCELLED:
+        fatalError("Cancellation not supported yet")
 
-        default:
-            throw UniffiInternalError.unexpectedRustCallStatusCode
+    default:
+        throw UniffiInternalError.unexpectedRustCallStatusCode
     }
 }
 
 // Public interface members begin here.
 
-
-fileprivate struct FfiConverterUInt16: FfiConverterPrimitive {
+private struct FfiConverterUInt16: FfiConverterPrimitive {
     typealias FfiType = UInt16
     typealias SwiftType = UInt16
 
@@ -310,7 +311,7 @@ fileprivate struct FfiConverterUInt16: FfiConverterPrimitive {
     }
 }
 
-fileprivate struct FfiConverterUInt32: FfiConverterPrimitive {
+private struct FfiConverterUInt32: FfiConverterPrimitive {
     typealias FfiType = UInt32
     typealias SwiftType = UInt32
 
@@ -323,7 +324,7 @@ fileprivate struct FfiConverterUInt32: FfiConverterPrimitive {
     }
 }
 
-fileprivate struct FfiConverterDouble: FfiConverterPrimitive {
+private struct FfiConverterDouble: FfiConverterPrimitive {
     typealias FfiType = Double
     typealias SwiftType = Double
 
@@ -336,7 +337,7 @@ fileprivate struct FfiConverterDouble: FfiConverterPrimitive {
     }
 }
 
-fileprivate struct FfiConverterString: FfiConverter {
+private struct FfiConverterString: FfiConverter {
     typealias SwiftType = String
     typealias FfiType = RustBuffer
 
@@ -364,7 +365,7 @@ fileprivate struct FfiConverterString: FfiConverter {
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> String {
         let len: Int32 = try readInt(&buf)
-        return String(bytes: try readBytes(&buf, count: Int(len)), encoding: String.Encoding.utf8)!
+        return try String(bytes: readBytes(&buf, count: Int(len)), encoding: String.Encoding.utf8)!
     }
 
     public static func write(_ value: String, into buf: inout [UInt8]) {
@@ -374,12 +375,12 @@ fileprivate struct FfiConverterString: FfiConverter {
     }
 }
 
-fileprivate struct FfiConverterData: FfiConverterRustBuffer {
+private struct FfiConverterData: FfiConverterRustBuffer {
     typealias SwiftType = Data
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Data {
         let len: Int32 = try readInt(&buf)
-        return Data(try readBytes(&buf, count: Int(len)))
+        return try Data(readBytes(&buf, count: Int(len)))
     }
 
     public static func write(_ value: Data, into buf: inout [UInt8]) {
@@ -389,7 +390,7 @@ fileprivate struct FfiConverterData: FfiConverterRustBuffer {
     }
 }
 
-fileprivate struct FfiConverterTimestamp: FfiConverterRustBuffer {
+private struct FfiConverterTimestamp: FfiConverterRustBuffer {
     typealias SwiftType = Date
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Date {
@@ -397,10 +398,10 @@ fileprivate struct FfiConverterTimestamp: FfiConverterRustBuffer {
         let nanoseconds: UInt32 = try readInt(&buf)
         if seconds >= 0 {
             let delta = Double(seconds) + (Double(nanoseconds) / 1.0e9)
-            return Date.init(timeIntervalSince1970: delta)
+            return Date(timeIntervalSince1970: delta)
         } else {
             let delta = Double(seconds) - (Double(nanoseconds) / 1.0e9)
-            return Date.init(timeIntervalSince1970: delta)
+            return Date(timeIntervalSince1970: delta)
         }
     }
 
@@ -424,17 +425,15 @@ fileprivate struct FfiConverterTimestamp: FfiConverterRustBuffer {
     }
 }
 
-
-
-public protocol NavigationControllerProtocol : AnyObject {
-    func advanceToNextStep(state: TripState)  -> TripState
-    func getInitialState(location: UserLocation)  -> TripState
-    func updateUserLocation(location: UserLocation, state: TripState)  -> TripState
-    
+public protocol NavigationControllerProtocol: AnyObject {
+    func advanceToNextStep(state: TripState) -> TripState
+    func getInitialState(location: UserLocation) -> TripState
+    func updateUserLocation(location: UserLocation, state: TripState) -> TripState
 }
 
 public class NavigationController:
-    NavigationControllerProtocol {
+    NavigationControllerProtocol
+{
     fileprivate let pointer: UnsafeMutableRawPointer
 
     // TODO: We'd like this to be `private` but for Swifty reasons,
@@ -443,64 +442,53 @@ public class NavigationController:
     required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
         self.pointer = pointer
     }
-    public convenience init(route: Route, config: NavigationControllerConfig)  {
-        self.init(unsafeFromRawPointer: try! rustCall() {
-    uniffi_ferrostar_fn_constructor_navigationcontroller_new(
-        FfiConverterTypeRoute.lower(route),
-        FfiConverterTypeNavigationControllerConfig.lower(config),$0)
-})
+
+    public convenience init(route: Route, config: NavigationControllerConfig) {
+        self.init(unsafeFromRawPointer: try! rustCall {
+            uniffi_ferrostar_fn_constructor_navigationcontroller_new(
+                FfiConverterTypeRoute.lower(route),
+                FfiConverterTypeNavigationControllerConfig.lower(config), $0
+            )
+        })
     }
 
     deinit {
         try! rustCall { uniffi_ferrostar_fn_free_navigationcontroller(pointer, $0) }
     }
 
-    
-
-    
-    
-
-    public func advanceToNextStep(state: TripState)  -> TripState {
-        return try!  FfiConverterTypeTripState.lift(
-            try! 
-    rustCall() {
-    
-    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.pointer, 
-        FfiConverterTypeTripState.lower(state),$0
-    )
-}
+    public func advanceToNextStep(state: TripState) -> TripState {
+        return try! FfiConverterTypeTripState.lift(
+            try!
+                rustCall {
+                    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.pointer,
+                                                                                         FfiConverterTypeTripState.lower(state), $0)
+                }
         )
     }
 
-    public func getInitialState(location: UserLocation)  -> TripState {
-        return try!  FfiConverterTypeTripState.lift(
-            try! 
-    rustCall() {
-    
-    uniffi_ferrostar_fn_method_navigationcontroller_get_initial_state(self.pointer, 
-        FfiConverterTypeUserLocation.lower(location),$0
-    )
-}
+    public func getInitialState(location: UserLocation) -> TripState {
+        return try! FfiConverterTypeTripState.lift(
+            try!
+                rustCall {
+                    uniffi_ferrostar_fn_method_navigationcontroller_get_initial_state(self.pointer,
+                                                                                      FfiConverterTypeUserLocation.lower(location), $0)
+                }
         )
     }
 
-    public func updateUserLocation(location: UserLocation, state: TripState)  -> TripState {
-        return try!  FfiConverterTypeTripState.lift(
-            try! 
-    rustCall() {
-    
-    uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.pointer, 
-        FfiConverterTypeUserLocation.lower(location),
-        FfiConverterTypeTripState.lower(state),$0
-    )
-}
+    public func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
+        return try! FfiConverterTypeTripState.lift(
+            try!
+                rustCall {
+                    uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.pointer,
+                                                                                         FfiConverterTypeUserLocation.lower(location),
+                                                                                         FfiConverterTypeTripState.lower(state), $0)
+                }
         )
     }
-
 }
 
 public struct FfiConverterTypeNavigationController: FfiConverter {
-
     typealias FfiType = UnsafeMutableRawPointer
     typealias SwiftType = NavigationController
 
@@ -517,7 +505,7 @@ public struct FfiConverterTypeNavigationController: FfiConverter {
         // The Rust code won't compile if a pointer won't fit in a UInt64.
         // We have to go via `UInt` because that's the thing that's the size of a pointer.
         let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
-        if (ptr == nil) {
+        if ptr == nil {
             throw UniffiInternalError.unexpectedNullPointer
         }
         return try lift(ptr!)
@@ -530,7 +518,6 @@ public struct FfiConverterTypeNavigationController: FfiConverter {
     }
 }
 
-
 public func FfiConverterTypeNavigationController_lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationController {
     return try FfiConverterTypeNavigationController.lift(pointer)
 }
@@ -539,16 +526,14 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
     return FfiConverterTypeNavigationController.lower(value)
 }
 
-
-
-public protocol RouteAdapterProtocol : AnyObject {
-    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws  -> RouteRequest
-    func parseResponse(response: Data) throws  -> [Route]
-    
+public protocol RouteAdapterProtocol: AnyObject {
+    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
+    func parseResponse(response: Data) throws -> [Route]
 }
 
 public class RouteAdapter:
-    RouteAdapterProtocol {
+    RouteAdapterProtocol
+{
     fileprivate let pointer: UnsafeMutableRawPointer
 
     // TODO: We'd like this to be `private` but for Swifty reasons,
@@ -557,60 +542,50 @@ public class RouteAdapter:
     required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
         self.pointer = pointer
     }
-    public convenience init(requestGenerator: RouteRequestGenerator, responseParser: RouteResponseParser)  {
-        self.init(unsafeFromRawPointer: try! rustCall() {
-    uniffi_ferrostar_fn_constructor_routeadapter_new(
-        FfiConverterTypeRouteRequestGenerator.lower(requestGenerator),
-        FfiConverterTypeRouteResponseParser.lower(responseParser),$0)
-})
+
+    public convenience init(requestGenerator: RouteRequestGenerator, responseParser: RouteResponseParser) {
+        self.init(unsafeFromRawPointer: try! rustCall {
+            uniffi_ferrostar_fn_constructor_routeadapter_new(
+                FfiConverterTypeRouteRequestGenerator.lower(requestGenerator),
+                FfiConverterTypeRouteResponseParser.lower(responseParser), $0
+            )
+        })
     }
 
     deinit {
         try! rustCall { uniffi_ferrostar_fn_free_routeadapter(pointer, $0) }
     }
 
-    
-
-    public static func newValhallaHttp(endpointUrl: String, profile: String)  -> RouteAdapter {
-        return RouteAdapter(unsafeFromRawPointer: try! rustCall() {
-    uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
-        FfiConverterString.lower(endpointUrl),
-        FfiConverterString.lower(profile),$0)
-})
+    public static func newValhallaHttp(endpointUrl: String, profile: String) -> RouteAdapter {
+        return RouteAdapter(unsafeFromRawPointer: try! rustCall {
+            uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
+                FfiConverterString.lower(endpointUrl),
+                FfiConverterString.lower(profile), $0
+            )
+        })
     }
 
-    
-
-    
-    
-
-    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws  -> RouteRequest {
-        return try  FfiConverterTypeRouteRequest.lift(
-            try 
-    rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
-    uniffi_ferrostar_fn_method_routeadapter_generate_request(self.pointer, 
-        FfiConverterTypeUserLocation.lower(userLocation),
-        FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints),$0
-    )
-}
+    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
+        return try FfiConverterTypeRouteRequest.lift(
+            rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
+                uniffi_ferrostar_fn_method_routeadapter_generate_request(self.pointer,
+                                                                         FfiConverterTypeUserLocation.lower(userLocation),
+                                                                         FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
+            }
         )
     }
 
-    public func parseResponse(response: Data) throws  -> [Route] {
-        return try  FfiConverterSequenceTypeRoute.lift(
-            try 
-    rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
-    uniffi_ferrostar_fn_method_routeadapter_parse_response(self.pointer, 
-        FfiConverterData.lower(response),$0
-    )
-}
+    public func parseResponse(response: Data) throws -> [Route] {
+        return try FfiConverterSequenceTypeRoute.lift(
+            rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
+                uniffi_ferrostar_fn_method_routeadapter_parse_response(self.pointer,
+                                                                       FfiConverterData.lower(response), $0)
+            }
         )
     }
-
 }
 
 public struct FfiConverterTypeRouteAdapter: FfiConverter {
-
     typealias FfiType = UnsafeMutableRawPointer
     typealias SwiftType = RouteAdapter
 
@@ -627,7 +602,7 @@ public struct FfiConverterTypeRouteAdapter: FfiConverter {
         // The Rust code won't compile if a pointer won't fit in a UInt64.
         // We have to go via `UInt` because that's the thing that's the size of a pointer.
         let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
-        if (ptr == nil) {
+        if ptr == nil {
             throw UniffiInternalError.unexpectedNullPointer
         }
         return try lift(ptr!)
@@ -640,7 +615,6 @@ public struct FfiConverterTypeRouteAdapter: FfiConverter {
     }
 }
 
-
 public func FfiConverterTypeRouteAdapter_lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteAdapter {
     return try FfiConverterTypeRouteAdapter.lift(pointer)
 }
@@ -649,15 +623,13 @@ public func FfiConverterTypeRouteAdapter_lower(_ value: RouteAdapter) -> UnsafeM
     return FfiConverterTypeRouteAdapter.lower(value)
 }
 
-
-
-public protocol RouteRequestGenerator : AnyObject {
-    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws  -> RouteRequest
-    
+public protocol RouteRequestGenerator: AnyObject {
+    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
 }
 
 public class RouteRequestGeneratorImpl:
-    RouteRequestGenerator {
+    RouteRequestGenerator
+{
     fileprivate let pointer: UnsafeMutableRawPointer
 
     // TODO: We'd like this to be `private` but for Swifty reasons,
@@ -671,34 +643,27 @@ public class RouteRequestGeneratorImpl:
         try! rustCall { uniffi_ferrostar_fn_free_routerequestgenerator(pointer, $0) }
     }
 
-    
-
-    
-    
-
-    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws  -> RouteRequest {
-        return try  FfiConverterTypeRouteRequest.lift(
-            try 
-    rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
-    uniffi_ferrostar_fn_method_routerequestgenerator_generate_request(self.pointer, 
-        FfiConverterTypeUserLocation.lower(userLocation),
-        FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints),$0
-    )
-}
+    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
+        return try FfiConverterTypeRouteRequest.lift(
+            rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
+                uniffi_ferrostar_fn_method_routerequestgenerator_generate_request(self.pointer,
+                                                                                  FfiConverterTypeUserLocation.lower(userLocation),
+                                                                                  FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
+            }
         )
     }
-
 }
-fileprivate extension NSLock {
+
+private extension NSLock {
     func withLock<T>(f: () throws -> T) rethrows -> T {
-        self.lock()
+        lock()
         defer { self.unlock() }
         return try f()
     }
 }
 
-fileprivate typealias UniFFICallbackHandle = UInt64
-fileprivate class UniFFICallbackHandleMap<T> {
+private typealias UniFFICallbackHandle = UInt64
+private class UniFFICallbackHandleMap<T> {
     private var leftMap: [UniFFICallbackHandle: T] = [:]
     private var counter: [UniFFICallbackHandle: UInt64] = [:]
     private var rightMap: [ObjectIdentifier: UniFFICallbackHandle] = [:]
@@ -756,17 +721,15 @@ private let UNIFFI_CALLBACK_UNEXPECTED_ERROR: Int32 = 2
 
 // Declaration and FfiConverters for RouteRequestGenerator Callback Interface
 
-fileprivate let uniffiCallbackInterfaceRouteRequestGenerator : ForeignCallback =
-    { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
-    
+private let uniffiCallbackInterfaceRouteRequestGenerator: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
 
     func invokeGenerateRequest(_ swiftCallbackInterface: RouteRequestGenerator, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
         var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
         func makeCall() throws -> Int32 {
-            let result =  try swiftCallbackInterface.generateRequest(
-                    userLocation:  try FfiConverterTypeUserLocation.read(from: &reader), 
-                    waypoints:  try FfiConverterSequenceTypeGeographicCoordinate.read(from: &reader)
-                    )
+            let result = try swiftCallbackInterface.generateRequest(
+                userLocation: FfiConverterTypeUserLocation.read(from: &reader),
+                waypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &reader)
+            )
             var writer = [UInt8]()
             FfiConverterTypeRouteRequest.write(result, into: &writer)
             out_buf.pointee = RustBuffer(bytes: writer)
@@ -780,32 +743,31 @@ fileprivate let uniffiCallbackInterfaceRouteRequestGenerator : ForeignCallback =
         }
     }
 
-
     switch method {
-        case IDX_CALLBACK_FREE:
-            FfiConverterTypeRouteRequestGenerator.handleMap.remove(handle: handle)
-            // Sucessful return
-            // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
-            return UNIFFI_CALLBACK_SUCCESS
-        case 1:
-            guard let cb = FfiConverterTypeRouteRequestGenerator.handleMap.get(handle: handle) else {
-                out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
-                return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-            }
-            do {
-                return try invokeGenerateRequest(cb, argsData, argsLen, out_buf)
-            } catch let error {
-                out_buf.pointee = FfiConverterString.lower(String(describing: error))
-                return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-            }
-        
-        // This should never happen, because an out of bounds method index won't
-        // ever be used. Once we can catch errors, we should return an InternalError.
-        // https://github.com/mozilla/uniffi-rs/issues/351
-        default:
-            // An unexpected error happened.
-            // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+    case IDX_CALLBACK_FREE:
+        FfiConverterTypeRouteRequestGenerator.handleMap.remove(handle: handle)
+        // Sucessful return
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_SUCCESS
+    case 1:
+        guard let cb = FfiConverterTypeRouteRequestGenerator.handleMap.get(handle: handle) else {
+            out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
             return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+        do {
+            return try invokeGenerateRequest(cb, argsData, argsLen, out_buf)
+        } catch {
+            out_buf.pointee = FfiConverterString.lower(String(describing: error))
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+
+    // This should never happen, because an out of bounds method index won't
+    // ever be used. Once we can catch errors, we should return an InternalError.
+    // https://github.com/mozilla/uniffi-rs/issues/351
+    default:
+        // An unexpected error happened.
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_UNEXPECTED_ERROR
     }
 }
 
@@ -835,7 +797,7 @@ public struct FfiConverterTypeRouteRequestGenerator: FfiConverter {
         // The Rust code won't compile if a pointer won't fit in a UInt64.
         // We have to go via `UInt` because that's the thing that's the size of a pointer.
         let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
-        if (ptr == nil) {
+        if ptr == nil {
             throw UniffiInternalError.unexpectedNullPointer
         }
         return try lift(ptr!)
@@ -848,7 +810,6 @@ public struct FfiConverterTypeRouteRequestGenerator: FfiConverter {
     }
 }
 
-
 public func FfiConverterTypeRouteRequestGenerator_lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteRequestGenerator {
     return try FfiConverterTypeRouteRequestGenerator.lift(pointer)
 }
@@ -857,15 +818,13 @@ public func FfiConverterTypeRouteRequestGenerator_lower(_ value: RouteRequestGen
     return FfiConverterTypeRouteRequestGenerator.lower(value)
 }
 
-
-
-public protocol RouteResponseParser : AnyObject {
-    func parseResponse(response: Data) throws  -> [Route]
-    
+public protocol RouteResponseParser: AnyObject {
+    func parseResponse(response: Data) throws -> [Route]
 }
 
 public class RouteResponseParserImpl:
-    RouteResponseParser {
+    RouteResponseParser
+{
     fileprivate let pointer: UnsafeMutableRawPointer
 
     // TODO: We'd like this to be `private` but for Swifty reasons,
@@ -879,37 +838,26 @@ public class RouteResponseParserImpl:
         try! rustCall { uniffi_ferrostar_fn_free_routeresponseparser(pointer, $0) }
     }
 
-    
-
-    
-    
-
-    public func parseResponse(response: Data) throws  -> [Route] {
-        return try  FfiConverterSequenceTypeRoute.lift(
-            try 
-    rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
-    uniffi_ferrostar_fn_method_routeresponseparser_parse_response(self.pointer, 
-        FfiConverterData.lower(response),$0
-    )
-}
+    public func parseResponse(response: Data) throws -> [Route] {
+        return try FfiConverterSequenceTypeRoute.lift(
+            rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
+                uniffi_ferrostar_fn_method_routeresponseparser_parse_response(self.pointer,
+                                                                              FfiConverterData.lower(response), $0)
+            }
         )
     }
-
 }
-
 
 // Declaration and FfiConverters for RouteResponseParser Callback Interface
 
-fileprivate let uniffiCallbackInterfaceRouteResponseParser : ForeignCallback =
-    { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
-    
+private let uniffiCallbackInterfaceRouteResponseParser: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
 
     func invokeParseResponse(_ swiftCallbackInterface: RouteResponseParser, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
         var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
         func makeCall() throws -> Int32 {
-            let result =  try swiftCallbackInterface.parseResponse(
-                    response:  try FfiConverterData.read(from: &reader)
-                    )
+            let result = try swiftCallbackInterface.parseResponse(
+                response: FfiConverterData.read(from: &reader)
+            )
             var writer = [UInt8]()
             FfiConverterSequenceTypeRoute.write(result, into: &writer)
             out_buf.pointee = RustBuffer(bytes: writer)
@@ -923,32 +871,31 @@ fileprivate let uniffiCallbackInterfaceRouteResponseParser : ForeignCallback =
         }
     }
 
-
     switch method {
-        case IDX_CALLBACK_FREE:
-            FfiConverterTypeRouteResponseParser.handleMap.remove(handle: handle)
-            // Sucessful return
-            // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
-            return UNIFFI_CALLBACK_SUCCESS
-        case 1:
-            guard let cb = FfiConverterTypeRouteResponseParser.handleMap.get(handle: handle) else {
-                out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
-                return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-            }
-            do {
-                return try invokeParseResponse(cb, argsData, argsLen, out_buf)
-            } catch let error {
-                out_buf.pointee = FfiConverterString.lower(String(describing: error))
-                return UNIFFI_CALLBACK_UNEXPECTED_ERROR
-            }
-        
-        // This should never happen, because an out of bounds method index won't
-        // ever be used. Once we can catch errors, we should return an InternalError.
-        // https://github.com/mozilla/uniffi-rs/issues/351
-        default:
-            // An unexpected error happened.
-            // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+    case IDX_CALLBACK_FREE:
+        FfiConverterTypeRouteResponseParser.handleMap.remove(handle: handle)
+        // Sucessful return
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_SUCCESS
+    case 1:
+        guard let cb = FfiConverterTypeRouteResponseParser.handleMap.get(handle: handle) else {
+            out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
             return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+        do {
+            return try invokeParseResponse(cb, argsData, argsLen, out_buf)
+        } catch {
+            out_buf.pointee = FfiConverterString.lower(String(describing: error))
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+
+    // This should never happen, because an out of bounds method index won't
+    // ever be used. Once we can catch errors, we should return an InternalError.
+    // https://github.com/mozilla/uniffi-rs/issues/351
+    default:
+        // An unexpected error happened.
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_UNEXPECTED_ERROR
     }
 }
 
@@ -978,7 +925,7 @@ public struct FfiConverterTypeRouteResponseParser: FfiConverter {
         // The Rust code won't compile if a pointer won't fit in a UInt64.
         // We have to go via `UInt` because that's the thing that's the size of a pointer.
         let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
-        if (ptr == nil) {
+        if ptr == nil {
             throw UniffiInternalError.unexpectedNullPointer
         }
         return try lift(ptr!)
@@ -991,7 +938,6 @@ public struct FfiConverterTypeRouteResponseParser: FfiConverter {
     }
 }
 
-
 public func FfiConverterTypeRouteResponseParser_lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteResponseParser {
     return try FfiConverterTypeRouteResponseParser.lift(pointer)
 }
@@ -999,7 +945,6 @@ public func FfiConverterTypeRouteResponseParser_lift(_ pointer: UnsafeMutableRaw
 public func FfiConverterTypeRouteResponseParser_lower(_ value: RouteResponseParser) -> UnsafeMutableRawPointer {
     return FfiConverterTypeRouteResponseParser.lower(value)
 }
-
 
 public struct CourseOverGround {
     public var degrees: UInt16
@@ -1013,9 +958,8 @@ public struct CourseOverGround {
     }
 }
 
-
 extension CourseOverGround: Equatable, Hashable {
-    public static func ==(lhs: CourseOverGround, rhs: CourseOverGround) -> Bool {
+    public static func == (lhs: CourseOverGround, rhs: CourseOverGround) -> Bool {
         if lhs.degrees != rhs.degrees {
             return false
         }
@@ -1031,14 +975,13 @@ extension CourseOverGround: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeCourseOverGround: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CourseOverGround {
         return
             try CourseOverGround(
-                degrees: FfiConverterUInt16.read(from: &buf), 
+                degrees: FfiConverterUInt16.read(from: &buf),
                 accuracy: FfiConverterUInt16.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: CourseOverGround, into buf: inout [UInt8]) {
@@ -1047,7 +990,6 @@ public struct FfiConverterTypeCourseOverGround: FfiConverterRustBuffer {
     }
 }
 
-
 public func FfiConverterTypeCourseOverGround_lift(_ buf: RustBuffer) throws -> CourseOverGround {
     return try FfiConverterTypeCourseOverGround.lift(buf)
 }
@@ -1055,7 +997,6 @@ public func FfiConverterTypeCourseOverGround_lift(_ buf: RustBuffer) throws -> C
 public func FfiConverterTypeCourseOverGround_lower(_ value: CourseOverGround) -> RustBuffer {
     return FfiConverterTypeCourseOverGround.lower(value)
 }
-
 
 public struct GeographicCoordinate {
     public var lng: Double
@@ -1069,9 +1010,8 @@ public struct GeographicCoordinate {
     }
 }
 
-
 extension GeographicCoordinate: Equatable, Hashable {
-    public static func ==(lhs: GeographicCoordinate, rhs: GeographicCoordinate) -> Bool {
+    public static func == (lhs: GeographicCoordinate, rhs: GeographicCoordinate) -> Bool {
         if lhs.lng != rhs.lng {
             return false
         }
@@ -1087,14 +1027,13 @@ extension GeographicCoordinate: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeGeographicCoordinate: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> GeographicCoordinate {
         return
             try GeographicCoordinate(
-                lng: FfiConverterDouble.read(from: &buf), 
+                lng: FfiConverterDouble.read(from: &buf),
                 lat: FfiConverterDouble.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: GeographicCoordinate, into buf: inout [UInt8]) {
@@ -1103,7 +1042,6 @@ public struct FfiConverterTypeGeographicCoordinate: FfiConverterRustBuffer {
     }
 }
 
-
 public func FfiConverterTypeGeographicCoordinate_lift(_ buf: RustBuffer) throws -> GeographicCoordinate {
     return try FfiConverterTypeGeographicCoordinate.lift(buf)
 }
@@ -1111,7 +1049,6 @@ public func FfiConverterTypeGeographicCoordinate_lift(_ buf: RustBuffer) throws 
 public func FfiConverterTypeGeographicCoordinate_lower(_ value: GeographicCoordinate) -> RustBuffer {
     return FfiConverterTypeGeographicCoordinate.lower(value)
 }
-
 
 public struct LocationSimulationState {
     public var currentLocation: GeographicCoordinate
@@ -1125,9 +1062,8 @@ public struct LocationSimulationState {
     }
 }
 
-
 extension LocationSimulationState: Equatable, Hashable {
-    public static func ==(lhs: LocationSimulationState, rhs: LocationSimulationState) -> Bool {
+    public static func == (lhs: LocationSimulationState, rhs: LocationSimulationState) -> Bool {
         if lhs.currentLocation != rhs.currentLocation {
             return false
         }
@@ -1143,14 +1079,13 @@ extension LocationSimulationState: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeLocationSimulationState: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LocationSimulationState {
         return
             try LocationSimulationState(
-                currentLocation: FfiConverterTypeGeographicCoordinate.read(from: &buf), 
+                currentLocation: FfiConverterTypeGeographicCoordinate.read(from: &buf),
                 remainingLocations: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: LocationSimulationState, into buf: inout [UInt8]) {
@@ -1159,7 +1094,6 @@ public struct FfiConverterTypeLocationSimulationState: FfiConverterRustBuffer {
     }
 }
 
-
 public func FfiConverterTypeLocationSimulationState_lift(_ buf: RustBuffer) throws -> LocationSimulationState {
     return try FfiConverterTypeLocationSimulationState.lift(buf)
 }
@@ -1167,7 +1101,6 @@ public func FfiConverterTypeLocationSimulationState_lift(_ buf: RustBuffer) thro
 public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimulationState) -> RustBuffer {
     return FfiConverterTypeLocationSimulationState.lower(value)
 }
-
 
 public struct NavigationControllerConfig {
     public var stepAdvance: StepAdvanceMode
@@ -1179,9 +1112,8 @@ public struct NavigationControllerConfig {
     }
 }
 
-
 extension NavigationControllerConfig: Equatable, Hashable {
-    public static func ==(lhs: NavigationControllerConfig, rhs: NavigationControllerConfig) -> Bool {
+    public static func == (lhs: NavigationControllerConfig, rhs: NavigationControllerConfig) -> Bool {
         if lhs.stepAdvance != rhs.stepAdvance {
             return false
         }
@@ -1193,20 +1125,18 @@ extension NavigationControllerConfig: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
         return
             try NavigationControllerConfig(
                 stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
     }
 }
-
 
 public func FfiConverterTypeNavigationControllerConfig_lift(_ buf: RustBuffer) throws -> NavigationControllerConfig {
     return try FfiConverterTypeNavigationControllerConfig.lift(buf)
@@ -1215,7 +1145,6 @@ public func FfiConverterTypeNavigationControllerConfig_lift(_ buf: RustBuffer) t
 public func FfiConverterTypeNavigationControllerConfig_lower(_ value: NavigationControllerConfig) -> RustBuffer {
     return FfiConverterTypeNavigationControllerConfig.lower(value)
 }
-
 
 public struct Route {
     public var geometry: [GeographicCoordinate]
@@ -1233,9 +1162,8 @@ public struct Route {
     }
 }
 
-
 extension Route: Equatable, Hashable {
-    public static func ==(lhs: Route, rhs: Route) -> Bool {
+    public static func == (lhs: Route, rhs: Route) -> Bool {
         if lhs.geometry != rhs.geometry {
             return false
         }
@@ -1259,16 +1187,15 @@ extension Route: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Route {
         return
             try Route(
-                geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf), 
-                distance: FfiConverterDouble.read(from: &buf), 
-                waypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf), 
+                geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
+                distance: FfiConverterDouble.read(from: &buf),
+                waypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 steps: FfiConverterSequenceTypeRouteStep.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: Route, into buf: inout [UInt8]) {
@@ -1279,7 +1206,6 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
     }
 }
 
-
 public func FfiConverterTypeRoute_lift(_ buf: RustBuffer) throws -> Route {
     return try FfiConverterTypeRoute.lift(buf)
 }
@@ -1287,7 +1213,6 @@ public func FfiConverterTypeRoute_lift(_ buf: RustBuffer) throws -> Route {
 public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
     return FfiConverterTypeRoute.lower(value)
 }
-
 
 public struct RouteStep {
     public var geometry: [GeographicCoordinate]
@@ -1309,9 +1234,8 @@ public struct RouteStep {
     }
 }
 
-
 extension RouteStep: Equatable, Hashable {
-    public static func ==(lhs: RouteStep, rhs: RouteStep) -> Bool {
+    public static func == (lhs: RouteStep, rhs: RouteStep) -> Bool {
         if lhs.geometry != rhs.geometry {
             return false
         }
@@ -1343,18 +1267,17 @@ extension RouteStep: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteStep {
         return
             try RouteStep(
-                geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf), 
-                distance: FfiConverterDouble.read(from: &buf), 
-                roadName: FfiConverterOptionString.read(from: &buf), 
-                instruction: FfiConverterString.read(from: &buf), 
-                visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf), 
+                geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
+                distance: FfiConverterDouble.read(from: &buf),
+                roadName: FfiConverterOptionString.read(from: &buf),
+                instruction: FfiConverterString.read(from: &buf),
+                visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf),
                 spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: RouteStep, into buf: inout [UInt8]) {
@@ -1367,7 +1290,6 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
     }
 }
 
-
 public func FfiConverterTypeRouteStep_lift(_ buf: RustBuffer) throws -> RouteStep {
     return try FfiConverterTypeRouteStep.lift(buf)
 }
@@ -1375,7 +1297,6 @@ public func FfiConverterTypeRouteStep_lift(_ buf: RustBuffer) throws -> RouteSte
 public func FfiConverterTypeRouteStep_lower(_ value: RouteStep) -> RustBuffer {
     return FfiConverterTypeRouteStep.lower(value)
 }
-
 
 public struct SpokenInstruction {
     public var text: String
@@ -1391,9 +1312,8 @@ public struct SpokenInstruction {
     }
 }
 
-
 extension SpokenInstruction: Equatable, Hashable {
-    public static func ==(lhs: SpokenInstruction, rhs: SpokenInstruction) -> Bool {
+    public static func == (lhs: SpokenInstruction, rhs: SpokenInstruction) -> Bool {
         if lhs.text != rhs.text {
             return false
         }
@@ -1413,15 +1333,14 @@ extension SpokenInstruction: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeSpokenInstruction: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SpokenInstruction {
         return
             try SpokenInstruction(
-                text: FfiConverterString.read(from: &buf), 
-                ssml: FfiConverterOptionString.read(from: &buf), 
+                text: FfiConverterString.read(from: &buf),
+                ssml: FfiConverterOptionString.read(from: &buf),
                 triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: SpokenInstruction, into buf: inout [UInt8]) {
@@ -1431,7 +1350,6 @@ public struct FfiConverterTypeSpokenInstruction: FfiConverterRustBuffer {
     }
 }
 
-
 public func FfiConverterTypeSpokenInstruction_lift(_ buf: RustBuffer) throws -> SpokenInstruction {
     return try FfiConverterTypeSpokenInstruction.lift(buf)
 }
@@ -1439,7 +1357,6 @@ public func FfiConverterTypeSpokenInstruction_lift(_ buf: RustBuffer) throws -> 
 public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) -> RustBuffer {
     return FfiConverterTypeSpokenInstruction.lower(value)
 }
-
 
 public struct UserLocation {
     public var coordinates: GeographicCoordinate
@@ -1457,9 +1374,8 @@ public struct UserLocation {
     }
 }
 
-
 extension UserLocation: Equatable, Hashable {
-    public static func ==(lhs: UserLocation, rhs: UserLocation) -> Bool {
+    public static func == (lhs: UserLocation, rhs: UserLocation) -> Bool {
         if lhs.coordinates != rhs.coordinates {
             return false
         }
@@ -1483,16 +1399,15 @@ extension UserLocation: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UserLocation {
         return
             try UserLocation(
-                coordinates: FfiConverterTypeGeographicCoordinate.read(from: &buf), 
-                horizontalAccuracy: FfiConverterDouble.read(from: &buf), 
-                courseOverGround: FfiConverterOptionTypeCourseOverGround.read(from: &buf), 
+                coordinates: FfiConverterTypeGeographicCoordinate.read(from: &buf),
+                horizontalAccuracy: FfiConverterDouble.read(from: &buf),
+                courseOverGround: FfiConverterOptionTypeCourseOverGround.read(from: &buf),
                 timestamp: FfiConverterTimestamp.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: UserLocation, into buf: inout [UInt8]) {
@@ -1503,7 +1418,6 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
     }
 }
 
-
 public func FfiConverterTypeUserLocation_lift(_ buf: RustBuffer) throws -> UserLocation {
     return try FfiConverterTypeUserLocation.lift(buf)
 }
@@ -1511,7 +1425,6 @@ public func FfiConverterTypeUserLocation_lift(_ buf: RustBuffer) throws -> UserL
 public func FfiConverterTypeUserLocation_lower(_ value: UserLocation) -> RustBuffer {
     return FfiConverterTypeUserLocation.lower(value)
 }
-
 
 public struct VisualInstruction {
     public var primaryContent: VisualInstructionContent
@@ -1527,9 +1440,8 @@ public struct VisualInstruction {
     }
 }
 
-
 extension VisualInstruction: Equatable, Hashable {
-    public static func ==(lhs: VisualInstruction, rhs: VisualInstruction) -> Bool {
+    public static func == (lhs: VisualInstruction, rhs: VisualInstruction) -> Bool {
         if lhs.primaryContent != rhs.primaryContent {
             return false
         }
@@ -1549,15 +1461,14 @@ extension VisualInstruction: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeVisualInstruction: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> VisualInstruction {
         return
             try VisualInstruction(
-                primaryContent: FfiConverterTypeVisualInstructionContent.read(from: &buf), 
-                secondaryContent: FfiConverterOptionTypeVisualInstructionContent.read(from: &buf), 
+                primaryContent: FfiConverterTypeVisualInstructionContent.read(from: &buf),
+                secondaryContent: FfiConverterOptionTypeVisualInstructionContent.read(from: &buf),
                 triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: VisualInstruction, into buf: inout [UInt8]) {
@@ -1567,7 +1478,6 @@ public struct FfiConverterTypeVisualInstruction: FfiConverterRustBuffer {
     }
 }
 
-
 public func FfiConverterTypeVisualInstruction_lift(_ buf: RustBuffer) throws -> VisualInstruction {
     return try FfiConverterTypeVisualInstruction.lift(buf)
 }
@@ -1575,7 +1485,6 @@ public func FfiConverterTypeVisualInstruction_lift(_ buf: RustBuffer) throws -> 
 public func FfiConverterTypeVisualInstruction_lower(_ value: VisualInstruction) -> RustBuffer {
     return FfiConverterTypeVisualInstruction.lower(value)
 }
-
 
 public struct VisualInstructionContent {
     public var text: String
@@ -1593,9 +1502,8 @@ public struct VisualInstructionContent {
     }
 }
 
-
 extension VisualInstructionContent: Equatable, Hashable {
-    public static func ==(lhs: VisualInstructionContent, rhs: VisualInstructionContent) -> Bool {
+    public static func == (lhs: VisualInstructionContent, rhs: VisualInstructionContent) -> Bool {
         if lhs.text != rhs.text {
             return false
         }
@@ -1619,16 +1527,15 @@ extension VisualInstructionContent: Equatable, Hashable {
     }
 }
 
-
 public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> VisualInstructionContent {
         return
             try VisualInstructionContent(
-                text: FfiConverterString.read(from: &buf), 
-                maneuverType: FfiConverterOptionTypeManeuverType.read(from: &buf), 
-                maneuverModifier: FfiConverterOptionTypeManeuverModifier.read(from: &buf), 
+                text: FfiConverterString.read(from: &buf),
+                maneuverType: FfiConverterOptionTypeManeuverType.read(from: &buf),
+                maneuverModifier: FfiConverterOptionTypeManeuverModifier.read(from: &buf),
                 roundaboutExitDegrees: FfiConverterOptionUInt16.read(from: &buf)
-        )
+            )
     }
 
     public static func write(_ value: VisualInstructionContent, into buf: inout [UInt8]) {
@@ -1638,7 +1545,6 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
         FfiConverterOptionUInt16.write(value.roundaboutExitDegrees, into: &buf)
     }
 }
-
 
 public func FfiConverterTypeVisualInstructionContent_lift(_ buf: RustBuffer) throws -> VisualInstructionContent {
     return try FfiConverterTypeVisualInstructionContent.lift(buf)
@@ -1651,7 +1557,6 @@ public func FfiConverterTypeVisualInstructionContent_lower(_ value: VisualInstru
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum ManeuverModifier {
-    
     case uTurn
     case sharpRight
     case right
@@ -1668,66 +1573,54 @@ public struct FfiConverterTypeManeuverModifier: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ManeuverModifier {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        
         case 1: return .uTurn
-        
+
         case 2: return .sharpRight
-        
+
         case 3: return .right
-        
+
         case 4: return .slightRight
-        
+
         case 5: return .straight
-        
+
         case 6: return .slightLeft
-        
+
         case 7: return .left
-        
+
         case 8: return .sharpLeft
-        
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: ManeuverModifier, into buf: inout [UInt8]) {
         switch value {
-        
-        
         case .uTurn:
             writeInt(&buf, Int32(1))
-        
-        
+
         case .sharpRight:
             writeInt(&buf, Int32(2))
-        
-        
+
         case .right:
             writeInt(&buf, Int32(3))
-        
-        
+
         case .slightRight:
             writeInt(&buf, Int32(4))
-        
-        
+
         case .straight:
             writeInt(&buf, Int32(5))
-        
-        
+
         case .slightLeft:
             writeInt(&buf, Int32(6))
-        
-        
+
         case .left:
             writeInt(&buf, Int32(7))
-        
-        
+
         case .sharpLeft:
             writeInt(&buf, Int32(8))
-        
         }
     }
 }
-
 
 public func FfiConverterTypeManeuverModifier_lift(_ buf: RustBuffer) throws -> ManeuverModifier {
     return try FfiConverterTypeManeuverModifier.lift(buf)
@@ -1737,15 +1630,11 @@ public func FfiConverterTypeManeuverModifier_lower(_ value: ManeuverModifier) ->
     return FfiConverterTypeManeuverModifier.lower(value)
 }
 
-
 extension ManeuverModifier: Equatable, Hashable {}
-
-
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum ManeuverType {
-    
     case turn
     case newName
     case depart
@@ -1770,114 +1659,94 @@ public struct FfiConverterTypeManeuverType: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ManeuverType {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        
         case 1: return .turn
-        
+
         case 2: return .newName
-        
+
         case 3: return .depart
-        
+
         case 4: return .arrive
-        
+
         case 5: return .merge
-        
+
         case 6: return .onRamp
-        
+
         case 7: return .offRamp
-        
+
         case 8: return .fork
-        
+
         case 9: return .endOfRoad
-        
-        case 10: return .`continue`
-        
+
+        case 10: return .continue
+
         case 11: return .roundabout
-        
+
         case 12: return .rotary
-        
+
         case 13: return .roundaboutTurn
-        
+
         case 14: return .notification
-        
+
         case 15: return .exitRoundabout
-        
+
         case 16: return .exitRotary
-        
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: ManeuverType, into buf: inout [UInt8]) {
         switch value {
-        
-        
         case .turn:
             writeInt(&buf, Int32(1))
-        
-        
+
         case .newName:
             writeInt(&buf, Int32(2))
-        
-        
+
         case .depart:
             writeInt(&buf, Int32(3))
-        
-        
+
         case .arrive:
             writeInt(&buf, Int32(4))
-        
-        
+
         case .merge:
             writeInt(&buf, Int32(5))
-        
-        
+
         case .onRamp:
             writeInt(&buf, Int32(6))
-        
-        
+
         case .offRamp:
             writeInt(&buf, Int32(7))
-        
-        
+
         case .fork:
             writeInt(&buf, Int32(8))
-        
-        
+
         case .endOfRoad:
             writeInt(&buf, Int32(9))
-        
-        
-        case .`continue`:
+
+        case .continue:
             writeInt(&buf, Int32(10))
-        
-        
+
         case .roundabout:
             writeInt(&buf, Int32(11))
-        
-        
+
         case .rotary:
             writeInt(&buf, Int32(12))
-        
-        
+
         case .roundaboutTurn:
             writeInt(&buf, Int32(13))
-        
-        
+
         case .notification:
             writeInt(&buf, Int32(14))
-        
-        
+
         case .exitRoundabout:
             writeInt(&buf, Int32(15))
-        
-        
+
         case .exitRotary:
             writeInt(&buf, Int32(16))
-        
         }
     }
 }
-
 
 public func FfiConverterTypeManeuverType_lift(_ buf: RustBuffer) throws -> ManeuverType {
     return try FfiConverterTypeManeuverType.lift(buf)
@@ -1887,15 +1756,11 @@ public func FfiConverterTypeManeuverType_lower(_ value: ManeuverType) -> RustBuf
     return FfiConverterTypeManeuverType.lower(value)
 }
 
-
 extension ManeuverType: Equatable, Hashable {}
-
-
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum RouteRequest {
-    
     case httpPost(url: String, headers: [String: String], body: Data)
 }
 
@@ -1905,31 +1770,26 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteRequest {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        
-        case 1: return .httpPost(
-            url: try FfiConverterString.read(from: &buf), 
-            headers: try FfiConverterDictionaryStringString.read(from: &buf), 
-            body: try FfiConverterData.read(from: &buf)
-        )
-        
+        case 1: return try .httpPost(
+                url: FfiConverterString.read(from: &buf),
+                headers: FfiConverterDictionaryStringString.read(from: &buf),
+                body: FfiConverterData.read(from: &buf)
+            )
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: RouteRequest, into buf: inout [UInt8]) {
         switch value {
-        
-        
-        case let .httpPost(url,headers,body):
+        case let .httpPost(url, headers, body):
             writeInt(&buf, Int32(1))
             FfiConverterString.write(url, into: &buf)
             FfiConverterDictionaryStringString.write(headers, into: &buf)
             FfiConverterData.write(body, into: &buf)
-            
         }
     }
 }
-
 
 public func FfiConverterTypeRouteRequest_lift(_ buf: RustBuffer) throws -> RouteRequest {
     return try FfiConverterTypeRouteRequest.lift(buf)
@@ -1939,15 +1799,9 @@ public func FfiConverterTypeRouteRequest_lower(_ value: RouteRequest) -> RustBuf
     return FfiConverterTypeRouteRequest.lower(value)
 }
 
-
 extension RouteRequest: Equatable, Hashable {}
 
-
-
 public enum RoutingRequestGenerationError {
-
-    
-    
     case NotEnoughWaypoints
     case JsonError
     case UnknownError
@@ -1957,56 +1811,39 @@ public enum RoutingRequestGenerationError {
     }
 }
 
-
 public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuffer {
     typealias SwiftType = RoutingRequestGenerationError
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RoutingRequestGenerationError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-
-        
-
-        
         case 1: return .NotEnoughWaypoints
         case 2: return .JsonError
         case 3: return .UnknownError
 
-         default: throw UniffiInternalError.unexpectedEnumCase
+        default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: RoutingRequestGenerationError, into buf: inout [UInt8]) {
         switch value {
-
-        
-
-        
-        
         case .NotEnoughWaypoints:
             writeInt(&buf, Int32(1))
-        
-        
+
         case .JsonError:
             writeInt(&buf, Int32(2))
-        
-        
+
         case .UnknownError:
             writeInt(&buf, Int32(3))
-        
         }
     }
 }
 
-
 extension RoutingRequestGenerationError: Equatable, Hashable {}
 
-extension RoutingRequestGenerationError: Error { }
+extension RoutingRequestGenerationError: Error {}
 
 public enum RoutingResponseParseError {
-
-    
-    
     case ParseError(error: String)
     case UnknownError
 
@@ -2015,54 +1852,38 @@ public enum RoutingResponseParseError {
     }
 }
 
-
 public struct FfiConverterTypeRoutingResponseParseError: FfiConverterRustBuffer {
     typealias SwiftType = RoutingResponseParseError
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RoutingResponseParseError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-
-        
-
-        
-        case 1: return .ParseError(
-            error: try FfiConverterString.read(from: &buf)
+        case 1: return try .ParseError(
+                error: FfiConverterString.read(from: &buf)
             )
         case 2: return .UnknownError
 
-         default: throw UniffiInternalError.unexpectedEnumCase
+        default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: RoutingResponseParseError, into buf: inout [UInt8]) {
         switch value {
-
-        
-
-        
-        
         case let .ParseError(error):
             writeInt(&buf, Int32(1))
             FfiConverterString.write(error, into: &buf)
-            
-        
+
         case .UnknownError:
             writeInt(&buf, Int32(2))
-        
         }
     }
 }
 
-
 extension RoutingResponseParseError: Equatable, Hashable {}
 
-extension RoutingResponseParseError: Error { }
+extension RoutingResponseParseError: Error {}
 
 public enum SimulationError {
-
-    
-    
     case PolylineError(error: String)
     case NotEnoughPoints
 
@@ -2071,54 +1892,40 @@ public enum SimulationError {
     }
 }
 
-
 public struct FfiConverterTypeSimulationError: FfiConverterRustBuffer {
     typealias SwiftType = SimulationError
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SimulationError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-
-        
-
-        
-        case 1: return .PolylineError(
-            error: try FfiConverterString.read(from: &buf)
+        case 1: return try .PolylineError(
+                error: FfiConverterString.read(from: &buf)
             )
         case 2: return .NotEnoughPoints
 
-         default: throw UniffiInternalError.unexpectedEnumCase
+        default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: SimulationError, into buf: inout [UInt8]) {
         switch value {
-
-        
-
-        
-        
         case let .PolylineError(error):
             writeInt(&buf, Int32(1))
             FfiConverterString.write(error, into: &buf)
-            
-        
+
         case .NotEnoughPoints:
             writeInt(&buf, Int32(2))
-        
         }
     }
 }
 
-
 extension SimulationError: Equatable, Hashable {}
 
-extension SimulationError: Error { }
+extension SimulationError: Error {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum SimulationSpeed {
-    
     case jumpToNextLocation
 }
 
@@ -2128,24 +1935,19 @@ public struct FfiConverterTypeSimulationSpeed: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SimulationSpeed {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        
         case 1: return .jumpToNextLocation
-        
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: SimulationSpeed, into buf: inout [UInt8]) {
         switch value {
-        
-        
         case .jumpToNextLocation:
             writeInt(&buf, Int32(1))
-        
         }
     }
 }
-
 
 public func FfiConverterTypeSimulationSpeed_lift(_ buf: RustBuffer) throws -> SimulationSpeed {
     return try FfiConverterTypeSimulationSpeed.lift(buf)
@@ -2155,15 +1957,11 @@ public func FfiConverterTypeSimulationSpeed_lower(_ value: SimulationSpeed) -> R
     return FfiConverterTypeSimulationSpeed.lower(value)
 }
 
-
 extension SimulationSpeed: Equatable, Hashable {}
-
-
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum StepAdvanceMode {
-    
     case manual
     case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16)
     case relativeLineStringDistance(minimumHorizontalAccuracy: UInt16, automaticAdvanceDistance: UInt16?)
@@ -2175,46 +1973,39 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> StepAdvanceMode {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        
         case 1: return .manual
-        
-        case 2: return .distanceToEndOfStep(
-            distance: try FfiConverterUInt16.read(from: &buf), 
-            minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
-        )
-        
-        case 3: return .relativeLineStringDistance(
-            minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), 
-            automaticAdvanceDistance: try FfiConverterOptionUInt16.read(from: &buf)
-        )
-        
+
+        case 2: return try .distanceToEndOfStep(
+                distance: FfiConverterUInt16.read(from: &buf),
+                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf)
+            )
+
+        case 3: return try .relativeLineStringDistance(
+                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf),
+                automaticAdvanceDistance: FfiConverterOptionUInt16.read(from: &buf)
+            )
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: StepAdvanceMode, into buf: inout [UInt8]) {
         switch value {
-        
-        
         case .manual:
             writeInt(&buf, Int32(1))
-        
-        
-        case let .distanceToEndOfStep(distance,minimumHorizontalAccuracy):
+
+        case let .distanceToEndOfStep(distance, minimumHorizontalAccuracy):
             writeInt(&buf, Int32(2))
             FfiConverterUInt16.write(distance, into: &buf)
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
-            
-        
-        case let .relativeLineStringDistance(minimumHorizontalAccuracy,automaticAdvanceDistance):
+
+        case let .relativeLineStringDistance(minimumHorizontalAccuracy, automaticAdvanceDistance):
             writeInt(&buf, Int32(3))
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             FfiConverterOptionUInt16.write(automaticAdvanceDistance, into: &buf)
-            
         }
     }
 }
-
 
 public func FfiConverterTypeStepAdvanceMode_lift(_ buf: RustBuffer) throws -> StepAdvanceMode {
     return try FfiConverterTypeStepAdvanceMode.lift(buf)
@@ -2224,15 +2015,11 @@ public func FfiConverterTypeStepAdvanceMode_lower(_ value: StepAdvanceMode) -> R
     return FfiConverterTypeStepAdvanceMode.lower(value)
 }
 
-
 extension StepAdvanceMode: Equatable, Hashable {}
-
-
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum TripState {
-    
     case navigating(snappedUserLocation: UserLocation, remainingSteps: [RouteStep], distanceToNextManeuver: Double)
     case complete
 }
@@ -2243,37 +2030,31 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TripState {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        
-        case 1: return .navigating(
-            snappedUserLocation: try FfiConverterTypeUserLocation.read(from: &buf), 
-            remainingSteps: try FfiConverterSequenceTypeRouteStep.read(from: &buf), 
-            distanceToNextManeuver: try FfiConverterDouble.read(from: &buf)
-        )
-        
+        case 1: return try .navigating(
+                snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
+                remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
+                distanceToNextManeuver: FfiConverterDouble.read(from: &buf)
+            )
+
         case 2: return .complete
-        
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: TripState, into buf: inout [UInt8]) {
         switch value {
-        
-        
-        case let .navigating(snappedUserLocation,remainingSteps,distanceToNextManeuver):
+        case let .navigating(snappedUserLocation, remainingSteps, distanceToNextManeuver):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
-            
-        
+
         case .complete:
             writeInt(&buf, Int32(2))
-        
         }
     }
 }
-
 
 public func FfiConverterTypeTripState_lift(_ buf: RustBuffer) throws -> TripState {
     return try FfiConverterTypeTripState.lift(buf)
@@ -2283,12 +2064,9 @@ public func FfiConverterTypeTripState_lower(_ value: TripState) -> RustBuffer {
     return FfiConverterTypeTripState.lower(value)
 }
 
-
 extension TripState: Equatable, Hashable {}
 
-
-
-fileprivate struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
+private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     typealias SwiftType = UInt16?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
@@ -2309,7 +2087,7 @@ fileprivate struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     }
 }
 
-fileprivate struct FfiConverterOptionString: FfiConverterRustBuffer {
+private struct FfiConverterOptionString: FfiConverterRustBuffer {
     typealias SwiftType = String?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
@@ -2330,7 +2108,7 @@ fileprivate struct FfiConverterOptionString: FfiConverterRustBuffer {
     }
 }
 
-fileprivate struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
+private struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
     typealias SwiftType = CourseOverGround?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
@@ -2351,7 +2129,7 @@ fileprivate struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffe
     }
 }
 
-fileprivate struct FfiConverterOptionTypeVisualInstructionContent: FfiConverterRustBuffer {
+private struct FfiConverterOptionTypeVisualInstructionContent: FfiConverterRustBuffer {
     typealias SwiftType = VisualInstructionContent?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
@@ -2372,7 +2150,7 @@ fileprivate struct FfiConverterOptionTypeVisualInstructionContent: FfiConverterR
     }
 }
 
-fileprivate struct FfiConverterOptionTypeManeuverModifier: FfiConverterRustBuffer {
+private struct FfiConverterOptionTypeManeuverModifier: FfiConverterRustBuffer {
     typealias SwiftType = ManeuverModifier?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
@@ -2393,7 +2171,7 @@ fileprivate struct FfiConverterOptionTypeManeuverModifier: FfiConverterRustBuffe
     }
 }
 
-fileprivate struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
+private struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
     typealias SwiftType = ManeuverType?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
@@ -2414,7 +2192,7 @@ fileprivate struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
     }
 }
 
-fileprivate struct FfiConverterSequenceTypeGeographicCoordinate: FfiConverterRustBuffer {
+private struct FfiConverterSequenceTypeGeographicCoordinate: FfiConverterRustBuffer {
     typealias SwiftType = [GeographicCoordinate]
 
     public static func write(_ value: [GeographicCoordinate], into buf: inout [UInt8]) {
@@ -2430,13 +2208,13 @@ fileprivate struct FfiConverterSequenceTypeGeographicCoordinate: FfiConverterRus
         var seq = [GeographicCoordinate]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            seq.append(try FfiConverterTypeGeographicCoordinate.read(from: &buf))
+            try seq.append(FfiConverterTypeGeographicCoordinate.read(from: &buf))
         }
         return seq
     }
 }
 
-fileprivate struct FfiConverterSequenceTypeRoute: FfiConverterRustBuffer {
+private struct FfiConverterSequenceTypeRoute: FfiConverterRustBuffer {
     typealias SwiftType = [Route]
 
     public static func write(_ value: [Route], into buf: inout [UInt8]) {
@@ -2452,13 +2230,13 @@ fileprivate struct FfiConverterSequenceTypeRoute: FfiConverterRustBuffer {
         var seq = [Route]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            seq.append(try FfiConverterTypeRoute.read(from: &buf))
+            try seq.append(FfiConverterTypeRoute.read(from: &buf))
         }
         return seq
     }
 }
 
-fileprivate struct FfiConverterSequenceTypeRouteStep: FfiConverterRustBuffer {
+private struct FfiConverterSequenceTypeRouteStep: FfiConverterRustBuffer {
     typealias SwiftType = [RouteStep]
 
     public static func write(_ value: [RouteStep], into buf: inout [UInt8]) {
@@ -2474,13 +2252,13 @@ fileprivate struct FfiConverterSequenceTypeRouteStep: FfiConverterRustBuffer {
         var seq = [RouteStep]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            seq.append(try FfiConverterTypeRouteStep.read(from: &buf))
+            try seq.append(FfiConverterTypeRouteStep.read(from: &buf))
         }
         return seq
     }
 }
 
-fileprivate struct FfiConverterSequenceTypeSpokenInstruction: FfiConverterRustBuffer {
+private struct FfiConverterSequenceTypeSpokenInstruction: FfiConverterRustBuffer {
     typealias SwiftType = [SpokenInstruction]
 
     public static func write(_ value: [SpokenInstruction], into buf: inout [UInt8]) {
@@ -2496,13 +2274,13 @@ fileprivate struct FfiConverterSequenceTypeSpokenInstruction: FfiConverterRustBu
         var seq = [SpokenInstruction]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            seq.append(try FfiConverterTypeSpokenInstruction.read(from: &buf))
+            try seq.append(FfiConverterTypeSpokenInstruction.read(from: &buf))
         }
         return seq
     }
 }
 
-fileprivate struct FfiConverterSequenceTypeVisualInstruction: FfiConverterRustBuffer {
+private struct FfiConverterSequenceTypeVisualInstruction: FfiConverterRustBuffer {
     typealias SwiftType = [VisualInstruction]
 
     public static func write(_ value: [VisualInstruction], into buf: inout [UInt8]) {
@@ -2518,13 +2296,13 @@ fileprivate struct FfiConverterSequenceTypeVisualInstruction: FfiConverterRustBu
         var seq = [VisualInstruction]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            seq.append(try FfiConverterTypeVisualInstruction.read(from: &buf))
+            try seq.append(FfiConverterTypeVisualInstruction.read(from: &buf))
         }
         return seq
     }
 }
 
-fileprivate struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
+private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
     public static func write(_ value: [String: String], into buf: inout [UInt8]) {
         let len = Int32(value.count)
         writeInt(&buf, len)
@@ -2538,7 +2316,7 @@ fileprivate struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
         let len: Int32 = try readInt(&buf)
         var dict = [String: String]()
         dict.reserveCapacity(Int(len))
-        for _ in 0..<len {
+        for _ in 0 ..< len {
             let key = try FfiConverterString.read(from: &buf)
             let value = try FfiConverterString.read(from: &buf)
             dict[key] = value
@@ -2547,60 +2325,66 @@ fileprivate struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
     }
 }
 
-public func advanceLocationSimulation(state: LocationSimulationState, speed: SimulationSpeed)  -> LocationSimulationState {
-    return try!  FfiConverterTypeLocationSimulationState.lift(
-        try! rustCall() {
-    uniffi_ferrostar_fn_func_advance_location_simulation(
-        FfiConverterTypeLocationSimulationState.lower(state),
-        FfiConverterTypeSimulationSpeed.lower(speed),$0)
-}
+public func advanceLocationSimulation(state: LocationSimulationState, speed: SimulationSpeed) -> LocationSimulationState {
+    return try! FfiConverterTypeLocationSimulationState.lift(
+        try! rustCall {
+            uniffi_ferrostar_fn_func_advance_location_simulation(
+                FfiConverterTypeLocationSimulationState.lower(state),
+                FfiConverterTypeSimulationSpeed.lower(speed), $0
+            )
+        }
     )
 }
 
-public func createOsrmResponseParser(polylinePrecision: UInt32)  -> RouteResponseParser {
-    return try!  FfiConverterTypeRouteResponseParser.lift(
-        try! rustCall() {
-    uniffi_ferrostar_fn_func_create_osrm_response_parser(
-        FfiConverterUInt32.lower(polylinePrecision),$0)
-}
+public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponseParser {
+    return try! FfiConverterTypeRouteResponseParser.lift(
+        try! rustCall {
+            uniffi_ferrostar_fn_func_create_osrm_response_parser(
+                FfiConverterUInt32.lower(polylinePrecision), $0
+            )
+        }
     )
 }
 
-public func createValhallaRequestGenerator(endpointUrl: String, profile: String)  -> RouteRequestGenerator {
-    return try!  FfiConverterTypeRouteRequestGenerator.lift(
-        try! rustCall() {
-    uniffi_ferrostar_fn_func_create_valhalla_request_generator(
-        FfiConverterString.lower(endpointUrl),
-        FfiConverterString.lower(profile),$0)
-}
+public func createValhallaRequestGenerator(endpointUrl: String, profile: String) -> RouteRequestGenerator {
+    return try! FfiConverterTypeRouteRequestGenerator.lift(
+        try! rustCall {
+            uniffi_ferrostar_fn_func_create_valhalla_request_generator(
+                FfiConverterString.lower(endpointUrl),
+                FfiConverterString.lower(profile), $0
+            )
+        }
     )
 }
 
-public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate]) throws  -> LocationSimulationState {
-    return try  FfiConverterTypeLocationSimulationState.lift(
-        try rustCallWithError(FfiConverterTypeSimulationError.lift) {
-    uniffi_ferrostar_fn_func_location_simulation_from_coordinates(
-        FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates),$0)
-}
+public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate]) throws -> LocationSimulationState {
+    return try FfiConverterTypeLocationSimulationState.lift(
+        rustCallWithError(FfiConverterTypeSimulationError.lift) {
+            uniffi_ferrostar_fn_func_location_simulation_from_coordinates(
+                FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates), $0
+            )
+        }
     )
 }
 
-public func locationSimulationFromPolyline(polyline: String, precision: UInt32) throws  -> LocationSimulationState {
-    return try  FfiConverterTypeLocationSimulationState.lift(
-        try rustCallWithError(FfiConverterTypeSimulationError.lift) {
-    uniffi_ferrostar_fn_func_location_simulation_from_polyline(
-        FfiConverterString.lower(polyline),
-        FfiConverterUInt32.lower(precision),$0)
-}
+public func locationSimulationFromPolyline(polyline: String, precision: UInt32) throws -> LocationSimulationState {
+    return try FfiConverterTypeLocationSimulationState.lift(
+        rustCallWithError(FfiConverterTypeSimulationError.lift) {
+            uniffi_ferrostar_fn_func_location_simulation_from_polyline(
+                FfiConverterString.lower(polyline),
+                FfiConverterUInt32.lower(precision), $0
+            )
+        }
     )
 }
 
-public func locationSimulationFromRoute(route: Route) throws  -> LocationSimulationState {
-    return try  FfiConverterTypeLocationSimulationState.lift(
-        try rustCallWithError(FfiConverterTypeSimulationError.lift) {
-    uniffi_ferrostar_fn_func_location_simulation_from_route(
-        FfiConverterTypeRoute.lower(route),$0)
-}
+public func locationSimulationFromRoute(route: Route) throws -> LocationSimulationState {
+    return try FfiConverterTypeLocationSimulationState.lift(
+        rustCallWithError(FfiConverterTypeSimulationError.lift) {
+            uniffi_ferrostar_fn_func_location_simulation_from_route(
+                FfiConverterTypeRoute.lower(route), $0
+            )
+        }
     )
 }
 
@@ -2609,6 +2393,7 @@ private enum InitializationResult {
     case contractVersionMismatch
     case apiChecksumMismatch
 }
+
 // Use a global variables to perform the versioning checks. Swift ensures that
 // the code inside is only computed once.
 private var initializationResult: InitializationResult {
@@ -2619,52 +2404,52 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if (uniffi_ferrostar_checksum_func_advance_location_simulation() != 31818) {
+    if uniffi_ferrostar_checksum_func_advance_location_simulation() != 31818 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 37676) {
+    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 37676 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 42515) {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 42515 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 32668) {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 32668 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 33402) {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 33402 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 52353) {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 52353 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 5714) {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 5714 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 22778) {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 22778 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 19022) {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 19022 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 35986) {
+    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 35986 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 29808) {
+    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 29808 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 34771) {
+    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 34771 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 30875) {
+    if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 30875 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 26294) {
+    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 26294 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 22742) {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 22742 {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 34303) {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 34303 {
         return InitializationResult.apiChecksumMismatch
     }
 
