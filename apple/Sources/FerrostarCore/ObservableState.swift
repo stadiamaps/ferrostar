@@ -6,7 +6,7 @@ import UniFFI
 ///
 /// While the core generally does not include UI, this is purely at the model layer and should be implemented
 /// the same for all frontends.
-public struct FerrostarObservableState {
+public struct NavigationState {
     public internal(set) var snappedLocation: CLLocation
     public internal(set) var heading: CLHeading?
     public internal(set) var courseOverGround: CLLocationDirection?
@@ -24,13 +24,13 @@ public struct FerrostarObservableState {
         self.currentStep = steps.first!
     }
 
-    public static let pedestrianExample = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])
+    public static let pedestrianExample = NavigationState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [])
 
-    public static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> FerrostarObservableState {
+    public static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> NavigationState {
         let remainingLocations = Array(samplePedestrianWaypoints.dropFirst(n))
         let lastUserLocation = remainingLocations.first!
 
-        var result = FerrostarObservableState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [UniFFI.RouteStep(geometry: [lastUserLocation.geographicCoordinates], distance: 100, roadName: "Jefferson St.", instruction: "Walk west on Jefferson St.", visualInstructions: [UniFFI.VisualInstruction(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)], spokenInstructions: [])])
+        var result = NavigationState(snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude, longitude: samplePedestrianWaypoints.first!.longitude), fullRoute: samplePedestrianWaypoints, steps: [UniFFI.RouteStep(geometry: [lastUserLocation.geographicCoordinates], distance: 100, roadName: "Jefferson St.", instruction: "Walk west on Jefferson St.", visualInstructions: [UniFFI.VisualInstruction(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)], spokenInstructions: [])])
 
         result.snappedLocation = CLLocation(latitude: lastUserLocation.latitude, longitude: lastUserLocation.longitude)
 

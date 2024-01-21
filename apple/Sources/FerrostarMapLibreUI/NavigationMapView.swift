@@ -12,14 +12,14 @@ public struct NavigationMapView: View {
     let darkStyleURL: URL
     // TODO: Configurable camera and user "puck" rotation modes
     
-    private var navigationState: FerrostarObservableState?
+    private var navigationState: NavigationState?
     @Binding private var camera: MapViewCamera
     private var previewRoutes: [Route]?
     
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
-        navigationState: FerrostarObservableState?,
+        navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
         previewRoutes routes: [Route]? = nil
     ) {
@@ -34,7 +34,7 @@ public struct NavigationMapView: View {
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
-        navigationState: FerrostarObservableState?,
+        navigationState: NavigationState?,
         initialCamera: MapViewCamera,
         previewRoutes routes: [Route]? = nil
     ) {

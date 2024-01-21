@@ -7,7 +7,19 @@ in an iOS application.
 
 1. Sign up for a [free Stadia Maps account](https://client.stadiamaps.com/signup/?utm_content=ferrostar_ios&utm_campaign=ferrostar_demos&utm_source=github)
 2. Go through property setup and create an API key.
-3. Update the `API-Keys.plist` with your API key.
+3. Update the `API-Keys.plist` with your API key. Shown below opened as XML/Source: 
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>STADIAMAPS_API_KEY</key>
+    <string>00000000-0000-0000-0000-000000000000</string>
+</dict>
+</plist>
+```
+
 4. Run the app!
 
 NOTES:

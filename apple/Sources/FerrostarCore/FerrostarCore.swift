@@ -57,7 +57,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public weak var delegate: FerrostarCoreDelegate?
 
     /// The observable state of the model (for easy binding in SwiftUI views).
-    @Published public private(set) var observableState: FerrostarObservableState?
+    @Published public private(set) var state: NavigationState?
 
     private let networkSession: URLRequestLoading
     private let routeAdapter: UniFFI.RouteAdapterProtocol
@@ -123,7 +123,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         locationProvider.startUpdating()
 
-        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
+        state = NavigationState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
         let controller = NavigationController(route: route.inner, config: NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue))
         navigationController = controller
         DispatchQueue.main.async {
@@ -134,7 +134,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
         navigationController = nil
-        observableState = nil
+        state = nil
         tripState = nil
         locationProvider.stopUpdating()
     }
@@ -148,24 +148,24 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
             switch (newState) {
             case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
-                self.observableState?.snappedLocation = CLLocation(userLocation: snappedLocation)
-                self.observableState?.courseOverGround = location.course
-                self.observableState?.currentStep = remainingSteps.first
+                self.state?.snappedLocation = CLLocation(userLocation: snappedLocation)
+                self.state?.courseOverGround = location.course
+                self.state?.currentStep = remainingSteps.first
                 // TODO: This isn't great; the core should probably just tell us which instruction to display
-                self.observableState?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
+                self.state?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
                     distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
-                self.observableState?.distanceToNextManeuver = distanceToNextManeuver
+                self.state?.distanceToNextManeuver = distanceToNextManeuver
                 // TODO
     //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
     //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
     //                })
             case .complete:
                 // TODO: "You have arrived"?
-                self.observableState?.visualInstructions = nil
-                self.observableState?.snappedLocation = location  // We arrived; no more snapping needed
-                self.observableState?.courseOverGround = location.course
-                self.observableState?.spokenInstruction = nil
+                self.state?.visualInstructions = nil
+                self.state?.snappedLocation = location  // We arrived; no more snapping needed
+                self.state?.courseOverGround = location.course
+                self.state?.spokenInstruction = nil
             }
 
             self.delegate?.core(self, didUpdateNavigationState: TripState(newState))
@@ -185,7 +185,7 @@ extension FerrostarCore: LocationManagingDelegate {
     }
 
     public func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
-        observableState?.heading = newHeading
+        state?.heading = newHeading
     }
 
     public func locationManager(_: LocationProviding, didFailWithError error: Error) {

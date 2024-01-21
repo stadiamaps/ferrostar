@@ -53,7 +53,7 @@ struct NavigationView: View {
             NavigationMapView(
                 lightStyleURL: style,
                 darkStyleURL: style,
-                navigationState: ferrostarCore.observableState,
+                navigationState: ferrostarCore.state,
                 initialCamera: .center(initialLocation.coordinate, zoom: 14),
                 previewRoutes: routes
             )
