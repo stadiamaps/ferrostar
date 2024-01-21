@@ -54,8 +54,7 @@ struct NavigationView: View {
                 lightStyleURL: style,
                 darkStyleURL: style,
                 navigationState: ferrostarCore.state,
-                initialCamera: .center(initialLocation.coordinate, zoom: 14),
-                previewRoutes: routes
+                initialCamera: .center(initialLocation.coordinate, zoom: 14)
             )
             .overlay(alignment: .bottomLeading) {
                 VStack {

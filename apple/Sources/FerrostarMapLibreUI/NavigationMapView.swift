@@ -14,20 +14,17 @@ public struct NavigationMapView: View {
     
     private var navigationState: NavigationState?
     @Binding private var camera: MapViewCamera
-    private var previewRoutes: [Route]?
     
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
         navigationState: NavigationState?,
-        camera: Binding<MapViewCamera>,
-        previewRoutes routes: [Route]? = nil
+        camera: Binding<MapViewCamera>
     ) {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
         self._camera = camera
-        previewRoutes = routes
         // TODO: Set up following of the user
     }
     
@@ -35,14 +32,12 @@ public struct NavigationMapView: View {
         lightStyleURL: URL,
         darkStyleURL: URL,
         navigationState: NavigationState?,
-        initialCamera: MapViewCamera,
-        previewRoutes routes: [Route]? = nil
+        initialCamera: MapViewCamera
     ) {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
         self._camera = .constant(initialCamera)
-        previewRoutes = routes
         // TODO: Set up following of the user
     }
 
