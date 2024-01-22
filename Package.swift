@@ -4,8 +4,10 @@
 import PackageDescription
 
 let binaryTarget: Target
+let maplibreSwiftUIDSLPackage: Package.Dependency
 // TODO: Define this via an env variable that doesn't need to be checked in?
 let useLocalFramework = false
+let useLocalMapLibreSwiftUIDSL = false
 
 if useLocalFramework {
     binaryTarget = .binaryTarget(
@@ -24,6 +26,11 @@ if useLocalFramework {
     )
 }
 
+if useLocalMapLibreSwiftUIDSL {
+    maplibreSwiftUIDSLPackage = .package(path: "../maplibre-swiftui-dsl-playground")
+} else {
+    maplibreSwiftUIDSLPackage = .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main")
+}
 
 let package = Package(
     name: "FerrostarCore",
@@ -42,11 +49,11 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main"),
+        maplibreSwiftUIDSLPackage,
         .package(
             url: "https://github.com/pointfreeco/swift-snapshot-testing",
             from: "1.15.0"
-          ),
+        ),
     ],
     targets: [
         binaryTarget,
@@ -59,7 +66,6 @@ let package = Package(
             name: "FerrostarMapLibreUI",
             dependencies: [
                 .target(name: "FerrostarCore"),
-                .product(name: "MapLibre", package: "maplibre-swiftui-dsl-playground"),
                 .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
                 .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
             ],

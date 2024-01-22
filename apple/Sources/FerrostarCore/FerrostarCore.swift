@@ -57,7 +57,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public weak var delegate: FerrostarCoreDelegate?
 
     /// The observable state of the model (for easy binding in SwiftUI views).
-    @Published public private(set) var observableState: FerrostarObservableState?
+    @Published public private(set) var state: NavigationState?
 
     private let networkSession: URLRequestLoading
     private let routeAdapter: UniFFI.RouteAdapterProtocol
@@ -123,16 +123,18 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         locationProvider.startUpdating()
 
-        observableState = FerrostarObservableState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
+        state = NavigationState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
         let controller = NavigationController(route: route.inner, config: NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue))
         navigationController = controller
-        update(newState: controller.getInitialState(location: location.userLocation), location: location)
+        DispatchQueue.main.async {
+            self.update(newState: controller.getInitialState(location: location.userLocation), location: location)
+        }
     }
 
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
         navigationController = nil
-        observableState = nil
+        state = nil
         tripState = nil
         locationProvider.stopUpdating()
     }
@@ -141,31 +143,33 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// You should call this rather than setting properties directly
     private func update(newState: UniFFI.TripState, location: CLLocation) {
-        tripState = newState
+        DispatchQueue.main.async {
+            self.tripState = newState
 
-        switch (newState) {
-        case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
-            observableState?.snappedLocation = CLLocation(userLocation: snappedLocation)
-            observableState?.courseOverGround = location.course
-            observableState?.currentStep = remainingSteps.first
-            // TODO: This isn't great; the core should probably just tell us which instruction to display
-            observableState?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
-                distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
-            })
-            observableState?.distanceToNextManeuver = distanceToNextManeuver
-            // TODO
-//                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
-//                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
-//                })
-        case .complete:
-            // TODO: "You have arrived"?
-            observableState?.visualInstructions = nil
-            observableState?.snappedLocation = location  // We arrived; no more snapping needed
-            observableState?.courseOverGround = location.course
-            observableState?.spokenInstruction = nil
+            switch (newState) {
+            case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
+                self.state?.snappedLocation = CLLocation(userLocation: snappedLocation)
+                self.state?.courseOverGround = location.course
+                self.state?.currentStep = remainingSteps.first
+                // TODO: This isn't great; the core should probably just tell us which instruction to display
+                self.state?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
+                    distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
+                })
+                self.state?.distanceToNextManeuver = distanceToNextManeuver
+                // TODO
+    //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
+    //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
+    //                })
+            case .complete:
+                // TODO: "You have arrived"?
+                self.state?.visualInstructions = nil
+                self.state?.snappedLocation = location  // We arrived; no more snapping needed
+                self.state?.courseOverGround = location.course
+                self.state?.spokenInstruction = nil
+            }
+
+            self.delegate?.core(self, didUpdateNavigationState: TripState(newState))
         }
-
-        delegate?.core(self, didUpdateNavigationState: TripState(newState))
     }
 }
 
@@ -176,12 +180,12 @@ extension FerrostarCore: LocationManagingDelegate {
               let newState = navigationController?.updateUserLocation(location: location.userLocation, state: state) else {
             return
         }
-
+        
         update(newState: newState, location: location)
     }
 
     public func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
-        observableState?.heading = newHeading
+        state?.heading = newHeading
     }
 
     public func locationManager(_: LocationProviding, didFailWithError error: Error) {

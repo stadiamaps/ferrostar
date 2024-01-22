@@ -1,0 +1,454 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 60;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1611A5592B2E6E98006B131D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1611A5532B2E6E98006B131D /* Assets.xcassets */; };
+		1611A55B2B2E6E98006B131D /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5562B2E6E98006B131D /* NavigationView.swift */; };
+		1611A55C2B2E6E98006B131D /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5572B2E6E98006B131D /* ConfigurationView.swift */; };
+		1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5582B2E6E98006B131D /* DemoApp.swift */; };
+		1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679C2B2F6F85008BFF1F /* APIKeys.swift */; };
+		1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */; };
+		167FD69B2B54B55A00CB4445 /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 167FD69A2B54B55A00CB4445 /* FerrostarCore */; };
+		167FD69D2B54B55A00CB4445 /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 167FD69C2B54B55A00CB4445 /* FerrostarMapLibreUI */; };
+		168ECA7A2B2E8C42007B11DE /* API-Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 168ECA792B2E8C42007B11DE /* API-Keys.plist */; };
+		169A1D562B2E8280006CE59E /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 169A1D552B2E8280006CE59E /* FerrostarCore */; };
+		169A1D582B2E8280006CE59E /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */; };
+		169B50132B2E46800008EBB7 /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 169B50122B2E46800008EBB7 /* FerrostarCore */; };
+		169B50152B2E46800008EBB7 /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 169B50142B2E46800008EBB7 /* FerrostarMapLibreUI */; };
+		E9505FCA2AD449B30016BF0A /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FC92AD449B30016BF0A /* FerrostarCore */; };
+		E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1611A5532B2E6E98006B131D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1611A5552B2E6E98006B131D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1611A5562B2E6E98006B131D /* NavigationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
+		1611A5572B2E6E98006B131D /* ConfigurationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
+		1611A5582B2E6E98006B131D /* DemoApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
+		1663679C2B2F6F85008BFF1F /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
+		1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationData.swift; sourceTree = "<group>"; };
+		168ECA792B2E8C42007B11DE /* API-Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "API-Keys.plist"; sourceTree = "<group>"; };
+		168ECA7B2B2F6A1E007B11DE /* Ferrostar Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ferrostar Demo-Info.plist"; sourceTree = "<group>"; };
+		E9505FB72AD449700016BF0A /* Ferrostar Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ferrostar Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9DD18E42B18EE7A00CAF29A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E9DD18E52B18F4BD00CAF29A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E9505FB42AD449700016BF0A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9505FCA2AD449B30016BF0A /* FerrostarCore in Frameworks */,
+				169B50152B2E46800008EBB7 /* FerrostarMapLibreUI in Frameworks */,
+				167FD69B2B54B55A00CB4445 /* FerrostarCore in Frameworks */,
+				E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */,
+				169A1D582B2E8280006CE59E /* FerrostarMapLibreUI in Frameworks */,
+				167FD69D2B54B55A00CB4445 /* FerrostarMapLibreUI in Frameworks */,
+				169B50132B2E46800008EBB7 /* FerrostarCore in Frameworks */,
+				169A1D562B2E8280006CE59E /* FerrostarCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1611A5522B2E6E98006B131D /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				1611A5532B2E6E98006B131D /* Assets.xcassets */,
+				1611A5542B2E6E98006B131D /* Preview Content */,
+				1663679B2B2F6F79008BFF1F /* Helpers */,
+				1611A5562B2E6E98006B131D /* NavigationView.swift */,
+				1611A5572B2E6E98006B131D /* ConfigurationView.swift */,
+				1611A5582B2E6E98006B131D /* DemoApp.swift */,
+			);
+			path = Demo;
+			sourceTree = "<group>";
+		};
+		1611A5542B2E6E98006B131D /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				1611A5552B2E6E98006B131D /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		1663679B2B2F6F79008BFF1F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				1663679C2B2F6F85008BFF1F /* APIKeys.swift */,
+				1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		E9505FAE2AD449700016BF0A = {
+			isa = PBXGroup;
+			children = (
+				168ECA792B2E8C42007B11DE /* API-Keys.plist */,
+				168ECA7B2B2F6A1E007B11DE /* Ferrostar Demo-Info.plist */,
+				1611A5522B2E6E98006B131D /* Demo */,
+				E9DD18E52B18F4BD00CAF29A /* LICENSE */,
+				E9DD18E42B18EE7A00CAF29A /* README.md */,
+				E9505FB82AD449700016BF0A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E9505FB82AD449700016BF0A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E9505FB72AD449700016BF0A /* Ferrostar Demo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E9505FB62AD449700016BF0A /* Ferrostar Demo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E9505FC52AD449710016BF0A /* Build configuration list for PBXNativeTarget "Ferrostar Demo" */;
+			buildPhases = (
+				E9505FB32AD449700016BF0A /* Sources */,
+				E9505FB42AD449700016BF0A /* Frameworks */,
+				E9505FB52AD449700016BF0A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Ferrostar Demo";
+			packageProductDependencies = (
+				E9505FC92AD449B30016BF0A /* FerrostarCore */,
+				E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */,
+				169B50122B2E46800008EBB7 /* FerrostarCore */,
+				169B50142B2E46800008EBB7 /* FerrostarMapLibreUI */,
+				169A1D552B2E8280006CE59E /* FerrostarCore */,
+				169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */,
+				167FD69A2B54B55A00CB4445 /* FerrostarCore */,
+				167FD69C2B54B55A00CB4445 /* FerrostarMapLibreUI */,
+			);
+			productName = "iOS Demo";
+			productReference = E9505FB72AD449700016BF0A /* Ferrostar Demo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E9505FAF2AD449700016BF0A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					E9505FB62AD449700016BF0A = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = E9505FB22AD449700016BF0A /* Build configuration list for PBXProject "Ferrostar Demo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E9505FAE2AD449700016BF0A;
+			packageReferences = (
+				167FD6992B54B55A00CB4445 /* XCLocalSwiftPackageReference "../.." */,
+			);
+			productRefGroup = E9505FB82AD449700016BF0A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E9505FB62AD449700016BF0A /* Ferrostar Demo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E9505FB52AD449700016BF0A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1611A5592B2E6E98006B131D /* Assets.xcassets in Resources */,
+				168ECA7A2B2E8C42007B11DE /* API-Keys.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E9505FB32AD449700016BF0A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1611A55B2B2E6E98006B131D /* NavigationView.swift in Sources */,
+				1611A55C2B2E6E98006B131D /* ConfigurationView.swift in Sources */,
+				1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */,
+				1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */,
+				1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E9505FC32AD449710016BF0A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E9505FC42AD449710016BF0A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		E9505FC62AD449710016BF0A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Demo/Preview Content\"";
+				DEVELOPMENT_TEAM = W4C54KHWZ6;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Ferrostar Demo-Info.plist";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs your location to offer turn-by-turn navigation";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stadiamaps.ferrostar.Demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E9505FC72AD449710016BF0A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Demo/Preview Content\"";
+				DEVELOPMENT_TEAM = W4C54KHWZ6;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Ferrostar Demo-Info.plist";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs your location to offer turn-by-turn navigation";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.stadiamaps.ferrostar.Demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E9505FB22AD449700016BF0A /* Build configuration list for PBXProject "Ferrostar Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9505FC32AD449710016BF0A /* Debug */,
+				E9505FC42AD449710016BF0A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E9505FC52AD449710016BF0A /* Build configuration list for PBXNativeTarget "Ferrostar Demo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9505FC62AD449710016BF0A /* Debug */,
+				E9505FC72AD449710016BF0A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		167FD6992B54B55A00CB4445 /* XCLocalSwiftPackageReference "../.." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../..;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		167FD69A2B54B55A00CB4445 /* FerrostarCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarCore;
+		};
+		167FD69C2B54B55A00CB4445 /* FerrostarMapLibreUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarMapLibreUI;
+		};
+		169A1D552B2E8280006CE59E /* FerrostarCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarCore;
+		};
+		169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarMapLibreUI;
+		};
+		169B50122B2E46800008EBB7 /* FerrostarCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarCore;
+		};
+		169B50142B2E46800008EBB7 /* FerrostarMapLibreUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarMapLibreUI;
+		};
+		E9505FC92AD449B30016BF0A /* FerrostarCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarCore;
+		};
+		E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FerrostarMapLibreUI;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E9505FAF2AD449700016BF0A /* Project object */;
+}
