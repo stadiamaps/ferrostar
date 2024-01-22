@@ -5,91 +5,76 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 
 public struct NavigationMapView: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    
     let lightStyleURL: URL
     let darkStyleURL: URL
     // TODO: Configurable camera and user "puck" rotation modes
-
-    @ObservedObject var navigationState: FerrostarObservableState
-
-    @State private var camera: MapView.Camera
-
-    // TODO: Determine this automatically
-    private var useDarkStyle: Bool {
-        return false
-    }
-
-    /// Creates a new instance of the default navigation map.
-    ///
-    /// `lightStyleURL` and `darkStyleURL` are yet to be implemented.
+    
+    private var navigationState: NavigationState?
+    @Binding private var camera: MapViewCamera
+    
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
-        navigationState: FerrostarObservableState
+        navigationState: NavigationState?,
+        camera: Binding<MapViewCamera>
     ) {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
-
-        _camera = State(initialValue: MapView.Camera.centerAndZoom(navigationState.fullRouteShape.first!, 14))
-
+        self._camera = camera
+        // TODO: Set up following of the user
+    }
+    
+    public init(
+        lightStyleURL: URL,
+        darkStyleURL: URL,
+        navigationState: NavigationState?,
+        initialCamera: MapViewCamera
+    ) {
+        self.lightStyleURL = lightStyleURL
+        self.darkStyleURL = darkStyleURL
+        self.navigationState = navigationState
+        self._camera = .constant(initialCamera)
         // TODO: Set up following of the user
     }
 
     public var body: some View {
         MapView(
-            styleURL: useDarkStyle ? darkStyleURL : lightStyleURL,
+            styleURL: colorScheme == .dark ? darkStyleURL : lightStyleURL,
             camera: $camera
         ) {
-            let routePolylineSource = ShapeSource(identifier: "route-polyline-source") {
-                navigationState.routePolyline
+            // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
+            
+            if let routePolyline = navigationState?.routePolyline {
+                RouteStyleLayer(polyline: routePolyline,
+                                identifier: "route-polyline",
+                                style: TravelledRouteStyle())
             }
-
-            let remainingRoutePolylineSource = ShapeSource(identifier: "remaining-route-polyline-source") {
-                navigationState.remainingRoutePolyline
+            
+            if let remainingRoutePolyline = navigationState?.remainingRoutePolyline {
+                RouteStyleLayer(polyline: remainingRoutePolyline,
+                                identifier: "remaining-route-polyline")
             }
-
-            let userLocationSource = ShapeSource(identifier: "user-location-source") {
-                MLNPointFeature(coordinate: navigationState.snappedLocation.coordinate)
+            
+            if let snappedLocation = navigationState?.snappedLocation {
+                let userLocationSource = ShapeSource(identifier: "user-location-source") {
+                    MLNPointFeature(coordinate: snappedLocation.coordinate)
+                }
+                
+                SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
+                    .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
+                    .iconRotation(constant: navigationState?.courseOverGround?.magnitude ?? 0)
             }
-
-            // TODO: Make this configurable via a modifier
-            LineStyleLayer(identifier: "route-polyline-casing", source: routePolylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .white)
-                .lineWidth(interpolatedBy: .zoomLevel,
-                           curveType: .exponential,
-                           parameters: NSExpression(forConstantValue: 1.5),
-                           stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
-
-            // TODO: Make this configurable via a modifier
-            LineStyleLayer(identifier: "route-polyline", source: routePolylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .lightGray)
-                .lineWidth(interpolatedBy: .zoomLevel,
-                           curveType: .exponential,
-                           parameters: NSExpression(forConstantValue: 1.5),
-                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
-
-            // TODO: Make this configurable via a modifier
-            LineStyleLayer(identifier: "route-polyline-remaining", source: remainingRoutePolylineSource)
-                .lineCap(constant: .round)
-                .lineJoin(constant: .round)
-                .lineColor(constant: .systemBlue)
-                .lineWidth(interpolatedBy: .zoomLevel,
-                           curveType: .exponential,
-                           parameters: NSExpression(forConstantValue: 1.5),
-                           stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
-
-            SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
-                .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
-                .iconRotation(constant: navigationState.courseOverGround?.magnitude ?? 0)
         }
         .edgesIgnoringSafeArea(.all)
         .overlay(alignment: .top, content: {
-            if let visualInstructions = navigationState.visualInstructions {
-                BannerView(instructions: visualInstructions, distanceToNextManeuver: navigationState.distanceToNextManeuver)
+            if let navigationState,
+               let visualInstructions = navigationState.visualInstructions {
+                BannerView(instructions: visualInstructions,
+                           distanceToNextManeuver: navigationState.distanceToNextManeuver)
             }
         })
     }
@@ -102,6 +87,7 @@ public struct NavigationMapView: View {
         NavigationMapView(
             lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
             darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-            navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4)
+            navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4),
+            initialCamera: .default()
         )
 }

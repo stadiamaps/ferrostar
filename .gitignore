@@ -81,3 +81,6 @@ xcuserdata/
 
 # Android (cargo-ndk outputs; they end up in the Android source tree)
 *.so
+
+# Example App
+API-Keys.plist
