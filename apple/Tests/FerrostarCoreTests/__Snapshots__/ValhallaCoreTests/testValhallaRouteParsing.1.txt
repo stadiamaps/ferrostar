@@ -1,6 +1,13 @@
 ▿ 1 element
   ▿ Route
     ▿ inner: Route
+      ▿ bbox: BoundingBox
+        ▿ ne: GeographicCoordinate
+          - lat: 60.535008
+          - lng: -149.543469
+        ▿ sw: GeographicCoordinate
+          - lat: 60.534716
+          - lng: -149.548581
       - distance: 284.0
       ▿ geometry: 10 elements
         ▿ GeographicCoordinate

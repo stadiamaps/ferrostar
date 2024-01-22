@@ -36,6 +36,22 @@ impl From<GeographicCoordinate> for Point {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
+pub struct BoundingBox {
+    pub sw: GeographicCoordinate,
+    pub ne: GeographicCoordinate,
+}
+
+impl From<Rect> for BoundingBox {
+    fn from(value: Rect) -> Self {
+        Self {
+            sw: value.min().into(),
+            ne: value.max().into(),
+        }
+    }
+}
+
 /// The direction in which the user/device is observed to be traveling.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct CourseOverGround {
@@ -79,6 +95,7 @@ impl From<UserLocation> for Point {
 #[cfg_attr(test, derive(Serialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinate>,
+    pub bbox: BoundingBox,
     /// The total route distance, in meters.
     pub distance: f64,
     /// The ordered list of waypoints to visit, including the starting point.

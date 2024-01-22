@@ -5,6 +5,7 @@ use crate::models::{
     GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction, VisualInstructionContent,
 };
 use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
+use geo::BoundingRect;
 use polyline::decode_polyline;
 
 /// A response parser for OSRM-compatible routing backends.
@@ -44,24 +45,27 @@ impl RouteResponseParser for OsrmResponseParser {
                         error: error.clone(),
                     }
                 })?;
-            let geometry = linestring
-                .coords()
-                .map(|coord| GeographicCoordinate::from(*coord))
-                .collect();
+            if let Some(bbox) = linestring.bounding_rect() {
+                let geometry = linestring
+                    .coords()
+                    .map(|coord| GeographicCoordinate::from(*coord))
+                    .collect();
 
-            let mut steps = vec![];
-            for leg in route.legs {
-                for step in leg.steps {
-                    steps.push(RouteStep::from_osrm(&step, self.polyline_precision)?);
+                let mut steps = vec![];
+                for leg in route.legs {
+                    for step in leg.steps {
+                        steps.push(RouteStep::from_osrm(&step, self.polyline_precision)?);
+                    }
                 }
-            }
 
-            routes.push(Route {
-                geometry,
-                distance: route.distance,
-                waypoints: waypoints.clone(),
-                steps,
-            })
+                routes.push(Route {
+                    geometry,
+                    bbox: bbox.into(),
+                    distance: route.distance,
+                    waypoints: waypoints.clone(),
+                    steps,
+                })
+            }
         }
 
         Ok(routes)
