@@ -228,3 +228,27 @@ pub struct VisualInstruction {
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
     pub trigger_distance_before_maneuver: f64,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_polyline_encode() {
+        let sw = GeographicCoordinate {lng: 0.0, lat: 0.0};
+        let ne = GeographicCoordinate {lng: 1.0, lat: 1.0};
+        let route = Route {
+            geometry: vec![sw, ne],
+            bbox: BoundingBox { sw, ne },
+            distance: 0.0,
+            waypoints: vec![],
+            steps: vec![],
+        };
+
+        let polyline5 = get_route_polyline(&route, 5).expect("Unable to encode polyline for route");
+        insta::assert_yaml_snapshot!(polyline5);
+
+        let polyline6 = get_route_polyline(&route, 6).expect("Unable to encode polyline for route");
+        insta::assert_yaml_snapshot!(polyline6);
+    }
+}
