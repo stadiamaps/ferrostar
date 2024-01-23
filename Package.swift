@@ -5,7 +5,6 @@ import PackageDescription
 
 let binaryTarget: Target
 let maplibreSwiftUIDSLPackage: Package.Dependency
-// TODO: Define this via an env variable that doesn't need to be checked in?
 let useLocalFramework = false
 let useLocalMapLibreSwiftUIDSL = false
 

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "3b88d990bc39ed5347852a536c0efd942a07fc97",
-        "version" : "6.0.0-pre9599200f2529de44ba62d4662cddb445dc19397d"
+        "revision" : "3df876f8f2c6c591b0f66a29b3e216020afc885c",
+        "version" : "6.0.0"
       }
     },
     {
@@ -16,6 +16,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "b8deecb8adc3b911de311ead5a13b98fbf2d7824"
+      }
+    },
+    {
+      "identity" : "maplibre-swiftui-dsl-playground",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
+      "state" : {
+        "branch" : "main",
+        "revision" : "39e1d896ac9e898242c91ffc7726b631a0eb187e"
       }
     },
     {
@@ -32,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "6ad4ea24b01559dde0773e3d091f1b9e36175036",
-        "version" : "509.0.2"
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
       }
     }
   ],

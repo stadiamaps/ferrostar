@@ -50,8 +50,11 @@ for info on expectations and dev environment setup.
 
 #### iOS
 
-See the [ferrostar-ios-demo](https://github.com/stadiamaps/ferrostar-ios-demo) repo
-for a demonstration of the current status.
+See the [Demo App](apple/DemoApp) repo
+for an up to date demo app that works in your simulator.
+The slightly older [ferrostar-ios-demo](https://github.com/stadiamaps/ferrostar-ios-demo)
+shows an example that is designed to work with "live" location updates on a real device.
+This will soon be completely mereged into the iOS demo app in this repo.
 
 #### Android
 

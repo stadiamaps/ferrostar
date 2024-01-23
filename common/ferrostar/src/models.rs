@@ -1,9 +1,16 @@
-use geo::{Coord, LineString, Point};
+use geo::{Coord, LineString, Point, Rect};
+use polyline::encode_coordinates;
 use serde::Deserialize;
 use std::time::SystemTime;
 
 #[cfg(test)]
 use serde::Serialize;
+
+#[derive(Debug, thiserror::Error, uniffi::Error)]
+pub enum ModelError {
+    #[error("Failed to generate a polyline from route coordinates: {error}.")]
+    PolylineGenerationError { error: String },
+}
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
@@ -103,6 +110,15 @@ pub struct Route {
     /// A waypoint represents a start/end point for a route leg.
     pub waypoints: Vec<GeographicCoordinate>,
     pub steps: Vec<RouteStep>,
+}
+
+/// Helper function for getting the route as an encoded polyline.
+///
+/// Mostly used for debugging.
+#[uniffi::export]
+fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelError> {
+    encode_coordinates(route.geometry.iter().map(|c| Coord::from(*c)), precision)
+        .map_err(|error| ModelError::PolylineGenerationError { error })
 }
 
 /// A maneuver (such as a turn or merge) followed by travel of a certain distance until reaching
