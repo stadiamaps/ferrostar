@@ -1818,6 +1818,41 @@ public func FfiConverterTypeManeuverType_lower(_ value: ManeuverType) -> RustBuf
 
 extension ManeuverType: Equatable, Hashable {}
 
+public enum ModelError {
+    case PolylineGenerationError(error: String)
+
+    fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
+        return try FfiConverterTypeModelError.lift(error)
+    }
+}
+
+public struct FfiConverterTypeModelError: FfiConverterRustBuffer {
+    typealias SwiftType = ModelError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ModelError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return try .PolylineGenerationError(
+                error: FfiConverterString.read(from: &buf)
+            )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ModelError, into buf: inout [UInt8]) {
+        switch value {
+        case let .PolylineGenerationError(error):
+            writeInt(&buf, Int32(1))
+            FfiConverterString.write(error, into: &buf)
+        }
+    }
+}
+
+extension ModelError: Equatable, Hashable {}
+
+extension ModelError: Error {}
+
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum RouteRequest {
@@ -2448,6 +2483,17 @@ public func locationSimulationFromRoute(route: Route) throws -> LocationSimulati
     )
 }
 
+public func routeToPolyline(route: Route, precision: UInt32) throws -> String {
+    return try FfiConverterString.lift(
+        rustCallWithError(FfiConverterTypeModelError.lift) {
+            uniffi_ferrostar_fn_func_route_to_polyline(
+                FfiConverterTypeRoute.lower(route),
+                FfiConverterUInt32.lower(precision), $0
+            )
+        }
+    )
+}
+
 private enum InitializationResult {
     case ok
     case contractVersionMismatch
@@ -2480,6 +2526,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 52353 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_checksum_func_route_to_polyline() != 26870 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 5714 {
