@@ -2452,6 +2452,17 @@ public func createValhallaRequestGenerator(endpointUrl: String, profile: String)
     )
 }
 
+public func getRoutePolyline(route: Route, precision: UInt32) throws -> String {
+    return try FfiConverterString.lift(
+        rustCallWithError(FfiConverterTypeModelError.lift) {
+            uniffi_ferrostar_fn_func_get_route_polyline(
+                FfiConverterTypeRoute.lower(route),
+                FfiConverterUInt32.lower(precision), $0
+            )
+        }
+    )
+}
+
 public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate]) throws -> LocationSimulationState {
     return try FfiConverterTypeLocationSimulationState.lift(
         rustCallWithError(FfiConverterTypeSimulationError.lift) {
@@ -2483,17 +2494,6 @@ public func locationSimulationFromRoute(route: Route) throws -> LocationSimulati
     )
 }
 
-public func routeToPolyline(route: Route, precision: UInt32) throws -> String {
-    return try FfiConverterString.lift(
-        rustCallWithError(FfiConverterTypeModelError.lift) {
-            uniffi_ferrostar_fn_func_route_to_polyline(
-                FfiConverterTypeRoute.lower(route),
-                FfiConverterUInt32.lower(precision), $0
-            )
-        }
-    )
-}
-
 private enum InitializationResult {
     case ok
     case contractVersionMismatch
@@ -2519,6 +2519,9 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 42515 {
         return InitializationResult.apiChecksumMismatch
     }
+    if uniffi_ferrostar_checksum_func_get_route_polyline() != 7053 {
+        return InitializationResult.apiChecksumMismatch
+    }
     if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 32668 {
         return InitializationResult.apiChecksumMismatch
     }
@@ -2526,9 +2529,6 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 52353 {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if uniffi_ferrostar_checksum_func_route_to_polyline() != 26870 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 5714 {

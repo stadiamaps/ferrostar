@@ -28,7 +28,7 @@ public struct Route {
     }
 
     public func getPolyline(precision: UInt32) throws -> String {
-        return try routeToPolyline(route: inner, precision: precision)
+        return try getRoutePolyline(route: inner, precision: precision)
     }
 }
 
