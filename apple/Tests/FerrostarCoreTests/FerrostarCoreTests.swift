@@ -58,7 +58,7 @@ final class FerrostarCoreTests: XCTestCase {
 
         let geom = [GeographicCoordinate(lng: 0, lat: 0), GeographicCoordinate(lng: 1, lat: 1)]
         let instructionContent = VisualInstructionContent(text: "Sail straight", maneuverType: .depart, maneuverModifier: .straight, roundaboutExitDegrees: nil)
-        let mockRoute = UniFFI.Route(geometry: geom, distance: 1, waypoints: geom, steps: [RouteStep(geometry: geom, distance: 1, roadName: "foo road", instruction: "Sail straight", visualInstructions: [VisualInstruction(primaryContent: instructionContent, secondaryContent: nil, triggerDistanceBeforeManeuver: 42)], spokenInstructions: [])])
+        let mockRoute = UniFFI.Route(geometry: geom, bbox: BoundingBox(sw: geom.first!, ne: geom.last!), distance: 1, waypoints: geom, steps: [RouteStep(geometry: geom, distance: 1, roadName: "foo road", instruction: "Sail straight", visualInstructions: [VisualInstruction(primaryContent: instructionContent, secondaryContent: nil, triggerDistanceBeforeManeuver: 42)], spokenInstructions: [])])
 
         let routeAdapter = RouteAdapter(requestGenerator: MockRouteRequestGenerator(), responseParser: MockRouteResponseParser(routes: [mockRoute]))
 

@@ -26,6 +26,10 @@ public struct Route {
             CLLocationCoordinate2D(geographicCoordinates: point)
         }
     }
+
+    public func getPolyline(precision: UInt32) throws -> String {
+        return try getRoutePolyline(route: inner, precision: precision)
+    }
 }
 
 /// A Swift wrapper around `UniFFI.TripState`.

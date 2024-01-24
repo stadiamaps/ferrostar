@@ -39,6 +39,13 @@ expression: routes
       lat: 52.523269
     - lng: 13.428554
       lat: 52.523239
+  bbox:
+    sw:
+      lng: 13.387228
+      lat: 52.517033
+    ne:
+      lng: 13.430413
+      lat: 52.529684
   distance: 4731.8
   waypoints:
     - lng: 13.388798

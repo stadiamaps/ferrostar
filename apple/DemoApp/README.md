@@ -7,7 +7,7 @@ in an iOS application.
 
 1. Sign up for a [free Stadia Maps account](https://client.stadiamaps.com/signup/?utm_content=ferrostar_ios&utm_campaign=ferrostar_demos&utm_source=github)
 2. Go through property setup and create an API key.
-3. Update the `API-Keys.plist` with your API key. Shown below opened as XML/Source: 
+3. Create an `API-Keys.plist` file with your API key. Shown below opened as XML/Source: 
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>

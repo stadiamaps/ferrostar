@@ -2,7 +2,7 @@ name: iOS CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "*" ]
   pull_request:
     branches: [ main ]
 
@@ -29,6 +29,13 @@ jobs:
 
     - name: Checkout repo
       uses: actions/checkout@v3
+
+    - name: Configure Package.swift for local development
+      run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
+
+    - name: Build iOS XCFramework
+      run: ./build-ios.sh --release
+      working-directory: common
     
     - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
       run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}

@@ -1,9 +1,16 @@
-use geo::{Coord, LineString, Point};
+use geo::{Coord, LineString, Point, Rect};
+use polyline::encode_coordinates;
 use serde::Deserialize;
 use std::time::SystemTime;
 
 #[cfg(test)]
 use serde::Serialize;
+
+#[derive(Debug, thiserror::Error, uniffi::Error)]
+pub enum ModelError {
+    #[error("Failed to generate a polyline from route coordinates: {error}.")]
+    PolylineGenerationError { error: String },
+}
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
@@ -33,6 +40,22 @@ impl From<GeographicCoordinate> for Coord {
 impl From<GeographicCoordinate> for Point {
     fn from(value: GeographicCoordinate) -> Self {
         Self(value.into())
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
+pub struct BoundingBox {
+    pub sw: GeographicCoordinate,
+    pub ne: GeographicCoordinate,
+}
+
+impl From<Rect> for BoundingBox {
+    fn from(value: Rect) -> Self {
+        Self {
+            sw: value.min().into(),
+            ne: value.max().into(),
+        }
     }
 }
 
@@ -79,6 +102,7 @@ impl From<UserLocation> for Point {
 #[cfg_attr(test, derive(Serialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinate>,
+    pub bbox: BoundingBox,
     /// The total route distance, in meters.
     pub distance: f64,
     /// The ordered list of waypoints to visit, including the starting point.
@@ -86,6 +110,15 @@ pub struct Route {
     /// A waypoint represents a start/end point for a route leg.
     pub waypoints: Vec<GeographicCoordinate>,
     pub steps: Vec<RouteStep>,
+}
+
+/// Helper function for getting the route as an encoded polyline.
+///
+/// Mostly used for debugging.
+#[uniffi::export]
+fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelError> {
+    encode_coordinates(route.geometry.iter().map(|c| Coord::from(*c)), precision)
+        .map_err(|error| ModelError::PolylineGenerationError { error })
 }
 
 /// A maneuver (such as a turn or merge) followed by travel of a certain distance until reaching
@@ -194,4 +227,28 @@ pub struct VisualInstruction {
     pub secondary_content: Option<VisualInstructionContent>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
     pub trigger_distance_before_maneuver: f64,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_polyline_encode() {
+        let sw = GeographicCoordinate {lng: 0.0, lat: 0.0};
+        let ne = GeographicCoordinate {lng: 1.0, lat: 1.0};
+        let route = Route {
+            geometry: vec![sw, ne],
+            bbox: BoundingBox { sw, ne },
+            distance: 0.0,
+            waypoints: vec![],
+            steps: vec![],
+        };
+
+        let polyline5 = get_route_polyline(&route, 5).expect("Unable to encode polyline for route");
+        insta::assert_yaml_snapshot!(polyline5);
+
+        let polyline6 = get_route_polyline(&route, 6).expect("Unable to encode polyline for route");
+        insta::assert_yaml_snapshot!(polyline6);
+    }
 }

@@ -104,7 +104,8 @@ mod tests {
             GeographicCoordinate { lng: 1.0, lat: 1.0 },
             GeographicCoordinate { lng: 2.0, lat: 2.0 },
             GeographicCoordinate { lng: 3.0, lat: 3.0 },
-        ]).expect("Unable to initialize simulation");
+        ])
+        .expect("Unable to initialize simulation");
 
         let mut states = vec![state.clone()];
         for _ in 0..4 {

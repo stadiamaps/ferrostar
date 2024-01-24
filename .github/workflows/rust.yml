@@ -2,7 +2,7 @@ name: Rust (Common)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "*" ]
   pull_request:
     branches: [ "main" ]
 
@@ -22,9 +22,3 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
       working-directory: common
-    # - name: Build iOS XCFramework
-      # run: ./build-ios.sh
-      # working-directory: common
-    # - name: Build Android Shared Library
-      # run: ./build-android.sh
-      # working-directory: common

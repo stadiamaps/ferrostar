@@ -946,6 +946,58 @@ public func FfiConverterTypeRouteResponseParser_lower(_ value: RouteResponsePars
     return FfiConverterTypeRouteResponseParser.lower(value)
 }
 
+public struct BoundingBox {
+    public var sw: GeographicCoordinate
+    public var ne: GeographicCoordinate
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(sw: GeographicCoordinate, ne: GeographicCoordinate) {
+        self.sw = sw
+        self.ne = ne
+    }
+}
+
+extension BoundingBox: Equatable, Hashable {
+    public static func == (lhs: BoundingBox, rhs: BoundingBox) -> Bool {
+        if lhs.sw != rhs.sw {
+            return false
+        }
+        if lhs.ne != rhs.ne {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(sw)
+        hasher.combine(ne)
+    }
+}
+
+public struct FfiConverterTypeBoundingBox: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> BoundingBox {
+        return
+            try BoundingBox(
+                sw: FfiConverterTypeGeographicCoordinate.read(from: &buf),
+                ne: FfiConverterTypeGeographicCoordinate.read(from: &buf)
+            )
+    }
+
+    public static func write(_ value: BoundingBox, into buf: inout [UInt8]) {
+        FfiConverterTypeGeographicCoordinate.write(value.sw, into: &buf)
+        FfiConverterTypeGeographicCoordinate.write(value.ne, into: &buf)
+    }
+}
+
+public func FfiConverterTypeBoundingBox_lift(_ buf: RustBuffer) throws -> BoundingBox {
+    return try FfiConverterTypeBoundingBox.lift(buf)
+}
+
+public func FfiConverterTypeBoundingBox_lower(_ value: BoundingBox) -> RustBuffer {
+    return FfiConverterTypeBoundingBox.lower(value)
+}
+
 public struct CourseOverGround {
     public var degrees: UInt16
     public var accuracy: UInt16
@@ -1148,14 +1200,16 @@ public func FfiConverterTypeNavigationControllerConfig_lower(_ value: Navigation
 
 public struct Route {
     public var geometry: [GeographicCoordinate]
+    public var bbox: BoundingBox
     public var distance: Double
     public var waypoints: [GeographicCoordinate]
     public var steps: [RouteStep]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinate], distance: Double, waypoints: [GeographicCoordinate], steps: [RouteStep]) {
+    public init(geometry: [GeographicCoordinate], bbox: BoundingBox, distance: Double, waypoints: [GeographicCoordinate], steps: [RouteStep]) {
         self.geometry = geometry
+        self.bbox = bbox
         self.distance = distance
         self.waypoints = waypoints
         self.steps = steps
@@ -1165,6 +1219,9 @@ public struct Route {
 extension Route: Equatable, Hashable {
     public static func == (lhs: Route, rhs: Route) -> Bool {
         if lhs.geometry != rhs.geometry {
+            return false
+        }
+        if lhs.bbox != rhs.bbox {
             return false
         }
         if lhs.distance != rhs.distance {
@@ -1181,6 +1238,7 @@ extension Route: Equatable, Hashable {
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(geometry)
+        hasher.combine(bbox)
         hasher.combine(distance)
         hasher.combine(waypoints)
         hasher.combine(steps)
@@ -1192,6 +1250,7 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
         return
             try Route(
                 geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
+                bbox: FfiConverterTypeBoundingBox.read(from: &buf),
                 distance: FfiConverterDouble.read(from: &buf),
                 waypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 steps: FfiConverterSequenceTypeRouteStep.read(from: &buf)
@@ -1200,6 +1259,7 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
 
     public static func write(_ value: Route, into buf: inout [UInt8]) {
         FfiConverterSequenceTypeGeographicCoordinate.write(value.geometry, into: &buf)
+        FfiConverterTypeBoundingBox.write(value.bbox, into: &buf)
         FfiConverterDouble.write(value.distance, into: &buf)
         FfiConverterSequenceTypeGeographicCoordinate.write(value.waypoints, into: &buf)
         FfiConverterSequenceTypeRouteStep.write(value.steps, into: &buf)
@@ -1757,6 +1817,41 @@ public func FfiConverterTypeManeuverType_lower(_ value: ManeuverType) -> RustBuf
 }
 
 extension ManeuverType: Equatable, Hashable {}
+
+public enum ModelError {
+    case PolylineGenerationError(error: String)
+
+    fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
+        return try FfiConverterTypeModelError.lift(error)
+    }
+}
+
+public struct FfiConverterTypeModelError: FfiConverterRustBuffer {
+    typealias SwiftType = ModelError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ModelError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return try .PolylineGenerationError(
+                error: FfiConverterString.read(from: &buf)
+            )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ModelError, into buf: inout [UInt8]) {
+        switch value {
+        case let .PolylineGenerationError(error):
+            writeInt(&buf, Int32(1))
+            FfiConverterString.write(error, into: &buf)
+        }
+    }
+}
+
+extension ModelError: Equatable, Hashable {}
+
+extension ModelError: Error {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
@@ -2357,6 +2452,17 @@ public func createValhallaRequestGenerator(endpointUrl: String, profile: String)
     )
 }
 
+public func getRoutePolyline(route: Route, precision: UInt32) throws -> String {
+    return try FfiConverterString.lift(
+        rustCallWithError(FfiConverterTypeModelError.lift) {
+            uniffi_ferrostar_fn_func_get_route_polyline(
+                FfiConverterTypeRoute.lower(route),
+                FfiConverterUInt32.lower(precision), $0
+            )
+        }
+    )
+}
+
 public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate]) throws -> LocationSimulationState {
     return try FfiConverterTypeLocationSimulationState.lift(
         rustCallWithError(FfiConverterTypeSimulationError.lift) {
@@ -2411,6 +2517,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 42515 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_checksum_func_get_route_polyline() != 7053 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 32668 {
