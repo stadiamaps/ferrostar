@@ -24,6 +24,5 @@ in an iOS application.
 
 NOTES:
 
-* If you are running in the Simulator, set your location to Apple
-* If you running on a device, you probably need to change the test location to some other place nearby (we plan to replace this with a map)
+* If you get some nonsensical build errors about FerrostarCore not being available, close Xcode and ONLY open this project (not the main Ferrostar Swift Package)
 * At the moment, this is purely for functional testing; no effort has yet gone into polish

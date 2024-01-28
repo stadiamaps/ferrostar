@@ -25,7 +25,7 @@ Our next priority is a first pass of the Android UI.
 - Modular (or one could even say hexagonal) architecture
 - Highly extensible (routing backends, UI, etc.)
 - Batteries included: Navigation UI should be usable out of the box for the most common use cases in iOS and Android native apps without much configuration
-- Vendor-neutrality to allow collaboration among major industry players, hobbyists, and everyone in-between
+- Vendor-neutrality to allow collaboration among major industry players, hobbyists, and everyone in-between. We'll maintain a [list of those with known working integrations](VENDORS.md)
 - No telemetry out of the box. If a use case (ex: fleet management) requires telemetry, this can be added by the developer in their own code.
 
 ## Non-goals
