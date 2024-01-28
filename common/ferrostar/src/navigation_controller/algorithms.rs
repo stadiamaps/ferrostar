@@ -36,6 +36,10 @@ fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
     }
 }
 
+pub fn deviation_from_line(point: &Point, line: &LineString) -> Option<f64> {
+    snap_point_to_line(point, line).map(|snapped| snapped.haversine_distance(point))
+}
+
 fn is_close_enough_to_end_of_step(
     current_position: &Point,
     current_step_linestring: &LineString,

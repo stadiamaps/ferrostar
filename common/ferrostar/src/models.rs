@@ -235,8 +235,8 @@ mod tests {
 
     #[test]
     fn test_polyline_encode() {
-        let sw = GeographicCoordinate {lng: 0.0, lat: 0.0};
-        let ne = GeographicCoordinate {lng: 1.0, lat: 1.0};
+        let sw = GeographicCoordinate { lng: 0.0, lat: 0.0 };
+        let ne = GeographicCoordinate { lng: 1.0, lat: 1.0 };
         let route = Route {
             geometry: vec![sw, ne],
             bbox: BoundingBox { sw, ne },

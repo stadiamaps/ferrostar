@@ -142,38 +142,39 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Internal state update.
     ///
     /// You should call this rather than setting properties directly
+    @MainActor
     private func update(newState: UniFFI.TripState, location: CLLocation) {
-        DispatchQueue.main.async {
-            self.tripState = newState
+        self.tripState = newState
 
-            switch (newState) {
-            case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
-                self.state?.snappedLocation = CLLocation(userLocation: snappedLocation)
-                self.state?.courseOverGround = location.course
-                self.state?.currentStep = remainingSteps.first
-                // TODO: This isn't great; the core should probably just tell us which instruction to display
-                self.state?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
-                    distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
-                })
-                self.state?.distanceToNextManeuver = distanceToNextManeuver
-                // TODO
-    //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
-    //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
-    //                })
-            case .complete:
-                // TODO: "You have arrived"?
-                self.state?.visualInstructions = nil
-                self.state?.snappedLocation = location  // We arrived; no more snapping needed
-                self.state?.courseOverGround = location.course
-                self.state?.spokenInstruction = nil
-            }
-
-            self.delegate?.core(self, didUpdateNavigationState: TripState(newState))
+        switch (newState) {
+        case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver, deviationFromRouteLine: let deviationFromRouteLine):
+            self.state?.snappedLocation = CLLocation(userLocation: snappedLocation)
+            self.state?.courseOverGround = location.course
+            self.state?.currentStep = remainingSteps.first
+            // TODO: This isn't great; the core should probably just tell us which instruction to display
+            self.state?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
+                distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
+            })
+            self.state?.distanceToNextManeuver = distanceToNextManeuver
+            self.state?.deviationFromRouteLine = deviationFromRouteLine
+            // TODO
+//                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
+//                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
+//                })
+        case .complete:
+            // TODO: "You have arrived"?
+            self.state?.visualInstructions = nil
+            self.state?.snappedLocation = location  // We arrived; no more snapping needed
+            self.state?.courseOverGround = location.course
+            self.state?.spokenInstruction = nil
         }
+
+        self.delegate?.core(self, didUpdateNavigationState: TripState(newState))
     }
 }
 
 extension FerrostarCore: LocationManagingDelegate {
+    @MainActor
     public func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last,
               let state = tripState,

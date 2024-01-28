@@ -34,13 +34,13 @@ public struct Route {
 
 /// A Swift wrapper around `UniFFI.TripState`.
 public enum TripState {
-    case navigating(snappedUserLocation: CLLocation, remainingSteps: [UniFFI.RouteStep], distanceToNextManeuver: Double)
+    case navigating(snappedUserLocation: CLLocation, remainingSteps: [UniFFI.RouteStep], distanceToNextManeuver: CLLocationDistance, deviationFromRouteLine: CLLocationDistance?)
     case complete
 
     init(_ update: UniFFI.TripState) {
         switch (update) {
-        case .navigating(snappedUserLocation: let location, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
-            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingSteps: remainingSteps, distanceToNextManeuver: distanceToNextManeuver)
+        case .navigating(snappedUserLocation: let location, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver, deviationFromRouteLine: let deviationFromRouteLine):
+            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingSteps: remainingSteps, distanceToNextManeuver: distanceToNextManeuver, deviationFromRouteLine: deviationFromRouteLine)
         case .complete:
             self = .complete
         }

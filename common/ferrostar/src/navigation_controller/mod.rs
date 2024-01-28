@@ -3,9 +3,10 @@ pub mod models;
 
 use crate::models::{Route, UserLocation};
 use crate::navigation_controller::algorithms::{
-    advance_step, distance_to_end_of_step, should_advance_to_next_step,
+    advance_step, deviation_from_line, distance_to_end_of_step, should_advance_to_next_step,
 };
 use algorithms::snap_user_location_to_line;
+use geo::Point;
 use models::*;
 use std::sync::Arc;
 
@@ -42,11 +43,14 @@ impl NavigationController {
         let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
         let distance_to_next_maneuver =
             distance_to_end_of_step(&snapped_user_location.into(), &current_step_linestring);
+        let deviation_from_route_line =
+            deviation_from_line(&Point::from(location), &current_step_linestring);
 
         TripState::Navigating {
             snapped_user_location,
             remaining_steps: remaining_steps.clone(),
             distance_to_next_maneuver,
+            deviation_from_route_line,
         }
     }
 
@@ -60,6 +64,7 @@ impl NavigationController {
             TripState::Navigating {
                 snapped_user_location,
                 ref remaining_steps,
+                deviation_from_route_line,
                 ..
             } => {
                 let update = advance_step(remaining_steps);
@@ -78,6 +83,7 @@ impl NavigationController {
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
                             distance_to_next_maneuver,
+                            deviation_from_route_line: *deviation_from_route_line,
                         }
                     }
                     StepAdvanceStatus::EndOfRoute => TripState::Complete,
@@ -144,11 +150,14 @@ impl NavigationController {
                         &snapped_user_location.into(),
                         &current_step_linestring,
                     );
+                    let deviation_from_route_line =
+                        deviation_from_line(&Point::from(location), &current_step_linestring);
 
                     TripState::Navigating {
                         snapped_user_location,
                         remaining_steps,
                         distance_to_next_maneuver,
+                        deviation_from_route_line,
                     }
                 } else {
                     TripState::Complete

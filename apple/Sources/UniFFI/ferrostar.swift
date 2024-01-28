@@ -2115,7 +2115,7 @@ extension StepAdvanceMode: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum TripState {
-    case navigating(snappedUserLocation: UserLocation, remainingSteps: [RouteStep], distanceToNextManeuver: Double)
+    case navigating(snappedUserLocation: UserLocation, remainingSteps: [RouteStep], distanceToNextManeuver: Double, deviationFromRouteLine: Double?)
     case complete
 }
 
@@ -2128,7 +2128,8 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return try .navigating(
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
-                distanceToNextManeuver: FfiConverterDouble.read(from: &buf)
+                distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
+                deviationFromRouteLine: FfiConverterOptionDouble.read(from: &buf)
             )
 
         case 2: return .complete
@@ -2139,11 +2140,12 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
 
     public static func write(_ value: TripState, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingSteps, distanceToNextManeuver):
+        case let .navigating(snappedUserLocation, remainingSteps, distanceToNextManeuver, deviationFromRouteLine):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
+            FfiConverterOptionDouble.write(deviationFromRouteLine, into: &buf)
 
         case .complete:
             writeInt(&buf, Int32(2))
@@ -2177,6 +2179,27 @@ private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterUInt16.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterOptionDouble: FfiConverterRustBuffer {
+    typealias SwiftType = Double?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterDouble.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterDouble.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }

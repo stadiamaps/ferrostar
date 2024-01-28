@@ -10,8 +10,10 @@ pub enum TripState {
         /// The step at the front of the list is always the current step.
         /// We currently assume that you cannot move backward to a previous step.
         remaining_steps: Vec<RouteStep>,
+        /// The distance to the next maneuver, in meters.
         distance_to_next_maneuver: f64,
-        // TODO: Communicate off-route and other state info
+        /// The deviation of the user from the expected route line.
+        deviation_from_route_line: Option<f64>,
     },
     Complete,
 }
