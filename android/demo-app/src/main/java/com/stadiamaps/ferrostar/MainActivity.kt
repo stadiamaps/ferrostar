@@ -90,10 +90,9 @@ class MainActivity : ComponentActivity() {
                         startingLocation = initialSimulatedLocation
                     )
 
-                    val delayBetweenSteps = 1.toDuration(DurationUnit.SECONDS)
                     var simulationState = locationSimulationFromRoute(route)
                     while (true) {
-                        delay(delayBetweenSteps)
+                        delay(1.toDuration(DurationUnit.SECONDS))
                         simulationState = advanceLocationSimulation(simulationState, SimulationSpeed.JUMP_TO_NEXT_LOCATION)
                         locationProvider.lastLocation = SimulatedLocation(
                             simulationState.currentLocation,
