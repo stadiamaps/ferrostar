@@ -31,7 +31,7 @@ pub enum RouteRequest {
 ///
 /// Implementations may be either in Rust (most popular engines should eventually have Rust
 /// implementations) or foreign code.
-#[uniffi::export]
+#[uniffi::export(with_foreign)]
 pub trait RouteRequestGenerator: Send + Sync {
     /// Generates a routing backend request given the set of locations.
     ///
@@ -49,7 +49,7 @@ pub trait RouteRequestGenerator: Send + Sync {
 
 /// A generic interface describing any object capable of parsing a response from a routing
 /// backend into one or more [Route]s.
-#[uniffi::export]
+#[uniffi::export(with_foreign)]
 pub trait RouteResponseParser: Send + Sync {
     /// Parses a raw response from the routing backend into a route.
     ///
