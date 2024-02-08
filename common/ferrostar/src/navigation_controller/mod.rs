@@ -8,7 +8,6 @@ use crate::navigation_controller::algorithms::{
 use algorithms::snap_user_location_to_line;
 use geo::Point;
 use models::*;
-use std::sync::Arc;
 
 /// Manages the navigation lifecycle of a route, reacting to inputs like user location updates
 /// and returning a new state.
@@ -26,8 +25,8 @@ pub struct NavigationController {
 #[uniffi::export]
 impl NavigationController {
     #[uniffi::constructor]
-    pub fn new(route: Route, config: NavigationControllerConfig) -> Arc<Self> {
-        Arc::new(Self { config, route })
+    pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
+        Self { config, route }
     }
 
     /// Returns initial trip state as if the user had just started the route with no progress.

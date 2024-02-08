@@ -88,15 +88,15 @@ impl RouteAdapter {
     pub fn new(
         request_generator: Arc<dyn RouteRequestGenerator>,
         response_parser: Arc<dyn RouteResponseParser>,
-    ) -> Arc<Self> {
-        Arc::new(Self {
+    ) -> Self {
+        Self {
             request_generator,
             response_parser,
-        })
+        }
     }
 
     #[uniffi::constructor]
-    pub fn new_valhalla_http(endpoint_url: String, profile: String) -> Arc<Self> {
+    pub fn new_valhalla_http(endpoint_url: String, profile: String) -> Self {
         let request_generator = create_valhalla_request_generator(endpoint_url, profile);
         let response_parser = create_osrm_response_parser(6);
         Self::new(request_generator, response_parser)
