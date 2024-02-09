@@ -1,12 +1,11 @@
-mod algorithms;
+pub mod algorithms;
 pub mod models;
 
 use crate::models::{Route, UserLocation};
 use crate::navigation_controller::algorithms::{
-    advance_step, deviation_from_line, distance_to_end_of_step, should_advance_to_next_step,
+    advance_step, distance_to_end_of_step, should_advance_to_next_step,
 };
 use algorithms::snap_user_location_to_line;
-use geo::Point;
 use models::*;
 
 /// Manages the navigation lifecycle of a route, reacting to inputs like user location updates
@@ -42,14 +41,17 @@ impl NavigationController {
         let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
         let distance_to_next_maneuver =
             distance_to_end_of_step(&snapped_user_location.into(), &current_step_linestring);
-        let deviation_from_route_line =
-            deviation_from_line(&Point::from(location), &current_step_linestring);
+        let deviation = self.config.route_deviation_tracking.check_route_deviation(
+            location,
+            &self.route,
+            current_route_step,
+        );
 
         TripState::Navigating {
             snapped_user_location,
             remaining_steps: remaining_steps.clone(),
             distance_to_next_maneuver,
-            deviation_from_route_line,
+            deviation,
         }
     }
 
@@ -63,7 +65,7 @@ impl NavigationController {
             TripState::Navigating {
                 snapped_user_location,
                 ref remaining_steps,
-                deviation_from_route_line,
+                deviation,
                 ..
             } => {
                 let update = advance_step(remaining_steps);
@@ -82,7 +84,7 @@ impl NavigationController {
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
                             distance_to_next_maneuver,
-                            deviation_from_route_line: *deviation_from_route_line,
+                            deviation: *deviation,
                         }
                     }
                     StepAdvanceStatus::EndOfRoute => TripState::Complete,
@@ -114,9 +116,6 @@ impl NavigationController {
                 let snapped_user_location =
                     snap_user_location_to_line(location, &current_step_linestring);
 
-                // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
-                // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
-
                 // If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
                 let mut remaining_steps = remaining_steps.clone();
                 let current_step = if should_advance_to_next_step(
@@ -144,19 +143,23 @@ impl NavigationController {
                     Some(current_step.clone())
                 };
 
-                if current_step.is_some() {
+                if let Some(step) = current_step {
                     let distance_to_next_maneuver = distance_to_end_of_step(
                         &snapped_user_location.into(),
                         &current_step_linestring,
                     );
-                    let deviation_from_route_line =
-                        deviation_from_line(&Point::from(location), &current_step_linestring);
+
+                    let deviation = self.config.route_deviation_tracking.check_route_deviation(
+                        location,
+                        &self.route,
+                        &step,
+                    );
 
                     TripState::Navigating {
                         snapped_user_location,
                         remaining_steps,
                         distance_to_next_maneuver,
-                        deviation_from_route_line,
+                        deviation,
                     }
                 } else {
                     TripState::Complete

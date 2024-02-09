@@ -117,6 +117,8 @@ class FerrostarCore(
         val controller = _navigationController
 
         if (controller != null) {
+            // TODO: Figure out where to work in off route behaviors
+
             _state?.update { currentValue ->
                 controller.updateUserLocation(
                     location = location.userLocation(),

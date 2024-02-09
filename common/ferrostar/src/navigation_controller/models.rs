@@ -1,3 +1,4 @@
+use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{RouteStep, UserLocation};
 use geo::LineString;
 
@@ -12,17 +13,18 @@ pub enum TripState {
         remaining_steps: Vec<RouteStep>,
         /// The distance to the next maneuver, in meters.
         distance_to_next_maneuver: f64,
-        /// The deviation of the user from the expected route line.
-        deviation_from_route_line: Option<f64>,
+        deviation: RouteDeviation,
     },
     Complete,
 }
 
 pub enum StepAdvanceStatus {
+    /// Navigation has advanced, and the information on the next step is embedded.
     Advanced {
         step: RouteStep,
         linestring: LineString,
     },
+    /// Navigation has reached the end of the route.
     EndOfRoute,
 }
 
@@ -34,14 +36,14 @@ pub enum StepAdvanceMode {
     DistanceToEndOfStep {
         /// Distance to the last waypoint in the step, measured in meters, at which to advance.
         distance: u16,
-        /// The minimum required horizontal accuracy of the user location.
+        /// The minimum required horizontal accuracy of the user location, in meters.
         /// Values larger than this cannot trigger a step advance.
         minimum_horizontal_accuracy: u16,
     },
     /// Automatically advances when the user's distance to the *next* step's linestring  is less
     /// than the distance to the current step's linestring.
     RelativeLineStringDistance {
-        /// The minimum required horizontal accuracy of the user location.
+        /// The minimum required horizontal accuracy of the user location, in meters.
         /// Values larger than this cannot trigger a step advance.
         minimum_horizontal_accuracy: u16,
         /// At this (optional) distance, navigation should advance to the next step regardless
@@ -50,7 +52,8 @@ pub enum StepAdvanceMode {
     },
 }
 
-#[derive(Debug, Copy, Clone, uniffi::Record)]
+#[derive(Clone, uniffi::Record)]
 pub struct NavigationControllerConfig {
     pub step_advance: StepAdvanceMode,
+    pub route_deviation_tracking: RouteDeviationTracking,
 }

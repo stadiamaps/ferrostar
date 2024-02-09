@@ -113,7 +113,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     /// Starts navigation with the given route. Any previous navigation session is dropped.
-    public func startNavigation(route: Route, stepAdvance: StepAdvanceMode) throws {
+    public func startNavigation(route: Route, stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
@@ -124,7 +124,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.startUpdating()
 
         state = NavigationState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
-        let controller = NavigationController(route: route.inner, config: NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue))
+        let controller = NavigationController(route: route.inner, config: NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue, routeDeviationTracking: routeDeviationTracking.ffiValue))
         navigationController = controller
         DispatchQueue.main.async {
             self.update(newState: controller.getInitialState(location: location.userLocation), location: location)
@@ -147,7 +147,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             self.tripState = newState
 
             switch (newState) {
-            case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver, deviationFromRouteLine: let deviationFromRouteLine):
+            case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver, deviation: let deviation):
                 self.state?.snappedLocation = CLLocation(userLocation: snappedLocation)
                 self.state?.courseOverGround = location.course
                 self.state?.currentStep = remainingSteps.first
@@ -156,11 +156,31 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
-                self.state?.deviationFromRouteLine = deviationFromRouteLine
                 // TODO
     //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
     //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
     //                })
+
+                switch (deviation) {
+                case .noDeviation:
+                    // No action
+                    break
+                case .offRoute(deviationFromRouteLine: let deviationFromRouteLine):
+                    // TODO: Recalculation logic; we have two options
+                    //
+                    // Option 1: "Fully managed" framework approach
+                    // - Is another recalculation in flight?
+                    // - Provide a hook for the user to decide whether to proceed with recalculation (defaults to yes? if you don't want recalculation, change your off route detection criterion!)
+                    // - If recalculating should proceed, fetch routes using `getRoutes`
+                    // - Call back via hook point to select a route (defaults to the first route)
+                    //
+                    // Option 2: Minimal approach; give developers more flexibility but also require some boilerplate for simple cases
+                    // - Offer an "off route listener" hook point
+                    // - Let the developer decide whether to make the call to `getRoutes`
+                    // - Let the developer handle selection of the new route
+                    // - Let the developer call `startNavigation` with the new route
+                    break
+                }
             case .complete:
                 // TODO: "You have arrived"?
                 self.state?.visualInstructions = nil

@@ -32,6 +32,7 @@ import okhttp3.OkHttpClient
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.LocationSimulationState
 import uniffi.ferrostar.NavigationControllerConfig
+import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.SimulationSpeed
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.advanceLocationSimulation
@@ -84,7 +85,8 @@ class MainActivity : ComponentActivity() {
                             StepAdvanceMode.RelativeLineStringDistance(
                                 minimumHorizontalAccuracy = 25U,
                                 automaticAdvanceDistance = 10U
-                            )
+                            ),
+                            RouteDeviationTracking.StaticThreshold(25U, 10.0)
                         ),
                         locationProvider = locationProvider,
                         startingLocation = initialSimulatedLocation

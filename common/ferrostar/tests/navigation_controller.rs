@@ -1,5 +1,6 @@
 extern crate ferrostar;
 
+use ferrostar::deviation_detection::RouteDeviationTracking;
 use ferrostar::models::{Route, UserLocation};
 use ferrostar::navigation_controller::models::{
     NavigationControllerConfig, StepAdvanceMode, TripState,
@@ -38,6 +39,7 @@ fn same_location_results_in_identical_state() {
         route,
         NavigationControllerConfig {
             step_advance: StepAdvanceMode::Manual,
+            route_deviation_tracking: RouteDeviationTracking::None,
         },
     );
 
@@ -71,6 +73,7 @@ fn simple_route_state_machine_manual_advance() {
         route,
         NavigationControllerConfig {
             step_advance: StepAdvanceMode::Manual,
+            route_deviation_tracking: RouteDeviationTracking::None,
         },
     );
 
@@ -143,6 +146,7 @@ fn simple_route_state_machine_advances_with_location_change() {
                 distance: 0,
                 minimum_horizontal_accuracy: 0,
             },
+            route_deviation_tracking: RouteDeviationTracking::None,
         },
     );
 

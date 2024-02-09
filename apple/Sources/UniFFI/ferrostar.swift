@@ -718,6 +718,217 @@ public func FfiConverterTypeRouteAdapter_lower(_ value: RouteAdapter) -> UnsafeM
     return FfiConverterTypeRouteAdapter.lower(value)
 }
 
+public protocol RouteDeviationDetector: AnyObject {
+    /**
+     * Determines whether the user is following the route correctly or not.
+     *
+     * NOTE: This function is merely for reporting the tracking status based on available information.
+     * A return value indicating that the user is off route does not necessarily mean
+     * that a new route will be recalculated immediately.
+     */
+    func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation
+}
+
+public class RouteDeviationDetectorImpl:
+    RouteDeviationDetector
+{
+    fileprivate let pointer: UnsafeMutableRawPointer
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_routedeviationdetector(self.pointer, $0) }
+    }
+
+    deinit {
+        try! rustCall { uniffi_ferrostar_fn_free_routedeviationdetector(pointer, $0) }
+    }
+
+    /**
+     * Determines whether the user is following the route correctly or not.
+     *
+     * NOTE: This function is merely for reporting the tracking status based on available information.
+     * A return value indicating that the user is off route does not necessarily mean
+     * that a new route will be recalculated immediately.
+     */
+    public func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation {
+        return try! FfiConverterTypeRouteDeviation.lift(
+            try!
+                rustCall {
+                    uniffi_ferrostar_fn_method_routedeviationdetector_check_route_deviation(self.uniffiClonePointer(),
+                                                                                            FfiConverterTypeUserLocation.lower(location),
+                                                                                            FfiConverterTypeRoute.lower(route),
+                                                                                            FfiConverterTypeRouteStep.lower(currentRouteStep), $0)
+                }
+        )
+    }
+}
+
+private extension NSLock {
+    func withLock<T>(f: () throws -> T) rethrows -> T {
+        lock()
+        defer { self.unlock() }
+        return try f()
+    }
+}
+
+private typealias UniFFICallbackHandle = UInt64
+private class UniFFICallbackHandleMap<T> {
+    private var leftMap: [UniFFICallbackHandle: T] = [:]
+    private var counter: [UniFFICallbackHandle: UInt64] = [:]
+    private var rightMap: [ObjectIdentifier: UniFFICallbackHandle] = [:]
+
+    private let lock = NSLock()
+    private var currentHandle: UniFFICallbackHandle = 1
+    private let stride: UniFFICallbackHandle = 1
+
+    func insert(obj: T) -> UniFFICallbackHandle {
+        lock.withLock {
+            let id = ObjectIdentifier(obj as AnyObject)
+            let handle = rightMap[id] ?? {
+                currentHandle += stride
+                let handle = currentHandle
+                leftMap[handle] = obj
+                rightMap[id] = handle
+                return handle
+            }()
+            counter[handle] = (counter[handle] ?? 0) + 1
+            return handle
+        }
+    }
+
+    func get(handle: UniFFICallbackHandle) -> T? {
+        lock.withLock {
+            leftMap[handle]
+        }
+    }
+
+    func delete(handle: UniFFICallbackHandle) {
+        remove(handle: handle)
+    }
+
+    @discardableResult
+    func remove(handle: UniFFICallbackHandle) -> T? {
+        lock.withLock {
+            defer { counter[handle] = (counter[handle] ?? 1) - 1 }
+            guard counter[handle] == 1 else { return leftMap[handle] }
+            let obj = leftMap.removeValue(forKey: handle)
+            if let obj = obj {
+                rightMap.removeValue(forKey: ObjectIdentifier(obj as AnyObject))
+            }
+            return obj
+        }
+    }
+}
+
+// Magic number for the Rust proxy to call using the same mechanism as every other method,
+// to free the callback once it's dropped by Rust.
+private let IDX_CALLBACK_FREE: Int32 = 0
+// Callback return codes
+private let UNIFFI_CALLBACK_SUCCESS: Int32 = 0
+private let UNIFFI_CALLBACK_ERROR: Int32 = 1
+private let UNIFFI_CALLBACK_UNEXPECTED_ERROR: Int32 = 2
+
+// Declaration and FfiConverters for RouteDeviationDetector Callback Interface
+
+private let uniffiCallbackInterfaceRouteDeviationDetector: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
+
+    func invokeCheckRouteDeviation(_ swiftCallbackInterface: RouteDeviationDetector, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
+        var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
+        func makeCall() throws -> Int32 {
+            let result = try swiftCallbackInterface.checkRouteDeviation(
+                location: FfiConverterTypeUserLocation.read(from: &reader),
+                route: FfiConverterTypeRoute.read(from: &reader),
+                currentRouteStep: FfiConverterTypeRouteStep.read(from: &reader)
+            )
+            var writer = [UInt8]()
+            FfiConverterTypeRouteDeviation.write(result, into: &writer)
+            out_buf.pointee = RustBuffer(bytes: writer)
+            return UNIFFI_CALLBACK_SUCCESS
+        }
+        return try makeCall()
+    }
+
+    switch method {
+    case IDX_CALLBACK_FREE:
+        FfiConverterTypeRouteDeviationDetector.handleMap.remove(handle: handle)
+        // Successful return
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_SUCCESS
+    case 1:
+        guard let cb = FfiConverterTypeRouteDeviationDetector.handleMap.get(handle: handle) else {
+            out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+        do {
+            return try invokeCheckRouteDeviation(cb, argsData, argsLen, out_buf)
+        } catch {
+            out_buf.pointee = FfiConverterString.lower(String(describing: error))
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+
+    // This should never happen, because an out of bounds method index won't
+    // ever be used. Once we can catch errors, we should return an InternalError.
+    // https://github.com/mozilla/uniffi-rs/issues/351
+    default:
+        // An unexpected error happened.
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+    }
+}
+
+private func uniffiCallbackInitRouteDeviationDetector() {
+    uniffi_ferrostar_fn_init_callback_routedeviationdetector(uniffiCallbackInterfaceRouteDeviationDetector)
+}
+
+public struct FfiConverterTypeRouteDeviationDetector: FfiConverter {
+    fileprivate static var handleMap = UniFFICallbackHandleMap<RouteDeviationDetector>()
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = RouteDeviationDetector
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteDeviationDetector {
+        return RouteDeviationDetectorImpl(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: RouteDeviationDetector) -> UnsafeMutableRawPointer {
+        guard let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: handleMap.insert(obj: value))) else {
+            fatalError("Cast to UnsafeMutableRawPointer failed")
+        }
+        return ptr
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteDeviationDetector {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if ptr == nil {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: RouteDeviationDetector, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+public func FfiConverterTypeRouteDeviationDetector_lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteDeviationDetector {
+    return try FfiConverterTypeRouteDeviationDetector.lift(pointer)
+}
+
+public func FfiConverterTypeRouteDeviationDetector_lower(_ value: RouteDeviationDetector) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeRouteDeviationDetector.lower(value)
+}
+
 /**
  * A trait describing any object capable of generating [RouteRequest]s.
  *
@@ -788,71 +999,6 @@ public class RouteRequestGeneratorImpl:
         )
     }
 }
-
-private extension NSLock {
-    func withLock<T>(f: () throws -> T) rethrows -> T {
-        lock()
-        defer { self.unlock() }
-        return try f()
-    }
-}
-
-private typealias UniFFICallbackHandle = UInt64
-private class UniFFICallbackHandleMap<T> {
-    private var leftMap: [UniFFICallbackHandle: T] = [:]
-    private var counter: [UniFFICallbackHandle: UInt64] = [:]
-    private var rightMap: [ObjectIdentifier: UniFFICallbackHandle] = [:]
-
-    private let lock = NSLock()
-    private var currentHandle: UniFFICallbackHandle = 1
-    private let stride: UniFFICallbackHandle = 1
-
-    func insert(obj: T) -> UniFFICallbackHandle {
-        lock.withLock {
-            let id = ObjectIdentifier(obj as AnyObject)
-            let handle = rightMap[id] ?? {
-                currentHandle += stride
-                let handle = currentHandle
-                leftMap[handle] = obj
-                rightMap[id] = handle
-                return handle
-            }()
-            counter[handle] = (counter[handle] ?? 0) + 1
-            return handle
-        }
-    }
-
-    func get(handle: UniFFICallbackHandle) -> T? {
-        lock.withLock {
-            leftMap[handle]
-        }
-    }
-
-    func delete(handle: UniFFICallbackHandle) {
-        remove(handle: handle)
-    }
-
-    @discardableResult
-    func remove(handle: UniFFICallbackHandle) -> T? {
-        lock.withLock {
-            defer { counter[handle] = (counter[handle] ?? 1) - 1 }
-            guard counter[handle] == 1 else { return leftMap[handle] }
-            let obj = leftMap.removeValue(forKey: handle)
-            if let obj = obj {
-                rightMap.removeValue(forKey: ObjectIdentifier(obj as AnyObject))
-            }
-            return obj
-        }
-    }
-}
-
-// Magic number for the Rust proxy to call using the same mechanism as every other method,
-// to free the callback once it's dropped by Rust.
-private let IDX_CALLBACK_FREE: Int32 = 0
-// Callback return codes
-private let UNIFFI_CALLBACK_SUCCESS: Int32 = 0
-private let UNIFFI_CALLBACK_ERROR: Int32 = 1
-private let UNIFFI_CALLBACK_UNEXPECTED_ERROR: Int32 = 2
 
 // Declaration and FfiConverters for RouteRequestGenerator Callback Interface
 
@@ -1344,26 +1490,16 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 
 public struct NavigationControllerConfig {
     public var stepAdvance: StepAdvanceMode
+    public var routeDeviationTracking: RouteDeviationTracking
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
     public init(
-        stepAdvance: StepAdvanceMode)
-    {
+        stepAdvance: StepAdvanceMode,
+        routeDeviationTracking: RouteDeviationTracking
+    ) {
         self.stepAdvance = stepAdvance
-    }
-}
-
-extension NavigationControllerConfig: Equatable, Hashable {
-    public static func == (lhs: NavigationControllerConfig, rhs: NavigationControllerConfig) -> Bool {
-        if lhs.stepAdvance != rhs.stepAdvance {
-            return false
-        }
-        return true
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(stepAdvance)
+        self.routeDeviationTracking = routeDeviationTracking
     }
 }
 
@@ -1371,12 +1507,14 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
         return
             try NavigationControllerConfig(
-                stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf)
+                stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf),
+                routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf)
             )
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
+        FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
     }
 }
 
@@ -2159,6 +2297,140 @@ extension ModelError: Error {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
+ * Status information that describes whether the user is proceeding according to the route or not.
+ *
+ * Note that the name is intentionally a bit generic to allow for expansion of other states.
+ * For example, we could conceivably add a "wrong way" status in the future.
+ */
+public enum RouteDeviation {
+    /**
+     * The user is proceeding on course within the expected tolerances; everything is normal.
+     */
+    case noDeviation
+    /**
+     * The user is off the expected route.
+     */
+    case offRoute(
+        /**
+         * The deviation from the route line, in meters.
+         */
+        deviationFromRouteLine: Double
+    )
+}
+
+public struct FfiConverterTypeRouteDeviation: FfiConverterRustBuffer {
+    typealias SwiftType = RouteDeviation
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteDeviation {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .noDeviation
+
+        case 2: return try .offRoute(
+                deviationFromRouteLine: FfiConverterDouble.read(from: &buf)
+            )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: RouteDeviation, into buf: inout [UInt8]) {
+        switch value {
+        case .noDeviation:
+            writeInt(&buf, Int32(1))
+
+        case let .offRoute(deviationFromRouteLine):
+            writeInt(&buf, Int32(2))
+            FfiConverterDouble.write(deviationFromRouteLine, into: &buf)
+        }
+    }
+}
+
+public func FfiConverterTypeRouteDeviation_lift(_ buf: RustBuffer) throws -> RouteDeviation {
+    return try FfiConverterTypeRouteDeviation.lift(buf)
+}
+
+public func FfiConverterTypeRouteDeviation_lower(_ value: RouteDeviation) -> RustBuffer {
+    return FfiConverterTypeRouteDeviation.lower(value)
+}
+
+extension RouteDeviation: Equatable, Hashable {}
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+public enum RouteDeviationTracking {
+    /**
+     * No checks will be done, and we assume the user is always following the route.
+     */
+    case none
+    case staticThreshold(
+        /**
+         * The minimum required horizontal accuracy of the user location, in meters.
+         * Values larger than this will not trigger route deviation warnings.
+         */
+        minimumHorizontalAccuracy: UInt16,
+        /**
+            * The maximum acceptable deviation from the route line, in meters.
+            *
+            * If the distance between the reported location and the expected route line
+            * is greater than this threshold, it will be flagged as an off route condition.
+            */
+        maxAcceptableDeviation: Double
+    )
+    case custom(
+        detector: RouteDeviationDetector
+    )
+}
+
+public struct FfiConverterTypeRouteDeviationTracking: FfiConverterRustBuffer {
+    typealias SwiftType = RouteDeviationTracking
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteDeviationTracking {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .none
+
+        case 2: return try .staticThreshold(
+                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf),
+                maxAcceptableDeviation: FfiConverterDouble.read(from: &buf)
+            )
+
+        case 3: return try .custom(
+                detector: FfiConverterTypeRouteDeviationDetector.read(from: &buf)
+            )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: RouteDeviationTracking, into buf: inout [UInt8]) {
+        switch value {
+        case .none:
+            writeInt(&buf, Int32(1))
+
+        case let .staticThreshold(minimumHorizontalAccuracy, maxAcceptableDeviation):
+            writeInt(&buf, Int32(2))
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+            FfiConverterDouble.write(maxAcceptableDeviation, into: &buf)
+
+        case let .custom(detector):
+            writeInt(&buf, Int32(3))
+            FfiConverterTypeRouteDeviationDetector.write(detector, into: &buf)
+        }
+    }
+}
+
+public func FfiConverterTypeRouteDeviationTracking_lift(_ buf: RustBuffer) throws -> RouteDeviationTracking {
+    return try FfiConverterTypeRouteDeviationTracking.lift(buf)
+}
+
+public func FfiConverterTypeRouteDeviationTracking_lower(_ value: RouteDeviationTracking) -> RustBuffer {
+    return FfiConverterTypeRouteDeviationTracking.lower(value)
+}
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
  * A route request generated by a [RouteRequestGenerator].
  */
 public enum RouteRequest {
@@ -2387,7 +2659,7 @@ public enum StepAdvanceMode {
          */
         distance: UInt16,
         /**
-            * The minimum required horizontal accuracy of the user location.
+            * The minimum required horizontal accuracy of the user location, in meters.
             * Values larger than this cannot trigger a step advance.
             */
         minimumHorizontalAccuracy: UInt16
@@ -2398,7 +2670,7 @@ public enum StepAdvanceMode {
      */
     case relativeLineStringDistance(
         /**
-         * The minimum required horizontal accuracy of the user location.
+         * The minimum required horizontal accuracy of the user location, in meters.
          * Values larger than this cannot trigger a step advance.
          */
         minimumHorizontalAccuracy: UInt16,
@@ -2478,10 +2750,7 @@ public enum TripState {
             * The distance to the next maneuver, in meters.
             */
         distanceToNextManeuver: Double,
-        /**
-            * The deviation of the user from the expected route line.
-            */
-        deviationFromRouteLine: Double?
+        deviation: RouteDeviation
     )
     case complete
 }
@@ -2496,7 +2765,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
-                deviationFromRouteLine: FfiConverterOptionDouble.read(from: &buf)
+                deviation: FfiConverterTypeRouteDeviation.read(from: &buf)
             )
 
         case 2: return .complete
@@ -2507,12 +2776,12 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
 
     public static func write(_ value: TripState, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingSteps, distanceToNextManeuver, deviationFromRouteLine):
+        case let .navigating(snappedUserLocation, remainingSteps, distanceToNextManeuver, deviation):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
-            FfiConverterOptionDouble.write(deviationFromRouteLine, into: &buf)
+            FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
 
         case .complete:
             writeInt(&buf, Int32(2))
@@ -2546,27 +2815,6 @@ private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterUInt16.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-private struct FfiConverterOptionDouble: FfiConverterRustBuffer {
-    typealias SwiftType = Double?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterDouble.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterDouble.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -2951,6 +3199,9 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 39819 {
         return InitializationResult.apiChecksumMismatch
     }
+    if uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 17675 {
+        return InitializationResult.apiChecksumMismatch
+    }
     if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 837 {
         return InitializationResult.apiChecksumMismatch
     }
@@ -2967,6 +3218,7 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
 
+    uniffiCallbackInitRouteDeviationDetector()
     uniffiCallbackInitRouteRequestGenerator()
     uniffiCallbackInitRouteResponseParser()
     return InitializationResult.ok

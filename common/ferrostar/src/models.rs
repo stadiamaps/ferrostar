@@ -98,7 +98,7 @@ impl From<UserLocation> for Point {
 ///
 /// NOTE: This type is unstable and is still under active development and should be
 /// considered unstable.
-#[derive(Debug, uniffi::Record)]
+#[derive(Clone, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinate>,
