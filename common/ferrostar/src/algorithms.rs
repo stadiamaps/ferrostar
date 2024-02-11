@@ -4,14 +4,13 @@ use geo::{
     LineString, Point,
 };
 
-use super::models::{StepAdvanceMode, StepAdvanceStatus};
-use crate::navigation_controller::models::StepAdvanceStatus::{Advanced, EndOfRoute};
+use crate::navigation_controller::models::{StepAdvanceMode, StepAdvanceStatus::{Advanced, EndOfRoute}, StepAdvanceStatus};
 
 #[cfg(test)]
-use std::time::SystemTime;
-
-#[cfg(test)]
-use proptest::prelude::*;
+use {
+    crate::navigation_controller::test_helpers::gen_dummy_route_step, proptest::prelude::*,
+    std::time::SystemTime,
+};
 
 /// Snaps a user location to the closest point on a route line.
 pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> UserLocation {
@@ -40,7 +39,7 @@ pub fn deviation_from_line(point: &Point, line: &LineString) -> Option<f64> {
     snap_point_to_line(point, line).map(|snapped| snapped.haversine_distance(point))
 }
 
-fn is_close_enough_to_end_of_step(
+fn is_close_enough_to_end_of_linestring(
     current_position: &Point,
     current_step_linestring: &LineString,
     threshold: f64,
@@ -76,7 +75,7 @@ pub fn should_advance_to_next_step(
             if user_location.horizontal_accuracy > minimum_horizontal_accuracy.into() {
                 false
             } else {
-                is_close_enough_to_end_of_step(
+                is_close_enough_to_end_of_linestring(
                     &current_position,
                     current_step_linestring,
                     distance as f64,
@@ -92,7 +91,7 @@ pub fn should_advance_to_next_step(
             } else {
                 if let Some(distance) = automatic_advance_distance {
                     // Short-circuit: if we are close to the end of the step, we may advance
-                    if is_close_enough_to_end_of_step(
+                    if is_close_enough_to_end_of_linestring(
                         &current_position,
                         current_step_linestring,
                         distance as f64,
@@ -191,27 +190,6 @@ pub fn distance_to_end_of_step(
         step_length - traversed
     } else {
         0.0
-    }
-}
-
-#[cfg(test)]
-fn gen_dummy_route_step(start_lng: f64, start_lat: f64, end_lng: f64, end_lat: f64) -> RouteStep {
-    RouteStep {
-        geometry: vec![
-            GeographicCoordinate {
-                lng: start_lng,
-                lat: start_lat,
-            },
-            GeographicCoordinate {
-                lng: end_lng,
-                lat: end_lat,
-            },
-        ],
-        distance: 0.0,
-        road_name: None,
-        instruction: "".to_string(),
-        visual_instructions: vec![],
-        spoken_instructions: vec![],
     }
 }
 

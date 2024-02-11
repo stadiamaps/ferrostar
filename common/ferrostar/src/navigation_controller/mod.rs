@@ -1,11 +1,12 @@
-pub mod algorithms;
 pub mod models;
 
-use crate::models::{Route, UserLocation};
-use crate::navigation_controller::algorithms::{
-    advance_step, distance_to_end_of_step, should_advance_to_next_step,
+#[cfg(test)]
+pub(crate) mod test_helpers;
+
+use crate::{
+    algorithms::{snap_user_location_to_line, advance_step, distance_to_end_of_step, should_advance_to_next_step},
+    models::{Route, UserLocation}
 };
-use algorithms::snap_user_location_to_line;
 use models::*;
 
 /// Manages the navigation lifecycle of a route, reacting to inputs like user location updates
