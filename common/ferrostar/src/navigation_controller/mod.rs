@@ -4,8 +4,11 @@ pub mod models;
 pub(crate) mod test_helpers;
 
 use crate::{
-    algorithms::{snap_user_location_to_line, advance_step, distance_to_end_of_step, should_advance_to_next_step},
-    models::{Route, UserLocation}
+    algorithms::{
+        advance_step, distance_to_end_of_step, should_advance_to_next_step,
+        snap_user_location_to_line,
+    },
+    models::{Route, UserLocation},
 };
 use models::*;
 

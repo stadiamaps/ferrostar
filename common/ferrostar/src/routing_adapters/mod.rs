@@ -36,7 +36,7 @@ pub trait RouteRequestGenerator: Send + Sync {
     /// Generates a routing backend request given the set of locations.
     ///
     /// While most implementations will treat the locations as an ordered sequence, this is not
-    /// guaranteed (ex: an optimized router)..
+    /// guaranteed (ex: an optimized router).
     /// TODO: Option for whether we should account for course over ground or heading.
     fn generate_request(
         &self,

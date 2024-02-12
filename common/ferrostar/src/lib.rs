@@ -6,12 +6,12 @@
 //! as this is still under extremely active development,
 //! and proper documentation is still in flux.
 
+pub mod algorithms;
 pub mod deviation_detection;
 pub mod models;
 pub mod navigation_controller;
 pub mod routing_adapters;
 pub mod simulation;
-pub mod algorithms;
 
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;

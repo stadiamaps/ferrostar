@@ -1,5 +1,5 @@
-use crate::models::{Route, RouteStep, UserLocation};
 use crate::algorithms::deviation_from_line;
+use crate::models::{Route, RouteStep, UserLocation};
 use geo::Point;
 use std::sync::Arc;
 
@@ -55,7 +55,7 @@ impl RouteDeviationTracking {
                         &current_route_step.get_linestring(),
                     )
                     .map_or(RouteDeviation::NoDeviation, |deviation| {
-                        if deviation > *max_acceptable_deviation {
+                        if deviation > 0.0 && deviation > *max_acceptable_deviation {
                             RouteDeviation::OffRoute {
                                 deviation_from_route_line: deviation,
                             }
@@ -111,9 +111,9 @@ proptest! {
     /// which never reports that the user is off route, even when they obviously are.
     #[test]
     fn no_deviation_tracking(
-        x1 in -180f64..180f64, y1 in -90f64..90f64,
-        x2 in -180f64..180f64, y2 in -90f64..90f64,
-        x3 in -180f64..180f64, y3 in -90f64..90f64,
+        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
+        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
+        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
     ) {
         let tracking = RouteDeviationTracking::None;
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
@@ -156,9 +156,9 @@ proptest! {
     /// with user-supplied code.
     #[test]
     fn custom_no_deviation_mode(
-        x1 in -180f64..180f64, y1 in -90f64..90f64,
-        x2 in -180f64..180f64, y2 in -90f64..90f64,
-        x3 in -180f64..180f64, y3 in -90f64..90f64,
+        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
+        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
+        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
     ) {
         struct NeverDetector {}
 
@@ -215,9 +215,9 @@ proptest! {
     /// Custom behavior claiming that the user is always off the route.
     #[test]
     fn custom_always_off_route(
-        x1 in -180f64..180f64, y1 in -90f64..90f64,
-        x2 in -180f64..180f64, y2 in -90f64..90f64,
-        x3 in -180f64..180f64, y3 in -90f64..90f64,
+        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
+        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
+        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
     ) {
         struct NeverDetector {}
 
@@ -281,11 +281,11 @@ proptest! {
     /// using [crate::algorithms::deviation_from_line]
     #[test]
     fn static_threshold_oracle_test(
-        x1 in -180f64..180f64, y1 in -90f64..90f64,
-        x2 in -180f64..180f64, y2 in -90f64..90f64,
-        x3 in -180f64..180f64, y3 in -90f64..90f64,
-        minimum_horizontal_accuracy in 1u16..100u16,
-        max_acceptable_deviation in 1f64..100f64,
+        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
+        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
+        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
+        minimum_horizontal_accuracy: u16,
+        max_acceptable_deviation: f64,
     ) {
         let tracking = RouteDeviationTracking::StaticThreshold {
             minimum_horizontal_accuracy,
@@ -336,5 +336,38 @@ proptest! {
                 );
             }
         }
+    }
+
+    /// Tests [RouteDeviationTracking::StaticThreshold] behavior
+    /// for values which are not accurate enough.
+    #[test]
+    fn static_threshold_ignores_inaccurate_location_updates(
+        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
+        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
+        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
+        horizontal_accuracy in 1u16..,
+        max_acceptable_deviation: f64,
+    ) {
+        let tracking = RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: horizontal_accuracy - 1,
+            max_acceptable_deviation
+        };
+        let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
+        let route = gen_route_from_steps(vec![current_route_step.clone()]);
+
+        let coordinates = GeographicCoordinate {
+            lng: x3,
+            lat: y3,
+        };
+        let user_location_random = UserLocation {
+            coordinates,
+            horizontal_accuracy: horizontal_accuracy as f64,
+            course_over_ground: None,
+            timestamp: SystemTime::now(),
+        };
+        assert_eq!(
+            tracking.check_route_deviation(user_location_random, &route, &current_route_step),
+            RouteDeviation::NoDeviation
+        );
     }
 }

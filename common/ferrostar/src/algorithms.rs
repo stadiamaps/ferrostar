@@ -4,7 +4,10 @@ use geo::{
     LineString, Point,
 };
 
-use crate::navigation_controller::models::{StepAdvanceMode, StepAdvanceStatus::{Advanced, EndOfRoute}, StepAdvanceStatus};
+use crate::navigation_controller::models::{
+    StepAdvanceMode, StepAdvanceStatus,
+    StepAdvanceStatus::{Advanced, EndOfRoute},
+};
 
 #[cfg(test)]
 use {
@@ -197,11 +200,11 @@ pub fn distance_to_end_of_step(
 proptest! {
     #[test]
     fn should_advance_exact_position(
-        x1 in -180f64..180f64, y1 in -90f64..90f64,
-        x2 in -180f64..180f64, y2 in -90f64..90f64,
-        x3 in -180f64..180f64, y3 in -90f64..90f64,
+        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
+        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
+        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
         has_next_step: bool,
-        distance: u16, minimum_horizontal_accuracy: u16, excess_inaccuracy in 0f64..65535f64,
+        distance: u16, minimum_horizontal_accuracy: u16, excess_inaccuracy in 0f64..=65535f64,
         automatic_advance_distance: Option<u16>,
     ) {
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
@@ -249,11 +252,11 @@ proptest! {
 
     #[test]
     fn should_advance_inexact_position(
-        x1 in -180f64..180f64, y1 in -90f64..90f64,
-        x2 in -180f64..180f64, y2 in -90f64..90f64,
-        x3 in -180f64..180f64, y3 in -90f64..90f64,
-        error in -0.003f64..0.003f64, has_next_step: bool,
-        distance: u16, minimum_horizontal_accuracy in 0u16..250u16,
+        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
+        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
+        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
+        error in -0.003f64..=0.003f64, has_next_step: bool,
+        distance: u16, minimum_horizontal_accuracy in 0u16..=250u16,
         automatic_advance_distance: Option<u16>,
     ) {
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
@@ -299,6 +302,42 @@ proptest! {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use geo::{coord, point};
+
+    #[test]
+    fn test_deviation_from_line() {
+        // Diagonal line from the origin to (1,1)
+        let linestring = LineString::new(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]);
+
+        let origin = point! {
+            x: 0.0,
+            y: 0.0,
+        };
+        let midpoint = point! {
+            x: 0.5,
+            y: 0.5,
+        };
+        let off_line = point! {
+            x: 1.0,
+            y: 0.5,
+        };
+
+        // The origin is directly on the line
+        assert_eq!(deviation_from_line(&origin, &linestring), Some(0.0));
+
+        // The midpoint is also directly on the line
+        assert_eq!(deviation_from_line(&midpoint, &linestring), Some(0.0));
+
+        // This point however is off the line.
+        // We assume the underlying library functions are tested and this is just a sanity check.
+        assert!(deviation_from_line(&off_line, &linestring)
+            .map_or(false, |deviation| deviation - 39312.21257675703
+                < f64::EPSILON));
+    }
+}
 // TODO: Unit tests
 // - Under and over distance accuracy thresholds
 // - Equator and extreme latitude
