@@ -13,6 +13,7 @@ pub enum TripState {
         remaining_steps: Vec<RouteStep>,
         /// The distance to the next maneuver, in meters.
         distance_to_next_maneuver: f64,
+        /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
     },
     Complete,
