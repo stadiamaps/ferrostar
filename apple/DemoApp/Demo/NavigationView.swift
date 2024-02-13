@@ -175,7 +175,7 @@ struct NavigationView: View {
         
         try ferrostarCore.startNavigation(
             route: route,
-            stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10))
+            stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10), routeDeviationTracking: .none)
         
         if let simulated = locationManager as? SimulatedLocationProvider {
             try simulated.startSimulating(route: route)

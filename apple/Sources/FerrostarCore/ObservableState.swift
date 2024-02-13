@@ -15,7 +15,6 @@ public struct NavigationState {
     public internal(set) var visualInstructions: UniFFI.VisualInstruction?
     public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
     public internal(set) var distanceToNextManeuver: CLLocationDistance?
-    public internal(set) var deviationFromRouteLine: CLLocationDistance?
 
     init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
         self.snappedLocation = snappedLocation

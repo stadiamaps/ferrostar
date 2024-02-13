@@ -9,7 +9,7 @@ use {
         models::GeographicCoordinate,
         navigation_controller::test_helpers::{gen_dummy_route_step, gen_route_from_steps},
     },
-    proptest::proptest,
+    proptest::prelude::*,
     std::time::SystemTime,
 };
 
@@ -111,9 +111,9 @@ proptest! {
     /// which never reports that the user is off route, even when they obviously are.
     #[test]
     fn no_deviation_tracking(
-        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
-        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
-        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
+        x1: f64, y1: f64,
+        x2: f64, y2: f64,
+        x3: f64, y3: f64,
     ) {
         let tracking = RouteDeviationTracking::None;
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
@@ -130,9 +130,9 @@ proptest! {
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        assert_eq!(
+        prop_assert_eq!(
             tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
-            RouteDeviation::NoDeviation,
+            RouteDeviation::NoDeviation
         );
 
         // Set the user location to a random value.
@@ -146,9 +146,9 @@ proptest! {
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        assert_eq!(
+        prop_assert_eq!(
             tracking.check_route_deviation(user_location_random, &route, &current_route_step),
-            RouteDeviation::NoDeviation,
+            RouteDeviation::NoDeviation
         );
     }
 
@@ -156,9 +156,9 @@ proptest! {
     /// with user-supplied code.
     #[test]
     fn custom_no_deviation_mode(
-        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
-        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
-        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
+        x1: f64, y1: f64,
+        x2: f64, y2: f64,
+        x3: f64, y3: f64,
     ) {
         struct NeverDetector {}
 
@@ -190,9 +190,9 @@ proptest! {
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        assert_eq!(
+        prop_assert_eq!(
             tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
-            RouteDeviation::NoDeviation,
+            RouteDeviation::NoDeviation
         );
 
         // Set the user location to a random value.
@@ -206,18 +206,18 @@ proptest! {
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        assert_eq!(
+        prop_assert_eq!(
             tracking.check_route_deviation(user_location_random, &route, &current_route_step),
-            RouteDeviation::NoDeviation,
+            RouteDeviation::NoDeviation
         );
     }
 
     /// Custom behavior claiming that the user is always off the route.
     #[test]
     fn custom_always_off_route(
-        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
-        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
-        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
+        x1: f64, y1: f64,
+        x2: f64, y2: f64,
+        x3: f64, y3: f64,
     ) {
         struct NeverDetector {}
 
@@ -251,11 +251,11 @@ proptest! {
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        assert_eq!(
+        prop_assert_eq!(
             tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
             RouteDeviation::OffRoute {
                 deviation_from_route_line: 7.0
-            },
+            }
         );
 
         // Set the user location to a random value.
@@ -269,11 +269,11 @@ proptest! {
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        assert_eq!(
+        prop_assert_eq!(
             tracking.check_route_deviation(user_location_random, &route, &current_route_step),
             RouteDeviation::OffRoute {
                 deviation_from_route_line: 7.0
-            },
+            }
         );
     }
 
@@ -281,11 +281,12 @@ proptest! {
     /// using [crate::algorithms::deviation_from_line]
     #[test]
     fn static_threshold_oracle_test(
-        x1 in -180f64..=180f64, y1 in -90f64..=90f64,
-        x2 in -180f64..=180f64, y2 in -90f64..=90f64,
-        x3 in -180f64..=180f64, y3 in -90f64..=90f64,
+        x1: f64, y1: f64,
+        x2: f64, y2: f64,
+        x3: f64, y3: f64,
         minimum_horizontal_accuracy: u16,
-        max_acceptable_deviation: f64,
+        horizontal_accuracy: f64,
+        max_acceptable_deviation in 0f64..,
     ) {
         let tracking = RouteDeviationTracking::StaticThreshold {
             minimum_horizontal_accuracy,
@@ -301,14 +302,13 @@ proptest! {
                 lng: x1,
                 lat: y1,
             },
-            // TODO: Test different accuracy values
-            horizontal_accuracy: 0.0,
+            horizontal_accuracy,
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        assert_eq!(
+        prop_assert_eq!(
             tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
-            RouteDeviation::NoDeviation,
+            RouteDeviation::NoDeviation
         );
 
         // Set the user location to a random value.
@@ -327,12 +327,14 @@ proptest! {
         let deviation = deviation_from_line(&Point::from(coordinates), &current_route_step.get_linestring());
         match tracking.check_route_deviation(user_location_random, &route, &current_route_step) {
             RouteDeviation::NoDeviation => {
-                assert!(deviation.unwrap() <= max_acceptable_deviation)
+                if let Some(calculated) = deviation {
+                    prop_assert!(calculated <= max_acceptable_deviation);
+                }
             }
             RouteDeviation::OffRoute{ deviation_from_route_line } => {
-                assert_eq!(
+                prop_assert_eq!(
                     deviation_from_route_line,
-                    deviation.unwrap(),
+                    deviation.unwrap()
                 );
             }
         }
@@ -365,7 +367,7 @@ proptest! {
             course_over_ground: None,
             timestamp: SystemTime::now(),
         };
-        assert_eq!(
+        prop_assert_eq!(
             tracking.check_route_deviation(user_location_random, &route, &current_route_step),
             RouteDeviation::NoDeviation
         );
