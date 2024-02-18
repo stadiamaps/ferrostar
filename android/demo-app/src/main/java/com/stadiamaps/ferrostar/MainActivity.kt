@@ -60,7 +60,9 @@ class MainActivity : ComponentActivity() {
     private val core = FerrostarCore(
         valhallaEndpointURL = URL("https://valhalla1.openstreetmap.de/route"),
         profile = "bicycle",
-        httpClient = httpClient
+        httpClient = httpClient,
+        // TODO: Example showing the delegate in action
+        delegate = null,
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

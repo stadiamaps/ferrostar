@@ -22,31 +22,31 @@ data class NavigationUiState(
 )
 
 class NavigationViewModel(
-    tripStateFlow: StateFlow<TripState>,
+    stateFlow: StateFlow<FerrostarCoreState>,
     initialUserLocation: Location,
     private val routeGeometry: List<GeographicCoordinate>,
 ) : ViewModel() {
     private var lastLocation: UserLocation = initialUserLocation.userLocation()
 
-    val uiState = tripStateFlow.map { tripState ->
-        lastLocation = when (tripState) {
-            is TripState.Navigating -> tripState.snappedUserLocation
+    val uiState = stateFlow.map { coreState ->
+        lastLocation = when (coreState.tripState) {
+            is TripState.Navigating -> coreState.tripState.snappedUserLocation
             is TripState.Complete -> lastLocation
         }
 
-        uiStateForTripState(tripState, lastLocation)
+        uiState(coreState, lastLocation)
         // This awkward dance is required because Kotlin doesn't have a way to map over StateFlows
         // without converting to a generic Flow in the process.
-    }.stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(), initialValue = uiStateForTripState(tripStateFlow.value, initialUserLocation.userLocation()))
+    }.stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(), initialValue = uiState(stateFlow.value, initialUserLocation.userLocation()))
 
-    private fun uiStateForTripState(tripState: TripState, location: UserLocation) = NavigationUiState(
+    private fun uiState(coreState: FerrostarCoreState, location: UserLocation) = NavigationUiState(
         snappedLocation = location,
         // TODO: Heading/course over ground
         heading = null,
         routeGeometry = routeGeometry,
-        visualInstruction = visualInstructionForState(tripState),
+        visualInstruction = visualInstructionForState(coreState.tripState),
         spokenInstruction = null,
-        distanceToNextManeuver = distanceForState(tripState)
+        distanceToNextManeuver = distanceForState(coreState.tripState)
     )
 }
 
