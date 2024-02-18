@@ -247,7 +247,8 @@ class ValhallaCoreTest {
         val core = FerrostarCore(
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
-            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            delegate = null
         )
 
         return runTest {
