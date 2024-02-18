@@ -945,8 +945,7 @@ public protocol RouteRequestGenerator: AnyObject {
      * Generates a routing backend request given the set of locations.
      *
      * While most implementations will treat the locations as an ordered sequence, this is not
-     * guaranteed (ex: an optimized router)..
-     * TODO: Option for whether we should account for course over ground or heading.
+     * guaranteed (ex: an optimized router).
      */
     func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
 }
@@ -986,8 +985,7 @@ public class RouteRequestGeneratorImpl:
      * Generates a routing backend request given the set of locations.
      *
      * While most implementations will treat the locations as an ordered sequence, this is not
-     * guaranteed (ex: an optimized router)..
-     * TODO: Option for whether we should account for course over ground or heading.
+     * guaranteed (ex: an optimized router).
      */
     public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
@@ -2750,6 +2748,9 @@ public enum TripState {
             * The distance to the next maneuver, in meters.
             */
         distanceToNextManeuver: Double,
+        /**
+            * The route deviation status: is the user following the route or not?
+            */
         deviation: RouteDeviation
     )
     case complete
@@ -3202,7 +3203,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 17675 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 837 {
+    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 33758 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 38851 {

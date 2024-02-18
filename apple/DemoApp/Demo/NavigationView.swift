@@ -35,14 +35,13 @@ struct NavigationView: View {
         let simulated = SimulatedLocationProvider(location: initialLocation)
         simulated.warpFactor = 10
         locationManager = simulated
-        
-        _ferrostarCore = ObservedObject(
-            wrappedValue: FerrostarCore(
-                valhallaEndpointUrl: URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!,
-                profile: "pedestrian",
-                locationManager: locationManager
-            )
+        self.ferrostarCore = FerrostarCore(
+            valhallaEndpointUrl: URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!,
+            profile: "pedestrian",
+            locationManager: locationManager
         )
+
+        // TODO: Example showing delegate
     }
     
     var body: some View {

@@ -15,6 +15,20 @@ enum FerrostarCoreError: Error, Equatable {
     case httpStatusCode(Int)
 }
 
+/// Corrective action to take when the user deviates from the route.
+public enum CorrectiveAction {
+    /// Don't do anything.
+    ///
+    /// Note that this is most commonly paired with no route deviation tracking as a formality.
+    /// Think twice before using this as a mechanism for implementing your own logic outiside of the provided framework,
+    /// as doing so will mean you miss out on state updates around alternate route calculation.
+    case doNothing
+    /// Get new routes from the route adapter.
+    ///
+    /// Once new routes have been fetched
+    case getNewRoutes(waypoints: [CLLocationCoordinate2D])
+}
+
 /// Receives events from ``FerrostarCore``.
 ///
 /// This is the central point responsible for relaying updates back to the application.
@@ -25,14 +39,16 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// to enable location services.
     func core(_ core: FerrostarCore, locationManagerFailedWithError error: Error)
 
-    /// Called when the core gives us an updated navigation state.
+    /// Called when the core detects that the user has deviated from the route.
     ///
-    /// This method will be called whenever the user's location changes significantly enough to have an effect
-    /// on the navigation state that is important enough to require a decision or UI update (quite often in the
-    /// case of a moving vehicle).
+    /// This hook enables app developers to take the most appropriate corrective action.
+    func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double) -> CorrectiveAction
+
+    /// Called when the core has loaded alternative routes.
     ///
-    /// This is *probably* not the final interface for this function but it's something to start with.
-    func core(_ core: FerrostarCore, didUpdateNavigationState update: TripState)
+    /// The developer may decide whether or not to act on this information given the current trip state.
+    /// This is currently used for recalculation when the user diverges from the route, but can be extended for other uses in the future.
+    func core(_ core: FerrostarCore, loadedAlternativeRoutes: [Route])
 }
 
 
@@ -64,6 +80,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private let locationProvider: LocationProviding
     private var navigationController: UniFFI.NavigationControllerProtocol?
     private var tripState: UniFFI.TripState?
+    private var routeRequestInFlight = false
+    private var lastAutomaticRecalculation: Date? = nil
 
     public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationManager: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
@@ -85,6 +103,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// Success and failure are communicated via ``delegate`` methods.
     public func getRoutes(initialLocation: CLLocation, waypoints: [CLLocationCoordinate2D]) async throws -> [Route] {
+        routeRequestInFlight = true
+
+        defer {
+            routeRequestInFlight = false
+        }
+
         let routeRequest = try routeAdapter.generateRequest(userLocation: initialLocation.userLocation, waypoints: waypoints.map { $0.geographicCoordinates })
 
         switch routeRequest {
@@ -99,6 +123,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 urlRequest.setValue(value, forHTTPHeaderField: header)
             }
             urlRequest.httpBody = Data(body)
+            urlRequest.timeoutInterval = 15
 
             let (data, response) = try await networkSession.loadData(with: urlRequest)
 
@@ -166,19 +191,27 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     // No action
                     break
                 case .offRoute(deviationFromRouteLine: let deviationFromRouteLine):
-                    // TODO: Recalculation logic; we have two options
-                    //
-                    // Option 1: "Fully managed" framework approach
-                    // - Is another recalculation in flight?
-                    // - Provide a hook for the user to decide whether to proceed with recalculation (defaults to yes? if you don't want recalculation, change your off route detection criterion!)
-                    // - If recalculating should proceed, fetch routes using `getRoutes`
-                    // - Call back via hook point to select a route (defaults to the first route)
-                    //
-                    // Option 2: Minimal approach; give developers more flexibility but also require some boilerplate for simple cases
-                    // - Offer an "off route listener" hook point
-                    // - Let the developer decide whether to make the call to `getRoutes`
-                    // - Let the developer handle selection of the new route
-                    // - Let the developer call `startNavigation` with the new route
+                    guard !self.routeRequestInFlight && self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? 0 > -5 else {
+                        break
+                    }
+
+                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine) ?? .doNothing) {
+                    case .doNothing:
+                        break
+                    case .getNewRoutes(let waypoints):
+                        self.state?.isCalculatingNewRoute = true
+                        Task {
+                            defer {
+                                DispatchQueue.main.async {
+                                    self.state?.isCalculatingNewRoute = false
+                                }
+                            }
+                            let routes = try await self.getRoutes(initialLocation: location, waypoints: waypoints)
+                            self.lastAutomaticRecalculation = Date()
+                            self.delegate?.core(self, loadedAlternativeRoutes: routes)
+                        }
+                    }
+
                     break
                 }
             case .complete:
@@ -188,9 +221,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 self.state?.courseOverGround = location.course
                 self.state?.spokenInstruction = nil
             }
-
-            self.delegate?.core(self, didUpdateNavigationState: TripState(newState))
-
         }
     }
 }

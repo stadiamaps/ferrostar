@@ -30,7 +30,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.LocationSimulationState
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.SimulationSpeed
@@ -38,6 +37,7 @@ import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.advanceLocationSimulation
 import uniffi.ferrostar.locationSimulationFromRoute
 import java.net.URL
+import java.time.Duration
 import java.time.Instant
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -50,14 +50,14 @@ class MainActivity : ComponentActivity() {
         Instant.now()
     )
     private val locationProvider = SimulatedLocationProvider()
-    private val httpClient = OkHttpClient.Builder().build()
+    private val httpClient = OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
 
     // NOTE: This is a public instance which is suitable for development, but not for heavy use.
     // This server is suitable for testing and building your app, but once you are ready to go live,
     // YOU MUST USE ANOTHER SERVER.
     //
     // See https://github.com/stadiamaps/ferrostar/blob/main/VENDORS.md for options
-    val core = FerrostarCore(
+    private val core = FerrostarCore(
         valhallaEndpointURL = URL("https://valhalla1.openstreetmap.de/route"),
         profile = "bicycle",
         httpClient = httpClient
