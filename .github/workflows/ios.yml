@@ -38,6 +38,9 @@ jobs:
         ]
     
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
@@ -49,12 +52,9 @@ jobs:
     - name: Install xcbeautify
       run: brew install xcbeautify
 
-    - name: Checkout repo
-      uses: actions/checkout@v4
-
     - name: Build ${{ matrix.scheme }}
-      run: xcodebuild -scheme "${{ matrix.scheme }}" build -configuration Debug -skipMacroValidation | xcbeautify && exit ${PIPESTATUS[0]} \
-        CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+      run: xcodebuild -scheme "${{ matrix.scheme }}" build -configuration Debug -skipMacroValidation \
+        CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO | xcbeautify && exit ${PIPESTATUS[0]}
       working-directory: apple/DemoApp
 
   test:
@@ -71,6 +71,9 @@ jobs:
         ]
 
     steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
