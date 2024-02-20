@@ -1,5 +1,11 @@
 import CoreLocation
-@testable import FerrostarCore
+@testable import class FerrostarCore.MockURLSession
+import class FerrostarCore.SimulatedLocationProvider
+import enum FerrostarCore.FerrostarCoreError
+import struct FerrostarCore.Route
+import protocol FerrostarCore.FerrostarCoreDelegate
+import enum FerrostarCore.CorrectiveAction
+import class FerrostarCore.FerrostarCore
 import UniFFI
 import XCTest
 import SnapshotTesting
@@ -11,8 +17,13 @@ let errorBody = Data("""
 """.utf8)
 let errorResponse = HTTPURLResponse(url: valhallaEndpointUrl, statusCode: 401, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!
 
-// Simple test to ensure that the extensibility with native code is working.
+// Mocked route
+let mockGeom = [GeographicCoordinate(lng: 0, lat: 0), GeographicCoordinate(lng: 1, lat: 1)]
+let instructionContent = VisualInstructionContent(text: "Sail straight", maneuverType: .depart, maneuverModifier: .straight, roundaboutExitDegrees: nil)
+let mockRoute = UniFFI.Route(geometry: mockGeom, bbox: BoundingBox(sw: mockGeom.first!, ne: mockGeom.last!), distance: 1, waypoints: mockGeom, steps: [RouteStep(geometry: mockGeom, distance: 1, roadName: "foo road", instruction: "Sail straight", visualInstructions: [VisualInstruction(primaryContent: instructionContent, secondaryContent: nil, triggerDistanceBeforeManeuver: 42)], spokenInstructions: [])])
 
+// Mocked route adapter
+let mockRouteAdapter = RouteAdapter(requestGenerator: MockRouteRequestGenerator(), responseParser: MockRouteResponseParser(routes: [mockRoute]))
 
 private class MockRouteRequestGenerator: RouteRequestGenerator {
     func generateRequest(userLocation: UniFFI.UserLocation, waypoints: [UniFFI.GeographicCoordinate]) throws -> UniFFI.RouteRequest {
@@ -40,7 +51,7 @@ final class FerrostarCoreTests: XCTestCase {
 
         let routeAdapter = RouteAdapter(requestGenerator: MockRouteRequestGenerator(), responseParser: MockRouteResponseParser(routes: []))
 
-        let core = FerrostarCore(routeAdapter: routeAdapter, locationManager: SimulatedLocationProvider(), networkSession: mockSession)
+        let core = FerrostarCore(routeAdapter: routeAdapter, locationProvider: SimulatedLocationProvider(), networkSession: mockSession)
 
         do {
             // Tests that the core generates a request and attempts to process it, but throws due to the mocked network layer
@@ -56,17 +67,68 @@ final class FerrostarCoreTests: XCTestCase {
         let mockSession = MockURLSession()
         mockSession.registerMock(forURL: valhallaEndpointUrl, withData: Data(), andResponse: successfulJSONResponse)
 
-        let geom = [GeographicCoordinate(lng: 0, lat: 0), GeographicCoordinate(lng: 1, lat: 1)]
-        let instructionContent = VisualInstructionContent(text: "Sail straight", maneuverType: .depart, maneuverModifier: .straight, roundaboutExitDegrees: nil)
-        let mockRoute = UniFFI.Route(geometry: geom, bbox: BoundingBox(sw: geom.first!, ne: geom.last!), distance: 1, waypoints: geom, steps: [RouteStep(geometry: geom, distance: 1, roadName: "foo road", instruction: "Sail straight", visualInstructions: [VisualInstruction(primaryContent: instructionContent, secondaryContent: nil, triggerDistanceBeforeManeuver: 42)], spokenInstructions: [])])
-
-        let routeAdapter = RouteAdapter(requestGenerator: MockRouteRequestGenerator(), responseParser: MockRouteResponseParser(routes: [mockRoute]))
-
-        let core = FerrostarCore(routeAdapter: routeAdapter, locationManager: SimulatedLocationProvider(), networkSession: mockSession)
+        let core = FerrostarCore(routeAdapter: mockRouteAdapter, locationProvider: SimulatedLocationProvider(), networkSession: mockSession)
 
         // Tests that the core generates a request and then the mocked parser returns the expected routes
         let routes = try await core.getRoutes(initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469), waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
         assertSnapshot(of: routes, as: .dump)
+    }
+
+    func testCustomOffRouteHandler() async throws {
+        let routeDeviationCallbackExp = expectation(description: "The delegate should receive a callback that the user has deviated from the route")
+        routeDeviationCallbackExp.expectedFulfillmentCount = 1
+
+        let loadedAltRoutesExp = expectation(description: "The delegate should receive a callback when alternative routes are loaded")
+        loadedAltRoutesExp.expectedFulfillmentCount = 1
+
+        let locationProvider = SimulatedLocationProvider()
+        
+        let mockSession = MockURLSession()
+        mockSession.registerMock(forURL: valhallaEndpointUrl, withData: Data(), andResponse: successfulJSONResponse)
+
+        let core = FerrostarCore(routeAdapter: mockRouteAdapter, locationProvider: locationProvider, networkSession: mockSession)
+
+        class CoreDelegate: FerrostarCoreDelegate {
+            private let routeDeviationCallbackExp: XCTestExpectation
+            private let loadedAltRoutesExp: XCTestExpectation
+
+            init(routeDeviationCallbackExp: XCTestExpectation, loadedAltRoutesExp: XCTestExpectation) {
+                self.routeDeviationCallbackExp = routeDeviationCallbackExp
+                self.loadedAltRoutesExp = loadedAltRoutesExp
+            }
+
+            func core(_ core: FerrostarCore, locationManagerFailedWithError error: Error) {
+                // Do nothing
+            }
+
+            func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double) -> CorrectiveAction {
+                XCTAssertEqual(deviationInMeters, 42)
+                self.routeDeviationCallbackExp.fulfill()
+                return .getNewRoutes(waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
+            }
+
+            func core(_ core: FerrostarCore, loadedAlternateRoutes: [Route]) {
+                XCTAssert(core.state?.isCalculatingNewRoute == true)  // We are still calculating until this method completes
+                XCTAssert(!loadedAlternateRoutes.isEmpty)
+                self.loadedAltRoutesExp.fulfill()
+            }
+        }
+
+        let delegate = CoreDelegate(routeDeviationCallbackExp: routeDeviationCallbackExp, loadedAltRoutesExp: loadedAltRoutesExp)
+        core.delegate = delegate
+
+        let routes = try await core.getRoutes(initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469), waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
+
+        locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0)
+        try core.startNavigation(route: routes.first!, stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16), routeDeviationTracking: .custom(detector: { userLocation, route, step in
+            // Pretend that the user is always off route
+            .offRoute(deviationFromRouteLine: 42)
+        }))
+
+        await fulfillment(of: [routeDeviationCallbackExp], timeout: 1.0)
+        await fulfillment(of: [loadedAltRoutesExp], timeout: 1.0)
+
+        XCTAssert(core.state?.isCalculatingNewRoute == false)
     }
 
     // TODO: Various location services failure modes (need special mocks to simulate these)

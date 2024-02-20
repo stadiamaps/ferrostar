@@ -44,11 +44,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This hook enables app developers to take the most appropriate corrective action.
     func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double) -> CorrectiveAction
 
-    /// Called when the core has loaded alternative routes.
+    /// Called when the core has loaded alternate routes.
     ///
     /// The developer may decide whether or not to act on this information given the current trip state.
     /// This is currently used for recalculation when the user diverges from the route, but can be extended for other uses in the future.
-    func core(_ core: FerrostarCore, loadedAlternativeRoutes: [Route])
+    /// Note that the `isCalculatingNewRoute` property of ``NavigationState`` will be true until this method returns.
+    /// Delegates may thus rely on this state introspection to decide what action to take given alterante routes.
+    func core(_ core: FerrostarCore, loadedAlternateRoutes: [Route])
 }
 
 
@@ -72,6 +74,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
 
+    /// The minimum time to wait before initiating another route recalculation.
+    ///
+    /// This matters in the case that a user is off route, the framework calculates a new route,
+    /// and the user is determined to still be off the new route.
+    /// This adds a minimum delay (default 5 seconds).
+    public var minimumTimeBeforeRecalculaton: TimeInterval = 5
+
     /// The observable state of the model (for easy binding in SwiftUI views).
     @Published public private(set) var state: NavigationState?
 
@@ -83,9 +92,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
 
-    public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationManager: LocationProviding, networkSession: URLRequestLoading) {
+    public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
-        locationProvider = locationManager
+        self.locationProvider = locationProvider
         self.networkSession = networkSession
 
         super.init()
@@ -94,9 +103,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.delegate = self
     }
 
-    public convenience init(valhallaEndpointUrl: URL, profile: String, locationManager: LocationProviding, networkSession: URLRequestLoading = URLSession.shared) {
+    public convenience init(valhallaEndpointUrl: URL, profile: String, locationProvider: LocationProviding, networkSession: URLRequestLoading = URLSession.shared) {
         let routeAdapter = UniFFI.RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndpointUrl.absoluteString, profile: profile)
-        self.init(routeAdapter: routeAdapter, locationManager: locationManager, networkSession: networkSession)
+        self.init(routeAdapter: routeAdapter, locationProvider: locationProvider, networkSession: networkSession)
     }
 
     /// Tries to get routes visiting one or more waypoints starting from the initial location.
@@ -191,7 +200,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     // No action
                     break
                 case .offRoute(deviationFromRouteLine: let deviationFromRouteLine):
-                    guard !self.routeRequestInFlight && self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? 0 > -5 else {
+                    guard !self.routeRequestInFlight && self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? 0 > -self.minimumTimeBeforeRecalculaton else {
                         break
                     }
 
@@ -201,15 +210,18 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     case .getNewRoutes(let waypoints):
                         self.state?.isCalculatingNewRoute = true
                         Task {
-                            defer {
-                                DispatchQueue.main.async {
-                                    self.state?.isCalculatingNewRoute = false
-                                }
+                            do {
+                                let routes = try await self.getRoutes(initialLocation: location, waypoints: waypoints)
+                                self.lastAutomaticRecalculation = Date()
+                                self.delegate?.core(self, loadedAlternateRoutes: routes)
+
+                            } catch {
+                                // Do nothing; this exists to enable us to run what amounts to an "async defer"
                             }
-                            let routes = try await self.getRoutes(initialLocation: location, waypoints: waypoints)
-                            self.lastAutomaticRecalculation = Date()
-                            self.delegate?.core(self, loadedAlternativeRoutes: routes)
-                        }
+
+                            await MainActor.run {
+                                self.state?.isCalculatingNewRoute = false
+                            }                        }
                     }
 
                     break
