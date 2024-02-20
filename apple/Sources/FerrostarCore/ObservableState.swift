@@ -15,7 +15,7 @@ public struct NavigationState {
     public internal(set) var visualInstructions: UniFFI.VisualInstruction?
     public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
     public internal(set) var distanceToNextManeuver: CLLocationDistance?
-    /// Set to true when the core is calculating a new route (ex: due to the user being off route).
+    /// Indicates when the core is calculating a new route (ex: due to the user being off route).
     public internal(set) var isCalculatingNewRoute: Bool = false
 
     init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {

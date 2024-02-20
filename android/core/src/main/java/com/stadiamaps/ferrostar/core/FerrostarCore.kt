@@ -32,9 +32,24 @@ class InvalidStatusCodeException(val statusCode: Int): FerrostarCoreException("R
 
 class NoResponseBodyException: FerrostarCoreException("Route request was successful but had no body bytes")
 
+/**
+ * Corrective action to take when the user deviates from the route.
+ */
 sealed class CorrectiveAction {
-    class DoNothing: CorrectiveAction()
+    /**
+     * Don't do anything.
+     *
+     * Note that this is most commonly paired with no route deviation tracking as a formality.
+     * Think twice before using this as a mechanism for implementing your own logic outside of the provided framework,
+     * as doing so will mean you miss out on state updates around alternate route calculation.
+     */
+    object DoNothing : CorrectiveAction()
 
+    /**
+     * Tells the core to fetch new routes from the route adapter.
+     *
+     * Once they are available, the delegate will be notified of the new routes.
+     */
     class GetNewRoutes(val waypoints: List<GeographicCoordinate>): CorrectiveAction()
 }
 
@@ -44,6 +59,7 @@ interface FerrostarCoreDelegate {
      *
      * The developer may decide whether or not to act on this information given the current trip state.
      * This is currently used for recalculation when the user diverges from the route, but can be extended for other uses in the future.
+     * Note that [FerrostarCoreState.isCalculatingNewRoute]` will be `true` until this method returns.
      */
     fun correctiveActionForDeviation(core: FerrostarCore, deviationInMeters: Double): CorrectiveAction
 
@@ -56,13 +72,31 @@ interface FerrostarCoreDelegate {
     fun loadedAlternativeRoutes(core: FerrostarCore, routes: List<Route>)
 }
 
-data class FerrostarCoreState(val tripState: TripState, val isCalculatingNewRoute: Boolean)
+data class FerrostarCoreState(
+    /**
+     * The raw trip state from the core.
+     */
+    val tripState: TripState,
+    /**
+     * Indicates when the core is calculating a new route (ex: due to the user being off route).
+     */
+    val isCalculatingNewRoute: Boolean)
+
 
 class FerrostarCore(
     val routeAdapter: RouteAdapterInterface,
     val httpClient: OkHttpClient,
     val delegate: FerrostarCoreDelegate?,
 ) : LocationUpdateListener {
+    /**
+     * The minimum time to wait before initiating another route recalculation.
+     *
+     * This matters in the case that a user is off route, the framework calculates a new route,
+     * and the user is determined to still be off the new route.
+     * This adds a minimum delay (default 5 seconds).
+     */
+    var minimumTimeBeforeRecalculaton: Long = 5
+
     private val _executor = Executors.newSingleThreadExecutor()
     private val _scope = CoroutineScope(Dispatchers.Default)
     private var _locationProvider: LocationProvider? = null
@@ -167,11 +201,11 @@ class FerrostarCore(
 
                 if (newState is TripState.Navigating) {
                     if (newState.deviation is RouteDeviation.OffRoute) {
-                        if (!_routeRequestInFlight && _lastAutomaticRecalculation?.isAfter(LocalDateTime.now().minusSeconds(15)) != false) {
+                        if (!_routeRequestInFlight && _lastAutomaticRecalculation?.isAfter(LocalDateTime.now().minusSeconds(minimumTimeBeforeRecalculaton)) != false) {
                             val action = delegate?.correctiveActionForDeviation(
                                 this,
                                 newState.deviation.deviationFromRouteLine
-                            ) ?: CorrectiveAction.DoNothing()
+                            ) ?: CorrectiveAction.DoNothing
                             when (action) {
                                 is CorrectiveAction.DoNothing -> {
                                     // Do nothing
@@ -183,12 +217,12 @@ class FerrostarCore(
                                         try {
                                             val routes =
                                                 getRoutes(location.userLocation(), action.waypoints)
-                                            _lastAutomaticRecalculation = LocalDateTime.now()
                                             delegate?.loadedAlternativeRoutes(
                                                 this@FerrostarCore,
                                                 routes
                                             )
                                         } finally {
+                                            _lastAutomaticRecalculation = LocalDateTime.now()
                                             _isCalculatingNewRoute = false
                                         }
                                     }

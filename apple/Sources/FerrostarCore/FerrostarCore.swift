@@ -20,12 +20,12 @@ public enum CorrectiveAction {
     /// Don't do anything.
     ///
     /// Note that this is most commonly paired with no route deviation tracking as a formality.
-    /// Think twice before using this as a mechanism for implementing your own logic outiside of the provided framework,
+    /// Think twice before using this as a mechanism for implementing your own logic outside of the provided framework,
     /// as doing so will mean you miss out on state updates around alternate route calculation.
     case doNothing
-    /// Get new routes from the route adapter.
+    /// Tells the core to fetch new routes from the route adapter.
     ///
-    /// Once new routes have been fetched
+    /// Once they are available, the delegate will be notified of the new routes.
     case getNewRoutes(waypoints: [CLLocationCoordinate2D])
 }
 
@@ -91,6 +91,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var tripState: UniFFI.TripState?
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
+    private var recalculationTask: Task<(), Never>?
 
     public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
@@ -209,19 +210,19 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         break
                     case .getNewRoutes(let waypoints):
                         self.state?.isCalculatingNewRoute = true
-                        Task {
+                        self.recalculationTask = Task {
                             do {
                                 let routes = try await self.getRoutes(initialLocation: location, waypoints: waypoints)
-                                self.lastAutomaticRecalculation = Date()
                                 self.delegate?.core(self, loadedAlternateRoutes: routes)
-
                             } catch {
                                 // Do nothing; this exists to enable us to run what amounts to an "async defer"
                             }
 
                             await MainActor.run {
+                                self.lastAutomaticRecalculation = Date()
                                 self.state?.isCalculatingNewRoute = false
-                            }                        }
+                            }
+                        }
                     }
 
                     break
