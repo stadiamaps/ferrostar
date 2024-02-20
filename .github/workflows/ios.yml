@@ -83,7 +83,10 @@ jobs:
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip libferrostar-rs.xcframework.zip
+      run: unzip libferrostar-rs.xcframework.zip -d common
+
+    - name: Configure Package.swift for local development
+      run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
 
     - name: Install xcbeautify
       run: brew install xcbeautify
