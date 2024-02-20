@@ -52,6 +52,9 @@ jobs:
     - name: Install xcbeautify
       run: brew install xcbeautify
 
+    - name: Rename API-Keys.plist template
+      run: mv apple/DemoApp/API-Keys.plist.template apple/DemoApp/API-Keys.plist
+
     - name: Build ${{ matrix.scheme }}
       run: xcodebuild -scheme "${{ matrix.scheme }}" build -configuration Debug -skipMacroValidation \
         CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO | xcbeautify && exit ${PIPESTATUS[0]}
