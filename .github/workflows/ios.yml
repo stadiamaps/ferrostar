@@ -24,8 +24,8 @@ jobs:
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
       with:
-        name: libferrostar-rs.xcframework
-        path: target/ios/libferrostar-rs.xcframework
+        name: libferrostar-rs.xcframework.zip
+        path: common/target/ios/libferrostar-rs.xcframework.zip
         retention-days: 5
 
   build-demo:
@@ -41,7 +41,7 @@ jobs:
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
-        name: libferrostar-rs.xcframework
+        name: libferrostar-rs.xcframework.zip
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -71,7 +71,7 @@ jobs:
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
-        name: libferrostar-rs.xcframework
+        name: libferrostar-rs.xcframework.zip
 
     - name: Install xcbeautify
       run: brew install xcbeautify
