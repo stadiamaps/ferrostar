@@ -53,7 +53,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Build ${{ matrix.scheme }}
-      run: xcodebuild -scheme ${{ matrix.scheme }} build -configuration Debug -skipMacroValidation | xcbeautify && exit ${PIPESTATUS[0]} \
+      run: xcodebuild -scheme "${{ matrix.scheme }}" build -configuration Debug -skipMacroValidation | xcbeautify && exit ${PIPESTATUS[0]} \
         CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
       working-directory: apple/DemoApp
 
@@ -74,7 +74,6 @@ jobs:
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
-        path: common/target/ios/
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
