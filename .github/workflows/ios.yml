@@ -41,7 +41,11 @@ jobs:
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
+        path: common/target/ios/
         name: libferrostar-rs.xcframework.zip
+
+    - name: Unzip libferrostar-rs.xcframework
+      run: unzip -o common/target/ios/libferrostar-rs.xcframework.zip -d common/target/ios/libferrostar-rs.xcframework
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -71,7 +75,11 @@ jobs:
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
+        path: common/target/ios/
         name: libferrostar-rs.xcframework.zip
+
+    - name: Unzip libferrostar-rs.xcframework
+      run: unzip -o common/target/ios/libferrostar-rs.xcframework.zip -d common/target/ios/libferrostar-rs.xcframework
 
     - name: Install xcbeautify
       run: brew install xcbeautify
