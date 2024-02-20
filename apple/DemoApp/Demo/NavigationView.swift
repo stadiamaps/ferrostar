@@ -17,7 +17,7 @@ struct NavigationView: View {
     private let initialLocation = CLLocation(latitude: 37.332726,
                                              longitude: -122.031790)
     
-    private var locationManager: LocationProviding
+    private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
     
     @State private var isFetchingRoutes = false
@@ -34,19 +34,19 @@ struct NavigationView: View {
     init() {
         let simulated = SimulatedLocationProvider(location: initialLocation)
         simulated.warpFactor = 10
-        locationManager = simulated
+        locationProvider = simulated
         self.ferrostarCore = FerrostarCore(
             valhallaEndpointUrl: URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!,
             profile: "pedestrian",
-            locationManager: locationManager
+            locationProvider: locationProvider
         )
 
         // TODO: Example showing delegate
     }
     
     var body: some View {
-        let locationServicesEnabled = locationManager.authorizationStatus == .authorizedAlways
-            || locationManager.authorizationStatus == .authorizedWhenInUse
+        let locationServicesEnabled = locationProvider.authorizationStatus == .authorizedAlways
+            || locationProvider.authorizationStatus == .authorizedWhenInUse
 
         NavigationStack {
             NavigationMapView(
@@ -149,7 +149,7 @@ struct NavigationView: View {
     // MARK: Conveniences
     
     func getRoutes() async {
-        guard let userLocation = locationManager.lastLocation else {
+        guard let userLocation = locationProvider.lastLocation else {
             print("No user location")
             return
         }
@@ -176,15 +176,15 @@ struct NavigationView: View {
             route: route,
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10), routeDeviationTracking: .none)
         
-        if let simulated = locationManager as? SimulatedLocationProvider {
+        if let simulated = locationProvider as? SimulatedLocationProvider {
             try simulated.startSimulating(route: route)
             print("DemoApp: starting route simulation")
         }
     }
     
     var locationLabel: String {
-        guard let userLocation = locationManager.lastLocation else {
-            return "No location - authed as \(locationManager.authorizationStatus)"
+        guard let userLocation = locationProvider.lastLocation else {
+            return "No location - authed as \(locationProvider.authorizationStatus)"
         }
         
         return "±\(Int(userLocation.horizontalAccuracy))m accuracy"
