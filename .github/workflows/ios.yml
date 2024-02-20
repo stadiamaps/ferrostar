@@ -41,11 +41,10 @@ jobs:
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
-        path: common/target/ios/
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip -o common/target/ios/libferrostar-rs.xcframework.zip -d common/target/ios/libferrostar-rs.xcframework
+      run: unzip libferrostar-rs.xcframework.zip
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -56,7 +55,7 @@ jobs:
     - name: Build ${{ matrix.scheme }}
       run: xcodebuild -scheme ${{ matrix.scheme }} build -configuration Debug -skipMacroValidation | xcbeautify && exit ${PIPESTATUS[0]} \
         CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
-      working-directory: apple/demo
+      working-directory: apple/DemoApp
 
   test:
     runs-on: macos-13
@@ -79,7 +78,7 @@ jobs:
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip -o common/target/ios/libferrostar-rs.xcframework.zip -d common/target/ios/libferrostar-rs.xcframework
+      run: unzip libferrostar-rs.xcframework.zip
 
     - name: Install xcbeautify
       run: brew install xcbeautify
