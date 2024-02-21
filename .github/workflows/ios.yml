@@ -48,7 +48,8 @@ jobs:
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip common/libferrostar-rs.xcframework.zip
+      run: unzip libferrostar-rs.xcframework.zip
+      working-directory: common
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -88,7 +89,8 @@ jobs:
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip common/libferrostar-rs.xcframework.zip
+      run: unzip libferrostar-rs.xcframework.zip
+      working-directory: common
 
     - name: Install xcbeautify
       run: brew install xcbeautify
