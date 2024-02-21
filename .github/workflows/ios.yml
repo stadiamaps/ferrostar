@@ -61,6 +61,13 @@ jobs:
       run: xcodebuild -scheme "${{ matrix.scheme }}" build -configuration Debug -skipMacroValidation \
         CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO | xcbeautify && exit ${PIPESTATUS[0]}
       working-directory: apple/DemoApp
+      
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Package.swift
+        path: Package.swift
+        retention-days: 5
 
   test:
     runs-on: macos-13
@@ -97,3 +104,10 @@ jobs:
 
     - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
       run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Package.swift
+        path: Package.swift
+        retention-days: 5
