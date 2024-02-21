@@ -85,10 +85,10 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         path: common
-        name: common/libferrostar-rs.xcframework.zip
+        name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip libferrostar-rs.xcframework.zip
+      run: unzip common/libferrostar-rs.xcframework.zip
 
     - name: Install xcbeautify
       run: brew install xcbeautify
