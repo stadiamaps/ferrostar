@@ -38,16 +38,18 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
+    - name: Configure Package.swift for local development
+      run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
+
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
+        path: common
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip libferrostar-rs.xcframework.zip -d common
-
-    - name: Configure Package.swift for local development
-      run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
+      run: unzip libferrostar-rs.xcframework.zip
+      working-directory: common
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -59,6 +61,13 @@ jobs:
       run: xcodebuild -scheme "${{ matrix.scheme }}" build -configuration Debug -skipMacroValidation \
         CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO | xcbeautify && exit ${PIPESTATUS[0]}
       working-directory: apple/DemoApp
+      
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Demo-Package.swift
+        path: Package.swift
+        retention-days: 5
 
   test:
     runs-on: macos-13
@@ -77,19 +86,28 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
+    - name: Configure Package.swift for local development
+      run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
+
     - name: Download libferrostar-rs.xcframework.
       uses: actions/download-artifact@v4
       with:
+        path: common
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip libferrostar-rs.xcframework.zip -d common
-
-    - name: Configure Package.swift for local development
-      run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
+      run: unzip libferrostar-rs.xcframework.zip
+      working-directory: common
 
     - name: Install xcbeautify
       run: brew install xcbeautify
 
     - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
       run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Library-Package.swift
+        path: Package.swift
+        retention-days: 5
