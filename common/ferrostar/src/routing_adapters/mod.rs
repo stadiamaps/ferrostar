@@ -37,7 +37,8 @@ pub trait RouteRequestGenerator: Send + Sync {
     ///
     /// While most implementations will treat the locations as an ordered sequence, this is not
     /// guaranteed (ex: an optimized router).
-    /// TODO: Option for whether we should account for course over ground or heading.
+    // TODO: Arbitrary options; how can we make this generic???
+    // TODO: Option for whether we should account for course over ground or heading.
     fn generate_request(
         &self,
         user_location: UserLocation,
