@@ -74,7 +74,7 @@ final class FerrostarCoreTests: XCTestCase {
         assertSnapshot(of: routes, as: .dump)
     }
 
-    func testCustomOffRouteHandler() async throws {
+    func testCustomRouteDeviationHandler() async throws {
         let routeDeviationCallbackExp = expectation(description: "The delegate should receive a callback that the user has deviated from the route")
         routeDeviationCallbackExp.expectedFulfillmentCount = 1
 

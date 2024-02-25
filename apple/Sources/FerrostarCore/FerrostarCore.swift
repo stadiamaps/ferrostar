@@ -191,9 +191,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
-                self.state?.remainingWaypoints = remainingWaypoints.map({ coord in
+                let clRemainingWaypoints = remainingWaypoints.map({ coord in
                     CLLocationCoordinate2D(geographicCoordinates: coord)
                 })
+                self.state?.remainingWaypoints = clRemainingWaypoints
 
     //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
     //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
@@ -208,14 +209,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         break
                     }
 
-                    let fallbackAction: CorrectiveAction
-                    if let waypoints = self.state?.remainingWaypoints {
-                        fallbackAction = .getNewRoutes(waypoints: waypoints)
-                    } else {
-                        fallbackAction = .doNothing
-                    }
-
-                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine) ?? fallbackAction) {
+                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine) ?? .getNewRoutes(waypoints: clRemainingWaypoints)) {
                     case .doNothing:
                         break
                     case .getNewRoutes(let waypoints):

@@ -248,6 +248,7 @@ class ValhallaCoreTest {
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            locationProvider = SimulatedLocationProvider(),
             delegate = null
         )
 

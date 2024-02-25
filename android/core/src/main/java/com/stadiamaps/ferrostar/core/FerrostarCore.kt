@@ -86,6 +86,7 @@ data class FerrostarCoreState(
 class FerrostarCore(
     val routeAdapter: RouteAdapterInterface,
     val httpClient: OkHttpClient,
+    val locationProvider: LocationProvider,
     val delegate: FerrostarCoreDelegate?,
 ) : LocationUpdateListener {
     /**
@@ -99,23 +100,26 @@ class FerrostarCore(
 
     private val _executor = Executors.newSingleThreadExecutor()
     private val _scope = CoroutineScope(Dispatchers.Default)
-    private var _locationProvider: LocationProvider? = null
     private var _navigationController: NavigationController? = null
     private var _state: MutableStateFlow<FerrostarCoreState>? = null
     private var _routeRequestInFlight = false
     private var _isCalculatingNewRoute = false
     private var _lastAutomaticRecalculation: LocalDateTime? = null
 
+    private var _config: NavigationControllerConfig? = null
+
     constructor(
         valhallaEndpointURL: URL,
         profile: String,
         httpClient: OkHttpClient,
+        locationProvider: LocationProvider,
         delegate: FerrostarCoreDelegate?,
     ) : this(
         RouteAdapter.newValhallaHttp(
             valhallaEndpointURL.toString(), profile
         ),
         httpClient,
+        locationProvider,
         delegate,
     )
 
@@ -159,7 +163,7 @@ class FerrostarCore(
      * It will automatically subscribe to location provider updates.
      * Returns a view model which
      */
-    fun startNavigation(route: Route, config: NavigationControllerConfig, locationProvider: LocationProvider, startingLocation: Location): NavigationViewModel {
+    fun startNavigation(route: Route, config: NavigationControllerConfig, startingLocation: Location): NavigationViewModel {
         stopNavigation()
 
         val controller = NavigationController(
@@ -170,7 +174,6 @@ class FerrostarCore(
 
         _navigationController = controller
         _state = stateFlow
-        _locationProvider = locationProvider
 
         locationProvider.addListener(this, _executor)
 
@@ -182,8 +185,7 @@ class FerrostarCore(
     }
 
     fun stopNavigation() {
-        _locationProvider?.removeListener(this)
-        _locationProvider = null
+        locationProvider.removeListener(this)
         _navigationController?.destroy()
         _navigationController = null
         _state = null
@@ -205,7 +207,7 @@ class FerrostarCore(
                             val action = delegate?.correctiveActionForDeviation(
                                 this,
                                 newState.deviation.deviationFromRouteLine
-                            ) ?: CorrectiveAction.DoNothing
+                            ) ?: CorrectiveAction.GetNewRoutes(newState.remainingWaypoints)
                             when (action) {
                                 is CorrectiveAction.DoNothing -> {
                                     // Do nothing
@@ -217,10 +219,15 @@ class FerrostarCore(
                                         try {
                                             val routes =
                                                 getRoutes(location.userLocation(), action.waypoints)
-                                            delegate?.loadedAlternativeRoutes(
-                                                this@FerrostarCore,
-                                                routes
-                                            )
+                                            val config = _config
+                                            if (delegate != null) {
+                                                delegate.loadedAlternativeRoutes(
+                                                    this@FerrostarCore,
+                                                    routes
+                                                )
+                                            } else if (routes.count() > 1 && config != null) {
+                                                startNavigation(routes.first(), config, location)
+                                            }
                                         } finally {
                                             _lastAutomaticRecalculation = LocalDateTime.now()
                                             _isCalculatingNewRoute = false

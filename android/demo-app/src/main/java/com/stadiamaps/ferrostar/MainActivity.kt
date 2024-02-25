@@ -61,6 +61,7 @@ class MainActivity : ComponentActivity() {
         valhallaEndpointURL = URL("https://valhalla1.openstreetmap.de/route"),
         profile = "bicycle",
         httpClient = httpClient,
+        locationProvider = locationProvider,
         // TODO: Example showing the delegate in action
         delegate = null,
     )
@@ -90,7 +91,6 @@ class MainActivity : ComponentActivity() {
                             ),
                             RouteDeviationTracking.StaticThreshold(25U, 10.0)
                         ),
-                        locationProvider = locationProvider,
                         startingLocation = initialSimulatedLocation
                     )
 
