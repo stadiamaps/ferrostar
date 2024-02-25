@@ -33,12 +33,6 @@ public enum CorrectiveAction {
 ///
 /// This is the central point responsible for relaying updates back to the application.
 public protocol FerrostarCoreDelegate: AnyObject {
-    /// Called when the location manager failed to get the user's location.
-    ///
-    /// This is a serious error, and the UI layer should inform the user. They may need to check their settings
-    /// to enable location services.
-    func core(_ core: FerrostarCore, locationManagerFailedWithError error: Error)
-
     /// Called when the core detects that the user has deviated from the route.
     ///
     /// This hook enables app developers to take the most appropriate corrective action.
@@ -50,7 +44,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This is currently used for recalculation when the user diverges from the route, but can be extended for other uses in the future.
     /// Note that the `isCalculatingNewRoute` property of ``NavigationState`` will be true until this method returns.
     /// Delegates may thus rely on this state introspection to decide what action to take given alterante routes.
-    func core(_ core: FerrostarCore, loadedAlternateRoutes: [Route])
+    func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route])
 }
 
 
@@ -92,6 +86,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
     private var recalculationTask: Task<(), Never>?
+
+    private var initStepAdvance: StepAdvanceMode?
+    private var initRouteDeviationTracking: RouteDeviationTracking?
 
     public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
@@ -156,6 +153,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
             throw FerrostarCoreError.userLocationUnknown
         }
 
+        initStepAdvance = stepAdvance
+        initRouteDeviationTracking = routeDeviationTracking
+
         locationProvider.startUpdating()
 
         state = NavigationState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
@@ -182,7 +182,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             self.tripState = newState
 
             switch (newState) {
-            case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver, deviation: let deviation):
+            case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, remainingWaypoints: let remainingWaypoints, distanceToNextManeuver: let distanceToNextManeuver, deviation: let deviation):
                 self.state?.snappedLocation = CLLocation(userLocation: snappedLocation)
                 self.state?.courseOverGround = location.course
                 self.state?.currentStep = remainingSteps.first
@@ -191,7 +191,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
-                // TODO
+                self.state?.remainingWaypoints = remainingWaypoints.map({ coord in
+                    CLLocationCoordinate2D(geographicCoordinates: coord)
+                })
+
     //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
     //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
     //                })
@@ -205,7 +208,14 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         break
                     }
 
-                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine) ?? .doNothing) {
+                    let fallbackAction: CorrectiveAction
+                    if let waypoints = self.state?.remainingWaypoints {
+                        fallbackAction = .getNewRoutes(waypoints: waypoints)
+                    } else {
+                        fallbackAction = .doNothing
+                    }
+
+                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine) ?? fallbackAction) {
                     case .doNothing:
                         break
                     case .getNewRoutes(let waypoints):
@@ -213,7 +223,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         self.recalculationTask = Task {
                             do {
                                 let routes = try await self.getRoutes(initialLocation: location, waypoints: waypoints)
-                                self.delegate?.core(self, loadedAlternateRoutes: routes)
+                                if let delegate = self.delegate {
+                                    delegate.core(self, loadedAlternateRoutes: routes)
+                                } else if let route = routes.first {
+                                    // Default behavior when no delegate is assigned:
+                                    // accept the first route, as this is what most users want
+                                    try self.startNavigation(route: route, stepAdvance: self.initStepAdvance!, routeDeviationTracking: self.initRouteDeviationTracking!)
+                                }
                             } catch {
                                 // Do nothing; this exists to enable us to run what amounts to an "async defer"
                             }
@@ -255,6 +271,8 @@ extension FerrostarCore: LocationManagingDelegate {
     }
 
     public func locationManager(_: LocationProviding, didFailWithError error: Error) {
-        delegate?.core(self, locationManagerFailedWithError: error)
+        // TODO: Decide if/how to propagate this upstream later.
+        // For initial releases, we simply assume that the developer has requested the correct permissions
+        // and ensure this before attempting to start location updates.
     }
 }

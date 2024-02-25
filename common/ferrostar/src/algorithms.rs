@@ -1,5 +1,8 @@
 use crate::models::{GeographicCoordinate, RouteStep, UserLocation};
-use geo::{Closest, ClosestPoint, EuclideanDistance, HaversineDistance, HaversineLength, LineLocatePoint, LineString, Point};
+use geo::{
+    Closest, ClosestPoint, EuclideanDistance, HaversineDistance, HaversineLength, LineLocatePoint,
+    LineString, Point,
+};
 
 use crate::navigation_controller::models::{
     StepAdvanceMode, StepAdvanceStatus,
@@ -8,9 +11,10 @@ use crate::navigation_controller::models::{
 
 #[cfg(test)]
 use {
-    crate::navigation_controller::test_helpers::gen_dummy_route_step, proptest::prelude::*,
-    std::time::SystemTime,
+    crate::navigation_controller::test_helpers::gen_dummy_route_step,
     geo::{coord, point},
+    proptest::prelude::*,
+    std::time::SystemTime,
 };
 
 /// Snaps a user location to the closest point on a route line.
@@ -34,15 +38,19 @@ fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
     match line.closest_point(point) {
         Closest::Intersection(snapped) | Closest::SinglePoint(snapped) => {
             let (x, y) = (snapped.x(), snapped.y());
-            if x.is_nan() || x.is_subnormal() || x.is_infinite() || y.is_nan() || y.is_subnormal() || y.is_infinite() {
+            if x.is_nan()
+                || x.is_subnormal()
+                || x.is_infinite()
+                || y.is_nan()
+                || y.is_subnormal()
+                || y.is_infinite()
+            {
                 None
             } else {
                 Some(snapped)
             }
-        },
-        Closest::Indeterminate => {
-            None
-        },
+        }
+        Closest::Indeterminate => None,
     }
 }
 
@@ -171,8 +179,8 @@ pub fn should_advance_to_next_step(
 /// including dropping a completed step.
 /// This function is safe and idempotent in the case that it is accidentally
 /// invoked with no remaining steps.
-pub fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
-    // NOTE: The first item is the *current* step and we want the *next* step.
+pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
+    // NOTE: The first item is the *current* step, and we want the *next* step.
     match remaining_steps.get(1) {
         Some(new_step) => Advanced {
             step: new_step.clone(),

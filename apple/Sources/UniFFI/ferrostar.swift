@@ -440,7 +440,7 @@ public protocol NavigationControllerProtocol: AnyObject {
      *
      * Depending on the advancement strategy, this may be automatic.
      * For other cases, it is desirable to advance to the next step manually (ex: walking in an
-     * urban tunnel). We leave this decision to the app developer.
+     * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
      */
     func advanceToNextStep(state: TripState) -> TripState
 
@@ -498,7 +498,7 @@ public class NavigationController:
      *
      * Depending on the advancement strategy, this may be automatic.
      * For other cases, it is desirable to advance to the next step manually (ex: walking in an
-     * urban tunnel). We leave this decision to the app developer.
+     * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
      */
     public func advanceToNextStep(state: TripState) -> TripState {
         return try! FfiConverterTypeTripState.lift(
@@ -2740,10 +2740,22 @@ public enum TripState {
         snappedUserLocation: UserLocation,
         /**
             * The ordered list of steps that remain in the trip.
+            *
             * The step at the front of the list is always the current step.
             * We currently assume that you cannot move backward to a previous step.
             */
         remainingSteps: [RouteStep],
+        /**
+            * Remaining waypoints to visit on the route.
+            *
+            * The waypoint at the front of the list is always the *next* waypoint "goal."
+            * Unlike the current step, there is no value in tracking the "current" waypoint,
+            * as the main use of waypoints is recalculation when the user deviates from the route.
+            * (In most use cases, a route will have only two waypoints, but more complex use cases
+            * may have multiple intervening points that are visited along the route.)
+            * This list is updated as the user advances through the route.
+            */
+        remainingWaypoints: [GeographicCoordinate],
         /**
             * The distance to the next maneuver, in meters.
             */
@@ -2765,6 +2777,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return try .navigating(
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
+                remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
                 deviation: FfiConverterTypeRouteDeviation.read(from: &buf)
             )
@@ -2777,10 +2790,11 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
 
     public static func write(_ value: TripState, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingSteps, distanceToNextManeuver, deviation):
+        case let .navigating(snappedUserLocation, remainingSteps, remainingWaypoints, distanceToNextManeuver, deviation):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
+            FfiConverterSequenceTypeGeographicCoordinate.write(remainingWaypoints, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
 
@@ -3185,7 +3199,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 1344 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 50206 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 59656 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 48874 {
