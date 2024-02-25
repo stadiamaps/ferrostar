@@ -16,7 +16,8 @@ struct NavigationView: View {
     
     private let initialLocation = CLLocation(latitude: 37.332726,
                                              longitude: -122.031790)
-    
+    private let navigationDelegate = NavigationDelegate()
+
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
     
@@ -40,8 +41,8 @@ struct NavigationView: View {
             profile: "pedestrian",
             locationProvider: locationProvider
         )
-
-        // TODO: Example showing delegate
+        // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
+        self.ferrostarCore.delegate = navigationDelegate
     }
     
     var body: some View {

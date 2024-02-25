@@ -12,7 +12,6 @@ public struct NavigationState {
     public internal(set) var courseOverGround: CLLocationDirection?
     public internal(set) var fullRouteShape: [CLLocationCoordinate2D]
     public internal(set) var currentStep: UniFFI.RouteStep?
-    public internal(set) var remainingWaypoints: [CLLocationCoordinate2D]?
     public internal(set) var visualInstructions: UniFFI.VisualInstruction?
     public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
     public internal(set) var distanceToNextManeuver: CLLocationDistance?

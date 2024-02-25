@@ -155,12 +155,13 @@ fn simple_route_state_machine_advances_with_location_change() {
     let initial_state = controller.get_initial_state(initial_user_location);
     let TripState::Navigating {
         remaining_steps: initial_remaining_steps,
-        remaining_waypoints: initial_remaining_waypoints,
+        remaining_waypoints,
         ..
     } = initial_state.clone()
     else {
         panic!("Expected state to be navigating");
     };
+    assert_eq!(remaining_waypoints.len(), 1);
 
     // The current step should change when we jump to the end location
     let TripState::Navigating {

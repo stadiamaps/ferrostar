@@ -62,8 +62,8 @@ class MainActivity : ComponentActivity() {
         profile = "bicycle",
         httpClient = httpClient,
         locationProvider = locationProvider,
-        // TODO: Example showing the delegate in action
-        delegate = null,
+        // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
+        delegate = NavigationDelegate(),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +71,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             var navigationViewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
+            locationProvider.lastLocation = initialSimulatedLocation
 
             LaunchedEffect(savedInstanceState) {
                 // Fetch a route in the background
@@ -91,7 +92,6 @@ class MainActivity : ComponentActivity() {
                             ),
                             RouteDeviationTracking.StaticThreshold(25U, 10.0)
                         ),
-                        startingLocation = initialSimulatedLocation
                     )
 
                     var simulationState = locationSimulationFromRoute(route)

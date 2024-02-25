@@ -32,6 +32,8 @@ class InvalidStatusCodeException(val statusCode: Int): FerrostarCoreException("R
 
 class NoResponseBodyException: FerrostarCoreException("Route request was successful but had no body bytes")
 
+class UserLocationUnknown: FerrostarCoreException("The user location is unknown; ensure the location provider is properly configured")
+
 /**
  * Corrective action to take when the user deviates from the route.
  */
@@ -59,9 +61,9 @@ interface FerrostarCoreDelegate {
      *
      * The developer may decide whether or not to act on this information given the current trip state.
      * This is currently used for recalculation when the user diverges from the route, but can be extended for other uses in the future.
-     * Note that [FerrostarCoreState.isCalculatingNewRoute]` will be `true` until this method returns.
+     * Note that [FerrostarCoreState.isCalculatingNewRoute] and [FerrostarCore.isCalculatingNewRoute] will be `true` until this method returns.
      */
-    fun correctiveActionForDeviation(core: FerrostarCore, deviationInMeters: Double): CorrectiveAction
+    fun correctiveActionForDeviation(core: FerrostarCore, deviationInMeters: Double, remainingWaypoints: List<GeographicCoordinate>): CorrectiveAction
 
     /**
      * Called when the core has loaded alternative routes.
@@ -98,12 +100,14 @@ class FerrostarCore(
      */
     var minimumTimeBeforeRecalculaton: Long = 5
 
+    var isCalculatingNewRoute: Boolean = false
+        private set
+
     private val _executor = Executors.newSingleThreadExecutor()
-    private val _scope = CoroutineScope(Dispatchers.Default)
+    private val _scope = CoroutineScope(Dispatchers.IO)
     private var _navigationController: NavigationController? = null
     private var _state: MutableStateFlow<FerrostarCoreState>? = null
     private var _routeRequestInFlight = false
-    private var _isCalculatingNewRoute = false
     private var _lastAutomaticRecalculation: LocalDateTime? = null
 
     private var _config: NavigationControllerConfig? = null
@@ -163,14 +167,18 @@ class FerrostarCore(
      * It will automatically subscribe to location provider updates.
      * Returns a view model which
      */
-    fun startNavigation(route: Route, config: NavigationControllerConfig, startingLocation: Location): NavigationViewModel {
+    fun startNavigation(route: Route, config: NavigationControllerConfig): NavigationViewModel {
         stopNavigation()
 
         val controller = NavigationController(
             route,
             config,
         )
-        val stateFlow = MutableStateFlow(FerrostarCoreState(tripState = controller.getInitialState(startingLocation.userLocation()), false))
+        val startingLocation = locationProvider.lastLocation ?: throw UserLocationUnknown()
+
+        val initialTripState = controller.getInitialState(startingLocation.userLocation())
+        val stateFlow = MutableStateFlow(FerrostarCoreState(tripState = initialTripState, false))
+        handleStateUpdate(initialTripState, startingLocation.userLocation())
 
         _navigationController = controller
         _state = stateFlow
@@ -191,6 +199,52 @@ class FerrostarCore(
         _state = null
     }
 
+    /**
+     * Internal method to react to state updates.
+     *
+     * This is where reactions are triggered in response to a state change (ex: initiating recalculation as the user goes off route).
+     */
+    private fun handleStateUpdate(newState: TripState, location: UserLocation) {
+        if (newState is TripState.Navigating) {
+            if (newState.deviation is RouteDeviation.OffRoute) {
+                if (!_routeRequestInFlight && _lastAutomaticRecalculation?.isAfter(LocalDateTime.now().minusSeconds(minimumTimeBeforeRecalculaton)) != false) {
+                    val action = delegate?.correctiveActionForDeviation(
+                        this,
+                        newState.deviation.deviationFromRouteLine,
+                        newState.remainingWaypoints
+                    ) ?: CorrectiveAction.GetNewRoutes(newState.remainingWaypoints)
+                    when (action) {
+                        is CorrectiveAction.DoNothing -> {
+                            // Do nothing
+                        }
+
+                        is CorrectiveAction.GetNewRoutes -> {
+                            isCalculatingNewRoute = true
+                            _scope.launch {
+                                try {
+                                    val routes =
+                                        getRoutes(location, action.waypoints)
+                                    val config = _config
+                                    if (delegate != null) {
+                                        delegate.loadedAlternativeRoutes(
+                                            this@FerrostarCore,
+                                            routes
+                                        )
+                                    } else if (routes.count() > 1 && config != null) {
+                                        startNavigation(routes.first(), config)
+                                    }
+                                } finally {
+                                    _lastAutomaticRecalculation = LocalDateTime.now()
+                                    isCalculatingNewRoute = false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override fun onLocationUpdated(location: Location) {
         val controller = _navigationController
 
@@ -201,45 +255,9 @@ class FerrostarCore(
                     state = currentValue.tripState
                 )
 
-                if (newState is TripState.Navigating) {
-                    if (newState.deviation is RouteDeviation.OffRoute) {
-                        if (!_routeRequestInFlight && _lastAutomaticRecalculation?.isAfter(LocalDateTime.now().minusSeconds(minimumTimeBeforeRecalculaton)) != false) {
-                            val action = delegate?.correctiveActionForDeviation(
-                                this,
-                                newState.deviation.deviationFromRouteLine
-                            ) ?: CorrectiveAction.GetNewRoutes(newState.remainingWaypoints)
-                            when (action) {
-                                is CorrectiveAction.DoNothing -> {
-                                    // Do nothing
-                                }
+                handleStateUpdate(newState, location.userLocation())
 
-                                is CorrectiveAction.GetNewRoutes -> {
-                                    _isCalculatingNewRoute = true
-                                    _scope.launch {
-                                        try {
-                                            val routes =
-                                                getRoutes(location.userLocation(), action.waypoints)
-                                            val config = _config
-                                            if (delegate != null) {
-                                                delegate.loadedAlternativeRoutes(
-                                                    this@FerrostarCore,
-                                                    routes
-                                                )
-                                            } else if (routes.count() > 1 && config != null) {
-                                                startNavigation(routes.first(), config, location)
-                                            }
-                                        } finally {
-                                            _lastAutomaticRecalculation = LocalDateTime.now()
-                                            _isCalculatingNewRoute = false
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                FerrostarCoreState(tripState = newState, _isCalculatingNewRoute)
+                FerrostarCoreState(tripState = newState, isCalculatingNewRoute)
             }
         }
     }

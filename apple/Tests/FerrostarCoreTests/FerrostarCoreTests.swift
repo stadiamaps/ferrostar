@@ -97,19 +97,15 @@ final class FerrostarCoreTests: XCTestCase {
                 self.loadedAltRoutesExp = loadedAltRoutesExp
             }
 
-            func core(_ core: FerrostarCore, locationManagerFailedWithError error: Error) {
-                // Do nothing
-            }
-
-            func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double) -> CorrectiveAction {
+            func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double, remainingWaypoints waypoints: [CLLocationCoordinate2D]) -> CorrectiveAction {
                 XCTAssertEqual(deviationInMeters, 42)
                 self.routeDeviationCallbackExp.fulfill()
-                return .getNewRoutes(waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
+                return .getNewRoutes(waypoints: waypoints)
             }
 
-            func core(_ core: FerrostarCore, loadedAlternateRoutes: [Route]) {
+            func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route]) {
                 XCTAssert(core.state?.isCalculatingNewRoute == true)  // We are still calculating until this method completes
-                XCTAssert(!loadedAlternateRoutes.isEmpty)
+                XCTAssert(!routes.isEmpty)
                 self.loadedAltRoutesExp.fulfill()
             }
         }

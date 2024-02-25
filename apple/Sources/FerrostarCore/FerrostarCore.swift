@@ -36,7 +36,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Called when the core detects that the user has deviated from the route.
     ///
     /// This hook enables app developers to take the most appropriate corrective action.
-    func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double) -> CorrectiveAction
+    func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double, remainingWaypoints waypoints: [CLLocationCoordinate2D]) -> CorrectiveAction
 
     /// Called when the core has loaded alternate routes.
     ///
@@ -194,7 +194,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 let clRemainingWaypoints = remainingWaypoints.map({ coord in
                     CLLocationCoordinate2D(geographicCoordinates: coord)
                 })
-                self.state?.remainingWaypoints = clRemainingWaypoints
 
     //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
     //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
@@ -209,7 +208,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         break
                     }
 
-                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine) ?? .getNewRoutes(waypoints: clRemainingWaypoints)) {
+                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine, remainingWaypoints: clRemainingWaypoints) ?? .getNewRoutes(waypoints: clRemainingWaypoints)) {
                     case .doNothing:
                         break
                     case .getNewRoutes(let waypoints):
