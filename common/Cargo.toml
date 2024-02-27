@@ -15,4 +15,4 @@ lto = "thin"
 opt-level = "s"
 
 [workspace.dependencies]
-uniffi = { git = "https://github.com/mozilla/uniffi-rs/", rev = "fbc6631953a889c7af6e5f1af94de9242589b75b" }
+uniffi = "0.26.1"

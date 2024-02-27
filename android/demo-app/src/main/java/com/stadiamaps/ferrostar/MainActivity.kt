@@ -30,13 +30,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.LocationSimulationState
 import uniffi.ferrostar.NavigationControllerConfig
+import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.SimulationSpeed
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.advanceLocationSimulation
 import uniffi.ferrostar.locationSimulationFromRoute
 import java.net.URL
+import java.time.Duration
 import java.time.Instant
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -49,17 +50,20 @@ class MainActivity : ComponentActivity() {
         Instant.now()
     )
     private val locationProvider = SimulatedLocationProvider()
-    private val httpClient = OkHttpClient.Builder().build()
+    private val httpClient = OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
 
     // NOTE: This is a public instance which is suitable for development, but not for heavy use.
     // This server is suitable for testing and building your app, but once you are ready to go live,
     // YOU MUST USE ANOTHER SERVER.
     //
     // See https://github.com/stadiamaps/ferrostar/blob/main/VENDORS.md for options
-    val core = FerrostarCore(
+    private val core = FerrostarCore(
         valhallaEndpointURL = URL("https://valhalla1.openstreetmap.de/route"),
         profile = "bicycle",
-        httpClient = httpClient
+        httpClient = httpClient,
+        locationProvider = locationProvider,
+        // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
+        delegate = NavigationDelegate(),
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +71,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             var navigationViewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
+            locationProvider.lastLocation = initialSimulatedLocation
 
             LaunchedEffect(savedInstanceState) {
                 // Fetch a route in the background
@@ -84,16 +89,14 @@ class MainActivity : ComponentActivity() {
                             StepAdvanceMode.RelativeLineStringDistance(
                                 minimumHorizontalAccuracy = 25U,
                                 automaticAdvanceDistance = 10U
-                            )
+                            ),
+                            RouteDeviationTracking.StaticThreshold(25U, 10.0)
                         ),
-                        locationProvider = locationProvider,
-                        startingLocation = initialSimulatedLocation
                     )
 
-                    val delayBetweenSteps = 1.toDuration(DurationUnit.SECONDS)
                     var simulationState = locationSimulationFromRoute(route)
                     while (true) {
-                        delay(delayBetweenSteps)
+                        delay(1.toDuration(DurationUnit.SECONDS))
                         simulationState = advanceLocationSimulation(simulationState, SimulationSpeed.JUMP_TO_NEXT_LOCATION)
                         locationProvider.lastLocation = SimulatedLocation(
                             simulationState.currentLocation,

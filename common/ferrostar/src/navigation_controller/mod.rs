@@ -1,13 +1,17 @@
-mod algorithms;
 pub mod models;
 
-use crate::models::{Route, UserLocation};
-use crate::navigation_controller::algorithms::{
-    advance_step, distance_to_end_of_step, should_advance_to_next_step,
+#[cfg(test)]
+pub(crate) mod test_helpers;
+
+use crate::{
+    algorithms::{
+        advance_step, distance_to_end_of_step, should_advance_to_next_step,
+        snap_user_location_to_line,
+    },
+    models::{Route, UserLocation},
 };
-use algorithms::snap_user_location_to_line;
+use geo::{HaversineDistance, Point};
 use models::*;
-use std::sync::Arc;
 
 /// Manages the navigation lifecycle of a route, reacting to inputs like user location updates
 /// and returning a new state.
@@ -25,8 +29,8 @@ pub struct NavigationController {
 #[uniffi::export]
 impl NavigationController {
     #[uniffi::constructor]
-    pub fn new(route: Route, config: NavigationControllerConfig) -> Arc<Self> {
-        Arc::new(Self { config, route })
+    pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
+        Self { config, route }
     }
 
     /// Returns initial trip state as if the user had just started the route with no progress.
@@ -42,11 +46,19 @@ impl NavigationController {
         let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
         let distance_to_next_maneuver =
             distance_to_end_of_step(&snapped_user_location.into(), &current_step_linestring);
+        let deviation = self.config.route_deviation_tracking.check_route_deviation(
+            location,
+            &self.route,
+            current_route_step,
+        );
 
         TripState::Navigating {
             snapped_user_location,
             remaining_steps: remaining_steps.clone(),
+            // Skip the first waypoint, as it is the current one
+            remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
             distance_to_next_maneuver,
+            deviation,
         }
     }
 
@@ -54,14 +66,17 @@ impl NavigationController {
     ///
     /// Depending on the advancement strategy, this may be automatic.
     /// For other cases, it is desirable to advance to the next step manually (ex: walking in an
-    /// urban tunnel). We leave this decision to the app developer.
+    /// urban tunnel). We leave this decision to the app developer and provide this as a convenience.
     pub fn advance_to_next_step(&self, state: &TripState) -> TripState {
         match state {
             TripState::Navigating {
                 snapped_user_location,
                 ref remaining_steps,
+                ref remaining_waypoints,
+                deviation,
                 ..
             } => {
+                // FIXME: This logic is mostly duplicated below
                 let update = advance_step(remaining_steps);
                 match update {
                     StepAdvanceStatus::Advanced {
@@ -72,12 +87,38 @@ impl NavigationController {
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
 
+                        // Update remaining waypoints
+                        let should_advance_waypoint = if let Some(waypoint) =
+                            remaining_waypoints.first()
+                        {
+                            let current_location: Point = snapped_user_location.coordinates.into();
+                            let next_waypoint: Point = (*waypoint).into();
+                            // TODO: This is just a hard-coded threshold for the time being.
+                            // More sophisticated behavior will take some time and use cases, so punting on this for now.
+                            current_location.haversine_distance(&next_waypoint) < 100.0
+                        } else {
+                            false
+                        };
+
+                        let remaining_waypoints = if should_advance_waypoint {
+                            let mut remaining_waypoints = remaining_waypoints.clone();
+                            remaining_waypoints.remove(0);
+                            remaining_waypoints
+                        } else {
+                            remaining_waypoints.clone()
+                        };
+
                         let distance_to_next_maneuver =
                             distance_to_end_of_step(&(*snapped_user_location).into(), &linestring);
+
                         TripState::Navigating {
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
+                            remaining_waypoints,
                             distance_to_next_maneuver,
+                            // NOTE: We *can't* run deviation calculations in this method,
+                            // as it requires a non-snapped user location.
+                            deviation: *deviation,
                         }
                     }
                     StepAdvanceStatus::EndOfRoute => TripState::Complete,
@@ -94,6 +135,8 @@ impl NavigationController {
         match state {
             TripState::Navigating {
                 ref remaining_steps,
+                ref remaining_waypoints,
+                deviation,
                 ..
             } => {
                 let Some(current_step) = remaining_steps.first() else {
@@ -105,53 +148,60 @@ impl NavigationController {
                 //
 
                 // Find the nearest point on the route line
-                let mut current_step_linestring = current_step.get_linestring();
+                let current_step_linestring = current_step.get_linestring();
                 let snapped_user_location =
                     snap_user_location_to_line(location, &current_step_linestring);
+                let distance_to_next_maneuver = distance_to_end_of_step(
+                    &snapped_user_location.into(),
+                    &current_step_linestring,
+                );
+                let intermediate_state = TripState::Navigating {
+                    snapped_user_location,
+                    remaining_steps: remaining_steps.clone(),
+                    remaining_waypoints: remaining_waypoints.clone(),
+                    distance_to_next_maneuver,
+                    deviation: *deviation,
+                };
 
-                // TODO: Check if the user's distance is > some configurable threshold, accounting for GPS error, mode of travel, etc.
-                // TODO: If so, flag that the user is off route so higher levels can recalculate if desired
-
-                // If on track, update the set of remaining waypoints, remaining steps (drop from the list), and update current step.
-                let mut remaining_steps = remaining_steps.clone();
-                let current_step = if should_advance_to_next_step(
+                match if should_advance_to_next_step(
                     &current_step_linestring,
                     remaining_steps.get(1),
                     &location,
                     self.config.step_advance,
                 ) {
                     // Advance to the next step
-                    let update = advance_step(&remaining_steps);
-                    match update {
-                        StepAdvanceStatus::Advanced { step, linestring } => {
-                            // Apply the updates
-                            // TODO: Figure out an elegant way to factor this out as it appears in two places
-                            remaining_steps.remove(0);
-                            current_step_linestring = linestring;
-
-                            Some(step.clone())
-                        }
-                        StepAdvanceStatus::EndOfRoute => {
-                            return TripState::Complete;
-                        }
-                    }
+                    self.advance_to_next_step(&intermediate_state)
                 } else {
-                    Some(current_step.clone())
-                };
-
-                if current_step.is_some() {
-                    let distance_to_next_maneuver = distance_to_end_of_step(
-                        &snapped_user_location.into(),
-                        &current_step_linestring,
-                    );
-
+                    // Do not advance
+                    intermediate_state
+                } {
                     TripState::Navigating {
                         snapped_user_location,
                         remaining_steps,
+                        remaining_waypoints,
                         distance_to_next_maneuver,
+                        deviation: _,
+                    } => {
+                        // Recalculate deviation. This happens later, as the current step may have changed.
+                        // The distance to the next maneuver will be updated by advance_to_next_step if needed.
+                        let current_step = remaining_steps
+                            .first()
+                            .expect("Invalid state: navigating with zero remaining steps.");
+                        let deviation = self.config.route_deviation_tracking.check_route_deviation(
+                            location,
+                            &self.route,
+                            current_step,
+                        );
+
+                        TripState::Navigating {
+                            snapped_user_location,
+                            remaining_steps,
+                            remaining_waypoints,
+                            distance_to_next_maneuver,
+                            deviation,
+                        }
                     }
-                } else {
-                    TripState::Complete
+                    TripState::Complete => TripState::Complete,
                 }
             }
             // Terminal state

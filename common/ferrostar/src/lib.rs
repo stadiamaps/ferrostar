@@ -1,3 +1,13 @@
+//! # Ferrostar
+//!
+//! Ferrostar is a modern SDK for building turn-by-turn navigation applications.
+//!
+//! See the [README on GitHub](https://github.com/stadiamaps/ferrostar) for the moment,
+//! as this is still under extremely active development,
+//! and proper documentation is still in flux.
+
+pub mod algorithms;
+pub mod deviation_detection;
 pub mod models;
 pub mod navigation_controller;
 pub mod routing_adapters;

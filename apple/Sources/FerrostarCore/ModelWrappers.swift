@@ -34,13 +34,15 @@ public struct Route {
 
 /// A Swift wrapper around `UniFFI.TripState`.
 public enum TripState {
-    case navigating(snappedUserLocation: CLLocation, remainingSteps: [UniFFI.RouteStep], distanceToNextManeuver: Double)
+    case navigating(snappedUserLocation: CLLocation, remainingSteps: [UniFFI.RouteStep], remainingWaypoints: [CLLocationCoordinate2D], distanceToNextManeuver: CLLocationDistance, deviation: RouteDeviation)
     case complete
 
     init(_ update: UniFFI.TripState) {
         switch (update) {
-        case .navigating(snappedUserLocation: let location, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
-            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingSteps: remainingSteps, distanceToNextManeuver: distanceToNextManeuver)
+        case .navigating(snappedUserLocation: let location, remainingSteps: let remainingSteps, remainingWaypoints: let remainingWaypoints, distanceToNextManeuver: let distanceToNextManeuver, deviation: let deviation):
+            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingSteps: remainingSteps, remainingWaypoints: remainingWaypoints.map({ coord in
+                CLLocationCoordinate2D(geographicCoordinates: coord)
+            }), distanceToNextManeuver: distanceToNextManeuver, deviation: deviation)
         case .complete:
             self = .complete
         }
@@ -67,6 +69,38 @@ public enum StepAdvanceMode {
             return .distanceToEndOfStep(distance: distance, minimumHorizontalAccuracy: minimumHorizontalAccuracy)
         case .relativeLineStringDistance(minimumHorizontalAccuracy: let minimumHorizontalAccuracy, automaticAdvanceDistance: let automaticAdvanceDistance):
             return .relativeLineStringDistance(minimumHorizontalAccuracy: minimumHorizontalAccuracy, automaticAdvanceDistance: automaticAdvanceDistance)
+        }
+    }
+}
+
+private class DetectorImpl: RouteDeviationDetector {
+    let detectorFunc: (UserLocation, Route, RouteStep) -> RouteDeviation
+
+    init(detectorFunc: @escaping (UserLocation, Route, RouteStep) -> RouteDeviation) {
+        self.detectorFunc = detectorFunc
+    }
+
+    func checkRouteDeviation(location: UniFFI.UserLocation, route: UniFFI.Route, currentRouteStep: UniFFI.RouteStep) -> UniFFI.RouteDeviation {
+        return detectorFunc(location, Route(inner: route), currentRouteStep)
+    }
+}
+
+/// A Swift wrapper around `UniFFI.RouteDeviationTracking`
+public enum RouteDeviationTracking {
+    case none
+
+    case staticThreshold(minimumHorizontalAccuracy: UInt16, maxAcceptableDeviation: Double)
+
+    case custom(detector: (UserLocation, Route, RouteStep) -> RouteDeviation)
+
+    var ffiValue: UniFFI.RouteDeviationTracking {
+        switch self {
+        case .none:
+            return .none
+        case .staticThreshold(minimumHorizontalAccuracy: let minimumHorizontalAccuracy, maxAcceptableDeviation: let maxAcceptableDeviation):
+            return .staticThreshold(minimumHorizontalAccuracy: minimumHorizontalAccuracy, maxAcceptableDeviation: maxAcceptableDeviation)
+        case .custom(detector: let detectorFunc):
+            return .custom(detector: DetectorImpl(detectorFunc: detectorFunc))
         }
     }
 }

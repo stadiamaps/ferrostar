@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-ferrostar:
-    runs-on: macos-13
+    runs-on: macos-14
 
     steps:
     - name: Checkout repo
@@ -26,7 +26,7 @@ jobs:
         retention-days: 5
 
   build-demo:
-    runs-on: macos-13
+    runs-on: macos-14
     needs: build-ferrostar
     strategy:
       matrix:
@@ -70,7 +70,7 @@ jobs:
         retention-days: 5
 
   test:
-    runs-on: macos-13
+    runs-on: macos-14
     needs: build-ferrostar
     strategy:
       matrix:

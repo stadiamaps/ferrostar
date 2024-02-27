@@ -425,12 +425,45 @@ private struct FfiConverterTimestamp: FfiConverterRustBuffer {
     }
 }
 
+/**
+ * Manages the navigation lifecycle of a route, reacting to inputs like user location updates
+ * and returning a new state.
+ * If you want to recalculate a new route, you need to create a new navigation controller.
+ *
+ * In the overall architecture, this is a mid-level construct. It wraps some lower
+ * level constructs like the route adapter, but a higher level wrapper handles things
+ * like feeding in user location updates, route recalculation behavior, etc.
+ */
 public protocol NavigationControllerProtocol: AnyObject {
+    /**
+     * Advances navigation to the next step.
+     *
+     * Depending on the advancement strategy, this may be automatic.
+     * For other cases, it is desirable to advance to the next step manually (ex: walking in an
+     * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+     */
     func advanceToNextStep(state: TripState) -> TripState
+
+    /**
+     * Returns initial trip state as if the user had just started the route with no progress.
+     */
     func getInitialState(location: UserLocation) -> TripState
+
+    /**
+     * Updates the user's current location and updates the navigation state accordingly.
+     */
     func updateUserLocation(location: UserLocation, state: TripState) -> TripState
 }
 
+/**
+ * Manages the navigation lifecycle of a route, reacting to inputs like user location updates
+ * and returning a new state.
+ * If you want to recalculate a new route, you need to create a new navigation controller.
+ *
+ * In the overall architecture, this is a mid-level construct. It wraps some lower
+ * level constructs like the route adapter, but a higher level wrapper handles things
+ * like feeding in user location updates, route recalculation behavior, etc.
+ */
 public class NavigationController:
     NavigationControllerProtocol
 {
@@ -441,6 +474,10 @@ public class NavigationController:
     // make it `required` without making it `public`.
     required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
         self.pointer = pointer
+    }
+
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_navigationcontroller(self.pointer, $0) }
     }
 
     public convenience init(route: Route, config: NavigationControllerConfig) {
@@ -456,31 +493,44 @@ public class NavigationController:
         try! rustCall { uniffi_ferrostar_fn_free_navigationcontroller(pointer, $0) }
     }
 
+    /**
+     * Advances navigation to the next step.
+     *
+     * Depending on the advancement strategy, this may be automatic.
+     * For other cases, it is desirable to advance to the next step manually (ex: walking in an
+     * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+     */
     public func advanceToNextStep(state: TripState) -> TripState {
         return try! FfiConverterTypeTripState.lift(
             try!
                 rustCall {
-                    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.pointer,
+                    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.uniffiClonePointer(),
                                                                                          FfiConverterTypeTripState.lower(state), $0)
                 }
         )
     }
 
+    /**
+     * Returns initial trip state as if the user had just started the route with no progress.
+     */
     public func getInitialState(location: UserLocation) -> TripState {
         return try! FfiConverterTypeTripState.lift(
             try!
                 rustCall {
-                    uniffi_ferrostar_fn_method_navigationcontroller_get_initial_state(self.pointer,
+                    uniffi_ferrostar_fn_method_navigationcontroller_get_initial_state(self.uniffiClonePointer(),
                                                                                       FfiConverterTypeUserLocation.lower(location), $0)
                 }
         )
     }
 
+    /**
+     * Updates the user's current location and updates the navigation state accordingly.
+     */
     public func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
         return try! FfiConverterTypeTripState.lift(
             try!
                 rustCall {
-                    uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.pointer,
+                    uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.uniffiClonePointer(),
                                                                                          FfiConverterTypeUserLocation.lower(location),
                                                                                          FfiConverterTypeTripState.lower(state), $0)
                 }
@@ -497,7 +547,7 @@ public struct FfiConverterTypeNavigationController: FfiConverter {
     }
 
     public static func lower(_ value: NavigationController) -> UnsafeMutableRawPointer {
-        return value.pointer
+        return value.uniffiClonePointer()
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationController {
@@ -526,11 +576,52 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
     return FfiConverterTypeNavigationController.lower(value)
 }
 
+/**
+ * The route adapter bridges between the common core and a routing backend.
+ *
+ * This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
+ * traits, but it provides one further level of abstraction which is helpful to consumers.
+ * As there is no way to signal compatibility between request generators and response parsers,
+ * the [RouteAdapter] provides convenience constructors which take the guesswork out of it,
+ * while still leaving consumers free to implement one or both halves.
+ *
+ * In the future, we may provide additional methods or conveniences, and this
+ * indirection leaves the design open to such changes without necessarily breaking source
+ * compatibility.
+ * One such possible extension would be the ability to fetch more detailed attributes in real time.
+ * This is supported by the Valhalla stack, among others.
+ *
+ * Ideas  welcome re: how to signal compatibility between request generators and response parsers.
+ * I don't think we can do this in the type system, since one of the reasons for the split design
+ * is modularity, including the possibility of user-provided implementations, and these will not
+ * always be of a "known" type to the Rust side.
+ */
 public protocol RouteAdapterProtocol: AnyObject {
     func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
+
     func parseResponse(response: Data) throws -> [Route]
 }
 
+/**
+ * The route adapter bridges between the common core and a routing backend.
+ *
+ * This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
+ * traits, but it provides one further level of abstraction which is helpful to consumers.
+ * As there is no way to signal compatibility between request generators and response parsers,
+ * the [RouteAdapter] provides convenience constructors which take the guesswork out of it,
+ * while still leaving consumers free to implement one or both halves.
+ *
+ * In the future, we may provide additional methods or conveniences, and this
+ * indirection leaves the design open to such changes without necessarily breaking source
+ * compatibility.
+ * One such possible extension would be the ability to fetch more detailed attributes in real time.
+ * This is supported by the Valhalla stack, among others.
+ *
+ * Ideas  welcome re: how to signal compatibility between request generators and response parsers.
+ * I don't think we can do this in the type system, since one of the reasons for the split design
+ * is modularity, including the possibility of user-provided implementations, and these will not
+ * always be of a "known" type to the Rust side.
+ */
 public class RouteAdapter:
     RouteAdapterProtocol
 {
@@ -541,6 +632,10 @@ public class RouteAdapter:
     // make it `required` without making it `public`.
     required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
         self.pointer = pointer
+    }
+
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_routeadapter(self.pointer, $0) }
     }
 
     public convenience init(requestGenerator: RouteRequestGenerator, responseParser: RouteResponseParser) {
@@ -568,7 +663,7 @@ public class RouteAdapter:
     public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
             rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
-                uniffi_ferrostar_fn_method_routeadapter_generate_request(self.pointer,
+                uniffi_ferrostar_fn_method_routeadapter_generate_request(self.uniffiClonePointer(),
                                                                          FfiConverterTypeUserLocation.lower(userLocation),
                                                                          FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
             }
@@ -578,7 +673,7 @@ public class RouteAdapter:
     public func parseResponse(response: Data) throws -> [Route] {
         return try FfiConverterSequenceTypeRoute.lift(
             rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
-                uniffi_ferrostar_fn_method_routeadapter_parse_response(self.pointer,
+                uniffi_ferrostar_fn_method_routeadapter_parse_response(self.uniffiClonePointer(),
                                                                        FfiConverterData.lower(response), $0)
             }
         )
@@ -594,7 +689,7 @@ public struct FfiConverterTypeRouteAdapter: FfiConverter {
     }
 
     public static func lower(_ value: RouteAdapter) -> UnsafeMutableRawPointer {
-        return value.pointer
+        return value.uniffiClonePointer()
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteAdapter {
@@ -623,12 +718,19 @@ public func FfiConverterTypeRouteAdapter_lower(_ value: RouteAdapter) -> UnsafeM
     return FfiConverterTypeRouteAdapter.lower(value)
 }
 
-public protocol RouteRequestGenerator: AnyObject {
-    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
+public protocol RouteDeviationDetector: AnyObject {
+    /**
+     * Determines whether the user is following the route correctly or not.
+     *
+     * NOTE: This function is merely for reporting the tracking status based on available information.
+     * A return value indicating that the user is off route does not necessarily mean
+     * that a new route will be recalculated immediately.
+     */
+    func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation
 }
 
-public class RouteRequestGeneratorImpl:
-    RouteRequestGenerator
+public class RouteDeviationDetectorImpl:
+    RouteDeviationDetector
 {
     fileprivate let pointer: UnsafeMutableRawPointer
 
@@ -639,17 +741,30 @@ public class RouteRequestGeneratorImpl:
         self.pointer = pointer
     }
 
-    deinit {
-        try! rustCall { uniffi_ferrostar_fn_free_routerequestgenerator(pointer, $0) }
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_routedeviationdetector(self.pointer, $0) }
     }
 
-    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
-        return try FfiConverterTypeRouteRequest.lift(
-            rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
-                uniffi_ferrostar_fn_method_routerequestgenerator_generate_request(self.pointer,
-                                                                                  FfiConverterTypeUserLocation.lower(userLocation),
-                                                                                  FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
-            }
+    deinit {
+        try! rustCall { uniffi_ferrostar_fn_free_routedeviationdetector(pointer, $0) }
+    }
+
+    /**
+     * Determines whether the user is following the route correctly or not.
+     *
+     * NOTE: This function is merely for reporting the tracking status based on available information.
+     * A return value indicating that the user is off route does not necessarily mean
+     * that a new route will be recalculated immediately.
+     */
+    public func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation {
+        return try! FfiConverterTypeRouteDeviation.lift(
+            try!
+                rustCall {
+                    uniffi_ferrostar_fn_method_routedeviationdetector_check_route_deviation(self.uniffiClonePointer(),
+                                                                                            FfiConverterTypeUserLocation.lower(location),
+                                                                                            FfiConverterTypeRoute.lower(route),
+                                                                                            FfiConverterTypeRouteStep.lower(currentRouteStep), $0)
+                }
         )
     }
 }
@@ -719,6 +834,170 @@ private let UNIFFI_CALLBACK_SUCCESS: Int32 = 0
 private let UNIFFI_CALLBACK_ERROR: Int32 = 1
 private let UNIFFI_CALLBACK_UNEXPECTED_ERROR: Int32 = 2
 
+// Declaration and FfiConverters for RouteDeviationDetector Callback Interface
+
+private let uniffiCallbackInterfaceRouteDeviationDetector: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
+
+    func invokeCheckRouteDeviation(_ swiftCallbackInterface: RouteDeviationDetector, _ argsData: UnsafePointer<UInt8>, _ argsLen: Int32, _ out_buf: UnsafeMutablePointer<RustBuffer>) throws -> Int32 {
+        var reader = createReader(data: Data(bytes: argsData, count: Int(argsLen)))
+        func makeCall() throws -> Int32 {
+            let result = try swiftCallbackInterface.checkRouteDeviation(
+                location: FfiConverterTypeUserLocation.read(from: &reader),
+                route: FfiConverterTypeRoute.read(from: &reader),
+                currentRouteStep: FfiConverterTypeRouteStep.read(from: &reader)
+            )
+            var writer = [UInt8]()
+            FfiConverterTypeRouteDeviation.write(result, into: &writer)
+            out_buf.pointee = RustBuffer(bytes: writer)
+            return UNIFFI_CALLBACK_SUCCESS
+        }
+        return try makeCall()
+    }
+
+    switch method {
+    case IDX_CALLBACK_FREE:
+        FfiConverterTypeRouteDeviationDetector.handleMap.remove(handle: handle)
+        // Successful return
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_SUCCESS
+    case 1:
+        guard let cb = FfiConverterTypeRouteDeviationDetector.handleMap.get(handle: handle) else {
+            out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+        do {
+            return try invokeCheckRouteDeviation(cb, argsData, argsLen, out_buf)
+        } catch {
+            out_buf.pointee = FfiConverterString.lower(String(describing: error))
+            return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+        }
+
+    // This should never happen, because an out of bounds method index won't
+    // ever be used. Once we can catch errors, we should return an InternalError.
+    // https://github.com/mozilla/uniffi-rs/issues/351
+    default:
+        // An unexpected error happened.
+        // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
+        return UNIFFI_CALLBACK_UNEXPECTED_ERROR
+    }
+}
+
+private func uniffiCallbackInitRouteDeviationDetector() {
+    uniffi_ferrostar_fn_init_callback_routedeviationdetector(uniffiCallbackInterfaceRouteDeviationDetector)
+}
+
+public struct FfiConverterTypeRouteDeviationDetector: FfiConverter {
+    fileprivate static var handleMap = UniFFICallbackHandleMap<RouteDeviationDetector>()
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = RouteDeviationDetector
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteDeviationDetector {
+        return RouteDeviationDetectorImpl(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: RouteDeviationDetector) -> UnsafeMutableRawPointer {
+        guard let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: handleMap.insert(obj: value))) else {
+            fatalError("Cast to UnsafeMutableRawPointer failed")
+        }
+        return ptr
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteDeviationDetector {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if ptr == nil {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: RouteDeviationDetector, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+public func FfiConverterTypeRouteDeviationDetector_lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteDeviationDetector {
+    return try FfiConverterTypeRouteDeviationDetector.lift(pointer)
+}
+
+public func FfiConverterTypeRouteDeviationDetector_lower(_ value: RouteDeviationDetector) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeRouteDeviationDetector.lower(value)
+}
+
+/**
+ * A trait describing any object capable of generating [RouteRequest]s.
+ *
+ * The interface is intentionally generic. Every routing backend has its own set of
+ * parameters, including a "profile," max travel speed, units of speed and distance, and more.
+ * It is assumed that these properties will be set at construction time or otherwise configured
+ * before use, so that we can keep the public interface as generic as possible.
+ *
+ * Implementations may be either in Rust (most popular engines should eventually have Rust
+ * implementations) or foreign code.
+ */
+public protocol RouteRequestGenerator: AnyObject {
+    /**
+     * Generates a routing backend request given the set of locations.
+     *
+     * While most implementations will treat the locations as an ordered sequence, this is not
+     * guaranteed (ex: an optimized router).
+     */
+    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
+}
+
+/**
+ * A trait describing any object capable of generating [RouteRequest]s.
+ *
+ * The interface is intentionally generic. Every routing backend has its own set of
+ * parameters, including a "profile," max travel speed, units of speed and distance, and more.
+ * It is assumed that these properties will be set at construction time or otherwise configured
+ * before use, so that we can keep the public interface as generic as possible.
+ *
+ * Implementations may be either in Rust (most popular engines should eventually have Rust
+ * implementations) or foreign code.
+ */
+public class RouteRequestGeneratorImpl:
+    RouteRequestGenerator
+{
+    fileprivate let pointer: UnsafeMutableRawPointer
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_routerequestgenerator(self.pointer, $0) }
+    }
+
+    deinit {
+        try! rustCall { uniffi_ferrostar_fn_free_routerequestgenerator(pointer, $0) }
+    }
+
+    /**
+     * Generates a routing backend request given the set of locations.
+     *
+     * While most implementations will treat the locations as an ordered sequence, this is not
+     * guaranteed (ex: an optimized router).
+     */
+    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
+        return try FfiConverterTypeRouteRequest.lift(
+            rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
+                uniffi_ferrostar_fn_method_routerequestgenerator_generate_request(self.uniffiClonePointer(),
+                                                                                  FfiConverterTypeUserLocation.lower(userLocation),
+                                                                                  FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
+            }
+        )
+    }
+}
+
 // Declaration and FfiConverters for RouteRequestGenerator Callback Interface
 
 private let uniffiCallbackInterfaceRouteRequestGenerator: ForeignCallback = { (handle: UniFFICallbackHandle, method: Int32, argsData: UnsafePointer<UInt8>, argsLen: Int32, out_buf: UnsafeMutablePointer<RustBuffer>) -> Int32 in
@@ -746,7 +1025,7 @@ private let uniffiCallbackInterfaceRouteRequestGenerator: ForeignCallback = { (h
     switch method {
     case IDX_CALLBACK_FREE:
         FfiConverterTypeRouteRequestGenerator.handleMap.remove(handle: handle)
-        // Sucessful return
+        // Successful return
         // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
         return UNIFFI_CALLBACK_SUCCESS
     case 1:
@@ -818,10 +1097,24 @@ public func FfiConverterTypeRouteRequestGenerator_lower(_ value: RouteRequestGen
     return FfiConverterTypeRouteRequestGenerator.lower(value)
 }
 
+/**
+ * A generic interface describing any object capable of parsing a response from a routing
+ * backend into one or more [Route]s.
+ */
 public protocol RouteResponseParser: AnyObject {
+    /**
+     * Parses a raw response from the routing backend into a route.
+     *
+     * We use a sequence of octets as a common interchange format.
+     * as this works for all currently conceivable formats (JSON, PBF, etc.).
+     */
     func parseResponse(response: Data) throws -> [Route]
 }
 
+/**
+ * A generic interface describing any object capable of parsing a response from a routing
+ * backend into one or more [Route]s.
+ */
 public class RouteResponseParserImpl:
     RouteResponseParser
 {
@@ -834,14 +1127,24 @@ public class RouteResponseParserImpl:
         self.pointer = pointer
     }
 
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_routeresponseparser(self.pointer, $0) }
+    }
+
     deinit {
         try! rustCall { uniffi_ferrostar_fn_free_routeresponseparser(pointer, $0) }
     }
 
+    /**
+     * Parses a raw response from the routing backend into a route.
+     *
+     * We use a sequence of octets as a common interchange format.
+     * as this works for all currently conceivable formats (JSON, PBF, etc.).
+     */
     public func parseResponse(response: Data) throws -> [Route] {
         return try FfiConverterSequenceTypeRoute.lift(
             rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
-                uniffi_ferrostar_fn_method_routeresponseparser_parse_response(self.pointer,
+                uniffi_ferrostar_fn_method_routeresponseparser_parse_response(self.uniffiClonePointer(),
                                                                               FfiConverterData.lower(response), $0)
             }
         )
@@ -874,7 +1177,7 @@ private let uniffiCallbackInterfaceRouteResponseParser: ForeignCallback = { (han
     switch method {
     case IDX_CALLBACK_FREE:
         FfiConverterTypeRouteResponseParser.handleMap.remove(handle: handle)
-        // Sucessful return
+        // Successful return
         // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
         return UNIFFI_CALLBACK_SUCCESS
     case 1:
@@ -952,7 +1255,10 @@ public struct BoundingBox {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(sw: GeographicCoordinate, ne: GeographicCoordinate) {
+    public init(
+        sw: GeographicCoordinate,
+        ne: GeographicCoordinate
+    ) {
         self.sw = sw
         self.ne = ne
     }
@@ -998,13 +1304,33 @@ public func FfiConverterTypeBoundingBox_lower(_ value: BoundingBox) -> RustBuffe
     return FfiConverterTypeBoundingBox.lower(value)
 }
 
+/**
+ * The direction in which the user/device is observed to be traveling.
+ */
 public struct CourseOverGround {
+    /**
+     * The direction in which the user's device is traveling, measured in clockwise degrees from
+     * true north (N = 0, E = 90, S = 180, W = 270).
+     */
     public var degrees: UInt16
+    /**
+     * The accuracy of the course value, measured in degrees.
+     */
     public var accuracy: UInt16
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(degrees: UInt16, accuracy: UInt16) {
+    public init(
+        /**
+         * The direction in which the user's device is traveling, measured in clockwise degrees from
+         * true north (N = 0, E = 90, S = 180, W = 270).
+         */
+        degrees: UInt16,
+        /**
+            * The accuracy of the course value, measured in degrees.
+            */
+        accuracy: UInt16
+    ) {
         self.degrees = degrees
         self.accuracy = accuracy
     }
@@ -1056,7 +1382,10 @@ public struct GeographicCoordinate {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(lng: Double, lat: Double) {
+    public init(
+        lng: Double,
+        lat: Double
+    ) {
         self.lng = lng
         self.lat = lat
     }
@@ -1108,7 +1437,10 @@ public struct LocationSimulationState {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(currentLocation: GeographicCoordinate, remainingLocations: [GeographicCoordinate]) {
+    public init(
+        currentLocation: GeographicCoordinate,
+        remainingLocations: [GeographicCoordinate]
+    ) {
         self.currentLocation = currentLocation
         self.remainingLocations = remainingLocations
     }
@@ -1156,24 +1488,16 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 
 public struct NavigationControllerConfig {
     public var stepAdvance: StepAdvanceMode
+    public var routeDeviationTracking: RouteDeviationTracking
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(stepAdvance: StepAdvanceMode) {
+    public init(
+        stepAdvance: StepAdvanceMode,
+        routeDeviationTracking: RouteDeviationTracking
+    ) {
         self.stepAdvance = stepAdvance
-    }
-}
-
-extension NavigationControllerConfig: Equatable, Hashable {
-    public static func == (lhs: NavigationControllerConfig, rhs: NavigationControllerConfig) -> Bool {
-        if lhs.stepAdvance != rhs.stepAdvance {
-            return false
-        }
-        return true
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(stepAdvance)
+        self.routeDeviationTracking = routeDeviationTracking
     }
 }
 
@@ -1181,12 +1505,14 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
         return
             try NavigationControllerConfig(
-                stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf)
+                stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf),
+                routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf)
             )
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
+        FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
     }
 }
 
@@ -1198,16 +1524,44 @@ public func FfiConverterTypeNavigationControllerConfig_lower(_ value: Navigation
     return FfiConverterTypeNavigationControllerConfig.lower(value)
 }
 
+/**
+ * Information describing the series of steps needed to travel between two or more points.
+ *
+ * NOTE: This type is unstable and is still under active development and should be
+ * considered unstable.
+ */
 public struct Route {
     public var geometry: [GeographicCoordinate]
     public var bbox: BoundingBox
+    /**
+     * The total route distance, in meters.
+     */
     public var distance: Double
+    /**
+     * The ordered list of waypoints to visit, including the starting point.
+     * Note that this is distinct from the *geometry* which includes all points visited.
+     * A waypoint represents a start/end point for a route leg.
+     */
     public var waypoints: [GeographicCoordinate]
     public var steps: [RouteStep]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinate], bbox: BoundingBox, distance: Double, waypoints: [GeographicCoordinate], steps: [RouteStep]) {
+    public init(
+        geometry: [GeographicCoordinate],
+        bbox: BoundingBox,
+        /**
+            * The total route distance, in meters.
+            */
+        distance: Double,
+        /**
+            * The ordered list of waypoints to visit, including the starting point.
+            * Note that this is distinct from the *geometry* which includes all points visited.
+            * A waypoint represents a start/end point for a route leg.
+            */
+        waypoints: [GeographicCoordinate],
+        steps: [RouteStep]
+    ) {
         self.geometry = geometry
         self.bbox = bbox
         self.distance = distance
@@ -1274,8 +1628,19 @@ public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
     return FfiConverterTypeRoute.lower(value)
 }
 
+/**
+ * A maneuver (such as a turn or merge) followed by travel of a certain distance until reaching
+ * the next step.
+ *
+ * NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
+ * but we will intentionally define this somewhat looser unless/until it becomes clear something
+
+ */
 public struct RouteStep {
     public var geometry: [GeographicCoordinate]
+    /**
+     * The distance, in meters, to travel along the route after the maneuver to reach the next step.
+     */
     public var distance: Double
     public var roadName: String?
     public var instruction: String
@@ -1284,7 +1649,17 @@ public struct RouteStep {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinate], distance: Double, roadName: String?, instruction: String, visualInstructions: [VisualInstruction], spokenInstructions: [SpokenInstruction]) {
+    public init(
+        geometry: [GeographicCoordinate],
+        /**
+            * The distance, in meters, to travel along the route after the maneuver to reach the next step.
+            */
+        distance: Double,
+        roadName: String?,
+        instruction: String,
+        visualInstructions: [VisualInstruction],
+        spokenInstructions: [SpokenInstruction]
+    ) {
         self.geometry = geometry
         self.distance = distance
         self.roadName = roadName
@@ -1359,13 +1734,35 @@ public func FfiConverterTypeRouteStep_lower(_ value: RouteStep) -> RustBuffer {
 }
 
 public struct SpokenInstruction {
+    /**
+     * Plain-text instruction which can be synthesized with a TTS engine.
+     */
     public var text: String
+    /**
+     * Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
+     */
     public var ssml: String?
+    /**
+     * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+     */
     public var triggerDistanceBeforeManeuver: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(text: String, ssml: String?, triggerDistanceBeforeManeuver: Double) {
+    public init(
+        /**
+         * Plain-text instruction which can be synthesized with a TTS engine.
+         */
+        text: String,
+        /**
+            * Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
+            */
+        ssml: String?,
+        /**
+            * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+            */
+        triggerDistanceBeforeManeuver: Double
+    ) {
         self.text = text
         self.ssml = ssml
         self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
@@ -1418,15 +1815,32 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
     return FfiConverterTypeSpokenInstruction.lower(value)
 }
 
+/**
+ * The location of the user that is navigating.
+ *
+ * In addition to coordinates, this includes estimated accuracy and course information,
+ * which can influence navigation logic and UI.
+ */
 public struct UserLocation {
     public var coordinates: GeographicCoordinate
+    /**
+     * The estimated accuracy of the coordinate (in meters)
+     */
     public var horizontalAccuracy: Double
     public var courseOverGround: CourseOverGround?
     public var timestamp: Date
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(coordinates: GeographicCoordinate, horizontalAccuracy: Double, courseOverGround: CourseOverGround?, timestamp: Date) {
+    public init(
+        coordinates: GeographicCoordinate,
+        /**
+            * The estimated accuracy of the coordinate (in meters)
+            */
+        horizontalAccuracy: Double,
+        courseOverGround: CourseOverGround?,
+        timestamp: Date
+    ) {
         self.coordinates = coordinates
         self.horizontalAccuracy = horizontalAccuracy
         self.courseOverGround = courseOverGround
@@ -1489,11 +1903,21 @@ public func FfiConverterTypeUserLocation_lower(_ value: UserLocation) -> RustBuf
 public struct VisualInstruction {
     public var primaryContent: VisualInstructionContent
     public var secondaryContent: VisualInstructionContent?
+    /**
+     * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+     */
     public var triggerDistanceBeforeManeuver: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(primaryContent: VisualInstructionContent, secondaryContent: VisualInstructionContent?, triggerDistanceBeforeManeuver: Double) {
+    public init(
+        primaryContent: VisualInstructionContent,
+        secondaryContent: VisualInstructionContent?,
+        /**
+            * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+            */
+        triggerDistanceBeforeManeuver: Double
+    ) {
         self.primaryContent = primaryContent
         self.secondaryContent = secondaryContent
         self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
@@ -1554,7 +1978,12 @@ public struct VisualInstructionContent {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(text: String, maneuverType: ManeuverType?, maneuverModifier: ManeuverModifier?, roundaboutExitDegrees: UInt16?) {
+    public init(
+        text: String,
+        maneuverType: ManeuverType?,
+        maneuverModifier: ManeuverModifier?,
+        roundaboutExitDegrees: UInt16?
+    ) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
@@ -1616,6 +2045,9 @@ public func FfiConverterTypeVisualInstructionContent_lower(_ value: VisualInstru
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Specifies additional information about a [ManeuverType]
+ */
 public enum ManeuverModifier {
     case uTurn
     case sharpRight
@@ -1694,6 +2126,11 @@ extension ManeuverModifier: Equatable, Hashable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Indicates the type of maneuver to perform.
+ *
+ * Frequently used in conjunction with [ManeuverModifier].
+ */
 public enum ManeuverType {
     case turn
     case newName
@@ -1819,7 +2256,9 @@ public func FfiConverterTypeManeuverType_lower(_ value: ManeuverType) -> RustBuf
 extension ManeuverType: Equatable, Hashable {}
 
 public enum ModelError {
-    case PolylineGenerationError(error: String)
+    case PolylineGenerationError(
+        error: String
+    )
 
     fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
         return try FfiConverterTypeModelError.lift(error)
@@ -1855,8 +2294,149 @@ extension ModelError: Error {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Status information that describes whether the user is proceeding according to the route or not.
+ *
+ * Note that the name is intentionally a bit generic to allow for expansion of other states.
+ * For example, we could conceivably add a "wrong way" status in the future.
+ */
+public enum RouteDeviation {
+    /**
+     * The user is proceeding on course within the expected tolerances; everything is normal.
+     */
+    case noDeviation
+    /**
+     * The user is off the expected route.
+     */
+    case offRoute(
+        /**
+         * The deviation from the route line, in meters.
+         */
+        deviationFromRouteLine: Double
+    )
+}
+
+public struct FfiConverterTypeRouteDeviation: FfiConverterRustBuffer {
+    typealias SwiftType = RouteDeviation
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteDeviation {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .noDeviation
+
+        case 2: return try .offRoute(
+                deviationFromRouteLine: FfiConverterDouble.read(from: &buf)
+            )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: RouteDeviation, into buf: inout [UInt8]) {
+        switch value {
+        case .noDeviation:
+            writeInt(&buf, Int32(1))
+
+        case let .offRoute(deviationFromRouteLine):
+            writeInt(&buf, Int32(2))
+            FfiConverterDouble.write(deviationFromRouteLine, into: &buf)
+        }
+    }
+}
+
+public func FfiConverterTypeRouteDeviation_lift(_ buf: RustBuffer) throws -> RouteDeviation {
+    return try FfiConverterTypeRouteDeviation.lift(buf)
+}
+
+public func FfiConverterTypeRouteDeviation_lower(_ value: RouteDeviation) -> RustBuffer {
+    return FfiConverterTypeRouteDeviation.lower(value)
+}
+
+extension RouteDeviation: Equatable, Hashable {}
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+public enum RouteDeviationTracking {
+    /**
+     * No checks will be done, and we assume the user is always following the route.
+     */
+    case none
+    case staticThreshold(
+        /**
+         * The minimum required horizontal accuracy of the user location, in meters.
+         * Values larger than this will not trigger route deviation warnings.
+         */
+        minimumHorizontalAccuracy: UInt16,
+        /**
+            * The maximum acceptable deviation from the route line, in meters.
+            *
+            * If the distance between the reported location and the expected route line
+            * is greater than this threshold, it will be flagged as an off route condition.
+            */
+        maxAcceptableDeviation: Double
+    )
+    case custom(
+        detector: RouteDeviationDetector
+    )
+}
+
+public struct FfiConverterTypeRouteDeviationTracking: FfiConverterRustBuffer {
+    typealias SwiftType = RouteDeviationTracking
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteDeviationTracking {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .none
+
+        case 2: return try .staticThreshold(
+                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf),
+                maxAcceptableDeviation: FfiConverterDouble.read(from: &buf)
+            )
+
+        case 3: return try .custom(
+                detector: FfiConverterTypeRouteDeviationDetector.read(from: &buf)
+            )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: RouteDeviationTracking, into buf: inout [UInt8]) {
+        switch value {
+        case .none:
+            writeInt(&buf, Int32(1))
+
+        case let .staticThreshold(minimumHorizontalAccuracy, maxAcceptableDeviation):
+            writeInt(&buf, Int32(2))
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+            FfiConverterDouble.write(maxAcceptableDeviation, into: &buf)
+
+        case let .custom(detector):
+            writeInt(&buf, Int32(3))
+            FfiConverterTypeRouteDeviationDetector.write(detector, into: &buf)
+        }
+    }
+}
+
+public func FfiConverterTypeRouteDeviationTracking_lift(_ buf: RustBuffer) throws -> RouteDeviationTracking {
+    return try FfiConverterTypeRouteDeviationTracking.lift(buf)
+}
+
+public func FfiConverterTypeRouteDeviationTracking_lower(_ value: RouteDeviationTracking) -> RustBuffer {
+    return FfiConverterTypeRouteDeviationTracking.lower(value)
+}
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * A route request generated by a [RouteRequestGenerator].
+ */
 public enum RouteRequest {
-    case httpPost(url: String, headers: [String: String], body: Data)
+    case httpPost(
+        url: String,
+        headers: [String: String],
+        body: Data
+    )
 }
 
 public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
@@ -1939,7 +2519,9 @@ extension RoutingRequestGenerationError: Equatable, Hashable {}
 extension RoutingRequestGenerationError: Error {}
 
 public enum RoutingResponseParseError {
-    case ParseError(error: String)
+    case ParseError(
+        error: String
+    )
     case UnknownError
 
     fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
@@ -1979,7 +2561,9 @@ extension RoutingResponseParseError: Equatable, Hashable {}
 extension RoutingResponseParseError: Error {}
 
 public enum SimulationError {
-    case PolylineError(error: String)
+    case PolylineError(
+        error: String
+    )
     case NotEnoughPoints
 
     fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
@@ -2021,6 +2605,9 @@ extension SimulationError: Error {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum SimulationSpeed {
+    /**
+     * Jumps directly to the next location without any interpolation
+     */
     case jumpToNextLocation
 }
 
@@ -2057,9 +2644,40 @@ extension SimulationSpeed: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum StepAdvanceMode {
+    /**
+     * Never advances to the next step automatically
+     */
     case manual
-    case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16)
-    case relativeLineStringDistance(minimumHorizontalAccuracy: UInt16, automaticAdvanceDistance: UInt16?)
+    /**
+     * Automatically advances when the user's location is close enough to the end of the step
+     */
+    case distanceToEndOfStep(
+        /**
+         * Distance to the last waypoint in the step, measured in meters, at which to advance.
+         */
+        distance: UInt16,
+        /**
+            * The minimum required horizontal accuracy of the user location, in meters.
+            * Values larger than this cannot trigger a step advance.
+            */
+        minimumHorizontalAccuracy: UInt16
+    )
+    /**
+     * Automatically advances when the user's distance to the *next* step's linestring  is less
+     * than the distance to the current step's linestring.
+     */
+    case relativeLineStringDistance(
+        /**
+         * The minimum required horizontal accuracy of the user location, in meters.
+         * Values larger than this cannot trigger a step advance.
+         */
+        minimumHorizontalAccuracy: UInt16,
+        /**
+            * At this (optional) distance, navigation should advance to the next step regardless
+            * of which LineString appears closer.
+            */
+        automaticAdvanceDistance: UInt16?
+    )
 }
 
 public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
@@ -2114,8 +2732,39 @@ extension StepAdvanceMode: Equatable, Hashable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Internal state of the navigation controller.
+ */
 public enum TripState {
-    case navigating(snappedUserLocation: UserLocation, remainingSteps: [RouteStep], distanceToNextManeuver: Double)
+    case navigating(
+        snappedUserLocation: UserLocation,
+        /**
+            * The ordered list of steps that remain in the trip.
+            *
+            * The step at the front of the list is always the current step.
+            * We currently assume that you cannot move backward to a previous step.
+            */
+        remainingSteps: [RouteStep],
+        /**
+            * Remaining waypoints to visit on the route.
+            *
+            * The waypoint at the front of the list is always the *next* waypoint "goal."
+            * Unlike the current step, there is no value in tracking the "current" waypoint,
+            * as the main use of waypoints is recalculation when the user deviates from the route.
+            * (In most use cases, a route will have only two waypoints, but more complex use cases
+            * may have multiple intervening points that are visited along the route.)
+            * This list is updated as the user advances through the route.
+            */
+        remainingWaypoints: [GeographicCoordinate],
+        /**
+            * The distance to the next maneuver, in meters.
+            */
+        distanceToNextManeuver: Double,
+        /**
+            * The route deviation status: is the user following the route or not?
+            */
+        deviation: RouteDeviation
+    )
     case complete
 }
 
@@ -2128,7 +2777,9 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return try .navigating(
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
-                distanceToNextManeuver: FfiConverterDouble.read(from: &buf)
+                remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
+                distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
+                deviation: FfiConverterTypeRouteDeviation.read(from: &buf)
             )
 
         case 2: return .complete
@@ -2139,11 +2790,13 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
 
     public static func write(_ value: TripState, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingSteps, distanceToNextManeuver):
+        case let .navigating(snappedUserLocation, remainingSteps, remainingWaypoints, distanceToNextManeuver, deviation):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
+            FfiConverterSequenceTypeGeographicCoordinate.write(remainingWaypoints, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
+            FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
 
         case .complete:
             writeInt(&buf, Int32(2))
@@ -2420,6 +3073,16 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
     }
 }
 
+/**
+ * Returns the next simulation state based on the desired strategy.
+ * Results of this can be thought of like a stream from a generator function.
+ *
+ * This function is intended to be called once/second.
+ * However, the caller may vary speed to purposefully replay at a faster rate
+ * (ex: calling 3x per second will be a triple speed simulation).
+ *
+ * When there are now more locations to visit, returns the same state forever.
+ */
 public func advanceLocationSimulation(state: LocationSimulationState, speed: SimulationSpeed) -> LocationSimulationState {
     return try! FfiConverterTypeLocationSimulationState.lift(
         try! rustCall {
@@ -2452,6 +3115,11 @@ public func createValhallaRequestGenerator(endpointUrl: String, profile: String)
     )
 }
 
+/**
+ * Helper function for getting the route as an encoded polyline.
+ *
+ * Mostly used for debugging.
+ */
 public func getRoutePolyline(route: Route, precision: UInt32) throws -> String {
     return try FfiConverterString.lift(
         rustCallWithError(FfiConverterTypeModelError.lift) {
@@ -2510,58 +3178,62 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if uniffi_ferrostar_checksum_func_advance_location_simulation() != 31818 {
+    if uniffi_ferrostar_checksum_func_advance_location_simulation() != 44291 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 37676 {
+    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 10648 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 42515 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 14703 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_get_route_polyline() != 7053 {
+    if uniffi_ferrostar_checksum_func_get_route_polyline() != 53320 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 32668 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 36441 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 33402 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 51577 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 52353 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 1344 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 5714 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 59656 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 22778 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 48874 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 19022 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 60529 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 35986 {
+    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 39525 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 29808 {
+    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 39819 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 34771 {
+    if uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 17675 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 30875 {
+    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 33758 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 26294 {
+    if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 38851 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 22742 {
+    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 29000 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 34303 {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 15081 {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 24553 {
         return InitializationResult.apiChecksumMismatch
     }
 
+    uniffiCallbackInitRouteDeviationDetector()
     uniffiCallbackInitRouteRequestGenerator()
     uniffiCallbackInitRouteResponseParser()
     return InitializationResult.ok
