@@ -104,3 +104,12 @@ public enum RouteDeviationTracking {
         }
     }
 }
+
+/// A Swift wrapper around `UniFFI.NavigationControllerConfig`.
+public struct NavigationControllerConfig {
+    public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) {
+        ffiValue = UniFFI.NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue, routeDeviationTracking: routeDeviationTracking.ffiValue)
+    }
+
+    var ffiValue: UniFFI.NavigationControllerConfig
+}

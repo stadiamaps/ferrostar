@@ -63,7 +63,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 /// possible routes, one is selected, either interactively by the user, or programmatically.
 /// The particulars will vary by app; do what makes the most sense for your user experience.
 ///
-/// Finally, with a route selected, call ``startNavigation(route:)`` to start a session.
+/// Finally, with a route selected, call ``startNavigation(route:config:)`` to start a session.
 @objc public class FerrostarCore: NSObject, ObservableObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
@@ -87,8 +87,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var lastAutomaticRecalculation: Date? = nil
     private var recalculationTask: Task<(), Never>?
 
-    private var initStepAdvance: StepAdvanceMode?
-    private var initRouteDeviationTracking: RouteDeviationTracking?
+    private var config: NavigationControllerConfig?
 
     public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
@@ -145,7 +144,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     /// Starts navigation with the given route. Any previous navigation session is dropped.
-    public func startNavigation(route: Route, stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) throws {
+    public func startNavigation(route: Route, config: NavigationControllerConfig) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
@@ -153,13 +152,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
             throw FerrostarCoreError.userLocationUnknown
         }
 
-        initStepAdvance = stepAdvance
-        initRouteDeviationTracking = routeDeviationTracking
+        self.config = config
 
         locationProvider.startUpdating()
 
         state = NavigationState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
-        let controller = NavigationController(route: route.inner, config: NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue, routeDeviationTracking: routeDeviationTracking.ffiValue))
+        let controller = NavigationController(route: route.inner, config: config.ffiValue)
         navigationController = controller
         DispatchQueue.main.async {
             self.update(newState: controller.getInitialState(location: location.userLocation), location: location)
@@ -218,10 +216,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
                                 let routes = try await self.getRoutes(initialLocation: location, waypoints: waypoints)
                                 if let delegate = self.delegate {
                                     delegate.core(self, loadedAlternateRoutes: routes)
-                                } else if let route = routes.first {
+                                } else if let route = routes.first, let config = self.config {
                                     // Default behavior when no delegate is assigned:
-                                    // accept the first route, as this is what most users want
-                                    try self.startNavigation(route: route, stepAdvance: self.initStepAdvance!, routeDeviationTracking: self.initRouteDeviationTracking!)
+                                    // accept the first route, as this is what most users want when they go off route.
+                                    try self.startNavigation(route: route, config: config)
                                 }
                             } catch {
                                 // Do nothing; this exists to enable us to run what amounts to an "async defer"
