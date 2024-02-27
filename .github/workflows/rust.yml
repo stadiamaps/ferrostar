@@ -21,8 +21,7 @@ jobs:
       - run: >-
           cargo hack check --rust-version --workspace --all-targets
           --ignore-private
-        with:
-          manifest-path: common/Cargo.toml
+        working-directory: common
 
   semver-checks:
     runs-on: macos-14
@@ -31,7 +30,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Check semver
         uses: obi1kenobi/cargo-semver-checks-action@v2
-        working-directory: common
+        with:
+          manifest-path: common/Cargo.toml
 
   build:
     runs-on: macos-14
