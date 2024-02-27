@@ -24,10 +24,12 @@ class NavigationDelegate: FerrostarCoreDelegate {
         if core.state?.isCalculatingNewRoute ?? false,
            let route = routes.first {
             do {
+                // Most implementations will probably reuse existing configs (the default implementation does),
+                // but we provide devs with flexibility here.
+                let config = NavigationControllerConfig(stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10), routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20))
                 try core.startNavigation(
                     route: route,
-                    stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
-                    routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20))
+                    config: config)
             } catch {
                 // Users of the framework my develop their own responses here, such as notifying the user if appropriate
             }

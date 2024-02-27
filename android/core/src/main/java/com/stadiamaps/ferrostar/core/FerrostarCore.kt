@@ -55,6 +55,7 @@ sealed class CorrectiveAction {
     class GetNewRoutes(val waypoints: List<GeographicCoordinate>): CorrectiveAction()
 }
 
+// TODO: Think of a better (more specialized) name for this interface; something about rerouting? The term "delegate" is imported from the Apple ecosystem and will be super confusing to a Kotlin dev.
 interface FerrostarCoreDelegate {
     /**
      * Called when the core has loaded alternative routes.
@@ -231,6 +232,8 @@ class FerrostarCore(
                                             routes
                                         )
                                     } else if (routes.count() > 1 && config != null) {
+                                        // Default behavior when there is no user-defined behavior:
+                                        // accept the first route, as this is what most users want when they go off route.
                                         startNavigation(routes.first(), config)
                                     }
                                 } finally {

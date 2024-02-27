@@ -6,6 +6,13 @@ members = [
 ]
 resolver = "2"
 
+[workspace.package]
+authors = ["Ian Wagner <ian@stadiamaps.com>", "Jacob Fielding <jacob@rallista.app>", "Luke Seelenbinder <luke@stadiamaps.com>"]
+license = "BSD-3-Clause"
+edition = "2021"
+repository = "https://github.com/stadiamaps/ferrostar"
+rust-version = "1.74.0"
+
 [profile.dev.package]
 insta.opt-level = 3
 similar.opt-level = 3

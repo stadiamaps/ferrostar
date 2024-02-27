@@ -6,6 +6,7 @@ import struct FerrostarCore.Route
 import protocol FerrostarCore.FerrostarCoreDelegate
 import enum FerrostarCore.CorrectiveAction
 import class FerrostarCore.FerrostarCore
+import struct FerrostarCore.NavigationControllerConfig
 import UniFFI
 import XCTest
 import SnapshotTesting
@@ -116,10 +117,12 @@ final class FerrostarCoreTests: XCTestCase {
         let routes = try await core.getRoutes(initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469), waypoints: [CLLocationCoordinate2D(latitude: 60.5349908, longitude: -149.5485806)])
 
         locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0)
-        try core.startNavigation(route: routes.first!, stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16), routeDeviationTracking: .custom(detector: { userLocation, route, step in
+        let config = NavigationControllerConfig(stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16), routeDeviationTracking: .custom(detector: { userLocation, route, step in
             // Pretend that the user is always off route
             .offRoute(deviationFromRouteLine: 42)
         }))
+
+        try core.startNavigation(route: routes.first!, config: config)
 
         await fulfillment(of: [routeDeviationCallbackExp], timeout: 1.0)
         await fulfillment(of: [loadedAltRoutesExp], timeout: 1.0)
