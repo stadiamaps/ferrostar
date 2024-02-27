@@ -1,19 +1,20 @@
 [package]
 name = "ferrostar"
 version = "0.0.18"
-authors = ["Ian Wagner <ian@stadiamaps.com>", "Jacob Fielding <jacob@rallista.app>", "Luke Seelenbinder <luke@stadiamaps.com>"]
-license = "BSD-3-Clause"
-repository = "https://github.com/stadiamaps/ferrostar"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
 categories = ["science::geo"]
-edition = "2021"
+authors.workspace = true
+license.workspace = true
+edition.workspace = true
+repository.workspace = true
+rust-version.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-geo = "0.27.0"
+geo = "0.28.0"
 polyline = "0.10.0"
 serde = { version = "1.0.162", features = ["derive"] }
 serde_json = "1.0.96"
