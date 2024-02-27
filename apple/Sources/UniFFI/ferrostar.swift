@@ -999,12 +999,12 @@ public func FfiConverterTypeBoundingBox_lower(_ value: BoundingBox) -> RustBuffe
 }
 
 public struct CourseOverGround {
-    public var degrees: UInt16
-    public var accuracy: UInt16
+    public var degrees: Double
+    public var accuracy: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(degrees: UInt16, accuracy: UInt16) {
+    public init(degrees: Double, accuracy: Double) {
         self.degrees = degrees
         self.accuracy = accuracy
     }
@@ -1031,14 +1031,14 @@ public struct FfiConverterTypeCourseOverGround: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CourseOverGround {
         return
             try CourseOverGround(
-                degrees: FfiConverterUInt16.read(from: &buf),
-                accuracy: FfiConverterUInt16.read(from: &buf)
+                degrees: FfiConverterDouble.read(from: &buf),
+                accuracy: FfiConverterDouble.read(from: &buf)
             )
     }
 
     public static func write(_ value: CourseOverGround, into buf: inout [UInt8]) {
-        FfiConverterUInt16.write(value.degrees, into: &buf)
-        FfiConverterUInt16.write(value.accuracy, into: &buf)
+        FfiConverterDouble.write(value.degrees, into: &buf)
+        FfiConverterDouble.write(value.accuracy, into: &buf)
     }
 }
 
@@ -1051,31 +1051,31 @@ public func FfiConverterTypeCourseOverGround_lower(_ value: CourseOverGround) ->
 }
 
 public struct GeographicCoordinate {
-    public var lng: Double
     public var lat: Double
+    public var lng: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(lng: Double, lat: Double) {
-        self.lng = lng
+    public init(lat: Double, lng: Double) {
         self.lat = lat
+        self.lng = lng
     }
 }
 
 extension GeographicCoordinate: Equatable, Hashable {
     public static func == (lhs: GeographicCoordinate, rhs: GeographicCoordinate) -> Bool {
-        if lhs.lng != rhs.lng {
+        if lhs.lat != rhs.lat {
             return false
         }
-        if lhs.lat != rhs.lat {
+        if lhs.lng != rhs.lng {
             return false
         }
         return true
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(lng)
         hasher.combine(lat)
+        hasher.combine(lng)
     }
 }
 
@@ -1083,14 +1083,14 @@ public struct FfiConverterTypeGeographicCoordinate: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> GeographicCoordinate {
         return
             try GeographicCoordinate(
-                lng: FfiConverterDouble.read(from: &buf),
-                lat: FfiConverterDouble.read(from: &buf)
+                lat: FfiConverterDouble.read(from: &buf),
+                lng: FfiConverterDouble.read(from: &buf)
             )
     }
 
     public static func write(_ value: GeographicCoordinate, into buf: inout [UInt8]) {
-        FfiConverterDouble.write(value.lng, into: &buf)
         FfiConverterDouble.write(value.lat, into: &buf)
+        FfiConverterDouble.write(value.lng, into: &buf)
     }
 }
 
@@ -1100,6 +1100,90 @@ public func FfiConverterTypeGeographicCoordinate_lift(_ buf: RustBuffer) throws 
 
 public func FfiConverterTypeGeographicCoordinate_lower(_ value: GeographicCoordinate) -> RustBuffer {
     return FfiConverterTypeGeographicCoordinate.lower(value)
+}
+
+public struct Heading {
+    public var geographicHeading: Double
+    public var accuracy: Double
+    public var x: Double
+    public var y: Double
+    public var z: Double
+    public var timestamp: Date
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(geographicHeading: Double, accuracy: Double, x: Double, y: Double, z: Double, timestamp: Date) {
+        self.geographicHeading = geographicHeading
+        self.accuracy = accuracy
+        self.x = x
+        self.y = y
+        self.z = z
+        self.timestamp = timestamp
+    }
+}
+
+extension Heading: Equatable, Hashable {
+    public static func == (lhs: Heading, rhs: Heading) -> Bool {
+        if lhs.geographicHeading != rhs.geographicHeading {
+            return false
+        }
+        if lhs.accuracy != rhs.accuracy {
+            return false
+        }
+        if lhs.x != rhs.x {
+            return false
+        }
+        if lhs.y != rhs.y {
+            return false
+        }
+        if lhs.z != rhs.z {
+            return false
+        }
+        if lhs.timestamp != rhs.timestamp {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(geographicHeading)
+        hasher.combine(accuracy)
+        hasher.combine(x)
+        hasher.combine(y)
+        hasher.combine(z)
+        hasher.combine(timestamp)
+    }
+}
+
+public struct FfiConverterTypeHeading: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Heading {
+        return
+            try Heading(
+                geographicHeading: FfiConverterDouble.read(from: &buf),
+                accuracy: FfiConverterDouble.read(from: &buf),
+                x: FfiConverterDouble.read(from: &buf),
+                y: FfiConverterDouble.read(from: &buf),
+                z: FfiConverterDouble.read(from: &buf),
+                timestamp: FfiConverterTimestamp.read(from: &buf)
+            )
+    }
+
+    public static func write(_ value: Heading, into buf: inout [UInt8]) {
+        FfiConverterDouble.write(value.geographicHeading, into: &buf)
+        FfiConverterDouble.write(value.accuracy, into: &buf)
+        FfiConverterDouble.write(value.x, into: &buf)
+        FfiConverterDouble.write(value.y, into: &buf)
+        FfiConverterDouble.write(value.z, into: &buf)
+        FfiConverterTimestamp.write(value.timestamp, into: &buf)
+    }
+}
+
+public func FfiConverterTypeHeading_lift(_ buf: RustBuffer) throws -> Heading {
+    return try FfiConverterTypeHeading.lift(buf)
+}
+
+public func FfiConverterTypeHeading_lower(_ value: Heading) -> RustBuffer {
+    return FfiConverterTypeHeading.lower(value)
 }
 
 public struct LocationSimulationState {

@@ -5,8 +5,8 @@ import PackageDescription
 
 let binaryTarget: Target
 let maplibreSwiftUIDSLPackage: Package.Dependency
-let useLocalFramework = false
-let useLocalMapLibreSwiftUIDSL = false
+let useLocalFramework = true
+let useLocalMapLibreSwiftUIDSL = true
 
 if useLocalFramework {
     binaryTarget = .binaryTarget(
@@ -28,7 +28,7 @@ if useLocalFramework {
 if useLocalMapLibreSwiftUIDSL {
     maplibreSwiftUIDSLPackage = .package(path: "../maplibre-swiftui-dsl-playground")
 } else {
-    maplibreSwiftUIDSLPackage = .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", branch: "main")
+    maplibreSwiftUIDSLPackage = .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", from: "0.0.2")
 }
 
 let package = Package(

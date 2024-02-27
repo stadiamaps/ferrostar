@@ -44,7 +44,7 @@ public struct RouteStyleLayer: StyleLayerCollection {
     ///   - polyline: The polyline representation of the layer
     ///   - identifier: The source and layer identifier prefix.
     ///   - style: The style of the route polyline. This will include whether a casing is included.
-    init(polyline: MLNPolyline, identifier: String, style: RouteStyle = ActiveRouteStyle()) {
+    public init(polyline: MLNPolyline, identifier: String, style: RouteStyle = ActiveRouteStyle()) {
         self.polyline = polyline
         self.identifier = identifier
         self.style = style

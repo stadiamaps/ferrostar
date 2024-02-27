@@ -15,15 +15,15 @@ pub enum ModelError {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct GeographicCoordinate {
-    pub lng: f64,
     pub lat: f64,
+    pub lng: f64,
 }
 
 impl From<Coord> for GeographicCoordinate {
     fn from(value: Coord) -> Self {
         Self {
-            lng: value.x,
             lat: value.y,
+            lng: value.x,
         }
     }
 }
@@ -59,18 +59,51 @@ impl From<Rect> for BoundingBox {
     }
 }
 
+/// The heading of the user/device.
+/// 
+/// Ferrostar prefers course over ground
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+pub struct Heading {
+    pub geographic_heading: f64,
+    pub accuracy: f64,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+    pub timestamp: SystemTime,
+}
+
+impl Heading {
+    pub fn new(
+        geographic_heading: f64,
+        accuracy: f64,
+        x: f64,
+        y: f64,
+        z: f64,
+        timestamp: SystemTime,
+    ) -> Self {
+        Self {
+            geographic_heading,
+            accuracy,
+            x,
+            y,
+            z,
+            timestamp,
+        }
+    }
+}
+
 /// The direction in which the user/device is observed to be traveling.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct CourseOverGround {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
     /// true north (N = 0, E = 90, S = 180, W = 270).
-    pub degrees: u16,
+    pub degrees: f64,
     /// The accuracy of the course value, measured in degrees.
-    pub accuracy: u16,
+    pub accuracy: f64,
 }
 
 impl CourseOverGround {
-    pub fn new(degrees: u16, accuracy: u16) -> Self {
+    pub fn new(degrees: f64, accuracy: f64) -> Self {
         Self { degrees, accuracy }
     }
 }
@@ -86,6 +119,26 @@ pub struct UserLocation {
     pub horizontal_accuracy: f64,
     pub course_over_ground: Option<CourseOverGround>,
     pub timestamp: SystemTime,
+}
+
+impl UserLocation {
+    pub fn new(
+        latitude: f64,
+        longitude: f64,
+        horizontal_accuracy: f64,
+        course_over_ground: Option<CourseOverGround>,
+        timestamp: SystemTime,
+    ) -> Self {
+        Self {
+            coordinates: GeographicCoordinate { 
+                lat: latitude, 
+                lng: longitude 
+            },
+            horizontal_accuracy,
+            course_over_ground,
+            timestamp,
+        }
+    }
 }
 
 impl From<UserLocation> for Point {

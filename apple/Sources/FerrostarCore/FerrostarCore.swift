@@ -148,8 +148,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
             switch (newState) {
             case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, distanceToNextManeuver: let distanceToNextManeuver):
-                self.state?.snappedLocation = CLLocation(userLocation: snappedLocation)
-                self.state?.courseOverGround = location.course
+                self.state?.snappedLocation = UserLocation(clLocation: location)
+                self.state?.courseOverGround = CourseOverGround(degrees: location.course, accuracy: location.courseAccuracy)
                 self.state?.currentStep = remainingSteps.first
                 // TODO: This isn't great; the core should probably just tell us which instruction to display
                 self.state?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
@@ -163,8 +163,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             case .complete:
                 // TODO: "You have arrived"?
                 self.state?.visualInstructions = nil
-                self.state?.snappedLocation = location  // We arrived; no more snapping needed
-                self.state?.courseOverGround = location.course
+                self.state?.snappedLocation = UserLocation(clLocation: location)  // We arrived; no more snapping needed
+                self.state?.courseOverGround = CourseOverGround(degrees: location.course, accuracy: location.courseAccuracy)
                 self.state?.spokenInstruction = nil
             }
 
@@ -185,7 +185,7 @@ extension FerrostarCore: LocationManagingDelegate {
     }
 
     public func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
-        state?.heading = newHeading
+        state?.heading = Heading(clHeading: newHeading)
     }
 
     public func locationManager(_: LocationProviding, didFailWithError error: Error) {
