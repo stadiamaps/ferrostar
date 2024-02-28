@@ -6,6 +6,13 @@ members = [
 ]
 resolver = "2"
 
+[workspace.package]
+authors = ["Ian Wagner <ian@stadiamaps.com>", "Jacob Fielding <jacob@rallista.app>", "Luke Seelenbinder <luke@stadiamaps.com>"]
+license = "BSD-3-Clause"
+edition = "2021"
+repository = "https://github.com/stadiamaps/ferrostar"
+rust-version = "1.74.0"
+
 [profile.dev.package]
 insta.opt-level = 3
 similar.opt-level = 3
@@ -15,4 +22,4 @@ lto = "thin"
 opt-level = "s"
 
 [workspace.dependencies]
-uniffi = { git = "https://github.com/mozilla/uniffi-rs/", rev = "fbc6631953a889c7af6e5f1af94de9242589b75b" }
+uniffi = "0.26.1"

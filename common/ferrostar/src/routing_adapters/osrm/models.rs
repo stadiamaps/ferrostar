@@ -1,4 +1,4 @@
-//! OSRM models from the API spec: http://project-osrm.org/docs/v5.5.1/api/
+//! OSRM models from the API spec: <http://project-osrm.org/docs/v5.5.1/api/>
 //!
 //! Note that in some cases we optionally allow for extensions that have been made to the spec
 //! by others which are now pseudo-standardized (ex: Mapbox). We omit some fields which are not

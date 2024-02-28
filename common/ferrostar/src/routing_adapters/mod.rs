@@ -31,13 +31,14 @@ pub enum RouteRequest {
 ///
 /// Implementations may be either in Rust (most popular engines should eventually have Rust
 /// implementations) or foreign code.
-#[uniffi::export]
+#[uniffi::export(with_foreign)]
 pub trait RouteRequestGenerator: Send + Sync {
     /// Generates a routing backend request given the set of locations.
     ///
     /// While most implementations will treat the locations as an ordered sequence, this is not
-    /// guaranteed (ex: an optimized router)..
-    /// TODO: Option for whether we should account for course over ground or heading.
+    /// guaranteed (ex: an optimized router).
+    // TODO: Arbitrary options; how can we make this generic???
+    // TODO: Option for whether we should account for course over ground or heading.
     fn generate_request(
         &self,
         user_location: UserLocation,
@@ -49,7 +50,7 @@ pub trait RouteRequestGenerator: Send + Sync {
 
 /// A generic interface describing any object capable of parsing a response from a routing
 /// backend into one or more [Route]s.
-#[uniffi::export]
+#[uniffi::export(with_foreign)]
 pub trait RouteResponseParser: Send + Sync {
     /// Parses a raw response from the routing backend into a route.
     ///
@@ -88,15 +89,15 @@ impl RouteAdapter {
     pub fn new(
         request_generator: Arc<dyn RouteRequestGenerator>,
         response_parser: Arc<dyn RouteResponseParser>,
-    ) -> Arc<Self> {
-        Arc::new(Self {
+    ) -> Self {
+        Self {
             request_generator,
             response_parser,
-        })
+        }
     }
 
     #[uniffi::constructor]
-    pub fn new_valhalla_http(endpoint_url: String, profile: String) -> Arc<Self> {
+    pub fn new_valhalla_http(endpoint_url: String, profile: String) -> Self {
         let request_generator = create_valhalla_request_generator(endpoint_url, profile);
         let response_parser = create_osrm_response_parser(6);
         Self::new(request_generator, response_parser)

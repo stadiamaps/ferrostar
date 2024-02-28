@@ -1,0 +1,11 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc d19dfb8bb824e1998c294918ba29b381a618582acf362e3d02a1d0dfe895905b # shrinks to x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = 0.0
+cc 08b20ce6b7b9499cd1f5af1ae15367d83ac5cbc09fadb8fa770409488b07b221 # shrinks to x1 = 0.0, y1 = 4.233089928589958e162, x2 = 0.0, y2 = 0.0, x3 = 0.0, y3 = 0.0, minimum_horizontal_accuracy = 0, horizontal_accuracy = 0.0, max_acceptable_deviation = 0.0
+cc 95479b0b7c128061cc6df61a29d7fbe49d764e2b9aba59dafed3ba0275ddedb1 # shrinks to x1 = -0.0, y1 = 0.0, x2 = 0.0, y2 = -1.4717756057562962e265, x3 = 0.0, y3 = 0.0, minimum_horizontal_accuracy = 0, horizontal_accuracy = 0.0, max_acceptable_deviation = -1.335008194259936e-309
+cc 41c5ca5f4d7617534b9442c23630813e94d092cd3146f8efe62e631508432eaf # shrinks to x1 = 0.0, y1 = 0.0, x2 = 0.0, y2 = -1.458929417498442e62, x3 = 0.0, y3 = 0.0, minimum_horizontal_accuracy = 0, horizontal_accuracy = 0.0, max_acceptable_deviation = -2.7106463905954037e138
+cc 4db52b6397185441487a1bb53b328248213c2ccdbe2e71cff963ac2be6627d51 # shrinks to x1 = 3.533686378944801e119, y1 = -0.0, x2 = 0.0, y2 = -5.457510912428616e-15, x3 = 0.0, y3 = 2.1562926009690472e64, minimum_horizontal_accuracy = 0, horizontal_accuracy = 0.0, max_acceptable_deviation = 0.0

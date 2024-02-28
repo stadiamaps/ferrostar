@@ -154,7 +154,7 @@ impl From<UserLocation> for Point {
 ///
 /// NOTE: This type is unstable and is still under active development and should be
 /// considered unstable.
-#[derive(Debug, uniffi::Record)]
+#[derive(Clone, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinate>,
@@ -291,8 +291,8 @@ mod tests {
 
     #[test]
     fn test_polyline_encode() {
-        let sw = GeographicCoordinate {lng: 0.0, lat: 0.0};
-        let ne = GeographicCoordinate {lng: 1.0, lat: 1.0};
+        let sw = GeographicCoordinate { lng: 0.0, lat: 0.0 };
+        let ne = GeographicCoordinate { lng: 1.0, lat: 1.0 };
         let route = Route {
             geometry: vec![sw, ne],
             bbox: BoundingBox { sw, ne },
