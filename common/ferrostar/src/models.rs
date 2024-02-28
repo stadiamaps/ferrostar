@@ -61,32 +61,35 @@ impl From<Rect> for BoundingBox {
 
 /// The heading of the user/device.
 /// 
-/// Ferrostar prefers course over ground
+/// Ferrostar prefers course over ground, but may use heading in some cases.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct Heading {
-    pub geographic_heading: f64,
-    pub accuracy: f64,
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
+    /// The heading in degrees relative to true north.
+    pub true_heading: u16,
+    /// The maximum deviation in degrees between the reported heading and the true geomagnetic heading.
+    pub accuracy: u16,
+    /// The time at which the heading was recorded.
     pub timestamp: SystemTime,
 }
 
 impl Heading {
+
+    /// Create a new heading.
+    /// 
+    /// # Arguments
+    /// 
+    /// * `true_heading` - The heading relative to true north, measured in clockwise degrees from
+    /// true north (N = 0, E = 90, S = 180, W = 270).
+    /// * `accuracy` - The maximum deviation in degrees between the reported heading and the true geomagnetic heading.
+    /// * `timestamp` - The time at which the heading was recorded.
     pub fn new(
-        geographic_heading: f64,
-        accuracy: f64,
-        x: f64,
-        y: f64,
-        z: f64,
+        true_heading: u16,
+        accuracy: u16,
         timestamp: SystemTime,
     ) -> Self {
         Self {
-            geographic_heading,
+            true_heading,
             accuracy,
-            x,
-            y,
-            z,
             timestamp,
         }
     }
@@ -97,13 +100,13 @@ impl Heading {
 pub struct CourseOverGround {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
     /// true north (N = 0, E = 90, S = 180, W = 270).
-    pub degrees: f64,
+    pub degrees: u16,
     /// The accuracy of the course value, measured in degrees.
-    pub accuracy: f64,
+    pub accuracy: u16,
 }
 
 impl CourseOverGround {
-    pub fn new(degrees: f64, accuracy: f64) -> Self {
+    pub fn new(degrees: u16, accuracy: u16) -> Self {
         Self { degrees, accuracy }
     }
 }

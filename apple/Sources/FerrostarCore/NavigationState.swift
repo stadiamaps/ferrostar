@@ -21,8 +21,8 @@ public struct NavigationState: Hashable {
         if let heading {
             self.heading = Heading(clHeading: heading)
         }
-        self.courseOverGround = CourseOverGround(degrees: snappedLocation.course,
-                                                 accuracy: snappedLocation.courseAccuracy)
+        self.courseOverGround = CourseOverGround(course: snappedLocation.course,
+                                                 courseAccuracy: snappedLocation.courseAccuracy)
         self.fullRouteShape = fullRoute.map { GeographicCoordinate(lat: $0.latitude, lng: $0.longitude) }
         self.currentStep = steps.first!
     }

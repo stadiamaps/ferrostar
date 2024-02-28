@@ -999,12 +999,12 @@ public func FfiConverterTypeBoundingBox_lower(_ value: BoundingBox) -> RustBuffe
 }
 
 public struct CourseOverGround {
-    public var degrees: Double
-    public var accuracy: Double
+    public var degrees: UInt16
+    public var accuracy: UInt16
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(degrees: Double, accuracy: Double) {
+    public init(degrees: UInt16, accuracy: UInt16) {
         self.degrees = degrees
         self.accuracy = accuracy
     }
@@ -1031,14 +1031,14 @@ public struct FfiConverterTypeCourseOverGround: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CourseOverGround {
         return
             try CourseOverGround(
-                degrees: FfiConverterDouble.read(from: &buf),
-                accuracy: FfiConverterDouble.read(from: &buf)
+                degrees: FfiConverterUInt16.read(from: &buf),
+                accuracy: FfiConverterUInt16.read(from: &buf)
             )
     }
 
     public static func write(_ value: CourseOverGround, into buf: inout [UInt8]) {
-        FfiConverterDouble.write(value.degrees, into: &buf)
-        FfiConverterDouble.write(value.accuracy, into: &buf)
+        FfiConverterUInt16.write(value.degrees, into: &buf)
+        FfiConverterUInt16.write(value.accuracy, into: &buf)
     }
 }
 
@@ -1103,40 +1103,25 @@ public func FfiConverterTypeGeographicCoordinate_lower(_ value: GeographicCoordi
 }
 
 public struct Heading {
-    public var geographicHeading: Double
-    public var accuracy: Double
-    public var x: Double
-    public var y: Double
-    public var z: Double
+    public var trueHeading: UInt16
+    public var accuracy: UInt16
     public var timestamp: Date
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geographicHeading: Double, accuracy: Double, x: Double, y: Double, z: Double, timestamp: Date) {
-        self.geographicHeading = geographicHeading
+    public init(trueHeading: UInt16, accuracy: UInt16, timestamp: Date) {
+        self.trueHeading = trueHeading
         self.accuracy = accuracy
-        self.x = x
-        self.y = y
-        self.z = z
         self.timestamp = timestamp
     }
 }
 
 extension Heading: Equatable, Hashable {
     public static func == (lhs: Heading, rhs: Heading) -> Bool {
-        if lhs.geographicHeading != rhs.geographicHeading {
+        if lhs.trueHeading != rhs.trueHeading {
             return false
         }
         if lhs.accuracy != rhs.accuracy {
-            return false
-        }
-        if lhs.x != rhs.x {
-            return false
-        }
-        if lhs.y != rhs.y {
-            return false
-        }
-        if lhs.z != rhs.z {
             return false
         }
         if lhs.timestamp != rhs.timestamp {
@@ -1146,11 +1131,8 @@ extension Heading: Equatable, Hashable {
     }
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(geographicHeading)
+        hasher.combine(trueHeading)
         hasher.combine(accuracy)
-        hasher.combine(x)
-        hasher.combine(y)
-        hasher.combine(z)
         hasher.combine(timestamp)
     }
 }
@@ -1159,21 +1141,15 @@ public struct FfiConverterTypeHeading: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Heading {
         return
             try Heading(
-                geographicHeading: FfiConverterDouble.read(from: &buf),
-                accuracy: FfiConverterDouble.read(from: &buf),
-                x: FfiConverterDouble.read(from: &buf),
-                y: FfiConverterDouble.read(from: &buf),
-                z: FfiConverterDouble.read(from: &buf),
+                trueHeading: FfiConverterUInt16.read(from: &buf),
+                accuracy: FfiConverterUInt16.read(from: &buf),
                 timestamp: FfiConverterTimestamp.read(from: &buf)
             )
     }
 
     public static func write(_ value: Heading, into buf: inout [UInt8]) {
-        FfiConverterDouble.write(value.geographicHeading, into: &buf)
-        FfiConverterDouble.write(value.accuracy, into: &buf)
-        FfiConverterDouble.write(value.x, into: &buf)
-        FfiConverterDouble.write(value.y, into: &buf)
-        FfiConverterDouble.write(value.z, into: &buf)
+        FfiConverterUInt16.write(value.trueHeading, into: &buf)
+        FfiConverterUInt16.write(value.accuracy, into: &buf)
         FfiConverterTimestamp.write(value.timestamp, into: &buf)
     }
 }

@@ -3,35 +3,34 @@ source: ferrostar/src/simulation.rs
 expression: states
 ---
 - current_location:
-    lng: 0
     lat: 0
+    lng: 0
   remaining_locations:
-    - lng: 1
-      lat: 1
-    - lng: 2
-      lat: 2
-    - lng: 3
-      lat: 3
+    - lat: 1
+      lng: 1
+    - lat: 2
+      lng: 2
+    - lat: 3
+      lng: 3
 - current_location:
-    lng: 1
     lat: 1
+    lng: 1
   remaining_locations:
-    - lng: 2
-      lat: 2
-    - lng: 3
-      lat: 3
+    - lat: 2
+      lng: 2
+    - lat: 3
+      lng: 3
 - current_location:
-    lng: 2
     lat: 2
+    lng: 2
   remaining_locations:
-    - lng: 3
-      lat: 3
+    - lat: 3
+      lng: 3
 - current_location:
-    lng: 3
     lat: 3
+    lng: 3
   remaining_locations: []
 - current_location:
-    lng: 3
     lat: 3
+    lng: 3
   remaining_locations: []
-

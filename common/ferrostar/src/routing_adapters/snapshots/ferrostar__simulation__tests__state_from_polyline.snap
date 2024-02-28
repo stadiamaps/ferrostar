@@ -1,6 +1,5 @@
 ---
 source: ferrostar/src/simulation.rs
-assertion_line: 126
 expression: state
 ---
 current_location:
@@ -25,4 +24,3 @@ remaining_locations:
     lng: -149.546937
   - lat: 60.534991
     lng: -149.548581
-

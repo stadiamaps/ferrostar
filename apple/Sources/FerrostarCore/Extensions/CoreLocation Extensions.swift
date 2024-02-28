@@ -16,7 +16,7 @@ extension CLLocation {
         let ffiCourse: UniFFI.CourseOverGround?
 
         if course >= 0 && courseAccuracy >= 0 {
-            ffiCourse = UniFFI.CourseOverGround(degrees: course, accuracy: courseAccuracy)
+            ffiCourse = UniFFI.CourseOverGround(course: course, courseAccuracy: courseAccuracy)
         } else {
             ffiCourse = nil
         }
@@ -56,14 +56,39 @@ extension GeographicCoordinate {
     }
 }
 
+extension CourseOverGround {
+    
+    /// Intialize a Course Over Ground object from the relevant Core Location types. These can be found on a
+    /// CLLocation object.
+    ///
+    /// - Parameters:
+    ///   - course: The direction the device is travelling, measured in degrees relative to true north.
+    ///   - courseAccuracy: The accuracy of the direction
+    public init?(course: CLLocationDirection,
+                 courseAccuracy: CLLocationDirectionAccuracy) {
+        guard course > 0 && courseAccuracy > 0 else {
+            return nil
+        }
+        
+        self.init(degrees: UInt16(course), accuracy: UInt16(courseAccuracy))
+    }
+}
+
 extension Heading {
     
-    public init(clHeading: CLHeading) {
-        self.init(geographicHeading: clHeading.trueHeading,
-                  accuracy: clHeading.headingAccuracy,
-                  x: clHeading.x,
-                  y: clHeading.y,
-                  z: clHeading.z,
+    /// Initialize a Heading if it can be represented as integers
+    ///
+    /// This will return nil for invalid headings.
+    ///
+    /// - Parameter clHeading: The CoreLocation heading provided by the location manager.
+    public init?(clHeading: CLHeading) {
+        guard clHeading.trueHeading > 0
+            && clHeading.headingAccuracy > 0 else {
+            return nil
+        }
+        
+        self.init(trueHeading: UInt16(clHeading.trueHeading),
+                  accuracy: UInt16(clHeading.headingAccuracy),
                   timestamp: clHeading.timestamp)
     }
 }
@@ -78,11 +103,8 @@ extension UserLocation {
             coordinates: GeographicCoordinate(cl: clLocation.coordinate),
             horizontalAccuracy: clLocation.horizontalAccuracy,
             courseOverGround: CourseOverGround(
-                degrees: clLocation.course,
-                accuracy: clLocation.courseAccuracy),
+                course: clLocation.course,
+                courseAccuracy: clLocation.courseAccuracy),
             timestamp: clLocation.timestamp)
     }
 }
-
-
-
