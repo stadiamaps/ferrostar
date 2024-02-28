@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "3df876f8f2c6c591b0f66a29b3e216020afc885c",
-        "version" : "6.0.0"
+        "revision" : "818e1d6b83e4cbe8482eca3e6e57d3f560926157",
+        "version" : "6.1.1"
       }
     },
     {
@@ -19,12 +19,12 @@
       }
     },
     {
-      "identity" : "maplibre-swiftui-dsl-playground",
+      "identity" : "mockable",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
+      "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "a8a2792b970cebf2e1116c606c066ba82da4972d"
+        "revision" : "7af00c08880d375f2742ca55705abd69837fe6c3",
+        "version" : "0.0.2"
       }
     },
     {
