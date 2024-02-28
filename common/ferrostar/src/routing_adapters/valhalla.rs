@@ -107,8 +107,8 @@ mod tests {
         coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
         horizontal_accuracy: 6.0,
         course_over_ground: Some(CourseOverGround {
-            degrees: 42.0,
-            accuracy: 12.0,
+            degrees: 42,
+            accuracy: 12,
         }),
         timestamp: SystemTime::UNIX_EPOCH,
     };
