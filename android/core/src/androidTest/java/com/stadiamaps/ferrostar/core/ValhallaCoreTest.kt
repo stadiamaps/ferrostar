@@ -263,34 +263,34 @@ class ValhallaCoreTest {
             assertEquals(
                 listOf(
                     GeographicCoordinate(
-                        -149.543469, 60.534716
+                        60.534716, -149.543469
                     ),
                     GeographicCoordinate(
-                        -149.543879, 60.534782
+                        60.534782, -149.543879
                     ),
                     GeographicCoordinate(
-                        -149.544134, 60.534829
+                        60.534829, -149.544134
                     ),
                     GeographicCoordinate(
-                        -149.5443, 60.534856
+                        60.534856, -149.5443
                     ),
                     GeographicCoordinate(
-                        -149.544533, 60.534887
+                        60.534887, -149.544533
                     ),
                     GeographicCoordinate(
-                        -149.544976, 60.534941
+                        60.534941, -149.544976
                     ),
                     GeographicCoordinate(
-                        -149.545485, 60.534971
+                        60.534971, -149.545485
                     ),
                     GeographicCoordinate(
-                        -149.546177, 60.535003
+                        60.535003, -149.546177
                     ),
                     GeographicCoordinate(
-                        -149.546937, 60.535008
+                        60.535008, -149.546937
                     ),
                     GeographicCoordinate(
-                        -149.548581, 60.534991
+                        60.534991, -149.548581
                     ),
                 ), routes.first().geometry
             )
