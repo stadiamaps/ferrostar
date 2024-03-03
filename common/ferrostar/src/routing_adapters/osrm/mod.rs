@@ -2,7 +2,8 @@ pub(crate) mod models;
 
 use super::RouteResponseParser;
 use crate::models::{
-    GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction, VisualInstructionContent,
+    GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
+    VisualInstructionContent, Waypoint, WaypointKind,
 };
 use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
 use geo::BoundingRect;
@@ -29,9 +30,13 @@ impl RouteResponseParser for OsrmResponseParser {
         let waypoints: Vec<_> = res
             .waypoints
             .iter()
-            .map(|waypoint| GeographicCoordinate {
-                lat: waypoint.location.latitude(),
-                lng: waypoint.location.longitude(),
+            .map(|waypoint| Waypoint {
+                coordinate: GeographicCoordinate {
+                    lat: waypoint.location.latitude(),
+                    lng: waypoint.location.longitude(),
+                },
+                // TODO: Figure out how to handle via_waypoints interspersed in the route
+                kind: WaypointKind::Break,
             })
             .collect();
 

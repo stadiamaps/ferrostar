@@ -18,6 +18,7 @@ import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.Waypoint
 import java.net.URL
 import java.time.LocalDateTime
 import java.util.concurrent.Executors
@@ -52,7 +53,7 @@ sealed class CorrectiveAction {
      *
      * Once they are available, the delegate will be notified of the new routes.
      */
-    class GetNewRoutes(val waypoints: List<GeographicCoordinate>): CorrectiveAction()
+    class GetNewRoutes(val waypoints: List<Waypoint>): CorrectiveAction()
 }
 
 // TODO: Think of a better (more specialized) name for this interface; something about rerouting? The term "delegate" is imported from the Apple ecosystem and will be super confusing to a Kotlin dev.
@@ -64,7 +65,7 @@ interface FerrostarCoreDelegate {
      * This is currently used for recalculation when the user diverges from the route, but can be extended for other uses in the future.
      * Note that [FerrostarCoreState.isCalculatingNewRoute] and [FerrostarCore.isCalculatingNewRoute] will be `true` until this method returns.
      */
-    fun correctiveActionForDeviation(core: FerrostarCore, deviationInMeters: Double, remainingWaypoints: List<GeographicCoordinate>): CorrectiveAction
+    fun correctiveActionForDeviation(core: FerrostarCore, deviationInMeters: Double, remainingWaypoints: List<Waypoint>): CorrectiveAction
 
     /**
      * Called when the core has loaded alternative routes.
@@ -129,7 +130,7 @@ class FerrostarCore(
     )
 
     suspend fun getRoutes(
-        initialLocation: UserLocation, waypoints: List<GeographicCoordinate>
+        initialLocation: UserLocation, waypoints: List<Waypoint>
     ): List<Route> = try {
         _routeRequestInFlight = true
 

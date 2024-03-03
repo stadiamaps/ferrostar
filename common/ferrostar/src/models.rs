@@ -12,6 +12,7 @@ pub enum ModelError {
     PolylineGenerationError { error: String },
 }
 
+/// A geographic coordinate in WGS84.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct GeographicCoordinate {
@@ -41,6 +42,36 @@ impl From<GeographicCoordinate> for Point {
     fn from(value: GeographicCoordinate) -> Self {
         Self(value.into())
     }
+}
+
+/// A waypoint along a route.
+///
+/// Within the context of Ferrostar, a route request consists of exactly one [UserLocation]
+/// and at least one [Waypoint]. The route starts from the user's location (which may
+/// contain other useful information like their current course for the [crate::routing_adapters::RouteRequestGenerator]
+/// to use) and proceeds through one or more waypoints.
+///
+/// Waypoints are used during route calculation, are tracked throughout the lifecycle of a trip,
+/// and are used for recalculating when the sure deviates from the expected route.
+///
+/// Note that support for features beyond basic geographic coordinates varies by routing engine.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
+pub struct Waypoint {
+    pub coordinate: GeographicCoordinate,
+    pub kind: WaypointKind,
+}
+
+/// Describes characteristics of the waypoint for the routing backend.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Enum)]
+#[cfg_attr(test, derive(Serialize))]
+pub enum WaypointKind {
+    /// Starts or ends a leg of the trip.
+    ///
+    /// Most routing engines will generate arrival and departure instructions.
+    Break,
+    /// A waypoint that is simply passed through, but will not have any arrival or departure instructions.
+    Via,
 }
 
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
@@ -121,7 +152,7 @@ pub struct Route {
     /// The ordered list of waypoints to visit, including the starting point.
     /// Note that this is distinct from the *geometry* which includes all points visited.
     /// A waypoint represents a start/end point for a route leg.
-    pub waypoints: Vec<GeographicCoordinate>,
+    pub waypoints: Vec<Waypoint>,
     pub steps: Vec<RouteStep>,
 }
 

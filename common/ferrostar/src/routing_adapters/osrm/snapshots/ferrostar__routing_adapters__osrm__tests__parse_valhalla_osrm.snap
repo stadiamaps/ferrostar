@@ -292,10 +292,14 @@ expression: routes
       lng: 24.765372
   distance: 2604.35
   waypoints:
-    - lat: 59.442643
-      lng: 24.765368
-    - lat: 59.452226
-      lng: 24.730034
+    - coordinate:
+        lat: 59.442643
+        lng: 24.765368
+      kind: Break
+    - coordinate:
+        lat: 59.452226
+        lng: 24.730034
+      kind: Break
   steps:
     - geometry:
         - lat: 59.442643

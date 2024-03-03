@@ -1,6 +1,7 @@
+use crate::models::Waypoint;
 use crate::{
     create_osrm_response_parser, create_valhalla_request_generator,
-    models::{GeographicCoordinate, Route, UserLocation},
+    models::{Route, UserLocation},
 };
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
@@ -42,7 +43,7 @@ pub trait RouteRequestGenerator: Send + Sync {
     fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinate>,
+        waypoints: Vec<Waypoint>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError>;
 
     // TODO: "Trace attributes" request method? Maybe in a separate trait?
@@ -110,7 +111,7 @@ impl RouteAdapter {
     pub fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinate>,
+        waypoints: Vec<Waypoint>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
         self.request_generator
             .generate_request(user_location, waypoints)

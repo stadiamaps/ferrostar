@@ -60,6 +60,9 @@ pub struct RouteLeg {
     pub distance: f64,
     /// A sequence of steps with turn-by-turn instructions.
     pub steps: Vec<RouteStep>,
+    /// TODO
+    #[serde(default)]
+    pub via_waypoints: Vec<Waypoint>,
 }
 
 /// An annotation of a route leg with fine-grained information about segments or nodes.

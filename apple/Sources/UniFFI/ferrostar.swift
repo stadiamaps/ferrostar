@@ -597,7 +597,7 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
  * always be of a "known" type to the Rust side.
  */
 public protocol RouteAdapterProtocol: AnyObject {
-    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
+    func generateRequest(userLocation: UserLocation, waypoints: [Waypoint]) throws -> RouteRequest
 
     func parseResponse(response: Data) throws -> [Route]
 }
@@ -660,12 +660,12 @@ public class RouteAdapter:
         })
     }
 
-    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
+    public func generateRequest(userLocation: UserLocation, waypoints: [Waypoint]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
             rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
                 uniffi_ferrostar_fn_method_routeadapter_generate_request(self.uniffiClonePointer(),
                                                                          FfiConverterTypeUserLocation.lower(userLocation),
-                                                                         FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
+                                                                         FfiConverterSequenceTypeWaypoint.lower(waypoints), $0)
             }
         )
     }
@@ -947,7 +947,7 @@ public protocol RouteRequestGenerator: AnyObject {
      * While most implementations will treat the locations as an ordered sequence, this is not
      * guaranteed (ex: an optimized router).
      */
-    func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest
+    func generateRequest(userLocation: UserLocation, waypoints: [Waypoint]) throws -> RouteRequest
 }
 
 /**
@@ -987,12 +987,12 @@ public class RouteRequestGeneratorImpl:
      * While most implementations will treat the locations as an ordered sequence, this is not
      * guaranteed (ex: an optimized router).
      */
-    public func generateRequest(userLocation: UserLocation, waypoints: [GeographicCoordinate]) throws -> RouteRequest {
+    public func generateRequest(userLocation: UserLocation, waypoints: [Waypoint]) throws -> RouteRequest {
         return try FfiConverterTypeRouteRequest.lift(
             rustCallWithError(FfiConverterTypeRoutingRequestGenerationError.lift) {
                 uniffi_ferrostar_fn_method_routerequestgenerator_generate_request(self.uniffiClonePointer(),
                                                                                   FfiConverterTypeUserLocation.lower(userLocation),
-                                                                                  FfiConverterSequenceTypeGeographicCoordinate.lower(waypoints), $0)
+                                                                                  FfiConverterSequenceTypeWaypoint.lower(waypoints), $0)
             }
         )
     }
@@ -1007,7 +1007,7 @@ private let uniffiCallbackInterfaceRouteRequestGenerator: ForeignCallback = { (h
         func makeCall() throws -> Int32 {
             let result = try swiftCallbackInterface.generateRequest(
                 userLocation: FfiConverterTypeUserLocation.read(from: &reader),
-                waypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &reader)
+                waypoints: FfiConverterSequenceTypeWaypoint.read(from: &reader)
             )
             var writer = [UInt8]()
             FfiConverterTypeRouteRequest.write(result, into: &writer)
@@ -1376,6 +1376,9 @@ public func FfiConverterTypeCourseOverGround_lower(_ value: CourseOverGround) ->
     return FfiConverterTypeCourseOverGround.lower(value)
 }
 
+/**
+ * A geographic coordinate in WGS84.
+ */
 public struct GeographicCoordinate {
     public var lat: Double
     public var lng: Double
@@ -2130,6 +2133,74 @@ public func FfiConverterTypeVisualInstructionContent_lower(_ value: VisualInstru
     return FfiConverterTypeVisualInstructionContent.lower(value)
 }
 
+/**
+ * A waypoint along a route.
+ *
+ * Within the context of Ferrostar, a route request consists of exactly one [UserLocation]
+ * and at least one [Waypoint]. The route starts from the user's location (which may
+ * contain other useful information like their current course for the [crate::routing_adapters::RouteRequestGenerator]
+ * to use) and proceeds through one or more waypoints.
+ *
+ * Waypoints are used during route calculation, are tracked throughout the lifecycle of a trip,
+ * and are used for recalculating when the sure deviates from the expected route.
+ *
+ * Note that support for features beyond basic geographic coordinates varies by routing engine.
+ */
+public struct Waypoint {
+    public var coordinate: GeographicCoordinate
+    public var kind: WaypointKind
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        coordinate: GeographicCoordinate,
+        kind: WaypointKind
+    ) {
+        self.coordinate = coordinate
+        self.kind = kind
+    }
+}
+
+extension Waypoint: Equatable, Hashable {
+    public static func == (lhs: Waypoint, rhs: Waypoint) -> Bool {
+        if lhs.coordinate != rhs.coordinate {
+            return false
+        }
+        if lhs.kind != rhs.kind {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(coordinate)
+        hasher.combine(kind)
+    }
+}
+
+public struct FfiConverterTypeWaypoint: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Waypoint {
+        return
+            try Waypoint(
+                coordinate: FfiConverterTypeGeographicCoordinate.read(from: &buf),
+                kind: FfiConverterTypeWaypointKind.read(from: &buf)
+            )
+    }
+
+    public static func write(_ value: Waypoint, into buf: inout [UInt8]) {
+        FfiConverterTypeGeographicCoordinate.write(value.coordinate, into: &buf)
+        FfiConverterTypeWaypointKind.write(value.kind, into: &buf)
+    }
+}
+
+public func FfiConverterTypeWaypoint_lift(_ buf: RustBuffer) throws -> Waypoint {
+    return try FfiConverterTypeWaypoint.lift(buf)
+}
+
+public func FfiConverterTypeWaypoint_lower(_ value: Waypoint) -> RustBuffer {
+    return FfiConverterTypeWaypoint.lower(value)
+}
+
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
@@ -2524,6 +2595,10 @@ public enum RouteRequest {
         headers: [String: String],
         body: Data
     )
+    case custom(
+        userLocation: UserLocation,
+        waypoints: [Waypoint]
+    )
 }
 
 public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
@@ -2538,6 +2613,11 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
                 body: FfiConverterData.read(from: &buf)
             )
 
+        case 2: return try .custom(
+                userLocation: FfiConverterTypeUserLocation.read(from: &buf),
+                waypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf)
+            )
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -2549,6 +2629,11 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
             FfiConverterString.write(url, into: &buf)
             FfiConverterDictionaryStringString.write(headers, into: &buf)
             FfiConverterData.write(body, into: &buf)
+
+        case let .custom(userLocation, waypoints):
+            writeInt(&buf, Int32(2))
+            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
+            FfiConverterSequenceTypeWaypoint.write(waypoints, into: &buf)
         }
     }
 }
@@ -2901,6 +2986,59 @@ public func FfiConverterTypeTripState_lower(_ value: TripState) -> RustBuffer {
 
 extension TripState: Equatable, Hashable {}
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Describes characteristics of the waypoint for the routing backend.
+ */
+public enum WaypointKind {
+    /**
+     * Starts or ends a leg of the trip.
+     *
+     * Most routing engines will generate arrival and departure instructions.
+     */
+    case `break`
+    /**
+     * A waypoint that is simply passed through, but will not have any arrival or departure instructions.
+     */
+    case via
+}
+
+public struct FfiConverterTypeWaypointKind: FfiConverterRustBuffer {
+    typealias SwiftType = WaypointKind
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> WaypointKind {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .break
+
+        case 2: return .via
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: WaypointKind, into buf: inout [UInt8]) {
+        switch value {
+        case .break:
+            writeInt(&buf, Int32(1))
+
+        case .via:
+            writeInt(&buf, Int32(2))
+        }
+    }
+}
+
+public func FfiConverterTypeWaypointKind_lift(_ buf: RustBuffer) throws -> WaypointKind {
+    return try FfiConverterTypeWaypointKind.lift(buf)
+}
+
+public func FfiConverterTypeWaypointKind_lower(_ value: WaypointKind) -> RustBuffer {
+    return FfiConverterTypeWaypointKind.lower(value)
+}
+
+extension WaypointKind: Equatable, Hashable {}
+
 private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     typealias SwiftType = UInt16?
 
@@ -3137,6 +3275,28 @@ private struct FfiConverterSequenceTypeVisualInstruction: FfiConverterRustBuffer
     }
 }
 
+private struct FfiConverterSequenceTypeWaypoint: FfiConverterRustBuffer {
+    typealias SwiftType = [Waypoint]
+
+    public static func write(_ value: [Waypoint], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeWaypoint.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [Waypoint] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [Waypoint]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            try seq.append(FfiConverterTypeWaypoint.read(from: &buf))
+        }
+        return seq
+    }
+}
+
 private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
     public static func write(_ value: [String: String], into buf: inout [UInt8]) {
         let len = Int32(value.count)
@@ -3295,7 +3455,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 60529 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 39525 {
+    if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 7702 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 39819 {
@@ -3304,7 +3464,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 17675 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 33758 {
+    if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 44693 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 38851 {

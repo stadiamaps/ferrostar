@@ -1,4 +1,4 @@
-use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep};
+use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoint, WaypointKind};
 use geo::{BoundingRect, LineString, Point};
 
 pub fn gen_dummy_route_step(
@@ -45,8 +45,14 @@ pub fn gen_route_from_steps(steps: Vec<RouteStep>) -> Route {
         waypoints: vec![
             // This method cannot be used outside the test configuration,
             // so unwraps are OK.
-            steps.first().unwrap().geometry.first().cloned().unwrap(),
-            steps.last().unwrap().geometry.last().cloned().unwrap(),
+            Waypoint {
+                coordinate: steps.first().unwrap().geometry.first().cloned().unwrap(),
+                kind: WaypointKind::Break,
+            },
+            Waypoint {
+                coordinate: steps.last().unwrap().geometry.last().cloned().unwrap(),
+                kind: WaypointKind::Break,
+            },
         ],
         steps,
     }
