@@ -66,7 +66,7 @@ impl From<Rect> for BoundingBox {
 pub struct Heading {
     /// The heading in degrees relative to true north.
     pub true_heading: u16,
-    /// The maximum deviation in degrees between the reported heading and the true geomagnetic heading.
+    /// The platform specific accuracy of the heading value.
     pub accuracy: u16,
     /// The time at which the heading was recorded.
     pub timestamp: SystemTime,

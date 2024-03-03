@@ -13,22 +13,3 @@ and routing backends, which are described in detail in [ARCHITECTURE ](../ARCHIT
 
 This crate provides a binary target, `uniffi-bindgen`, which generates Kotlin and Swift bindings.
 You probably don't need to touch this crate. It's just here because no canonical binary exists on crates.io.
-
-## Getting Started
-
-### Android
-
-Install cargo-ndk to allow gradle to build the local library `libferrostar.so` and `libuniffi_ferrostar.so`. With cargo-ndk installed you can load and sync Android Studio then build the demo app allowing gradle to automatically build what it needs.
-
-```sh
-cargo install cargo-ndk
-```
-
-### iOS 
-
-Run the build iOS shell command to build the xcframework required to locally run the Swift Package and demo app.
-
-```sh
-cd common
-./build-ios.sh
-```

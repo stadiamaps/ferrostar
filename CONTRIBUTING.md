@@ -85,10 +85,18 @@ Given these limitations, we opted for a shell script until further notice.
 ### Android
 
 1. Install [Android Studio](https://developer.android.com/studio).
-2. Ensure that the latest NDK is installed
+2. Install cargo-ndk to allow gradle to build the local library `libferrostar.so` and `libuniffi_ferrostar.so`. 
+   With cargo-ndk installed you can load and sync Android Studio then build the demo app allowing gradle to 
+   automatically build what it needs.
+
+```sh
+cargo install cargo-ndk
+```
+
+3. Ensure that the latest NDK is installed
    (refer to the `ndkVersion` number in [`core/build.gradle`](android/core/build.gradle)
    and ensure you have the same version available).
-3. Open the Gradle workspace ('android/') in Android Studio.
+4. Open the Gradle workspace ('android/') in Android Studio.
    Gradle builds automatically ensure the core is built,
    so there are no funky scripts needed as on iOS.
 
