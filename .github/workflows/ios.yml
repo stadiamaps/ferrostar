@@ -14,8 +14,8 @@ jobs:
     - name: Upgrade swiftformat to latest
       run: brew install swiftformat
 
-    - name: Checkout maplibre-swiftui-dsl-playground
-      uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v4
 
     - name: Check format
       run: swiftformat . --lint
