@@ -61,12 +61,12 @@ public struct NavigationMapView: View {
             
             if let snappedLocation = navigationState?.snappedLocation {
                 let userLocationSource = ShapeSource(identifier: "user-location-source") {
-                    MLNPointFeature(coordinate: snappedLocation.coordinate)
+                    MLNPointFeature(coordinate: snappedLocation.coordinates.clLocationCoordinate2D)
                 }
                 
                 SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
                     .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
-                    .iconRotation(constant: navigationState?.courseOverGround?.magnitude ?? 0)
+                    .iconRotation(constant: Double(navigationState?.courseOverGround?.degrees ?? 0))
             }
         }
         .edgesIgnoringSafeArea(.all)

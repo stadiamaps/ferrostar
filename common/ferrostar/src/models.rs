@@ -15,15 +15,15 @@ pub enum ModelError {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct GeographicCoordinate {
-    pub lng: f64,
     pub lat: f64,
+    pub lng: f64,
 }
 
 impl From<Coord> for GeographicCoordinate {
     fn from(value: Coord) -> Self {
         Self {
-            lng: value.x,
             lat: value.y,
+            lng: value.x,
         }
     }
 }
@@ -57,6 +57,19 @@ impl From<Rect> for BoundingBox {
             ne: value.max().into(),
         }
     }
+}
+
+/// The heading of the user/device.
+/// 
+/// Ferrostar prefers course over ground, but may use heading in some cases.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+pub struct Heading {
+    /// The heading in degrees relative to true north.
+    pub true_heading: u16,
+    /// The platform specific accuracy of the heading value.
+    pub accuracy: u16,
+    /// The time at which the heading was recorded.
+    pub timestamp: SystemTime,
 }
 
 /// The direction in which the user/device is observed to be traveling.

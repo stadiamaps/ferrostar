@@ -19,7 +19,7 @@ let errorBody = Data("""
 let errorResponse = HTTPURLResponse(url: valhallaEndpointUrl, statusCode: 401, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!
 
 // Mocked route
-let mockGeom = [GeographicCoordinate(lng: 0, lat: 0), GeographicCoordinate(lng: 1, lat: 1)]
+let mockGeom = [GeographicCoordinate(lat: 0, lng: 0), GeographicCoordinate(lat: 1, lng: 1)]
 let instructionContent = VisualInstructionContent(text: "Sail straight", maneuverType: .depart, maneuverModifier: .straight, roundaboutExitDegrees: nil)
 let mockRoute = UniFFI.Route(geometry: mockGeom, bbox: BoundingBox(sw: mockGeom.first!, ne: mockGeom.last!), distance: 1, waypoints: mockGeom, steps: [RouteStep(geometry: mockGeom, distance: 1, roadName: "foo road", instruction: "Sail straight", visualInstructions: [VisualInstruction(primaryContent: instructionContent, secondaryContent: nil, triggerDistanceBeforeManeuver: 42)], spokenInstructions: [])])
 
