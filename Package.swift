@@ -46,6 +46,10 @@ let package = Package(
             name: "FerrostarMapLibreUI",
             targets: ["FerrostarMapLibreUI"]
         ),
+        .library(
+            name: "FerrostarCoreFFI",
+            targets: ["FerrostarCoreFFI"]
+        ),
     ],
     dependencies: [
         maplibreSwiftUIDSLPackage,
@@ -58,7 +62,7 @@ let package = Package(
         binaryTarget,
         .target(
             name: "FerrostarCore",
-            dependencies: [.target(name: "UniFFI")],
+            dependencies: [.target(name: "FerrostarCoreFFI")],
             path: "apple/Sources/FerrostarCore"
         ),
         .target(
@@ -71,7 +75,7 @@ let package = Package(
             path: "apple/Sources/FerrostarMapLibreUI"
         ),
         .target(
-            name: "UniFFI",
+            name: "FerrostarCoreFFI",
             dependencies: [.target(name: "FerrostarCoreRS")],
             path: "apple/Sources/UniFFI"
         ),

@@ -1,6 +1,6 @@
 import XCTest
 import CoreLocation
-import UniFFI
+import FerrostarCoreFFI
 @testable import FerrostarCore
 
 class MockCLHeading: CLHeading {

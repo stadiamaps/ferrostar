@@ -1,9 +1,9 @@
 import CoreLocation
-import UniFFI
+import FerrostarCoreFFI
 
 extension CLLocationCoordinate2D {
-    var geographicCoordinates: UniFFI.GeographicCoordinate {
-        UniFFI.GeographicCoordinate(lat: latitude, lng: longitude)
+    var geographicCoordinates: GeographicCoordinate {
+        GeographicCoordinate(lat: latitude, lng: longitude)
     }
 
     init(geographicCoordinates: GeographicCoordinate) {
@@ -12,19 +12,19 @@ extension CLLocationCoordinate2D {
 }
 
 extension CLLocation {
-    var userLocation: UniFFI.UserLocation {
-        let ffiCourse: UniFFI.CourseOverGround?
+    var userLocation: UserLocation {
+        let ffiCourse: CourseOverGround?
 
         if course >= 0 && courseAccuracy >= 0 {
-            ffiCourse = UniFFI.CourseOverGround(course: course, courseAccuracy: courseAccuracy)
+            ffiCourse = CourseOverGround(course: course, courseAccuracy: courseAccuracy)
         } else {
             ffiCourse = nil
         }
 
-        return UniFFI.UserLocation(coordinates: coordinate.geographicCoordinates, horizontalAccuracy: horizontalAccuracy, courseOverGround: ffiCourse, timestamp: timestamp)
+        return UserLocation(coordinates: coordinate.geographicCoordinates, horizontalAccuracy: horizontalAccuracy, courseOverGround: ffiCourse, timestamp: timestamp)
     }
 
-    convenience init(userLocation: UniFFI.UserLocation) {
+    convenience init(userLocation: UserLocation) {
         let invalid: Double = -1.0
 
         let courseDegrees : CLLocationDirection
@@ -132,7 +132,7 @@ extension UserLocation {
     
     /// Initialize a UserLocation from an Apple CoreLocation CLLocation
     ///
-    /// Unlike CourseOverGround & Heading, this value will init with invalid values.
+    /// Unlike CourseOverGround & Heading, this initializer will accept inputs with invalid values.
     ///
     /// - Parameter clLocation: The location.
     public init(clLocation: CLLocation) {

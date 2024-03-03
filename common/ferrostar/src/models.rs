@@ -91,7 +91,7 @@ impl From<Rect> for BoundingBox {
 }
 
 /// The heading of the user/device.
-/// 
+///
 /// Ferrostar prefers course over ground, but may use heading in some cases.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct Heading {

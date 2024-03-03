@@ -9,6 +9,10 @@ import SwiftUI
 import CoreLocation
 import FerrostarCore
 import FerrostarMapLibreUI
+import struct FerrostarCoreFFI.Route
+import struct FerrostarCoreFFI.GeographicCoordinate
+import struct FerrostarCoreFFI.Waypoint
+import enum FerrostarCoreFFI.WaypointKind
 
 let style = URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!
 
@@ -156,7 +160,7 @@ struct NavigationView: View {
         }
         
         do {
-            let waypoints = locations.map { $0.coordinate }
+            let waypoints = locations.map { Waypoint(coordinate: GeographicCoordinate(lat: $0.coordinate.latitude, lng: $0.coordinate.longitude), kind: .break) }
             routes = try await ferrostarCore.getRoutes(initialLocation: userLocation,
                                                        waypoints: waypoints)
             

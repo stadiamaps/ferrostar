@@ -20,7 +20,6 @@ pub enum RouteRequest {
         headers: HashMap<String, String>,
         body: Vec<u8>,
     },
-    // TODO: Generic case for cases like local/offline route generation or other arbitrary foreign code
 }
 
 /// A trait describing any object capable of generating [RouteRequest]s.
@@ -31,7 +30,7 @@ pub enum RouteRequest {
 /// before use, so that we can keep the public interface as generic as possible.
 ///
 /// Implementations may be either in Rust (most popular engines should eventually have Rust
-/// implementations) or foreign code.
+/// glue code) or foreign code.
 #[uniffi::export(with_foreign)]
 pub trait RouteRequestGenerator: Send + Sync {
     /// Generates a routing backend request given the set of locations.
@@ -60,7 +59,9 @@ pub trait RouteResponseParser: Send + Sync {
     fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, RoutingResponseParseError>;
 }
 
-/// The route adapter bridges between the common core and a routing backend.
+/// The route adapter bridges between the common core and a routing backend where interaction takes place
+/// over a generic request/response flow (typically over a network;
+/// local/offline routers do not use this object as the interaction patterns are different).
 ///
 /// This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
 /// traits, but it provides one further level of abstraction which is helpful to consumers.

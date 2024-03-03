@@ -1,5 +1,5 @@
 import CoreLocation
-import UniFFI
+import FerrostarCoreFFI
 
 public protocol LocationProviding: AnyObject {
     var delegate: LocationManagingDelegate? { get set }
@@ -132,7 +132,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     }
     
     public func startSimulating(route: Route) throws {
-        simulationState = try locationSimulationFromRoute(route: route.inner)
+        simulationState = try locationSimulationFromRoute(route: route)
         startUpdating()
     }
     

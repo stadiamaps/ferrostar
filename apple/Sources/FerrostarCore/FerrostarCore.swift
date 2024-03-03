@@ -1,5 +1,5 @@
 import CoreLocation
-import UniFFI
+import FerrostarCoreFFI
 import Foundation
 
 enum FerrostarCoreError: Error, Equatable {
@@ -26,7 +26,7 @@ public enum CorrectiveAction {
     /// Tells the core to fetch new routes from the route adapter.
     ///
     /// Once they are available, the delegate will be notified of the new routes.
-    case getNewRoutes(waypoints: [CLLocationCoordinate2D])
+    case getNewRoutes(waypoints: [Waypoint])
 }
 
 /// Receives events from ``FerrostarCore``.
@@ -36,7 +36,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Called when the core detects that the user has deviated from the route.
     ///
     /// This hook enables app developers to take the most appropriate corrective action.
-    func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double, remainingWaypoints waypoints: [CLLocationCoordinate2D]) -> CorrectiveAction
+    func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double, remainingWaypoints waypoints: [Waypoint]) -> CorrectiveAction
 
     /// Called when the core has loaded alternate routes.
     ///
@@ -79,17 +79,17 @@ public protocol FerrostarCoreDelegate: AnyObject {
     @Published public private(set) var state: NavigationState?
 
     private let networkSession: URLRequestLoading
-    private let routeAdapter: UniFFI.RouteAdapterProtocol
+    private let routeAdapter: RouteAdapterProtocol
     private let locationProvider: LocationProviding
-    private var navigationController: UniFFI.NavigationControllerProtocol?
-    private var tripState: UniFFI.TripState?
+    private var navigationController: NavigationControllerProtocol?
+    private var tripState: TripState?
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
     private var recalculationTask: Task<(), Never>?
 
     private var config: NavigationControllerConfig?
 
-    public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
+    public init(routeAdapter: RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
         self.routeAdapter = routeAdapter
         self.locationProvider = locationProvider
         self.networkSession = networkSession
@@ -101,21 +101,21 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     public convenience init(valhallaEndpointUrl: URL, profile: String, locationProvider: LocationProviding, networkSession: URLRequestLoading = URLSession.shared) {
-        let routeAdapter = UniFFI.RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndpointUrl.absoluteString, profile: profile)
+        let routeAdapter = RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndpointUrl.absoluteString, profile: profile)
         self.init(routeAdapter: routeAdapter, locationProvider: locationProvider, networkSession: networkSession)
     }
 
     /// Tries to get routes visiting one or more waypoints starting from the initial location.
     ///
     /// Success and failure are communicated via ``delegate`` methods.
-    public func getRoutes(initialLocation: CLLocation, waypoints: [CLLocationCoordinate2D]) async throws -> [Route] {
+    public func getRoutes(initialLocation: CLLocation, waypoints: [Waypoint]) async throws -> [Route] {
         routeRequestInFlight = true
 
         defer {
             routeRequestInFlight = false
         }
 
-        let routeRequest = try routeAdapter.generateRequest(userLocation: initialLocation.userLocation, waypoints: waypoints.map { $0.geographicCoordinates })
+        let routeRequest = try routeAdapter.generateRequest(userLocation: initialLocation.userLocation, waypoints: waypoints)
 
         switch routeRequest {
         case let .httpPost(url: url, headers: headers, body: body):
@@ -138,7 +138,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             } else {
                 let routes = try routeAdapter.parseResponse(response: data)
 
-                return routes.map { Route(inner: $0) }
+                return routes
             }
         }
     }
@@ -156,8 +156,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         locationProvider.startUpdating()
 
-        state = NavigationState(snappedLocation: location, heading: locationProvider.lastHeading, fullRoute: route.geometry, steps: route.inner.steps)
-        let controller = NavigationController(route: route.inner, config: config.ffiValue)
+        state = NavigationState(snappedLocation: location, heading: locationProvider.lastHeading, fullRouteShape: route.geometry, steps: route.steps)
+        let controller = NavigationController(route: route, config: config.ffiValue)
         navigationController = controller
         DispatchQueue.main.async {
             self.update(newState: controller.getInitialState(location: location.userLocation), location: location)
@@ -175,7 +175,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Internal state update.
     ///
     /// You should call this rather than setting properties directly
-    private func update(newState: UniFFI.TripState, location: CLLocation) {
+    private func update(newState: TripState, location: CLLocation) {
         DispatchQueue.main.async {
             self.tripState = newState
 
@@ -189,9 +189,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
-                let clRemainingWaypoints = remainingWaypoints.map({ coord in
-                    CLLocationCoordinate2D(geographicCoordinates: coord)
-                })
 
     //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
     //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
@@ -206,7 +203,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         break
                     }
 
-                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine, remainingWaypoints: clRemainingWaypoints) ?? .getNewRoutes(waypoints: clRemainingWaypoints)) {
+                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine, remainingWaypoints: remainingWaypoints) ?? .getNewRoutes(waypoints: remainingWaypoints)) {
                     case .doNothing:
                         break
                     case .getNewRoutes(let waypoints):

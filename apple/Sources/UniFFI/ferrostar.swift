@@ -577,7 +577,9 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 }
 
 /**
- * The route adapter bridges between the common core and a routing backend.
+ * The route adapter bridges between the common core and a routing backend where interaction takes place
+ * over a generic request/response flow (typically over a network;
+ * local/offline routers do not use this object as the interaction patterns are different).
  *
  * This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
  * traits, but it provides one further level of abstraction which is helpful to consumers.
@@ -603,7 +605,9 @@ public protocol RouteAdapterProtocol: AnyObject {
 }
 
 /**
- * The route adapter bridges between the common core and a routing backend.
+ * The route adapter bridges between the common core and a routing backend where interaction takes place
+ * over a generic request/response flow (typically over a network;
+ * local/offline routers do not use this object as the interaction patterns are different).
  *
  * This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
  * traits, but it provides one further level of abstraction which is helpful to consumers.
@@ -938,7 +942,7 @@ public func FfiConverterTypeRouteDeviationDetector_lower(_ value: RouteDeviation
  * before use, so that we can keep the public interface as generic as possible.
  *
  * Implementations may be either in Rust (most popular engines should eventually have Rust
- * implementations) or foreign code.
+ * glue code) or foreign code.
  */
 public protocol RouteRequestGenerator: AnyObject {
     /**
@@ -959,7 +963,7 @@ public protocol RouteRequestGenerator: AnyObject {
  * before use, so that we can keep the public interface as generic as possible.
  *
  * Implementations may be either in Rust (most popular engines should eventually have Rust
- * implementations) or foreign code.
+ * glue code) or foreign code.
  */
 public class RouteRequestGeneratorImpl:
     RouteRequestGenerator
@@ -1445,7 +1449,7 @@ public struct Heading {
      */
     public var trueHeading: UInt16
     /**
-     * The maximum deviation in degrees between the reported heading and the true geomagnetic heading.
+     * The platform specific accuracy of the heading value.
      */
     public var accuracy: UInt16
     /**
@@ -1461,7 +1465,7 @@ public struct Heading {
          */
         trueHeading: UInt16,
         /**
-            * The maximum deviation in degrees between the reported heading and the true geomagnetic heading.
+            * The platform specific accuracy of the heading value.
             */
         accuracy: UInt16,
         /**
@@ -1632,7 +1636,7 @@ public struct Route {
      * Note that this is distinct from the *geometry* which includes all points visited.
      * A waypoint represents a start/end point for a route leg.
      */
-    public var waypoints: [GeographicCoordinate]
+    public var waypoints: [Waypoint]
     public var steps: [RouteStep]
 
     // Default memberwise initializers are never public by default, so we
@@ -1649,7 +1653,7 @@ public struct Route {
             * Note that this is distinct from the *geometry* which includes all points visited.
             * A waypoint represents a start/end point for a route leg.
             */
-        waypoints: [GeographicCoordinate],
+        waypoints: [Waypoint],
         steps: [RouteStep]
     ) {
         self.geometry = geometry
@@ -1696,7 +1700,7 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
                 geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
                 bbox: FfiConverterTypeBoundingBox.read(from: &buf),
                 distance: FfiConverterDouble.read(from: &buf),
-                waypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
+                waypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
                 steps: FfiConverterSequenceTypeRouteStep.read(from: &buf)
             )
     }
@@ -1705,7 +1709,7 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
         FfiConverterSequenceTypeGeographicCoordinate.write(value.geometry, into: &buf)
         FfiConverterTypeBoundingBox.write(value.bbox, into: &buf)
         FfiConverterDouble.write(value.distance, into: &buf)
-        FfiConverterSequenceTypeGeographicCoordinate.write(value.waypoints, into: &buf)
+        FfiConverterSequenceTypeWaypoint.write(value.waypoints, into: &buf)
         FfiConverterSequenceTypeRouteStep.write(value.steps, into: &buf)
     }
 }
@@ -2595,10 +2599,6 @@ public enum RouteRequest {
         headers: [String: String],
         body: Data
     )
-    case custom(
-        userLocation: UserLocation,
-        waypoints: [Waypoint]
-    )
 }
 
 public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
@@ -2613,11 +2613,6 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
                 body: FfiConverterData.read(from: &buf)
             )
 
-        case 2: return try .custom(
-                userLocation: FfiConverterTypeUserLocation.read(from: &buf),
-                waypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf)
-            )
-
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -2629,11 +2624,6 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
             FfiConverterString.write(url, into: &buf)
             FfiConverterDictionaryStringString.write(headers, into: &buf)
             FfiConverterData.write(body, into: &buf)
-
-        case let .custom(userLocation, waypoints):
-            writeInt(&buf, Int32(2))
-            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
-            FfiConverterSequenceTypeWaypoint.write(waypoints, into: &buf)
         }
     }
 }
@@ -2927,7 +2917,7 @@ public enum TripState {
             * may have multiple intervening points that are visited along the route.)
             * This list is updated as the user advances through the route.
             */
-        remainingWaypoints: [GeographicCoordinate],
+        remainingWaypoints: [Waypoint],
         /**
             * The distance to the next maneuver, in meters.
             */
@@ -2949,7 +2939,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return try .navigating(
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
-                remainingWaypoints: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
+                remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
                 deviation: FfiConverterTypeRouteDeviation.read(from: &buf)
             )
@@ -2966,7 +2956,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
-            FfiConverterSequenceTypeGeographicCoordinate.write(remainingWaypoints, into: &buf)
+            FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
 

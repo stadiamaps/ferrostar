@@ -152,7 +152,10 @@ mod tests {
             body,
         } = generator
             .generate_request(USER_LOCATION, WAYPOINTS.to_vec())
-            .unwrap();
+            .unwrap()
+        else {
+            panic!("Unexpected route request generated.");
+        };
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());
@@ -193,7 +196,10 @@ mod tests {
             body,
         } = generator
             .generate_request(USER_LOCATION_WITH_COURSE, WAYPOINTS.to_vec())
-            .unwrap();
+            .unwrap()
+        else {
+            panic!("Unexpected route request generated.");
+        };
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());
@@ -242,7 +248,10 @@ mod tests {
             body,
         } = generator
             .generate_request(location, WAYPOINTS.to_vec())
-            .unwrap();
+            .unwrap()
+        else {
+            panic!("Unexpected route request generated.");
+        };
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());

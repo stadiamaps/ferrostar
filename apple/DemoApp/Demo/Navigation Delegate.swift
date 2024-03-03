@@ -7,12 +7,14 @@
 
 import CoreLocation
 import FerrostarCore
+import struct FerrostarCoreFFI.Waypoint
+import struct FerrostarCoreFFI.Route
 
 /// Not all navigation apps will require a navigation delegate. In fact, we hope that most don't!
 /// In case you do though, this sample implementation shows what you'll need to get started
 /// by re-implementing the default behaviors of the core.
 class NavigationDelegate: FerrostarCoreDelegate {
-    func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double, remainingWaypoints waypoints: [CLLocationCoordinate2D]) -> CorrectiveAction {
+    func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double, remainingWaypoints waypoints: [Waypoint]) -> CorrectiveAction {
         // If the user is off course, we'll try to calculate a new route using the remaining waypoints.
         return .getNewRoutes(waypoints: waypoints)
     }

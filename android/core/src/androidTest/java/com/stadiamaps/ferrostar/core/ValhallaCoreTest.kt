@@ -24,6 +24,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.Waypoint
+import uniffi.ferrostar.WaypointKind
 import java.net.URL
 import java.time.Instant
 
@@ -256,7 +258,7 @@ class ValhallaCoreTest {
             val routes = core.getRoutes(
                 UserLocation(
                     GeographicCoordinate(60.5347155, -149.543469), 12.0, null, Instant.now()
-                ), waypoints = listOf(GeographicCoordinate(60.5349908, -149.5485806))
+                ), waypoints = listOf(Waypoint(coordinate = GeographicCoordinate(60.5349908, -149.5485806), kind = WaypointKind.BREAK))
             )
 
             assertEquals(routes.count(), 1)

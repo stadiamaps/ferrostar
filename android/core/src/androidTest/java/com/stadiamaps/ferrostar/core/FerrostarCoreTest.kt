@@ -32,6 +32,8 @@ import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 import uniffi.ferrostar.VisualInstructionContent
+import uniffi.ferrostar.Waypoint
+import uniffi.ferrostar.WaypointKind
 import java.time.Instant
 
 private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
@@ -41,9 +43,8 @@ private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
 class MockRouteRequestGenerator : RouteRequestGenerator {
     override fun generateRequest(
         userLocation: UserLocation,
-        waypoints: List<GeographicCoordinate>
+        waypoints: List<Waypoint>
     ): RouteRequest = RouteRequest.HttpPost(valhallaEndpointUrl, mapOf(), byteArrayOf())
-
 }
 
 class MockRouteResponseParser(private val routes: List<Route>) : RouteResponseParser {
@@ -72,7 +73,7 @@ class FerrostarCoreTest {
         geometry = mockGeom,
         bbox = BoundingBox(sw = mockGeom.first(), ne = mockGeom.last()),
         distance = 1.0,
-        waypoints = mockGeom,
+        waypoints = mockGeom.map { Waypoint(coordinate = it, kind = WaypointKind.BREAK) },
         steps = listOf(
             RouteStep(
                 geometry = mockGeom,
@@ -124,7 +125,7 @@ class FerrostarCoreTest {
                         60.5347155
                     ), 0.0, null, Instant.now()
                 ),
-                waypoints = listOf(GeographicCoordinate(-149.5485806, 60.5349908))
+                waypoints = listOf(Waypoint(coordinate = GeographicCoordinate(-149.5485806, 60.5349908), kind = WaypointKind.BREAK))
             )
             fail("Expected the request to fail")
         } catch (e: InvalidStatusCodeException) {
@@ -161,7 +162,7 @@ class FerrostarCoreTest {
                     lng = -149.543469,
                     lat = 60.5347155
                 ), horizontalAccuracy = 6.0, courseOverGround = null, timestamp = Instant.now()
-            ), waypoints = listOf(GeographicCoordinate(lng = -149.5485806, lat = 60.5349908))
+            ), waypoints = listOf(Waypoint(coordinate = GeographicCoordinate(lng = -149.5485806, lat = 60.5349908), kind = WaypointKind.BREAK))
         )
 
         assertEquals(listOf(mockRoute), routes)
@@ -186,7 +187,7 @@ class FerrostarCoreTest {
             override fun correctiveActionForDeviation(
                 core: FerrostarCore,
                 deviationInMeters: Double,
-                remainingWaypoints: List<GeographicCoordinate>
+                remainingWaypoints: List<Waypoint>
             ): CorrectiveAction {
                 correctiveActionDelegateCalled = true
                 assertEquals(42.0, deviationInMeters, Double.MIN_VALUE);
@@ -218,7 +219,7 @@ class FerrostarCoreTest {
                     lng = -149.543469,
                     lat = 60.5347155
                 ), horizontalAccuracy = 6.0, courseOverGround = null, timestamp = Instant.now()
-            ), waypoints = listOf(GeographicCoordinate(lng = -149.5485806, lat = 60.5349908))
+            ), waypoints = listOf(Waypoint(coordinate = GeographicCoordinate(lng = -149.5485806, lat = 60.5349908), kind = WaypointKind.BREAK))
         )
 
         locationProvider.lastLocation = SimulatedLocation(GeographicCoordinate(0.0, 0.0), 6.0, null, Instant.now())
