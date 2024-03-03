@@ -100,6 +100,7 @@ cargo install cargo-ndk
 4. Open the Gradle workspace ('android/') in Android Studio.
    Gradle builds automatically ensure the core is built,
    so there are no funky scripts needed as on iOS.
+5. Run the `ktfmtFormat` gradle action before committing to ensure consistent formatting.
 
 ## Writing & Running Tests
 

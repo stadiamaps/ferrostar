@@ -14,37 +14,32 @@ import org.ramani.compose.MapLibre
 import org.ramani.compose.Polyline
 
 @Composable
-fun NavigationMapView(
-    viewModel: NavigationViewModel
-) {
-    val uiState = viewModel.uiState.collectAsState()
+fun NavigationMapView(viewModel: NavigationViewModel) {
+  val uiState = viewModel.uiState.collectAsState()
 
-    Box {
-        MapLibre(
-            modifier = Modifier.fillMaxSize(),
-            cameraPosition = CameraPosition(
-                target = LatLng(
-                    uiState.value.snappedLocation.coordinates.lat,
-                    uiState.value.snappedLocation.coordinates.lng
-                ),
-                zoom = 13.0
-            )
-        ) {
-            Circle(
-                center = LatLng(
-                    uiState.value.snappedLocation.coordinates.lat,
-                    uiState.value.snappedLocation.coordinates.lng
-                ), radius = 10f, color = "Blue"
-            )
-            Polyline(
-                points = uiState.value.routeGeometry.map { LatLng(it.lat, it.lng) },
-                color = "Red",
-                lineWidth = 5f
-            )
+  Box {
+    MapLibre(
+        modifier = Modifier.fillMaxSize(),
+        cameraPosition =
+            CameraPosition(
+                target =
+                    LatLng(
+                        uiState.value.snappedLocation.coordinates.lat,
+                        uiState.value.snappedLocation.coordinates.lng),
+                zoom = 13.0)) {
+          Circle(
+              center =
+                  LatLng(
+                      uiState.value.snappedLocation.coordinates.lat,
+                      uiState.value.snappedLocation.coordinates.lng),
+              radius = 10f,
+              color = "Blue")
+          Polyline(
+              points = uiState.value.routeGeometry.map { LatLng(it.lat, it.lng) },
+              color = "Red",
+              lineWidth = 5f)
         }
 
-        uiState.value.visualInstruction?.let {
-            BannerView(it, uiState.value.distanceToNextManeuver)
-        }
-    }
+    uiState.value.visualInstruction?.let { BannerView(it, uiState.value.distanceToNextManeuver) }
+  }
 }

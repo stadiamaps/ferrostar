@@ -1,7 +1,6 @@
 /**
- * FIXME: This file should move out of Android Tests ASAP.
- * It only exists here because I haven't yet figured out how to build and link the platform-native
- * binaries via JNI just yet and this works.
+ * FIXME: This file should move out of Android Tests ASAP. It only exists here because I haven't yet
+ * figured out how to build and link the platform-native binaries via JNI just yet and this works.
  * See https://github.com/willir/cargo-ndk-android-gradle/issues/12.
  *
  * This solution is STUPIDLY INEFFICIENT and will probably contribute to global climate change since
@@ -9,6 +8,8 @@
  */
 package com.stadiamaps.ferrostar.core
 
+import java.net.URL
+import java.time.Instant
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -26,10 +27,9 @@ import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
-import java.net.URL
-import java.time.Instant
 
-const val simpleRoute = """
+const val simpleRoute =
+    """
 {
   "routes": [
     {
@@ -231,71 +231,50 @@ const val simpleRoute = """
 """
 
 class ValhallaCoreTest {
-    private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
+  private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
 
-    @Test
-    fun parseValhallaRouteResponse(): TestResult {
-        val interceptor = MockInterceptor().apply {
-            rule(post, url eq valhallaEndpointUrl) {
-                respond(simpleRoute, MEDIATYPE_JSON)
-            }
+  @Test
+  fun parseValhallaRouteResponse(): TestResult {
+    val interceptor =
+        MockInterceptor().apply {
+          rule(post, url eq valhallaEndpointUrl) { respond(simpleRoute, MEDIATYPE_JSON) }
 
-            rule(get) {
-                respond {
-                    throw IllegalStateException("an IO error")
-                }
-            }
+          rule(get) { respond { throw IllegalStateException("an IO error") } }
         }
-        val core = FerrostarCore(
+    val core =
+        FerrostarCore(
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
-            delegate = null
-        )
+            delegate = null)
 
-        return runTest {
-            val routes = core.getRoutes(
-                UserLocation(
-                    GeographicCoordinate(60.5347155, -149.543469), 12.0, null, Instant.now()
-                ), waypoints = listOf(Waypoint(coordinate = GeographicCoordinate(60.5349908, -149.5485806), kind = WaypointKind.BREAK))
-            )
+    return runTest {
+      val routes =
+          core.getRoutes(
+              UserLocation(
+                  GeographicCoordinate(60.5347155, -149.543469), 12.0, null, Instant.now()),
+              waypoints =
+                  listOf(
+                      Waypoint(
+                          coordinate = GeographicCoordinate(60.5349908, -149.5485806),
+                          kind = WaypointKind.BREAK)))
 
-            assertEquals(routes.count(), 1)
-            assertEquals(
-                listOf(
-                    GeographicCoordinate(
-                        60.534716, -149.543469
-                    ),
-                    GeographicCoordinate(
-                        60.534782, -149.543879
-                    ),
-                    GeographicCoordinate(
-                        60.534829, -149.544134
-                    ),
-                    GeographicCoordinate(
-                        60.534856, -149.5443
-                    ),
-                    GeographicCoordinate(
-                        60.534887, -149.544533
-                    ),
-                    GeographicCoordinate(
-                        60.534941, -149.544976
-                    ),
-                    GeographicCoordinate(
-                        60.534971, -149.545485
-                    ),
-                    GeographicCoordinate(
-                        60.535003, -149.546177
-                    ),
-                    GeographicCoordinate(
-                        60.535008, -149.546937
-                    ),
-                    GeographicCoordinate(
-                        60.534991, -149.548581
-                    ),
-                ), routes.first().geometry
-            )
-        }
+      assertEquals(routes.count(), 1)
+      assertEquals(
+          listOf(
+              GeographicCoordinate(60.534716, -149.543469),
+              GeographicCoordinate(60.534782, -149.543879),
+              GeographicCoordinate(60.534829, -149.544134),
+              GeographicCoordinate(60.534856, -149.5443),
+              GeographicCoordinate(60.534887, -149.544533),
+              GeographicCoordinate(60.534941, -149.544976),
+              GeographicCoordinate(60.534971, -149.545485),
+              GeographicCoordinate(60.535003, -149.546177),
+              GeographicCoordinate(60.535008, -149.546937),
+              GeographicCoordinate(60.534991, -149.548581),
+          ),
+          routes.first().geometry)
     }
+  }
 }
