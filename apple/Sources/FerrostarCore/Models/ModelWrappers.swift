@@ -1,10 +1,10 @@
-import Foundation
 import CoreLocation
 import FerrostarCoreFFI
+import Foundation
 
-extension Route {
-    public func getPolyline(precision: UInt32) throws -> String {
-        return try getRoutePolyline(route: self, precision: precision)
+public extension Route {
+    func getPolyline(precision: UInt32) throws -> String {
+        try getRoutePolyline(route: self, precision: precision)
     }
 }
 
@@ -16,7 +16,7 @@ private class DetectorImpl: RouteDeviationDetector {
     }
 
     func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation {
-        return detectorFunc(location, route, currentRouteStep)
+        detectorFunc(location, route, currentRouteStep)
     }
 }
 
@@ -31,11 +31,17 @@ public enum RouteDeviationTracking {
     var ffiValue: FerrostarCoreFFI.RouteDeviationTracking {
         switch self {
         case .none:
-            return .none
-        case .staticThreshold(minimumHorizontalAccuracy: let minimumHorizontalAccuracy, maxAcceptableDeviation: let maxAcceptableDeviation):
-            return .staticThreshold(minimumHorizontalAccuracy: minimumHorizontalAccuracy, maxAcceptableDeviation: maxAcceptableDeviation)
-        case .custom(detector: let detectorFunc):
-            return .custom(detector: DetectorImpl(detectorFunc: detectorFunc))
+            .none
+        case let .staticThreshold(
+            minimumHorizontalAccuracy: minimumHorizontalAccuracy,
+            maxAcceptableDeviation: maxAcceptableDeviation
+        ):
+            .staticThreshold(
+                minimumHorizontalAccuracy: minimumHorizontalAccuracy,
+                maxAcceptableDeviation: maxAcceptableDeviation
+            )
+        case let .custom(detector: detectorFunc):
+            .custom(detector: DetectorImpl(detectorFunc: detectorFunc))
         }
     }
 }
@@ -43,7 +49,10 @@ public enum RouteDeviationTracking {
 /// A Swift wrapper around `UniFFI.NavigationControllerConfig`.
 public struct NavigationControllerConfig {
     public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) {
-        ffiValue = FerrostarCoreFFI.NavigationControllerConfig(stepAdvance: stepAdvance, routeDeviationTracking: routeDeviationTracking.ffiValue)
+        ffiValue = FerrostarCoreFFI.NavigationControllerConfig(
+            stepAdvance: stepAdvance,
+            routeDeviationTracking: routeDeviationTracking.ffiValue
+        )
     }
 
     var ffiValue: FerrostarCoreFFI.NavigationControllerConfig

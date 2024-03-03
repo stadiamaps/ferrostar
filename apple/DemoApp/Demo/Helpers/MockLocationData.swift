@@ -1,14 +1,7 @@
-//
-//  MockLocationData.swift
-//  Ferrostar Demo
-//
-//  Created by Jacob Fielding on 12/17/23.
-//
-
-import Foundation
 import CoreLocation
+import Foundation
 
-struct LocationIdentifier : Identifiable, Equatable, Hashable {
+struct LocationIdentifier: Identifiable, Equatable, Hashable {
     static func == (lhs: LocationIdentifier, rhs: LocationIdentifier) -> Bool {
         lhs.id == rhs.id
     }
@@ -23,5 +16,8 @@ struct LocationIdentifier : Identifiable, Equatable, Hashable {
 }
 
 let locations = [
-    LocationIdentifier(name: "Cupertino HS", coordinate: CLLocationCoordinate2D(latitude: 37.31910, longitude: -122.01018)),
+    LocationIdentifier(
+        name: "Cupertino HS",
+        coordinate: CLLocationCoordinate2D(latitude: 37.31910, longitude: -122.01018)
+    ),
 ]

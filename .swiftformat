@@ -1,0 +1,16 @@
+# file options
+
+--exclude apple/.build
+--exclude apple/DemoApp/.build
+
+# format options
+
+--header ""
+--indent 4
+--importgrouping testable-bottom
+--maxwidth 120
+--swiftversion 5.9
+
+# rules
+
+--enable isEmpty

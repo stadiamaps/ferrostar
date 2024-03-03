@@ -1,20 +1,19 @@
-import SwiftUI
 import FerrostarCore
 import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
+import SwiftUI
 
 public struct NavigationMapView: View {
-    
     @Environment(\.colorScheme) var colorScheme
-    
+
     let lightStyleURL: URL
     let darkStyleURL: URL
     // TODO: Configurable camera and user "puck" rotation modes
-    
+
     private var navigationState: NavigationState?
     @Binding private var camera: MapViewCamera
-    
+
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
@@ -24,10 +23,10 @@ public struct NavigationMapView: View {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
-        self._camera = camera
+        _camera = camera
         // TODO: Set up following of the user
     }
-    
+
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
@@ -37,7 +36,7 @@ public struct NavigationMapView: View {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
-        self._camera = .constant(initialCamera)
+        _camera = .constant(initialCamera)
         // TODO: Set up following of the user
     }
 
@@ -47,23 +46,23 @@ public struct NavigationMapView: View {
             camera: $camera
         ) {
             // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
-            
+
             if let routePolyline = navigationState?.routePolyline {
                 RouteStyleLayer(polyline: routePolyline,
                                 identifier: "route-polyline",
                                 style: TravelledRouteStyle())
             }
-            
+
             if let remainingRoutePolyline = navigationState?.remainingRoutePolyline {
                 RouteStyleLayer(polyline: remainingRoutePolyline,
                                 identifier: "remaining-route-polyline")
             }
-            
+
             if let snappedLocation = navigationState?.snappedLocation {
                 let userLocationSource = ShapeSource(identifier: "user-location-source") {
                     MLNPointFeature(coordinate: snappedLocation.coordinates.clLocationCoordinate2D)
                 }
-                
+
                 SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
                     .iconImage(constant: UIImage(systemName: "location.north.circle.fill")!)
                     .iconRotation(constant: Double(navigationState?.courseOverGround?.degrees ?? 0))
@@ -72,7 +71,8 @@ public struct NavigationMapView: View {
         .edgesIgnoringSafeArea(.all)
         .overlay(alignment: .top, content: {
             if let navigationState,
-               let visualInstructions = navigationState.visualInstructions {
+               let visualInstructions = navigationState.visualInstructions
+            {
                 BannerView(instructions: visualInstructions,
                            distanceToNextManeuver: navigationState.distanceToNextManeuver)
             }
@@ -80,14 +80,12 @@ public struct NavigationMapView: View {
     }
 }
 
-
 #Preview {
     // TODO: Make map URL configurable but gitignored
-    return
-        NavigationMapView(
-            lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-            darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-            navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4),
-            initialCamera: .default()
-        )
+    NavigationMapView(
+        lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4),
+        initialCamera: .default()
+    )
 }

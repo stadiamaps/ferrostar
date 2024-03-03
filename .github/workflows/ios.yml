@@ -7,6 +7,19 @@ on:
     branches: [ main ]
 
 jobs:
+  format-lint:
+    runs-on: macos-14
+
+    steps:
+    - name: Upgrade swiftformat to latest
+      run: brew install swiftformat
+
+    - name: Checkout maplibre-swiftui-dsl-playground
+      uses: actions/checkout@v3
+
+    - name: Check format
+      run: swiftformat . --lint
+      
   build-ferrostar:
     runs-on: macos-14
 

@@ -1,6 +1,6 @@
 import CoreLocation
-@testable import FerrostarCore
 import XCTest
+@testable import FerrostarCore
 
 private class MockHeading: CLHeading {
     let value: CLLocationDirection

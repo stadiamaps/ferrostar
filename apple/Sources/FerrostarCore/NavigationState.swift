@@ -1,6 +1,6 @@
-import Foundation
 import CoreLocation
 import FerrostarCoreFFI
+import Foundation
 
 /// An observable state object, to make binding easier for SwiftUI applications.
 ///
@@ -18,13 +18,18 @@ public struct NavigationState: Hashable {
     /// Indicates when the core is calculating a new route due to the user being off route
     public internal(set) var isCalculatingNewRoute: Bool = false
 
-    init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRouteShape: [GeographicCoordinate], steps: [RouteStep]) {
+    init(
+        snappedLocation: CLLocation,
+        heading: CLHeading? = nil,
+        fullRouteShape: [GeographicCoordinate],
+        steps: [RouteStep]
+    ) {
         self.snappedLocation = UserLocation(clLocation: snappedLocation)
         if let heading {
             self.heading = Heading(clHeading: heading)
         }
-        self.courseOverGround = self.snappedLocation.courseOverGround
+        courseOverGround = self.snappedLocation.courseOverGround
         self.fullRouteShape = fullRouteShape
-        self.currentStep = steps.first!
+        currentStep = steps.first!
     }
 }

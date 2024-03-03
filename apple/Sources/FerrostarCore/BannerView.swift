@@ -1,8 +1,8 @@
 
-import SwiftUI
-import FerrostarCoreFFI
 import CoreLocation
+import FerrostarCoreFFI
 import MapKit
+import SwiftUI
 
 extension VisualInstructionContent {
     // Stand-in art using SFSymbols for now. Ideally look for some
@@ -85,7 +85,12 @@ public struct BannerView: View {
 }
 
 #Preview {
-    let instructions = VisualInstruction(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
+    let instructions = VisualInstruction(
+        primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left,
+                                                 roundaboutExitDegrees: nil),
+        secondaryContent: nil,
+        triggerDistanceBeforeManeuver: 42.0
+    )
 
     return BannerView(instructions: instructions, distanceToNextManeuver: 42)
 }

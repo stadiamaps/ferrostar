@@ -36,17 +36,21 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Called when the core detects that the user has deviated from the route.
     ///
     /// This hook enables app developers to take the most appropriate corrective action.
-    func core(_ core: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double, remainingWaypoints waypoints: [Waypoint]) -> CorrectiveAction
+    func core(
+        _ core: FerrostarCore,
+        correctiveActionForDeviation deviationInMeters: Double,
+        remainingWaypoints waypoints: [Waypoint]
+    ) -> CorrectiveAction
 
     /// Called when the core has loaded alternate routes.
     ///
     /// The developer may decide whether or not to act on this information given the current trip state.
-    /// This is currently used for recalculation when the user diverges from the route, but can be extended for other uses in the future.
+    /// This is currently used for recalculation when the user diverges from the route, but can be extended for other
+    /// uses in the future.
     /// Note that the `isCalculatingNewRoute` property of ``NavigationState`` will be true until this method returns.
     /// Delegates may thus rely on this state introspection to decide what action to take given alterante routes.
     func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route])
 }
-
 
 /// The Ferrostar core.
 ///
@@ -85,11 +89,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var tripState: TripState?
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
-    private var recalculationTask: Task<(), Never>?
+    private var recalculationTask: Task<Void, Never>?
 
     private var config: NavigationControllerConfig?
 
-    public init(routeAdapter: RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
+    public init(
+        routeAdapter: RouteAdapterProtocol,
+        locationProvider: LocationProviding,
+        networkSession: URLRequestLoading
+    ) {
         self.routeAdapter = routeAdapter
         self.locationProvider = locationProvider
         self.networkSession = networkSession
@@ -100,8 +108,16 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.delegate = self
     }
 
-    public convenience init(valhallaEndpointUrl: URL, profile: String, locationProvider: LocationProviding, networkSession: URLRequestLoading = URLSession.shared) {
-        let routeAdapter = RouteAdapter.newValhallaHttp(endpointUrl: valhallaEndpointUrl.absoluteString, profile: profile)
+    public convenience init(
+        valhallaEndpointUrl: URL,
+        profile: String,
+        locationProvider: LocationProviding,
+        networkSession: URLRequestLoading = URLSession.shared
+    ) {
+        let routeAdapter = RouteAdapter.newValhallaHttp(
+            endpointUrl: valhallaEndpointUrl.absoluteString,
+            profile: profile
+        )
         self.init(routeAdapter: routeAdapter, locationProvider: locationProvider, networkSession: networkSession)
     }
 
@@ -115,7 +131,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
             routeRequestInFlight = false
         }
 
-        let routeRequest = try routeAdapter.generateRequest(userLocation: initialLocation.userLocation, waypoints: waypoints)
+        let routeRequest = try routeAdapter.generateRequest(
+            userLocation: initialLocation.userLocation,
+            waypoints: waypoints
+        )
 
         switch routeRequest {
         case let .httpPost(url: url, headers: headers, body: body):
@@ -156,7 +175,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         locationProvider.startUpdating()
 
-        state = NavigationState(snappedLocation: location, heading: locationProvider.lastHeading, fullRouteShape: route.geometry, steps: route.steps)
+        state = NavigationState(
+            snappedLocation: location,
+            heading: locationProvider.lastHeading,
+            fullRouteShape: route.geometry,
+            steps: route.steps
+        )
         let controller = NavigationController(route: route, config: config.ffiValue)
         navigationController = controller
         DispatchQueue.main.async {
@@ -179,8 +203,14 @@ public protocol FerrostarCoreDelegate: AnyObject {
         DispatchQueue.main.async {
             self.tripState = newState
 
-            switch (newState) {
-            case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, remainingWaypoints: let remainingWaypoints, distanceToNextManeuver: let distanceToNextManeuver, deviation: let deviation):
+            switch newState {
+            case let .navigating(
+                snappedUserLocation: snappedLocation,
+                remainingSteps: remainingSteps,
+                remainingWaypoints: remainingWaypoints,
+                distanceToNextManeuver: distanceToNextManeuver,
+                deviation: deviation
+            ):
                 self.state?.snappedLocation = snappedLocation
                 self.state?.courseOverGround = snappedLocation.courseOverGround
                 self.state?.currentStep = remainingSteps.first
@@ -190,23 +220,31 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 })
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
 
-    //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
-    //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
-    //                })
+                //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: {
+                //                instruction in
+                //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
+                //                })
 
-                switch (deviation) {
+                switch deviation {
                 case .noDeviation:
                     // No action
                     break
-                case .offRoute(deviationFromRouteLine: let deviationFromRouteLine):
-                    guard !self.routeRequestInFlight && self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? 0 > -self.minimumTimeBeforeRecalculaton else {
+                case let .offRoute(deviationFromRouteLine: deviationFromRouteLine):
+                    guard !self.routeRequestInFlight,
+                          self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? 0 > -self
+                          .minimumTimeBeforeRecalculaton
+                    else {
                         break
                     }
 
-                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine, remainingWaypoints: remainingWaypoints) ?? .getNewRoutes(waypoints: remainingWaypoints)) {
+                    switch self.delegate?.core(
+                        self,
+                        correctiveActionForDeviation: deviationFromRouteLine,
+                        remainingWaypoints: remainingWaypoints
+                    ) ?? .getNewRoutes(waypoints: remainingWaypoints) {
                     case .doNothing:
                         break
-                    case .getNewRoutes(let waypoints):
+                    case let .getNewRoutes(waypoints):
                         self.state?.isCalculatingNewRoute = true
                         self.recalculationTask = Task {
                             do {
@@ -228,14 +266,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
                             }
                         }
                     }
-
-                    break
                 }
             case .complete:
                 // TODO: "You have arrived"?
                 self.state?.visualInstructions = nil
                 self.state?.snappedLocation = UserLocation(clLocation: location)
-                self.state?.courseOverGround = CourseOverGround(course: location.course, courseAccuracy: location.courseAccuracy)
+                self.state?.courseOverGround = CourseOverGround(
+                    course: location.course,
+                    courseAccuracy: location.courseAccuracy
+                )
                 self.state?.spokenInstruction = nil
             }
         }
@@ -244,21 +283,22 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
 extension FerrostarCore: LocationManagingDelegate {
     @MainActor
-    public func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(_: LocationProviding, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last,
               let state = tripState,
-              let newState = navigationController?.updateUserLocation(location: location.userLocation, state: state) else {
+              let newState = navigationController?.updateUserLocation(location: location.userLocation, state: state)
+        else {
             return
         }
-        
+
         update(newState: newState, location: location)
     }
 
-    public func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
+    public func locationManager(_: LocationProviding, didUpdateHeading newHeading: CLHeading) {
         state?.heading = Heading(clHeading: newHeading)
     }
 
-    public func locationManager(_: LocationProviding, didFailWithError error: Error) {
+    public func locationManager(_: LocationProviding, didFailWithError _: Error) {
         // TODO: Decide if/how to propagate this upstream later.
         // For initial releases, we simply assume that the developer has requested the correct permissions
         // and ensure this before attempting to start location updates.

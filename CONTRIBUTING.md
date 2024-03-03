@@ -47,7 +47,7 @@ For minor or straightforward bug fixes, feel free to proceed directly to a PR.
 2. Open the cargo workspace (`common/`) in your preferred editing environment. 
 
 The Rust project is a cargo workspace,
-and nothing beyond the above is requried should be needed to start hacking. 
+and nothing beyond the above is requried should be needed to start hacking.
 
 ### iOS
 
@@ -58,9 +58,10 @@ and nothing beyond the above is requried should be needed to start hacking.
 xcode-select --install
 ```
 
-3. Since you're developing locally, set `let useLocalFramework = true` in `Package.swift`.
+3. Install [`swiftformat`](https://github.com/nicklockwood/SwiftFormat).
+4. Since you're developing locally, set `let useLocalFramework = true` in `Package.swift`.
    (TODO: Figure out a way to extract this so it doesn't get accidentally committed.) 
-4. Run the iOS build script:
+5. Run the iOS build script:
 
 ```shell
 cd apple/common

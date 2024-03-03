@@ -28,7 +28,10 @@ if useLocalFramework {
 if useLocalMapLibreSwiftUIDSL {
     maplibreSwiftUIDSLPackage = .package(path: "../maplibre-swiftui-dsl-playground")
 } else {
-    maplibreSwiftUIDSLPackage = .package(url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground", from: "0.0.2")
+    maplibreSwiftUIDSLPackage = .package(
+        url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
+        from: "0.0.2"
+    )
 }
 
 let package = Package(

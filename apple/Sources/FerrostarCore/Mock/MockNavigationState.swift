@@ -1,16 +1,16 @@
-import Foundation
 import CoreLocation
 import FerrostarCoreFFI
+import Foundation
 
-extension NavigationState {
-    public static let pedestrianExample = NavigationState(
+public extension NavigationState {
+    static let pedestrianExample = NavigationState(
         snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.lat,
                                     longitude: samplePedestrianWaypoints.first!.lng),
         fullRouteShape: samplePedestrianWaypoints,
         steps: []
     )
 
-    public static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> NavigationState {
+    static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> NavigationState {
         let remainingLocations = Array(samplePedestrianWaypoints.dropFirst(n))
         let lastUserLocation = remainingLocations.first!
 
@@ -24,11 +24,18 @@ extension NavigationState {
                 instruction: "Walk west on Jefferson St.",
                 visualInstructions: [
                     VisualInstruction(
-                        primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil),
-                        secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
+                        primaryContent: VisualInstructionContent(
+                            text: "Hyde Street",
+                            maneuverType: .turn,
+                            maneuverModifier: .left,
+                            roundaboutExitDegrees: nil
+                        ),
+                        secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0
+                    ),
                 ],
-                spokenInstructions: [])
-            ])
+                spokenInstructions: []
+            )]
+        )
 
         result.snappedLocation = UserLocation(
             coordinates: samplePedestrianWaypoints.first!,
