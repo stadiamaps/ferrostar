@@ -237,7 +237,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             case .complete:
                 // TODO: "You have arrived"?
                 self.state?.visualInstructions = nil
-                self.state?.snappedLocation = UserLocation(clLocation: location)! // TODO: Handle error?  // We arrived; no more snapping needed
+                self.state?.snappedLocation = UserLocation(clLocation: location)
                 self.state?.courseOverGround = CourseOverGround(course: location.course, courseAccuracy: location.courseAccuracy)
                 self.state?.spokenInstruction = nil
             }

@@ -19,7 +19,7 @@ public struct NavigationState: Hashable {
     public internal(set) var isCalculatingNewRoute: Bool = false
 
     init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
-        self.snappedLocation = UserLocation(clLocation: snappedLocation)! // TODO: Handle an error here if UserLocation is invalid?
+        self.snappedLocation = UserLocation(clLocation: snappedLocation)
         if let heading {
             self.heading = Heading(clHeading: heading)
         }

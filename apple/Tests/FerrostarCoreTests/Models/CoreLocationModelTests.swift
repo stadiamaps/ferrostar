@@ -62,24 +62,6 @@ final class CoreLocationModelTests: XCTestCase {
         XCTAssertEqual(userLocation.timestamp, timestamp)
     }
     
-    func testInvalidInitUserLocation() {
-        let timestamp = Date()
-        let coordinate = CLLocationCoordinate2D(latitude: -77.846323, longitude: 166.668235)
-        let location = CLLocation(coordinate: coordinate,
-                                  altitude: 10,
-                                  horizontalAccuracy: -1.1,
-                                  verticalAccuracy: 6.6,
-                                  course: 45.5,
-                                  courseAccuracy: 3.3,
-                                  speed: 4.4,
-                                  speedAccuracy: 1.1,
-                                  timestamp: timestamp)
-        
-        let invalid = UserLocation(clLocation: location)
-        
-        XCTAssertNil(invalid)
-    }
-    
     // MARK: CourseOverGround
     
     func testInitCourseOverGround() {
