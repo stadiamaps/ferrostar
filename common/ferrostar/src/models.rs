@@ -72,29 +72,6 @@ pub struct Heading {
     pub timestamp: SystemTime,
 }
 
-impl Heading {
-
-    /// Create a new heading.
-    /// 
-    /// # Arguments
-    /// 
-    /// * `true_heading` - The heading relative to true north, measured in clockwise degrees from
-    /// true north (N = 0, E = 90, S = 180, W = 270).
-    /// * `accuracy` - The maximum deviation in degrees between the reported heading and the true geomagnetic heading.
-    /// * `timestamp` - The time at which the heading was recorded.
-    pub fn new(
-        true_heading: u16,
-        accuracy: u16,
-        timestamp: SystemTime,
-    ) -> Self {
-        Self {
-            true_heading,
-            accuracy,
-            timestamp,
-        }
-    }
-}
-
 /// The direction in which the user/device is observed to be traveling.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct CourseOverGround {
@@ -122,26 +99,6 @@ pub struct UserLocation {
     pub horizontal_accuracy: f64,
     pub course_over_ground: Option<CourseOverGround>,
     pub timestamp: SystemTime,
-}
-
-impl UserLocation {
-    pub fn new(
-        latitude: f64,
-        longitude: f64,
-        horizontal_accuracy: f64,
-        course_over_ground: Option<CourseOverGround>,
-        timestamp: SystemTime,
-    ) -> Self {
-        Self {
-            coordinates: GeographicCoordinate { 
-                lat: latitude, 
-                lng: longitude 
-            },
-            horizontal_accuracy,
-            course_over_ground,
-            timestamp,
-        }
-    }
 }
 
 impl From<UserLocation> for Point {
