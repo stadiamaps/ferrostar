@@ -112,4 +112,4 @@ class SimulatedLocationProvider : LocationProvider {
   }
 }
 
-// TODO: Non-simulated implementations
+// TODO: Non-simulated implementations (GoogleFusedLocationProvider? AndroidSystemLocationProvider?)

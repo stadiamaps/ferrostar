@@ -52,22 +52,17 @@ public protocol FerrostarCoreDelegate: AnyObject {
     func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route])
 }
 
-/// The Ferrostar core.
-///
-/// This is the entrypoint for end users of Ferrostar, and is responsible
+/// This is the entrypoint for end users of Ferrostar on iOS, and is responsible
 /// for "driving" the navigation with location updates and other events.
 ///
 /// The usual flow is for callers to configure an instance of the core, set a ``delegate``,
-/// and reuse the core for as long as it makes sense (necessarily somewhat app-specific).
-/// Note that it is the responsibility of the caller to ensure that the location manager is authorized to get
+/// and reuse the instance for as long as it makes sense (necessarily somewhat app-specific).
+/// You can first call ``getRoutes(waypoints:userLocation:)``
+/// to fetch a list of possible routes asynchronously. After selecting a suitable route (either interactively by the
+/// user, or programmatically), call ``startNavigation(route:config:)`` to start a session.
+///
+/// NOTE: it is the responsibility of the caller to ensure that the location manager is authorized to get
 /// live user location with high precision.
-///
-/// Users will first want to call ``getRoutes(waypoints:userLocation:)``
-/// to fetch a list of possible routes asynchronously. Upon successfully computing a set of
-/// possible routes, one is selected, either interactively by the user, or programmatically.
-/// The particulars will vary by app; do what makes the most sense for your user experience.
-///
-/// Finally, with a route selected, call ``startNavigation(route:config:)`` to start a session.
 @objc public class FerrostarCore: NSObject, ObservableObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?

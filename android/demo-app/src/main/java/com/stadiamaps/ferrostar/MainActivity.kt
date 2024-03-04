@@ -19,8 +19,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
+import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
+import com.stadiamaps.ferrostar.core.RouteDeviationHandler
 import com.stadiamaps.ferrostar.core.SimulatedLocation
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
@@ -62,13 +65,28 @@ class MainActivity : ComponentActivity() {
           profile = "bicycle",
           httpClient = httpClient,
           locationProvider = locationProvider,
-          // NOTE: Not all applications will need a delegate. Read the NavigationDelegate
-          // documentation for details.
-          delegate = NavigationDelegate(),
       )
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    // Not all navigation apps will require this sort of extra configuration.
+    // In fact, we hope that most don't!
+    // In case you do though, this sample implementation shows what you'll need to get started
+    // (this basically re-implements the default behaviors).
+    core.deviationHandler = RouteDeviationHandler { _, _, remainingWaypoints ->
+      CorrectiveAction.GetNewRoutes(remainingWaypoints)
+    }
+    core.alternativeRouteProcessor = AlternativeRouteProcessor { core, routes ->
+      if (routes.isNotEmpty()) {
+        core.startNavigation(
+            routes.first(),
+            NavigationControllerConfig(
+                StepAdvanceMode.RelativeLineStringDistance(
+                    minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
+                RouteDeviationTracking.StaticThreshold(25U, 10.0)))
+      }
+    }
 
     setContent {
       var navigationViewModel by remember { mutableStateOf<NavigationViewModel?>(null) }

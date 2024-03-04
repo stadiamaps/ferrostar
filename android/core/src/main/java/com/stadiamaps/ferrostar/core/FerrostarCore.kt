@@ -22,72 +22,6 @@ import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 
-open class FerrostarCoreException : Exception {
-  constructor(message: String) : super(message)
-
-  constructor(message: String, cause: Throwable) : super(message, cause)
-
-  constructor(cause: Throwable) : super(cause)
-}
-
-class InvalidStatusCodeException(val statusCode: Int) :
-    FerrostarCoreException("Route request failed with status code $statusCode")
-
-class NoResponseBodyException :
-    FerrostarCoreException("Route request was successful but had no body bytes")
-
-class UserLocationUnknown :
-    FerrostarCoreException(
-        "The user location is unknown; ensure the location provider is properly configured")
-
-/** Corrective action to take when the user deviates from the route. */
-sealed class CorrectiveAction {
-  /**
-   * Don't do anything.
-   *
-   * Note that this is most commonly paired with no route deviation tracking as a formality. Think
-   * twice before using this as a mechanism for implementing your own logic outside of the provided
-   * framework, as doing so will mean you miss out on state updates around alternate route
-   * calculation.
-   */
-  object DoNothing : CorrectiveAction()
-
-  /**
-   * Tells the core to fetch new routes from the route adapter.
-   *
-   * Once they are available, the delegate will be notified of the new routes.
-   */
-  class GetNewRoutes(val waypoints: List<Waypoint>) : CorrectiveAction()
-}
-
-// TODO: Think of a better (more specialized) name for this interface; something about rerouting?
-// The term "delegate" is imported from the Apple ecosystem and will be super confusing to a Kotlin
-// dev.
-interface FerrostarCoreDelegate {
-  /**
-   * Called when the core has loaded alternative routes.
-   *
-   * The developer may decide whether or not to act on this information given the current trip
-   * state. This is currently used for recalculation when the user diverges from the route, but can
-   * be extended for other uses in the future. Note that [FerrostarCoreState.isCalculatingNewRoute]
-   * and [FerrostarCore.isCalculatingNewRoute] will be `true` until this method returns.
-   */
-  fun correctiveActionForDeviation(
-      core: FerrostarCore,
-      deviationInMeters: Double,
-      remainingWaypoints: List<Waypoint>
-  ): CorrectiveAction
-
-  /**
-   * Called when the core has loaded alternative routes.
-   *
-   * The developer may decide whether or not to act on this information given the current trip
-   * state. This is currently used for recalculation when the user diverges from the route, but can
-   * be extended for other uses in the future.
-   */
-  fun loadedAlternativeRoutes(core: FerrostarCore, routes: List<Route>)
-}
-
 data class FerrostarCoreState(
     /** The raw trip state from the core. */
     val tripState: TripState,
@@ -95,11 +29,22 @@ data class FerrostarCoreState(
     val isCalculatingNewRoute: Boolean
 )
 
+/**
+ * This is the entrypoint for end users of Ferrostar on Android, and is responsible for "driving"
+ * the navigation with location updates and other events.
+ *
+ * The usual flow is for callers to configure an instance of the core reuse the instance for as long
+ * as it makes sense (necessarily somewhat app-specific). You can first call [getRoutes] to fetch a
+ * list of possible routes asynchronously. After selecting a suitable route (either interactively by
+ * the user or programmatically), call [startNavigation] to start a session.
+ *
+ * NOTE: It is the responsibility of the caller to ensure that the location manager is authorized to
+ * access the user's location.
+ */
 class FerrostarCore(
     val routeAdapter: RouteAdapterInterface,
     val httpClient: OkHttpClient,
     val locationProvider: LocationProvider,
-    val delegate: FerrostarCoreDelegate?,
 ) : LocationUpdateListener {
   /**
    * The minimum time to wait before initiating another route recalculation.
@@ -109,6 +54,24 @@ class FerrostarCore(
    * seconds).
    */
   var minimumTimeBeforeRecalculaton: Long = 5
+
+  /**
+   * Controls what happens when the user deviates from the route.
+   *
+   * The default behavior (when this property is `null`) is to fetch new routes automatically. These
+   * will be passed to the [alternativeRouteProcessor] or, if none is specified, navigation will
+   * automatically proceed according to the first route.
+   */
+  var deviationHandler: RouteDeviationHandler? = null
+
+  /**
+   * Handles alternative routes as they are loaded.
+   *
+   * The default behavior (when this property is `null`) is to automatically reroute the user when
+   * an alternative route arrives due to the user being off course. In all other cases, no action
+   * will be taken unless an [AlternativeRouteProcessor] is provided.
+   */
+  var alternativeRouteProcessor: AlternativeRouteProcessor? = null
 
   var isCalculatingNewRoute: Boolean = false
     private set
@@ -127,12 +90,10 @@ class FerrostarCore(
       profile: String,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
-      delegate: FerrostarCoreDelegate?,
   ) : this(
       RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile),
       httpClient,
       locationProvider,
-      delegate,
   )
 
   suspend fun getRoutes(initialLocation: UserLocation, waypoints: List<Waypoint>): List<Route> =
@@ -213,7 +174,7 @@ class FerrostarCore(
             _lastAutomaticRecalculation?.isAfter(
                 LocalDateTime.now().minusSeconds(minimumTimeBeforeRecalculaton)) != false) {
           val action =
-              delegate?.correctiveActionForDeviation(
+              deviationHandler?.correctiveActionForDeviation(
                   this, newState.deviation.deviationFromRouteLine, newState.remainingWaypoints)
                   ?: CorrectiveAction.GetNewRoutes(newState.remainingWaypoints)
           when (action) {
@@ -226,13 +187,20 @@ class FerrostarCore(
                 try {
                   val routes = getRoutes(location, action.waypoints)
                   val config = _config
-                  if (delegate != null) {
-                    delegate.loadedAlternativeRoutes(this@FerrostarCore, routes)
-                  } else if (routes.count() > 1 && config != null) {
-                    // Default behavior when there is no user-defined behavior:
-                    // accept the first route, as this is what most users want when they go off
-                    // route.
-                    startNavigation(routes.first(), config)
+                  val processor = alternativeRouteProcessor
+                  val state = _state?.value
+                  // Make sure we are still navigating and the new route is still relevant
+                  if (state != null &&
+                      state.tripState is TripState.Navigating &&
+                      state.tripState.deviation is RouteDeviation.OffRoute) {
+                    if (processor != null) {
+                      processor.loadedAlternativeRoutes(this@FerrostarCore, routes)
+                    } else if (routes.count() > 1 && config != null) {
+                      // Default behavior when there is no user-defined behavior:
+                      // accept the first route, as this is what most users want when they go off
+                      // route.
+                      startNavigation(routes.first(), config)
+                    }
                   }
                 } finally {
                   _lastAutomaticRecalculation = LocalDateTime.now()

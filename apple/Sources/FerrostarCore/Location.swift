@@ -17,8 +17,8 @@ public protocol LocationManagingDelegate: AnyObject {
     func locationManager(_ manager: LocationProviding, didFailWithError error: Error)
 }
 
-// TODO: Permissions are currently NOT handled and they should be!!!
-public class LiveLocationProvider: NSObject, ObservableObject {
+/// A location provider that uses Apple's CoreLocation framework.
+public class CoreLocationProvider: NSObject, ObservableObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
@@ -51,7 +51,7 @@ public class LiveLocationProvider: NSObject, ObservableObject {
     @Published public private(set) var lastHeading: CLHeading?
 }
 
-extension LiveLocationProvider: LocationProviding {
+extension CoreLocationProvider: LocationProviding {
     public func startUpdating() {
         locationManager.startUpdatingLocation()
         locationManager.startUpdatingHeading()
@@ -63,7 +63,7 @@ extension LiveLocationProvider: LocationProviding {
     }
 }
 
-extension LiveLocationProvider: CLLocationManagerDelegate {
+extension CoreLocationProvider: CLLocationManagerDelegate {
     public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         lastLocation = locations.last
         delegate?.locationManager(self, didUpdateLocations: locations)

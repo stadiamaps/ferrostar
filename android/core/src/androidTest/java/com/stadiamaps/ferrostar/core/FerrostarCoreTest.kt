@@ -107,8 +107,7 @@ class FerrostarCoreTest {
                     requestGenerator = MockRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf())),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-            locationProvider = SimulatedLocationProvider(),
-            delegate = null)
+            locationProvider = SimulatedLocationProvider())
 
     try {
       // Tests that the core generates a request and attempts to process it, but throws due to the
@@ -151,8 +150,7 @@ class FerrostarCoreTest {
                     requestGenerator = MockRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-            locationProvider = SimulatedLocationProvider(),
-            delegate = null)
+            locationProvider = SimulatedLocationProvider())
     val routes =
         core.getRoutes(
             initialLocation =
@@ -183,29 +181,31 @@ class FerrostarCoreTest {
           rule(post, url eq valhallaEndpointUrl) { respond(200, "".toResponseBody()) }
         }
 
-    class CoreDelegate : FerrostarCoreDelegate {
-      var correctiveActionDelegateCalled = false
-      var loadedAltRoutesDelegateCalled = false
+    class DeviationHandler : RouteDeviationHandler {
+      var called = false
 
       override fun correctiveActionForDeviation(
           core: FerrostarCore,
           deviationInMeters: Double,
           remainingWaypoints: List<Waypoint>
       ): CorrectiveAction {
-        correctiveActionDelegateCalled = true
+        called = true
         assertEquals(42.0, deviationInMeters, Double.MIN_VALUE)
         return CorrectiveAction.GetNewRoutes(remainingWaypoints)
       }
+    }
+
+    class RouteProcessor : AlternativeRouteProcessor {
+      var called = false
 
       override fun loadedAlternativeRoutes(core: FerrostarCore, routes: List<Route>) {
-        loadedAltRoutesDelegateCalled = true
+        called = true
         assert(core.isCalculatingNewRoute) // We are still calculating until this method completes
         assert(routes.isNotEmpty())
       }
     }
 
     val locationProvider = SimulatedLocationProvider()
-    val delegate = CoreDelegate()
     val core =
         FerrostarCore(
             routeAdapter =
@@ -213,8 +213,13 @@ class FerrostarCoreTest {
                     requestGenerator = MockRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-            locationProvider = locationProvider,
-            delegate = delegate)
+            locationProvider = locationProvider)
+
+    val deviationHandler = DeviationHandler()
+    core.deviationHandler = deviationHandler
+
+    val processor = RouteProcessor()
+    core.alternativeRouteProcessor = processor
 
     val routes =
         core.getRoutes(
@@ -253,12 +258,12 @@ class FerrostarCoreTest {
                           }
                         })))
 
-    assert(delegate.correctiveActionDelegateCalled)
+    assert(deviationHandler.called)
 
     // TODO: Figure out how to test this properly with Kotlin coroutines + JUnit in the way.
     // Spent several hours fighting it trying to get something half as good as XCTestExpectation,
     // but was ultimately unsuccessful. I verified this works fine in a debugger and real app,
     // but the test scope is different.
-    //        assert(delegate.loadedAltRoutesDelegateCalled)
+    //        assert(processor.called)
   }
 }
