@@ -25,8 +25,8 @@ sealed class CorrectiveAction {
 /** Reacts to the user deviating from a route, recommending a corrective action. */
 fun interface RouteDeviationHandler {
   fun correctiveActionForDeviation(
-    core: FerrostarCore,
-    deviationInMeters: Double,
-    remainingWaypoints: List<Waypoint>,
+      core: FerrostarCore,
+      deviationInMeters: Double,
+      remainingWaypoints: List<Waypoint>,
   ): CorrectiveAction
 }
