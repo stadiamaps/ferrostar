@@ -5,10 +5,10 @@
 //  Created by Jacob Fielding on 12/17/23.
 //
 
-import Foundation
 import CoreLocation
+import Foundation
 
-struct LocationIdentifier : Identifiable, Equatable, Hashable {
+struct LocationIdentifier: Identifiable, Equatable, Hashable {
     static func == (lhs: LocationIdentifier, rhs: LocationIdentifier) -> Bool {
         lhs.id == rhs.id
     }

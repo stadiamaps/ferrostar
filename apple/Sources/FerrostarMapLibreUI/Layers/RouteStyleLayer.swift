@@ -1,7 +1,7 @@
-import UIKit
 import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
+import UIKit
 
 /// A customizable style for the route and it's casing.
 public protocol RouteStyle {
@@ -33,11 +33,10 @@ public struct TravelledRouteStyle: RouteStyle {
 }
 
 public struct RouteStyleLayer: StyleLayerCollection {
-    
     private let polyline: MLNPolyline
     private let identifier: String
     private let style: RouteStyle
-    
+
     /// Create a navigation route polyline layer
     ///
     /// - Parameters:
@@ -49,12 +48,12 @@ public struct RouteStyleLayer: StyleLayerCollection {
         self.identifier = identifier
         self.style = style
     }
-    
+
     public var layers: [StyleLayerDefinition] {
         let source = ShapeSource(identifier: "\(identifier)-source") {
             polyline
         }
-        
+
         if let casingColor = style.casingColor {
             LineStyleLayer(identifier: "\(identifier)-casing", source: source)
                 .lineCap(constant: style.lineCap)

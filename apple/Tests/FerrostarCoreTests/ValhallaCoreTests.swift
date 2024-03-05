@@ -3,9 +3,9 @@
 
 import CoreLocation
 @testable import FerrostarCore
+import SnapshotTesting
 import UniFFI
 import XCTest
-import SnapshotTesting
 
 final class ValhallaCoreTests: XCTestCase {
     func testValhallaRouteParsing() async throws {

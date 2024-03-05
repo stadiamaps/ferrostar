@@ -1,8 +1,8 @@
 
-import SwiftUI
-import UniFFI
 import CoreLocation
 import MapKit
+import SwiftUI
+import UniFFI
 
 extension UniFFI.VisualInstructionContent {
     // Stand-in art using SFSymbols for now. Ideally look for some

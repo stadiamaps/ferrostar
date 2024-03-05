@@ -1,5 +1,5 @@
-import Foundation
 import FerrostarCore
+import Foundation
 import MapLibre
 
 extension NavigationState {
@@ -8,7 +8,7 @@ extension NavigationState {
     }
 
     var remainingRoutePolyline: MLNPolyline {
-        // FIXME
+        // FIXME:
         return MLNPolylineFeature(coordinates: fullRouteShape.map { $0.clLocationCoordinate2D })
     }
 }

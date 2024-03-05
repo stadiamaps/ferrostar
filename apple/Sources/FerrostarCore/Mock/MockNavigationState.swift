@@ -1,16 +1,16 @@
-import Foundation
 import CoreLocation
+import Foundation
 import UniFFI
 
-extension NavigationState {
-    public static let pedestrianExample = NavigationState(
+public extension NavigationState {
+    static let pedestrianExample = NavigationState(
         snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude,
                                     longitude: samplePedestrianWaypoints.first!.longitude),
         fullRoute: samplePedestrianWaypoints,
         steps: []
     )
 
-    public static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> NavigationState {
+    static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> NavigationState {
         let remainingLocations = Array(samplePedestrianWaypoints.dropFirst(n))
         let lastUserLocation = remainingLocations.first!
 
@@ -25,10 +25,12 @@ extension NavigationState {
                 visualInstructions: [
                     UniFFI.VisualInstruction(
                         primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil),
-                        secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
+                        secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0
+                    ),
                 ],
-                spokenInstructions: [])
-            ])
+                spokenInstructions: []
+            )]
+        )
 
         result.snappedLocation = UserLocation(
             coordinates: GeographicCoordinate(lat: samplePedestrianWaypoints.first!.latitude,

@@ -1,5 +1,5 @@
-import Foundation
 import CoreLocation
+import Foundation
 import UniFFI
 
 /// An observable state object, to make binding easier for SwiftUI applications.
@@ -23,8 +23,8 @@ public struct NavigationState: Hashable {
         if let heading {
             self.heading = Heading(clHeading: heading)
         }
-        self.courseOverGround = self.snappedLocation.courseOverGround
-        self.fullRouteShape = fullRoute.map { GeographicCoordinate(cl: $0) }
-        self.currentStep = steps.first!
+        courseOverGround = self.snappedLocation.courseOverGround
+        fullRouteShape = fullRoute.map { GeographicCoordinate(cl: $0) }
+        currentStep = steps.first!
     }
 }

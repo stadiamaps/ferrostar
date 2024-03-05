@@ -65,12 +65,12 @@ extension LiveLocationProvider: LocationProviding {
 
 extension LiveLocationProvider: CLLocationManagerDelegate {
     public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.lastLocation = locations.last
+        lastLocation = locations.last
         delegate?.locationManager(self, didUpdateLocations: locations)
     }
 
     public func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        self.lastHeading = newHeading
+        lastHeading = newHeading
         delegate?.locationManager(self, didUpdateHeading: newHeading)
     }
 
@@ -78,11 +78,11 @@ extension LiveLocationProvider: CLLocationManagerDelegate {
         delegate?.locationManager(self, didFailWithError: error)
     }
 
-    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    public func locationManagerDidChangeAuthorization(_: CLLocationManager) {
         authorizationStatus = locationManager.authorizationStatus
 
         switch authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse: 
+        case .authorizedAlways, .authorizedWhenInUse:
             locationManager.requestLocation()
         default: break
         }
@@ -93,15 +93,14 @@ extension LiveLocationProvider: CLLocationManagerDelegate {
 ///
 /// This allows for more granular unit tests.
 public class SimulatedLocationProvider: LocationProviding, ObservableObject {
-    
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
-    
+
     private var updateTask: Task<Void, Error>?
-    
+
     public private(set) var simulationState: LocationSimulationState?
     public var warpFactor: UInt64 = 1
-    
+
     @Published public var lastLocation: CLLocation? {
         didSet {
             notifyDelegateOfLocation()
@@ -120,23 +119,21 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             notifyDelegateOfHeading()
         }
     }
-    
-    public init() {
-        
-    }
+
+    public init() {}
 
     public init(coordinate: CLLocationCoordinate2D) {
         lastLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
     }
-    
+
     public init(location: CLLocation) {
         lastLocation = location
     }
-    
+
     public func setSimulatedRoute(_ route: Route) throws {
         simulationState = try locationSimulationFromRoute(route: route.inner)
     }
-    
+
     public func startUpdating() {
         isUpdating = true
         updateTask?.cancel()
@@ -161,30 +158,30 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             delegate?.locationManager(self, didUpdateHeading: heading)
         }
     }
-    
+
     private func updateLocation() async throws {
         while isUpdating {
             // Exit if the task has been cancelled.
             try Task.checkCancellation()
-            
-            guard let lastState = self.simulationState else {
+
+            guard let lastState = simulationState else {
                 return
             }
-            
-            try await Task.sleep(nanoseconds: NSEC_PER_SEC / self.warpFactor)
-            
+
+            try await Task.sleep(nanoseconds: NSEC_PER_SEC / warpFactor)
+
             // Check cancellation before updating after wait.
             try Task.checkCancellation()
-            
+
             // Calculate the new state.
             let newState = advanceLocationSimulation(state: lastState, speed: .jumpToNextLocation)
-            
+
             // Exit/stop if the route has been fully simplated (newState location matches our existing location).
             if simulationState?.currentLocation == newState.currentLocation {
                 stopUpdating()
                 return
             }
-            
+
             // Bump the last location.
             lastLocation = CLLocation(latitude: newState.currentLocation.lat, longitude: newState.currentLocation.lng)
             simulationState = newState

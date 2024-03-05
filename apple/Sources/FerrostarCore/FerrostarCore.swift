@@ -1,6 +1,6 @@
 import CoreLocation
-import UniFFI
 import Foundation
+import UniFFI
 
 enum FerrostarCoreError: Error, Equatable {
     /// The user has disabled location services for this app.
@@ -47,7 +47,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
     func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route])
 }
 
-
 /// The Ferrostar core.
 ///
 /// This is the entrypoint for end users of Ferrostar, and is responsible
@@ -85,8 +84,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var tripState: UniFFI.TripState?
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
-    private var recalculationTask: Task<(), Never>?
-    
+    private var recalculationTask: Task<Void, Never>?
+
     private var config: NavigationControllerConfig?
 
     public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
@@ -179,8 +178,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         DispatchQueue.main.async {
             self.tripState = newState
 
-            switch (newState) {
-            case .navigating(snappedUserLocation: let snappedLocation, remainingSteps: let remainingSteps, remainingWaypoints: let remainingWaypoints, distanceToNextManeuver: let distanceToNextManeuver, deviation: let deviation):
+            switch newState {
+            case let .navigating(snappedUserLocation: snappedLocation, remainingSteps: remainingSteps, remainingWaypoints: remainingWaypoints, distanceToNextManeuver: distanceToNextManeuver, deviation: deviation):
                 self.state?.snappedLocation = snappedLocation
                 self.state?.courseOverGround = snappedLocation.courseOverGround
                 self.state?.currentStep = remainingSteps.first
@@ -189,27 +188,27 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
-                let clRemainingWaypoints = remainingWaypoints.map({ coord in
+                let clRemainingWaypoints = remainingWaypoints.map { coord in
                     CLLocationCoordinate2D(geographicCoordinates: coord)
-                })
+                }
 
-    //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
-    //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
-    //                })
+                //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
+                //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
+                //                })
 
-                switch (deviation) {
+                switch deviation {
                 case .noDeviation:
                     // No action
                     break
-                case .offRoute(deviationFromRouteLine: let deviationFromRouteLine):
+                case let .offRoute(deviationFromRouteLine: deviationFromRouteLine):
                     guard !self.routeRequestInFlight && self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? 0 > -self.minimumTimeBeforeRecalculaton else {
                         break
                     }
 
-                    switch (self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine, remainingWaypoints: clRemainingWaypoints) ?? .getNewRoutes(waypoints: clRemainingWaypoints)) {
+                    switch self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine, remainingWaypoints: clRemainingWaypoints) ?? .getNewRoutes(waypoints: clRemainingWaypoints) {
                     case .doNothing:
                         break
-                    case .getNewRoutes(let waypoints):
+                    case let .getNewRoutes(waypoints):
                         self.state?.isCalculatingNewRoute = true
                         self.recalculationTask = Task {
                             do {
@@ -231,8 +230,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                             }
                         }
                     }
-
-                    break
                 }
             case .complete:
                 // TODO: "You have arrived"?
@@ -247,21 +244,22 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
 extension FerrostarCore: LocationManagingDelegate {
     @MainActor
-    public func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(_: LocationProviding, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last,
               let state = tripState,
-              let newState = navigationController?.updateUserLocation(location: location.userLocation, state: state) else {
+              let newState = navigationController?.updateUserLocation(location: location.userLocation, state: state)
+        else {
             return
         }
-        
+
         update(newState: newState, location: location)
     }
 
-    public func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading) {
+    public func locationManager(_: LocationProviding, didUpdateHeading newHeading: CLHeading) {
         state?.heading = Heading(clHeading: newHeading)
     }
 
-    public func locationManager(_: LocationProviding, didFailWithError error: Error) {
+    public func locationManager(_: LocationProviding, didFailWithError _: Error) {
         // TODO: Decide if/how to propagate this upstream later.
         // For initial releases, we simply assume that the developer has requested the correct permissions
         // and ensure this before attempting to start location updates.

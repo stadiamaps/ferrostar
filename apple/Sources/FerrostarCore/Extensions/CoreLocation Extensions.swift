@@ -27,7 +27,7 @@ extension CLLocation {
     convenience init(userLocation: UniFFI.UserLocation) {
         let invalid: Double = -1.0
 
-        let courseDegrees : CLLocationDirection
+        let courseDegrees: CLLocationDirection
         let courseAccuracy: CLLocationDirectionAccuracy
         if let course = userLocation.courseOverGround {
             courseDegrees = CLLocationDirection(course.degrees)
@@ -43,21 +43,19 @@ extension CLLocation {
 
 // MARK: Ferrostar Models
 
-extension GeographicCoordinate {
-    
-    public var clLocationCoordinate2D: CLLocationCoordinate2D {
+public extension GeographicCoordinate {
+    var clLocationCoordinate2D: CLLocationCoordinate2D {
         CLLocationCoordinate2D(latitude: lat,
                                longitude: lng)
     }
-    
-    public init(cl clLocationCoordinate2D: CLLocationCoordinate2D) {
+
+    init(cl clLocationCoordinate2D: CLLocationCoordinate2D) {
         self.init(lat: clLocationCoordinate2D.latitude,
                   lng: clLocationCoordinate2D.longitude)
     }
 }
 
-extension CourseOverGround {
-    
+public extension CourseOverGround {
     /// Intialize a Course Over Ground object from the relevant Core Location types. These can be found on a
     /// CLLocation object.
     ///
@@ -66,37 +64,37 @@ extension CourseOverGround {
     /// - Parameters:
     ///   - course: The direction the device is travelling, measured in degrees relative to true north.
     ///   - courseAccuracy: The accuracy of the direction
-    public init?(course: CLLocationDirection,
-                 courseAccuracy: CLLocationDirectionAccuracy) {
-        guard course >= 0 && courseAccuracy >= 0 else {
+    init?(course: CLLocationDirection,
+          courseAccuracy: CLLocationDirectionAccuracy)
+    {
+        guard course >= 0, courseAccuracy >= 0 else {
             return nil
         }
-        
+
         self.init(degrees: UInt16(course), accuracy: UInt16(courseAccuracy))
     }
 }
 
-extension Heading {
-    
+public extension Heading {
     /// Initialize a Heading if it can be represented as integers
     ///
     /// This returns nil if the heading or accuracy  are invalid as defined by Apple (negative)
     ///
     /// - Parameter clHeading: The CoreLocation heading provided by the location manager.
-    public init?(clHeading: CLHeading) {
-        guard clHeading.trueHeading >= 0
-            && clHeading.headingAccuracy >= 0 else {
+    init?(clHeading: CLHeading) {
+        guard clHeading.trueHeading >= 0,
+              clHeading.headingAccuracy >= 0
+        else {
             return nil
         }
-        
+
         self.init(trueHeading: UInt16(clHeading.trueHeading),
                   accuracy: UInt16(clHeading.headingAccuracy),
                   timestamp: clHeading.timestamp)
     }
 }
 
-extension UserLocation {
-    
+public extension UserLocation {
     /// Initialize a UserLocation from values.
     ///
     /// - Parameters:
@@ -106,42 +104,44 @@ extension UserLocation {
     ///   - course: The direction of travel measured in degrees clockwise from north.
     ///   - courseAccuracy: The course accuracy measured in degrees.
     ///   - timestamp: The timestamp of the location record.
-    public init(latitude: CLLocationDegrees,
-                longitude: CLLocationDegrees,
-                horizontalAccuracy: CLLocationDistance,
-                course: CLLocationDirection,
-                courseAccuracy: CLLocationDirectionAccuracy,
-                timestamp: Date) {
-        
+    init(latitude: CLLocationDegrees,
+         longitude: CLLocationDegrees,
+         horizontalAccuracy: CLLocationDistance,
+         course: CLLocationDirection,
+         courseAccuracy: CLLocationDirectionAccuracy,
+         timestamp: Date)
+    {
         self.init(coordinates: GeographicCoordinate(lat: latitude, lng: longitude),
                   horizontalAccuracy: horizontalAccuracy,
                   courseOverGround: CourseOverGround(course: course, courseAccuracy: courseAccuracy),
                   timestamp: timestamp)
     }
-    
+
     /// Initialize a UserLocation with a coordinate only.
     ///
     /// - Parameter clCoordinateLocation2D: A core location coordinate.
-    public init(clCoordinateLocation2D: CLLocationCoordinate2D) {
+    init(clCoordinateLocation2D: CLLocationCoordinate2D) {
         // This behavior matches how CLLocation initializes with a coordinate (setting accuracy to 0 & date to now)
         self.init(coordinates: GeographicCoordinate(cl: clCoordinateLocation2D),
                   horizontalAccuracy: 0,
                   courseOverGround: nil,
                   timestamp: Date())
     }
-    
+
     /// Initialize a UserLocation from an Apple CoreLocation CLLocation
     ///
     /// Unlike CourseOverGround & Heading, this value will init with invalid values.
     ///
     /// - Parameter clLocation: The location.
-    public init(clLocation: CLLocation) {
+    init(clLocation: CLLocation) {
         self.init(
             coordinates: GeographicCoordinate(cl: clLocation.coordinate),
             horizontalAccuracy: clLocation.horizontalAccuracy,
             courseOverGround: CourseOverGround(
                 course: clLocation.course,
-                courseAccuracy: clLocation.courseAccuracy),
-            timestamp: clLocation.timestamp)
+                courseAccuracy: clLocation.courseAccuracy
+            ),
+            timestamp: clLocation.timestamp
+        )
     }
 }

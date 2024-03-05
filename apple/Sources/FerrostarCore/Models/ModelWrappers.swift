@@ -9,8 +9,8 @@
 ///
 /// This might be a candidate for macros once we have a few more examples.
 
-import Foundation
 import CoreLocation
+import Foundation
 import UniFFI
 
 /// A wrapper around the FFI `Route`.
@@ -38,11 +38,11 @@ public enum TripState {
     case complete
 
     init(_ update: UniFFI.TripState) {
-        switch (update) {
-        case .navigating(snappedUserLocation: let location, remainingSteps: let remainingSteps, remainingWaypoints: let remainingWaypoints, distanceToNextManeuver: let distanceToNextManeuver, deviation: let deviation):
-            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingSteps: remainingSteps, remainingWaypoints: remainingWaypoints.map({ coord in
+        switch update {
+        case let .navigating(snappedUserLocation: location, remainingSteps: remainingSteps, remainingWaypoints: remainingWaypoints, distanceToNextManeuver: distanceToNextManeuver, deviation: deviation):
+            self = .navigating(snappedUserLocation: CLLocation(userLocation: location), remainingSteps: remainingSteps, remainingWaypoints: remainingWaypoints.map { coord in
                 CLLocationCoordinate2D(geographicCoordinates: coord)
-            }), distanceToNextManeuver: distanceToNextManeuver, deviation: deviation)
+            }, distanceToNextManeuver: distanceToNextManeuver, deviation: deviation)
         case .complete:
             self = .complete
         }
@@ -65,9 +65,9 @@ public enum StepAdvanceMode {
         switch self {
         case .manual:
             return .manual
-        case .distanceToEndOfStep(distance: let distance, minimumHorizontalAccuracy: let minimumHorizontalAccuracy):
+        case let .distanceToEndOfStep(distance: distance, minimumHorizontalAccuracy: minimumHorizontalAccuracy):
             return .distanceToEndOfStep(distance: distance, minimumHorizontalAccuracy: minimumHorizontalAccuracy)
-        case .relativeLineStringDistance(minimumHorizontalAccuracy: let minimumHorizontalAccuracy, automaticAdvanceDistance: let automaticAdvanceDistance):
+        case let .relativeLineStringDistance(minimumHorizontalAccuracy: minimumHorizontalAccuracy, automaticAdvanceDistance: automaticAdvanceDistance):
             return .relativeLineStringDistance(minimumHorizontalAccuracy: minimumHorizontalAccuracy, automaticAdvanceDistance: automaticAdvanceDistance)
         }
     }
@@ -97,9 +97,9 @@ public enum RouteDeviationTracking {
         switch self {
         case .none:
             return .none
-        case .staticThreshold(minimumHorizontalAccuracy: let minimumHorizontalAccuracy, maxAcceptableDeviation: let maxAcceptableDeviation):
+        case let .staticThreshold(minimumHorizontalAccuracy: minimumHorizontalAccuracy, maxAcceptableDeviation: maxAcceptableDeviation):
             return .staticThreshold(minimumHorizontalAccuracy: minimumHorizontalAccuracy, maxAcceptableDeviation: maxAcceptableDeviation)
-        case .custom(detector: let detectorFunc):
+        case let .custom(detector: detectorFunc):
             return .custom(detector: DetectorImpl(detectorFunc: detectorFunc))
         }
     }
