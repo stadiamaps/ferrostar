@@ -1,7 +1,6 @@
 import CoreLocation
 import FerrostarCoreFFI
 import Foundation
-import UniFFI
 
 enum FerrostarCoreError: Error, Equatable {
     /// The user has disabled location services for this app.
