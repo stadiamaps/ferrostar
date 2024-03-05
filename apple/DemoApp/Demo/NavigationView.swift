@@ -148,7 +148,7 @@ struct NavigationView: View {
     // MARK: Conveniences
 
     func getRoutes() async {
-        guard let userLocation = locationProvider.lastLocation?.userLocation else {
+        guard let userLocation = locationProvider.lastLocation else {
             print("No user location")
             return
         }

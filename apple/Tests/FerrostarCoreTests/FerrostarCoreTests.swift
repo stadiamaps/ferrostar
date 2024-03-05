@@ -197,7 +197,7 @@ final class FerrostarCoreTests: XCTestCase {
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
 
-        locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0)
+        locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0).userLocation
         let config = NavigationControllerConfig(
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16),
             routeDeviationTracking: .custom(detector: { _, _, _ in

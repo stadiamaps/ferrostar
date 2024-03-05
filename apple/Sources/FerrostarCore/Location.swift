@@ -4,16 +4,16 @@ import FerrostarCoreFFI
 public protocol LocationProviding: AnyObject {
     var delegate: LocationManagingDelegate? { get set }
     var authorizationStatus: CLAuthorizationStatus { get }
-    var lastLocation: CLLocation? { get }
-    var lastHeading: CLHeading? { get }
+    var lastLocation: UserLocation? { get }
+    var lastHeading: Heading? { get }
 
     func startUpdating()
     func stopUpdating()
 }
 
 public protocol LocationManagingDelegate: AnyObject {
-    func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation])
-    func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading)
+    func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [UserLocation])
+    func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: Heading)
     func locationManager(_ manager: LocationProviding, didFailWithError error: Error)
 }
 
@@ -37,7 +37,7 @@ public class CoreLocationProvider: NSObject, ObservableObject {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
         case .authorizedAlways, .authorizedWhenInUse:
-            lastLocation = locationManager.location
+            lastLocation = locationManager.location?.userLocation
             locationManager.requestLocation()
         default:
             break
@@ -46,9 +46,9 @@ public class CoreLocationProvider: NSObject, ObservableObject {
         locationManager.activityType = activityType
     }
 
-    @Published public private(set) var lastLocation: CLLocation?
+    @Published public private(set) var lastLocation: UserLocation?
 
-    @Published public private(set) var lastHeading: CLHeading?
+    @Published public private(set) var lastHeading: Heading?
 }
 
 extension CoreLocationProvider: LocationProviding {
@@ -65,13 +65,17 @@ extension CoreLocationProvider: LocationProviding {
 
 extension CoreLocationProvider: CLLocationManagerDelegate {
     public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastLocation = locations.last
-        delegate?.locationManager(self, didUpdateLocations: locations)
+        lastLocation = locations.last?.userLocation
+        delegate?.locationManager(self, didUpdateLocations: locations.map(\.userLocation))
     }
 
     public func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        lastHeading = newHeading
-        delegate?.locationManager(self, didUpdateHeading: newHeading)
+        let value = Heading(clHeading: newHeading)
+        lastHeading = value
+
+        if let value {
+            delegate?.locationManager(self, didUpdateHeading: value)
+        }
     }
 
     public func locationManager(_: CLLocationManager, didFailWithError error: Error) {
@@ -99,13 +103,13 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     public private(set) var simulationState: LocationSimulationState?
     public var warpFactor: UInt64 = 1
 
-    @Published public var lastLocation: CLLocation? {
+    @Published public var lastLocation: UserLocation? {
         didSet {
             notifyDelegateOfLocation()
         }
     }
 
-    @Published public var lastHeading: CLHeading? {
+    @Published public var lastHeading: Heading? {
         didSet {
             notifyDelegateOfHeading()
         }
@@ -121,10 +125,14 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     public init() {}
 
     public init(coordinate: CLLocationCoordinate2D) {
-        lastLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        lastLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).userLocation
     }
 
     public init(location: CLLocation) {
+        lastLocation = location.userLocation
+    }
+
+    public init(location: UserLocation) {
         lastLocation = location
     }
 
@@ -168,7 +176,12 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
                 return
             }
 
-            lastLocation = CLLocation(latitude: newState.currentLocation.lat, longitude: newState.currentLocation.lng)
+            lastLocation = UserLocation(
+                coordinates: newState.currentLocation,
+                horizontalAccuracy: 0,
+                courseOverGround: nil,
+                timestamp: Date()
+            )
             simulationState = newState
 
             updateLocation()

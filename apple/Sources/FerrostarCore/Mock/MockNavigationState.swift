@@ -4,8 +4,14 @@ import Foundation
 
 public extension NavigationState {
     static let pedestrianExample = NavigationState(
-        snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.lat,
-                                    longitude: samplePedestrianWaypoints.first!.lng),
+        snappedLocation: UserLocation(
+            latitude: samplePedestrianWaypoints.first!.lat,
+            longitude: samplePedestrianWaypoints.first!.lng,
+            horizontalAccuracy: 0,
+            course: 0,
+            courseAccuracy: 0,
+            timestamp: Date()
+        ),
         fullRouteShape: samplePedestrianWaypoints,
         steps: []
     )
@@ -15,8 +21,14 @@ public extension NavigationState {
         let lastUserLocation = remainingLocations.first!
 
         var result = NavigationState(
-            snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.lat,
-                                        longitude: samplePedestrianWaypoints.first!.lng),
+            snappedLocation: UserLocation(
+                latitude: samplePedestrianWaypoints.first!.lat,
+                longitude: samplePedestrianWaypoints.first!.lng,
+                horizontalAccuracy: 0,
+                course: 0,
+                courseAccuracy: 0,
+                timestamp: Date()
+            ),
             fullRouteShape: samplePedestrianWaypoints,
             steps: [RouteStep(
                 geometry: [lastUserLocation],

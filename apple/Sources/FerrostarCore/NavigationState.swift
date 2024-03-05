@@ -9,7 +9,6 @@ import Foundation
 public struct NavigationState: Hashable {
     public internal(set) var snappedLocation: UserLocation
     public internal(set) var heading: Heading?
-    public internal(set) var courseOverGround: CourseOverGround?
     public internal(set) var fullRouteShape: [GeographicCoordinate]
     public internal(set) var currentStep: RouteStep?
     public internal(set) var visualInstructions: VisualInstruction?
@@ -19,16 +18,13 @@ public struct NavigationState: Hashable {
     public internal(set) var isCalculatingNewRoute: Bool = false
 
     init(
-        snappedLocation: CLLocation,
-        heading: CLHeading? = nil,
+        snappedLocation: UserLocation,
+        heading: Heading? = nil,
         fullRouteShape: [GeographicCoordinate],
         steps: [RouteStep]
     ) {
-        self.snappedLocation = UserLocation(clLocation: snappedLocation)
-        if let heading {
-            self.heading = Heading(clHeading: heading)
-        }
-        courseOverGround = self.snappedLocation.courseOverGround
+        self.snappedLocation = snappedLocation
+        self.heading = heading
         self.fullRouteShape = fullRouteShape
         currentStep = steps.first!
     }

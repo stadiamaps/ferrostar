@@ -1,32 +1,7 @@
 import CoreLocation
+import FerrostarCoreFFI
 import XCTest
 @testable import FerrostarCore
-
-private class MockHeading: CLHeading {
-    let value: CLLocationDirection
-    override var magneticHeading: CLLocationDirection {
-        value
-    }
-
-    override var trueHeading: CLLocationDirection {
-        value
-    }
-
-    override var headingAccuracy: CLLocationDirection {
-        0
-    }
-
-    init(value: CLLocationDirection) {
-        self.value = value
-
-        super.init()
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("You aren't supposted to call this")
-    }
-}
 
 final class SimulatedLocationManagerTests: XCTestCase {
     func testInitialValuesAreNull() {
@@ -38,7 +13,7 @@ final class SimulatedLocationManagerTests: XCTestCase {
     func testSetLocation() {
         let locationManager = SimulatedLocationProvider()
 
-        let location = CLLocation(latitude: 42, longitude: 24)
+        let location = CLLocation(latitude: 42, longitude: 24).userLocation
         locationManager.lastLocation = location
 
         XCTAssertEqual(locationManager.lastLocation, location)
@@ -47,7 +22,7 @@ final class SimulatedLocationManagerTests: XCTestCase {
     func testSetHeading() {
         let locationManager = SimulatedLocationProvider()
 
-        let heading = MockHeading(value: 42)
+        let heading = Heading(trueHeading: 42, accuracy: 0, timestamp: Date())
         locationManager.lastHeading = heading
 
         XCTAssertEqual(locationManager.lastHeading, heading)
@@ -59,19 +34,19 @@ final class SimulatedLocationManagerTests: XCTestCase {
 
         class LocationDelegate: LocationManagingDelegate {
             private let expectation: XCTestExpectation
-            private var expectedLocations: [CLLocation]
+            private var expectedLocations: [UserLocation]
 
-            init(expectation: XCTestExpectation, expectedLocations: [CLLocation]) {
+            init(expectation: XCTestExpectation, expectedLocations: [UserLocation]) {
                 self.expectation = expectation
                 self.expectedLocations = expectedLocations
             }
 
-            func locationManager(_: LocationProviding, didUpdateLocations locations: [CLLocation]) {
+            func locationManager(_: LocationProviding, didUpdateLocations locations: [UserLocation]) {
                 XCTAssertEqual(locations.last, expectedLocations.removeFirst())
                 expectation.fulfill()
             }
 
-            func locationManager(_: LocationProviding, didUpdateHeading _: CLHeading) {
+            func locationManager(_: LocationProviding, didUpdateHeading _: Heading) {
                 XCTFail("Unexpected heading update")
             }
 
@@ -80,7 +55,10 @@ final class SimulatedLocationManagerTests: XCTestCase {
             }
         }
 
-        var locations = [CLLocation(latitude: 42, longitude: 24), CLLocation(latitude: 24, longitude: 42)]
+        var locations = [
+            CLLocation(latitude: 42, longitude: 24).userLocation,
+            CLLocation(latitude: 24, longitude: 42).userLocation,
+        ]
 
         let locationManager = SimulatedLocationProvider()
         locationManager.delegate = LocationDelegate(expectation: exp, expectedLocations: locations)
@@ -98,18 +76,18 @@ final class SimulatedLocationManagerTests: XCTestCase {
 
         class LocationDelegate: LocationManagingDelegate {
             private let expectation: XCTestExpectation
-            private var expectedHeadings: [CLHeading]
+            private var expectedHeadings: [Heading]
 
-            init(expectation: XCTestExpectation, expectedHeadings: [CLHeading]) {
+            init(expectation: XCTestExpectation, expectedHeadings: [Heading]) {
                 self.expectation = expectation
                 self.expectedHeadings = expectedHeadings
             }
 
-            func locationManager(_: LocationProviding, didUpdateLocations _: [CLLocation]) {
+            func locationManager(_: LocationProviding, didUpdateLocations _: [UserLocation]) {
                 XCTFail("Unexpected location update")
             }
 
-            func locationManager(_: LocationProviding, didUpdateHeading newHeading: CLHeading) {
+            func locationManager(_: LocationProviding, didUpdateHeading newHeading: Heading) {
                 XCTAssertEqual(newHeading, expectedHeadings.removeFirst())
                 expectation.fulfill()
             }
@@ -119,7 +97,10 @@ final class SimulatedLocationManagerTests: XCTestCase {
             }
         }
 
-        var headings = [MockHeading(value: 42), MockHeading(value: 24)]
+        var headings = [
+            Heading(trueHeading: 42, accuracy: 0, timestamp: Date()),
+            Heading(trueHeading: 24, accuracy: 0, timestamp: Date()),
+        ]
 
         let locationManager = SimulatedLocationProvider()
         locationManager.delegate = LocationDelegate(expectation: exp, expectedHeadings: headings)

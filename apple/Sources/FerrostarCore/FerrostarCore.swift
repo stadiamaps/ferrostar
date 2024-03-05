@@ -212,7 +212,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         let controller = NavigationController(route: route, config: config.ffiValue)
         navigationController = controller
         DispatchQueue.main.async {
-            self.update(newState: controller.getInitialState(location: location.userLocation), location: location)
+            self.update(newState: controller.getInitialState(location: location), location: location)
         }
     }
 
@@ -227,7 +227,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Internal state update.
     ///
     /// You should call this rather than setting properties directly
-    private func update(newState: TripState, location: CLLocation) {
+    private func update(newState: TripState, location: UserLocation) {
         DispatchQueue.main.async {
             self.tripState = newState
 
@@ -240,7 +240,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 deviation: deviation
             ):
                 self.state?.snappedLocation = snappedLocation
-                self.state?.courseOverGround = snappedLocation.courseOverGround
                 self.state?.currentStep = remainingSteps.first
                 // TODO: This isn't great; the core should probably just tell us which instruction to display
                 self.state?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
@@ -277,7 +276,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         self.recalculationTask = Task {
                             do {
                                 let routes = try await self.getRoutes(
-                                    initialLocation: location.userLocation,
+                                    initialLocation: location,
                                     waypoints: waypoints
                                 )
                                 if let delegate = self.delegate {
@@ -301,11 +300,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             case .complete:
                 // TODO: "You have arrived"?
                 self.state?.visualInstructions = nil
-                self.state?.snappedLocation = UserLocation(clLocation: location)
-                self.state?.courseOverGround = CourseOverGround(
-                    course: location.course,
-                    courseAccuracy: location.courseAccuracy
-                )
+                self.state?.snappedLocation = location
                 self.state?.spokenInstruction = nil
             }
         }
@@ -314,10 +309,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
 extension FerrostarCore: LocationManagingDelegate {
     @MainActor
-    public func locationManager(_: LocationProviding, didUpdateLocations locations: [CLLocation]) {
+    public func locationManager(_: LocationProviding, didUpdateLocations locations: [UserLocation]) {
         guard let location = locations.last,
               let state = tripState,
-              let newState = navigationController?.updateUserLocation(location: location.userLocation, state: state)
+              let newState = navigationController?.updateUserLocation(location: location, state: state)
         else {
             return
         }
@@ -325,8 +320,8 @@ extension FerrostarCore: LocationManagingDelegate {
         update(newState: newState, location: location)
     }
 
-    public func locationManager(_: LocationProviding, didUpdateHeading newHeading: CLHeading) {
-        state?.heading = Heading(clHeading: newHeading)
+    public func locationManager(_: LocationProviding, didUpdateHeading newHeading: Heading) {
+        state?.heading = newHeading
     }
 
     public func locationManager(_: LocationProviding, didFailWithError _: Error) {
