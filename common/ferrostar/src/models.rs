@@ -54,7 +54,7 @@ impl From<GeographicCoordinate> for Point {
 /// Waypoints are used during route calculation, are tracked throughout the lifecycle of a trip,
 /// and are used for recalculating when the user deviates from the expected route.
 ///
-/// Note that support for features beyond basic geographic coordinates varies by routing engine.
+/// Note that support for properties beyond basic geographic coordinates varies by routing engine.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct Waypoint {
