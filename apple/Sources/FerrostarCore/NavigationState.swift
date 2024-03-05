@@ -1,6 +1,6 @@
-import Foundation
 import CoreLocation
-import UniFFI
+import FerrostarCoreFFI
+import Foundation
 
 /// An observable state object, to make binding easier for SwiftUI applications.
 ///
@@ -9,22 +9,23 @@ import UniFFI
 public struct NavigationState: Hashable {
     public internal(set) var snappedLocation: UserLocation
     public internal(set) var heading: Heading?
-    public internal(set) var courseOverGround: CourseOverGround?
     public internal(set) var fullRouteShape: [GeographicCoordinate]
-    public internal(set) var currentStep: UniFFI.RouteStep?
-    public internal(set) var visualInstructions: UniFFI.VisualInstruction?
-    public internal(set) var spokenInstruction: UniFFI.SpokenInstruction?
+    public internal(set) var currentStep: RouteStep?
+    public internal(set) var visualInstructions: VisualInstruction?
+    public internal(set) var spokenInstruction: SpokenInstruction?
     public internal(set) var distanceToNextManeuver: CLLocationDistance?
     /// Indicates when the core is calculating a new route due to the user being off route
     public internal(set) var isCalculatingNewRoute: Bool = false
 
-    init(snappedLocation: CLLocation, heading: CLHeading? = nil, fullRoute: [CLLocationCoordinate2D], steps: [RouteStep]) {
-        self.snappedLocation = UserLocation(clLocation: snappedLocation)
-        if let heading {
-            self.heading = Heading(clHeading: heading)
-        }
-        self.courseOverGround = self.snappedLocation.courseOverGround
-        self.fullRouteShape = fullRoute.map { GeographicCoordinate(cl: $0) }
-        self.currentStep = steps.first!
+    init(
+        snappedLocation: UserLocation,
+        heading: Heading? = nil,
+        fullRouteShape: [GeographicCoordinate],
+        steps: [RouteStep]
+    ) {
+        self.snappedLocation = snappedLocation
+        self.heading = heading
+        self.fullRouteShape = fullRouteShape
+        currentStep = steps.first!
     }
 }

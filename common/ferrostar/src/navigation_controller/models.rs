@@ -1,5 +1,5 @@
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{GeographicCoordinate, RouteStep, UserLocation};
+use crate::models::{RouteStep, UserLocation, Waypoint};
 use geo::LineString;
 
 /// Internal state of the navigation controller.
@@ -20,7 +20,7 @@ pub enum TripState {
         /// (In most use cases, a route will have only two waypoints, but more complex use cases
         /// may have multiple intervening points that are visited along the route.)
         /// This list is updated as the user advances through the route.
-        remaining_waypoints: Vec<GeographicCoordinate>,
+        remaining_waypoints: Vec<Waypoint>,
         /// The distance to the next maneuver, in meters.
         distance_to_next_maneuver: f64,
         /// The route deviation status: is the user following the route or not?

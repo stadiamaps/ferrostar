@@ -1,24 +1,24 @@
 import CoreLocation
-import UniFFI
+import FerrostarCoreFFI
 
 public protocol LocationProviding: AnyObject {
     var delegate: LocationManagingDelegate? { get set }
     var authorizationStatus: CLAuthorizationStatus { get }
-    var lastLocation: CLLocation? { get }
-    var lastHeading: CLHeading? { get }
+    var lastLocation: UserLocation? { get }
+    var lastHeading: Heading? { get }
 
     func startUpdating()
     func stopUpdating()
 }
 
 public protocol LocationManagingDelegate: AnyObject {
-    func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [CLLocation])
-    func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: CLHeading)
+    func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [UserLocation])
+    func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: Heading)
     func locationManager(_ manager: LocationProviding, didFailWithError error: Error)
 }
 
-// TODO: Permissions are currently NOT handled and they should be!!!
-public class LiveLocationProvider: NSObject, ObservableObject {
+/// A location provider that uses Apple's CoreLocation framework.
+public class CoreLocationProvider: NSObject, ObservableObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
@@ -37,7 +37,7 @@ public class LiveLocationProvider: NSObject, ObservableObject {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
         case .authorizedAlways, .authorizedWhenInUse:
-            lastLocation = locationManager.location
+            lastLocation = locationManager.location?.userLocation
             locationManager.requestLocation()
         default:
             break
@@ -46,12 +46,12 @@ public class LiveLocationProvider: NSObject, ObservableObject {
         locationManager.activityType = activityType
     }
 
-    @Published public private(set) var lastLocation: CLLocation?
+    @Published public private(set) var lastLocation: UserLocation?
 
-    @Published public private(set) var lastHeading: CLHeading?
+    @Published public private(set) var lastHeading: Heading?
 }
 
-extension LiveLocationProvider: LocationProviding {
+extension CoreLocationProvider: LocationProviding {
     public func startUpdating() {
         locationManager.startUpdatingLocation()
         locationManager.startUpdatingHeading()
@@ -63,26 +63,30 @@ extension LiveLocationProvider: LocationProviding {
     }
 }
 
-extension LiveLocationProvider: CLLocationManagerDelegate {
+extension CoreLocationProvider: CLLocationManagerDelegate {
     public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.lastLocation = locations.last
-        delegate?.locationManager(self, didUpdateLocations: locations)
+        lastLocation = locations.last?.userLocation
+        delegate?.locationManager(self, didUpdateLocations: locations.map(\.userLocation))
     }
 
     public func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        self.lastHeading = newHeading
-        delegate?.locationManager(self, didUpdateHeading: newHeading)
+        let value = Heading(clHeading: newHeading)
+        lastHeading = value
+
+        if let value {
+            delegate?.locationManager(self, didUpdateHeading: value)
+        }
     }
 
     public func locationManager(_: CLLocationManager, didFailWithError error: Error) {
         delegate?.locationManager(self, didFailWithError: error)
     }
 
-    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+    public func locationManagerDidChangeAuthorization(_: CLLocationManager) {
         authorizationStatus = locationManager.authorizationStatus
 
         switch authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse: 
+        case .authorizedAlways, .authorizedWhenInUse:
             locationManager.requestLocation()
         default: break
         }
@@ -93,20 +97,19 @@ extension LiveLocationProvider: CLLocationManagerDelegate {
 ///
 /// This allows for more granular unit tests.
 public class SimulatedLocationProvider: LocationProviding, ObservableObject {
-    
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
-    
+
     public private(set) var simulationState: LocationSimulationState?
     public var warpFactor: UInt64 = 1
-    
-    @Published public var lastLocation: CLLocation? {
+
+    @Published public var lastLocation: UserLocation? {
         didSet {
             notifyDelegateOfLocation()
         }
     }
 
-    @Published public var lastHeading: CLHeading? {
+    @Published public var lastHeading: Heading? {
         didSet {
             notifyDelegateOfHeading()
         }
@@ -118,24 +121,26 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             notifyDelegateOfHeading()
         }
     }
-    
-    public init() {
-        
-    }
+
+    public init() {}
 
     public init(coordinate: CLLocationCoordinate2D) {
-        lastLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        lastLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude).userLocation
     }
-    
+
     public init(location: CLLocation) {
+        lastLocation = location.userLocation
+    }
+
+    public init(location: UserLocation) {
         lastLocation = location
     }
-    
+
     public func startSimulating(route: Route) throws {
-        simulationState = try locationSimulationFromRoute(route: route.inner)
+        simulationState = try locationSimulationFromRoute(route: route)
         startUpdating()
     }
-    
+
     public func startUpdating() {
         isUpdating = true
         updateLocation()
@@ -156,26 +161,30 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             delegate?.locationManager(self, didUpdateHeading: heading)
         }
     }
-    
+
     private func updateLocation() {
         Task {
             guard isUpdating, let lastState = self.simulationState else {
                 return
             }
-            
+
             try await Task.sleep(nanoseconds: NSEC_PER_SEC / self.warpFactor)
             let newState = advanceLocationSimulation(state: lastState, speed: .jumpToNextLocation)
-            
+
             if simulationState?.currentLocation == newState.currentLocation {
                 stopUpdating()
                 return
             }
-            
-            lastLocation = CLLocation(latitude: newState.currentLocation.lat, longitude: newState.currentLocation.lng)
+
+            lastLocation = UserLocation(
+                coordinates: newState.currentLocation,
+                horizontalAccuracy: 0,
+                courseOverGround: nil,
+                timestamp: Date()
+            )
             simulationState = newState
-            
+
             updateLocation()
-            return
         }
     }
 }

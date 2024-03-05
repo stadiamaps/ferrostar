@@ -48,10 +48,16 @@ expression: routes
       lng: 13.430413
   distance: 4731.8
   waypoints:
-    - lat: 52.517033
-      lng: 13.388798
-    - lat: 52.529432
-      lng: 13.39763
-    - lat: 52.523239
-      lng: 13.428554
+    - coordinate:
+        lat: 52.517033
+        lng: 13.388798
+      kind: Break
+    - coordinate:
+        lat: 52.529432
+        lng: 13.39763
+      kind: Break
+    - coordinate:
+        lat: 52.523239
+        lng: 13.428554
+      kind: Break
   steps: []
