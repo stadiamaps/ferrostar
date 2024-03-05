@@ -192,8 +192,11 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
 
             // Bump the last location.
             lastLocation = UserLocation(
-                clCoordinateLocation2D: CLLocationCoordinate2D(latitude: newState.currentLocation.lat,
-                                                               longitude: newState.currentLocation.lng))
+                coordinates: newState.currentLocation,
+                horizontalAccuracy: 0,
+                courseOverGround: nil,
+                timestamp: Date()
+            )
             simulationState = newState
         }
     }

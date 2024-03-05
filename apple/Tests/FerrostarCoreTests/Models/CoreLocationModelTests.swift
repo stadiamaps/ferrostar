@@ -2,7 +2,6 @@ import CoreLocation
 import FerrostarCoreFFI
 import XCTest
 @testable import FerrostarCore
-import XCTest
 
 class MockCLHeading: CLHeading {
     @available(*, unavailable)
