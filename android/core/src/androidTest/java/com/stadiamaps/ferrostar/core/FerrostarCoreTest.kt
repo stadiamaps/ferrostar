@@ -175,44 +175,45 @@ class FerrostarCoreTest {
   @Test
   fun testCustomRouteProvider() = runTest {
     val interceptor =
-      MockInterceptor().apply {
-        rule(post) { respond { throw IllegalStateException("Unexpected call") } }
-      }
+        MockInterceptor().apply {
+          rule(post) { respond { throw IllegalStateException("Unexpected call") } }
+        }
 
-    val routeProvider = object : CustomRouteProvider {
-      var wasCalled = false
+    val routeProvider =
+        object : CustomRouteProvider {
+          var wasCalled = false
 
-      override suspend fun getRoutes(
-        userLocation: UserLocation,
-        waypoints: List<Waypoint>
-      ): List<Route>  {
-        wasCalled = true
-        return listOf(mockRoute)
-      }
-    }
+          override suspend fun getRoutes(
+              userLocation: UserLocation,
+              waypoints: List<Waypoint>
+          ): List<Route> {
+            wasCalled = true
+            return listOf(mockRoute)
+          }
+        }
 
     val core =
-      FerrostarCore(
-        customRouteProvider = routeProvider,
-        httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-        locationProvider = SimulatedLocationProvider())
+        FerrostarCore(
+            customRouteProvider = routeProvider,
+            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            locationProvider = SimulatedLocationProvider())
     val routes =
-      core.getRoutes(
-        initialLocation =
-        UserLocation(
-          coordinates =
-          GeographicCoordinate(
-            lat = 60.5347155,
-            lng = -149.543469,
-          ),
-          horizontalAccuracy = 6.0,
-          courseOverGround = null,
-          timestamp = Instant.now()),
-        waypoints =
-        listOf(
-          Waypoint(
-            coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
-            kind = WaypointKind.BREAK)))
+        core.getRoutes(
+            initialLocation =
+                UserLocation(
+                    coordinates =
+                        GeographicCoordinate(
+                            lat = 60.5347155,
+                            lng = -149.543469,
+                        ),
+                    horizontalAccuracy = 6.0,
+                    courseOverGround = null,
+                    timestamp = Instant.now()),
+            waypoints =
+                listOf(
+                    Waypoint(
+                        coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
+                        kind = WaypointKind.BREAK)))
 
     assertEquals(listOf(mockRoute), routes)
     assert(routeProvider.wasCalled)
