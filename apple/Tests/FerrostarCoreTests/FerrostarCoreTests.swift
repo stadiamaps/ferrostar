@@ -93,7 +93,12 @@ final class FerrostarCoreTests: XCTestCase {
             // Tests that the core generates a request and attempts to process it, but throws due to the mocked network
             // layer
             _ = try await core.getRoutes(
-                initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469),
+                initialLocation: UserLocation(
+                    coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
+                    horizontalAccuracy: 0,
+                    courseOverGround: nil,
+                    timestamp: Date()
+                ),
                 waypoints: [Waypoint(
                     coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806),
                     kind: .break
@@ -118,7 +123,12 @@ final class FerrostarCoreTests: XCTestCase {
 
         // Tests that the core generates a request and then the mocked parser returns the expected routes
         let routes = try await core.getRoutes(
-            initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469),
+            initialLocation: UserLocation(
+                coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
+                horizontalAccuracy: 0,
+                courseOverGround: nil,
+                timestamp: Date()
+            ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
         assertSnapshot(of: routes, as: .dump)
@@ -178,7 +188,12 @@ final class FerrostarCoreTests: XCTestCase {
         core.delegate = delegate
 
         let routes = try await core.getRoutes(
-            initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469),
+            initialLocation: UserLocation(
+                coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
+                horizontalAccuracy: 0,
+                courseOverGround: nil,
+                timestamp: Date()
+            ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
 

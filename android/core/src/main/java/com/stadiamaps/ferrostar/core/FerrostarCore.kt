@@ -15,7 +15,6 @@ import uniffi.ferrostar.NavigationController
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
-import uniffi.ferrostar.RouteAdapterInterface
 import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.TripState
@@ -42,7 +41,7 @@ data class FerrostarCoreState(
  * access the user's location.
  */
 class FerrostarCore(
-    val routeAdapter: RouteAdapterInterface,
+    val routeProvider: RouteProvider,
     val httpClient: OkHttpClient,
     val locationProvider: LocationProvider,
 ) : LocationUpdateListener {
@@ -91,7 +90,28 @@ class FerrostarCore(
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
   ) : this(
-      RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile),
+      RouteProvider.RouteAdapter(
+          RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile)),
+      httpClient,
+      locationProvider,
+  )
+
+  constructor(
+      routeAdapter: RouteAdapter,
+      httpClient: OkHttpClient,
+      locationProvider: LocationProvider,
+  ) : this(
+      RouteProvider.RouteAdapter(routeAdapter),
+      httpClient,
+      locationProvider,
+  )
+
+  constructor(
+      customRouteProvider: CustomRouteProvider,
+      httpClient: OkHttpClient,
+      locationProvider: LocationProvider,
+  ) : this(
+      RouteProvider.CustomProvider(customRouteProvider),
       httpClient,
       locationProvider,
   )
@@ -100,29 +120,33 @@ class FerrostarCore(
       try {
         _routeRequestInFlight = true
 
-        when (val request = routeAdapter.generateRequest(initialLocation, waypoints)) {
-          is RouteRequest.HttpPost -> {
-            val httpRequest =
-                Request.Builder()
-                    .url(request.url)
-                    .post(request.body.toRequestBody())
-                    .apply { request.headers.map { (name, value) -> header(name, value) } }
-                    .build()
+        when (routeProvider) {
+          is RouteProvider.CustomProvider ->
+              routeProvider.provider.getRoutes(initialLocation, waypoints)
+          is RouteProvider.RouteAdapter -> {
+            when (val request = routeProvider.adapter.generateRequest(initialLocation, waypoints)) {
+              is RouteRequest.HttpPost -> {
+                val httpRequest =
+                    Request.Builder()
+                        .url(request.url)
+                        .post(request.body.toRequestBody())
+                        .apply { request.headers.map { (name, value) -> header(name, value) } }
+                        .build()
 
-            val res = httpClient.newCall(httpRequest).await()
-            val bodyBytes = res.body?.bytes()
-            if (!res.isSuccessful) {
-              throw InvalidStatusCodeException(res.code)
-            } else if (bodyBytes == null) {
-              throw NoResponseBodyException()
+                val res = httpClient.newCall(httpRequest).await()
+                val bodyBytes = res.body?.bytes()
+                if (!res.isSuccessful) {
+                  throw InvalidStatusCodeException(res.code)
+                } else if (bodyBytes == null) {
+                  throw NoResponseBodyException()
+                }
+
+                routeProvider.adapter.parseResponse(bodyBytes)
+              }
             }
-
-            routeAdapter.parseResponse(bodyBytes)
           }
         }
       } finally {
-        // TODO: Make sure this doesn't cause issues when we add support for arbitrary code to
-        // generate routes
         _routeRequestInFlight = false
       }
 

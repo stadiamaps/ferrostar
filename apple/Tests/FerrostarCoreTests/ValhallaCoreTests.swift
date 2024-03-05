@@ -21,7 +21,14 @@ final class ValhallaCoreTests: XCTestCase {
             networkSession: mockSession
         )
         let routes = try await core.getRoutes(
-            initialLocation: CLLocation(latitude: 60.5347155, longitude: -149.543469),
+            initialLocation: UserLocation(
+                latitude: 60.5347155,
+                longitude: -149.543469,
+                horizontalAccuracy: 0,
+                course: 0,
+                courseAccuracy: 0,
+                timestamp: Date()
+            ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
 

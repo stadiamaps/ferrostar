@@ -78,7 +78,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     @Published public private(set) var state: NavigationState?
 
     private let networkSession: URLRequestLoading
-    private let routeAdapter: RouteAdapterProtocol
+    private let routeProvider: RouteProvider
     private let locationProvider: LocationProviding
     private var navigationController: NavigationControllerProtocol?
     private var tripState: TripState?
@@ -89,11 +89,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var config: NavigationControllerConfig?
 
     public init(
-        routeAdapter: RouteAdapterProtocol,
+        routeProvider: RouteProvider,
         locationProvider: LocationProviding,
         networkSession: URLRequestLoading
     ) {
-        self.routeAdapter = routeAdapter
+        self.routeProvider = routeProvider
         self.locationProvider = locationProvider
         self.networkSession = networkSession
 
@@ -109,50 +109,83 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider: LocationProviding,
         networkSession: URLRequestLoading = URLSession.shared
     ) {
-        let routeAdapter = RouteAdapter.newValhallaHttp(
+        let adapter = RouteAdapter.newValhallaHttp(
             endpointUrl: valhallaEndpointUrl.absoluteString,
             profile: profile
         )
-        self.init(routeAdapter: routeAdapter, locationProvider: locationProvider, networkSession: networkSession)
+        self.init(
+            routeProvider: .routeAdapter(adapter),
+            locationProvider: locationProvider,
+            networkSession: networkSession
+        )
+    }
+
+    public convenience init(
+        routeAdapter: RouteAdapterProtocol,
+        locationProvider: LocationProviding,
+        networkSession: URLRequestLoading = URLSession.shared
+    ) {
+        self.init(
+            routeProvider: .routeAdapter(routeAdapter),
+            locationProvider: locationProvider,
+            networkSession: networkSession
+        )
+    }
+
+    public convenience init(
+        customRouteProvider: CustomRouteProvider,
+        locationProvider: LocationProviding,
+        networkSession: URLRequestLoading = URLSession.shared
+    ) {
+        self.init(
+            routeProvider: .customProvider(customRouteProvider),
+            locationProvider: locationProvider,
+            networkSession: networkSession
+        )
     }
 
     /// Tries to get routes visiting one or more waypoints starting from the initial location.
     ///
     /// Success and failure are communicated via ``delegate`` methods.
-    public func getRoutes(initialLocation: CLLocation, waypoints: [Waypoint]) async throws -> [Route] {
+    public func getRoutes(initialLocation: UserLocation, waypoints: [Waypoint]) async throws -> [Route] {
         routeRequestInFlight = true
 
         defer {
             routeRequestInFlight = false
         }
 
-        let routeRequest = try routeAdapter.generateRequest(
-            userLocation: initialLocation.userLocation,
-            waypoints: waypoints
-        )
+        switch routeProvider {
+        case let .customProvider(provider):
+            return try await provider.getRoutes(userLocation: initialLocation, waypoints: waypoints)
+        case let .routeAdapter(routeAdapter):
+            let routeRequest = try routeAdapter.generateRequest(
+                userLocation: initialLocation,
+                waypoints: waypoints
+            )
 
-        switch routeRequest {
-        case let .httpPost(url: url, headers: headers, body: body):
-            guard let url = URL(string: url) else {
-                throw FerrostarCoreError.invalidRequestUrl
-            }
+            switch routeRequest {
+            case let .httpPost(url: url, headers: headers, body: body):
+                guard let url = URL(string: url) else {
+                    throw FerrostarCoreError.invalidRequestUrl
+                }
 
-            var urlRequest = URLRequest(url: url)
-            urlRequest.httpMethod = "POST"
-            for (header, value) in headers {
-                urlRequest.setValue(value, forHTTPHeaderField: header)
-            }
-            urlRequest.httpBody = Data(body)
-            urlRequest.timeoutInterval = 15
+                var urlRequest = URLRequest(url: url)
+                urlRequest.httpMethod = "POST"
+                for (header, value) in headers {
+                    urlRequest.setValue(value, forHTTPHeaderField: header)
+                }
+                urlRequest.httpBody = Data(body)
+                urlRequest.timeoutInterval = 15
 
-            let (data, response) = try await networkSession.loadData(with: urlRequest)
+                let (data, response) = try await networkSession.loadData(with: urlRequest)
 
-            if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
-                throw FerrostarCoreError.httpStatusCode(res.statusCode)
-            } else {
-                let routes = try routeAdapter.parseResponse(response: data)
+                if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
+                    throw FerrostarCoreError.httpStatusCode(res.statusCode)
+                } else {
+                    let routes = try routeAdapter.parseResponse(response: data)
 
-                return routes
+                    return routes
+                }
             }
         }
     }
@@ -243,7 +276,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         self.state?.isCalculatingNewRoute = true
                         self.recalculationTask = Task {
                             do {
-                                let routes = try await self.getRoutes(initialLocation: location, waypoints: waypoints)
+                                let routes = try await self.getRoutes(
+                                    initialLocation: location.userLocation,
+                                    waypoints: waypoints
+                                )
                                 if let delegate = self.delegate {
                                     delegate.core(self, loadedAlternateRoutes: routes)
                                 } else if let route = routes.first, let config = self.config {

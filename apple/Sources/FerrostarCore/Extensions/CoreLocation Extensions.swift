@@ -12,7 +12,7 @@ extension CLLocationCoordinate2D {
 }
 
 extension CLLocation {
-    var userLocation: UserLocation {
+    public var userLocation: UserLocation {
         let ffiCourse: CourseOverGround? = if course >= 0, courseAccuracy >= 0 {
             CourseOverGround(course: course, courseAccuracy: courseAccuracy)
         } else {
