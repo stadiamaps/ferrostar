@@ -1,23 +1,23 @@
 package com.stadiamaps.ferrostar.core
 
+import java.time.Instant
+import java.util.concurrent.Executor
 import uniffi.ferrostar.CourseOverGround
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.UserLocation
-import java.time.Instant
-import java.util.concurrent.Executor
 
 interface Location {
-    val coordinates: GeographicCoordinate
-    val horizontalAccuracy: Double
-    val courseOverGround: CourseOverGround?
-    val timestamp: Instant
+  val coordinates: GeographicCoordinate
+  val horizontalAccuracy: Double
+  val courseOverGround: CourseOverGround?
+  val timestamp: Instant
 
-    fun userLocation(): UserLocation = UserLocation(
-        coordinates = coordinates,
-        horizontalAccuracy = horizontalAccuracy,
-        courseOverGround,
-        timestamp = timestamp
-    )
+  fun userLocation(): UserLocation =
+      UserLocation(
+          coordinates = coordinates,
+          horizontalAccuracy = horizontalAccuracy,
+          courseOverGround,
+          timestamp = timestamp)
 }
 
 data class SimulatedLocation(
@@ -34,34 +34,35 @@ data class AndroidLocation(
     override val courseOverGround: CourseOverGround?,
     override val timestamp: Instant
 ) : Location {
-    constructor(location: android.location.Location) : this(
-        GeographicCoordinate(location.latitude, location.longitude),
-        location.accuracy.toDouble(),
-        if (location.hasBearing() && location.hasBearingAccuracy()) {
-            CourseOverGround(
-                location.bearing.toInt().toUShort(),
-                location.bearingAccuracyDegrees.toInt().toUShort()
-            )
-        } else {
-            null
-        },
-        Instant.ofEpochMilli(location.time)
-    )
+  constructor(
+      location: android.location.Location
+  ) : this(
+      GeographicCoordinate(location.latitude, location.longitude),
+      location.accuracy.toDouble(),
+      if (location.hasBearing() && location.hasBearingAccuracy()) {
+        CourseOverGround(
+            location.bearing.toInt().toUShort(), location.bearingAccuracyDegrees.toInt().toUShort())
+      } else {
+        null
+      },
+      Instant.ofEpochMilli(location.time))
 }
 
 interface LocationProvider {
-    val lastLocation: Location?
+  val lastLocation: Location?
 
-    // TODO: Decide how to handle this on Android
-    val lastHeading: Float?
+  // TODO: Decide how to handle this on Android
+  val lastHeading: Float?
 
-    fun addListener(listener: LocationUpdateListener, executor: Executor)
-    fun removeListener(listener: LocationUpdateListener)
+  fun addListener(listener: LocationUpdateListener, executor: Executor)
+
+  fun removeListener(listener: LocationUpdateListener)
 }
 
 interface LocationUpdateListener {
-    fun onLocationUpdated(location: Location)
-    fun onHeadingUpdated(heading: Float)
+  fun onLocationUpdated(location: Location)
+
+  fun onHeadingUpdated(heading: Float)
 }
 
 /**
@@ -70,48 +71,45 @@ interface LocationUpdateListener {
  * This allows for more granular unit tests.
  */
 class SimulatedLocationProvider : LocationProvider {
-    override var lastLocation: Location? = null
-        set(value) {
-            field = value
-            onLocationUpdated()
-        }
-    override var lastHeading: Float? = null
-        set(value) {
-            field = value
-            onHeadingUpdated()
-        }
-
-    override fun addListener(listener: LocationUpdateListener, executor: Executor) {
-        listeners.add(listener to executor)
+  override var lastLocation: Location? = null
+    set(value) {
+      field = value
+      onLocationUpdated()
     }
 
-    override fun removeListener(listener: LocationUpdateListener) {
-        listeners.removeIf { it.first == listener }
+  override var lastHeading: Float? = null
+    set(value) {
+      field = value
+      onHeadingUpdated()
     }
 
-    private var listeners: MutableList<Pair<LocationUpdateListener, Executor>> = mutableListOf()
+  override fun addListener(listener: LocationUpdateListener, executor: Executor) {
+    listeners.add(listener to executor)
+  }
 
-    private fun onLocationUpdated() {
-        val location = lastLocation
-        if (location != null) {
-            for ((listener, executor) in listeners) {
-                executor.execute {
-                    listener.onLocationUpdated(location)
-                }
-            }
-        }
-    }
+  override fun removeListener(listener: LocationUpdateListener) {
+    listeners.removeIf { it.first == listener }
+  }
 
-    private fun onHeadingUpdated() {
-        val heading = lastHeading
-        if (heading != null) {
-            for ((listener, executor) in listeners) {
-                executor.execute {
-                    listener.onHeadingUpdated(heading)
-                }
-            }
-        }
+  private var listeners: MutableList<Pair<LocationUpdateListener, Executor>> = mutableListOf()
+
+  private fun onLocationUpdated() {
+    val location = lastLocation
+    if (location != null) {
+      for ((listener, executor) in listeners) {
+        executor.execute { listener.onLocationUpdated(location) }
+      }
     }
+  }
+
+  private fun onHeadingUpdated() {
+    val heading = lastHeading
+    if (heading != null) {
+      for ((listener, executor) in listeners) {
+        executor.execute { listener.onHeadingUpdated(heading) }
+      }
+    }
+  }
 }
 
-// TODO: Non-simulated implementations
+// TODO: Non-simulated implementations (GoogleFusedLocationProvider? AndroidSystemLocationProvider?)

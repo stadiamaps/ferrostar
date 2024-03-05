@@ -1,10 +1,14 @@
 
 import CoreLocation
+import FerrostarCoreFFI
 import MapKit
 import SwiftUI
+<<<<<<< HEAD
 import UniFFI
+=======
+>>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 
-extension UniFFI.VisualInstructionContent {
+extension VisualInstructionContent {
     // Stand-in art using SFSymbols for now. Ideally look for some
     // iconography licensed under CC or similar that we can use on all
     // platforms.
@@ -85,7 +89,12 @@ public struct BannerView: View {
 }
 
 #Preview {
-    let instructions = UniFFI.VisualInstruction(primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil), secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0)
+    let instructions = VisualInstruction(
+        primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left,
+                                                 roundaboutExitDegrees: nil),
+        secondaryContent: nil,
+        triggerDistanceBeforeManeuver: 42.0
+    )
 
     return BannerView(instructions: instructions, distanceToNextManeuver: 42)
 }

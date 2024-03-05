@@ -92,7 +92,7 @@ impl NavigationController {
                             remaining_waypoints.first()
                         {
                             let current_location: Point = snapped_user_location.coordinates.into();
-                            let next_waypoint: Point = (*waypoint).into();
+                            let next_waypoint: Point = waypoint.coordinate.into();
                             // TODO: This is just a hard-coded threshold for the time being.
                             // More sophisticated behavior will take some time and use cases, so punting on this for now.
                             current_location.haversine_distance(&next_waypoint) < 100.0

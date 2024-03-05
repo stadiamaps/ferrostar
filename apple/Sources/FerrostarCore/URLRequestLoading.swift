@@ -23,7 +23,8 @@ enum MockURLSessionError: Error {
 
 /// Mocks network responses by URL. Super quick-and-dirty for testing with mocks.
 ///
-/// By default, it will return an error for all requests. Register a mock by URL with ``registerMock(forURL:withData:andResponse:)``
+/// By default, it will return an error for all requests. Register a mock by URL with
+/// ``registerMock(forURL:withData:andResponse:)``
 public class MockURLSession: URLRequestLoading {
     private var urlResponseMap = [URL: (Data, URLResponse)]()
 

@@ -1,7 +1,12 @@
 import Foundation
 
 let valhallaEndpointUrl = URL(string: "https://api.stadiamaps.com/navigate/v1")!
-let successfulJSONResponse = HTTPURLResponse(url: valhallaEndpointUrl, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!
+let successfulJSONResponse = HTTPURLResponse(
+    url: valhallaEndpointUrl,
+    statusCode: 200,
+    httpVersion: "HTTP/1.1",
+    headerFields: ["Content-Type": "application/json"]
+)!
 
 let sampleRouteData = Data("""
 {

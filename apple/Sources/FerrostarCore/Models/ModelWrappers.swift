@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /// Various re-exported models.
 ///
 /// This wrapper approach is unfortunaetly necessary beacuse Swift packages cannot yet
@@ -70,6 +71,15 @@ public enum StepAdvanceMode {
         case let .relativeLineStringDistance(minimumHorizontalAccuracy: minimumHorizontalAccuracy, automaticAdvanceDistance: automaticAdvanceDistance):
             return .relativeLineStringDistance(minimumHorizontalAccuracy: minimumHorizontalAccuracy, automaticAdvanceDistance: automaticAdvanceDistance)
         }
+=======
+import CoreLocation
+import FerrostarCoreFFI
+import Foundation
+
+public extension Route {
+    func getPolyline(precision: UInt32) throws -> String {
+        try getRoutePolyline(route: self, precision: precision)
+>>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
     }
 }
 
@@ -80,8 +90,8 @@ private class DetectorImpl: RouteDeviationDetector {
         self.detectorFunc = detectorFunc
     }
 
-    func checkRouteDeviation(location: UniFFI.UserLocation, route: UniFFI.Route, currentRouteStep: UniFFI.RouteStep) -> UniFFI.RouteDeviation {
-        return detectorFunc(location, Route(inner: route), currentRouteStep)
+    func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation {
+        detectorFunc(location, route, currentRouteStep)
     }
 }
 
@@ -93,14 +103,28 @@ public enum RouteDeviationTracking {
 
     case custom(detector: (UserLocation, Route, RouteStep) -> RouteDeviation)
 
-    var ffiValue: UniFFI.RouteDeviationTracking {
+    var ffiValue: FerrostarCoreFFI.RouteDeviationTracking {
         switch self {
         case .none:
+<<<<<<< HEAD
             return .none
         case let .staticThreshold(minimumHorizontalAccuracy: minimumHorizontalAccuracy, maxAcceptableDeviation: maxAcceptableDeviation):
             return .staticThreshold(minimumHorizontalAccuracy: minimumHorizontalAccuracy, maxAcceptableDeviation: maxAcceptableDeviation)
         case let .custom(detector: detectorFunc):
             return .custom(detector: DetectorImpl(detectorFunc: detectorFunc))
+=======
+            .none
+        case let .staticThreshold(
+            minimumHorizontalAccuracy: minimumHorizontalAccuracy,
+            maxAcceptableDeviation: maxAcceptableDeviation
+        ):
+            .staticThreshold(
+                minimumHorizontalAccuracy: minimumHorizontalAccuracy,
+                maxAcceptableDeviation: maxAcceptableDeviation
+            )
+        case let .custom(detector: detectorFunc):
+            .custom(detector: DetectorImpl(detectorFunc: detectorFunc))
+>>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
         }
     }
 }
@@ -108,8 +132,11 @@ public enum RouteDeviationTracking {
 /// A Swift wrapper around `UniFFI.NavigationControllerConfig`.
 public struct NavigationControllerConfig {
     public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) {
-        ffiValue = UniFFI.NavigationControllerConfig(stepAdvance: stepAdvance.ffiValue, routeDeviationTracking: routeDeviationTracking.ffiValue)
+        ffiValue = FerrostarCoreFFI.NavigationControllerConfig(
+            stepAdvance: stepAdvance,
+            routeDeviationTracking: routeDeviationTracking.ffiValue
+        )
     }
 
-    var ffiValue: UniFFI.NavigationControllerConfig
+    var ffiValue: FerrostarCoreFFI.NavigationControllerConfig
 }

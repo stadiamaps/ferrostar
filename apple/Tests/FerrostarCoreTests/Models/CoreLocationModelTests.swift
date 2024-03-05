@@ -1,4 +1,9 @@
 import CoreLocation
+<<<<<<< HEAD
+=======
+import FerrostarCoreFFI
+import XCTest
+>>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 @testable import FerrostarCore
 import UniFFI
 import XCTest

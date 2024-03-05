@@ -1,10 +1,3 @@
-//
-//  ConfigurationView.swift
-//  Ferrostar Demo
-//
-//  Created by Jacob Fielding on 12/6/23.
-//
-
 import SwiftUI
 
 struct ConfigurationView: View {

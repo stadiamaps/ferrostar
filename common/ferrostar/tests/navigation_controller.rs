@@ -165,7 +165,9 @@ fn simple_route_state_machine_advances_with_location_change() {
 
     // The current step should change when we jump to the end location
     let TripState::Navigating {
-        remaining_steps, remaining_waypoints, ..
+        remaining_steps,
+        remaining_waypoints,
+        ..
     } = controller.update_user_location(user_location_end_of_first_step, &initial_state)
     else {
         panic!("Expected state to be navigating");

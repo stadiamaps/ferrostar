@@ -1,6 +1,7 @@
+use crate::models::Waypoint;
 use crate::{
     create_osrm_response_parser, create_valhalla_request_generator,
-    models::{GeographicCoordinate, Route, UserLocation},
+    models::{Route, UserLocation},
 };
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
@@ -19,7 +20,6 @@ pub enum RouteRequest {
         headers: HashMap<String, String>,
         body: Vec<u8>,
     },
-    // TODO: Generic case for cases like local/offline route generation or other arbitrary foreign code
 }
 
 /// A trait describing any object capable of generating [RouteRequest]s.
@@ -30,7 +30,7 @@ pub enum RouteRequest {
 /// before use, so that we can keep the public interface as generic as possible.
 ///
 /// Implementations may be either in Rust (most popular engines should eventually have Rust
-/// implementations) or foreign code.
+/// glue code) or foreign code.
 #[uniffi::export(with_foreign)]
 pub trait RouteRequestGenerator: Send + Sync {
     /// Generates a routing backend request given the set of locations.
@@ -42,7 +42,7 @@ pub trait RouteRequestGenerator: Send + Sync {
     fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinate>,
+        waypoints: Vec<Waypoint>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError>;
 
     // TODO: "Trace attributes" request method? Maybe in a separate trait?
@@ -59,7 +59,9 @@ pub trait RouteResponseParser: Send + Sync {
     fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, RoutingResponseParseError>;
 }
 
-/// The route adapter bridges between the common core and a routing backend.
+/// The route adapter bridges between the common core and a routing backend where interaction takes place
+/// over a generic request/response flow (typically over a network;
+/// local/offline routers do not use this object as the interaction patterns are different).
 ///
 /// This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
 /// traits, but it provides one further level of abstraction which is helpful to consumers.
@@ -110,7 +112,7 @@ impl RouteAdapter {
     pub fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinate>,
+        waypoints: Vec<Waypoint>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
         self.request_generator
             .generate_request(user_location, waypoints)

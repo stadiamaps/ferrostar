@@ -33,6 +33,15 @@ jobs:
         with:
           manifest-path: common/Cargo.toml
 
+  rustfmt:
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: rustfmt checks
+        run: cargo fmt --check
+        working-directory: common
+
   build:
     runs-on: macos-14
     steps:

@@ -1,14 +1,14 @@
 use super::{RouteRequest, RoutingRequestGenerationError};
-use crate::models::{GeographicCoordinate, UserLocation};
+use crate::models::{UserLocation, Waypoint, WaypointKind};
 use crate::routing_adapters::RouteRequestGenerator;
 use serde_json::{json, Value as JsonValue};
 use std::collections::HashMap;
 
-/// A request generator for Valhalla routing backends operating over HTTP.
+/// A route request generator for Valhalla backends operating over HTTP.
 ///
-/// Implementation notes:
-/// - The data is requested in OSRM format, as this lends itself well to navigation use cases.
-/// - All waypoints are interpreted as [`break`s](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations).
+/// Valhalla supports the [WaypointKind] field of [Waypoint]s. Variants have the same meaning as their
+/// [`type` strings in Valhalla API](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations)
+/// having the same name.
 #[derive(Debug)]
 pub struct ValhallaHttpRequestGenerator {
     /// The full URL of the Valhalla endpoint to access. This will normally be the route endpoint,
@@ -33,7 +33,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
     fn generate_request(
         &self,
         user_location: UserLocation,
-        waypoints: Vec<GeographicCoordinate>,
+        waypoints: Vec<Waypoint>,
     ) -> Result<RouteRequest, RoutingRequestGenerationError> {
         if waypoints.is_empty() {
             Err(RoutingRequestGenerationError::NotEnoughWaypoints)
@@ -55,12 +55,18 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
             let locations: Vec<JsonValue> = std::iter::once(start)
                 .chain(waypoints.iter().map(|waypoint| {
                     json!({
-                        "lat": waypoint.lat,
-                        "lon": waypoint.lng,
+                        "lat": waypoint.coordinate.lat,
+                        "lon": waypoint.coordinate.lng,
+                        "type": match waypoint.kind {
+                            WaypointKind::Break => "break",
+                            WaypointKind::Via => "via",
+                        },
                     })
                 }))
                 .collect();
-            // TODO: Figure out if we can use PBF?
+            // NOTE: We currently use the OSRM format, as it is the richest one.
+            // Though it would be nice to use PBF if we can get the required data.
+            // However, certain info (like banners) are only available in the OSRM format.
             // TODO: Trace attributes as we go rather than pulling a fat payload upfront that we might ditch later?
             let args = json!({
                 "format": "osrm",
@@ -90,7 +96,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::models::CourseOverGround;
+    use crate::models::{CourseOverGround, GeographicCoordinate};
     use assert_json_diff::assert_json_include;
     use serde_json::{from_slice, json};
     use std::time::SystemTime;
@@ -112,9 +118,15 @@ mod tests {
         }),
         timestamp: SystemTime::UNIX_EPOCH,
     };
-    const WAYPOINTS: [GeographicCoordinate; 2] = [
-        GeographicCoordinate { lat: 0.0, lng: 1.0 },
-        GeographicCoordinate { lat: 2.0, lng: 3.0 },
+    const WAYPOINTS: [Waypoint; 2] = [
+        Waypoint {
+            coordinate: GeographicCoordinate { lat: 0.0, lng: 1.0 },
+            kind: WaypointKind::Break,
+        },
+        Waypoint {
+            coordinate: GeographicCoordinate { lat: 2.0, lng: 3.0 },
+            kind: WaypointKind::Break,
+        },
     ];
 
     #[test]
@@ -140,7 +152,10 @@ mod tests {
             body,
         } = generator
             .generate_request(USER_LOCATION, WAYPOINTS.to_vec())
-            .unwrap();
+            .unwrap()
+        else {
+            panic!("Unexpected route request generated.");
+        };
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());
@@ -181,7 +196,10 @@ mod tests {
             body,
         } = generator
             .generate_request(USER_LOCATION_WITH_COURSE, WAYPOINTS.to_vec())
-            .unwrap();
+            .unwrap()
+        else {
+            panic!("Unexpected route request generated.");
+        };
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());
@@ -230,7 +248,10 @@ mod tests {
             body,
         } = generator
             .generate_request(location, WAYPOINTS.to_vec())
-            .unwrap();
+            .unwrap()
+        else {
+            panic!("Unexpected route request generated.");
+        };
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());

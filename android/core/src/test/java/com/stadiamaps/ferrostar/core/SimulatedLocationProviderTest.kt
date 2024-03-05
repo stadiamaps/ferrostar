@@ -1,56 +1,56 @@
 package com.stadiamaps.ferrostar.core
 
-import org.junit.Test
-
-import org.junit.Assert.*
-import uniffi.ferrostar.GeographicCoordinate
 import java.time.Instant
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import org.junit.Assert.*
+import org.junit.Test
+import uniffi.ferrostar.GeographicCoordinate
 
 class SimulatedLocationProviderTest {
-    @Test
-    fun `initial values are null`() {
-        val locationProvider = SimulatedLocationProvider()
+  @Test
+  fun `initial values are null`() {
+    val locationProvider = SimulatedLocationProvider()
 
-        assertNull(locationProvider.lastLocation)
-        assertNull(locationProvider.lastHeading)
-    }
+    assertNull(locationProvider.lastLocation)
+    assertNull(locationProvider.lastHeading)
+  }
 
-    @Test
-    fun `set location`() {
-        val locationProvider = SimulatedLocationProvider()
-        val location = SimulatedLocation(GeographicCoordinate(42.02, 24.0), 12.0, null, Instant.now())
+  @Test
+  fun `set location`() {
+    val locationProvider = SimulatedLocationProvider()
+    val location = SimulatedLocation(GeographicCoordinate(42.02, 24.0), 12.0, null, Instant.now())
 
-        locationProvider.lastLocation = location
+    locationProvider.lastLocation = location
 
-        assertEquals(locationProvider.lastLocation, location)
-    }
+    assertEquals(locationProvider.lastLocation, location)
+  }
 
-    @Test
-    fun `test listener events`() {
-        val latch = CountDownLatch(1)
-        val locationProvider = SimulatedLocationProvider()
-        val location = SimulatedLocation(GeographicCoordinate(42.02, 24.0), 12.0, null, Instant.now())
+  @Test
+  fun `test listener events`() {
+    val latch = CountDownLatch(1)
+    val locationProvider = SimulatedLocationProvider()
+    val location = SimulatedLocation(GeographicCoordinate(42.02, 24.0), 12.0, null, Instant.now())
 
-        val listener = object : LocationUpdateListener {
-            override fun onLocationUpdated(location: Location) {
-                assertEquals(location, location)
+    val listener =
+        object : LocationUpdateListener {
+          override fun onLocationUpdated(location: Location) {
+            assertEquals(location, location)
 
-                latch.countDown()
-            }
+            latch.countDown()
+          }
 
-            override fun onHeadingUpdated(heading: Float) {
-                fail("Unexpected heading update")
-            }
+          override fun onHeadingUpdated(heading: Float) {
+            fail("Unexpected heading update")
+          }
         }
 
-        locationProvider.addListener(listener, Executors.newSingleThreadExecutor())
+    locationProvider.addListener(listener, Executors.newSingleThreadExecutor())
 
-        locationProvider.lastLocation = location
+    locationProvider.lastLocation = location
 
-        assertEquals(locationProvider.lastLocation, location)
-        latch.await(1, TimeUnit.SECONDS)
-    }
+    assertEquals(locationProvider.lastLocation, location)
+    latch.await(1, TimeUnit.SECONDS)
+  }
 }
