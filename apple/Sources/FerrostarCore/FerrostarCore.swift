@@ -86,6 +86,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
     private var recalculationTask: Task<(), Never>?
+    
     private var config: NavigationControllerConfig?
 
     public init(routeAdapter: UniFFI.RouteAdapterProtocol, locationProvider: LocationProviding, networkSession: URLRequestLoading) {
