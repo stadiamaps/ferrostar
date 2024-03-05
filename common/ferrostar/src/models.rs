@@ -52,7 +52,7 @@ impl From<GeographicCoordinate> for Point {
 /// to use) and proceeds through one or more waypoints.
 ///
 /// Waypoints are used during route calculation, are tracked throughout the lifecycle of a trip,
-/// and are used for recalculating when the sure deviates from the expected route.
+/// and are used for recalculating when the user deviates from the expected route.
 ///
 /// Note that support for features beyond basic geographic coordinates varies by routing engine.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
