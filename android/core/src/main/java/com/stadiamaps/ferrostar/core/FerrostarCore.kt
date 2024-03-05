@@ -151,10 +151,12 @@ class FerrostarCore(
       }
 
   /**
-   * Starts navigation with the given parameters (erasing any previous state).
+   * Starts a navigation session with the given parameters (erasing any previous state).
    *
    * Once you have a location fix and a desired route, invoke this method. It will automatically
-   * subscribe to location provider updates. Returns a view model which
+   * subscribe to location provider updates. Returns a view model which is tied to the navigation
+   * session. You can observe this in either your own or one of the provided navigation compose
+   * views.
    */
   fun startNavigation(route: Route, config: NavigationControllerConfig): NavigationViewModel {
     stopNavigation()

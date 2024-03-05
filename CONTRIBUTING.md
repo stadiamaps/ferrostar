@@ -43,11 +43,14 @@ For minor or straightforward bug fixes, feel free to proceed directly to a PR.
 1. Install [Rust](https://www.rust-lang.org/).
    If at all possible, install `rustup`.
    We use [rust-toolchain.yml](common/rust-toolchain.yml)
-   to synchronize the toolchain and install targets automatically.
+   to synchronize the toolchain and install targets automatically
+   (otherwise you will need to manage toolchains manually).
 2. Open the cargo workspace (`common/`) in your preferred editing environment. 
 
 The Rust project is a cargo workspace,
-and nothing beyond the above is requried should be needed to start hacking.
+and nothing beyond the above should be needed to start hacking!
+
+Run `cargo fmt` from the `common` directory before committing to ensure consistent formatting.
 
 ### iOS
 
@@ -83,6 +86,9 @@ Given these limitations, we opted for a shell script until further notice.
    This makes the project view in Xcode slightly more cluttered,
    but there isn't much we can do about this given how SPM works.)
 
+Run `swiftformat .` from the `apple` directory before committing
+to ensure consistent formatting.
+
 ### Android
 
 1. Install [Android Studio](https://developer.android.com/studio).
@@ -100,7 +106,8 @@ cargo install cargo-ndk
 4. Open the Gradle workspace ('android/') in Android Studio.
    Gradle builds automatically ensure the core is built,
    so there are no funky scripts needed as on iOS.
-5. Run the `ktfmtFormat` gradle action before committing to ensure consistent formatting.
+
+Run the `ktfmtFormat` gradle action before committing to ensure consistent formatting.
 
 ## Writing & Running Tests
 
