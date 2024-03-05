@@ -1442,7 +1442,7 @@ public struct Heading {
      */
     public var trueHeading: UInt16
     /**
-     * The maximum deviation in degrees between the reported heading and the true geomagnetic heading.
+     * The platform specific accuracy of the heading value.
      */
     public var accuracy: UInt16
     /**
@@ -1458,7 +1458,7 @@ public struct Heading {
          */
         trueHeading: UInt16,
         /**
-            * The maximum deviation in degrees between the reported heading and the true geomagnetic heading.
+            * The platform specific accuracy of the heading value.
             */
         accuracy: UInt16,
         /**

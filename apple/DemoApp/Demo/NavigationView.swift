@@ -179,6 +179,14 @@ struct NavigationView: View {
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20))
 
+        if let simulated = locationProvider as? SimulatedLocationProvider {
+            // This configures the simulator to the desired route.
+            // The ferrostarCore.startNavigation will still start the location
+            // provider/simulator.
+            try simulated.setSimulatedRoute(route)
+            print("DemoApp: setting route to be simulated")
+        }
+        
         // Starts the navigation state machine.
         // It's worth having a look through the parameters,
         // as most of the configuration happens here.
@@ -186,10 +194,7 @@ struct NavigationView: View {
             route: route,
             config: config)
 
-        if let simulated = locationProvider as? SimulatedLocationProvider {
-            try simulated.startSimulating(route: route)
-            print("DemoApp: starting route simulation")
-        }
+
     }
     
     var locationLabel: String {

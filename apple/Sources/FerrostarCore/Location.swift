@@ -97,6 +97,8 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
     
+    private var updateTask: Task<Void, Error>?
+    
     public private(set) var simulationState: LocationSimulationState?
     public var warpFactor: UInt64 = 1
     
@@ -131,17 +133,20 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
         lastLocation = location
     }
     
-    public func startSimulating(route: Route) throws {
+    public func setSimulatedRoute(_ route: Route) throws {
         simulationState = try locationSimulationFromRoute(route: route.inner)
-        startUpdating()
     }
     
     public func startUpdating() {
         isUpdating = true
-        updateLocation()
+        updateTask?.cancel()
+        updateTask = Task {
+            try await updateLocation()
+        }
     }
 
     public func stopUpdating() {
+        updateTask?.cancel()
         isUpdating = false
     }
 
@@ -157,25 +162,32 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
         }
     }
     
-    private func updateLocation() {
-        Task {
-            guard isUpdating, let lastState = self.simulationState else {
+    private func updateLocation() async throws {
+        while isUpdating {
+            // Exit if the task has been cancelled.
+            try Task.checkCancellation()
+            
+            guard let lastState = self.simulationState else {
                 return
             }
             
             try await Task.sleep(nanoseconds: NSEC_PER_SEC / self.warpFactor)
+            
+            // Check cancellation before updating after wait.
+            try Task.checkCancellation()
+            
+            // Calculate the new state.
             let newState = advanceLocationSimulation(state: lastState, speed: .jumpToNextLocation)
             
+            // Exit/stop if the route has been fully simplated (newState location matches our existing location).
             if simulationState?.currentLocation == newState.currentLocation {
                 stopUpdating()
                 return
             }
             
+            // Bump the last location.
             lastLocation = CLLocation(latitude: newState.currentLocation.lat, longitude: newState.currentLocation.lng)
             simulationState = newState
-            
-            updateLocation()
-            return
         }
     }
 }

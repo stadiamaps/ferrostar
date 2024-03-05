@@ -14,8 +14,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "b8deecb8adc3b911de311ead5a13b98fbf2d7824"
+        "revision" : "507939d324a6296554894e1a534bb3f9c91a82d8",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "maplibre-swiftui-dsl-playground",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
+      "state" : {
+        "revision" : "e713f139395bbc561849c4c5ceaddb892378c44e",
+        "version" : "0.0.5"
       }
     },
     {
