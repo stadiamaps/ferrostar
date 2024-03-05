@@ -65,15 +65,6 @@ extension CoreLocationProvider: LocationProviding {
 
 extension CoreLocationProvider: CLLocationManagerDelegate {
     public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-<<<<<<< HEAD
-        lastLocation = locations.last
-        delegate?.locationManager(self, didUpdateLocations: locations)
-    }
-
-    public func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        lastHeading = newHeading
-        delegate?.locationManager(self, didUpdateHeading: newHeading)
-=======
         lastLocation = locations.last?.userLocation
         delegate?.locationManager(self, didUpdateLocations: locations.map(\.userLocation))
     }
@@ -85,7 +76,6 @@ extension CoreLocationProvider: CLLocationManagerDelegate {
         if let value {
             delegate?.locationManager(self, didUpdateHeading: value)
         }
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
     }
 
     public func locationManager(_: CLLocationManager, didFailWithError error: Error) {
@@ -110,19 +100,10 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
 
-<<<<<<< HEAD
-    private var updateTask: Task<Void, Error>?
-
-    public private(set) var simulationState: LocationSimulationState?
-    public var warpFactor: UInt64 = 1
-
-    @Published public var lastLocation: CLLocation? {
-=======
     public private(set) var simulationState: LocationSimulationState?
     public var warpFactor: UInt64 = 1
 
     @Published public var lastLocation: UserLocation? {
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
         didSet {
             notifyDelegateOfLocation()
         }
@@ -155,14 +136,9 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
         lastLocation = location
     }
 
-<<<<<<< HEAD
-    public func setSimulatedRoute(_ route: Route) throws {
-        simulationState = try locationSimulationFromRoute(route: route.inner)
-=======
     public func startSimulating(route: Route) throws {
         simulationState = try locationSimulationFromRoute(route: route)
         startUpdating()
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
     }
 
     public func startUpdating() {
@@ -190,26 +166,6 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
         }
     }
 
-<<<<<<< HEAD
-    private func updateLocation() async throws {
-        while isUpdating {
-            // Exit if the task has been cancelled.
-            try Task.checkCancellation()
-
-            guard let lastState = simulationState else {
-                return
-            }
-
-            try await Task.sleep(nanoseconds: NSEC_PER_SEC / warpFactor)
-
-            // Check cancellation before updating after wait.
-            try Task.checkCancellation()
-
-            // Calculate the new state.
-            let newState = advanceLocationSimulation(state: lastState, speed: .jumpToNextLocation)
-
-            // Exit/stop if the route has been fully simplated (newState location matches our existing location).
-=======
     private func updateLocation() {
         Task {
             guard isUpdating, let lastState = self.simulationState else {
@@ -219,17 +175,11 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             try await Task.sleep(nanoseconds: NSEC_PER_SEC / self.warpFactor)
             let newState = advanceLocationSimulation(state: lastState, speed: .jumpToNextLocation)
 
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
             if simulationState?.currentLocation == newState.currentLocation {
                 stopUpdating()
                 return
             }
 
-<<<<<<< HEAD
-            // Bump the last location.
-            lastLocation = CLLocation(latitude: newState.currentLocation.lat, longitude: newState.currentLocation.lng)
-            simulationState = newState
-=======
             lastLocation = UserLocation(
                 coordinates: newState.currentLocation,
                 horizontalAccuracy: 0,
@@ -239,7 +189,6 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             simulationState = newState
 
             updateLocation()
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
         }
     }
 }

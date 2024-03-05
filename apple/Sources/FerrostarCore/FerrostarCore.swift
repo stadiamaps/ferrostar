@@ -1,8 +1,5 @@
 import CoreLocation
-<<<<<<< HEAD
-=======
 import FerrostarCoreFFI
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 import Foundation
 import UniFFI
 
@@ -56,13 +53,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route])
 }
 
-<<<<<<< HEAD
-/// The Ferrostar core.
-///
-/// This is the entrypoint for end users of Ferrostar, and is responsible
-=======
 /// This is the entrypoint for end users of Ferrostar on iOS, and is responsible
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 /// for "driving" the navigation with location updates and other events.
 ///
 /// The usual flow is for callers to configure an instance of the core, set a ``delegate``,
@@ -242,9 +233,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
             self.tripState = newState
 
             switch newState {
-<<<<<<< HEAD
-            case let .navigating(snappedUserLocation: snappedLocation, remainingSteps: remainingSteps, remainingWaypoints: remainingWaypoints, distanceToNextManeuver: distanceToNextManeuver, deviation: deviation):
-=======
             case let .navigating(
                 snappedUserLocation: snappedLocation,
                 remainingSteps: remainingSteps,
@@ -252,7 +240,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 distanceToNextManeuver: distanceToNextManeuver,
                 deviation: deviation
             ):
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
                 self.state?.snappedLocation = snappedLocation
                 self.state?.currentStep = remainingSteps.first
                 // TODO: This isn't great; the core should probably just tell us which instruction to display
@@ -260,17 +247,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
                 })
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
-<<<<<<< HEAD
-                let clRemainingWaypoints = remainingWaypoints.map { coord in
-                    CLLocationCoordinate2D(geographicCoordinates: coord)
-                }
-
-                //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: { instruction in
-=======
 
                 //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: {
                 //                instruction in
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
                 //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
                 //                })
 
@@ -279,13 +258,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     // No action
                     break
                 case let .offRoute(deviationFromRouteLine: deviationFromRouteLine):
-<<<<<<< HEAD
-                    guard !self.routeRequestInFlight && self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? 0 > -self.minimumTimeBeforeRecalculaton else {
-                        break
-                    }
-
-                    switch self.delegate?.core(self, correctiveActionForDeviation: deviationFromRouteLine, remainingWaypoints: clRemainingWaypoints) ?? .getNewRoutes(waypoints: clRemainingWaypoints) {
-=======
                     guard !self.routeRequestInFlight,
                           self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? 0 > -self
                           .minimumTimeBeforeRecalculaton
@@ -298,7 +270,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         correctiveActionForDeviation: deviationFromRouteLine,
                         remainingWaypoints: remainingWaypoints
                     ) ?? .getNewRoutes(waypoints: remainingWaypoints) {
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
                     case .doNothing:
                         break
                     case let .getNewRoutes(waypoints):
@@ -339,17 +310,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
 extension FerrostarCore: LocationManagingDelegate {
     @MainActor
-<<<<<<< HEAD
-    public func locationManager(_: LocationProviding, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last,
-              let state = tripState,
-              let newState = navigationController?.updateUserLocation(location: location.userLocation, state: state)
-=======
     public func locationManager(_: LocationProviding, didUpdateLocations locations: [UserLocation]) {
         guard let location = locations.last,
               let state = tripState,
               let newState = navigationController?.updateUserLocation(location: location, state: state)
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
         else {
             return
         }
@@ -357,13 +321,8 @@ extension FerrostarCore: LocationManagingDelegate {
         update(newState: newState, location: location)
     }
 
-<<<<<<< HEAD
-    public func locationManager(_: LocationProviding, didUpdateHeading newHeading: CLHeading) {
-        state?.heading = Heading(clHeading: newHeading)
-=======
     public func locationManager(_: LocationProviding, didUpdateHeading newHeading: Heading) {
         state?.heading = newHeading
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
     }
 
     public func locationManager(_: LocationProviding, didFailWithError _: Error) {

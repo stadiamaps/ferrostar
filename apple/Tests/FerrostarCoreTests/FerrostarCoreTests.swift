@@ -4,22 +4,12 @@ import protocol FerrostarCore.CustomRouteProvider
 import class FerrostarCore.FerrostarCore
 import protocol FerrostarCore.FerrostarCoreDelegate
 import enum FerrostarCore.FerrostarCoreError
-<<<<<<< HEAD
-@testable import class FerrostarCore.MockURLSession
-import struct FerrostarCore.NavigationControllerConfig
-import struct FerrostarCore.Route
-import class FerrostarCore.SimulatedLocationProvider
-import SnapshotTesting
-import UniFFI
-import XCTest
-=======
 import struct FerrostarCore.NavigationControllerConfig
 import class FerrostarCore.SimulatedLocationProvider
 import FerrostarCoreFFI
 import SnapshotTesting
 import XCTest
 @testable import class FerrostarCore.MockURLSession
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 
 let errorBody = Data("""
 {
@@ -67,13 +57,8 @@ let mockRouteAdapter = RouteAdapter(
 )
 
 private class MockRouteRequestGenerator: RouteRequestGenerator {
-<<<<<<< HEAD
-    func generateRequest(userLocation _: UniFFI.UserLocation, waypoints _: [UniFFI.GeographicCoordinate]) throws -> UniFFI.RouteRequest {
-        return UniFFI.RouteRequest.httpPost(url: valhallaEndpointUrl.absoluteString, headers: [:], body: Data())
-=======
     func generateRequest(userLocation _: UserLocation, waypoints _: [Waypoint]) throws -> RouteRequest {
         RouteRequest.httpPost(url: valhallaEndpointUrl.absoluteString, headers: [:], body: Data())
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
     }
 }
 
@@ -84,13 +69,6 @@ private class MockRouteResponseParser: RouteResponseParser {
         self.routes = routes
     }
 
-<<<<<<< HEAD
-    func parseResponse(response _: Data) throws -> [UniFFI.Route] {
-        return routes
-    }
-}
-
-=======
     func parseResponse(response _: Data) throws -> [Route] {
         routes
     }
@@ -115,7 +93,6 @@ private class MockCustomRouteProvider: CustomRouteProvider {
     }
 }
 
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 final class FerrostarCoreTests: XCTestCase {
     func test401UnauthorizedRouteResponse() async throws {
         let mockSession = MockURLSession()
@@ -233,27 +210,19 @@ final class FerrostarCoreTests: XCTestCase {
                 self.loadedAltRoutesExp = loadedAltRoutesExp
             }
 
-<<<<<<< HEAD
-            func core(_: FerrostarCore, correctiveActionForDeviation deviationInMeters: Double, remainingWaypoints waypoints: [CLLocationCoordinate2D]) -> CorrectiveAction {
-=======
             func core(
                 _: FerrostarCore,
                 correctiveActionForDeviation deviationInMeters: Double,
                 remainingWaypoints waypoints: [Waypoint]
             ) -> CorrectiveAction {
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
                 XCTAssertEqual(deviationInMeters, 42)
                 routeDeviationCallbackExp.fulfill()
                 return .getNewRoutes(waypoints: waypoints)
             }
 
             func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route]) {
-<<<<<<< HEAD
-                XCTAssert(core.state?.isCalculatingNewRoute == true) // We are still calculating until this method completes
-=======
                 XCTAssert(core.state?
                     .isCalculatingNewRoute == true) // We are still calculating until this method completes
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
                 XCTAssert(!routes.isEmpty)
                 loadedAltRoutesExp.fulfill()
             }
@@ -275,13 +244,6 @@ final class FerrostarCoreTests: XCTestCase {
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
 
-<<<<<<< HEAD
-        locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0)
-        let config = NavigationControllerConfig(stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16), routeDeviationTracking: .custom(detector: { _, _, _ in
-            // Pretend that the user is always off route
-            .offRoute(deviationFromRouteLine: 42)
-        }))
-=======
         locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0).userLocation
         let config = NavigationControllerConfig(
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16),
@@ -290,7 +252,6 @@ final class FerrostarCoreTests: XCTestCase {
                 .offRoute(deviationFromRouteLine: 42)
             })
         )
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 
         try core.startNavigation(route: routes.first!, config: config)
 

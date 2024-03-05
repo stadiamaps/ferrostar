@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-//
-//  MockLocationData.swift
-//  Ferrostar Demo
-//
-//  Created by Jacob Fielding on 12/17/23.
-//
-
-=======
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 import CoreLocation
 import Foundation
 

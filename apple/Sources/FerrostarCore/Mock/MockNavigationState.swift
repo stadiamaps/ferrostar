@@ -1,14 +1,4 @@
 import CoreLocation
-<<<<<<< HEAD
-import Foundation
-import UniFFI
-
-public extension NavigationState {
-    static let pedestrianExample = NavigationState(
-        snappedLocation: CLLocation(latitude: samplePedestrianWaypoints.first!.latitude,
-                                    longitude: samplePedestrianWaypoints.first!.longitude),
-        fullRoute: samplePedestrianWaypoints,
-=======
 import FerrostarCoreFFI
 import Foundation
 
@@ -23,7 +13,6 @@ public extension NavigationState {
             timestamp: Date()
         ),
         fullRouteShape: samplePedestrianWaypoints,
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
         steps: []
     )
 
@@ -46,10 +35,6 @@ public extension NavigationState {
                 distance: 100, roadName: "Jefferson St.",
                 instruction: "Walk west on Jefferson St.",
                 visualInstructions: [
-<<<<<<< HEAD
-                    UniFFI.VisualInstruction(
-                        primaryContent: VisualInstructionContent(text: "Hyde Street", maneuverType: .turn, maneuverModifier: .left, roundaboutExitDegrees: nil),
-=======
                     VisualInstruction(
                         primaryContent: VisualInstructionContent(
                             text: "Hyde Street",
@@ -57,7 +42,6 @@ public extension NavigationState {
                             maneuverModifier: .left,
                             roundaboutExitDegrees: nil
                         ),
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
                         secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0
                     ),
                 ],

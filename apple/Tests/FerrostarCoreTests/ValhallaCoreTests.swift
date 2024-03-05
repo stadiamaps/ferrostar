@@ -1,15 +1,8 @@
 import CoreLocation
-<<<<<<< HEAD
-@testable import FerrostarCore
-import SnapshotTesting
-import UniFFI
-import XCTest
-=======
 import FerrostarCoreFFI
 import SnapshotTesting
 import XCTest
 @testable import FerrostarCore
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 
 final class ValhallaCoreTests: XCTestCase {
     @MainActor

@@ -3,10 +3,6 @@ import CoreLocation
 import FerrostarCoreFFI
 import MapKit
 import SwiftUI
-<<<<<<< HEAD
-import UniFFI
-=======
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 
 extension VisualInstructionContent {
     // Stand-in art using SFSymbols for now. Ideally look for some

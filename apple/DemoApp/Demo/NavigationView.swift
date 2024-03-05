@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-//
-//  NavigationView.swift
-//  Ferrostar Demo
-//
-//  Created by Ian Wagner on 2023-10-09.
-//
-
-=======
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 import CoreLocation
 import FerrostarCore
 import struct FerrostarCoreFFI.GeographicCoordinate
@@ -43,13 +33,9 @@ struct NavigationView: View {
         simulated.warpFactor = 10
         locationProvider = simulated
         ferrostarCore = FerrostarCore(
-<<<<<<< HEAD
-            valhallaEndpointUrl: URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!,
-=======
             valhallaEndpointUrl: URL(
                 string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)"
             )!,
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
             profile: "pedestrian",
             locationProvider: locationProvider
         )
@@ -194,17 +180,6 @@ struct NavigationView: View {
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20)
         )
-<<<<<<< HEAD
-
-        if let simulated = locationProvider as? SimulatedLocationProvider {
-            // This configures the simulator to the desired route.
-            // The ferrostarCore.startNavigation will still start the location
-            // provider/simulator.
-            try simulated.setSimulatedRoute(route)
-            print("DemoApp: setting route to be simulated")
-        }
-=======
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
 
         // Starts the navigation state machine.
         // It's worth having a look through the parameters,
@@ -213,14 +188,11 @@ struct NavigationView: View {
             route: route,
             config: config
         )
-<<<<<<< HEAD
-=======
 
         if let simulated = locationProvider as? SimulatedLocationProvider {
             try simulated.startSimulating(route: route)
             print("DemoApp: starting route simulation")
         }
->>>>>>> 746c43483e74319176f21e1fe96b78c038215c0b
     }
 
     var locationLabel: String {
