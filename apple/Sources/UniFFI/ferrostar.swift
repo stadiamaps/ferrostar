@@ -2194,9 +2194,9 @@ public func FfiConverterTypeVisualInstructionContent_lower(_ value: VisualInstru
  * to use) and proceeds through one or more waypoints.
  *
  * Waypoints are used during route calculation, are tracked throughout the lifecycle of a trip,
- * and are used for recalculating when the sure deviates from the expected route.
+ * and are used for recalculating when the user deviates from the expected route.
  *
- * Note that support for features beyond basic geographic coordinates varies by routing engine.
+ * Note that support for properties beyond basic geographic coordinates varies by routing engine.
  */
 public struct Waypoint {
     public var coordinate: GeographicCoordinate
