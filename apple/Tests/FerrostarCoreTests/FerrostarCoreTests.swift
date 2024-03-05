@@ -1,5 +1,6 @@
 import CoreLocation
 import enum FerrostarCore.CorrectiveAction
+import protocol FerrostarCore.CustomRouteProvider
 import class FerrostarCore.FerrostarCore
 import protocol FerrostarCore.FerrostarCoreDelegate
 import enum FerrostarCore.FerrostarCoreError
@@ -73,6 +74,25 @@ private class MockRouteResponseParser: RouteResponseParser {
     }
 }
 
+/// CustomRouteProvider demo implementation.
+///
+/// This protocol is used for route generation that doesn't have a clear request/response pattern
+/// (ex: local route generation).
+private class MockCustomRouteProvider: CustomRouteProvider {
+    private let routes: [Route]
+    private let expectation: XCTestExpectation
+
+    init(routes: [Route], expectation: XCTestExpectation) {
+        self.routes = routes
+        self.expectation = expectation
+    }
+
+    func getRoutes(userLocation _: UserLocation, waypoints _: [Waypoint]) async throws -> [Route] {
+        expectation.fulfill()
+        return routes
+    }
+}
+
 final class FerrostarCoreTests: XCTestCase {
     func test401UnauthorizedRouteResponse() async throws {
         let mockSession = MockURLSession()
@@ -132,6 +152,33 @@ final class FerrostarCoreTests: XCTestCase {
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
         assertSnapshot(of: routes, as: .dump)
+    }
+
+    @MainActor
+    func testCustomRouteProvider() async throws {
+        let expectation = expectation(description: "The custom route provider should be called once")
+        let mockSession = MockURLSession()
+        let mockCustomRouteProvider = MockCustomRouteProvider(routes: [mockRoute], expectation: expectation)
+
+        let core = FerrostarCore(
+            customRouteProvider: mockCustomRouteProvider,
+            locationProvider: SimulatedLocationProvider(),
+            networkSession: mockSession
+        )
+
+        // Tests that the core is able to call the custom route provider
+        let routes = try await core.getRoutes(
+            initialLocation: UserLocation(
+                coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
+                horizontalAccuracy: 0,
+                courseOverGround: nil,
+                timestamp: Date()
+            ),
+            waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
+        )
+        assertSnapshot(of: routes, as: .dump)
+
+        await fulfillment(of: [expectation], timeout: 1.0)
     }
 
     func testCustomRouteDeviationHandler() async throws {
