@@ -60,9 +60,9 @@ pub struct RouteLeg {
     pub distance: f64,
     /// A sequence of steps with turn-by-turn instructions.
     pub steps: Vec<RouteStep>,
-    /// TODO
+    /// A Mapbox and Valhalla extension which indicates which waypoints are passed through rather than creating a new leg.
     #[serde(default)]
-    pub via_waypoints: Vec<Waypoint>,
+    pub via_waypoints: Vec<ViaWaypoint>,
 }
 
 /// An annotation of a route leg with fine-grained information about segments or nodes.
@@ -271,10 +271,20 @@ pub struct Lane {
 pub struct Waypoint {
     /// THe name of the street that the waypoint snapped to.
     pub name: String,
-    /// The distance (in meters) between the snapped point and the original.
+    /// The distance (in meters) between the snapped point and the input coordinate.
     pub distance: f64,
     /// The waypoint's location on the road network.
     pub location: Coordinate,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ViaWaypoint {
+    /// The distance (in meters) from the leg origin
+    pub distance_from_start: f64,
+    /// The geometry point index of the location (leg-specific).
+    pub geometry_index: f64,
+    /// The waypoint's index in the array of waypoints.
+    pub waypoint_index: usize,
 }
 
 #[cfg(test)]
