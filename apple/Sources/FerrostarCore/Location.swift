@@ -101,7 +101,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
 
     private var updateTask: Task<Void, Error>?
-    
+
     public private(set) var simulationState: LocationSimulationState?
     public var warpFactor: UInt64 = 1
 
@@ -172,11 +172,11 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             // Exit if the task has been cancelled.
             try Task.checkCancellation()
 
-            guard let lastState = self.simulationState else {
+            guard let lastState = simulationState else {
                 return
             }
 
-            try await Task.sleep(nanoseconds: NSEC_PER_SEC / self.warpFactor)
+            try await Task.sleep(nanoseconds: NSEC_PER_SEC / warpFactor)
 
             // Check cancellation before updating after wait.
             try Task.checkCancellation()
