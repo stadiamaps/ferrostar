@@ -287,7 +287,7 @@ class FerrostarCoreTest {
                         kind = WaypointKind.BREAK)))
 
     locationProvider.lastLocation =
-        SimulatedLocation(GeographicCoordinate(0.0, 0.0), 6.0, null, Instant.now())
+        UserLocation(GeographicCoordinate(0.0, 0.0), 6.0, null, Instant.now())
     core.startNavigation(
         routes.first(),
         NavigationControllerConfig(

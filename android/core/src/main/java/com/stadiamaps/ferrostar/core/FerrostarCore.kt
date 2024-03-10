@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavigationController
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.Route
@@ -158,6 +159,7 @@ class FerrostarCore(
    * session. You can observe this in either your own or one of the provided navigation compose
    * views.
    */
+  @Throws(UserLocationUnknown::class)
   fun startNavigation(route: Route, config: NavigationControllerConfig): NavigationViewModel {
     stopNavigation()
 
@@ -168,9 +170,9 @@ class FerrostarCore(
         )
     val startingLocation = locationProvider.lastLocation ?: throw UserLocationUnknown()
 
-    val initialTripState = controller.getInitialState(startingLocation.userLocation())
+    val initialTripState = controller.getInitialState(startingLocation)
     val stateFlow = MutableStateFlow(FerrostarCoreState(tripState = initialTripState, false))
-    handleStateUpdate(initialTripState, startingLocation.userLocation())
+    handleStateUpdate(initialTripState, startingLocation)
 
     _navigationController = controller
     _state = stateFlow
@@ -240,23 +242,22 @@ class FerrostarCore(
     }
   }
 
-  override fun onLocationUpdated(location: Location) {
+  override fun onLocationUpdated(location: UserLocation) {
     val controller = _navigationController
 
     if (controller != null) {
       _state?.update { currentValue ->
         val newState =
-            controller.updateUserLocation(
-                location = location.userLocation(), state = currentValue.tripState)
+            controller.updateUserLocation(location = location, state = currentValue.tripState)
 
-        handleStateUpdate(newState, location.userLocation())
+        handleStateUpdate(newState, location)
 
         FerrostarCoreState(tripState = newState, isCalculatingNewRoute)
       }
     }
   }
 
-  override fun onHeadingUpdated(heading: Float) {
+  override fun onHeadingUpdated(heading: Heading) {
     // TODO: Publish new heading to flow
   }
 }

@@ -123,6 +123,9 @@ impl CourseOverGround {
 ///
 /// In addition to coordinates, this includes estimated accuracy and course information,
 /// which can influence navigation logic and UI.
+///
+/// NOTE: Heading is absent on purpose.
+/// Heading updates are not related to a change in the user's location.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
 pub struct UserLocation {
     pub coordinates: GeographicCoordinate,

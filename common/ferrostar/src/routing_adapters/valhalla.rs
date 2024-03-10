@@ -46,10 +46,9 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 // TODO: Street side tolerance as a tunable
                 "street_side_tolerance": core::cmp::max(5, user_location.horizontal_accuracy as u16),
             });
-            // TODO: Tunable to decide whether we care about course over ground
+            // TODO: Tunable to decide whether we care about course, and how accurate it needs to be
             if let Some(course) = user_location.course_over_ground {
                 start["heading"] = course.degrees.into();
-                start["heading_tolerance"] = course.accuracy.into();
             }
 
             let locations: Vec<JsonValue> = std::iter::once(start)
@@ -141,8 +140,7 @@ mod tests {
         ));
     }
 
-    #[test]
-    fn request_body_without_course() {
+    fn generate_body(user_location: UserLocation, waypoints: Vec<Waypoint>) -> JsonValue {
         let generator =
             ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
 
@@ -151,16 +149,18 @@ mod tests {
             headers,
             body,
         } = generator
-            .generate_request(USER_LOCATION, WAYPOINTS.to_vec())
-            .unwrap()
-        else {
-            panic!("Unexpected route request generated.");
-        };
+            .generate_request(user_location, waypoints)
+            .unwrap();
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());
 
-        let body_json: JsonValue = from_slice(&body).expect("Failed to parse request body as JSON");
+        from_slice(&body).expect("Failed to parse request body as JSON")
+    }
+
+    #[test]
+    fn request_body_without_course() {
+        let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec());
 
         assert_json_include!(
             actual: body_json,
@@ -187,24 +187,7 @@ mod tests {
 
     #[test]
     fn request_body_with_course() {
-        let generator =
-            ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
-
-        let RouteRequest::HttpPost {
-            url: request_url,
-            headers,
-            body,
-        } = generator
-            .generate_request(USER_LOCATION_WITH_COURSE, WAYPOINTS.to_vec())
-            .unwrap()
-        else {
-            panic!("Unexpected route request generated.");
-        };
-
-        assert_eq!(ENDPOINT_URL, request_url);
-        assert_eq!(headers["Content-Type"], "application/json".to_string());
-
-        let body_json: JsonValue = from_slice(&body).expect("Failed to parse request body as JSON");
+        let body_json = generate_body(USER_LOCATION_WITH_COURSE, WAYPOINTS.to_vec());
 
         assert_json_include!(
             actual: body_json,
@@ -216,7 +199,6 @@ mod tests {
                         "lon": 0.0,
                         "street_side_tolerance": 6,
                         "heading": 42,
-                        "heading_tolerance": 12,
                     },
                     {
                         "lat": 0.0,
@@ -248,10 +230,7 @@ mod tests {
             body,
         } = generator
             .generate_request(location, WAYPOINTS.to_vec())
-            .unwrap()
-        else {
-            panic!("Unexpected route request generated.");
-        };
+            .unwrap();
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());

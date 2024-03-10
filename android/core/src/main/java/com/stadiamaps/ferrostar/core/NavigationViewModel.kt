@@ -23,10 +23,10 @@ data class NavigationUiState(
 
 class NavigationViewModel(
     stateFlow: StateFlow<FerrostarCoreState>,
-    initialUserLocation: Location,
+    initialUserLocation: UserLocation,
     private val routeGeometry: List<GeographicCoordinate>,
 ) : ViewModel() {
-  private var lastLocation: UserLocation = initialUserLocation.userLocation()
+  private var lastLocation: UserLocation = initialUserLocation
 
   val uiState =
       stateFlow
@@ -45,7 +45,7 @@ class NavigationViewModel(
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
-              initialValue = uiState(stateFlow.value, initialUserLocation.userLocation()))
+              initialValue = uiState(stateFlow.value, initialUserLocation))
 
   private fun uiState(coreState: FerrostarCoreState, location: UserLocation) =
       NavigationUiState(
