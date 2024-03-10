@@ -56,9 +56,9 @@ public struct RouteStyleLayer: StyleLayerCollection {
 
         if let casingColor = style.casingColor {
             LineStyleLayer(identifier: "\(identifier)-casing", source: source)
-                .lineCap(constant: style.lineCap)
-                .lineJoin(constant: style.lineJoin)
-                .lineColor(constant: casingColor)
+                .lineCap(style.lineCap)
+                .lineJoin(style.lineJoin)
+                .lineColor(casingColor)
                 .lineWidth(interpolatedBy: .zoomLevel,
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
@@ -66,9 +66,9 @@ public struct RouteStyleLayer: StyleLayerCollection {
         }
 
         LineStyleLayer(identifier: "\(identifier)-polyline", source: source)
-            .lineCap(constant: style.lineCap)
-            .lineJoin(constant: style.lineJoin)
-            .lineColor(constant: style.color)
+            .lineCap(style.lineCap)
+            .lineJoin(style.lineJoin)
+            .lineColor(style.color)
             .lineWidth(interpolatedBy: .zoomLevel,
                        curveType: .exponential,
                        parameters: NSExpression(forConstantValue: 1.5),
