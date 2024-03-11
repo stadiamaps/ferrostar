@@ -24,7 +24,6 @@ import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
-import com.stadiamaps.ferrostar.core.SimulatedLocation
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
@@ -42,6 +41,7 @@ import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.SimulationSpeed
 import uniffi.ferrostar.StepAdvanceMode
+import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
 import uniffi.ferrostar.advanceLocationSimulation
@@ -49,7 +49,7 @@ import uniffi.ferrostar.locationSimulationFromRoute
 
 class MainActivity : ComponentActivity() {
   private val initialSimulatedLocation =
-      SimulatedLocation(
+      UserLocation(
           GeographicCoordinate(37.807770999999995, -122.41970699999999), 6.0, null, Instant.now())
   private val locationProvider = SimulatedLocationProvider()
   private val httpClient = OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
@@ -97,7 +97,7 @@ class MainActivity : ComponentActivity() {
         launch(Dispatchers.IO) {
           val routes =
               core.getRoutes(
-                  initialSimulatedLocation.userLocation(),
+                  initialSimulatedLocation,
                   listOf(
                       Waypoint(
                           coordinate = GeographicCoordinate(37.807587, -122.428411),
@@ -121,7 +121,7 @@ class MainActivity : ComponentActivity() {
             simulationState =
                 advanceLocationSimulation(simulationState, SimulationSpeed.JUMP_TO_NEXT_LOCATION)
             locationProvider.lastLocation =
-                SimulatedLocation(simulationState.currentLocation, 6.0, null, Instant.now())
+                UserLocation(simulationState.currentLocation, 6.0, null, Instant.now())
           }
         }
       }
