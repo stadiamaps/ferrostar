@@ -1965,6 +1965,9 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
  *
  * In addition to coordinates, this includes estimated accuracy and course information,
  * which can influence navigation logic and UI.
+ *
+ * NOTE: Heading is absent on purpose.
+ * Heading updates are not related to a change in the user's location.
  */
 public struct UserLocation {
     public var coordinates: GeographicCoordinate

@@ -1,58 +1,13 @@
 package com.stadiamaps.ferrostar.core
 
-import java.time.Instant
 import java.util.concurrent.Executor
-import uniffi.ferrostar.CourseOverGround
-import uniffi.ferrostar.GeographicCoordinate
+import uniffi.ferrostar.Heading
 import uniffi.ferrostar.UserLocation
 
-interface Location {
-  val coordinates: GeographicCoordinate
-  val horizontalAccuracy: Double
-  val courseOverGround: CourseOverGround?
-  val timestamp: Instant
-
-  fun userLocation(): UserLocation =
-      UserLocation(
-          coordinates = coordinates,
-          horizontalAccuracy = horizontalAccuracy,
-          courseOverGround,
-          timestamp = timestamp)
-}
-
-data class SimulatedLocation(
-    override val coordinates: GeographicCoordinate,
-    override val horizontalAccuracy: Double,
-    override val courseOverGround: CourseOverGround?,
-    override val timestamp: Instant
-) : Location
-
-// TODO: Decide if we want to have a compile-time dependency on Android
-data class AndroidLocation(
-    override val coordinates: GeographicCoordinate,
-    override val horizontalAccuracy: Double,
-    override val courseOverGround: CourseOverGround?,
-    override val timestamp: Instant
-) : Location {
-  constructor(
-      location: android.location.Location
-  ) : this(
-      GeographicCoordinate(location.latitude, location.longitude),
-      location.accuracy.toDouble(),
-      if (location.hasBearing() && location.hasBearingAccuracy()) {
-        CourseOverGround(
-            location.bearing.toInt().toUShort(), location.bearingAccuracyDegrees.toInt().toUShort())
-      } else {
-        null
-      },
-      Instant.ofEpochMilli(location.time))
-}
-
 interface LocationProvider {
-  val lastLocation: Location?
+  val lastLocation: UserLocation?
 
-  // TODO: Decide how to handle this on Android
-  val lastHeading: Float?
+  val lastHeading: Heading?
 
   fun addListener(listener: LocationUpdateListener, executor: Executor)
 
@@ -60,9 +15,9 @@ interface LocationProvider {
 }
 
 interface LocationUpdateListener {
-  fun onLocationUpdated(location: Location)
+  fun onLocationUpdated(location: UserLocation)
 
-  fun onHeadingUpdated(heading: Float)
+  fun onHeadingUpdated(heading: Heading)
 }
 
 /**
@@ -71,13 +26,13 @@ interface LocationUpdateListener {
  * This allows for more granular unit tests.
  */
 class SimulatedLocationProvider : LocationProvider {
-  override var lastLocation: Location? = null
+  override var lastLocation: UserLocation? = null
     set(value) {
       field = value
       onLocationUpdated()
     }
 
-  override var lastHeading: Float? = null
+  override var lastHeading: Heading? = null
     set(value) {
       field = value
       onHeadingUpdated()
