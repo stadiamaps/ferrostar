@@ -6,6 +6,7 @@
 
 - [iOS](./ios-getting-started.md)
 - [Android](./android-getting-started.md)
+- [Rust](./rust-getting-started.md)
 
 # Architecture
 

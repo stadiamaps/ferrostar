@@ -25,4 +25,5 @@ for info on expectations and dev environment setup.
 
 ### As a User
 
-Check out the [guide](guide/)!
+Check out the [guide](https://stadiamaps.github.io/ferrostar/)!
+Note that this is still VERY much a WIP skeleton, but will be fleshed out by mid-April.
