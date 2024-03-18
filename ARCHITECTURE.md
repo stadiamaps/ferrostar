@@ -1,13 +1,13 @@
 # Architecture Overview
 
-NOTE: This is intentionally hand-wavy in some parts, and will be formalized more as design and development progress.
+**NOTE: This document will soon be replaced by the user guide.**
 
 ## Repo Structure
 
 To ensure that everything can be developed properly in parallel,
 we use a monorepo structure.
 This, combined with CI, will ensure that changes in the core must be immediately reflected in frontends
-like Apple and Android..
+like Apple and Android.
 
 ## Core (`common`)
 

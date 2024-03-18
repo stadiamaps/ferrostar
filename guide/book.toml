@@ -1,0 +1,6 @@
+[book]
+authors = ["Ian Wagner"]
+language = "en"
+multilingual = false
+src = "src"
+title = "The Ferrostar User Guide"
