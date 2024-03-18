@@ -1582,13 +1582,13 @@ public func FfiConverterTypeHeading_lower(_ value: Heading) -> RustBuffer {
 }
 
 public struct LocationSimulationState {
-    public var currentLocation: GeographicCoordinate
+    public var currentLocation: UserLocation
     public var remainingLocations: [GeographicCoordinate]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
     public init(
-        currentLocation: GeographicCoordinate,
+        currentLocation: UserLocation,
         remainingLocations: [GeographicCoordinate]
     ) {
         self.currentLocation = currentLocation
@@ -1616,13 +1616,13 @@ extension LocationSimulationState: Equatable, Hashable {
 public struct FfiConverterTypeLocationSimulationState: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LocationSimulationState {
         try LocationSimulationState(
-            currentLocation: FfiConverterTypeGeographicCoordinate.read(from: &buf),
+            currentLocation: FfiConverterTypeUserLocation.read(from: &buf),
             remainingLocations: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf)
         )
     }
 
     public static func write(_ value: LocationSimulationState, into buf: inout [UInt8]) {
-        FfiConverterTypeGeographicCoordinate.write(value.currentLocation, into: &buf)
+        FfiConverterTypeUserLocation.write(value.currentLocation, into: &buf)
         FfiConverterSequenceTypeGeographicCoordinate.write(value.remainingLocations, into: &buf)
     }
 }
@@ -2772,6 +2772,45 @@ extension RoutingResponseParseError: Equatable, Hashable {}
 
 extension RoutingResponseParseError: Error {}
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+public enum SimulationAdvanceStyle {
+    /**
+     * Jumps directly to the next location without any interpolation
+     */
+    case jumpToNextLocation
+}
+
+public struct FfiConverterTypeSimulationAdvanceStyle: FfiConverterRustBuffer {
+    typealias SwiftType = SimulationAdvanceStyle
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SimulationAdvanceStyle {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .jumpToNextLocation
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: SimulationAdvanceStyle, into buf: inout [UInt8]) {
+        switch value {
+        case .jumpToNextLocation:
+            writeInt(&buf, Int32(1))
+        }
+    }
+}
+
+public func FfiConverterTypeSimulationAdvanceStyle_lift(_ buf: RustBuffer) throws -> SimulationAdvanceStyle {
+    try FfiConverterTypeSimulationAdvanceStyle.lift(buf)
+}
+
+public func FfiConverterTypeSimulationAdvanceStyle_lower(_ value: SimulationAdvanceStyle) -> RustBuffer {
+    FfiConverterTypeSimulationAdvanceStyle.lower(value)
+}
+
+extension SimulationAdvanceStyle: Equatable, Hashable {}
+
 public enum SimulationError {
     case PolylineError(
         error: String
@@ -2813,45 +2852,6 @@ public struct FfiConverterTypeSimulationError: FfiConverterRustBuffer {
 extension SimulationError: Equatable, Hashable {}
 
 extension SimulationError: Error {}
-
-// Note that we don't yet support `indirect` for enums.
-// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
-public enum SimulationSpeed {
-    /**
-     * Jumps directly to the next location without any interpolation
-     */
-    case jumpToNextLocation
-}
-
-public struct FfiConverterTypeSimulationSpeed: FfiConverterRustBuffer {
-    typealias SwiftType = SimulationSpeed
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SimulationSpeed {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        case 1: return .jumpToNextLocation
-
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: SimulationSpeed, into buf: inout [UInt8]) {
-        switch value {
-        case .jumpToNextLocation:
-            writeInt(&buf, Int32(1))
-        }
-    }
-}
-
-public func FfiConverterTypeSimulationSpeed_lift(_ buf: RustBuffer) throws -> SimulationSpeed {
-    try FfiConverterTypeSimulationSpeed.lift(buf)
-}
-
-public func FfiConverterTypeSimulationSpeed_lower(_ value: SimulationSpeed) -> RustBuffer {
-    FfiConverterTypeSimulationSpeed.lower(value)
-}
-
-extension SimulationSpeed: Equatable, Hashable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
@@ -3372,13 +3372,13 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
  * When there are now more locations to visit, returns the same state forever.
  */
 public func advanceLocationSimulation(state: LocationSimulationState,
-                                      speed: SimulationSpeed) -> LocationSimulationState
+                                      advanceStyle: SimulationAdvanceStyle) -> LocationSimulationState
 {
     try! FfiConverterTypeLocationSimulationState.lift(
         try! rustCall {
             uniffi_ferrostar_fn_func_advance_location_simulation(
                 FfiConverterTypeLocationSimulationState.lower(state),
-                FfiConverterTypeSimulationSpeed.lower(speed), $0
+                FfiConverterTypeSimulationAdvanceStyle.lower(advanceStyle), $0
             )
         }
     )
@@ -3468,7 +3468,7 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if uniffi_ferrostar_checksum_func_advance_location_simulation() != 44291 {
+    if uniffi_ferrostar_checksum_func_advance_location_simulation() != 63736 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 10648 {

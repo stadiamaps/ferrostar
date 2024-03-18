@@ -182,7 +182,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             try Task.checkCancellation()
 
             // Calculate the new state.
-            let newState = advanceLocationSimulation(state: lastState, speed: .jumpToNextLocation)
+            let newState = advanceLocationSimulation(state: lastState, advanceStyle: .jumpToNextLocation)
 
             // Exit/stop if the route has been fully simplated (newState location matches our existing location).
             if simulationState?.currentLocation == newState.currentLocation {
@@ -191,12 +191,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             }
 
             // Bump the last location.
-            lastLocation = UserLocation(
-                coordinates: newState.currentLocation,
-                horizontalAccuracy: 0,
-                courseOverGround: nil,
-                timestamp: Date()
-            )
+            lastLocation = newState.currentLocation
             simulationState = newState
         }
     }

@@ -3,8 +3,13 @@ source: ferrostar/src/simulation.rs
 expression: states
 ---
 - current_location:
-    lat: 0
-    lng: 0
+    coordinates:
+      lat: 0
+      lng: 0
+    horizontal_accuracy: 0
+    course_over_ground:
+      degrees: 45
+      accuracy: 0
   remaining_locations:
     - lat: 1
       lng: 1
@@ -13,24 +18,44 @@ expression: states
     - lat: 3
       lng: 3
 - current_location:
-    lat: 1
-    lng: 1
+    coordinates:
+      lat: 1
+      lng: 1
+    horizontal_accuracy: 0
+    course_over_ground:
+      degrees: 45
+      accuracy: 0
   remaining_locations:
     - lat: 2
       lng: 2
     - lat: 3
       lng: 3
 - current_location:
-    lat: 2
-    lng: 2
+    coordinates:
+      lat: 2
+      lng: 2
+    horizontal_accuracy: 0
+    course_over_ground:
+      degrees: 45
+      accuracy: 0
   remaining_locations:
     - lat: 3
       lng: 3
 - current_location:
-    lat: 3
-    lng: 3
+    coordinates:
+      lat: 3
+      lng: 3
+    horizontal_accuracy: 0
+    course_over_ground:
+      degrees: 45
+      accuracy: 0
   remaining_locations: []
 - current_location:
-    lat: 3
-    lng: 3
+    coordinates:
+      lat: 3
+      lng: 3
+    horizontal_accuracy: 0
+    course_over_ground:
+      degrees: 45
+      accuracy: 0
   remaining_locations: []
