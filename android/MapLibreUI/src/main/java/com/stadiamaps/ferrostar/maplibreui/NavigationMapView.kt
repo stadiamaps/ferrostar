@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import com.mapbox.mapboxsdk.geometry.LatLng
-import com.stadiamaps.ferrostar.compose.BannerView
+import com.stadiamaps.ferrostar.composeui.BannerView
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import org.ramani.compose.CameraPosition
 import org.ramani.compose.Circle

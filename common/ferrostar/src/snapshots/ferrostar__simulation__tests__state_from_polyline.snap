@@ -3,8 +3,13 @@ source: ferrostar/src/simulation.rs
 expression: state
 ---
 current_location:
-  lat: 60.534716
-  lng: -149.543469
+  coordinates:
+    lat: 60.534716
+    lng: -149.543469
+  horizontal_accuracy: 0
+  course_over_ground:
+    degrees: 0
+    accuracy: 0
 remaining_locations:
   - lat: 60.534782
     lng: -149.543879

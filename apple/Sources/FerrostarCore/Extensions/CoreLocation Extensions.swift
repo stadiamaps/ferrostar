@@ -157,4 +157,30 @@ public extension UserLocation {
             timestamp: clLocation.timestamp
         )
     }
+
+    var clLocation: CLLocation {
+        let courseDegrees: CLLocationDirection
+        let courseAccuracy: CLLocationDirectionAccuracy
+
+        if let course = courseOverGround {
+            courseDegrees = CLLocationDirection(course.degrees)
+            courseAccuracy = CLLocationDirectionAccuracy(course.accuracy)
+        } else {
+            courseDegrees = -1
+            courseAccuracy = -1
+        }
+
+        // TODO: Get speed info into UserLocation
+        return CLLocation(
+            coordinate: coordinates.clLocationCoordinate2D,
+            altitude: 0,
+            horizontalAccuracy: horizontalAccuracy,
+            verticalAccuracy: -1,
+            course: courseDegrees,
+            courseAccuracy: courseAccuracy,
+            speed: 0,
+            speedAccuracy: -1,
+            timestamp: timestamp
+        )
+    }
 }

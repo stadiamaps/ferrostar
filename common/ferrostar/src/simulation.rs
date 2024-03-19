@@ -1,5 +1,7 @@
-use crate::models::{GeographicCoordinate, Route};
+use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
+use geo::{GeodesicBearing, Point};
 use polyline::decode_polyline;
+use std::time::SystemTime;
 
 #[cfg(test)]
 use serde::Serialize;
@@ -15,12 +17,12 @@ pub enum SimulationError {
 #[derive(uniffi::Record, Clone)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct LocationSimulationState {
-    pub current_location: GeographicCoordinate,
+    pub current_location: UserLocation,
     remaining_locations: Vec<GeographicCoordinate>,
 }
 
 #[derive(uniffi::Enum)]
-pub enum SimulationSpeed {
+pub enum SimulationAdvanceStyle {
     /// Jumps directly to the next location without any interpolation
     JumpToNextLocation,
 }
@@ -29,14 +31,26 @@ pub enum SimulationSpeed {
 pub fn location_simulation_from_coordinates(
     coordinates: Vec<GeographicCoordinate>,
 ) -> Result<LocationSimulationState, SimulationError> {
-    if let Some((current_location, rest)) = coordinates.split_first() {
-        if rest.is_empty() {
-            Err(SimulationError::NotEnoughPoints)
-        } else {
+    if let Some((current, rest)) = coordinates.split_first() {
+        if let Some(next) = rest.first() {
+            let current_point = Point::from(*current);
+            let next_point = Point::from(*next);
+            let bearing = current_point.geodesic_bearing(next_point);
+            let current_location = UserLocation {
+                coordinates: *current,
+                horizontal_accuracy: 0.0,
+                course_over_ground: Some(CourseOverGround {
+                    degrees: bearing.round() as u16,
+                    accuracy: 0,
+                }),
+                timestamp: SystemTime::now(),
+            };
             Ok(LocationSimulationState {
-                current_location: *current_location,
+                current_location,
                 remaining_locations: Vec::from(rest),
             })
+        } else {
+            Err(SimulationError::NotEnoughPoints)
         }
     } else {
         Err(SimulationError::NotEnoughPoints)
@@ -79,14 +93,29 @@ pub fn location_simulation_from_polyline(
 #[uniffi::export]
 pub fn advance_location_simulation(
     state: &LocationSimulationState,
-    speed: SimulationSpeed,
+    advance_style: SimulationAdvanceStyle,
 ) -> LocationSimulationState {
-    if let Some((first, rest)) = state.remaining_locations.split_first() {
-        match speed {
-            SimulationSpeed::JumpToNextLocation => LocationSimulationState {
-                current_location: *first,
-                remaining_locations: Vec::from(rest),
-            },
+    if let Some((next, rest)) = state.remaining_locations.split_first() {
+        match advance_style {
+            SimulationAdvanceStyle::JumpToNextLocation => {
+                let current_point = Point::from(state.current_location.coordinates);
+                let next_point = Point::from(*next);
+                let bearing = current_point.geodesic_bearing(next_point);
+                let current_location = UserLocation {
+                    coordinates: *next,
+                    horizontal_accuracy: 0.0,
+                    course_over_ground: Some(CourseOverGround {
+                        degrees: bearing.round() as u16,
+                        accuracy: 0,
+                    }),
+                    timestamp: SystemTime::now(),
+                };
+
+                LocationSimulationState {
+                    current_location,
+                    remaining_locations: Vec::from(rest),
+                }
+            }
         }
     } else {
         state.clone()
@@ -109,7 +138,7 @@ mod tests {
 
         let mut states = vec![state.clone()];
         for _ in 0..4 {
-            state = advance_location_simulation(&state, SimulationSpeed::JumpToNextLocation);
+            state = advance_location_simulation(&state, SimulationAdvanceStyle::JumpToNextLocation);
             states.push(state.clone());
         }
 

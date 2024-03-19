@@ -30,22 +30,16 @@ import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
 import java.net.URL
 import java.time.Duration
 import java.time.Instant
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
-import uniffi.ferrostar.SimulationSpeed
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
-import uniffi.ferrostar.advanceLocationSimulation
-import uniffi.ferrostar.locationSimulationFromRoute
 
 class MainActivity : ComponentActivity() {
   private val initialSimulatedLocation =
@@ -88,9 +82,11 @@ class MainActivity : ComponentActivity() {
       }
     }
 
+    locationProvider.lastLocation = initialSimulatedLocation
+    locationProvider.warpFactor = 2u
+
     setContent {
       var navigationViewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
-      locationProvider.lastLocation = initialSimulatedLocation
 
       LaunchedEffect(savedInstanceState) {
         // Fetch a route in the background
@@ -115,14 +111,7 @@ class MainActivity : ComponentActivity() {
                           RouteDeviationTracking.StaticThreshold(25U, 10.0)),
               )
 
-          var simulationState = locationSimulationFromRoute(route)
-          while (true) {
-            delay(1.toDuration(DurationUnit.SECONDS))
-            simulationState =
-                advanceLocationSimulation(simulationState, SimulationSpeed.JUMP_TO_NEXT_LOCATION)
-            locationProvider.lastLocation =
-                UserLocation(simulationState.currentLocation, 6.0, null, Instant.now())
-          }
+          locationProvider.setSimulatedRoute(route)
         }
       }
 

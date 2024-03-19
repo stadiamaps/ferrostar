@@ -11,6 +11,7 @@
 # Architecture
 
 - [Architecture Overview](./architecture.md)
+- [Location Providers](./location-providers.md)
 
 # Appendices
 

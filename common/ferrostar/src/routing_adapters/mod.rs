@@ -61,7 +61,7 @@ pub trait RouteResponseParser: Send + Sync {
 
 /// The route adapter bridges between the common core and a routing backend where interaction takes place
 /// over a generic request/response flow (typically over a network;
-/// local/offline routers do not use this object as the interaction patterns are different).
+/// local/offline routers **do not use this object** as the interaction patterns are different).
 ///
 /// This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
 /// traits, but it provides one further level of abstraction which is helpful to consumers.
