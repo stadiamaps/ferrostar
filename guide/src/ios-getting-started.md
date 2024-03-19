@@ -13,37 +13,53 @@ TODO
 
 ### Location providers
 
-Location providers do pretty much what you would expect: provide locations!
-Location can come from a variety of underlying sources.
-If you're somewhat experienced building iOS apps, you'll probably immediately think of `CLLocationManager`,
-but location can also come from a simulation or a third-party location SDK such as [Naurt](https://naurt.com/).
-
-To support the variety of use cases, Ferrostar introduces the `LocationProviding` protocol
-as a common interface.
-You'll need to provide an instance of some concrete type conforming to `LocationProviding` to use Ferrostar.
-
+You'll need to configure a provider to get location updates.
 We bundle a few implementations to get you started, or you can create your own.
+The broad steps are the same regardless of which provider you use:
+create an instance of the class,
+store it in an instance variable where it makes sense,
+and (if simulating a route) set the location manually or enter a simulated route.
 
-#### `CoreLocationProvider`
-
-The `CoreLocationProvider` provides a ready-to-go wrapper around a `CLLocationManager`.
-It automatically takes care of requesting sensible permissions for you
-(make sure you have permission strings set in your `Info.plist`!).
-This is what you want for most production use cases.
+The API is extremely similar to the iOS location APIs you may already know,
+and you can start or stop updates at will.
 
 #### `SimulatedLocationProvider`
 
-The `SimulatedLocationProvider` allows for simulating location within Ferrostar,
+The `SimulatedLocationProvider` allows for simulating location within Ferrostar
 without needing GPX files or complicated environment setup.
+This is great for testing and development without stepping outside.
 
-To simulate an entire route from start to finish,
-use the higher level `setSimulatedRoute:` function to preload an entire route,
-which will be "played back" whenever location updates are enabled.
-You can control the simulation speed by setting the `warpFactor` property.
+First, instantiate the class.
+This will typically be saved as an instance variable.
 
-If you want low-level control instead, you can just set properties like `lastLocation` and `lastHeading` directly.
+```swift
+private let locationProvider = SimulatedLocationProvider(location: initialLocation)
+```
+
+You can set a new location using the `lastLocation` property at any time.
+Optionally, once you have a route, simulate the replay of the route.
+You can set a `warpFactor` to play it back faster.
+
+```swift
+locationProvider.warpFactor = 2
+locationProvider.setSimulatedRoute(route)
+```
+
+#### `CoreLocationProvider`
+
+The `CoreLocationProvider` provides a ready-to-go wrapper around a `CLLocationManager`
+for getting location updates from GNSS.
+It automatically takes care of requesting sensible permissions for you
+(make sure you have permission strings set in your `Info.plist`!).
+
+```swift
+private let locationProvider = CoreLocationProvider(activityType: .automotiveNavigation)
+```
 
 ## Configure the `FerrostarCore` instance
+
+`FerrostarCore` automatically starts and stops the `LocationProvider` updates
+along with `startNavigation(route:config:)` and `stopNavigation` calls.
 
 ## OPTIONAL: Configure the core delegate
 

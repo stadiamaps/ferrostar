@@ -10,34 +10,49 @@ TODO.
 
 ### Location providers
 
-Location providers do pretty much what you would expect: provide locations!
-Location can come from a variety of underlying sources.
-If you're somewhat experienced building Android apps,
-you'll probably immediately think of either the Google `FusedLocationProviderClient`
-or the `LocationManager` class in AOSP.
-Additionally, location can also come from a simulation
-or a third-party location SDK such as [Naurt](https://naurt.com/).
-
-To support the variety of use cases, Ferrostar introduces the `LocationProvider` interface as a common abstraction.
-You'll need to provide a concrete object implementing `LocationProvider` to use Ferrostar.
-
+You'll need to configure a provider to get location updates.
 We bundle a few implementations to get you started, or you can create your own.
+The broad steps are the same regardless of which provider you use:
+create an instance of the class,
+store it in an instance variable where it makes sense,
+and (if simulating a route) set the location manually or enter a simulated route.
 
-#### TODO: Google Play Services-backed provider
+Similar to the Android location APIs you may already know,
+you can add or remove listeners which will receive updates.
 
 #### `SimulatedLocationProvider`
 
-The `SimulatedLocationProvider` allows for simulating location within Ferrostar,
+The `SimulatedLocationProvider` allows for simulating location within Ferrostar
 without needing GPX files or complicated environment setup.
+This is great for testing and development without stepping outside.
 
-To simulate an entire route from start to finish,
-use the higher level `setSimulatedRoute` function to preload an entire route,
-which will be "played back" automatically when there is a listener attached.
-You can control the simulation speed by setting the `warpFactor` property.
+First, instantiate the class.
+This will typically be saved as an instance variable.
 
-If you want low-level control instead, you can just set properties like `lastLocation` and `lastHeading` directly.
+```kotlin
+private val locationProvider = SimulatedLocationProvider()
+```
+
+Later, most likely somewhere in your activity creation code or similar,
+set a location to your desired simulation start point.
+
+```kotlin
+locationProvider.lastLocation = initialSimulatedLocation
+```
+
+Optionally, once you have a route, simulate the replay of the route.
+You can set a `warpFactor` to play it back faster.
+
+```kotlin
+locationProvider.warpFactor = 2u
+locationProvider.setSimulatedRoute(route)
+```
+
+#### TODO: Google Play Services-backed provider
 
 ## Configure the `FerrostarCore` instance
+
+`FerrostarCore` automatically subscribes to location updates from the `LocationProvider`.
 
 ## OPTIONAL: Configure the `RouteDeviationHandler`
 
