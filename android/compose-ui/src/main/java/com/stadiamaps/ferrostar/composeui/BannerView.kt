@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.compose
+package com.stadiamaps.ferrostar.composeui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
