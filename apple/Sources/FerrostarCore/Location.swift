@@ -18,7 +18,7 @@ public protocol LocationManagingDelegate: AnyObject {
 }
 
 /// A location provider that uses Apple's CoreLocation framework.
-public class CoreLocationProvider: NSObject {
+public class CoreLocationProvider: NSObject, ObservableObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
@@ -55,9 +55,9 @@ public class CoreLocationProvider: NSObject {
         locationManager.activityType = activityType
     }
 
-    public private(set) var lastLocation: UserLocation?
+    @Published public private(set) var lastLocation: UserLocation?
 
-    public private(set) var lastHeading: Heading?
+    @Published public private(set) var lastHeading: Heading?
 }
 
 extension CoreLocationProvider: LocationProviding {
@@ -105,7 +105,7 @@ extension CoreLocationProvider: CLLocationManagerDelegate {
 /// Location provider for testing without relying on simulator location spoofing.
 ///
 /// This allows for more granular unit tests as well as route simulation use cases.
-public class SimulatedLocationProvider: LocationProviding {
+public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
 
@@ -116,13 +116,13 @@ public class SimulatedLocationProvider: LocationProviding {
     /// A factor by which simulated route playback speed is multiplied.
     public var warpFactor: UInt64 = 1
 
-    public var lastLocation: UserLocation? {
+    @Published public var lastLocation: UserLocation? {
         didSet {
             notifyDelegateOfLocation()
         }
     }
 
-    public var lastHeading: Heading? {
+    @Published public var lastHeading: Heading? {
         didSet {
             notifyDelegateOfHeading()
         }
