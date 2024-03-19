@@ -20,7 +20,7 @@ create an instance of the class,
 store it in an instance variable where it makes sense,
 and (if simulating a route) set the location manually or enter a simulated route.
 
-The API is extremely similar to the iOS location APIs you may already know,
+The API is similar to the iOS location APIs you may already know,
 and you can start or stop updates at will.
 
 #### `SimulatedLocationProvider`
@@ -30,7 +30,7 @@ without needing GPX files or complicated environment setup.
 This is great for testing and development without stepping outside.
 
 First, instantiate the class.
-This will typically be saved as an instance variable.
+This is usually saved as an instance variable.
 
 ```swift
 private let locationProvider = SimulatedLocationProvider(location: initialLocation)

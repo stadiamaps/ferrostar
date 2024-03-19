@@ -1,6 +1,6 @@
 # Location Providers
 
-Location providers do pretty much what you would expect: provide locations!
+Location providers do what you would expect: provide locations!
 Location providers are included in the platform libraries,
 since they need to talk to the outside world.
 
@@ -41,7 +41,7 @@ and unsubscribes itself (Android) or stops location updates automatically (iOS) 
 
 ## "Live" Location Providers
 
-Ferrostar also includes the following live location providers:
+Ferrostar includes the following live location providers:
 
 * iOS
   - `CoreLocationProvider` - Location backed by a `CLLocationManager`. See the [iOS tutorial](./ios-getting-started.md) for a usage example.
