@@ -14,15 +14,15 @@ Ferrostar is an SDK for building turn-by-turn navigation applications.
   Can do.
   Want to use your own detection logic to see if the user is off the route?
   Not a problem.
+  Taken together with the batteries included approach,
+  Ferrostar's aim is to make simple things simple, and complex things possible.
 * **Vendor-neutral** - As a corollary to its extensibility, Ferrostar is vendor-neutral,
   and welcomes PRs to add suport for additional [vendors](./vendors.md).
   We do not collect telemetry for any vendor (though developers may of course add their own when needed).
 
-## Non-goals
+## Ferrostar is not...
 
-The following are non-goals of the project. These are left to developers.
-
-- UI components for searching for addresses or building a trip (this is highly vendor-specific and often needs customization per-app).
-- Compatibility with ancient SDKs / API levels, except where it’s easy; this is a fresh start.
-- Route generation; there are many good [vendors](./vendors.md) as well as self-hosting / local generation options.
-- Building a "free roam" experience without any specific route (though it *should* be possible to plug Ferrostar into such an experience).
+- A set of UI components for searching for addresses or building a trip (look at [vendor](./vendors.md) SDKs that can help with this).
+- Aiming for compatibility with ancient SDKs / API levels, except where it’s easy; this is a rare change for a fresh start.
+- A router; there are many good [vendors](./vendors.md) that provide hosted APIs and offline route generation, as well as a rich ecosystem of FOSS software if you're looking to host your own for a smaller deployment.
+- Optimized for a "free roam" experience without any specific route (though it *should* totally be possible to plug Ferrostar into such an experience!).
