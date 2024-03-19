@@ -59,9 +59,9 @@ public struct NavigationMapView: View {
         }
         // TODO: make this more configurable / adaptable
         .mapViewContentInset(UIEdgeInsets(top: 450, left: 0, bottom: 0, right: 0))
-        .mapControls({
+        .mapControls {
             // No controls
-        })
+        }
         .ignoresSafeArea(.all)
         .overlay(alignment: .top, content: {
             if let navigationState,

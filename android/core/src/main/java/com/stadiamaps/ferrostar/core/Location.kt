@@ -68,3 +68,4 @@ class SimulatedLocationProvider : LocationProvider {
 }
 
 // TODO: Non-simulated implementations (GoogleFusedLocationProvider? AndroidSystemLocationProvider?)
+// Put these in different modules!

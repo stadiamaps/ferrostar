@@ -585,7 +585,7 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 /**
  * The route adapter bridges between the common core and a routing backend where interaction takes place
  * over a generic request/response flow (typically over a network;
- * local/offline routers do not use this object as the interaction patterns are different).
+ * local/offline routers **do not use this object** as the interaction patterns are different).
  *
  * This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
  * traits, but it provides one further level of abstraction which is helpful to consumers.
@@ -613,7 +613,7 @@ public protocol RouteAdapterProtocol: AnyObject {
 /**
  * The route adapter bridges between the common core and a routing backend where interaction takes place
  * over a generic request/response flow (typically over a network;
- * local/offline routers do not use this object as the interaction patterns are different).
+ * local/offline routers **do not use this object** as the interaction patterns are different).
  *
  * This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
  * traits, but it provides one further level of abstraction which is helpful to consumers.
@@ -3384,6 +3384,13 @@ public func advanceLocationSimulation(state: LocationSimulationState,
     )
 }
 
+/**
+ * Creates a [RouteResponseParser] capable of parsing OSRM responses.
+ *
+ * This response parser is designed to be fairly flexible,
+ * supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
+ * which contain richer information like banners and voice instructions for navigation.
+ */
 public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponseParser {
     try! FfiConverterTypeRouteResponseParser.lift(
         try! rustCall {
@@ -3394,6 +3401,12 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
     )
 }
 
+/**
+ * Creates a [RouteRequestGenerator]
+ * which generates requests to an arbitrary Valhalla server (using the OSRM response format).
+ *
+ * This is provided as a convenience for use from foreign code when creating your own [routing_adapters::RouteAdapter].
+ */
 public func createValhallaRequestGenerator(endpointUrl: String, profile: String) -> RouteRequestGenerator {
     try! FfiConverterTypeRouteRequestGenerator.lift(
         try! rustCall {
@@ -3471,10 +3484,10 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_advance_location_simulation() != 63736 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 10648 {
+    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 28097 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 14703 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 35701 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 53320 {

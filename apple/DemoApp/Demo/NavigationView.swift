@@ -2,8 +2,8 @@ import CoreLocation
 import FerrostarCore
 import struct FerrostarCoreFFI.GeographicCoordinate
 import struct FerrostarCoreFFI.Route
-import struct FerrostarCoreFFI.Waypoint
 import struct FerrostarCoreFFI.UserLocation
+import struct FerrostarCoreFFI.Waypoint
 import enum FerrostarCoreFFI.WaypointKind
 import FerrostarMapLibreUI
 import MapLibreSwiftUI
@@ -171,7 +171,8 @@ struct NavigationView: View {
                 // This configures the simulator to the desired route.
                 // The ferrostarCore.startNavigation will still start the location
                 // provider/simulator.
-                simulated.lastLocation = UserLocation(clCoordinateLocation2D: route.geometry.first!.clLocationCoordinate2D)
+                simulated
+                    .lastLocation = UserLocation(clCoordinateLocation2D: route.geometry.first!.clLocationCoordinate2D)
                 print("DemoApp: setting initial location")
             }
         } catch {
