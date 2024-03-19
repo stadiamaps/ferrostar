@@ -18,12 +18,21 @@ public protocol LocationManagingDelegate: AnyObject {
 }
 
 /// A location provider that uses Apple's CoreLocation framework.
-public class CoreLocationProvider: NSObject, ObservableObject {
+public class CoreLocationProvider: NSObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
     private let locationManager: CLLocationManager
 
+    /// Creates a location provider backed by an internal `CLLocationManager`
+    /// using the stated activity type.
+    ///
+    /// If authorization is not determined, this will automatically request permission to use location
+    /// while the user is using the app.
+    /// If for some reason your app requires access to the user's location at all times
+    /// (rarely necessary except for significant change monitoring and geofencing notifications),
+    /// you will need to request this access yourself.
+    /// Refer to the CoreLocation framework guides for further information.
     public init(activityType: CLActivityType) {
         locationManager = CLLocationManager()
         authorizationStatus = locationManager.authorizationStatus
@@ -46,9 +55,9 @@ public class CoreLocationProvider: NSObject, ObservableObject {
         locationManager.activityType = activityType
     }
 
-    @Published public private(set) var lastLocation: UserLocation?
+    public private(set) var lastLocation: UserLocation?
 
-    @Published public private(set) var lastHeading: Heading?
+    public private(set) var lastHeading: Heading?
 }
 
 extension CoreLocationProvider: LocationProviding {
@@ -95,23 +104,25 @@ extension CoreLocationProvider: CLLocationManagerDelegate {
 
 /// Location provider for testing without relying on simulator location spoofing.
 ///
-/// This allows for more granular unit tests.
-public class SimulatedLocationProvider: LocationProviding, ObservableObject {
+/// This allows for more granular unit tests as well as route simulation use cases.
+public class SimulatedLocationProvider: LocationProviding {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
 
     private var updateTask: Task<Void, Error>?
 
-    public private(set) var simulationState: LocationSimulationState?
+    private var simulationState: LocationSimulationState?
+
+    /// A factor by which simulated route playback speed is multiplied.
     public var warpFactor: UInt64 = 1
 
-    @Published public var lastLocation: UserLocation? {
+    public var lastLocation: UserLocation? {
         didSet {
             notifyDelegateOfLocation()
         }
     }
 
-    @Published public var lastHeading: Heading? {
+    public var lastHeading: Heading? {
         didSet {
             notifyDelegateOfHeading()
         }
@@ -172,7 +183,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             // Exit if the task has been cancelled.
             try Task.checkCancellation()
 
-            guard let lastState = simulationState else {
+            guard let initialState = simulationState else {
                 return
             }
 
@@ -182,17 +193,17 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             try Task.checkCancellation()
 
             // Calculate the new state.
-            let newState = advanceLocationSimulation(state: lastState, advanceStyle: .jumpToNextLocation)
+            let updatedState = advanceLocationSimulation(state: initialState, advanceStyle: .jumpToNextLocation)
 
-            // Exit/stop if the route has been fully simplated (newState location matches our existing location).
-            if simulationState?.currentLocation == newState.currentLocation {
+            // Stop if the route has been fully simulated (no state change).
+            if initialState == updatedState {
                 stopUpdating()
                 return
             }
 
             // Bump the last location.
-            lastLocation = newState.currentLocation
-            simulationState = newState
+            lastLocation = updatedState.currentLocation
+            simulationState = updatedState
         }
     }
 }
