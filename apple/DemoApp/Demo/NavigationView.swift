@@ -3,15 +3,17 @@ import FerrostarCore
 import struct FerrostarCoreFFI.GeographicCoordinate
 import struct FerrostarCoreFFI.Route
 import struct FerrostarCoreFFI.Waypoint
+import struct FerrostarCoreFFI.UserLocation
 import enum FerrostarCoreFFI.WaypointKind
 import FerrostarMapLibreUI
+import MapLibreSwiftUI
 import SwiftUI
 
 let style = URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!
+private let initialLocation = CLLocation(latitude: 37.332726,
+                                         longitude: -122.031790)
 
 struct NavigationView: View {
-    private let initialLocation = CLLocation(latitude: 37.332726,
-                                             longitude: -122.031790)
     private let navigationDelegate = NavigationDelegate()
 
     private var locationProvider: LocationProviding
@@ -28,9 +30,11 @@ struct NavigationView: View {
         }
     }
 
+    @State private var camera: MapViewCamera = .center(initialLocation.coordinate, zoom: 14)
+
     init() {
         let simulated = SimulatedLocationProvider(location: initialLocation)
-        simulated.warpFactor = 10
+        simulated.warpFactor = 2
         locationProvider = simulated
         ferrostarCore = FerrostarCore(
             valhallaEndpointUrl: URL(
@@ -52,7 +56,7 @@ struct NavigationView: View {
                 lightStyleURL: style,
                 darkStyleURL: style,
                 navigationState: ferrostarCore.state,
-                initialCamera: .center(initialLocation.coordinate, zoom: 14)
+                camera: $camera
             )
             .overlay(alignment: .bottomLeading) {
                 VStack {
@@ -162,6 +166,14 @@ struct NavigationView: View {
                                                        waypoints: waypoints)
 
             print("DemoApp: successfully fetched a route")
+
+            if let simulated = locationProvider as? SimulatedLocationProvider, let route = routes?.first {
+                // This configures the simulator to the desired route.
+                // The ferrostarCore.startNavigation will still start the location
+                // provider/simulator.
+                simulated.lastLocation = UserLocation(clCoordinateLocation2D: route.geometry.first!.clLocationCoordinate2D)
+                print("DemoApp: setting initial location")
+            }
         } catch {
             print("DemoApp: error fetching route: \(error)")
             errorMessage = "\(error)"
