@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.core
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.io.IOException
 import kotlin.coroutines.resumeWithException
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -7,6 +8,7 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
 
+@OptIn(ExperimentalCoroutinesApi::class)
 suspend fun Call.await(): Response {
   // Lightly adapted from
   // https://github.com/gildor/kotlin-coroutines-okhttp/blob/master/src/main/kotlin/ru/gildor/coroutines/okhttp/CallAwait.kt
