@@ -14,6 +14,8 @@ That said, things are now in a solid alpha state,
 and rapidly approaching beta for iOS (Android UI is slightly behind).
 While there are some rough edges, eager developers can start testing.
 
+Join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.us/) for updates + discussion.
+
 ![A screenshot of the current status](screenshot.png)
 
 ## Getting Started
