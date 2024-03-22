@@ -5,4 +5,22 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.7.20' apply false
     id 'com.github.willir.rust.cargo-ndk-android' version '0.3.4' apply false
     id 'com.ncorti.ktfmt.gradle' version '0.17.0' apply false
+    id 'maven-publish'
+}
+
+subprojects {
+    version = "0.0.1"
+
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/stadiamaps/ferrostar")
+                credentials {
+                    username = System.getenv("GITHUB_ACTOR")
+                    password = System.getenv("GITHUB_TOKEN")
+                }
+            }
+        }
+    }
 }
