@@ -5,8 +5,6 @@ plugins {
     id 'com.ncorti.ktfmt.gradle'
 }
 
-// TODO: Publishing?
-
 android {
     namespace 'com.stadiamaps.ferrostar.core'
     compileSdk 34
@@ -32,6 +30,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 }
 
@@ -91,4 +95,18 @@ android.libraryVariants.all { variant ->
 //    idea.module.generatedSourceDirs += file("${buildDir}/generated/source/uniffi/${variant.name}/java/uniffi")
 
     sourceSet.java.srcDir 'src/main/java'
+}
+
+publishing {
+    publications {
+        "${project.name}-release"(MavenPublication) {
+            groupId = 'com.stadiamaps'
+            artifactId = 'ferrostar-core'
+            version = project.version
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }

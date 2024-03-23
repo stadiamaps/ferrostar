@@ -34,6 +34,12 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.3.2'
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
@@ -65,14 +71,15 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.release
+publishing {
+    publications {
+        "${project.name}-release"(MavenPublication) {
+            groupId = 'com.stadiamaps'
+            artifactId = 'ferrostar-maplibreui'
+            version = project.version
 
-                groupId = 'com.stadiamaps'
-                artifactId = 'ferrostar-maplibreui'
+            afterEvaluate {
+                from components.release
             }
         }
     }

@@ -8,19 +8,19 @@ plugins {
     id 'maven-publish'
 }
 
-subprojects {
-    version = "0.0.1"
-
-    publishing {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/stadiamaps/ferrostar")
-                credentials {
-                    username = System.getenv("GITHUB_ACTOR")
-                    password = System.getenv("GITHUB_TOKEN")
-                }
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/stadiamaps/ferrostar")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
+}
+
+allprojects {
+    version = "0.0.1"
 }
