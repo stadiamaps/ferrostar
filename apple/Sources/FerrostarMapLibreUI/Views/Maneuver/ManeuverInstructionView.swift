@@ -1,14 +1,13 @@
-import SwiftUI
 import FerrostarCoreFFI
+import SwiftUI
 
 /// A Customizable Maneuver Instruction View.
 public struct ManeuverInstructionView<ManeuverView: View>: View {
-        
     private let text: String
     private let distanceRemaining: String?
     private let maneuverView: ManeuverView
     private let theme: InstructionRowTheme
-    
+
     /// Initialize a manuever instruction view that includes a custom leading view or icon..
     /// As an HStack, this view automatically corrects for .rightToLeft languages.
     ///
@@ -27,27 +26,27 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
         self.maneuverView = maneuverView()
         self.theme = theme
     }
-    
+
     public var body: some View {
         HStack {
             maneuverView
                 .frame(width: 64)
                 .foregroundColor(theme.iconTintColor)
-            
+
             VStack(alignment: .leading) {
                 if let distanceRemaining {
                     Text(distanceRemaining)
                         .font(theme.distanceFont)
                         .foregroundStyle(theme.distanceColor)
                 }
-                
+
                 Text(text)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                     .font(theme.instructionFont)
                     .foregroundStyle(theme.instructionColor)
             }
-            
+
             Spacer(minLength: 0)
         }
     }
@@ -66,7 +65,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
                 .frame(width: 32)
         }
         .font(.title)
-        
+
         ManeuverInstructionView(
             text: "Merge Left",
             distanceRemaining: "500 ft"
@@ -76,7 +75,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
         }
         .font(.body)
         .foregroundColor(.blue)
-        
+
         // Demonstrate a Right to Left
         ManeuverInstructionView(
             text: "ادمج يسارًا"

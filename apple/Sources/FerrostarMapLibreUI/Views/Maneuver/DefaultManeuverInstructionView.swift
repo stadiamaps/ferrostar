@@ -1,17 +1,16 @@
-import SwiftUI
 import FerrostarCoreFFI
+import SwiftUI
 
 /// The Default Themed Maneuver Instruction View.
 ///
 /// This view will display the maneuver icon if one exists.
 struct DefaultManeuverInstructionView: View {
-    
     private let text: String
     private let maneuverType: ManeuverType?
     private let maneuverModifier: ManeuverModifier?
     private let distanceRemaining: String?
     private let theme: InstructionRowTheme
-    
+
     /// Initialize a manuever instruction view that includes a leading icon.
     /// As an HStack, this view automatically corrects for .rightToLeft languages.
     ///
@@ -33,7 +32,7 @@ struct DefaultManeuverInstructionView: View {
         self.distanceRemaining = distanceRemaining
         self.theme = theme
     }
-    
+
     var body: some View {
         ManeuverInstructionView(
             text: text,

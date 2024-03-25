@@ -77,7 +77,7 @@ let package = Package(
             ],
             path: "apple/Sources/FerrostarMapLibreUI",
             resources: [
-                .process("Resources")
+                .process("Resources"),
             ]
         ),
         .target(

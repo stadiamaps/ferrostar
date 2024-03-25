@@ -12,4 +12,3 @@ public struct DefaultFerrostarTheme: FerrostarTheme {
     public let bannerListRow: any InstructionRowTheme = DefaultInstructionRowTheme()
     public let bannerOffsetRow: (any InstructionRowTheme)? = nil
 }
-

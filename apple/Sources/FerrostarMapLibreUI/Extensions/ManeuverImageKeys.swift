@@ -1,68 +1,66 @@
-import Foundation
 import FerrostarCoreFFI
+import Foundation
 
 // TODO: See if this could probably be in the core reasonably?
 extension ManeuverType {
-    
     var iconKey: String {
         switch self {
         case .turn:
-            return "turn"
+            "turn"
         case .newName:
-            return "new name"
+            "new name"
         case .depart:
-            return "depart"
+            "depart"
         case .arrive:
-            return "arrive"
+            "arrive"
         case .merge:
-            return "merge"
+            "merge"
         case .onRamp:
-            return "on ramp"
+            "on ramp"
         case .offRamp:
-            return "off ramp"
+            "off ramp"
         case .fork:
-            return "fork"
+            "fork"
         case .endOfRoad:
-            return "end of road"
+            "end of road"
         case .continue:
-            return "continue"
+            "continue"
         case .roundabout:
-            return "roundabout"
+            "roundabout"
         case .rotary:
-            return "rotary"
+            "rotary"
         case .roundaboutTurn:
-            return "roundabout turn"
+            "roundabout turn"
         case .notification:
-            return "notification"
+            "notification"
         case .exitRoundabout:
-            return "exit roundabout"
+            "exit roundabout"
         case .exitRotary:
-            return "exit rotary"
+            "exit rotary"
         }
     }
 }
 
 // TODO: See if this could probably be in the core reasonably?
 extension ManeuverModifier {
-    
     var iconKey: String {
         switch self {
         case .uTurn:
-            return "uturn"
+            "uturn"
         case .sharpRight:
-            return "sharp right"
+            "sharp right"
         case .right:
-            return "right"
+            "right"
         case .slightRight:
-            return "slight right"
+            "slight right"
         case .straight:
-            return "straight"
+            "straight"
         case .slightLeft:
-            return "slight left"
+            "slight left"
         case .left:
-            return "left"
+            "left"
         case .sharpLeft:
-            return "sharp left"
+            "sharp left"
         }
     }
 }

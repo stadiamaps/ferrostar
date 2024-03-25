@@ -1,16 +1,15 @@
-import SwiftUI
 import FerrostarCoreFFI
+import SwiftUI
 
 /// <#Description#>
 struct InstructionsView: View {
-    
     private let visualInstruction: VisualInstruction
     private let primaryRowTheme: InstructionRowTheme
     private let secondaryRowTheme: InstructionRowTheme
     private var hasSecondary: Bool {
         visualInstruction.secondaryContent != nil
     }
-    
+
     /// Create a visual instruction banner view. This view automatically displays the secondary
     /// instruction if there is one.
     ///
@@ -21,12 +20,13 @@ struct InstructionsView: View {
     public init(
         visualInstruction: VisualInstruction,
         primaryRowTheme: InstructionRowTheme = DefaultInstructionRowTheme(),
-        secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme()) {
+        secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme()
+    ) {
         self.visualInstruction = visualInstruction
         self.primaryRowTheme = primaryRowTheme
         self.secondaryRowTheme = secondaryRowTheme
     }
-    
+
     var body: some View {
         VStack {
             DefaultManeuverInstructionView(
@@ -40,7 +40,7 @@ struct InstructionsView: View {
             .padding(.horizontal, 16)
             .padding(.top, 16)
             .padding(.bottom, 0)
-            
+
             if let secondaryContent = visualInstruction.secondaryContent {
                 VStack {
                     DefaultManeuverInstructionView(
@@ -52,7 +52,7 @@ struct InstructionsView: View {
                     )
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
-                    
+
                     RoundedRectangle(cornerRadius: 3)
                         .frame(width: 24, height: 6)
                         .opacity(0.1)
@@ -78,44 +78,44 @@ struct InstructionsView: View {
         InstructionsView(
             visualInstruction: PreviewModels.visualInstruction
         )
-        
+
         // TODO: This instruction doesn't match :o
         InstructionsView(
             visualInstruction: PreviewModels.reducedVisualInstructions
         )
-        
+
         Spacer()
     }
     .background(Color.green)
 }
 
 #if DEBUG
-fileprivate class PreviewModels {
-    static let visualInstruction = VisualInstruction(
-        primaryContent: VisualInstructionContent(
-            text: "Turn right on Something Dr.",
-            maneuverType: .turn,
-            maneuverModifier: .right,
-            roundaboutExitDegrees: nil
-        ),
-        secondaryContent: VisualInstructionContent(
-            text: "Merge onto Hwy 123",
-            maneuverType: .merge,
-            maneuverModifier: .right,
-            roundaboutExitDegrees: nil
-        ),
-        triggerDistanceBeforeManeuver: 123
-    )
-    
-    static let reducedVisualInstructions = VisualInstruction(
-        primaryContent: VisualInstructionContent(
-            text: "Use the second exit to leave the roundabout.",
-            maneuverType: .rotary,
-            maneuverModifier: .slightRight,
-            roundaboutExitDegrees: nil
-        ),
-        secondaryContent: nil,
-        triggerDistanceBeforeManeuver: 123
-    )
-}
+    fileprivate class PreviewModels {
+        static let visualInstruction = VisualInstruction(
+            primaryContent: VisualInstructionContent(
+                text: "Turn right on Something Dr.",
+                maneuverType: .turn,
+                maneuverModifier: .right,
+                roundaboutExitDegrees: nil
+            ),
+            secondaryContent: VisualInstructionContent(
+                text: "Merge onto Hwy 123",
+                maneuverType: .merge,
+                maneuverModifier: .right,
+                roundaboutExitDegrees: nil
+            ),
+            triggerDistanceBeforeManeuver: 123
+        )
+
+        static let reducedVisualInstructions = VisualInstruction(
+            primaryContent: VisualInstructionContent(
+                text: "Use the second exit to leave the roundabout.",
+                maneuverType: .rotary,
+                maneuverModifier: .slightRight,
+                roundaboutExitDegrees: nil
+            ),
+            secondaryContent: nil,
+            triggerDistanceBeforeManeuver: 123
+        )
+    }
 #endif
