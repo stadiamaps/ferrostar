@@ -270,9 +270,9 @@ pub struct Lane {
 #[derive(Deserialize, Debug)]
 pub struct Waypoint {
     /// THe name of the street that the waypoint snapped to.
-    pub name: String,
+    pub name: Option<String>,
     /// The distance (in meters) between the snapped point and the input coordinate.
-    pub distance: f64,
+    pub distance: Option<f64>,
     /// The waypoint's location on the road network.
     pub location: Coordinate,
 }

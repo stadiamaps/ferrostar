@@ -5,7 +5,7 @@ import PackageDescription
 
 let binaryTarget: Target
 let maplibreSwiftUIDSLPackage: Package.Dependency
-let useLocalFramework = false
+let useLocalFramework = true
 let useLocalMapLibreSwiftUIDSL = false
 
 if useLocalFramework {
@@ -75,7 +75,10 @@ let package = Package(
                 .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
                 .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
             ],
-            path: "apple/Sources/FerrostarMapLibreUI"
+            path: "apple/Sources/FerrostarMapLibreUI",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .target(
             name: "FerrostarCoreFFI",
