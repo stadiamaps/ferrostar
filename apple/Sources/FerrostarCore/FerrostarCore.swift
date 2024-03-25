@@ -63,6 +63,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 ///
 /// NOTE: it is the responsibility of the caller to ensure that the location manager is authorized to get
 /// live user location with high precision.
+// TODO: See about making FerrostarCore its own actor; then we can verify that we've published things back on the main actor. Need to see if this is possible with obj-c interop. See https://github.com/apple/swift-evolution/blob/main/proposals/0306-actors.md#actor-interoperability-with-objective-c
 @objc public class FerrostarCore: NSObject, ObservableObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
@@ -216,6 +217,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             self.update(newState: controller.getInitialState(location: location), location: location)
         }
     }
+
+    // TODO: Ability to pause without totally stopping and clearing state
 
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {

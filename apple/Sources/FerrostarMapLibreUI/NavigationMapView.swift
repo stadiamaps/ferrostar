@@ -12,6 +12,8 @@ public struct NavigationMapView: View {
     // TODO: Configurable camera and user "puck" rotation modes
 
     private var navigationState: NavigationState?
+
+    @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
     @Binding private var camera: MapViewCamera
 
     public init(
@@ -27,23 +29,11 @@ public struct NavigationMapView: View {
         // TODO: Set up following of the user
     }
 
-    public init(
-        lightStyleURL: URL,
-        darkStyleURL: URL,
-        navigationState: NavigationState?,
-        initialCamera: MapViewCamera
-    ) {
-        self.lightStyleURL = lightStyleURL
-        self.darkStyleURL = darkStyleURL
-        self.navigationState = navigationState
-        _camera = .constant(initialCamera)
-        // TODO: Set up following of the user
-    }
-
     public var body: some View {
         MapView(
             styleURL: colorScheme == .dark ? darkStyleURL : lightStyleURL,
-            camera: $camera
+            camera: $camera,
+            locationManager: locationManager
         ) {
             // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
 
@@ -59,16 +49,20 @@ public struct NavigationMapView: View {
             }
 
             if let snappedLocation = navigationState?.snappedLocation {
-                let userLocationSource = ShapeSource(identifier: "user-location-source") {
-                    MLNPointFeature(coordinate: snappedLocation.coordinates.clLocationCoordinate2D)
-                }
+                locationManager.lastLocation = snappedLocation.clLocation
 
-                SymbolStyleLayer(identifier: "user-location", source: userLocationSource)
-                    .iconImage(UIImage(systemName: "location.north.circle.fill")!)
-                    .iconRotation(Double(navigationState?.snappedLocation.courseOverGround?.degrees ?? 0))
+                // TODO: Be less forceful about this.
+                DispatchQueue.main.async {
+                    camera = .trackUserLocationWithCourse(zoom: 18, pitch: .fixed(45))
+                }
             }
         }
-        .edgesIgnoringSafeArea(.all)
+        // TODO: make this more configurable / adaptable
+        .mapViewContentInset(UIEdgeInsets(top: 450, left: 0, bottom: 0, right: 0))
+        .mapControls {
+            // No controls
+        }
+        .ignoresSafeArea(.all)
         .overlay(alignment: .top, content: {
             if let navigationState,
                let visualInstructions = navigationState.visualInstructions
@@ -86,6 +80,6 @@ public struct NavigationMapView: View {
         lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4),
-        initialCamera: .default()
+        camera: .constant(.default())
     )
 }

@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.compose
+package com.stadiamaps.ferrostar.composeui
 
 import org.junit.Assert.*
 import org.junit.Test

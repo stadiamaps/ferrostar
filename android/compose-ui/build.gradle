@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace 'com.stadiamaps.ferrostar.maplibreui'
+    namespace 'com.stadiamaps.ferrostar.composeui'
     compileSdk 34
 
     defaultConfig {
@@ -34,6 +34,12 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.3.2'
     }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 dependencies {
@@ -57,4 +63,18 @@ dependencies {
 
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+}
+
+publishing {
+    publications {
+        "${project.name}-release"(MavenPublication) {
+            groupId = 'com.stadiamaps'
+            artifactId = 'ferrostar-composeui'
+            version = project.version
+
+            afterEvaluate {
+                from components.release
+            }
+        }
+    }
 }

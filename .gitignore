@@ -84,3 +84,6 @@ xcuserdata/
 
 # Example App
 API-Keys.plist
+
+# Editor temp files
+*~

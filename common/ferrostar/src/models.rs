@@ -105,6 +105,7 @@ pub struct Heading {
 
 /// The direction in which the user/device is observed to be traveling.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
 pub struct CourseOverGround {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
     /// true north (N = 0, E = 90, S = 180, W = 270).
@@ -127,11 +128,13 @@ impl CourseOverGround {
 /// NOTE: Heading is absent on purpose.
 /// Heading updates are not related to a change in the user's location.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
 pub struct UserLocation {
     pub coordinates: GeographicCoordinate,
     /// The estimated accuracy of the coordinate (in meters)
     pub horizontal_accuracy: f64,
     pub course_over_ground: Option<CourseOverGround>,
+    #[cfg_attr(test, serde(skip_serializing))]
     pub timestamp: SystemTime,
 }
 

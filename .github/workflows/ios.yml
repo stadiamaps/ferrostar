@@ -61,8 +61,12 @@ jobs:
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip libferrostar-rs.xcframework.zip
+      run: ditto -x -k libferrostar-rs.xcframework.zip target/ios/
       working-directory: common
+
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.2'
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -109,8 +113,12 @@ jobs:
         name: libferrostar-rs.xcframework.zip
 
     - name: Unzip libferrostar-rs.xcframework
-      run: unzip libferrostar-rs.xcframework.zip
+      run: ditto -x -k libferrostar-rs.xcframework.zip target/ios/
       working-directory: common
+
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.2'
 
     - name: Install xcbeautify
       run: brew install xcbeautify

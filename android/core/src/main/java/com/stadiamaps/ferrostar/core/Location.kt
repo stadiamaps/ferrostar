@@ -1,8 +1,20 @@
 package com.stadiamaps.ferrostar.core
 
 import java.util.concurrent.Executor
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import uniffi.ferrostar.Heading
+import uniffi.ferrostar.LocationSimulationState
+import uniffi.ferrostar.Route
+import uniffi.ferrostar.SimulationAdvanceStyle
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.advanceLocationSimulation
+import uniffi.ferrostar.locationSimulationFromRoute
 
 interface LocationProvider {
   val lastLocation: UserLocation?
@@ -26,6 +38,11 @@ interface LocationUpdateListener {
  * This allows for more granular unit tests.
  */
 class SimulatedLocationProvider : LocationProvider {
+  private var simulationState: LocationSimulationState? = null
+  private val scope = CoroutineScope(Dispatchers.Default)
+  private var simulationJob: Job? = null
+  private var listeners: MutableList<Pair<LocationUpdateListener, Executor>> = mutableListOf()
+
   override var lastLocation: UserLocation? = null
     set(value) {
       field = value
@@ -38,15 +55,49 @@ class SimulatedLocationProvider : LocationProvider {
       onHeadingUpdated()
     }
 
+  /** A factor by which simulated route playback speed is multiplied. */
+  var warpFactor: UInt = 1u
+
   override fun addListener(listener: LocationUpdateListener, executor: Executor) {
     listeners.add(listener to executor)
+
+    if (simulationJob == null) {
+      simulationJob = scope.launch { startSimulation() }
+    }
   }
 
   override fun removeListener(listener: LocationUpdateListener) {
     listeners.removeIf { it.first == listener }
+
+    if (listeners.isEmpty()) {
+      simulationJob?.cancel()
+    }
   }
 
-  private var listeners: MutableList<Pair<LocationUpdateListener, Executor>> = mutableListOf()
+  fun setSimulatedRoute(route: Route) {
+    simulationState = locationSimulationFromRoute(route)
+
+    if (listeners.isNotEmpty() && simulationJob == null) {
+      simulationJob = scope.launch { startSimulation() }
+    }
+  }
+
+  private suspend fun startSimulation() {
+    while (true) {
+      delay((1.0 / warpFactor.toFloat()).toDuration(DurationUnit.SECONDS))
+      val initialState = simulationState ?: return
+      val updatedState =
+          advanceLocationSimulation(initialState, SimulationAdvanceStyle.JUMP_TO_NEXT_LOCATION)
+
+      // Stop if the route has been fully simulated (no state change).
+      if (updatedState == initialState) {
+        return
+      }
+
+      simulationState = updatedState
+      lastLocation = updatedState.currentLocation
+    }
+  }
 
   private fun onLocationUpdated() {
     val location = lastLocation
@@ -68,3 +119,4 @@ class SimulatedLocationProvider : LocationProvider {
 }
 
 // TODO: Non-simulated implementations (GoogleFusedLocationProvider? AndroidSystemLocationProvider?)
+// Put these in different modules!
