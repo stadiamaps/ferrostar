@@ -7,6 +7,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
     private let text: String
     private let distanceRemaining: String?
     private let maneuverView: ManeuverView
+    private let theme: InstructionRowTheme
     
     /// Initialize a manuever instruction view that includes a custom leading view or icon..
     /// As an HStack, this view automatically corrects for .rightToLeft languages.
@@ -18,28 +19,33 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
     public init(
         text: String,
         distanceRemaining: String? = nil,
+        theme: InstructionRowTheme = DefaultInstructionRowTheme(),
         @ViewBuilder maneuverView: () -> ManeuverView = { EmptyView() }
     ) {
         self.text = text
         self.distanceRemaining = distanceRemaining
         self.maneuverView = maneuverView()
+        self.theme = theme
     }
     
     public var body: some View {
         HStack {
             maneuverView
                 .frame(width: 64)
+                .foregroundColor(theme.iconTintColor)
             
             VStack(alignment: .leading) {
                 if let distanceRemaining {
                     Text(distanceRemaining)
-                        .font(.title.bold())
+                        .font(theme.distanceFont)
+                        .foregroundStyle(theme.distanceColor)
                 }
                 
                 Text(text)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
-                    .font(.title2)
+                    .font(theme.instructionFont)
+                    .foregroundStyle(theme.instructionColor)
             }
             
             Spacer(minLength: 0)

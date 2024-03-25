@@ -10,6 +10,7 @@ struct DefaultManeuverInstructionView: View {
     private let maneuverType: ManeuverType?
     private let maneuverModifier: ManeuverModifier?
     private let distanceRemaining: String?
+    private let theme: InstructionRowTheme
     
     /// Initialize a manuever instruction view that includes a leading icon.
     /// As an HStack, this view automatically corrects for .rightToLeft languages.
@@ -23,18 +24,21 @@ struct DefaultManeuverInstructionView: View {
         text: String,
         maneuverType: ManeuverType?,
         maneuverModifier: ManeuverModifier?,
-        distanceRemaining: String? = nil
+        distanceRemaining: String? = nil,
+        theme: InstructionRowTheme = DefaultInstructionRowTheme()
     ) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
         self.distanceRemaining = distanceRemaining
+        self.theme = theme
     }
     
     var body: some View {
         ManeuverInstructionView(
             text: text,
-            distanceRemaining: distanceRemaining
+            distanceRemaining: distanceRemaining,
+            theme: theme
         ) {
             if let maneuverType {
                 ManeuverImage(

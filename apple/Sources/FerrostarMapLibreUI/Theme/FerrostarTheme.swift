@@ -2,7 +2,6 @@ import SwiftUI
 
 ///
 public protocol FerrostarTheme {
-    
     var banner: InstructionRowTheme { get }
     var bannerListRow: InstructionRowTheme { get }
     var bannerOffsetRow: InstructionRowTheme? { get }
