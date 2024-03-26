@@ -33,21 +33,47 @@ pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> 
     )
 }
 
+/// Internal function that truncates a float to 6 digits.
+///
+/// Note that this approach is not a substitute for fixed precision decimals,
+/// but it is acceptable for our use case,
+/// where our main goal is to avoid precision issues for values which do not matter
+/// and remove most edge cases with floating point numbers.
+///
+/// The `decimal_digits` parameter refers to the number of digits after the point.
+pub(crate) fn trunc_float(value: f64, decimal_digits: u32) -> f64 {
+    let factor = 10i64.pow(decimal_digits) as f64;
+    (value * factor).round() / factor
+}
+
+/// Predicate which is used to filter out several types of undesirable floating point values.
+///
+/// These include NaN values, subnormals (usually the result of underflow), and infinite values.
+fn is_valid_float(value: f64) -> bool {
+    !value.is_nan() && !value.is_subnormal() && !value.is_infinite()
+}
+
 fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
-    // TODO: Use haversine_closest_point once a new release is cut?
+    // Bail early when we have two essentially identical points.
+    // This can cause some issues with edge cases (captured in proptest regressions)
+    // with the underlying libraries.
+    if line.euclidean_distance(point) < 0.000001 {
+        return Some(*point);
+    }
+
+    // If either point is not a "valid" float, bail.
+    if !is_valid_float(point.x()) || !is_valid_float(point.y()) {
+        return None;
+    }
+
+    // TODO: Use haversine_closest_point once a new release is cut which doesn't panic on intersections
     match line.closest_point(point) {
         Closest::Intersection(snapped) | Closest::SinglePoint(snapped) => {
             let (x, y) = (snapped.x(), snapped.y());
-            if x.is_nan()
-                || x.is_subnormal()
-                || x.is_infinite()
-                || y.is_nan()
-                || y.is_subnormal()
-                || y.is_infinite()
-            {
-                None
-            } else {
+            if is_valid_float(x) && is_valid_float(y) {
                 Some(snapped)
+            } else {
+                None
             }
         }
         Closest::Indeterminate => None,
@@ -256,13 +282,10 @@ proptest! {
             let x = snapped.x();
             let y = snapped.y();
 
-            prop_assert!(!x.is_nan());
-            prop_assert!(!x.is_subnormal());
-            prop_assert!(!x.is_infinite());
+            prop_assert!(is_valid_float(x) || (!is_valid_float(x1) && x == x1));
+            prop_assert!(is_valid_float(y) || (!is_valid_float(y1) && y == y1));
 
-            prop_assert!(!y.is_nan());
-            prop_assert!(!y.is_subnormal());
-            prop_assert!(!y.is_infinite());
+            prop_assert!(line.euclidean_distance(&snapped) < 0.000001);
         } else {
             // Edge case 1: extremely small differences in values
             let is_miniscule_difference = (x1 - x2).abs() < 0.00000001 || (y1 - y2).abs() < 0.00000001;

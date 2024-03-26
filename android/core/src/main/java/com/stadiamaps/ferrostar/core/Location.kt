@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.LocationSimulationState
 import uniffi.ferrostar.Route
-import uniffi.ferrostar.SimulationAdvanceStyle
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.advanceLocationSimulation
 import uniffi.ferrostar.locationSimulationFromRoute
@@ -75,7 +74,7 @@ class SimulatedLocationProvider : LocationProvider {
   }
 
   fun setSimulatedRoute(route: Route) {
-    simulationState = locationSimulationFromRoute(route)
+    simulationState = locationSimulationFromRoute(route, resampleDistance = 10.0)
 
     if (listeners.isNotEmpty() && simulationJob == null) {
       simulationJob = scope.launch { startSimulation() }
@@ -87,7 +86,7 @@ class SimulatedLocationProvider : LocationProvider {
       delay((1.0 / warpFactor.toFloat()).toDuration(DurationUnit.SECONDS))
       val initialState = simulationState ?: return
       val updatedState =
-          advanceLocationSimulation(initialState, SimulationAdvanceStyle.JUMP_TO_NEXT_LOCATION)
+          advanceLocationSimulation(initialState)
 
       // Stop if the route has been fully simulated (no state change).
       if (updatedState == initialState) {

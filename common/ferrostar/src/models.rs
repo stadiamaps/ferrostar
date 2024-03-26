@@ -29,6 +29,15 @@ impl From<Coord> for GeographicCoordinate {
     }
 }
 
+impl From<Point> for GeographicCoordinate {
+    fn from(value: Point) -> Self {
+        Self {
+            lat: value.y(),
+            lng: value.x(),
+        }
+    }
+}
+
 impl From<GeographicCoordinate> for Coord {
     fn from(value: GeographicCoordinate) -> Self {
         Self {
