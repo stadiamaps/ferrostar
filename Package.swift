@@ -85,6 +85,9 @@ let package = Package(
             dependencies: [.target(name: "FerrostarCoreRS")],
             path: "apple/Sources/UniFFI"
         ),
+        
+        // MARK: Testing
+        
         .testTarget(
             name: "FerrostarCoreTests",
             dependencies: [
@@ -92,6 +95,15 @@ let package = Package(
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/FerrostarCoreTests"
+        ),
+        .testTarget(
+            name: "FerrostarMapLibreUITests",
+            dependencies: [
+                "FerrostarCore",
+                "FerrostarMapLibreUI",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
+            path: "apple/Tests/FerrostarMapLibreUITests"
         ),
     ]
 )

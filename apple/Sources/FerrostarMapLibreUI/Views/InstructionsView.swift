@@ -1,7 +1,7 @@
 import FerrostarCoreFFI
 import SwiftUI
 
-/// <#Description#>
+/// The core instruction view. This displays the current step with it's primary and secondary instruction.
 struct InstructionsView: View {
     private let visualInstruction: VisualInstruction
     private let primaryRowTheme: InstructionRowTheme
@@ -20,7 +20,8 @@ struct InstructionsView: View {
     public init(
         visualInstruction: VisualInstruction,
         primaryRowTheme: InstructionRowTheme = DefaultInstructionRowTheme(),
-        secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme()
+        secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme(),
+        onTapOrDrag: () -> Void = { }
     ) {
         self.visualInstruction = visualInstruction
         self.primaryRowTheme = primaryRowTheme
@@ -60,6 +61,7 @@ struct InstructionsView: View {
                 }
                 .background(.gray.opacity(0.2))
             } else {
+                // TODO: Do we want to add a specific drag/tap handler? Or just let the a global view modifier handle it.
                 RoundedRectangle(cornerRadius: 3)
                     .frame(width: 24, height: 6)
                     .opacity(0.1)
