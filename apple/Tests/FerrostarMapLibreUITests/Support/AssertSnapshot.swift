@@ -1,6 +1,6 @@
+import SnapshotTesting
 import SwiftUI
 import XCTest
-import SnapshotTesting
 
 extension XCTestCase {
     func assertView(

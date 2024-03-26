@@ -21,7 +21,7 @@ struct InstructionsView: View {
         visualInstruction: VisualInstruction,
         primaryRowTheme: InstructionRowTheme = DefaultInstructionRowTheme(),
         secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme(),
-        onTapOrDrag: () -> Void = { }
+        onTapOrDrag _: () -> Void = {}
     ) {
         self.visualInstruction = visualInstruction
         self.primaryRowTheme = primaryRowTheme
