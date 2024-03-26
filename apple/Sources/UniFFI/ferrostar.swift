@@ -3434,7 +3434,7 @@ public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate
 /**
  * Creates a location simulation from a polyline.
  *
- * Optionally resamples the input line so that there is a maximum distance between points.
+ * Optionally resamples the input line so that there is no more than the specified maximum distance between points.
  */
 public func locationSimulationFromPolyline(polyline: String, precision: UInt32,
                                            resampleDistance: Double?) throws -> LocationSimulationState
@@ -3453,7 +3453,7 @@ public func locationSimulationFromPolyline(polyline: String, precision: UInt32,
 /**
  * Creates a location simulation from a route.
  *
- * Optionally resamples the input line so that there is a maximum distance between points.
+ * Optionally resamples the route geometry so that there is no more than the specified maximum distance between points.
  */
 public func locationSimulationFromRoute(route: Route, resampleDistance: Double?) throws -> LocationSimulationState {
     try FfiConverterTypeLocationSimulationState.lift(
@@ -3497,10 +3497,10 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 29939 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 20352 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 36069 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 4075 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 46977 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 59656 {

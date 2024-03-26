@@ -85,8 +85,7 @@ class SimulatedLocationProvider : LocationProvider {
     while (true) {
       delay((1.0 / warpFactor.toFloat()).toDuration(DurationUnit.SECONDS))
       val initialState = simulationState ?: return
-      val updatedState =
-          advanceLocationSimulation(initialState)
+      val updatedState = advanceLocationSimulation(initialState)
 
       // Stop if the route has been fully simulated (no state change).
       if (updatedState == initialState) {
