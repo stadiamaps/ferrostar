@@ -61,7 +61,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 /// to fetch a list of possible routes asynchronously. After selecting a suitable route (either interactively by the
 /// user, or programmatically), call ``startNavigation(route:config:)`` to start a session.
 ///
-/// NOTE: it is the responsibility of the caller to ensure that the location manager is authorized to get
+/// NOTE: it is the responsibility of the caller to ensure that the location provider is authorized to get
 /// live user location with high precision.
 // TODO: See about making FerrostarCore its own actor; then we can verify that we've published things back on the main actor. Need to see if this is possible with obj-c interop. See https://github.com/apple/swift-evolution/blob/main/proposals/0306-actors.md#actor-interoperability-with-objective-c
 @objc public class FerrostarCore: NSObject, ObservableObject {

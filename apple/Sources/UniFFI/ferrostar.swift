@@ -2772,45 +2772,6 @@ extension RoutingResponseParseError: Equatable, Hashable {}
 
 extension RoutingResponseParseError: Error {}
 
-// Note that we don't yet support `indirect` for enums.
-// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
-public enum SimulationAdvanceStyle {
-    /**
-     * Jumps directly to the next location without any interpolation
-     */
-    case jumpToNextLocation
-}
-
-public struct FfiConverterTypeSimulationAdvanceStyle: FfiConverterRustBuffer {
-    typealias SwiftType = SimulationAdvanceStyle
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SimulationAdvanceStyle {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        case 1: return .jumpToNextLocation
-
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: SimulationAdvanceStyle, into buf: inout [UInt8]) {
-        switch value {
-        case .jumpToNextLocation:
-            writeInt(&buf, Int32(1))
-        }
-    }
-}
-
-public func FfiConverterTypeSimulationAdvanceStyle_lift(_ buf: RustBuffer) throws -> SimulationAdvanceStyle {
-    try FfiConverterTypeSimulationAdvanceStyle.lift(buf)
-}
-
-public func FfiConverterTypeSimulationAdvanceStyle_lower(_ value: SimulationAdvanceStyle) -> RustBuffer {
-    FfiConverterTypeSimulationAdvanceStyle.lower(value)
-}
-
-extension SimulationAdvanceStyle: Equatable, Hashable {}
-
 public enum SimulationError {
     case PolylineError(
         error: String
@@ -3101,6 +3062,27 @@ private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     }
 }
 
+private struct FfiConverterOptionDouble: FfiConverterRustBuffer {
+    typealias SwiftType = Double?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterDouble.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterDouble.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
 private struct FfiConverterOptionString: FfiConverterRustBuffer {
     typealias SwiftType = String?
 
@@ -3371,14 +3353,11 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
  *
  * When there are now more locations to visit, returns the same state forever.
  */
-public func advanceLocationSimulation(state: LocationSimulationState,
-                                      advanceStyle: SimulationAdvanceStyle) -> LocationSimulationState
-{
+public func advanceLocationSimulation(state: LocationSimulationState) -> LocationSimulationState {
     try! FfiConverterTypeLocationSimulationState.lift(
         try! rustCall {
             uniffi_ferrostar_fn_func_advance_location_simulation(
-                FfiConverterTypeLocationSimulationState.lower(state),
-                FfiConverterTypeSimulationAdvanceStyle.lower(advanceStyle), $0
+                FfiConverterTypeLocationSimulationState.lower(state), $0
             )
         }
     )
@@ -3434,32 +3413,54 @@ public func getRoutePolyline(route: Route, precision: UInt32) throws -> String {
     )
 }
 
-public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate]) throws -> LocationSimulationState {
+/**
+ * Creates a location simulation from a set of coordinates.
+ *
+ * Optionally resamples the input line so that there is a maximum distance between points.
+ */
+public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate],
+                                              resampleDistance: Double?) throws -> LocationSimulationState
+{
     try FfiConverterTypeLocationSimulationState.lift(
         rustCallWithError(FfiConverterTypeSimulationError.lift) {
             uniffi_ferrostar_fn_func_location_simulation_from_coordinates(
-                FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates), $0
+                FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates),
+                FfiConverterOptionDouble.lower(resampleDistance), $0
             )
         }
     )
 }
 
-public func locationSimulationFromPolyline(polyline: String, precision: UInt32) throws -> LocationSimulationState {
+/**
+ * Creates a location simulation from a polyline.
+ *
+ * Optionally resamples the input line so that there is no more than the specified maximum distance between points.
+ */
+public func locationSimulationFromPolyline(polyline: String, precision: UInt32,
+                                           resampleDistance: Double?) throws -> LocationSimulationState
+{
     try FfiConverterTypeLocationSimulationState.lift(
         rustCallWithError(FfiConverterTypeSimulationError.lift) {
             uniffi_ferrostar_fn_func_location_simulation_from_polyline(
                 FfiConverterString.lower(polyline),
-                FfiConverterUInt32.lower(precision), $0
+                FfiConverterUInt32.lower(precision),
+                FfiConverterOptionDouble.lower(resampleDistance), $0
             )
         }
     )
 }
 
-public func locationSimulationFromRoute(route: Route) throws -> LocationSimulationState {
+/**
+ * Creates a location simulation from a route.
+ *
+ * Optionally resamples the route geometry so that there is no more than the specified maximum distance between points.
+ */
+public func locationSimulationFromRoute(route: Route, resampleDistance: Double?) throws -> LocationSimulationState {
     try FfiConverterTypeLocationSimulationState.lift(
         rustCallWithError(FfiConverterTypeSimulationError.lift) {
             uniffi_ferrostar_fn_func_location_simulation_from_route(
-                FfiConverterTypeRoute.lower(route), $0
+                FfiConverterTypeRoute.lower(route),
+                FfiConverterOptionDouble.lower(resampleDistance), $0
             )
         }
     )
@@ -3481,7 +3482,7 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if uniffi_ferrostar_checksum_func_advance_location_simulation() != 63736 {
+    if uniffi_ferrostar_checksum_func_advance_location_simulation() != 62608 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 28097 {
@@ -3493,13 +3494,13 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 53320 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 36441 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 29939 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 51577 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 36069 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 1344 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 46977 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 59656 {

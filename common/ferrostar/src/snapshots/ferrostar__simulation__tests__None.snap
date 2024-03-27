@@ -11,49 +11,40 @@ expression: states
       degrees: 45
       accuracy: 0
   remaining_locations:
-    - lat: 1
-      lng: 1
-    - lat: 2
-      lng: 2
-    - lat: 3
-      lng: 3
+    - lat: 0.0001
+      lng: 0.0001
+    - lat: 0.0002
+      lng: 0.0002
+    - lat: 0.0003
+      lng: 0.0003
 - current_location:
     coordinates:
-      lat: 1
-      lng: 1
+      lat: 0.0001
+      lng: 0.0001
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 45
       accuracy: 0
   remaining_locations:
-    - lat: 2
-      lng: 2
-    - lat: 3
-      lng: 3
+    - lat: 0.0002
+      lng: 0.0002
+    - lat: 0.0003
+      lng: 0.0003
 - current_location:
     coordinates:
-      lat: 2
-      lng: 2
+      lat: 0.0002
+      lng: 0.0002
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 45
       accuracy: 0
   remaining_locations:
-    - lat: 3
-      lng: 3
+    - lat: 0.0003
+      lng: 0.0003
 - current_location:
     coordinates:
-      lat: 3
-      lng: 3
-    horizontal_accuracy: 0
-    course_over_ground:
-      degrees: 45
-      accuracy: 0
-  remaining_locations: []
-- current_location:
-    coordinates:
-      lat: 3
-      lng: 3
+      lat: 0.0003
+      lng: 0.0003
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 45

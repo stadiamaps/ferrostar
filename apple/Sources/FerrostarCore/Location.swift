@@ -150,7 +150,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     }
 
     public func setSimulatedRoute(_ route: Route) throws {
-        simulationState = try locationSimulationFromRoute(route: route)
+        simulationState = try locationSimulationFromRoute(route: route, resampleDistance: 10)
     }
 
     public func startUpdating() {
@@ -193,7 +193,7 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
             try Task.checkCancellation()
 
             // Calculate the new state.
-            let updatedState = advanceLocationSimulation(state: initialState, advanceStyle: .jumpToNextLocation)
+            let updatedState = advanceLocationSimulation(state: initialState)
 
             // Stop if the route has been fully simulated (no state change).
             if initialState == updatedState {
