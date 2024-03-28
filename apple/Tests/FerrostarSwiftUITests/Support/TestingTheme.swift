@@ -1,6 +1,6 @@
-import SwiftUI
-import Foundation
 import FerrostarSwiftUI
+import Foundation
+import SwiftUI
 
 struct TestingInstructionRowTheme: InstructionRowTheme {
     let distanceColor: Color = .black
