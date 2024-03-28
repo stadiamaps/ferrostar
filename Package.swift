@@ -47,7 +47,7 @@ let package = Package(
         ),
         .library(
             name: "FerrostarMapLibreUI",
-            targets: ["FerrostarMapLibreUI", 
+            targets: ["FerrostarMapLibreUI",
                       "FerrostarSwiftUI"] // TODO: Remove FerrostarSwiftUI from FerrostarMapLibreUI once we can fix the demo app swift package config (broken in Xcode 15.3)
         ),
         .library(
@@ -97,9 +97,9 @@ let package = Package(
             dependencies: [.target(name: "FerrostarCoreRS")],
             path: "apple/Sources/UniFFI"
         ),
-        
+
         // MARK: Testing
-        
+
         .testTarget(
             name: "FerrostarCoreTests",
             dependencies: [
