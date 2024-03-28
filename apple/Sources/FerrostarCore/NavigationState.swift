@@ -26,6 +26,9 @@ public struct NavigationState: Hashable {
         self.snappedLocation = snappedLocation
         self.heading = heading
         self.fullRouteShape = fullRouteShape
-        currentStep = steps.first!
+        currentStep = steps.first
+        visualInstructions = currentStep?.visualInstructions.first
+        spokenInstruction = currentStep?.spokenInstructions.first
+        distanceToNextManeuver = currentStep?.distance
     }
 }

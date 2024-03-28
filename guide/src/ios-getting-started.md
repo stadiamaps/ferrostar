@@ -61,10 +61,24 @@ private let locationProvider = CoreLocationProvider(activityType: .automotiveNav
 `FerrostarCore` automatically starts and stops the `LocationProvider` updates
 along with `startNavigation(route:config:)` and `stopNavigation` calls.
 
-## OPTIONAL: Configure the core delegate
+## Getting a route
+
+TODO
+
+## Starting a navigation session
+
+TODO
 
 ## Using the NavigationMapView
+
+TODO
 
 ## Demo app
 
 We've put together a minimal [demo app](https://github.com/stadiamaps/ferrostar/tree/main/apple/DemoApp) with an example integration.
+
+## Going deeper
+
+This covers the basic “batteries included” configuration which works for simple apps.
+But there’s a lot of room for customization!
+Skip on over to the customization chapters that interest you.

@@ -2568,11 +2568,17 @@ extension RouteDeviation: Equatable, Hashable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Determines if the user has deviated from the expected route.
+ */
 public enum RouteDeviationTracking {
     /**
      * No checks will be done, and we assume the user is always following the route.
      */
     case none
+    /**
+     * Uses a configurable static distance threshold to determine if the user has deviated from the route.
+     */
     case staticThreshold(
         /**
          * The minimum required horizontal accuracy of the user location, in meters.
@@ -2587,6 +2593,9 @@ public enum RouteDeviationTracking {
             */
         maxAcceptableDeviation: Double
     )
+    /**
+     * Arbitrary custom code; you decide!
+     */
     case custom(
         detector: RouteDeviationDetector
     )

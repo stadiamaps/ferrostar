@@ -13,10 +13,12 @@ use {
     std::time::SystemTime,
 };
 
+/// Determines if the user has deviated from the expected route.
 #[derive(Clone, uniffi::Enum)]
 pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
+    /// Uses a configurable static distance threshold to determine if the user has deviated from the route.
     StaticThreshold {
         /// The minimum required horizontal accuracy of the user location, in meters.
         /// Values larger than this will not trigger route deviation warnings.
@@ -28,6 +30,7 @@ pub enum RouteDeviationTracking {
         max_acceptable_deviation: f64,
     },
     // TODO: Standard variants that account for mode of travel. For example, `DefaultFor(modeOfTravel: ModeOfTravel)` with sensible defaults for walking, driving, cycling, etc.
+    /// Arbitrary custom code; you decide!
     Custom {
         detector: Arc<dyn RouteDeviationDetector>,
     },

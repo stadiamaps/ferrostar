@@ -8,6 +8,12 @@
 - [Android](./android-getting-started.md)
 - [Rust](./rust-getting-started.md)
 
+# Customization
+
+- [General](./general-customization.md)
+- [SwiftUI](./swiftui-customization.md)
+- [Jetpack Compose](./jetpack-compose-customization.md)
+
 # Architecture
 
 - [Architecture Overview](./architecture.md)

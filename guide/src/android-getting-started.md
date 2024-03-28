@@ -137,33 +137,24 @@ such as using a Valhalla [Route Provider](./route-providers.md#bundled-support).
 
 `FerrostarCore` automatically subscribes to location updates from the `LocationProvider`.
 
-## OPTIONAL: Configure a `RouteDeviationHandler`
+## Getting a route
 
-By default, Ferrostar will fetch new routes when the user goes off course.
-You can override this behavior by setting the `deviationHandler` property.
-This property is a `fun interface` in Kotlin, which allows for concise in-line declarations
-if your project uses Kotlin.
+TODO
 
-Refer to the demo app for an example of a custom implementation.
-Note that you can disable the default behavior of attempting to reroute
-by setting an empty implementation (not setting the property to `null`!).
+## Starting a navigation session
 
-## OPTIONAL: Configure an `AlternativeRouteProcessor`
+TODO
 
-`FerrostarCore` may occasionally load alternative routes.
-At this point, this is only used for recalculating when the user deviates from the route,
-but it may be used for additional behaviors in the future,
-such as speculative route checking based on current traffic (for supported vendors).
-By default, this will “accept” the new route and reroute the active navigation session
-whenever a new route arrives due to the user going off course.
+## Using the `NavigationMapView`
 
-If you don’t set the `alternativeRouteProcessor`
-Refer to the demo app for an example of a custom implementation.
-Note that you can disable the default behavior of attempting to reroute
-by setting an empty implementation (not setting the property to `null`!).
-
-## TODO: Using the NavigationMapView
+TODO
 
 ## Demo app
 
 We've put together a minimal [demo app](https://github.com/stadiamaps/ferrostar/tree/main/android/demo-app) with an example integration.
+
+## Going deeper
+
+This covers the basic “batteries included” configuration which works for simple apps.
+But there’s a lot of room for customization!
+Skip on over to the customization chapters that interest you.
