@@ -85,6 +85,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var tripState: TripState?
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
+    private var lastLocation: UserLocation? = nil
     private var recalculationTask: Task<Void, Never>?
 
     private var config: NavigationControllerConfig?
@@ -218,6 +219,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
         }
     }
 
+    public func advanceToNextStep() {
+        guard let controller = navigationController, let tripState, let lastLocation else {
+            return
+        }
+
+        let newState = controller.advanceToNextStep(state: tripState)
+        update(newState: newState, location: lastLocation)
+    }
+
     // TODO: Ability to pause without totally stopping and clearing state
 
     /// Stops navigation and stops requesting location updates (to save battery).
@@ -320,6 +330,8 @@ extension FerrostarCore: LocationManagingDelegate {
         else {
             return
         }
+
+        lastLocation = location
 
         update(newState: newState, location: location)
     }

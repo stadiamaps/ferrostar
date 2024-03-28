@@ -82,6 +82,7 @@ class FerrostarCore(
   private var _state: MutableStateFlow<FerrostarCoreState>? = null
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: LocalDateTime? = null
+  private var _lastLocation: UserLocation? = null
 
   private var _config: NavigationControllerConfig? = null
 
@@ -182,6 +183,21 @@ class FerrostarCore(
     return NavigationViewModel(stateFlow, startingLocation, route.geometry)
   }
 
+  fun advanceToNextStep() {
+    val controller = _navigationController
+    val location = _lastLocation
+
+    if (controller != null && location != null) {
+      _state?.update { currentValue ->
+        val newState = controller.advanceToNextStep(state = currentValue.tripState)
+
+        handleStateUpdate(newState, location)
+
+        FerrostarCoreState(tripState = newState, isCalculatingNewRoute)
+      }
+    }
+  }
+
   fun stopNavigation() {
     locationProvider.removeListener(this)
     _navigationController?.destroy()
@@ -243,6 +259,7 @@ class FerrostarCore(
   }
 
   override fun onLocationUpdated(location: UserLocation) {
+    _lastLocation = location
     val controller = _navigationController
 
     if (controller != null) {
