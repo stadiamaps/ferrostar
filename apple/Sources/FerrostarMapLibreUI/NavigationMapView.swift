@@ -1,5 +1,6 @@
 import FerrostarCore
 import FerrostarSwiftUI
+import MapKit
 import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
@@ -10,6 +11,7 @@ public struct NavigationMapView: View {
 
     let lightStyleURL: URL
     let darkStyleURL: URL
+    let distanceFormatter: Formatter
     // TODO: Configurable camera and user "puck" rotation modes
 
     private var navigationState: NavigationState?
@@ -21,11 +23,13 @@ public struct NavigationMapView: View {
         lightStyleURL: URL,
         darkStyleURL: URL,
         navigationState: NavigationState?,
-        camera: Binding<MapViewCamera>
+        camera: Binding<MapViewCamera>,
+        distanceFormatter: Formatter = MKDistanceFormatter()
     ) {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
+        self.distanceFormatter = distanceFormatter
         _camera = camera
     }
 
@@ -69,6 +73,7 @@ public struct NavigationMapView: View {
             {
                 InstructionsView(
                     visualInstruction: visualInstructions,
+                    distanceFormatter: distanceFormatter,
                     distanceToNextManeuver: navigationState.distanceToNextManeuver
                 )
             }
@@ -76,12 +81,34 @@ public struct NavigationMapView: View {
     }
 }
 
-#Preview {
+#Preview("Navigation Map View (Imperial)") {
     // TODO: Make map URL configurable but gitignored
-    NavigationMapView(
+    let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
+    let formatter = MKDistanceFormatter()
+    formatter.locale = Locale(identifier: "en-US")
+    formatter.units = .imperial
+
+    return NavigationMapView(
         lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        navigationState: .modifiedPedestrianExample(droppingNWaypoints: 4),
-        camera: .constant(.default())
+        navigationState: state,
+        camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
+        distanceFormatter: formatter
+    )
+}
+
+#Preview("Navigation Map View (Metric)") {
+    // TODO: Make map URL configurable but gitignored
+    let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
+    let formatter = MKDistanceFormatter()
+    formatter.locale = Locale(identifier: "en-US")
+    formatter.units = .metric
+
+    return NavigationMapView(
+        lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        navigationState: state,
+        camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
+        distanceFormatter: formatter
     )
 }
