@@ -1,0 +1,51 @@
+{
+  "originHash" : "2de37ddd210ec3a7ac1bb31b310d6cec67f2fc16d8665c70ac79a0a5df2a8d43",
+  "pins" : [
+    {
+      "identity" : "maplibre-gl-native-distribution",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
+      "state" : {
+        "revision" : "92505cfbad5c5ed6a93e0f3cd70872aaa98a12ac",
+        "version" : "6.2.0"
+      }
+    },
+    {
+      "identity" : "maplibre-swift-macros",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
+      "state" : {
+        "revision" : "9f15cbb11d2b5248ead47aecae5be8a1d4d5f463",
+        "version" : "0.0.2"
+      }
+    },
+    {
+      "identity" : "maplibre-swiftui-dsl-playground",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
+      "state" : {
+        "revision" : "d33066578eb665ae65b37d9d3bcc62dfbbfbc6a8",
+        "version" : "0.0.8"
+      }
+    },
+    {
+      "identity" : "mockable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kolos65/Mockable.git",
+      "state" : {
+        "revision" : "7c35a588f6c6a79ce6e0a719dc31e49a6fec069b",
+        "version" : "0.0.4"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
+      }
+    }
+  ],
+  "version" : 3
+}
