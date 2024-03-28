@@ -9,7 +9,7 @@ final class ManeuverInstructionViewTests: XCTestCase {
             ManeuverInstructionView(
                 text: "Turn Right on Road Ave.",
                 distanceToNextManeuver: 24140.16,
-                theme: DefaultInstructionRowTheme()
+                theme: TestingInstructionRowTheme()
             ) {
                 Image(systemName: "car.circle.fill")
                     .symbolRenderingMode(.multicolor)
@@ -17,6 +17,7 @@ final class ManeuverInstructionViewTests: XCTestCase {
                     .scaledToFit()
                     .frame(width: 32)
             }
+            .background(.white)
         }
     }
 
@@ -24,25 +25,29 @@ final class ManeuverInstructionViewTests: XCTestCase {
         assertView {
             ManeuverInstructionView(
                 text: "Merge Left",
-                distanceToNextManeuver: 152.4
+                distanceToNextManeuver: 152.4,
+                theme: TestingInstructionRowTheme()
             ) {
                 ManeuverImage(maneuverType: .merge, maneuverModifier: .left)
                     .frame(width: 24)
             }
             .font(.body)
             .foregroundColor(.blue)
+            .background(.white)
         }
     }
 
     func testRightToLeftInstruction() throws {
         assertView {
             ManeuverInstructionView(
-                text: "ادمج يسارًا"
+                text: "ادمج يسارًا",
+                theme: TestingInstructionRowTheme()
             ) {
                 ManeuverImage(maneuverType: .merge, maneuverModifier: .left)
                     .frame(width: 24)
             }
             .environment(\.layoutDirection, .rightToLeft)
+            .background(.white)
         }
     }
 }

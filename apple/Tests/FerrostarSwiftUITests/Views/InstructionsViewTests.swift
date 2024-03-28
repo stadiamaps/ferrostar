@@ -20,7 +20,9 @@ final class InstructionsViewTests: XCTestCase {
                         roundaboutExitDegrees: nil
                     ),
                     triggerDistanceBeforeManeuver: 123
-                )
+                ),
+                primaryRowTheme: TestingInstructionRowTheme(),
+                secondaryRowTheme: TestingInstructionRowTheme()
             )
         }
     }
@@ -37,7 +39,9 @@ final class InstructionsViewTests: XCTestCase {
                     ),
                     secondaryContent: nil,
                     triggerDistanceBeforeManeuver: 123
-                )
+                ),
+                primaryRowTheme: TestingInstructionRowTheme(),
+                secondaryRowTheme: TestingInstructionRowTheme()
             )
         }
     }
