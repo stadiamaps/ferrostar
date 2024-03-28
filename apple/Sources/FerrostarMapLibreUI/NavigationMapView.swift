@@ -1,4 +1,5 @@
 import FerrostarCore
+import FerrostarSwiftUI
 import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
@@ -67,8 +68,10 @@ public struct NavigationMapView: View {
             if let navigationState,
                let visualInstructions = navigationState.visualInstructions
             {
-                BannerView(instructions: visualInstructions,
-                           distanceToNextManeuver: navigationState.distanceToNextManeuver)
+                InstructionsView(
+                    visualInstruction: visualInstructions,
+                    distanceToNextManeuver: navigationState.distanceToNextManeuver
+                )
             }
         })
     }

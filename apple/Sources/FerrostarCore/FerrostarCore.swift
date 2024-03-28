@@ -199,6 +199,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         guard let location = locationProvider.lastLocation else {
             throw FerrostarCoreError.userLocationUnknown
         }
+        // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
 
         self.config = config
 

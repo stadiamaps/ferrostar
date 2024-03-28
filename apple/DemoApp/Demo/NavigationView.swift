@@ -93,7 +93,7 @@ struct NavigationView: View {
                                 .clipShape(.buttonBorder, style: FillStyle())
                                 .shadow(radius: 4)
                         )
-                        .padding(.top, 56)
+                        .padding(.top, 128) // TODO: Move the controls layer to a VStack w/ the InstructionsView
                     }
 
                     Spacer()
