@@ -43,6 +43,7 @@ public struct InstructionsView: View {
                 text: visualInstruction.primaryContent.text,
                 maneuverType: visualInstruction.primaryContent.maneuverType,
                 maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
+                distanceFormatter: distanceFormatter,
                 distanceToNextManeuver: distanceToNextManeuver,
                 theme: primaryRowTheme
             )
@@ -57,6 +58,7 @@ public struct InstructionsView: View {
                         text: secondaryContent.text,
                         maneuverType: secondaryContent.maneuverType,
                         maneuverModifier: secondaryContent.maneuverModifier,
+                        distanceFormatter: distanceFormatter,
                         theme: secondaryRowTheme
                     )
                     .padding(.horizontal, 16)
@@ -85,7 +87,11 @@ public struct InstructionsView: View {
 }
 
 #Preview {
-    VStack {
+    let germanFormatter = MKDistanceFormatter()
+    germanFormatter.locale = Locale(identifier: "de-DE")
+    germanFormatter.units = .metric
+
+    return VStack {
         InstructionsView(
             visualInstruction: VisualInstruction(
                 primaryContent: VisualInstructionContent(
@@ -115,6 +121,21 @@ public struct InstructionsView: View {
                 secondaryContent: nil,
                 triggerDistanceBeforeManeuver: 123
             )
+        )
+
+        InstructionsView(
+            visualInstruction: VisualInstruction(
+                primaryContent: VisualInstructionContent(
+                    text: "Links einfädeln.",
+                    maneuverType: .turn,
+                    maneuverModifier: .slightLeft,
+                    roundaboutExitDegrees: nil
+                ),
+                secondaryContent: nil,
+                triggerDistanceBeforeManeuver: 123
+            ),
+            distanceFormatter: germanFormatter,
+            distanceToNextManeuver: 1500.0
         )
 
         Spacer()

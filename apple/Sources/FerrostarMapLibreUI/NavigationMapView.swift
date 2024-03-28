@@ -27,7 +27,6 @@ public struct NavigationMapView: View {
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
         _camera = camera
-        // TODO: Set up following of the user
     }
 
     public var body: some View {

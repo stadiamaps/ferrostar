@@ -96,7 +96,7 @@ jobs:
         ]
         destination: [
           # TODO: Add more destinations
-          'platform=iOS Simulator,name=iPhone 15,OS=17.0.1'
+          'platform=iOS Simulator,name=iPhone 15,OS=17.2'
         ]
 
     steps:

@@ -28,7 +28,7 @@ public struct DefaultIconographyManeuverInstructionView: View {
         text: String,
         maneuverType: ManeuverType?,
         maneuverModifier: ManeuverModifier?,
-        distanceFormatter: Formatter = MKDistanceFormatter(),
+        distanceFormatter: Formatter,
         distanceToNextManeuver: CLLocationDistance? = nil,
         theme: InstructionRowTheme = DefaultInstructionRowTheme()
     ) {
