@@ -1,8 +1,7 @@
-import SnapshotTesting
 import SwiftUI
 import XCTest
 @testable import FerrostarCoreFFI
-@testable import FerrostarMapLibreUI
+@testable import FerrostarSwiftUI
 
 final class ManeuverImageTests: XCTestCase {
     func testManeuverImageDefaultTheme() {
@@ -14,6 +13,12 @@ final class ManeuverImageTests: XCTestCase {
         assertView {
             ManeuverImage(maneuverType: .fork, maneuverModifier: .left)
                 .frame(width: 32)
+        }
+    }
+
+    func testManeuverImageLarge() {
+        assertView {
+            ManeuverImage(maneuverType: .rotary, maneuverModifier: .slightRight)
         }
     }
 

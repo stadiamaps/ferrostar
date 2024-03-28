@@ -17,7 +17,7 @@ public protocol InstructionRowTheme {
     var iconTintColor: Color { get }
 }
 
-public struct DefaultInstructionRowTheme: InstructionRowTheme {
+public struct DefaultInstructionRowTheme: InstructionRowTheme, Equatable, Hashable {
     public var distanceColor: Color = .primary
     public var distanceFont: Font = .title.bold()
     public var instructionColor: Color = .secondary
@@ -29,7 +29,7 @@ public struct DefaultInstructionRowTheme: InstructionRowTheme {
     }
 }
 
-public struct DefaultSecondaryInstructionRowTheme: InstructionRowTheme {
+public struct DefaultSecondaryInstructionRowTheme: InstructionRowTheme, Equatable, Hashable {
     public var distanceColor: Color = .primary
     public var distanceFont: Font = .title3.bold()
     public var instructionColor: Color = .secondary

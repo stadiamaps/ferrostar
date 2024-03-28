@@ -47,7 +47,12 @@ let package = Package(
         ),
         .library(
             name: "FerrostarMapLibreUI",
-            targets: ["FerrostarMapLibreUI"]
+            targets: ["FerrostarMapLibreUI", 
+                      "FerrostarSwiftUI"] // TODO: Remove FerrostarSwiftUI from FerrostarMapLibreUI once we can fix the demo app swift package config (broken in Xcode 15.3)
+        ),
+        .library(
+            name: "FerrostarSwiftUI",
+            targets: ["FerrostarSwiftUI"]
         ),
         .library(
             name: "FerrostarCoreFFI",
@@ -75,7 +80,14 @@ let package = Package(
                 .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
                 .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
             ],
-            path: "apple/Sources/FerrostarMapLibreUI",
+            path: "apple/Sources/FerrostarMapLibreUI"
+        ),
+        .target(
+            name: "FerrostarSwiftUI",
+            dependencies: [
+                .target(name: "FerrostarCore"),
+            ],
+            path: "apple/Sources/FerrostarSwiftUI",
             resources: [
                 .process("Resources"),
             ]
@@ -97,13 +109,13 @@ let package = Package(
             path: "apple/Tests/FerrostarCoreTests"
         ),
         .testTarget(
-            name: "FerrostarMapLibreUITests",
+            name: "FerrostarSwiftUITests",
             dependencies: [
                 "FerrostarCore",
-                "FerrostarMapLibreUI",
+                "FerrostarSwiftUI",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
-            path: "apple/Tests/FerrostarMapLibreUITests"
+            path: "apple/Tests/FerrostarSwiftUITests"
         ),
     ]
 )

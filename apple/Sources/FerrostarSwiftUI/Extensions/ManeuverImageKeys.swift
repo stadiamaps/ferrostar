@@ -1,9 +1,11 @@
 import FerrostarCoreFFI
 import Foundation
 
-// TODO: See if this could probably be in the core reasonably?
 extension ManeuverType {
-    var iconKey: String {
+    /// The the string value representation of the ManeuverType.
+    ///
+    /// This string matches the OSRM json value and is used to load the maneuver icon.
+    var stringValue: String {
         switch self {
         case .turn:
             "turn"
@@ -41,9 +43,11 @@ extension ManeuverType {
     }
 }
 
-// TODO: See if this could probably be in the core reasonably?
 extension ManeuverModifier {
-    var iconKey: String {
+    /// The the string value representation of the ManeuverModifier.
+    ///
+    /// This string matches the OSRM json value and is used to load the maneuver icon.
+    var stringValue: String {
         switch self {
         case .uTurn:
             "uturn"

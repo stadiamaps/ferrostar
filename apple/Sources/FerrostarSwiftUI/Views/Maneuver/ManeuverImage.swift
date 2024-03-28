@@ -27,14 +27,12 @@ public struct ManeuverImage: View {
     }
 
     var maneuverImageName: String {
-        let parsedModifier = maneuverModifier?.iconKey.replacingOccurrences(of: " ", with: "_")
-
-        var imageName = maneuverType.iconKey.replacingOccurrences(of: " ", with: "_")
-        if let parsedModifier {
-            imageName += "_\(parsedModifier)"
-        }
-
-        return imageName
+        [
+            maneuverType.stringValue.replacingOccurrences(of: " ", with: "_"),
+            maneuverModifier?.stringValue.replacingOccurrences(of: " ", with: "_"),
+        ]
+        .compactMap { $0 }
+        .joined(separator: "_")
     }
 }
 
@@ -45,6 +43,8 @@ public struct ManeuverImage: View {
 
         ManeuverImage(maneuverType: .fork, maneuverModifier: .left)
             .frame(width: 32)
+
+        ManeuverImage(maneuverType: .rotary, maneuverModifier: .slightRight)
 
         ManeuverImage(maneuverType: .merge, maneuverModifier: .slightLeft)
             .frame(width: 92)

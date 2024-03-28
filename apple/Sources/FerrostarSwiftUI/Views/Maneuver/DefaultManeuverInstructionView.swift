@@ -1,4 +1,6 @@
+import CoreLocation
 import FerrostarCoreFFI
+import MapKit
 import SwiftUI
 
 /// The Default Themed Maneuver Instruction View.
@@ -8,7 +10,8 @@ struct DefaultManeuverInstructionView: View {
     private let text: String
     private let maneuverType: ManeuverType?
     private let maneuverModifier: ManeuverModifier?
-    private let distanceRemaining: String?
+    private let distanceToNextManeuver: CLLocationDistance?
+    private let distanceFormatter = MKDistanceFormatter()
     private let theme: InstructionRowTheme
 
     /// Initialize a manuever instruction view that includes a leading icon.
@@ -18,25 +21,26 @@ struct DefaultManeuverInstructionView: View {
     ///   - text: The maneuver instruction.
     ///   - maneuverType: The maneuver type defines the behavior.
     ///   - maneuverModifier: The maneuver modifier defines the direction.
-    ///   - distanceRemaining: A string that should represent the localized distance remaining.
+    ///   - distanceToNextManeuver: A string that should represent the localized distance remaining.
+    ///   - theme: The instruction row theme specifies attributes like colors and fonts for the row.
     public init(
         text: String,
         maneuverType: ManeuverType?,
         maneuverModifier: ManeuverModifier?,
-        distanceRemaining: String? = nil,
+        distanceToNextManeuver: CLLocationDistance? = nil,
         theme: InstructionRowTheme = DefaultInstructionRowTheme()
     ) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
-        self.distanceRemaining = distanceRemaining
+        self.distanceToNextManeuver = distanceToNextManeuver
         self.theme = theme
     }
 
     var body: some View {
         ManeuverInstructionView(
             text: text,
-            distanceRemaining: distanceRemaining,
+            distanceToNextManeuver: distanceToNextManeuver,
             theme: theme
         ) {
             if let maneuverType {
@@ -55,6 +59,6 @@ struct DefaultManeuverInstructionView: View {
         text: "Merge Left onto Something",
         maneuverType: .merge,
         maneuverModifier: .left,
-        distanceRemaining: "500 m"
+        distanceToNextManeuver: 500.0
     )
 }
