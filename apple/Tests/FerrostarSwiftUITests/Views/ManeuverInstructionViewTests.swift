@@ -1,3 +1,4 @@
+import MapKit
 import SwiftUI
 import XCTest
 @testable import FerrostarCoreFFI
@@ -8,6 +9,7 @@ final class ManeuverInstructionViewTests: XCTestCase {
         assertView {
             ManeuverInstructionView(
                 text: "Turn Right on Road Ave.",
+                distanceFormatter: americanDistanceFormatter,
                 distanceToNextManeuver: 24140.16,
                 theme: TestingInstructionRowTheme()
             ) {
@@ -25,6 +27,24 @@ final class ManeuverInstructionViewTests: XCTestCase {
         assertView {
             ManeuverInstructionView(
                 text: "Merge Left",
+                distanceFormatter: americanDistanceFormatter,
+                distanceToNextManeuver: 152.4,
+                theme: TestingInstructionRowTheme()
+            ) {
+                ManeuverImage(maneuverType: .merge, maneuverModifier: .left)
+                    .frame(width: 24)
+            }
+            .font(.body)
+            .foregroundColor(.blue)
+            .background(.white)
+        }
+    }
+
+    func testFerrostarInstructionDE() throws {
+        assertView {
+            ManeuverInstructionView(
+                text: "Links einfädeln",
+                distanceFormatter: germanDistanceFormatter,
                 distanceToNextManeuver: 152.4,
                 theme: TestingInstructionRowTheme()
             ) {
@@ -41,6 +61,7 @@ final class ManeuverInstructionViewTests: XCTestCase {
         assertView {
             ManeuverInstructionView(
                 text: "ادمج يسارًا",
+                distanceFormatter: americanDistanceFormatter,
                 theme: TestingInstructionRowTheme()
             ) {
                 ManeuverImage(maneuverType: .merge, maneuverModifier: .left)

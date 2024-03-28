@@ -3,13 +3,28 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class DefaultManeuverInstructionViewTests: XCTestCase {
-    func testDefaultManeuverInstructionView() {
+    func testDefaultManeuverInstructionViewUS() {
         assertView {
-            DefaultManeuverInstructionView(
+            DefaultIconographyManeuverInstructionView(
                 text: "Merge Left onto Something",
                 maneuverType: .merge,
                 maneuverModifier: .left,
-                distanceToNextManeuver: 500.0,
+                distanceFormatter: americanDistanceFormatter,
+                distanceToNextManeuver: 1500.0,
+                theme: TestingInstructionRowTheme()
+            )
+            .background(.white)
+        }
+    }
+
+    func testDefaultManeuverInstructionViewDE() {
+        assertView {
+            DefaultIconographyManeuverInstructionView(
+                text: "Links einfädeln",
+                maneuverType: .merge,
+                maneuverModifier: .left,
+                distanceFormatter: germanDistanceFormatter,
+                distanceToNextManeuver: 1500.0,
                 theme: TestingInstructionRowTheme()
             )
             .background(.white)

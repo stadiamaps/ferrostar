@@ -3,15 +3,16 @@ import FerrostarCoreFFI
 import MapKit
 import SwiftUI
 
-/// The Default Themed Maneuver Instruction View.
+/// A maneuver instruction view with reasonable default iconography.
 ///
-/// This view will display the maneuver icon if one exists.
-struct DefaultManeuverInstructionView: View {
+/// This view will display the maneuver icon using the public domain
+/// icons from Mapbox.
+public struct DefaultIconographyManeuverInstructionView: View {
     private let text: String
     private let maneuverType: ManeuverType?
     private let maneuverModifier: ManeuverModifier?
     private let distanceToNextManeuver: CLLocationDistance?
-    private let distanceFormatter = MKDistanceFormatter()
+    private let distanceFormatter: Formatter
     private let theme: InstructionRowTheme
 
     /// Initialize a manuever instruction view that includes a leading icon.
@@ -27,19 +28,22 @@ struct DefaultManeuverInstructionView: View {
         text: String,
         maneuverType: ManeuverType?,
         maneuverModifier: ManeuverModifier?,
+        distanceFormatter: Formatter = MKDistanceFormatter(),
         distanceToNextManeuver: CLLocationDistance? = nil,
         theme: InstructionRowTheme = DefaultInstructionRowTheme()
     ) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
+        self.distanceFormatter = distanceFormatter
         self.distanceToNextManeuver = distanceToNextManeuver
         self.theme = theme
     }
 
-    var body: some View {
+    public var body: some View {
         ManeuverInstructionView(
             text: text,
+            distanceFormatter: distanceFormatter,
             distanceToNextManeuver: distanceToNextManeuver,
             theme: theme
         ) {
@@ -54,11 +58,40 @@ struct DefaultManeuverInstructionView: View {
     }
 }
 
-#Preview {
-    DefaultManeuverInstructionView(
+#Preview("Default formatter") {
+    DefaultIconographyManeuverInstructionView(
         text: "Merge Left onto Something",
         maneuverType: .merge,
         maneuverModifier: .left,
-        distanceToNextManeuver: 500.0
+        distanceFormatter: MKDistanceFormatter(),
+        distanceToNextManeuver: 1500.0
+    )
+}
+
+#Preview("Custom formatter (US Imperial)") {
+    let formatter = MKDistanceFormatter()
+    formatter.locale = Locale(identifier: "en-US")
+    formatter.units = .imperial
+
+    return DefaultIconographyManeuverInstructionView(
+        text: "Merge Left onto Something",
+        maneuverType: .merge,
+        maneuverModifier: .left,
+        distanceFormatter: formatter,
+        distanceToNextManeuver: 1500.0
+    )
+}
+
+#Preview("Custom formatter (DE)") {
+    let formatter = MKDistanceFormatter()
+    formatter.locale = Locale(identifier: "de-DE")
+    formatter.units = .metric
+
+    return DefaultIconographyManeuverInstructionView(
+        text: "Merge Left onto Something",
+        maneuverType: .merge,
+        maneuverModifier: .left,
+        distanceFormatter: formatter,
+        distanceToNextManeuver: 1500.0
     )
 }

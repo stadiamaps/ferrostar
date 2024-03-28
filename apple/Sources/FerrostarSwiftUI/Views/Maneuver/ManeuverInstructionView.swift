@@ -3,11 +3,17 @@ import FerrostarCoreFFI
 import MapKit
 import SwiftUI
 
-/// A Customizable Maneuver Instruction View.
+/// A generic maneuver instruction view.
+///
+/// This view allows for the user to specify an arbitrary View
+/// as the first child of the HStack to enable custom iconography etc.
+/// If you want sensible iconography defaults,
+/// use ``DefaultIconographyManeuverInstructionView``,
+/// which builds on this with default iconography.
 public struct ManeuverInstructionView<ManeuverView: View>: View {
     private let text: String
     private let distanceToNextManeuver: CLLocationDistance?
-    private let distanceFormatter = MKDistanceFormatter()
+    private let distanceFormatter: Formatter
     private let maneuverView: ManeuverView
     private let theme: InstructionRowTheme
 
@@ -21,12 +27,14 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
     ///   - theme: The instruction row theme specifies attributes like colors and fonts for the row.
     public init(
         text: String,
+        distanceFormatter: Formatter,
         distanceToNextManeuver: CLLocationDistance? = nil,
         theme: InstructionRowTheme = DefaultInstructionRowTheme(),
         @ViewBuilder maneuverView: () -> ManeuverView = { EmptyView() }
     ) {
         self.text = text
         self.distanceToNextManeuver = distanceToNextManeuver
+        self.distanceFormatter = distanceFormatter
         self.maneuverView = maneuverView()
         self.theme = theme
     }
@@ -39,7 +47,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
 
             VStack(alignment: .leading) {
                 if let distanceToNextManeuver {
-                    Text("\(distanceFormatter.string(fromDistance: distanceToNextManeuver))")
+                    Text("\(distanceFormatter.string(for: distanceToNextManeuver) ?? "")")
                         .font(theme.distanceFont)
                         .foregroundStyle(theme.distanceColor)
                 }
@@ -60,6 +68,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
     VStack {
         ManeuverInstructionView(
             text: "Turn Right on Road Ave.",
+            distanceFormatter: MKDistanceFormatter(),
             distanceToNextManeuver: 24140.16
         ) {
             Image(systemName: "car.circle.fill")
@@ -72,6 +81,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
 
         ManeuverInstructionView(
             text: "Merge Left",
+            distanceFormatter: MKDistanceFormatter(),
             distanceToNextManeuver: 152.4
         ) {
             ManeuverImage(maneuverType: .merge, maneuverModifier: .left)
@@ -82,7 +92,8 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
 
         // Demonstrate a Right to Left
         ManeuverInstructionView(
-            text: "ادمج يسارًا"
+            text: "ادمج يسارًا",
+            distanceFormatter: MKDistanceFormatter()
         ) {
             ManeuverImage(maneuverType: .merge, maneuverModifier: .left)
                 .frame(width: 24)

@@ -7,7 +7,7 @@ import SwiftUI
 public struct InstructionsView: View {
     private let visualInstruction: VisualInstruction
     private let distanceToNextManeuver: CLLocationDistance?
-    private let distanceFormatter = MKDistanceFormatter()
+    private let distanceFormatter: Formatter
 
     private let primaryRowTheme: InstructionRowTheme
     private let secondaryRowTheme: InstructionRowTheme
@@ -25,11 +25,13 @@ public struct InstructionsView: View {
     ///   - secondaryRowTheme: The theme for the secondary instruction.
     public init(
         visualInstruction: VisualInstruction,
+        distanceFormatter: Formatter = MKDistanceFormatter(),
         distanceToNextManeuver: CLLocationDistance? = nil,
         primaryRowTheme: InstructionRowTheme = DefaultInstructionRowTheme(),
         secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme()
     ) {
         self.visualInstruction = visualInstruction
+        self.distanceFormatter = distanceFormatter
         self.distanceToNextManeuver = distanceToNextManeuver
         self.primaryRowTheme = primaryRowTheme
         self.secondaryRowTheme = secondaryRowTheme
@@ -37,7 +39,7 @@ public struct InstructionsView: View {
 
     public var body: some View {
         VStack {
-            DefaultManeuverInstructionView(
+            DefaultIconographyManeuverInstructionView(
                 text: visualInstruction.primaryContent.text,
                 maneuverType: visualInstruction.primaryContent.maneuverType,
                 maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
@@ -51,7 +53,7 @@ public struct InstructionsView: View {
 
             if let secondaryContent = visualInstruction.secondaryContent {
                 VStack {
-                    DefaultManeuverInstructionView(
+                    DefaultIconographyManeuverInstructionView(
                         text: secondaryContent.text,
                         maneuverType: secondaryContent.maneuverType,
                         maneuverModifier: secondaryContent.maneuverModifier,
@@ -102,7 +104,6 @@ public struct InstructionsView: View {
             )
         )
 
-        // TODO: This instruction doesn't match :o
         InstructionsView(
             visualInstruction: VisualInstruction(
                 primaryContent: VisualInstructionContent(

@@ -15,8 +15,8 @@ extension XCTestCase {
         let view = content()
             .frame(width: frame.width, height: frame.height)
 
-        assertSnapshot(matching: view,
-                       as: .image(precision: 0.9, perceptualPrecision: 0.95),
+        assertSnapshot(of: view,
+                       as: .image,
                        named: name,
                        record: record,
                        file: file,

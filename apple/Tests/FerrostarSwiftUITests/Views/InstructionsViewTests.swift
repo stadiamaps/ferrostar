@@ -21,6 +21,7 @@ final class InstructionsViewTests: XCTestCase {
                     ),
                     triggerDistanceBeforeManeuver: 123
                 ),
+                distanceFormatter: americanDistanceFormatter,
                 primaryRowTheme: TestingInstructionRowTheme(),
                 secondaryRowTheme: TestingInstructionRowTheme()
             )
@@ -40,6 +41,28 @@ final class InstructionsViewTests: XCTestCase {
                     secondaryContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
+                distanceFormatter: americanDistanceFormatter,
+                primaryRowTheme: TestingInstructionRowTheme(),
+                secondaryRowTheme: TestingInstructionRowTheme()
+            )
+        }
+    }
+
+    func testFormattingDE() {
+        assertView {
+            InstructionsView(
+                visualInstruction: VisualInstruction(
+                    primaryContent: VisualInstructionContent(
+                        text: "Links einfädeln",
+                        maneuverType: .turn,
+                        maneuverModifier: .left,
+                        roundaboutExitDegrees: nil
+                    ),
+                    secondaryContent: nil,
+                    triggerDistanceBeforeManeuver: 123
+                ),
+                distanceFormatter: germanDistanceFormatter,
+                distanceToNextManeuver: 152.4,
                 primaryRowTheme: TestingInstructionRowTheme(),
                 secondaryRowTheme: TestingInstructionRowTheme()
             )
