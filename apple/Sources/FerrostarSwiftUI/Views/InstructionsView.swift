@@ -40,7 +40,7 @@ public struct InstructionsView: View {
             DefaultManeuverInstructionView(
                 text: visualInstruction.primaryContent.text,
                 maneuverType: visualInstruction.primaryContent.maneuverType,
-                maneuverModifier: .left,
+                maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
                 distanceToNextManeuver: distanceToNextManeuver,
                 theme: primaryRowTheme
             )
