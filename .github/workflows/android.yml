@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: macos-14
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -43,8 +43,8 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 30
-        avd-name: macOS-14-arm64-v8a-aosp-atd-30
-        arch: arm64-v8a
+        avd-name: macOS-13-x86-aosp-atd-30
+        arch: x86
         target: aosp_atd
         script: ./gradlew connectedCheck
         working-directory: android
