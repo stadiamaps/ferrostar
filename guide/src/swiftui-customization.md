@@ -15,12 +15,6 @@ first we’d love to hear why via an issue on GitHub!
 In the case that you want complete control though,
 the map view itself is actually not that complex.
 
-## Customizing the instruction banners
-
-Ferrostar includes a number of views related to instruction banners.
-These are composed together to provide sensible defaults,
-but you can customize a number of things.
-
 ### Style
 
 TODO: We allow you to pass a light and dark style URL.
@@ -29,6 +23,12 @@ This is ~~broken~~ very much WIP and is likely to change ;)
 ### Camera
 
 TODO: Ability to override the built-in camera behavior (probably define a protocol for this).
+
+## Customizing the instruction banners
+
+Ferrostar includes a number of views related to instruction banners.
+These are composed together to provide sensible defaults,
+but you can customize a number of things.
 
 ### Distance formatting
 
