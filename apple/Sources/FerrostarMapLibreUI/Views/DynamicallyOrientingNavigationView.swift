@@ -61,7 +61,7 @@ public struct DynamicallyOrientingNavigationView: View {
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
 
-    return DynamicNavigationView(
+    return DynamicallyOrientingNavigationView(
         lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
@@ -77,7 +77,7 @@ public struct DynamicallyOrientingNavigationView: View {
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .metric
 
-    return DynamicNavigationView(
+    return DynamicallyOrientingNavigationView(
         lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
