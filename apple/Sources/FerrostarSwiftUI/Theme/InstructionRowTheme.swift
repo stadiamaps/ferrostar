@@ -7,10 +7,10 @@ public protocol InstructionRowTheme {
     /// The font for the step distance (or distance to step).
     var distanceFont: Font { get }
 
-    /// The color for primary instruction.
+    /// The color for instruction text.
     var instructionColor: Color { get }
 
-    /// The font for primary instruction.
+    /// The font for the instruction text.
     var instructionFont: Font { get }
 
     /// The color of the icon.

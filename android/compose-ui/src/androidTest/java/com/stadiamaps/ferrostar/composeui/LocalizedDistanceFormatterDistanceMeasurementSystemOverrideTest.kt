@@ -1,32 +1,31 @@
 package com.stadiamaps.ferrostar.composeui
 
-import android.icu.util.LocaleData
 import android.icu.util.ULocale
 import org.junit.Assert
 import org.junit.Test
 
 // NOTE: These tests have to be Android tests, since the ULocale APIs are not mocked.
 
-class LocalizedDistanceFormatterMeasurementSystemOverrideTest {
+class LocalizedDistanceFormatterDistanceMeasurementSystemOverrideTest {
   @Test
-  fun `measurement system override along with preferred locale override`() {
+  fun measurement_system_override_with_locale_override() {
     val formatter =
         LocalizedDistanceFormatter(
             localeOverride = ULocale.US,
-            measurementSystemOverride = LocaleData.MeasurementSystem.SI)
+            distanceMeasurementSystemOverride = DistanceMeasurementSystem.SI)
     Assert.assertEquals("17 km", formatter.format(17380.0))
 
-    formatter.measurementSystemOverride = null
+    formatter.distanceMeasurementSystemOverride = null
     Assert.assertEquals("11 mi", formatter.format(17380.0))
   }
 
   @Test
-  fun `measurement system override without a preferred locale override`() {
+  fun measurement_system_override_without_locale_override() {
     val formatter =
-        LocalizedDistanceFormatter(measurementSystemOverride = LocaleData.MeasurementSystem.SI)
+        LocalizedDistanceFormatter(distanceMeasurementSystemOverride = DistanceMeasurementSystem.SI)
     Assert.assertEquals("17 km", formatter.format(17380.0))
 
-    formatter.measurementSystemOverride = LocaleData.MeasurementSystem.US
+    formatter.distanceMeasurementSystemOverride = DistanceMeasurementSystem.IMPERIAL
     Assert.assertEquals("11 mi", formatter.format(17380.0))
   }
 }

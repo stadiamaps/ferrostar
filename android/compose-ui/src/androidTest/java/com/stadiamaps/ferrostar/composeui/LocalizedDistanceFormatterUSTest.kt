@@ -14,24 +14,24 @@ class LocalizedDistanceFormatterUSTest {
   private val formatter = LocalizedDistanceFormatter(localeOverride = ULocale.US)
 
   @Test
-  fun `distances greater than 1000 miles include a thousands separator`() {
+  fun distances_gt_1000mi_include_thousands_sep() {
     assertEquals("1,000 mi", formatter.format(1_609_344.0))
   }
 
   @Test
-  fun `distances greater than 10 miles are rounded to the nearest mile`() {
+  fun distances_greater_than_10mi_rounded_to_nearest_mile() {
     assertEquals("11 mi", formatter.format(17380.0))
   }
 
   @Test
-  fun `distances greater than 1000 feet but less that 10 miles are represented with at most one digit after the point`() {
+  fun distances_gt_1000ft_lt_10mi_have_at_most_1_fractional_digit() {
     assertEquals("0.2 mi", formatter.format(290.0))
     assertEquals("1 mi", formatter.format(1609.0))
     assertEquals("1.1 mi", formatter.format(1800.0))
   }
 
   @Test
-  fun `distances less than 290 meters are formatted as feet`() {
+  fun distances_lt_290m_formatted_as_feet() {
     assertEquals("900 ft", formatter.format(289.0))
     // Just over 850 ft; rounds up
     assertEquals("900 ft", formatter.format(260.0))
@@ -40,19 +40,19 @@ class LocalizedDistanceFormatterUSTest {
   }
 
   @Test
-  fun `distances between 100 and 500 feet are rounded to the nearest multiple of 50`() {
+  fun distances_between_100_and_500ft_rounded_to_nearest_multiple_of_50() {
     assertEquals("100 ft", formatter.format(32.0))
     assertEquals("150 ft", formatter.format(40.0))
   }
 
   @Test
-  fun `distances between 50 and 100 feet are rounded to the nearest multiple of 10`() {
+  fun distances_between_50_and_100ft_rounded_to_nearest_multiple_of_10() {
     assertEquals("90 ft", formatter.format(27.5))
     assertEquals("60 ft", formatter.format(17.0))
   }
 
   @Test
-  fun `distances less than 50 feet are rounded to the nearest multiple of 5`() {
+  fun distances_lt_50ft_rounded_to_nearest_multiple_of_5() {
     assertEquals("40 ft", formatter.format(12.0))
     assertEquals("35 ft", formatter.format(10.0))
   }
