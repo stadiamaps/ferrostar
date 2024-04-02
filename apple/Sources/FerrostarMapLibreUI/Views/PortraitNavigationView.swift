@@ -8,7 +8,6 @@ import SwiftUI
 
 /// A portrait orientation navigation view that includes the InstructionsView at the top.
 public struct PortraitNavigationView: View {
-
     let lightStyleURL: URL
     let darkStyleURL: URL
     let distanceFormatter: Formatter

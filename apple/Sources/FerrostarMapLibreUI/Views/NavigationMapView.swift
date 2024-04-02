@@ -6,7 +6,7 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-// TODO: Rename this NavigationView? Basically to detach the 
+// TODO: Rename this NavigationView? Basically to detach the
 public struct NavigationMapView: View {
     @Environment(\.colorScheme) var colorScheme
 
@@ -14,7 +14,7 @@ public struct NavigationMapView: View {
     let darkStyleURL: URL
     var mapViewContentInset: UIEdgeInsets = .zero
     let userLayers: [StyleLayerDefinition]
-    
+
     // TODO: Configurable camera and user "puck" rotation modes
 
     private var navigationState: NavigationState?
@@ -33,7 +33,7 @@ public struct NavigationMapView: View {
         self.darkStyleURL = darkStyleURL
         self.navigationState = navigationState
         _camera = camera
-        self.userLayers = makeMapContent()
+        userLayers = makeMapContent()
     }
 
     public var body: some View {
@@ -63,7 +63,7 @@ public struct NavigationMapView: View {
                     camera = .trackUserLocationWithCourse(zoom: 18, pitch: .fixed(45))
                 }
             }
-            
+
             userLayers
         }
         .mapViewContentInset(mapViewContentInset)

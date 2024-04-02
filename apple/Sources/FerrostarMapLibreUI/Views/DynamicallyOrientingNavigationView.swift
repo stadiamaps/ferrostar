@@ -8,10 +8,9 @@ import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
 public struct DynamicallyOrientingNavigationView: View {
-    
     // TODO: Add orientation handling once the landscape view is constructed.
     @State private var orientation = UIDeviceOrientation.unknown
-    
+
     let lightStyleURL: URL
     let darkStyleURL: URL
     let distanceFormatter: Formatter
@@ -21,7 +20,7 @@ public struct DynamicallyOrientingNavigationView: View {
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
     @Binding private var camera: MapViewCamera
-    
+
     public init(
         lightStyleURL: URL,
         darkStyleURL: URL,
@@ -36,10 +35,9 @@ public struct DynamicallyOrientingNavigationView: View {
         self.distanceFormatter = distanceFormatter
         _camera = camera
     }
-    
+
     public var body: some View {
         switch orientation {
-            
         case .landscapeLeft, .landscapeRight:
             Text("TODO")
         default:
