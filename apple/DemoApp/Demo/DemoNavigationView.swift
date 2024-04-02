@@ -13,7 +13,7 @@ let style = URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_k
 private let initialLocation = CLLocation(latitude: 37.332726,
                                          longitude: -122.031790)
 
-struct NavigationView: View {
+struct DemoNavigationView: View {
     private let navigationDelegate = NavigationDelegate()
 
     private var locationProvider: LocationProviding
@@ -52,7 +52,7 @@ struct NavigationView: View {
             || locationProvider.authorizationStatus == .authorizedWhenInUse
 
         NavigationStack {
-            NavigationMapView(
+            DynamicallyOrientingNavigationView(
                 lightStyleURL: style,
                 darkStyleURL: style,
                 navigationState: ferrostarCore.state,
@@ -221,5 +221,5 @@ struct NavigationView: View {
 }
 
 #Preview {
-    NavigationView()
+    DemoNavigationView()
 }
