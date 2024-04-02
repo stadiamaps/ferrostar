@@ -6,7 +6,6 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-// TODO: Rename this NavigationView? Basically to detach the
 public struct NavigationMapView: View {
     @Environment(\.colorScheme) var colorScheme
 
