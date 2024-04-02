@@ -6,7 +6,9 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    // TODO: Revert this to FAIL_ON_PROJECT_REPOS once ramani is installed from maven.
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
@@ -17,3 +19,7 @@ include ':core'
 include ':compose-ui'
 include ':demo-app'
 include ':MapLibreUI'
+
+// TODO: Remove this once ramani is installed from maven.
+include ':ramani-maplibre'
+project(':ramani-maplibre').projectDir = new File('ramani-maps/ramani-maplibre')
