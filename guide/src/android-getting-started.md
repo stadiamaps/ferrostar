@@ -3,6 +3,11 @@
 This section of the guide covers how to integrate Ferrostar into an Android app.
 We'll cover the "batteries included" approach, but flag areas for customization and overrides along the way.
 
+## Minimum requirements
+
+See the [platform support targets](./platform-support-targets.md) document
+for details on supported Android versions.
+
 ## Add dependencies
 
 Ferrostar releases are hosted on GitHub Packages.

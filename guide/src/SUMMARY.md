@@ -1,6 +1,7 @@
 # Summary
 
 [Introduction](./intro.md)
+[Platform Support Targets](./platform-support-targets.md)
 
 # Tutorial
 
