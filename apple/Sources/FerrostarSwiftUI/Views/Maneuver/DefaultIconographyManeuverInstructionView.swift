@@ -95,3 +95,17 @@ public struct DefaultIconographyManeuverInstructionView: View {
         distanceToNextManeuver: 1500.0
     )
 }
+
+#Preview("Custom formatter (UK)") {
+    let formatter = MKDistanceFormatter()
+    formatter.locale = Locale(identifier: "en-GB")
+    formatter.units = .imperialWithYards
+
+    return DefaultIconographyManeuverInstructionView(
+        text: "Merge Left onto Something",
+        maneuverType: .merge,
+        maneuverModifier: .left,
+        distanceFormatter: formatter,
+        distanceToNextManeuver: 300.0
+    )
+}

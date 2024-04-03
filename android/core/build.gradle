@@ -8,10 +8,10 @@ plugins {
 android {
     namespace 'com.stadiamaps.ferrostar.core'
     compileSdk 34
-    ndkVersion "25.2.9519653"
+    ndkVersion "26.2.11394342"
 
     defaultConfig {
-        minSdk 29
+        minSdk 25
         targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

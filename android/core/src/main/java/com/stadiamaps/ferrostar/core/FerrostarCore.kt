@@ -1,7 +1,6 @@
 package com.stadiamaps.ferrostar.core
 
 import java.net.URL
-import java.time.LocalDateTime
 import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -81,7 +80,7 @@ class FerrostarCore(
   private var _navigationController: NavigationController? = null
   private var _state: MutableStateFlow<FerrostarCoreState>? = null
   private var _routeRequestInFlight = false
-  private var _lastAutomaticRecalculation: LocalDateTime? = null
+  private var _lastAutomaticRecalculation: Long? = null
   private var _lastLocation: UserLocation? = null
 
   private var _config: NavigationControllerConfig? = null
@@ -215,8 +214,9 @@ class FerrostarCore(
     if (newState is TripState.Navigating) {
       if (newState.deviation is RouteDeviation.OffRoute) {
         if (!_routeRequestInFlight &&
-            _lastAutomaticRecalculation?.isAfter(
-                LocalDateTime.now().minusSeconds(minimumTimeBeforeRecalculaton)) != false) {
+            _lastAutomaticRecalculation?.let {
+              System.nanoTime() - it > minimumTimeBeforeRecalculaton
+            } != false) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
                   this, newState.deviation.deviationFromRouteLine, newState.remainingWaypoints)
@@ -247,7 +247,7 @@ class FerrostarCore(
                     }
                   }
                 } finally {
-                  _lastAutomaticRecalculation = LocalDateTime.now()
+                  _lastAutomaticRecalculation = System.nanoTime()
                   isCalculatingNewRoute = false
                 }
               }

@@ -43,7 +43,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
         HStack {
             maneuverView
                 .frame(width: 64)
-                .foregroundColor(theme.iconTintColor)
+                .foregroundStyle(theme.iconTintColor)
 
             VStack(alignment: .leading) {
                 if let distanceToNextManeuver {
@@ -65,7 +65,10 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
 }
 
 #Preview {
-    VStack {
+    let arabicFormatter = MKDistanceFormatter()
+    arabicFormatter.locale = Locale(identifier: "ar-SA")
+
+    return VStack {
         ManeuverInstructionView(
             text: "Turn Right on Road Ave.",
             distanceFormatter: MKDistanceFormatter(),
@@ -93,7 +96,8 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
         // Demonstrate a Right to Left
         ManeuverInstructionView(
             text: "ادمج يسارًا",
-            distanceFormatter: MKDistanceFormatter()
+            distanceFormatter: arabicFormatter,
+            distanceToNextManeuver: 100
         ) {
             ManeuverImage(maneuverType: .merge, maneuverModifier: .left)
                 .frame(width: 24)

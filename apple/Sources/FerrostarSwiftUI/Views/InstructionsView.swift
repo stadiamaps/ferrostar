@@ -127,7 +127,7 @@ public struct InstructionsView: View {
             visualInstruction: VisualInstruction(
                 primaryContent: VisualInstructionContent(
                     text: "Links einfädeln.",
-                    maneuverType: .turn,
+                    maneuverType: .merge,
                     maneuverModifier: .slightLeft,
                     roundaboutExitDegrees: nil
                 ),
