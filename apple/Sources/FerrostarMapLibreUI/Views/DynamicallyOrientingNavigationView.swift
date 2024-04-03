@@ -6,8 +6,10 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-public struct NavigationMapView: View {
-    @Environment(\.colorScheme) var colorScheme
+/// A navigation view that dynamically switches between portrait and landscape orientations.
+public struct DynamicallyOrientingNavigationView: View {
+    // TODO: Add orientation handling once the landscape view is constructed.
+    @State private var orientation = UIDeviceOrientation.unknown
 
     let lightStyleURL: URL
     let darkStyleURL: URL
@@ -25,6 +27,7 @@ public struct NavigationMapView: View {
         navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
         distanceFormatter: Formatter = MKDistanceFormatter()
+        // TODO: Add a symbol builder here for custom symbols along w/ route.
     ) {
         self.lightStyleURL = lightStyleURL
         self.darkStyleURL = darkStyleURL
@@ -34,61 +37,29 @@ public struct NavigationMapView: View {
     }
 
     public var body: some View {
-        MapView(
-            styleURL: colorScheme == .dark ? darkStyleURL : lightStyleURL,
-            camera: $camera,
-            locationManager: locationManager
-        ) {
-            // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
-
-            if let routePolyline = navigationState?.routePolyline {
-                RouteStyleLayer(polyline: routePolyline,
-                                identifier: "route-polyline",
-                                style: TravelledRouteStyle())
-            }
-
-            if let remainingRoutePolyline = navigationState?.remainingRoutePolyline {
-                RouteStyleLayer(polyline: remainingRoutePolyline,
-                                identifier: "remaining-route-polyline")
-            }
-
-            if let snappedLocation = navigationState?.snappedLocation {
-                locationManager.lastLocation = snappedLocation.clLocation
-
-                // TODO: Be less forceful about this.
-                DispatchQueue.main.async {
-                    camera = .trackUserLocationWithCourse(zoom: 18, pitch: .fixed(45))
-                }
-            }
+        switch orientation {
+        case .landscapeLeft, .landscapeRight:
+            Text("TODO")
+        default:
+            PortraitNavigationView(
+                lightStyleURL: lightStyleURL,
+                darkStyleURL: darkStyleURL,
+                navigationState: navigationState,
+                camera: $camera,
+                distanceFormatter: distanceFormatter
+            )
         }
-        // TODO: make this more configurable / adaptable
-        .mapViewContentInset(UIEdgeInsets(top: 450, left: 0, bottom: 0, right: 0))
-        .mapControls {
-            // No controls
-        }
-        .ignoresSafeArea(.all)
-        .overlay(alignment: .top, content: {
-            if let navigationState,
-               let visualInstructions = navigationState.visualInstructions
-            {
-                InstructionsView(
-                    visualInstruction: visualInstructions,
-                    distanceFormatter: distanceFormatter,
-                    distanceToNextManeuver: navigationState.distanceToNextManeuver
-                )
-            }
-        })
     }
 }
 
-#Preview("Navigation Map View (Imperial)") {
+#Preview("Portrait Navigation View (Imperial)") {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
     let formatter = MKDistanceFormatter()
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
 
-    return NavigationMapView(
+    return DynamicallyOrientingNavigationView(
         lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
@@ -97,14 +68,14 @@ public struct NavigationMapView: View {
     )
 }
 
-#Preview("Navigation Map View (Metric)") {
+#Preview("Portrait Navigation View (Metric)") {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
     let formatter = MKDistanceFormatter()
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .metric
 
-    return NavigationMapView(
+    return DynamicallyOrientingNavigationView(
         lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
