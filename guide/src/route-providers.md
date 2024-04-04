@@ -99,17 +99,21 @@ that uses a different request format but returns OSRM format responses.
 #### Implementing your own
 
 If you’re working with a routing engine
-that you think would be useful to others,
+and want to see it directly supported in Ferrostar,
 we welcome PRs!
 Have a look at the existing Valhalla (request generator)
-and OSRM (response parser) implementations.
+and OSRM (response parser) implementations for inspiration.
 
-If you’re dealing with servers+formats which make sense to upstream,
+If you’d rather keep the logic to yourself (ex: for an internal API),
 you can implement your own in Swift or Kotlin.
 Just implement/conform to one or both of
 `RouteRequestGenerator` and `RouteResponseParser`
-in your Swift and Kotlin code,
-depending on which parts are proprietary.
+in your Swift and Kotlin code.
+
+You may only need to implement one half or the other.
+For example, to integrate with an API that returns OSRM responses
+but has a different request format, you only need a `RouteRequestGenerator`;
+you can re-use the OSRM response parser.
 
 ### `CustomRouteProvider`
 
