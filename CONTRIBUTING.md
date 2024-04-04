@@ -67,7 +67,7 @@ xcode-select --install
 5. Run the iOS build script:
 
 ```shell
-cd apple/common
+cd common
 ./build-ios.sh
 ```
 
