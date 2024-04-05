@@ -1,5 +1,30 @@
 # Jetpack Compose
 
+The tutorial get you set up with defaults using a “batteries included” UI,
+but realistically this doesn’t work for every use case.
+This page walks you through the ways to customize the Compose UI to your liking.
+
+Note that this section is very much WIP.
+
+## Customizing the map
+
+Ferrostar includes a `NavigationMapView` based on [MapLibre Native](https://maplibre.org/).
+This is configurable with a number of constructor parameters.
+If the existing customizations don’t work for you,
+first we’d love to hear why via an issue on GitHub!
+In the case that you want complete control though,
+the map view itself is actually not that complex.
+
+### Style
+
+The demo app uses the MapLibre demo tiles, but you’ll need a proper basemap eventually.
+Just pass in the URL of any MapLibre-compatible JSON style.
+See the [vendors page](./vendors.md) for some ideas.
+
+### Camera
+
+TODO: Ability to override the built-in camera behavior (probably define a protocol for this).
+
 ## Customizing the instruction banners
 
 Ferrostar includes a number of views related to instruction banners.

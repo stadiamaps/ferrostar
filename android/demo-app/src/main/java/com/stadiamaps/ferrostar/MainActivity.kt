@@ -124,9 +124,7 @@ class MainActivity : ComponentActivity() {
             // but you can replace the styleURL with any valid MapLibre style URL.
             // See https://stadiamaps.github.io/ferrostar/vendors.html for some vendors.
             NavigationMapView(
-              styleUrl = "https://demotiles.maplibre.org/style.json",
-              viewModel = viewModel
-            )
+                styleUrl = "https://demotiles.maplibre.org/style.json", viewModel = viewModel)
           } else {
             // Loading indicator
             Column(

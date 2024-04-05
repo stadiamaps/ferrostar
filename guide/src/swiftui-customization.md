@@ -2,9 +2,9 @@
 
 The tutorial get you set up with defaults using a “batteries included” UI,
 but realistically this doesn’t work for every use case.
-This page walks you through the ways you can customize things to your liking.
+This page walks you through the ways to customize the SwiftUI frontend to your liking.
 
-Note that this page is very much WIP.
+Note that this section is very much WIP.
 
 ## Customizing the map
 
