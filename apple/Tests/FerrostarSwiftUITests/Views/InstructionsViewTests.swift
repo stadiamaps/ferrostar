@@ -48,6 +48,27 @@ final class InstructionsViewTests: XCTestCase {
         }
     }
 
+    func testSingularInstructionsViewWithPill() {
+        assertView {
+            InstructionsView(
+                visualInstruction: VisualInstruction(
+                    primaryContent: VisualInstructionContent(
+                        text: "Use the second exit to leave the roundabout.",
+                        maneuverType: .rotary,
+                        maneuverModifier: .slightRight,
+                        roundaboutExitDegrees: nil
+                    ),
+                    secondaryContent: nil,
+                    triggerDistanceBeforeManeuver: 123
+                ),
+                distanceFormatter: americanDistanceFormatter,
+                primaryRowTheme: TestingInstructionRowTheme(),
+                secondaryRowTheme: TestingInstructionRowTheme(),
+                showPillControl: true
+            )
+        }
+    }
+
     func testFormattingDE() {
         assertView {
             InstructionsView(

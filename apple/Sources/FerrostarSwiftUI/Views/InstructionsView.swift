@@ -28,13 +28,15 @@ public struct InstructionsView: View {
         distanceFormatter: Formatter = MKDistanceFormatter(),
         distanceToNextManeuver: CLLocationDistance? = nil,
         primaryRowTheme: InstructionRowTheme = DefaultInstructionRowTheme(),
-        secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme()
+        secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme(),
+        showPillControl: Bool = false
     ) {
         self.visualInstruction = visualInstruction
         self.distanceFormatter = distanceFormatter
         self.distanceToNextManeuver = distanceToNextManeuver
         self.primaryRowTheme = primaryRowTheme
         self.secondaryRowTheme = secondaryRowTheme
+        self.showPillControl = showPillControl
     }
 
     public var body: some View {
@@ -65,12 +67,12 @@ public struct InstructionsView: View {
                     .padding(.top, 8)
 
                     // TODO: Show the pill when interactivity is enabled
-//                    pillControl()
+                    pillControl(isActive: showPillControl)
                 }
                 .background(.gray.opacity(0.2))
             } else {
                 // TODO: Show the pill when interactivity is enabled
-//                pillControl()
+                pillControl(isActive: showPillControl)
             }
         }
         .background(Color.white)
@@ -80,10 +82,10 @@ public struct InstructionsView: View {
     }
 
     /// The pill control that is shown at the bottom of the Instructions View.
-    @ViewBuilder fileprivate func pillControl() -> some View {
+    @ViewBuilder fileprivate func pillControl(isActive: Bool) -> some View {
         RoundedRectangle(cornerRadius: 3)
             .frame(width: 24, height: 6)
-            .opacity(0.1)
+            .opacity(isActive ? 0.1 : 0.0)
             .padding(.bottom, 8)
     }
 }
@@ -137,7 +139,8 @@ public struct InstructionsView: View {
                 triggerDistanceBeforeManeuver: 123
             ),
             distanceFormatter: germanFormatter,
-            distanceToNextManeuver: 1500.0
+            distanceToNextManeuver: 1500.0,
+            showPillControl: true
         )
 
         Spacer()
