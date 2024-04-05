@@ -120,7 +120,13 @@ class MainActivity : ComponentActivity() {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
           val viewModel = navigationViewModel
           if (viewModel != null) {
-            NavigationMapView(viewModel = viewModel)
+            // Demo tiles illustrate a basic integration without any API key required,
+            // but you can replace the styleURL with any valid MapLibre style URL.
+            // See https://stadiamaps.github.io/ferrostar/vendors.html for some vendors.
+            NavigationMapView(
+              styleUrl = "https://demotiles.maplibre.org/style.json",
+              viewModel = viewModel
+            )
           } else {
             // Loading indicator
             Column(

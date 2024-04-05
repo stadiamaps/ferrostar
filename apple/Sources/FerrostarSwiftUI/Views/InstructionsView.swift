@@ -64,11 +64,13 @@ public struct InstructionsView: View {
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
 
-                    pillControl()
+                    // TODO: Show the pill when interactivity is enabled
+//                    pillControl()
                 }
                 .background(.gray.opacity(0.2))
             } else {
-                pillControl()
+                // TODO: Show the pill when interactivity is enabled
+//                pillControl()
             }
         }
         .background(Color.white)
