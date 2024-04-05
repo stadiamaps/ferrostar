@@ -15,6 +15,8 @@ public struct InstructionsView: View {
         visualInstruction.secondaryContent != nil
     }
 
+    private let showPillControl: Bool
+
     /// Create a visual instruction banner view. This view automatically displays the secondary
     /// instruction if there is one.
     ///
