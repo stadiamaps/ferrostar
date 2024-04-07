@@ -87,6 +87,3 @@ API-Keys.plist
 
 # Editor temp files
 *~
-
-# Temporary fix for Xcode 15.3
-apple/DemoApp/Ferrostar\ Demo.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved 
