@@ -11,8 +11,7 @@ public struct DynamicallyOrientingNavigationView: View {
     // TODO: Add orientation handling once the landscape view is constructed.
     @State private var orientation = UIDeviceOrientation.unknown
 
-    let lightStyleURL: URL
-    let darkStyleURL: URL
+    let styleURL: URL
     let distanceFormatter: Formatter
     // TODO: Configurable camera and user "puck" rotation modes
 
@@ -22,15 +21,13 @@ public struct DynamicallyOrientingNavigationView: View {
     @Binding private var camera: MapViewCamera
 
     public init(
-        lightStyleURL: URL,
-        darkStyleURL: URL,
+        styleURL: URL,
         navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
         distanceFormatter: Formatter = MKDistanceFormatter()
         // TODO: Add a symbol builder here for custom symbols along w/ route.
     ) {
-        self.lightStyleURL = lightStyleURL
-        self.darkStyleURL = darkStyleURL
+        self.styleURL = styleURL
         self.navigationState = navigationState
         self.distanceFormatter = distanceFormatter
         _camera = camera
@@ -42,8 +39,7 @@ public struct DynamicallyOrientingNavigationView: View {
             Text("TODO")
         default:
             PortraitNavigationView(
-                lightStyleURL: lightStyleURL,
-                darkStyleURL: darkStyleURL,
+                styleURL: styleURL,
                 navigationState: navigationState,
                 camera: $camera,
                 distanceFormatter: distanceFormatter
@@ -60,8 +56,7 @@ public struct DynamicallyOrientingNavigationView: View {
     formatter.units = .imperial
 
     return DynamicallyOrientingNavigationView(
-        lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         distanceFormatter: formatter
@@ -76,8 +71,7 @@ public struct DynamicallyOrientingNavigationView: View {
     formatter.units = .metric
 
     return DynamicallyOrientingNavigationView(
-        lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         distanceFormatter: formatter

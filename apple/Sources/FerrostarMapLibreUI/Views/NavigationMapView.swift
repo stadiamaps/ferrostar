@@ -13,10 +13,7 @@ import SwiftUI
 /// This is the basis of higher level views like
 /// ``DynamicallyOrientingNavigationView``.
 public struct NavigationMapView: View {
-    @Environment(\.colorScheme) var colorScheme
-
-    let lightStyleURL: URL
-    let darkStyleURL: URL
+    let styleURL: URL
     var mapViewContentInset: UIEdgeInsets = .zero
     let userLayers: [StyleLayerDefinition]
 
@@ -28,14 +25,12 @@ public struct NavigationMapView: View {
     @Binding private var camera: MapViewCamera
 
     public init(
-        lightStyleURL: URL,
-        darkStyleURL: URL,
+        styleURL: URL,
         navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
-        self.lightStyleURL = lightStyleURL
-        self.darkStyleURL = darkStyleURL
+        self.styleURL = styleURL
         self.navigationState = navigationState
         _camera = camera
         userLayers = makeMapContent()
@@ -43,7 +38,7 @@ public struct NavigationMapView: View {
 
     public var body: some View {
         MapView(
-            styleURL: colorScheme == .dark ? darkStyleURL : lightStyleURL,
+            styleURL: styleURL,
             camera: $camera,
             locationManager: locationManager
         ) {
@@ -84,8 +79,7 @@ public struct NavigationMapView: View {
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
 
     return NavigationMapView(
-        lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12))
     )
