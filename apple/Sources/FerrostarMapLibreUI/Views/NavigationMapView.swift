@@ -6,6 +6,12 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
+/// The most generic map view in Ferrostar.
+///
+/// This view includes renders a route line and includes a default camera.
+/// It does not include other UI elements like instruction banners.
+/// This is the basis of higher level views like
+/// ``DynamicallyOrientingNavigationView``.
 public struct NavigationMapView: View {
     @Environment(\.colorScheme) var colorScheme
 

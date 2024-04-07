@@ -16,6 +16,7 @@ public struct NavigationState: Hashable {
     public internal(set) var distanceToNextManeuver: CLLocationDistance?
     /// Indicates when the core is calculating a new route due to the user being off route
     public internal(set) var isCalculatingNewRoute: Bool = false
+    public internal(set) var routeDeviation: RouteDeviation?
 
     init(
         snappedLocation: UserLocation,

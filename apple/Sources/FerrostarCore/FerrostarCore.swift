@@ -266,6 +266,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
                 //                })
 
+                self.state?.routeDeviation = deviation
                 switch deviation {
                 case .noDeviation:
                     // No action
@@ -316,6 +317,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 self.state?.visualInstructions = nil
                 self.state?.snappedLocation = location
                 self.state?.spokenInstruction = nil
+                self.state?.routeDeviation = nil
             }
         }
     }
