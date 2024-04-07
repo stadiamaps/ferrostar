@@ -1,5 +1,5 @@
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{RouteStep, UserLocation, Waypoint};
+use crate::models::{RouteStep, UserLocation, VisualInstruction, Waypoint};
 use geo::LineString;
 
 /// Internal state of the navigation controller.
@@ -25,6 +25,9 @@ pub enum TripState {
         distance_to_next_maneuver: f64,
         /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
+        /// The visual instruction that should be displayed to the user.
+        visual_instruction: Option<VisualInstruction>,
+        // TODO: Do current visual instruction and spoken instruction belong here?
     },
     Complete,
 }

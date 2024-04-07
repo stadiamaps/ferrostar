@@ -2945,7 +2945,11 @@ public enum TripState {
         /**
             * The route deviation status: is the user following the route or not?
             */
-        deviation: RouteDeviation
+        deviation: RouteDeviation,
+        /**
+            * The visual instruction that should be displayed to the user.
+            */
+        visualInstruction: VisualInstruction?
     )
     case complete
 }
@@ -2961,7 +2965,8 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
-                deviation: FfiConverterTypeRouteDeviation.read(from: &buf)
+                deviation: FfiConverterTypeRouteDeviation.read(from: &buf),
+                visualInstruction: FfiConverterOptionTypeVisualInstruction.read(from: &buf)
             )
 
         case 2: return .complete
@@ -2972,14 +2977,21 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
 
     public static func write(_ value: TripState, into buf: inout [UInt8]) {
         switch value {
-        case let .navigating(snappedUserLocation, remainingSteps, remainingWaypoints, distanceToNextManeuver,
-                             deviation):
+        case let .navigating(
+            snappedUserLocation,
+            remainingSteps,
+            remainingWaypoints,
+            distanceToNextManeuver,
+            deviation,
+            visualInstruction
+        ):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
+            FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
 
         case .complete:
             writeInt(&buf, Int32(2))
@@ -3129,6 +3141,27 @@ private struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeCourseOverGround.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterOptionTypeVisualInstruction: FfiConverterRustBuffer {
+    typealias SwiftType = VisualInstruction?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeVisualInstruction.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeVisualInstruction.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }

@@ -206,6 +206,24 @@ impl RouteStep {
             y: coord.lat,
         }))
     }
+
+    /// Gets the active visual instruction given the user's progress along the step.
+    pub fn get_active_visual_instruction(
+        &self,
+        distance_to_end_of_step: f64,
+    ) -> Option<&VisualInstruction> {
+        // Plain English: finds the *last* instruction where we are past the trigger distance.
+        //
+        // We have a fudge factor to account for imprecision in calculation methodologies from different engines and CPUs,
+        // particularly at the start of a step.
+        self.visual_instructions
+            .iter()
+            .rev()
+            .filter(| instruction| {
+                distance_to_end_of_step - instruction.trigger_distance_before_maneuver <= 5.0
+            })
+            .next()
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, uniffi::Record)]
