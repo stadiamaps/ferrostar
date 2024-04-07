@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import uniffi.ferrostar.GeographicCoordinate
+import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.SpokenInstruction
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
@@ -19,6 +20,8 @@ data class NavigationUiState(
     val visualInstruction: VisualInstruction?,
     val spokenInstruction: SpokenInstruction?,
     val distanceToNextManeuver: Double?,
+    val isCalculatingNewRoute: Boolean?,
+    val routeDeviation: RouteDeviation?
 )
 
 class NavigationViewModel(
@@ -55,7 +58,9 @@ class NavigationViewModel(
           routeGeometry = routeGeometry,
           visualInstruction = visualInstructionForState(coreState.tripState),
           spokenInstruction = null,
-          distanceToNextManeuver = distanceForState(coreState.tripState))
+          distanceToNextManeuver = distanceForState(coreState.tripState),
+          isCalculatingNewRoute = coreState.isCalculatingNewRoute,
+          routeDeviation = deviationForState(coreState.tripState))
 }
 
 private fun distanceForState(newState: TripState) =
@@ -77,4 +82,10 @@ private fun visualInstructionForState(newState: TripState) =
       }
     } catch (_: NoSuchElementException) {
       null
+    }
+
+private fun deviationForState(newState: TripState) =
+    when (newState) {
+      is TripState.Navigating -> newState.deviation
+      is TripState.Complete -> null
     }
