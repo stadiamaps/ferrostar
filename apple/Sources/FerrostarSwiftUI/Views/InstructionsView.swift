@@ -77,7 +77,7 @@ public struct InstructionsView: View {
                 pillControl(isActive: showPillControl)
             }
         }
-        .background(secondaryRowTheme.backgroundColor)
+        .background(primaryRowTheme.backgroundColor)
         .clipShape(.rect(cornerRadius: 12))
         .padding()
         .shadow(radius: 12)
