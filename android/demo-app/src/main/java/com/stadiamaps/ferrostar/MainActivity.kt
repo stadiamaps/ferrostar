@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
+import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -30,6 +31,7 @@ import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
 import java.net.URL
 import java.time.Duration
 import java.time.Instant
+import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -61,8 +63,32 @@ class MainActivity : ComponentActivity() {
           locationProvider = locationProvider,
       )
 
+  private lateinit var ttsObserver: AndroidTtsObserver
+
+  override fun onDestroy() {
+    super.onDestroy()
+
+    // Don't forget to clean up!
+    ttsObserver.shutdown()
+  }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+
+    // Set up text-to-speech for spoken instructions. This is a pretty "default" setup.
+    // Most Android apps will want to set this up. TTS setup is *not* automatic.
+    //
+    // Be sure to read the class docs for further setup details.
+    //
+    // NOTE: We can't set this property in the same way as we do the core, because the context will
+    // not be initialized yet, but the language won't save us from doing it anyways. This will
+    // result in a confusing NPE.
+    ttsObserver =
+        AndroidTtsObserver(this) {
+          val status = it?.setLanguage(Locale.US)
+          android.util.Log.i("MainActivity", "setLanguage status: $status")
+        }
+    core.spokenInstructionObserver = ttsObserver
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!

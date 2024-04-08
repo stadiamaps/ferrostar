@@ -1879,6 +1879,11 @@ public func FfiConverterTypeRouteStep_lower(_ value: RouteStep) -> RustBuffer {
     FfiConverterTypeRouteStep.lower(value)
 }
 
+/**
+ * An instruction that can be synthesized using a TTS engine to announce an upcoming maneuver.
+ *
+ * Note that these do not have any locale information attached.
+ */
 public struct SpokenInstruction {
     /**
      * Plain-text instruction which can be synthesized with a TTS engine.
@@ -1892,6 +1897,17 @@ public struct SpokenInstruction {
      * How far (in meters) from the upcoming maneuver the instruction should start being displayed
      */
     public var triggerDistanceBeforeManeuver: Double
+    /**
+     * A unique identifier for this instruction.
+     *
+     * This is provided so that platform-layer integrations can easily disambiguate between distinct utterances,
+     * which may have the same textual content.
+     * UUIds conveniently fill this purpose.
+     *
+     * NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
+     * This should be theoretically possible though if someone cares to write up a proposal and a PR.
+     */
+    public var utteranceId: Uuid
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -1907,11 +1923,23 @@ public struct SpokenInstruction {
         /**
             * How far (in meters) from the upcoming maneuver the instruction should start being displayed
             */
-        triggerDistanceBeforeManeuver: Double
+        triggerDistanceBeforeManeuver: Double,
+        /**
+            * A unique identifier for this instruction.
+            *
+            * This is provided so that platform-layer integrations can easily disambiguate between distinct utterances,
+            * which may have the same textual content.
+            * UUIds conveniently fill this purpose.
+            *
+            * NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
+            * This should be theoretically possible though if someone cares to write up a proposal and a PR.
+            */
+        utteranceId: Uuid
     ) {
         self.text = text
         self.ssml = ssml
         self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
+        self.utteranceId = utteranceId
     }
 }
 
@@ -1926,6 +1954,9 @@ extension SpokenInstruction: Equatable, Hashable {
         if lhs.triggerDistanceBeforeManeuver != rhs.triggerDistanceBeforeManeuver {
             return false
         }
+        if lhs.utteranceId != rhs.utteranceId {
+            return false
+        }
         return true
     }
 
@@ -1933,6 +1964,7 @@ extension SpokenInstruction: Equatable, Hashable {
         hasher.combine(text)
         hasher.combine(ssml)
         hasher.combine(triggerDistanceBeforeManeuver)
+        hasher.combine(utteranceId)
     }
 }
 
@@ -1941,7 +1973,8 @@ public struct FfiConverterTypeSpokenInstruction: FfiConverterRustBuffer {
         try SpokenInstruction(
             text: FfiConverterString.read(from: &buf),
             ssml: FfiConverterOptionString.read(from: &buf),
-            triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf)
+            triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf),
+            utteranceId: FfiConverterTypeUuid.read(from: &buf)
         )
     }
 
@@ -1949,6 +1982,7 @@ public struct FfiConverterTypeSpokenInstruction: FfiConverterRustBuffer {
         FfiConverterString.write(value.text, into: &buf)
         FfiConverterOptionString.write(value.ssml, into: &buf)
         FfiConverterDouble.write(value.triggerDistanceBeforeManeuver, into: &buf)
+        FfiConverterTypeUuid.write(value.utteranceId, into: &buf)
     }
 }
 
@@ -2947,9 +2981,15 @@ public enum TripState {
             */
         deviation: RouteDeviation,
         /**
-            * The visual instruction that should be displayed to the user.
+            * The visual instruction that should be displayed in the user interface.
             */
-        visualInstruction: VisualInstruction?
+        visualInstruction: VisualInstruction?,
+        /**
+            * The most recent spoken instruction that should be synthesized using TTS.
+            *
+            * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
+            */
+        spokenInstruction: SpokenInstruction?
     )
     case complete
 }
@@ -2966,7 +3006,8 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
                 distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
                 deviation: FfiConverterTypeRouteDeviation.read(from: &buf),
-                visualInstruction: FfiConverterOptionTypeVisualInstruction.read(from: &buf)
+                visualInstruction: FfiConverterOptionTypeVisualInstruction.read(from: &buf),
+                spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
             )
 
         case 2: return .complete
@@ -2983,7 +3024,8 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             remainingWaypoints,
             distanceToNextManeuver,
             deviation,
-            visualInstruction
+            visualInstruction,
+            spokenInstruction
         ):
             writeInt(&buf, Int32(1))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
@@ -2992,6 +3034,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
             FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
+            FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
 
         case .complete:
             writeInt(&buf, Int32(2))
@@ -3141,6 +3184,27 @@ private struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeCourseOverGround.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterOptionTypeSpokenInstruction: FfiConverterRustBuffer {
+    typealias SwiftType = SpokenInstruction?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeSpokenInstruction.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeSpokenInstruction.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -3383,6 +3447,37 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
         }
         return dict
     }
+}
+
+/**
+ * Typealias from the type name used in the UDL file to the builtin type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
+public typealias Uuid = String
+public struct FfiConverterTypeUuid: FfiConverter {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Uuid {
+        try FfiConverterString.read(from: &buf)
+    }
+
+    public static func write(_ value: Uuid, into buf: inout [UInt8]) {
+        FfiConverterString.write(value, into: &buf)
+    }
+
+    public static func lift(_ value: RustBuffer) throws -> Uuid {
+        try FfiConverterString.lift(value)
+    }
+
+    public static func lower(_ value: Uuid) -> RustBuffer {
+        FfiConverterString.lower(value)
+    }
+}
+
+public func FfiConverterTypeUuid_lift(_ value: RustBuffer) throws -> Uuid {
+    try FfiConverterTypeUuid.lift(value)
+}
+
+public func FfiConverterTypeUuid_lower(_ value: Uuid) -> RustBuffer {
+    FfiConverterTypeUuid.lower(value)
 }
 
 /**

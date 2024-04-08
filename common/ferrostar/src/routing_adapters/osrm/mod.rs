@@ -9,6 +9,7 @@ use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingRespons
 use geo::BoundingRect;
 use polyline::decode_polyline;
 use std::collections::HashSet;
+use uuid::Uuid;
 
 /// A response parser for OSRM-compatible routing backends.
 ///
@@ -135,6 +136,7 @@ impl RouteStep {
                 text: instruction.announcement.clone(),
                 ssml: instruction.ssml_announcement.clone(),
                 trigger_distance_before_maneuver: instruction.distance_along_geometry,
+                utterance_id: Uuid::new_v4(),
             })
             .collect();
 

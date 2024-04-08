@@ -252,18 +252,16 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 remainingWaypoints: remainingWaypoints,
                 distanceToNextManeuver: distanceToNextManeuver,
                 deviation: deviation,
-                visualInstruction: visualInstruction
+                visualInstruction: visualInstruction,
+                spokenInstruction: spokenInstruction
             ):
                 self.state?.snappedLocation = snappedLocation
                 self.state?.currentStep = remainingSteps.first
                 // TODO: This isn't great; the core should probably just tell us which instruction to display
                 self.state?.visualInstruction = visualInstruction
+                // TODO: Create a spoken instruction observer protocol and do something with this
+                self.state?.spokenInstruction = spokenInstruction
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
-
-                //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: {
-                //                instruction in
-                //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
-                //                })
 
                 self.state?.routeDeviation = deviation
                 switch deviation {

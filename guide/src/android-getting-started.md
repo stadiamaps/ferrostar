@@ -3,6 +3,9 @@
 This section of the guide covers how to integrate Ferrostar into an Android app.
 We'll cover the "batteries included" approach, but flag areas for customization and overrides along the way.
 
+Note that while this section is WIP, we have a well-documented [demo app](https://github.com/stadiamaps/ferrostar/tree/main/android/demo-app).
+The TODOs will get filled in eventually, but the demo app is a good reference for now.
+
 ## Minimum requirements
 
 See the [platform support targets](./platform-support-targets.md) document
@@ -141,6 +144,22 @@ private val core =
 such as using a Valhalla [Route Provider](./route-providers.md#bundled-support).
 
 `FerrostarCore` automatically subscribes to location updates from the `LocationProvider`.
+
+## Set up voice guidance
+
+Ferrostar is able to process spoken instructions generated from some routing engines.
+The `com.stadiamaps.ferrostar.core.SpokenInstructionObserver` interface
+specifies haw to create your own observer.
+A reference implementation is provided in the `AndroidTtsObserver` class,
+which uses the text-to-speech engine built into Android.
+PRs welcome for other popular services (ex: Amazon Polly;
+note that some APIs also provide SSML instructions which work great with this!).
+
+TODO (unsure where best to document the full setup until we see how it shakes out on iOS)
+
+* Android Manifest
+* Set the language
+* Additional config (you have full control)
 
 ## Getting a route
 

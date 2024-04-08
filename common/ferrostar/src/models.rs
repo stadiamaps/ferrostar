@@ -5,6 +5,7 @@ use std::time::SystemTime;
 
 #[cfg(test)]
 use serde::Serialize;
+use uuid::Uuid;
 
 #[derive(Debug, thiserror::Error, uniffi::Error)]
 pub enum ModelError {
@@ -216,16 +217,29 @@ impl RouteStep {
         //
         // We have a fudge factor to account for imprecision in calculation methodologies from different engines and CPUs,
         // particularly at the start of a step.
-        self.visual_instructions
-            .iter()
-            .rev()
-            .filter(| instruction| {
-                distance_to_end_of_step - instruction.trigger_distance_before_maneuver <= 5.0
-            })
-            .next()
+        self.visual_instructions.iter().rev().find(|instruction| {
+            distance_to_end_of_step - instruction.trigger_distance_before_maneuver <= 5.0
+        })
+    }
+
+    /// Gets the current (latest?) spoken instruction given the user's progress along the step.
+    pub fn get_current_spoken_instruction(
+        &self,
+        distance_to_end_of_step: f64,
+    ) -> Option<&SpokenInstruction> {
+        // Plain English: finds the *last* instruction where we are past the trigger distance.
+        //
+        // We have a fudge factor to account for imprecision in calculation methodologies from different engines and CPUs,
+        // particularly at the start of a step.
+        self.spoken_instructions.iter().rev().find(|instruction| {
+            distance_to_end_of_step - instruction.trigger_distance_before_maneuver <= 5.0
+        })
     }
 }
 
+/// An instruction that can be synthesized using a TTS engine to announce an upcoming maneuver.
+///
+/// Note that these do not have any locale information attached.
 #[derive(Debug, Clone, PartialEq, uniffi::Record)]
 #[cfg_attr(test, derive(Serialize))]
 pub struct SpokenInstruction {
@@ -235,6 +249,16 @@ pub struct SpokenInstruction {
     pub ssml: Option<String>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
     pub trigger_distance_before_maneuver: f64,
+    /// A unique identifier for this instruction.
+    ///
+    /// This is provided so that platform-layer integrations can easily disambiguate between distinct utterances,
+    /// which may have the same textual content.
+    /// UUIds conveniently fill this purpose.
+    ///
+    /// NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
+    /// This should be theoretically possible though if someone cares to write up a proposal and a PR.
+    #[cfg_attr(test, serde(skip_serializing))]
+    pub utterance_id: Uuid,
 }
 
 /// Indicates the type of maneuver to perform.

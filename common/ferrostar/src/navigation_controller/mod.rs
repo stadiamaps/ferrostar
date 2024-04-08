@@ -54,6 +54,9 @@ impl NavigationController {
         let visual_instruction = current_route_step
             .get_active_visual_instruction(distance_to_next_maneuver)
             .cloned();
+        let spoken_instruction = current_route_step
+            .get_current_spoken_instruction(distance_to_next_maneuver)
+            .cloned();
 
         TripState::Navigating {
             snapped_user_location,
@@ -63,6 +66,7 @@ impl NavigationController {
             distance_to_next_maneuver,
             deviation,
             visual_instruction,
+            spoken_instruction,
         }
     }
 
@@ -118,6 +122,9 @@ impl NavigationController {
                         let visual_instruction = current_step
                             .get_active_visual_instruction(distance_to_next_maneuver)
                             .cloned();
+                        let spoken_instruction = current_step
+                            .get_current_spoken_instruction(distance_to_next_maneuver)
+                            .cloned();
 
                         TripState::Navigating {
                             snapped_user_location: *snapped_user_location,
@@ -128,6 +135,7 @@ impl NavigationController {
                             // as it requires a non-snapped user location.
                             deviation: *deviation,
                             visual_instruction,
+                            spoken_instruction,
                         }
                     }
                     StepAdvanceStatus::EndOfRoute => TripState::Complete,
@@ -147,6 +155,7 @@ impl NavigationController {
                 ref remaining_waypoints,
                 deviation,
                 visual_instruction,
+                spoken_instruction,
                 ..
             } => {
                 let Some(current_step) = remaining_steps.first() else {
@@ -172,6 +181,7 @@ impl NavigationController {
                     distance_to_next_maneuver,
                     deviation: *deviation,
                     visual_instruction: visual_instruction.clone(),
+                    spoken_instruction: spoken_instruction.clone(),
                 };
 
                 match if should_advance_to_next_step(
@@ -193,6 +203,7 @@ impl NavigationController {
                         distance_to_next_maneuver,
                         deviation: _,
                         visual_instruction: _,
+                        spoken_instruction: _,
                     } => {
                         // Recalculate deviation. This happens later, as the current step may have changed.
                         // The distance to the next maneuver will be updated by advance_to_next_step if needed.
@@ -208,6 +219,9 @@ impl NavigationController {
                         let visual_instruction = current_step
                             .get_active_visual_instruction(distance_to_next_maneuver)
                             .cloned();
+                        let spoken_instruction = current_step
+                            .get_current_spoken_instruction(distance_to_next_maneuver)
+                            .cloned();
 
                         TripState::Navigating {
                             snapped_user_location,
@@ -216,6 +230,7 @@ impl NavigationController {
                             distance_to_next_maneuver,
                             deviation,
                             visual_instruction,
+                            spoken_instruction,
                         }
                     }
                     TripState::Complete => TripState::Complete,
