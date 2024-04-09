@@ -6,20 +6,22 @@ pluginManagement {
     }
 }
 dependencyResolutionManagement {
-    // TODO: Revert this to FAIL_ON_PROJECT_REPOS once ramani is installed from maven.
-//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        maven {
+            url = 'https://maven.pkg.github.com/Rallista/maplibre-compose-playground'
+            credentials {
+                username = settings.ext.find('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+                password = settings.ext.find('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+
         google()
         mavenCentral()
     }
 }
-rootProject.name = "Ferrostar"
+rootProject.name = 'Ferrostar'
 include ':core'
 include ':compose-ui'
 include ':demo-app'
 include ':MapLibreUI'
-
-// TODO: Remove this once ramani is installed from maven.
-include ':ramani-maplibre'
-project(':ramani-maplibre').projectDir = new File('ramani-maps/ramani-maplibre')
