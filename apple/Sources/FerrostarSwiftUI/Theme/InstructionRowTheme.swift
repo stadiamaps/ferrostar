@@ -15,6 +15,9 @@ public protocol InstructionRowTheme {
 
     /// The color of the icon.
     var iconTintColor: Color { get }
+
+    /// The color of the background.
+    var backgroundColor: Color { get }
 }
 
 public struct DefaultInstructionRowTheme: InstructionRowTheme, Equatable, Hashable {
@@ -23,6 +26,7 @@ public struct DefaultInstructionRowTheme: InstructionRowTheme, Equatable, Hashab
     public var instructionColor: Color = .secondary
     public var instructionFont: Font = .title2
     public var iconTintColor: Color = .primary
+    public var backgroundColor: Color = .init(.systemBackground)
 
     public init() {
         // No action. Create your own theme or modify this inline if you want to customize
@@ -35,6 +39,7 @@ public struct DefaultSecondaryInstructionRowTheme: InstructionRowTheme, Equatabl
     public var instructionColor: Color = .secondary
     public var instructionFont: Font = .subheadline
     public var iconTintColor: Color = .primary
+    public var backgroundColor: Color = .init(.secondarySystemBackground)
 
     public init() {
         // No action. Create your own theme or modify this inline if you want to customize
