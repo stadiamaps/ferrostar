@@ -51,9 +51,9 @@ interface AndroidTtsStatusListener {
  *   errors.
  */
 class AndroidTtsObserver(
-  context: Context,
-  engine: String? = null,
-  var statusObserver: AndroidTtsStatusListener? = null,
+    context: Context,
+    engine: String? = null,
+    var statusObserver: AndroidTtsStatusListener? = null,
 ) : SpokenInstructionObserver, OnInitListener {
   companion object {
     private const val TAG = "AndroidTtsObserver"

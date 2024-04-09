@@ -179,6 +179,7 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
   }
 
   override fun onTtsSpeakError(utteranceId: String, status: Int) {
-    android.util.Log.e(TAG, "Something went wrong synthesizing utterance $utteranceId. Status code: $status.")
+    android.util.Log.e(
+        TAG, "Something went wrong synthesizing utterance $utteranceId. Status code: $status.")
   }
 }
