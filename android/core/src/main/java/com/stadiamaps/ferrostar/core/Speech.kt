@@ -17,6 +17,22 @@ interface SpokenInstructionObserver {
   var isMuted: Boolean
 }
 
+/** Observes the status of an [AndroidTtsObserver]. */
+interface AndroidTtsStatusListener {
+  /**
+   * Invoked when the [TextToSpeech] instance initialization is complete.
+   *
+   * If successful, the value [tts] will be non-null. Otherwise, it will be null. The status code
+   * returned by the init listener is passed as-is via [status].
+   */
+  fun onTtsInitialized(tts: TextToSpeech?, status: Int)
+
+  /**
+   * Invoked whenever [TextToSpeech.speak] returns a status code other than [TextToSpeech.SUCCESS].
+   */
+  fun onTtsSpeakError(utteranceId: String, status: Int)
+}
+
 /**
  * A configurable [SpokenInstructionObserver] integrated with the built-in Android text-to-speech
  * APIs.
@@ -31,15 +47,13 @@ interface SpokenInstructionObserver {
  *
  * @param context the Android context (required to initialize the [TextToSpeech] class).
  * @param engine the text to speech engine package name. If null, the system default is used.
- * @param configure a callback will to be invoked once the engine either succeeds or fails to
- *   initialize. You can use this to configure the instance (ex: by calling
- *   [TextToSpeech.setLanguage]). If initialization failed, the argument to the callback will be
- *   null.
+ * @param statusObserver an object that listens for status events like initialization and synthesis
+ *   errors.
  */
 class AndroidTtsObserver(
-    context: Context,
-    engine: String? = null,
-    private val configure: (TextToSpeech?) -> Unit = {}
+  context: Context,
+  engine: String? = null,
+  var statusObserver: AndroidTtsStatusListener? = null,
 ) : SpokenInstructionObserver, OnInitListener {
   companion object {
     private const val TAG = "AndroidTtsObserver"
@@ -84,14 +98,16 @@ class AndroidTtsObserver(
    * Fails silently if TTS is unavailable.
    */
   override fun onSpokenInstructionTrigger(spokenInstruction: SpokenInstruction) {
-    if (isInitializedSuccessfully && !isMuted) {
+    val tts = tts
+    if (tts != null && isInitializedSuccessfully && !isMuted) {
       // In the future, someone may wish to parse SSML to get more natural utterances into TtsSpans.
       // Amazon Polly is generally the intended target for SSML on Android though.
       val status =
-          tts?.speak(
+          tts.speak(
               spokenInstruction.text, TextToSpeech.QUEUE_ADD, null, spokenInstruction.utteranceId)
       if (status != TextToSpeech.SUCCESS) {
-        android.util.Log.e(TAG, "Unable to speak instruction (result was not SUCCESS).")
+        android.util.Log.e(TAG, "Unable to speak instruction: code $status")
+        statusObserver?.onTtsSpeakError(spokenInstruction.utteranceId, status)
       }
     }
   }
@@ -103,7 +119,7 @@ class AndroidTtsObserver(
       android.util.Log.e(TAG, "Unable to initialize TTS engine: code $status")
     }
 
-    configure(tts)
+    statusObserver?.onTtsInitialized(tts, status)
   }
 
   /**

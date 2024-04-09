@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar
 
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
+import com.stadiamaps.ferrostar.core.AndroidTtsStatusListener
 import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -43,7 +45,11 @@ import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
+  companion object {
+    private const val TAG = "MainActivity"
+  }
+
   private val initialSimulatedLocation =
       UserLocation(
           GeographicCoordinate(37.807770999999995, -122.41970699999999), 6.0, null, Instant.now())
@@ -83,11 +89,7 @@ class MainActivity : ComponentActivity() {
     // NOTE: We can't set this property in the same way as we do the core, because the context will
     // not be initialized yet, but the language won't save us from doing it anyways. This will
     // result in a confusing NPE.
-    ttsObserver =
-        AndroidTtsObserver(this) {
-          val status = it?.setLanguage(Locale.US)
-          android.util.Log.i("MainActivity", "setLanguage status: $status")
-        }
+    ttsObserver = AndroidTtsObserver(this, statusObserver = this)
     core.spokenInstructionObserver = ttsObserver
 
     // Not all navigation apps will require this sort of extra configuration.
@@ -163,5 +165,20 @@ class MainActivity : ComponentActivity() {
         }
       }
     }
+  }
+
+  // TTS listener methods
+
+  override fun onTtsInitialized(tts: TextToSpeech?, status: Int) {
+    if (tts != null) {
+      tts.setLanguage(Locale.US)
+      android.util.Log.i(TAG, "setLanguage status: $status")
+    } else {
+      android.util.Log.e(TAG, "TTS setup failed! $status")
+    }
+  }
+
+  override fun onTtsSpeakError(utteranceId: String, status: Int) {
+    android.util.Log.e(TAG, "Something went wrong synthesizing utterance $utteranceId. Status code: $status.")
   }
 }

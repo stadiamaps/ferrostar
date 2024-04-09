@@ -257,7 +257,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
             ):
                 self.state?.snappedLocation = snappedLocation
                 self.state?.currentStep = remainingSteps.first
-                // TODO: This isn't great; the core should probably just tell us which instruction to display
                 self.state?.visualInstruction = visualInstruction
                 // TODO: Create a spoken instruction observer protocol and do something with this
                 self.state?.spokenInstruction = spokenInstruction
