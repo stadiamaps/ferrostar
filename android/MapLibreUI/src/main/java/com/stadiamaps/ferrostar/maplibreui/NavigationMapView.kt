@@ -12,7 +12,6 @@ import org.ramani.compose.CameraMotionType
 import org.ramani.compose.CameraPosition
 import org.ramani.compose.Circle
 import org.ramani.compose.MapLibre
-import org.ramani.compose.Polyline
 import uniffi.ferrostar.VisualInstruction
 
 @Composable
@@ -40,17 +39,17 @@ fun NavigationMapView(
                 tilt = 45.0,
                 bearing = uiState.value.snappedLocation.courseOverGround?.degrees?.toDouble(),
                 motionType = CameraMotionType.EASE)) {
+          BorderedPolyline(
+              points = uiState.value.routeGeometry.map { LatLng(it.lat, it.lng) }, zIndex = 1)
           Circle(
               center =
                   LatLng(
                       uiState.value.snappedLocation.coordinates.lat,
                       uiState.value.snappedLocation.coordinates.lng),
               radius = 10f,
-              color = "Blue")
-          Polyline(
-              points = uiState.value.routeGeometry.map { LatLng(it.lat, it.lng) },
-              color = "Red",
-              lineWidth = 5f)
+              color = "Blue",
+              zIndex = 2,
+          )
         }
 
     uiState.value.visualInstruction?.let {
