@@ -15,6 +15,8 @@ first we’d love to hear why via an issue on GitHub!
 In the case that you want complete control though,
 the map view itself is actually not that complex.
 
+TODO: Passing a composable to add layers to the map (WIP)
+
 ### Style
 
 The demo app uses the MapLibre demo tiles, but you’ll need a proper basemap eventually.

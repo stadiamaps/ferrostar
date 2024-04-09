@@ -8,8 +8,7 @@ import SwiftUI
 
 /// A portrait orientation navigation view that includes the InstructionsView at the top.
 public struct PortraitNavigationView: View {
-    let lightStyleURL: URL
-    let darkStyleURL: URL
+    let styleURL: URL
     let distanceFormatter: Formatter
     // TODO: Configurable camera and user "puck" rotation modes
 
@@ -19,15 +18,13 @@ public struct PortraitNavigationView: View {
     @Binding private var camera: MapViewCamera
 
     public init(
-        lightStyleURL: URL,
-        darkStyleURL: URL,
+        styleURL: URL,
         navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
         distanceFormatter: Formatter = MKDistanceFormatter()
         // TODO: Add a symbol builder here for custom symbols along w/ route.
     ) {
-        self.lightStyleURL = lightStyleURL
-        self.darkStyleURL = darkStyleURL
+        self.styleURL = styleURL
         self.navigationState = navigationState
         self.distanceFormatter = distanceFormatter
         _camera = camera
@@ -35,15 +32,14 @@ public struct PortraitNavigationView: View {
 
     public var body: some View {
         NavigationMapView(
-            lightStyleURL: lightStyleURL,
-            darkStyleURL: darkStyleURL,
+            styleURL: styleURL,
             navigationState: navigationState,
             camera: $camera
         )
         .navigationMapViewContentInset(.portrait)
         .overlay(alignment: .top, content: {
             if let navigationState,
-               let visualInstructions = navigationState.visualInstructions
+               let visualInstructions = navigationState.visualInstruction
             {
                 InstructionsView(
                     visualInstruction: visualInstructions,
@@ -63,8 +59,7 @@ public struct PortraitNavigationView: View {
     formatter.units = .imperial
 
     return PortraitNavigationView(
-        lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         distanceFormatter: formatter
@@ -79,8 +74,7 @@ public struct PortraitNavigationView: View {
     formatter.units = .metric
 
     return PortraitNavigationView(
-        lightStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        darkStyleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
+        styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         distanceFormatter: formatter

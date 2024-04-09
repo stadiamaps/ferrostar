@@ -8,17 +8,22 @@ Note that this section is very much WIP.
 
 ## Customizing the map
 
-Ferrostar includes a `NavigationMapView` based on [MapLibre Native](https://maplibre.org/).
+Ferrostar includes a map view based on [MapLibre Native](https://maplibre.org/).
 This is configurable with a number of constructor parameters.
 If the existing customizations don’t work for you,
 first we’d love to hear why via an issue on GitHub!
 In the case that you want complete control though,
 the map view itself is actually not that complex.
 
+TODO: Write-up on the views as these are still in flux.
+See the demo app for a high-level example and look at the views it uses for now.
+
 ### Style
 
-TODO: We allow you to pass a light and dark style URL.
-This is ~~broken~~ very much WIP and is likely to change ;)
+We allow you to pass a style URL to any of the map view constructors.
+You can vary this dynamically as your app theme changes (ex: in dark mode).
+
+TODO: Passing a view builder to add layers to the map (WIP)
 
 ### Camera
 

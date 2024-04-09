@@ -251,20 +251,16 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 remainingSteps: remainingSteps,
                 remainingWaypoints: remainingWaypoints,
                 distanceToNextManeuver: distanceToNextManeuver,
-                deviation: deviation
+                deviation: deviation,
+                visualInstruction: visualInstruction,
+                spokenInstruction: spokenInstruction
             ):
                 self.state?.snappedLocation = snappedLocation
                 self.state?.currentStep = remainingSteps.first
-                // TODO: This isn't great; the core should probably just tell us which instruction to display
-                self.state?.visualInstructions = remainingSteps.first?.visualInstructions.last(where: { instruction in
-                    distanceToNextManeuver <= instruction.triggerDistanceBeforeManeuver
-                })
+                self.state?.visualInstruction = visualInstruction
+                // TODO: Create a spoken instruction observer protocol and do something with this
+                self.state?.spokenInstruction = spokenInstruction
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
-
-                //                observableState?.spokenInstruction = currentStep.spokenInstruction.last(where: {
-                //                instruction in
-                //                    currentStepRemainingDistance <= instruction.triggerDistanceBeforeManeuver
-                //                })
 
                 self.state?.routeDeviation = deviation
                 switch deviation {
@@ -314,7 +310,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 }
             case .complete:
                 // TODO: "You have arrived"?
-                self.state?.visualInstructions = nil
+                self.state?.visualInstruction = nil
                 self.state?.snappedLocation = location
                 self.state?.spokenInstruction = nil
                 self.state?.routeDeviation = nil

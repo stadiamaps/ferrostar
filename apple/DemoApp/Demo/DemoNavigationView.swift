@@ -53,8 +53,7 @@ struct DemoNavigationView: View {
 
         NavigationStack {
             DynamicallyOrientingNavigationView(
-                lightStyleURL: style,
-                darkStyleURL: style,
+                styleURL: style,
                 navigationState: ferrostarCore.state,
                 camera: $camera
             )

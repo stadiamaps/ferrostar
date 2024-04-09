@@ -72,6 +72,23 @@ class FerrostarCore(
    */
   var alternativeRouteProcessor: AlternativeRouteProcessor? = null
 
+  /**
+   * Handles spoken instructions as they are triggered throughout navigation.
+   *
+   * The default behavior (when this property is `null`) is to do nothing. The bundled
+   * [AndroidTtsObserver] can be easily configured though for an implementation with sensible
+   * defaults. You will probably want to set the locale to match that of your directions.
+   *
+   * Note that [FerrostarCore] ensures that observers will not see the same instruction twice in the
+   * course of a navigation session (that is, the period from [startNavigation] to
+   * [stopNavigation]).
+   */
+  var spokenInstructionObserver: SpokenInstructionObserver? = null
+
+  // Maintains a set of utterance IDs which have been seen previously.
+  // This helps us maintain the guarantee that the observer won't see the same one twice.
+  private val _queuedUtteranceIds: MutableSet<String> = mutableSetOf()
+
   var isCalculatingNewRoute: Boolean = false
     private set
 
@@ -202,6 +219,7 @@ class FerrostarCore(
     _navigationController?.destroy()
     _navigationController = null
     _state = null
+    _queuedUtteranceIds.clear()
   }
 
   /**
@@ -253,6 +271,13 @@ class FerrostarCore(
               }
             }
           }
+        }
+      }
+
+      if (newState.spokenInstruction != null) {
+        if (!_queuedUtteranceIds.contains(newState.spokenInstruction.utteranceId)) {
+          _queuedUtteranceIds.add(newState.spokenInstruction.utteranceId)
+          spokenInstructionObserver?.onSpokenInstructionTrigger(newState.spokenInstruction)
         }
       }
     }

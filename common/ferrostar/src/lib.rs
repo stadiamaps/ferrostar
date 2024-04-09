@@ -17,11 +17,27 @@ pub mod simulation;
 
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
+use std::str::FromStr;
 use std::sync::Arc;
+use uuid::Uuid;
 
 use routing_adapters::{RouteRequestGenerator, RouteResponseParser};
 
 uniffi::setup_scaffolding!();
+
+uniffi::custom_type!(Uuid, String);
+
+impl UniffiCustomTypeConverter for Uuid {
+    type Builtin = String;
+
+    fn into_custom(val: Self::Builtin) -> uniffi::Result<Self> {
+        Uuid::from_str(&val).map_err(|e| e.into())
+    }
+
+    fn from_custom(obj: Self) -> Self::Builtin {
+        obj.to_string()
+    }
+}
 
 //
 // Helpers that are only exposed via the FFI interface.

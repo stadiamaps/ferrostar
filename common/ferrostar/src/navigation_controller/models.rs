@@ -1,5 +1,5 @@
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{RouteStep, UserLocation, Waypoint};
+use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
 use geo::LineString;
 
 /// Internal state of the navigation controller.
@@ -25,6 +25,12 @@ pub enum TripState {
         distance_to_next_maneuver: f64,
         /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
+        /// The visual instruction that should be displayed in the user interface.
+        visual_instruction: Option<VisualInstruction>,
+        /// The most recent spoken instruction that should be synthesized using TTS.
+        ///
+        /// Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
+        spoken_instruction: Option<SpokenInstruction>,
     },
     Complete,
 }

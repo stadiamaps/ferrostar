@@ -72,12 +72,7 @@ private fun distanceForState(newState: TripState) =
 private fun visualInstructionForState(newState: TripState) =
     try {
       when (newState) {
-        // TODO: This isn't great; the core should probably just tell us which instruction to
-        // display
-        is TripState.Navigating ->
-            newState.remainingSteps.first().visualInstructions.last {
-              newState.distanceToNextManeuver <= it.triggerDistanceBeforeManeuver
-            }
+        is TripState.Navigating -> newState.visualInstruction
         is TripState.Complete -> null
       }
     } catch (_: NoSuchElementException) {
