@@ -1902,7 +1902,7 @@ public struct SpokenInstruction {
      *
      * This is provided so that platform-layer integrations can easily disambiguate between distinct utterances,
      * which may have the same textual content.
-     * UUIds conveniently fill this purpose.
+     * UUIDs conveniently fill this purpose.
      *
      * NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
      * This should be theoretically possible though if someone cares to write up a proposal and a PR.
@@ -1929,7 +1929,7 @@ public struct SpokenInstruction {
             *
             * This is provided so that platform-layer integrations can easily disambiguate between distinct utterances,
             * which may have the same textual content.
-            * UUIds conveniently fill this purpose.
+            * UUIDs conveniently fill this purpose.
             *
             * NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
             * This should be theoretically possible though if someone cares to write up a proposal and a PR.
