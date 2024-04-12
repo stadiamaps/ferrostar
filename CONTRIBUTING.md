@@ -14,15 +14,18 @@ The project team is active in the following forums:
   You can get an invite to the workspace at [slack.openstreetmap.us](https://slack.openstreetmap.us/).
 * For larger discussions where it would be desirable to have wider input / a less ephemeral record,
   consider starting a thread on [GitHub Discussions](https://github.com/stadiamaps/ferrostar/discussions).
-  This makes it easier to find and reference the discussion in the future. 
+  This makes it easier to find and reference the discussion in the future.
+
+### Testing
 
 Both new features and bugfixes should update or add unit test cases where possible
 to prevent regressions and demonstrate correctness.
 This is particularly true of the common core.
+
 We are a bit more lax with the frontend code as this may be difficult or impractical to test.
-(TODO: Look into snapshot testing as a way to overcome this issue.
-There is a great [iOS framework](https://github.com/pointfreeco/swift-snapshot-testing) available.
-Unsure of the state of Android.)
+We have been gradually introducing snapshot testing on iOS as a way to overcome these difficulties,
+but it's not perfect.
+Suggestions welcome for Android.
 
 ### New Features
 
@@ -35,6 +38,17 @@ and (if you're proposing code as well) the implementation of the feature.
 If you've identified a significant bug, or one that you don't intend to fix yourself,
 please write up an issue ticket describing the problem.
 For minor or straightforward bug fixes, feel free to proceed directly to a PR.
+
+### Pull Request Tips
+
+To speed up reviews, it's helpful if you enable edits from maintainers when opening the PR.
+In the case of minor changes, formatting, or style nitpicks, we can make edits directly to avoid wasting your time.
+In order to enable edits from maintainers, **you'll need to make the PR from a fork owned an individual**,
+not an organization.
+GitHub org-owned forks lack this flexibility.
+
+Note: we enforce formatting checks on PRs.
+If you forget to do this, CI will eventually fail on your PR.
 
 ## Preparing your Development Environment
 
@@ -103,7 +117,18 @@ cargo install cargo-ndk
 3. Ensure that the latest NDK is installed
    (refer to the `ndkVersion` number in [`core/build.gradle`](android/core/build.gradle)
    and ensure you have the same version available).
-4. Open the Gradle workspace ('android/') in Android Studio.
+   This is easiest to install via Android Studio's SDK Manager (under SDK Tools > NDK).
+4. Set up Github Packages authentication if you haven't already done so.
+   
+   - Get a Personal Access Token with permission to read packages
+   - Save your GitHub username and PAT in a Gradle properties file (ex: ~/.gradle/gradle.properties) like so:
+   - See [GitHub's guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#authenticating-to-github-packages) for more details.
+   
+   ```
+   gpr.user=username
+   gpr.key=key
+   ```
+5. Open the Gradle workspace ('android/') in Android Studio.
    Gradle builds automatically ensure the core is built,
    so there are no funky scripts needed as on iOS.
 
