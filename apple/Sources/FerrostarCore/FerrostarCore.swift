@@ -269,7 +269,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     break
                 case let .offRoute(deviationFromRouteLine: deviationFromRouteLine):
                     guard !self.routeRequestInFlight,
-                          self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? -TimeInterval.greatestFiniteMagnitude < -self
+                          self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? -TimeInterval
+                          .greatestFiniteMagnitude < -self
                           .minimumTimeBeforeRecalculaton
                     else {
                         break
