@@ -16,6 +16,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Ensure that we can operate on the full history
+        ref: main
 
     - name: Rewrite Package.swift with the correct tag
       run: sed -i '' "s/let releaseTag = .*$/let releaseTag = \"${{ github.event.release.tag_name }}\"/" Package.swift
