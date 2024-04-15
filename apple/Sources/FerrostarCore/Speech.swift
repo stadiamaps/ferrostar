@@ -21,6 +21,7 @@ public class AVSpeechSpokenInstructionObserver: SpokenInstructionObserver {
             }
         }
     }
+
     public let synthesizer = AVSpeechSynthesizer()
 
     public init(isMuted: Bool) {
