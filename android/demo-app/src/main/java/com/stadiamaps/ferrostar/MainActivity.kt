@@ -1,9 +1,12 @@
 package com.stadiamaps.ferrostar
 
+import android.Manifest
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.maplibre.compose.symbols.Circle
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.AndroidTtsStatusListener
@@ -116,7 +121,33 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
     setContent {
       var navigationViewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
 
+      // Get location permissions.
+      // NOTE: This is NOT a robust suggestion for how to get permissions in a production app.
+      // THis is simply minimal sample code in as few lines as possible.
+      val locationPermissions =
+          arrayOf(
+              Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+      val permissionsLauncher =
+          rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+              permissions ->
+            when {
+              permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                // TODO
+                // onAccess()
+              }
+              permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                // TODO
+                // onAccess()
+              }
+              else -> {
+                // TODO
+                // onFailed()
+              }
+            }
+          }
+
       LaunchedEffect(savedInstanceState) {
+        permissionsLauncher.launch(locationPermissions)
         // Fetch a route in the background
         launch(Dispatchers.IO) {
           val routes =
@@ -152,7 +183,21 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
             // but you can replace the styleURL with any valid MapLibre style URL.
             // See https://stadiamaps.github.io/ferrostar/vendors.html for some vendors.
             NavigationMapView(
-                styleUrl = "https://demotiles.maplibre.org/style.json", viewModel = viewModel)
+                styleUrl = "https://demotiles.maplibre.org/style.json", viewModel = viewModel) {
+                    uiState ->
+                  // Trivial, if silly example of how to add your own overlay layers.
+                  // (Also incidentally highlights the lag inherent in MapLibre location tracking
+                  // as-is.)
+                  Circle(
+                      center =
+                          LatLng(
+                              uiState.value.snappedLocation.coordinates.lat,
+                              uiState.value.snappedLocation.coordinates.lng),
+                      radius = 10f,
+                      color = "Blue",
+                      zIndex = 2,
+                  )
+                }
           } else {
             // Loading indicator
             Column(

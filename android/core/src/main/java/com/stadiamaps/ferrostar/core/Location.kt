@@ -1,5 +1,7 @@
 package com.stadiamaps.ferrostar.core
 
+import android.os.Build
+import android.os.SystemClock
 import java.util.concurrent.Executor
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -116,5 +118,36 @@ class SimulatedLocationProvider : LocationProvider {
   }
 }
 
-// TODO: Non-simulated implementations (GoogleFusedLocationProvider? AndroidSystemLocationProvider?)
-// Put these in different modules!
+fun UserLocation.toAndroidLocation(): android.location.Location {
+  val location = android.location.Location("FerrostarCore")
+
+  location.latitude = this.coordinates.lat
+  location.longitude = this.coordinates.lng
+  location.accuracy = this.horizontalAccuracy.toFloat()
+
+  // NOTE: We have a lot of checks in place which we could remove (+ improve correctness)
+  // if we supported API 26.
+  val course = this.courseOverGround
+  if (course != null) {
+    location.bearing = course.degrees.toFloat()
+
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      // NOTE: Course accuracy information is not available until API 26
+      location.bearingAccuracyDegrees = course.accuracy.toFloat()
+    }
+  }
+
+  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    // NOTE: Instant.toEpochMilli() is not available until API 26,
+    location.time = this.timestamp.toEpochMilli()
+  } else {
+    // TODO: Figure out a better approach for this (if we want to support it at all)
+    location.time = System.currentTimeMillis()
+  }
+
+  // FIXME: This is not entirely correct, but might be an acceptable approximation.
+  // Feedback welcome as the purpose is not really documented.
+  location.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
+
+  return location
+}
