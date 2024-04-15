@@ -5,9 +5,7 @@ on:
     types: [created]
 
 jobs:
-  build-ferrostar:
-    if: github.event.release.draft
-    
+  ios-release:
     runs-on: macos-14
 
     permissions:
