@@ -1,0 +1,41 @@
+name: iOS Release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build-ferrostar:
+    if: github.event.release.draft
+    
+    runs-on: macos-14
+
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Ensure that we can operate on the full history
+
+    - name: Rewrite Package.swift with the correct tag
+      run: sed -i '' "s/let releaseTag = .*$/let releaseTag = \"${{ github.event.release.tag_name }}\"/" Package.swift
+
+    - name: Build iOS XCFramework
+      run: ./build-ios.sh --release
+      working-directory: common
+
+    - uses: stefanzweifel/git-auto-commit-action@v5
+
+    - name: Move Tag
+      run: |
+        git tag -fa v${{ github.event.release.tag_name }} -m "Swift Package checksum for Release ${{ github.event.release.tag_name }}"
+        git push origin ${{ github.event.release.tag_name }} --force
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: common/target/ios/libferrostar-rs.xcframework.zip
+        draft: false
+        tag_name: ${{ github.event.release.tag_name }}
