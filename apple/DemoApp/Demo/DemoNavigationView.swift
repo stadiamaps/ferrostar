@@ -15,6 +15,7 @@ private let initialLocation = CLLocation(latitude: 37.332726,
 
 struct DemoNavigationView: View {
     private let navigationDelegate = NavigationDelegate()
+    private let spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
 
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
@@ -45,6 +46,14 @@ struct DemoNavigationView: View {
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
+
+        // Initialize text-to-speech; note that this is NOT automatic.
+        // You must set a spokenInstructionObserver.
+        // Fortunately, this is pretty easy with the provided class
+        // backed by AVSpeechSynthesizer.
+        // You can customize the instance it further as needed,
+        // or replace with your own.
+        ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
     }
 
     var body: some View {
