@@ -18,9 +18,6 @@ jobs:
         fetch-depth: 0  # Ensure that we can operate on the full history
         ref: main
 
-    - name: Rewrite Package.swift with the correct tag
-      run: sed -i '' "s/let releaseTag = .*$/let releaseTag = \"${{ github.event.release.tag_name }}\"/" Package.swift
-
     - name: Build iOS XCFramework
       run: ./build-ios.sh --release
       working-directory: common
@@ -29,7 +26,7 @@ jobs:
 
     - name: Move Tag
       run: |
-        git tag -fa v${{ github.event.release.tag_name }} -m "Swift Package checksum for Release ${{ github.event.release.tag_name }}"
+        git tag -fa ${{ github.event.release.tag_name }} -m "Swift Package checksum for Release ${{ github.event.release.tag_name }}"
         git push origin ${{ github.event.release.tag_name }} --force
 
     - name: Release
