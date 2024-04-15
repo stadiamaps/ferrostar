@@ -79,6 +79,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                     ]
                 },
                 "banner_instructions": true,
+                "voice_instructions": true,
                 "costing": &self.profile,
                 "locations": locations,
             });

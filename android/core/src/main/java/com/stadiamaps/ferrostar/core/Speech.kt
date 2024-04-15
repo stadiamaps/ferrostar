@@ -63,7 +63,7 @@ class AndroidTtsObserver(
     set(value) {
       field = value
 
-      if (tts?.isSpeaking == true) {
+      if (value && tts?.isSpeaking == true) {
         tts?.stop()
       }
     }

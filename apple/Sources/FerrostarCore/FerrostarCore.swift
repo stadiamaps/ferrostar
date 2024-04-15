@@ -68,6 +68,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
 
+    /// The spoken instruction observer; responsible for text-to-speech announcements.
+    public var spokenInstructionObserver: SpokenInstructionObserver?
+
     /// The minimum time to wait before initiating another route recalculation.
     ///
     /// This matters in the case that a user is off route, the framework calculates a new route,
@@ -87,6 +90,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var lastAutomaticRecalculation: Date? = nil
     private var lastLocation: UserLocation? = nil
     private var recalculationTask: Task<Void, Never>?
+    private var queuedUtteranceIDs: Set<String> = Set()
 
     private var config: NavigationControllerConfig?
 
@@ -235,6 +239,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         navigationController = nil
         state = nil
         tripState = nil
+        queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()
     }
 
@@ -308,6 +313,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
                             }
                         }
                     }
+                }
+
+                if let spokenInstruction, !self.queuedUtteranceIDs.contains(spokenInstruction.utteranceId) {
+                    self.queuedUtteranceIDs.insert(spokenInstruction.utteranceId)
+                    self.spokenInstructionObserver?.spokenInstructionTriggered(spokenInstruction)
                 }
             case .complete:
                 // TODO: "You have arrived"?

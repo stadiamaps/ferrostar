@@ -56,7 +56,7 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0'
 
-    implementation 'io.github.rallista:maplibre-compose:0.0.3'
+    api 'io.github.rallista:maplibre-compose:0.0.5'
 
     implementation project(':core')
     implementation project(':compose-ui')
