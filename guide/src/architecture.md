@@ -1,6 +1,6 @@
 # Architecture Overview
 
-Ferrostar is organized in a moduler (hexagonal) architecture.
+Ferrostar is organized in a modular (hexagonal) architecture.
 At the center sits the core, which is more or less purely functional (no mutable state).
 This is great for testability and portability.
 In the extreme on the portability side, we Ferrostar should build for WASM and many embedded architectures,
@@ -29,6 +29,6 @@ Breaking down the responsibilities by layer:
   - Interface with device sensors and other platform APIs
   - Networking
 
-As in any hexagonal architecture, you can't skip across multiple layer boundaries, and you can't reach outward.
+As in any hexagonal architecture, you can't skip across multiple layer boundaries.
 
 ![The Ferrostar Architecture Diagram](architecture.png)

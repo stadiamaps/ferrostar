@@ -3,9 +3,7 @@
 When cutting a release, follow this checklist:
 
 1. Ensure that all version strings are up to date.
-   Currently this means checking crate and Swift package versions.
-2. Generate the iOS framework using `build-ios.sh --release`.
-   This updates Package.swift and generates a distributable zipped framework under `common/target/ios`.
-3. Push the updated Package.swift.
-3. Create a GitHub release targeting the last commit.
-   Upload the zipped XCFramework (from step 2) along with the GitHub release! 
+   Currently this means checking `common/ferrostar/Cargo.toml`, `Package.swift`, and `android/build.gradle`.
+2. Create a GitHub release and use the new version as the tag name (not that it must be in X.Y.Z format to please SPM).
+3. Sit back and watch. GitHub actions take care of the rest.
+   Note that iOS CI ends up adding a commit due to the way binary checksumming works.

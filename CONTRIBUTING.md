@@ -1,3 +1,5 @@
+# Contributing to Ferrostar
+
 We're stoked that you're interested in working on Ferrostar!
 This contribution guide will get you started developing in no time,
 as well as provide some guidelines to follow when submitting an issue or PR.
@@ -51,6 +53,14 @@ Note: we enforce formatting checks on PRs.
 If you forget to do this, CI will eventually fail on your PR.
 
 ## Preparing your Development Environment
+
+
+To ensure that everything can be developed properly in parallel,
+we use a monorepo structure.
+This, combined with CI, will ensure that changes in the core must be immediately reflected in platform code
+like Apple and Android.
+
+Let's look at what's involved to get hacking on each platform.
 
 ### Rust
 

@@ -52,3 +52,19 @@ Cases where a more narrow interpretation is needed should be obvious.
   or something similar, we are referring to code written for/targeting
   the end deployment platform.
   Not the Rust core but rather platform-specific code like Swift or Kotlin.
+  
+## How to use this guide
+  
+This guide is broken up into several sections.
+The tutorial is designed to get you started quickly.
+Read this first (at least the chapter for your platform).
+Then you can pretty much skip around at will.
+
+If you want to go deeper and customize the user experience,
+check out the chapters on customization.
+If you can’t find what you want, feel free to [open an issue on GitHub](https://github.com/stadiamaps/ferrostar/issues/new/choose).
+
+The architecture section documents the design of Ferrostar and its various components.
+If you want to add support for a new routing API, post-process location updates,
+or contribute to the development of Ferrostar, this is where the authoritative docs live.
+(If you want to contribute, be sure to check out [CONTRIBUTING.md](https://github.com/stadiamaps/ferrostar/blob/main/CONTRIBUTING.md)!)
