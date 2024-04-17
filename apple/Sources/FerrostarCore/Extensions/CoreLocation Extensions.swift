@@ -69,7 +69,7 @@ public extension GeographicCoordinate {
 }
 
 public extension CourseOverGround {
-    /// Intialize a Course Over Ground object from the relevant Core Location types. These can be found on a
+    /// Initialize a Course Over Ground object from the relevant Core Location types. These can be found on a
     /// CLLocation object.
     ///
     /// This returns nil if the course or courseAccuracy are invalid as defined by Apple (negative)

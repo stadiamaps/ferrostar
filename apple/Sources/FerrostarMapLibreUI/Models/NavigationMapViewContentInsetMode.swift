@@ -4,13 +4,13 @@ public enum NavigationMapViewContentInsetMode {
     /// A predefined mode for landscape navigation map views
     /// where the user location should appear toward the bottom of the map.
     ///
-    /// This is used to accomidate a top InstructionView
+    /// This is used to accommodate a top InstructionView
     case landscape
 
     /// A predefined mode for landscape navigation map views
     /// where the user location should appear toward the bottom of the map.
     ///
-    /// This is used to accomidate a left InstructionView
+    /// This is used to accommodate a left InstructionView
     case portrait
 
     case edgeInset(UIEdgeInsets)

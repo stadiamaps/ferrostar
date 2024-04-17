@@ -15,7 +15,7 @@ public struct DefaultIconographyManeuverInstructionView: View {
     private let distanceFormatter: Formatter
     private let theme: InstructionRowTheme
 
-    /// Initialize a manuever instruction view that includes a leading icon.
+    /// Initialize a maneuver instruction view that includes a leading icon.
     /// As an HStack, this view automatically corrects for .rightToLeft languages.
     ///
     /// - Parameters:

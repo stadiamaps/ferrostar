@@ -48,7 +48,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This is currently used for recalculation when the user diverges from the route, but can be extended for other
     /// uses in the future.
     /// Note that the `isCalculatingNewRoute` property of ``NavigationState`` will be true until this method returns.
-    /// Delegates may thus rely on this state introspection to decide what action to take given alterante routes.
+    /// Delegates may thus rely on this state introspection to decide what action to take given alternate routes.
     func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route])
 }
 
