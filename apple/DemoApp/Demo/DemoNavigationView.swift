@@ -1,10 +1,6 @@
 import CoreLocation
 import FerrostarCore
-import struct FerrostarCoreFFI.GeographicCoordinate
-import struct FerrostarCoreFFI.Route
-import struct FerrostarCoreFFI.UserLocation
-import struct FerrostarCoreFFI.Waypoint
-import enum FerrostarCoreFFI.WaypointKind
+import FerrostarCoreFFI
 import FerrostarMapLibreUI
 import MapLibreSwiftUI
 import SwiftUI
