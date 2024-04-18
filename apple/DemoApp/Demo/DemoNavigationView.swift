@@ -1,10 +1,6 @@
 import CoreLocation
 import FerrostarCore
-import struct FerrostarCoreFFI.GeographicCoordinate
-import struct FerrostarCoreFFI.Route
-import struct FerrostarCoreFFI.UserLocation
-import struct FerrostarCoreFFI.Waypoint
-import enum FerrostarCoreFFI.WaypointKind
+import FerrostarCoreFFI
 import FerrostarMapLibreUI
 import MapLibreSwiftUI
 import SwiftUI
@@ -197,7 +193,7 @@ struct DemoNavigationView: View {
 
         // Configure the navigation session.
         // You have a lot of flexibility here based on your use case
-        let config = NavigationControllerConfig(
+        let config = SwiftNavigationControllerConfig(
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20)
         )

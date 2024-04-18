@@ -92,7 +92,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var recalculationTask: Task<Void, Never>?
     private var queuedUtteranceIDs: Set<String> = Set()
 
-    private var config: NavigationControllerConfig?
+    private var config: SwiftNavigationControllerConfig?
 
     public init(
         routeProvider: RouteProvider,
@@ -197,7 +197,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     /// Starts navigation with the given route. Any previous navigation session is dropped.
-    public func startNavigation(route: Route, config: NavigationControllerConfig) throws {
+    public func startNavigation(route: Route, config: SwiftNavigationControllerConfig) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.

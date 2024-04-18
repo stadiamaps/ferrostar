@@ -21,7 +21,7 @@ private class DetectorImpl: RouteDeviationDetector {
 }
 
 /// A Swift wrapper around `UniFFI.RouteDeviationTracking`
-public enum RouteDeviationTracking {
+public enum SwiftRouteDeviationTracking {
     case none
 
     case staticThreshold(minimumHorizontalAccuracy: UInt16, maxAcceptableDeviation: Double)
@@ -47,8 +47,8 @@ public enum RouteDeviationTracking {
 }
 
 /// A Swift wrapper around `UniFFI.NavigationControllerConfig`.
-public struct NavigationControllerConfig {
-    public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) {
+public struct SwiftNavigationControllerConfig {
+    public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: SwiftRouteDeviationTracking) {
         ffiValue = FerrostarCoreFFI.NavigationControllerConfig(
             stepAdvance: stepAdvance,
             routeDeviationTracking: routeDeviationTracking.ffiValue

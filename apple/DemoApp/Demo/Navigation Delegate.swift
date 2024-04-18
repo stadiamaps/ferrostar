@@ -1,7 +1,6 @@
 import CoreLocation
 import FerrostarCore
-import struct FerrostarCoreFFI.Route
-import struct FerrostarCoreFFI.Waypoint
+import FerrostarCoreFFI
 
 /// Not all navigation apps will require a navigation delegate. In fact, we hope that most don't!
 /// In case you do though, this sample implementation shows what you'll need to get started
@@ -24,7 +23,7 @@ class NavigationDelegate: FerrostarCoreDelegate {
             do {
                 // Most implementations will probably reuse existing configs (the default implementation does),
                 // but we provide devs with flexibility here.
-                let config = NavigationControllerConfig(
+                let config = SwiftNavigationControllerConfig(
                     stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32,
                                                              automaticAdvanceDistance: 10),
                     routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20)
