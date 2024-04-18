@@ -1,15 +1,8 @@
 import CoreLocation
-import enum FerrostarCore.CorrectiveAction
-import protocol FerrostarCore.CustomRouteProvider
-import class FerrostarCore.FerrostarCore
-import protocol FerrostarCore.FerrostarCoreDelegate
-import enum FerrostarCore.FerrostarCoreError
-import struct FerrostarCore.NavigationControllerConfig
-import class FerrostarCore.SimulatedLocationProvider
+@testable import FerrostarCore
 import FerrostarCoreFFI
 import SnapshotTesting
 import XCTest
-@testable import class FerrostarCore.MockURLSession
 
 let errorBody = Data("""
 {

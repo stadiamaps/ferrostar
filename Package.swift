@@ -43,7 +43,7 @@ let package = Package(
         // Products define the executables and libraries a package produces, and make them visible to other packages.
         .library(
             name: "FerrostarCore",
-            targets: ["FerrostarCore"]
+            targets: ["FerrostarCore", "FerrostarCoreFFI"]
         ),
         .library(
             name: "FerrostarMapLibreUI",
@@ -53,10 +53,6 @@ let package = Package(
         .library(
             name: "FerrostarSwiftUI",
             targets: ["FerrostarSwiftUI"]
-        ),
-        .library(
-            name: "FerrostarCoreFFI",
-            targets: ["FerrostarCoreFFI"]
         ),
     ],
     dependencies: [
