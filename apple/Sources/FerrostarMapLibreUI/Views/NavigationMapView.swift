@@ -22,17 +22,18 @@ public struct NavigationMapView: View {
     private var navigationState: NavigationState?
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
-    
+
     // MARK: Camera Settings
+
     @Binding private var camera: MapViewCamera
-    
+
     /// The snapped camera zoom. This is used to override the camera zoom whenever snapping is active.
     @Binding private var snappedZoom: Double
-    
+
     /// Whether to snap the camera on the next navigation status update. When this is false,
     /// the user can browse the map freely.
     @Binding private var useSnappedCamera: Bool
-    
+
     /// The MapViewPort is used to construct the camera at the end of a drag gesture.
     @State private var mapViewPort: MapViewPort?
 
@@ -42,16 +43,18 @@ public struct NavigationMapView: View {
     /// Tune this value to reduce the number of accidental drags that detach the camera
     /// from the snapped user location.
     private let breakwayVelocity: CGFloat
-    
+
     /// Initialize a map view tuned for turn by turn navigation.
     ///
     /// - Parameters:
     ///   - styleURL: The style URL for the map. This can dynamically change between light and dark mode.
     ///   - navigationState: The ferrostar navigations state. This is used primarily to drive user location on the map.
-    ///   - camera: The camera which is controlled by the navigation state, but may also be pushed to for other cases (e.g. user pan).
+    ///   - camera: The camera which is controlled by the navigation state, but may also be pushed to for other cases
+    /// (e.g. user pan).
     ///   - snappedZoom: The zoom for the snapped camera. This can be fixed, customized or controlled by the camera.
     ///   - useSnappedCamera: Whether to use the ferrostar snapped camera or the camer binding itself.
-    ///   - snappingBreakawayVelocity: The drag gesture velocity used to disable snapping. This can be tuned to prevent accidental drags.
+    ///   - snappingBreakawayVelocity: The drag gesture velocity used to disable snapping. This can be tuned to prevent
+    /// accidental drags.
     ///   - content: Any additional MapLibre symbols to show on the map.
     public init(
         styleURL: URL,
@@ -116,10 +119,11 @@ public struct NavigationMapView: View {
             DragGesture()
                 .onChanged { gesture in
                     guard gesture.velocity.width > breakwayVelocity
-                       || gesture.velocity.height > breakwayVelocity else {
+                        || gesture.velocity.height > breakwayVelocity
+                    else {
                         return
                     }
-                    
+
                     useSnappedCamera = false
                     if let mapViewPort {
                         camera = mapViewPort.asMapViewCamera()

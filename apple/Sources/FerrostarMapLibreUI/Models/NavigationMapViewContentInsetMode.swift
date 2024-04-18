@@ -1,8 +1,7 @@
-import UIKit
 import SwiftUI
+import UIKit
 
 public enum NavigationMapViewContentInsetMode {
-    
     /// A predefined mode for landscape navigation map views
     /// where the user location should appear toward the bottom of the map.
     ///
@@ -20,14 +19,14 @@ public enum NavigationMapViewContentInsetMode {
 
     var uiEdgeInsets: UIEdgeInsets {
         switch self {
-        case .landscape(let geometry, let verticalPct, let horizontalPct):
+        case let .landscape(geometry, verticalPct, horizontalPct):
             let top = geometry.size.height * verticalPct
             let leading = geometry.size.width * horizontalPct
-            
+
             return UIEdgeInsets(top: top, left: leading, bottom: 0, right: 0)
-        case .portrait(let geometry, let verticalPct):
+        case let .portrait(geometry, verticalPct):
             let top = geometry.size.height * verticalPct
-            
+
             return UIEdgeInsets(top: top, left: 0, bottom: 0, right: 0)
         case let .edgeInset(uIEdgeInsets):
             return uIEdgeInsets
