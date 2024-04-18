@@ -41,7 +41,5 @@ public class AVSpeechSpokenInstructionObserver: SpokenInstructionObserver {
         } else {
             AVSpeechUtterance(string: instruction.text)
         }
-
-        synthesizer.speak(utterance)
     }
 }

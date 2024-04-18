@@ -31,23 +31,25 @@ public struct PortraitNavigationView: View {
     }
 
     public var body: some View {
-        NavigationMapView(
-            styleURL: styleURL,
-            navigationState: navigationState,
-            camera: $camera
-        )
-        .navigationMapViewContentInset(.portrait)
-        .overlay(alignment: .top, content: {
-            if let navigationState,
-               let visualInstructions = navigationState.visualInstruction
-            {
-                InstructionsView(
-                    visualInstruction: visualInstructions,
-                    distanceFormatter: distanceFormatter,
-                    distanceToNextManeuver: navigationState.distanceToNextManeuver
-                )
-            }
-        })
+        GeometryReader { geometry in
+            NavigationMapView(
+                styleURL: styleURL,
+                navigationState: navigationState,
+                camera: $camera
+            )
+            .navigationMapViewContentInset(.portrait(within: geometry))
+            .overlay(alignment: .top, content: {
+                if let navigationState,
+                   let visualInstructions = navigationState.visualInstruction
+                {
+                    InstructionsView(
+                        visualInstruction: visualInstructions,
+                        distanceFormatter: distanceFormatter,
+                        distanceToNextManeuver: navigationState.distanceToNextManeuver
+                    )
+                }
+            })
+        }
     }
 }
 
