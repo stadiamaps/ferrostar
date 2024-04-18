@@ -1,8 +1,8 @@
 import CoreLocation
-@testable import FerrostarCore
 import FerrostarCoreFFI
 import SnapshotTesting
 import XCTest
+@testable import FerrostarCore
 
 let errorBody = Data("""
 {
@@ -238,7 +238,7 @@ final class FerrostarCoreTests: XCTestCase {
         )
 
         locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0).userLocation
-        let config = NavigationControllerConfig(
+        let config = SwiftNavigationControllerConfig(
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16),
             routeDeviationTracking: .custom(detector: { _, _, _ in
                 // Pretend that the user is always off route
