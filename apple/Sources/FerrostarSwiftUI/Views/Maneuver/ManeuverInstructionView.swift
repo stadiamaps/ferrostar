@@ -17,7 +17,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
     private let maneuverView: ManeuverView
     private let theme: InstructionRowTheme
 
-    /// Initialize a manuever instruction view that includes a custom leading view or icon..
+    /// Initialize a maneuver instruction view that includes a custom leading view or icon..
     /// As an HStack, this view automatically corrects for .rightToLeft languages.
     ///
     /// - Parameters:

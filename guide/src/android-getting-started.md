@@ -20,7 +20,7 @@ GitHub has a [guide on setting this up](https://docs.github.com/en/packages/work
 ### Maven repository setup
 
 Once you’ve configured GitHub credentials as project properties or environment variables,
-Add the repostory to your build script.
+Add the repository to your build script.
 Here is example `build.gradle`:
 
 ```groovy

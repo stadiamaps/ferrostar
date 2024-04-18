@@ -5,13 +5,13 @@ public enum NavigationMapViewContentInsetMode {
     /// A predefined mode for landscape navigation map views
     /// where the user location should appear toward the bottom of the map.
     ///
-    /// This is used to accomidate a left InstructionView and optional arrival view.
+    /// This is used to accommodate a left InstructionView
     case landscape(within: GeometryProxy, verticalPct: CGFloat = 0.75, horizontalPct: CGFloat = 0.75)
 
     /// A predefined mode for landscape navigation map views
     /// where the user location should appear toward the bottom of the map.
     ///
-    /// This is used to accomidate a top InstructionView and optional arrival view.
+    /// This is used to accommodate a top InstructionView
     case portrait(within: GeometryProxy, verticalPct: CGFloat = 0.75)
 
     /// Custom edge insets to manually control where the center of the map is.

@@ -1,6 +1,6 @@
 [package]
 name = "ferrostar"
-version = "0.0.24"
+version = "0.0.25"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]

@@ -23,7 +23,7 @@ public struct ActiveRouteStyle: RouteStyle {
 
 /// The travelled route style is grey without a casing.
 ///
-/// This is typically overlayed on top of the active route style of the entire polyline.
+/// This is typically overlaid on top of the active route style of the entire polyline.
 public struct TravelledRouteStyle: RouteStyle {
     public var color: UIColor = .systemGray
     public var casingColor: UIColor? = nil

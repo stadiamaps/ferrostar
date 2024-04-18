@@ -1,15 +1,8 @@
 import CoreLocation
-import enum FerrostarCore.CorrectiveAction
-import protocol FerrostarCore.CustomRouteProvider
-import class FerrostarCore.FerrostarCore
-import protocol FerrostarCore.FerrostarCoreDelegate
-import enum FerrostarCore.FerrostarCoreError
-import struct FerrostarCore.NavigationControllerConfig
-import class FerrostarCore.SimulatedLocationProvider
 import FerrostarCoreFFI
 import SnapshotTesting
 import XCTest
-@testable import class FerrostarCore.MockURLSession
+@testable import FerrostarCore
 
 let errorBody = Data("""
 {
@@ -245,7 +238,7 @@ final class FerrostarCoreTests: XCTestCase {
         )
 
         locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0).userLocation
-        let config = NavigationControllerConfig(
+        let config = SwiftNavigationControllerConfig(
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16),
             routeDeviationTracking: .custom(detector: { _, _, _ in
                 // Pretend that the user is always off route

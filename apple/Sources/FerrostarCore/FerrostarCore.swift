@@ -48,7 +48,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This is currently used for recalculation when the user diverges from the route, but can be extended for other
     /// uses in the future.
     /// Note that the `isCalculatingNewRoute` property of ``NavigationState`` will be true until this method returns.
-    /// Delegates may thus rely on this state introspection to decide what action to take given alterante routes.
+    /// Delegates may thus rely on this state introspection to decide what action to take given alternate routes.
     func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route])
 }
 
@@ -92,7 +92,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var recalculationTask: Task<Void, Never>?
     private var queuedUtteranceIDs: Set<String> = Set()
 
-    private var config: NavigationControllerConfig?
+    private var config: SwiftNavigationControllerConfig?
 
     public init(
         routeProvider: RouteProvider,
@@ -197,7 +197,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     /// Starts navigation with the given route. Any previous navigation session is dropped.
-    public func startNavigation(route: Route, config: NavigationControllerConfig) throws {
+    public func startNavigation(route: Route, config: SwiftNavigationControllerConfig) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
