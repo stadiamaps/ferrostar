@@ -18,7 +18,7 @@ public struct PortraitNavigationView: View {
     @Binding var camera: MapViewCamera
     @Binding var snappedZoom: Double
     @Binding var useSnappedCamera: Bool
-    
+
     public init(
         styleURL: URL,
         navigationState: NavigationState?,

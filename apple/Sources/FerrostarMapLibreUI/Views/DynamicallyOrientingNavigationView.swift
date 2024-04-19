@@ -27,7 +27,8 @@ public struct DynamicallyOrientingNavigationView: View {
     /// - Parameters:
     ///   - styleURL: The style URL for the map. This can dynamically change between light and dark mode.
     ///   - navigationState: The ferrostar navigations state. This is used primarily to drive user location on the map.
-    ///   - camera: The camera which is controlled by the navigation state, but may also be pushed to for other cases (e.g. user pan).
+    ///   - camera: The camera which is controlled by the navigation state, but may also be pushed to for other cases
+    /// (e.g. user pan).
     ///   - snappedZoom: The zoom for the snapped camera. This can be fixed, customized or controlled by the camera.
     ///   - useSnappedCamera: Whether to use the ferrostar snapped camera or the camer binding itself.
     ///   - distanceFormatter: The formatter for distances in instruction views.
