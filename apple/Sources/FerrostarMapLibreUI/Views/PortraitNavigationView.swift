@@ -15,12 +15,16 @@ public struct PortraitNavigationView: View {
     private var navigationState: NavigationState?
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
-    @Binding private var camera: MapViewCamera
-
+    @Binding var camera: MapViewCamera
+    @Binding var snappedZoom: Double
+    @Binding var useSnappedCamera: Bool
+    
     public init(
         styleURL: URL,
         navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
+        snappedZoom: Binding<Double>,
+        useSnappedCamera: Binding<Bool>,
         distanceFormatter: Formatter = MKDistanceFormatter()
         // TODO: Add a symbol builder here for custom symbols along w/ route.
     ) {
@@ -28,6 +32,8 @@ public struct PortraitNavigationView: View {
         self.navigationState = navigationState
         self.distanceFormatter = distanceFormatter
         _camera = camera
+        _snappedZoom = snappedZoom
+        _useSnappedCamera = useSnappedCamera
     }
 
     public var body: some View {
@@ -35,7 +41,9 @@ public struct PortraitNavigationView: View {
             NavigationMapView(
                 styleURL: styleURL,
                 navigationState: navigationState,
-                camera: $camera
+                camera: $camera,
+                snappedZoom: $snappedZoom,
+                useSnappedCamera: $useSnappedCamera
             )
             .navigationMapViewContentInset(.portrait(within: geometry))
             .overlay(alignment: .top, content: {
@@ -64,6 +72,8 @@ public struct PortraitNavigationView: View {
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
+        snappedZoom: .constant(18),
+        useSnappedCamera: .constant(true),
         distanceFormatter: formatter
     )
 }
@@ -79,6 +89,8 @@ public struct PortraitNavigationView: View {
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
+        snappedZoom: .constant(18),
+        useSnappedCamera: .constant(true),
         distanceFormatter: formatter
     )
 }

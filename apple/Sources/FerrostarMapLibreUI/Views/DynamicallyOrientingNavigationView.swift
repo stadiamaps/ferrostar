@@ -18,12 +18,25 @@ public struct DynamicallyOrientingNavigationView: View {
     private var navigationState: NavigationState?
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
-    @Binding private var camera: MapViewCamera
+    @Binding var camera: MapViewCamera
+    @Binding var snappedZoom: Double
+    @Binding var useSnappedCamera: Bool
 
+    /// Initialize a map view tuned for turn by turn navigation.
+    ///
+    /// - Parameters:
+    ///   - styleURL: The style URL for the map. This can dynamically change between light and dark mode.
+    ///   - navigationState: The ferrostar navigations state. This is used primarily to drive user location on the map.
+    ///   - camera: The camera which is controlled by the navigation state, but may also be pushed to for other cases (e.g. user pan).
+    ///   - snappedZoom: The zoom for the snapped camera. This can be fixed, customized or controlled by the camera.
+    ///   - useSnappedCamera: Whether to use the ferrostar snapped camera or the camer binding itself.
+    ///   - distanceFormatter: The formatter for distances in instruction views.
     public init(
         styleURL: URL,
         navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
+        snappedZoom: Binding<Double>,
+        useSnappedCamera: Binding<Bool>,
         distanceFormatter: Formatter = MKDistanceFormatter()
         // TODO: Add a symbol builder here for custom symbols along w/ route.
     ) {
@@ -31,6 +44,8 @@ public struct DynamicallyOrientingNavigationView: View {
         self.navigationState = navigationState
         self.distanceFormatter = distanceFormatter
         _camera = camera
+        _snappedZoom = snappedZoom
+        _useSnappedCamera = useSnappedCamera
     }
 
     public var body: some View {
@@ -42,6 +57,8 @@ public struct DynamicallyOrientingNavigationView: View {
                 styleURL: styleURL,
                 navigationState: navigationState,
                 camera: $camera,
+                snappedZoom: $snappedZoom,
+                useSnappedCamera: $useSnappedCamera,
                 distanceFormatter: distanceFormatter
             )
         }
@@ -59,6 +76,8 @@ public struct DynamicallyOrientingNavigationView: View {
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
+        snappedZoom: .constant(18),
+        useSnappedCamera: .constant(true),
         distanceFormatter: formatter
     )
 }
@@ -74,6 +93,8 @@ public struct DynamicallyOrientingNavigationView: View {
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
+        snappedZoom: .constant(18),
+        useSnappedCamera: .constant(true),
         distanceFormatter: formatter
     )
 }

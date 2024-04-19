@@ -25,14 +25,14 @@ public struct NavigationMapView: View {
 
     // MARK: Camera Settings
 
-    @Binding private var camera: MapViewCamera
+    @Binding var camera: MapViewCamera
 
     /// The snapped camera zoom. This is used to override the camera zoom whenever snapping is active.
-    @Binding private var snappedZoom: Double
+    @Binding var snappedZoom: Double
 
     /// Whether to snap the camera on the next navigation status update. When this is false,
     /// the user can browse the map freely.
-    @Binding private var useSnappedCamera: Bool
+    @Binding var useSnappedCamera: Bool
 
     /// The MapViewPort is used to construct the camera at the end of a drag gesture.
     @State private var mapViewPort: MapViewPort?
@@ -60,8 +60,8 @@ public struct NavigationMapView: View {
         styleURL: URL,
         navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
-        snappedZoom: Binding<Double> = .constant(18),
-        useSnappedCamera: Binding<Bool> = .constant(true),
+        snappedZoom: Binding<Double>,
+        useSnappedCamera: Binding<Bool>,
         snappingBreakawayVelocity: CGFloat = 25,
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
@@ -141,6 +141,8 @@ public struct NavigationMapView: View {
     return NavigationMapView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
-        camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12))
+        camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
+        snappedZoom: .constant(18),
+        useSnappedCamera: .constant(true)
     )
 }
