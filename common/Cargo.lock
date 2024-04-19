@@ -336,7 +336,7 @@ checksum = "25cbce373ec4653f1a01a31e8a5e5ec0c622dc27ff9c4e6606eefef5cbbed4a5"
 
 [[package]]
 name = "ferrostar"
-version = "0.0.25"
+version = "0.0.26"
 dependencies = [
  "assert-json-diff",
  "geo",
