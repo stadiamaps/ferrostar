@@ -86,7 +86,7 @@ public struct InstructionsView: View {
     /// The pill control that is shown at the bottom of the Instructions View.
     @ViewBuilder fileprivate func pillControl(isActive: Bool) -> some View {
         RoundedRectangle(cornerRadius: 3)
-            .frame(width: 24, height: 6)
+            .frame(width: 24, height: isActive ? 6 : 0)
             .opacity(isActive ? 0.1 : 0.0)
             .padding(.bottom, 8)
     }

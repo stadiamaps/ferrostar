@@ -60,7 +60,9 @@ struct DemoNavigationView: View {
             DynamicallyOrientingNavigationView(
                 styleURL: style,
                 navigationState: ferrostarCore.state,
-                camera: $camera
+                camera: $camera,
+                snappedZoom: .constant(18),
+                useSnappedCamera: .constant(true)
             )
             .overlay(alignment: .bottomLeading) {
                 VStack {

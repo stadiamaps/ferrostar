@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
       "state" : {
-        "revision" : "a5a329ab937de7a8b2844cbc899959fd0138daf8",
-        "version" : "0.0.10"
+        "revision" : "317024999056357506cf5c1ac91575cb7e1209fd",
+        "version" : "0.0.15"
       }
     },
     {
