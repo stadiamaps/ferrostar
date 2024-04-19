@@ -5,8 +5,8 @@ PRs welcome to expand the list or to add support!
 
 ## Routing
 
-* [Stadia Maps](https://stadiamaps.com/) - Valhalla-based; hosted API with on prem available
-* [GIS • OPS](https://gis-ops.com/) - (Mostly) Valhalla-based; custom deployments and integration of proprietary data
+* [Stadia Maps](https://stadiamaps.com/) - Valhalla-based API, either hosted (free keys for evaluation available) or on prem
+* [GIS • OPS](https://gis-ops.com/) - Valhalla or OSRM; custom deployments and integration of proprietary data
 
 
 ## Basemaps
@@ -21,3 +21,5 @@ Here are a few popular vendors:
 * [Mapbox](https://mapbox.com/) (note that pricing is different for accessing tiles directly rather than using their proprietary SDKs)
 * [Jawg](https://www.jawg.io/)
 * [MapTiler](https://maptiler.com/)
+
+At the time of this writing, all basemap vendors offer free API keys for evaluation use.
