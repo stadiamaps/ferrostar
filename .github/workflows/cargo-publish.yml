@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Cargo Build
+      - name: Cargo Publish
         run: cargo publish -p ferrostar
         working-directory: common
     env:
