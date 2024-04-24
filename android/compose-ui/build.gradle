@@ -68,8 +68,8 @@ dependencies {
 publishing {
     publications {
         "${project.name}-release"(MavenPublication) {
-            groupId = 'com.stadiamaps'
-            artifactId = 'ferrostar-composeui'
+            groupId = 'com.stadiamaps.ferrostar'
+            artifactId = 'composeui'
             version = project.version
 
             afterEvaluate {

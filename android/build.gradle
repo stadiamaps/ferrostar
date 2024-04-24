@@ -22,6 +22,6 @@ publishing {
 }
 
 allprojects {
-    group = "com.stadiamaps"
-    version = "0.0.27"
+    group = "com.stadiamaps.ferrostar"
+    version = "0.0.28"
 }

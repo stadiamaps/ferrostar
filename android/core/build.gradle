@@ -100,8 +100,8 @@ android.libraryVariants.all { variant ->
 publishing {
     publications {
         "${project.name}-release"(MavenPublication) {
-            groupId = 'com.stadiamaps'
-            artifactId = 'ferrostar-core'
+            groupId = 'com.stadiamaps.ferrostar'
+            artifactId = 'core'
             version = project.version
 
             afterEvaluate {

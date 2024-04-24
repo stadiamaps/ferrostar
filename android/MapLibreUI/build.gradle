@@ -74,8 +74,8 @@ dependencies {
 publishing {
     publications {
         "${project.name}-release"(MavenPublication) {
-            groupId = 'com.stadiamaps'
-            artifactId = 'ferrostar-maplibreui'
+            groupId = 'com.stadiamaps.ferrostar'
+            artifactId = 'maplibreui'
             version = project.version
 
             afterEvaluate {
