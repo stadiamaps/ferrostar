@@ -1,0 +1,19 @@
+on:
+  release:
+    types: [published]
+
+name: Cargo Publish
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  publish_crate:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cargo Build
+        run: cargo publish -p ferrostar
+        working-directory: common
+    env:
+      CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}

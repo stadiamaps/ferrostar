@@ -22,5 +22,6 @@ publishing {
 }
 
 allprojects {
+    group = "com.stadiamaps"
     version = "0.0.26"
 }
