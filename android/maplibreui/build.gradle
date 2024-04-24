@@ -59,7 +59,7 @@ dependencies {
     api 'io.github.rallista:maplibre-compose:0.0.5'
 
     implementation project(':core')
-    implementation project(':compose-ui')
+    implementation project(':composeui')
 
     testImplementation 'junit:junit:4.13.2'
 

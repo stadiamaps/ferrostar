@@ -21,7 +21,38 @@ GitHub has a [guide on setting this up](https://docs.github.com/en/packages/work
 
 Once you’ve configured GitHub credentials as project properties or environment variables,
 Add the repository to your build script.
-Here is example `build.gradle`:
+
+If you are using `settings.gradle` for your dependency resolution management,
+you’ll end up with something like along these lines:
+
+```groovy
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        maven {
+            url = 'https://maven.pkg.github.com/stadiamaps/ferrostar'
+            credentials {
+                username = settings.ext.find('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+                password = settings.ext.find('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+        
+        // For the MapLibre compose integration
+        maven {
+            url = 'https://maven.pkg.github.com/Rallista/maplibre-compose-playground'
+            credentials {
+                username = settings.ext.find('gpr.user') ?: System.getenv('GITHUB_ACTOR')
+                password = settings.ext.find('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+            }
+        }
+
+        google()
+        mavenCentral()
+    }
+}
+```
+
+And if you’re doing this directly in `build.gradle`, things look slightly different:
 
 ```groovy
 repositories {
@@ -31,8 +62,17 @@ repositories {
     maven {
         url = uri("https://maven.pkg.github.com/stadiamaps/ferrostar")
         credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-            password = project.findProperty("gpr.token") ?: System.getenv("TOKEN")
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+    
+    // For the MapLibre compose integration
+    maven {
+        url = uri("https://maven.pkg.github.com/Rallista/maplibre-compose-playground")
+        credentials {
+            username = settings.ext.find("gpr.user") ?: System.getenv("USERNAME")
+            password = settings.ext.find("gpr.token") ?: System.getenv("TOKEN")
         }
     }
 }
@@ -40,18 +80,53 @@ repositories {
 
 ### Add dependencies
 
-Next, add the dependencies to your app’s `build.gradle`.
-We omit the standard Jetpack Compose dependencies here.
+#### `build.gradle` with explicit version strings
+
+If you’re using the classic `build.gradle`
+with `implementation` strings using hard-coded versions,
+here’s how to set things up.
+Replace `X.Y.Z` with an [appropriate version](https://github.com/orgs/stadiamaps/packages?repo_name=ferrostar).
 
 ```groovy
 dependencies {
     // Elided: androidx dependencies: ktx and compose standard deps
 
     // Ferrostar
-    def ferrostarVersion = 'X.Y.Z' // Replace with the latest version
-    implementation "com.stadiamaps:ferrostar-core:${ferrostarVersion}"
-    implementation "com.stadiamaps:ferrostar-maplibreui:${ferrostarVersion}"
+    def ferrostarVersion = 'X.Y.Z'
+    implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
+    implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
 
+    // okhttp3
+    implementation platform("com.squareup.okhttp3:okhttp-bom:4.10.0")
+    implementation 'com.squareup.okhttp3:okhttp'
+}
+```
+
+#### `libs.versions.toml` “modern style”
+
+If you’re using the newer `libs.versions.toml` approach,
+add the versions like so:
+
+```toml
+[versions]
+ferrostar = "X.Y.X"
+
+[libraries]
+ferrostar-core = { group = "com.stadiamaps.ferrostar", name = "core", version.ref = "ferrostar" }
+ferrostar-maplibreui = { group = "com.stadiamaps.ferrostar", name = "maplibreui", version.ref = "ferrostar" }
+```
+
+Then reference it in your `build.gradle`:
+
+```groovy
+dependencies {
+    // Elided: androidx dependencies: ktx and compose standard deps
+
+    // Ferrostar
+    implementation libs.ferrostar.core
+    implementation libs.ferrostar.maplibreui
+
+    // okhttp3
     implementation platform("com.squareup.okhttp3:okhttp-bom:4.10.0")
     implementation 'com.squareup.okhttp3:okhttp'
 }
