@@ -6,13 +6,13 @@ Ferrostar is a FOSS navigation SDK built from the ground up for the future.
 
 ## Current status
 
-The project is under active development.
-Many parts of the design are still in flux,
-so there are no API stability guarantees.
+The project is under active development, but rapidly approaching beta.
+The core is quite functional.
+iOS is in a fairly solid beta state, and Android sholud be beta quality soon!
 
-That said, things are now in a solid alpha state,
-and rapidly approaching beta for iOS (Android UI is slightly behind).
-While there are some rough edges, eager developers can start testing.
+While there are some rough edges, eager developers can start integrating.
+Note that the API is currently NOT stable and there will still be some breaking changes,
+but the release notes should include details.
 
 Join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.us/) for updates + discussion.
 
@@ -20,12 +20,12 @@ Join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.
 
 ## Getting Started
 
-### As a Contributor
-
-See our [CONTRIBUTING](CONTRIBUTING.md) guide
-for info on expectations and dev environment setup.
 
 ### As a User
 
 Check out the [guide](https://stadiamaps.github.io/ferrostar/)!
-Note that this is still VERY much a WIP skeleton, but will be fleshed out by mid-April.
+
+### As a Contributor
+
+See our [CONTRIBUTING](CONTRIBUTING.md) guide
+for info on expectations and dev environment setup.
