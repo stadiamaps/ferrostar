@@ -97,7 +97,7 @@ dependencies {
     implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
 
     // okhttp3
-    implementation platform("com.squareup.okhttp3:okhttp-bom:4.10.0")
+    implementation platform("com.squareup.okhttp3:okhttp-bom:4.11.0")
     implementation 'com.squareup.okhttp3:okhttp'
 }
 ```
@@ -110,10 +110,12 @@ add the versions like so:
 ```toml
 [versions]
 ferrostar = "X.Y.X"
+okhttp3 = "4.11.0"
 
 [libraries]
 ferrostar-core = { group = "com.stadiamaps.ferrostar", name = "core", version.ref = "ferrostar" }
 ferrostar-maplibreui = { group = "com.stadiamaps.ferrostar", name = "maplibreui", version.ref = "ferrostar" }
+okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 ```
 
 Then reference it in your `build.gradle`:
@@ -127,16 +129,42 @@ dependencies {
     implementation libs.ferrostar.maplibreui
 
     // okhttp3
-    implementation platform("com.squareup.okhttp3:okhttp-bom:4.10.0")
-    implementation 'com.squareup.okhttp3:okhttp'
+    implementation libs.okhttp3
 }
 ```
 
 ## Configure location services
 
-### TODO: Permissions and privacy settings
+### Declaring permissions used
 
-The usual Android setup.
+Your app will need access to the user’s location.
+First, you’ll need the requisite permissions in your Android manifest:
+
+```xml
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+```
+
+You’ll then need to request permission from the user to access their precise location.
+
+### Requesting location access
+
+The “best” way to do this tends to change over time and varies with your app structure.
+If you’re using Jetpack Compose,
+you’ll want the `rememberLauncherForActivityResult` API.
+If you’re just using plain activities,
+the `registerForActivityResult` has what you need.
+
+In either case, you’ll want to review [Google’s documentation](https://developer.android.com/develop/sensors-and-location/location/permissions#kotlin).
+
+### Ensuring updates when the app loses focus
+
+Note that Ferrostar does *not* require “background” location access!
+This may be confusing if you’re new to mobile development.
+On Android, we can use something called a *foreground service*
+which lets us keep getting location updates even when the app isn’t front and center.
+
+TODO: Tutorial on this
 
 ### Location providers
 
@@ -189,6 +217,7 @@ which will trigger updates.
 ## Configure an HTTP client
 
 Before we configure the Ferrostar core, we need to set up an HTTP client.
+This is typically stored as an instance variable in one of your classes (ex: activity).
 We use the popular OkHttp library for this.
 Here we’ve set up a client with a global timeout of 15 seconds.
 Refer to the [OkHttp documentation](https://square.github.io/okhttp/) for further details on configuration.
@@ -230,7 +259,7 @@ which uses the text-to-speech engine built into Android.
 PRs welcome for other popular services (ex: Amazon Polly;
 note that some APIs also provide SSML instructions which work great with this!).
 
-TODO (unsure where best to document the full setup until we see how it shakes out on iOS)
+TODO documentation:
 
 * Android Manifest
 * Set the language
@@ -238,15 +267,91 @@ TODO (unsure where best to document the full setup until we see how it shakes ou
 
 ## Getting a route
 
-TODO
+Getting a route is easy!
+All you need is the start location (from the location provider)
+and a list of at least one waypoint to visit.
+
+```kotlin
+val routes =
+    core.getRoutes(
+        userLocation,
+        listOf(
+            Waypoint(
+                coordinate = GeographicCoordinate(37.807587, -122.428411),
+                kind = WaypointKind.BREAK),
+        ))
+```
+
+Note that this is a `suspend` function, so you’ll need to use it within a coroutine scope.
+You probably want something like `launch(Dispatchers.IO) { .. }`
+for most cases to ensure it’s running on the correct dispatcher.
+You may select a different dispatcher if you are doing offline route calculation.
 
 ## Starting a navigation session
 
-TODO
+Once you have a route (ex: by grabbing the first one from the list
+or by presenting the user with a selection screen),
+you’re ready to start a navigation session!
+
+When you start a navigation session, the core returns a view model
+which will automatically be updated with state updates.
+
+You can save “rememberable” state somewhere near the top of your composable block like so:
+
+```kotlin
+var navigationViewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
+```
+
+And then use it to store the result of your `startNavigation` invocation:
+
+```kotlin
+navigationViewModel =
+    core.startNavigation(
+        route = route,
+        config =
+        NavigationControllerConfig(
+            StepAdvanceMode.RelativeLineStringDistance(
+                minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
+            RouteDeviationTracking.StaticThreshold(25U, 10.0)),
+    )
+```
+
+Finally, If you’re simulating route progress
+(ex: in the emulator) with a `SimulatedLocationProvider`),
+set the route:
+
+```kotlin
+locationProvider.setSimulatedRoute(route)
+```
 
 ## Using the `NavigationMapView`
 
-TODO
+We’re finally ready to turn that view model into a beautiful navigation map!
+It’s really as simple as creating a `NavigationMapView` with the view model.
+Here’s an example:
+
+```kotlin
+ val viewModel = navigationViewModel
+ if (viewModel != null) {
+     // Demo tiles illustrate a basic integration without any API key required,
+     // but you can replace the styleURL with any valid MapLibre style URL.
+     // See https://stadiamaps.github.io/ferrostar/vendors.html for some vendors.
+     NavigationMapView(
+         styleUrl =
+         "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey",
+         viewModel = viewModel) { uiState ->
+         // You can add your own overlays here!
+     }
+ } else {
+     // Loading indicator
+     Column(
+         verticalArrangement = Arrangement.Center,
+         horizontalAlignment = Alignment.CenterHorizontally) {
+         Text(text = "Calculating route...")
+         CircularProgressIndicator(modifier = Modifier.width(64.dp))
+     }
+ }
+```
 
 ## Demo app
 

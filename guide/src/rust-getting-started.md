@@ -5,4 +5,4 @@ You're in the right spot.
 
 Documentation on [docs.rs](https://docs.rs/ferrostar/latest). Start with the navigation controller.
 
-TODO: Docs.
+TODO: Tutorial.
