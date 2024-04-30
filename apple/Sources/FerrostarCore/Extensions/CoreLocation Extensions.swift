@@ -23,7 +23,9 @@ extension CLLocation {
             coordinates: coordinate.geographicCoordinates,
             horizontalAccuracy: horizontalAccuracy,
             courseOverGround: ffiCourse,
-            timestamp: timestamp
+            timestamp: timestamp,
+            speed: parseCLValidityToOptional(speed),
+            speedAccuracy: parseCLValidityToOptional(speedAccuracy)
         )
     }
 
@@ -117,17 +119,24 @@ public extension UserLocation {
     ///   - course: The direction of travel measured in degrees clockwise from north.
     ///   - courseAccuracy: The course accuracy measured in degrees.
     ///   - timestamp: The timestamp of the location record.
+    ///   - speed: The speed in meters per second
+    ///   - speedAccuracy: The accuracy of the speed in meters per second
     init(latitude: CLLocationDegrees,
          longitude: CLLocationDegrees,
          horizontalAccuracy: CLLocationDistance,
          course: CLLocationDirection,
          courseAccuracy: CLLocationDirectionAccuracy,
-         timestamp: Date)
+         timestamp: Date,
+         speed: Double?,
+         speedAccuracy: Double?)
     {
         self.init(coordinates: GeographicCoordinate(lat: latitude, lng: longitude),
                   horizontalAccuracy: horizontalAccuracy,
                   courseOverGround: CourseOverGround(course: course, courseAccuracy: courseAccuracy),
-                  timestamp: timestamp)
+                  timestamp: timestamp,
+                  speed: parseCLValidityToOptional(speed),
+                  speedAccuracy: parseCLValidityToOptional(speedAccuracy)
+        )
     }
 
     /// Initialize a UserLocation with a coordinate only.
@@ -138,7 +147,9 @@ public extension UserLocation {
         self.init(coordinates: GeographicCoordinate(cl: clCoordinateLocation2D),
                   horizontalAccuracy: 0,
                   courseOverGround: nil,
-                  timestamp: Date())
+                  timestamp: Date(),
+                  speed: nil,
+                  speedAccuracy: nil)
     }
 
     /// Initialize a UserLocation from an Apple CoreLocation CLLocation
@@ -154,7 +165,9 @@ public extension UserLocation {
                 course: clLocation.course,
                 courseAccuracy: clLocation.courseAccuracy
             ),
-            timestamp: clLocation.timestamp
+            timestamp: clLocation.timestamp,
+            speed: parseCLValidityToOptional(clLocation.speed),
+            speedAccuracy: parseCLValidityToOptional(clLocation.speedAccuracy)
         )
     }
 
@@ -178,9 +191,17 @@ public extension UserLocation {
             verticalAccuracy: -1,
             course: courseDegrees,
             courseAccuracy: courseAccuracy,
-            speed: 0,
-            speedAccuracy: -1,
+            speed: speed ?? -1,
+            speedAccuracy: speedAccuracy ?? -1,
             timestamp: timestamp
         )
     }
+}
+
+fileprivate func parseCLValidityToOptional(_ value: Double?) -> Double? {
+    guard let value, value >= 0 else {
+        return nil
+    }
+    
+    return value
 }

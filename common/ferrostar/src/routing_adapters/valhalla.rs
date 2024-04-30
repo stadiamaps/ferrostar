@@ -108,6 +108,8 @@ mod tests {
         horizontal_accuracy: 6.0,
         course_over_ground: None,
         timestamp: SystemTime::UNIX_EPOCH,
+        speed: None,
+            speed_accuracy: None,
     };
     const USER_LOCATION_WITH_COURSE: UserLocation = UserLocation {
         coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
@@ -117,6 +119,8 @@ mod tests {
             accuracy: 12,
         }),
         timestamp: SystemTime::UNIX_EPOCH,
+        speed: None,
+            speed_accuracy: None,
     };
     const WAYPOINTS: [Waypoint; 2] = [
         Waypoint {
@@ -223,6 +227,8 @@ mod tests {
             horizontal_accuracy: -6.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
+            speed: None,
+            speed_accuracy: None,
         };
 
         let RouteRequest::HttpPost {

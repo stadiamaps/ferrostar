@@ -146,6 +146,8 @@ pub struct UserLocation {
     pub course_over_ground: Option<CourseOverGround>,
     #[cfg_attr(test, serde(skip_serializing))]
     pub timestamp: SystemTime,
+    pub speed: Option<f64>,
+    pub speed_accuracy: Option<f64>
 }
 
 impl From<UserLocation> for Point {
@@ -193,6 +195,8 @@ pub struct RouteStep {
     pub geometry: Vec<GeographicCoordinate>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
+    /// The duration, in seconds the router estimates it will take to travel the step.
+    pub duration: f64,
     pub road_name: Option<String>,
     pub instruction: String,
     pub visual_instructions: Vec<VisualInstruction>,

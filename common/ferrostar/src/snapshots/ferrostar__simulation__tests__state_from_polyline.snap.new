@@ -1,0 +1,34 @@
+---
+source: ferrostar/src/simulation.rs
+assertion_line: 215
+expression: state
+---
+current_location:
+  coordinates:
+    lat: 60.534716
+    lng: -149.543469
+  horizontal_accuracy: 0
+  course_over_ground:
+    degrees: 0
+    accuracy: 0
+  speed: ~
+  speed_accuracy: ~
+remaining_locations:
+  - lat: 60.534782
+    lng: -149.543879
+  - lat: 60.534829
+    lng: -149.544134
+  - lat: 60.534856
+    lng: -149.5443
+  - lat: 60.534887
+    lng: -149.544533
+  - lat: 60.534941
+    lng: -149.544976
+  - lat: 60.534971
+    lng: -149.545485
+  - lat: 60.535003
+    lng: -149.546177
+  - lat: 60.535008
+    lng: -149.546937
+  - lat: 60.534991
+    lng: -149.548581
