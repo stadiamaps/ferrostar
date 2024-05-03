@@ -33,7 +33,7 @@ dependencyResolutionManagement {
             url = 'https://maven.pkg.github.com/stadiamaps/ferrostar'
             credentials {
                 username = settings.ext.find('gpr.user') ?: System.getenv('GITHUB_ACTOR')
-                password = settings.ext.find('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+                password = settings.ext.find('gpr.token') ?: System.getenv('GITHUB_TOKEN')
             }
         }
         
@@ -42,7 +42,7 @@ dependencyResolutionManagement {
             url = 'https://maven.pkg.github.com/Rallista/maplibre-compose-playground'
             credentials {
                 username = settings.ext.find('gpr.user') ?: System.getenv('GITHUB_ACTOR')
-                password = settings.ext.find('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+                password = settings.ext.find('gpr.token') ?: System.getenv('GITHUB_TOKEN')
             }
         }
 
@@ -341,6 +341,7 @@ Here’s an example:
          "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey",
          viewModel = viewModel) { uiState ->
          // You can add your own overlays here!
+         // See https://github.com/Rallista/maplibre-compose-playground
      }
  } else {
      // Loading indicator
