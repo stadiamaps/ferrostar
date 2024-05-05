@@ -263,7 +263,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 self.state?.snappedLocation = snappedLocation
                 self.state?.currentStep = remainingSteps.first
                 self.state?.visualInstruction = visualInstruction
-                // TODO: Create a spoken instruction observer protocol and do something with this
                 self.state?.spokenInstruction = spokenInstruction
                 self.state?.distanceToNextManeuver = distanceToNextManeuver
 
