@@ -113,11 +113,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
         valhallaEndpointUrl: URL,
         profile: String,
         locationProvider: LocationProviding,
+        costingOptions: [String: [String: String]] = [:],
         networkSession: URLRequestLoading = URLSession.shared
     ) {
         let adapter = RouteAdapter.newValhallaHttp(
             endpointUrl: valhallaEndpointUrl.absoluteString,
-            profile: profile
+            profile: profile,
+            costingOptions: costingOptions
         )
         self.init(
             routeProvider: .routeAdapter(adapter),

@@ -17,8 +17,8 @@ pub mod simulation;
 
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
-use std::str::FromStr;
 use std::sync::Arc;
+use std::{collections::HashMap, str::FromStr};
 use uuid::Uuid;
 
 use routing_adapters::{RouteRequestGenerator, RouteResponseParser};
@@ -55,8 +55,13 @@ impl UniffiCustomTypeConverter for Uuid {
 fn create_valhalla_request_generator(
     endpoint_url: String,
     profile: String,
+    costing_options: HashMap<String, HashMap<String, String>>,
 ) -> Arc<dyn RouteRequestGenerator> {
-    Arc::new(ValhallaHttpRequestGenerator::new(endpoint_url, profile))
+    Arc::new(ValhallaHttpRequestGenerator::new(
+        endpoint_url,
+        profile,
+        costing_options,
+    ))
 }
 
 /// Creates a [RouteResponseParser] capable of parsing OSRM responses.

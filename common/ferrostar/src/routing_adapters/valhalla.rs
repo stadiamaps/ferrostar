@@ -17,14 +17,19 @@ pub struct ValhallaHttpRequestGenerator {
     /// Users *may* include a query string with an API key.
     endpoint_url: String,
     profile: String,
-    // TODO: more tunable parameters; a dict that gets inserted seems like a bare minimum; we can also allow higher level ones
+    costing_options: HashMap<String, HashMap<String, String>>,
 }
 
 impl ValhallaHttpRequestGenerator {
-    pub fn new(endpoint_url: String, profile: String) -> Self {
+    pub fn new(
+        endpoint_url: String,
+        profile: String,
+        costing_options: HashMap<String, HashMap<String, String>>,
+    ) -> Self {
         Self {
             endpoint_url,
             profile,
+            costing_options,
         }
     }
 }
@@ -82,6 +87,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 "voice_instructions": true,
                 "costing": &self.profile,
                 "locations": locations,
+                "costing_options": &self.costing_options,
             });
             let body = serde_json::to_vec(&args)?;
             Ok(RouteRequest::HttpPost {
@@ -131,8 +137,11 @@ mod tests {
 
     #[test]
     fn not_enough_locations() {
-        let generator =
-            ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
+        let generator = ValhallaHttpRequestGenerator::new(
+            ENDPOINT_URL.to_string(),
+            COSTING.to_string(),
+            HashMap::new(),
+        );
 
         // At least two locations are required
         assert!(matches!(
@@ -141,9 +150,16 @@ mod tests {
         ));
     }
 
-    fn generate_body(user_location: UserLocation, waypoints: Vec<Waypoint>) -> JsonValue {
-        let generator =
-            ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
+    fn generate_body(
+        user_location: UserLocation,
+        waypoints: Vec<Waypoint>,
+        costing_options: HashMap<String, HashMap<String, String>>,
+    ) -> JsonValue {
+        let generator = ValhallaHttpRequestGenerator::new(
+            ENDPOINT_URL.to_string(),
+            COSTING.to_string(),
+            costing_options,
+        );
 
         let RouteRequest::HttpPost {
             url: request_url,
@@ -161,7 +177,7 @@ mod tests {
 
     #[test]
     fn request_body_without_course() {
-        let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec());
+        let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec(), HashMap::new());
 
         assert_json_include!(
             actual: body_json,
@@ -181,14 +197,18 @@ mod tests {
                         "lat": 2.0,
                         "lon": 3.0,
                     }
-                ]
+                ],
             })
         );
     }
 
     #[test]
     fn request_body_with_course() {
-        let body_json = generate_body(USER_LOCATION_WITH_COURSE, WAYPOINTS.to_vec());
+        let body_json = generate_body(
+            USER_LOCATION_WITH_COURSE,
+            WAYPOINTS.to_vec(),
+            HashMap::new(),
+        );
 
         assert_json_include!(
             actual: body_json,
@@ -209,15 +229,53 @@ mod tests {
                         "lat": 2.0,
                         "lon": 3.0,
                     }
-                ]
+                ],
+            })
+        );
+    }
+
+    #[test]
+    fn request_body_without_costing_options() {
+        let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec(), HashMap::new());
+
+        assert_json_include!(
+            actual: body_json,
+            expected: json!({
+                "costing_options": {},
+            })
+        );
+    }
+
+    #[test]
+    fn request_body_with_costing_options() {
+        let body_json = generate_body(
+            USER_LOCATION,
+            WAYPOINTS.to_vec(),
+            HashMap::from([(
+                "bicycle".to_string(),
+                HashMap::from([("bicycle_type".to_string(), "Road".to_string())]),
+            )]),
+        );
+
+        assert_json_include!(
+            actual: body_json,
+            expected: json!({
+                "costing_options": {
+                    "bicycle": {
+                        "bicycle_type": "Road",
+                    },
+                },
             })
         );
     }
 
     #[test]
     fn request_body_with_invalid_horizontal_accuracy() {
-        let generator =
-            ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string());
+        let generator = ValhallaHttpRequestGenerator::new(
+            ENDPOINT_URL.to_string(),
+            COSTING.to_string(),
+            HashMap::new(),
+        );
         let location = UserLocation {
             coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
             horizontal_accuracy: -6.0,
@@ -256,7 +314,7 @@ mod tests {
                         "lat": 2.0,
                         "lon": 3.0,
                     }
-                ]
+                ],
             })
         );
     }

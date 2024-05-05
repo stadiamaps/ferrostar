@@ -661,11 +661,14 @@ public class RouteAdapter:
         try! rustCall { uniffi_ferrostar_fn_free_routeadapter(pointer, $0) }
     }
 
-    public static func newValhallaHttp(endpointUrl: String, profile: String) -> RouteAdapter {
+    public static func newValhallaHttp(endpointUrl: String, profile: String,
+                                       costingOptions: [String: [String: String]]) -> RouteAdapter
+    {
         RouteAdapter(unsafeFromRawPointer: try! rustCall {
             uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
                 FfiConverterString.lower(endpointUrl),
-                FfiConverterString.lower(profile), $0
+                FfiConverterString.lower(profile),
+                FfiConverterDictionaryStringDictionaryStringString.lower(costingOptions), $0
             )
         })
     }
@@ -3449,6 +3452,29 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
     }
 }
 
+private struct FfiConverterDictionaryStringDictionaryStringString: FfiConverterRustBuffer {
+    public static func write(_ value: [String: [String: String]], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for (key, value) in value {
+            FfiConverterString.write(key, into: &buf)
+            FfiConverterDictionaryStringString.write(value, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [String: [String: String]] {
+        let len: Int32 = try readInt(&buf)
+        var dict = [String: [String: String]]()
+        dict.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            let key = try FfiConverterString.read(from: &buf)
+            let value = try FfiConverterDictionaryStringString.read(from: &buf)
+            dict[key] = value
+        }
+        return dict
+    }
+}
+
 /**
  * Typealias from the type name used in the UDL file to the builtin type.  This
  * is needed because the UDL type name is used in function/method signatures.
@@ -3523,12 +3549,17 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
  *
  * This is provided as a convenience for use from foreign code when creating your own [routing_adapters::RouteAdapter].
  */
-public func createValhallaRequestGenerator(endpointUrl: String, profile: String) -> RouteRequestGenerator {
+public func createValhallaRequestGenerator(
+    endpointUrl: String,
+    profile: String,
+    costingOptions: [String: [String: String]]
+) -> RouteRequestGenerator {
     try! FfiConverterTypeRouteRequestGenerator.lift(
         try! rustCall {
             uniffi_ferrostar_fn_func_create_valhalla_request_generator(
                 FfiConverterString.lower(endpointUrl),
-                FfiConverterString.lower(profile), $0
+                FfiConverterString.lower(profile),
+                FfiConverterDictionaryStringDictionaryStringString.lower(costingOptions), $0
             )
         }
     )
@@ -3625,7 +3656,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 28097 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 35701 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 47939 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 53320 {
@@ -3670,7 +3701,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 15081 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 24553 {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 40140 {
         return InitializationResult.apiChecksumMismatch
     }
 

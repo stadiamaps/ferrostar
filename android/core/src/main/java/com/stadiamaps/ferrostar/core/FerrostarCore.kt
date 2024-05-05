@@ -107,9 +107,10 @@ class FerrostarCore(
       profile: String,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
+      costingOptions: Map<String, Map<String, String>> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
-          RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile)),
+          RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile, costingOptions)),
       httpClient,
       locationProvider,
   )

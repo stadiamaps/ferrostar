@@ -99,8 +99,13 @@ impl RouteAdapter {
     }
 
     #[uniffi::constructor]
-    pub fn new_valhalla_http(endpoint_url: String, profile: String) -> Self {
-        let request_generator = create_valhalla_request_generator(endpoint_url, profile);
+    pub fn new_valhalla_http(
+        endpoint_url: String,
+        profile: String,
+        costing_options: HashMap<String, HashMap<String, String>>,
+    ) -> Self {
+        let request_generator =
+            create_valhalla_request_generator(endpoint_url, profile, costing_options);
         let response_parser = create_osrm_response_parser(6);
         Self::new(request_generator, response_parser)
     }
