@@ -8,13 +8,17 @@ Ferrostar is a FOSS navigation SDK built from the ground up for the future.
 
 The project is under active development, but rapidly approaching beta.
 The core is quite functional.
-iOS is in a fairly solid beta state, and Android sholud be beta quality soon!
+iOS is in a fairly solid beta state, and one of the developers is actively using it for cycling navigation.
+Android sholud be beta quality soon
+The main areas where Android lags is in camera polish
+and hooking up live location services in a Google-independent manner.
 
 While there are some rough edges, eager developers can start integrating.
 Note that the API is currently NOT stable and there will still be some breaking changes,
 but the release notes should include details.
 
 Join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.us/) for updates + discussion.
+The core devs are active there and we're happy to answer questions / help you get started!
 
 ![A screenshot of the current status](screenshot.png)
 
