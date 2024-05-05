@@ -16,7 +16,7 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.0.29"
+    let releaseTag = "0.0.30"
     let releaseChecksum = "eb24954879fbf77e994ca084cf5ad8dfd5a0ab05117eeaf01a34dab6800360a1"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
