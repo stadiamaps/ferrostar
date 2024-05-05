@@ -195,7 +195,7 @@ pub struct RouteStep {
     pub geometry: Vec<GeographicCoordinate>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
-    /// The duration, in seconds the router estimates it will take to travel the step.
+    /// The estimated duration, in seconds, that it will take to complete this step.
     pub duration: f64,
     pub road_name: Option<String>,
     pub instruction: String,
