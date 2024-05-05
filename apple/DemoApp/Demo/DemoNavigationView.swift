@@ -2,6 +2,8 @@ import CoreLocation
 import FerrostarCore
 import FerrostarCoreFFI
 import FerrostarMapLibreUI
+import MapLibre
+import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
@@ -63,7 +65,16 @@ struct DemoNavigationView: View {
                 camera: $camera,
                 snappedZoom: .constant(18),
                 useSnappedCamera: .constant(true)
-            )
+            ) {
+                let source = ShapeSource(identifier: "userLocation") {
+                    // Demonstrate how to add a dynamic overlay;
+                    // also incidentally shows the extent of puck lag
+                    if let userLocation = locationProvider.lastLocation {
+                        MLNPointFeature(coordinate: userLocation.clLocation.coordinate)
+                    }
+                }
+                CircleStyleLayer(identifier: "foo", source: source)
+            }
             .overlay(alignment: .bottomLeading) {
                 VStack {
                     HStack {
