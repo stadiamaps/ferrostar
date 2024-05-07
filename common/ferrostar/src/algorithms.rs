@@ -292,12 +292,18 @@ pub fn calculate_trip_progress(
     }
 
     let steps_after_current = &remaining_steps[1..];
-    let distance_remaining = distance_to_next_maneuver +
-        steps_after_current.iter().map(|step| step.distance).sum::<f64>();
+    let distance_remaining = distance_to_next_maneuver
+        + steps_after_current
+            .iter()
+            .map(|step| step.distance)
+            .sum::<f64>();
 
     let duration_remaining = duration_to_end_of_step
-        + steps_after_current.iter().map(|step| step.duration).sum::<f64>();
-        
+        + steps_after_current
+            .iter()
+            .map(|step| step.duration)
+            .sum::<f64>();
+
     TripProgress {
         distance_to_next_maneuver,
         distance_remaining,
