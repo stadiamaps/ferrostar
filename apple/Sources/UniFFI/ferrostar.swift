@@ -1313,94 +1313,6 @@ public func FfiConverterTypeRouteResponseParser_lower(_ value: RouteResponsePars
     FfiConverterTypeRouteResponseParser.lower(value)
 }
 
-/**
- * A subset of state values that are used to show the user their current progress along the full route/trip.
- */
-public struct ArrivalState {
-    /**
-     * The distance to the next maneuver, in meters.
-     */
-    public var distanceToNextManeuver: Double
-    /**
-     * The total distance remaining in the trip, in meters.
-     *
-     * This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
-     */
-    public var distanceRemaining: Double
-    /**
-     * The total duration remaining in the trip, in seconds.
-     */
-    public var durationRemaining: Double
-
-    // Default memberwise initializers are never public by default, so we
-    // declare one manually.
-    public init(
-        /**
-         * The distance to the next maneuver, in meters.
-         */
-        distanceToNextManeuver: Double,
-        /**
-            * The total distance remaining in the trip, in meters.
-            *
-            * This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
-            */
-        distanceRemaining: Double,
-        /**
-            * The total duration remaining in the trip, in seconds.
-            */
-        durationRemaining: Double
-    ) {
-        self.distanceToNextManeuver = distanceToNextManeuver
-        self.distanceRemaining = distanceRemaining
-        self.durationRemaining = durationRemaining
-    }
-}
-
-extension ArrivalState: Equatable, Hashable {
-    public static func == (lhs: ArrivalState, rhs: ArrivalState) -> Bool {
-        if lhs.distanceToNextManeuver != rhs.distanceToNextManeuver {
-            return false
-        }
-        if lhs.distanceRemaining != rhs.distanceRemaining {
-            return false
-        }
-        if lhs.durationRemaining != rhs.durationRemaining {
-            return false
-        }
-        return true
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(distanceToNextManeuver)
-        hasher.combine(distanceRemaining)
-        hasher.combine(durationRemaining)
-    }
-}
-
-public struct FfiConverterTypeArrivalState: FfiConverterRustBuffer {
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ArrivalState {
-        try ArrivalState(
-            distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
-            distanceRemaining: FfiConverterDouble.read(from: &buf),
-            durationRemaining: FfiConverterDouble.read(from: &buf)
-        )
-    }
-
-    public static func write(_ value: ArrivalState, into buf: inout [UInt8]) {
-        FfiConverterDouble.write(value.distanceToNextManeuver, into: &buf)
-        FfiConverterDouble.write(value.distanceRemaining, into: &buf)
-        FfiConverterDouble.write(value.durationRemaining, into: &buf)
-    }
-}
-
-public func FfiConverterTypeArrivalState_lift(_ buf: RustBuffer) throws -> ArrivalState {
-    try FfiConverterTypeArrivalState.lift(buf)
-}
-
-public func FfiConverterTypeArrivalState_lower(_ value: ArrivalState) -> RustBuffer {
-    FfiConverterTypeArrivalState.lower(value)
-}
-
 public struct BoundingBox {
     public var sw: GeographicCoordinate
     public var ne: GeographicCoordinate
@@ -1878,7 +1790,7 @@ public struct RouteStep {
      */
     public var distance: Double
     /**
-     * The duration, in seconds the router estimates it will take to travel the step.
+     * The estimated duration, in seconds, that it will take to complete this step.
      */
     public var duration: Double
     public var roadName: String?
@@ -1895,7 +1807,7 @@ public struct RouteStep {
             */
         distance: Double,
         /**
-            * The duration, in seconds the router estimates it will take to travel the step.
+            * The estimated duration, in seconds, that it will take to complete this step.
             */
         duration: Double,
         roadName: String?,
@@ -1980,6 +1892,75 @@ public func FfiConverterTypeRouteStep_lift(_ buf: RustBuffer) throws -> RouteSte
 
 public func FfiConverterTypeRouteStep_lower(_ value: RouteStep) -> RustBuffer {
     FfiConverterTypeRouteStep.lower(value)
+}
+
+/**
+ * The speed of the user from the location provider.
+ */
+public struct Speed {
+    /**
+     * The user's speed in meters per second.
+     */
+    public var value: Double
+    /**
+     * The accuracy of the speed value, measured in meters per second.
+     */
+    public var accuracy: Double
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The user's speed in meters per second.
+         */
+        value: Double,
+        /**
+            * The accuracy of the speed value, measured in meters per second.
+            */
+        accuracy: Double
+    ) {
+        self.value = value
+        self.accuracy = accuracy
+    }
+}
+
+extension Speed: Equatable, Hashable {
+    public static func == (lhs: Speed, rhs: Speed) -> Bool {
+        if lhs.value != rhs.value {
+            return false
+        }
+        if lhs.accuracy != rhs.accuracy {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(value)
+        hasher.combine(accuracy)
+    }
+}
+
+public struct FfiConverterTypeSpeed: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Speed {
+        try Speed(
+            value: FfiConverterDouble.read(from: &buf),
+            accuracy: FfiConverterDouble.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: Speed, into buf: inout [UInt8]) {
+        FfiConverterDouble.write(value.value, into: &buf)
+        FfiConverterDouble.write(value.accuracy, into: &buf)
+    }
+}
+
+public func FfiConverterTypeSpeed_lift(_ buf: RustBuffer) throws -> Speed {
+    try FfiConverterTypeSpeed.lift(buf)
+}
+
+public func FfiConverterTypeSpeed_lower(_ value: Speed) -> RustBuffer {
+    FfiConverterTypeSpeed.lower(value)
 }
 
 /**
@@ -2098,6 +2079,94 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
 }
 
 /**
+ * A subset of state values that are used to show the user their current progress along the trip and it's components.
+ */
+public struct TripProgress {
+    /**
+     * The distance to the next maneuver, in meters.
+     */
+    public var distanceToNextManeuver: Double
+    /**
+     * The total distance remaining in the trip, in meters.
+     *
+     * This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
+     */
+    public var distanceRemaining: Double
+    /**
+     * The total duration remaining in the trip, in seconds.
+     */
+    public var durationRemaining: Double
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The distance to the next maneuver, in meters.
+         */
+        distanceToNextManeuver: Double,
+        /**
+            * The total distance remaining in the trip, in meters.
+            *
+            * This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
+            */
+        distanceRemaining: Double,
+        /**
+            * The total duration remaining in the trip, in seconds.
+            */
+        durationRemaining: Double
+    ) {
+        self.distanceToNextManeuver = distanceToNextManeuver
+        self.distanceRemaining = distanceRemaining
+        self.durationRemaining = durationRemaining
+    }
+}
+
+extension TripProgress: Equatable, Hashable {
+    public static func == (lhs: TripProgress, rhs: TripProgress) -> Bool {
+        if lhs.distanceToNextManeuver != rhs.distanceToNextManeuver {
+            return false
+        }
+        if lhs.distanceRemaining != rhs.distanceRemaining {
+            return false
+        }
+        if lhs.durationRemaining != rhs.durationRemaining {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(distanceToNextManeuver)
+        hasher.combine(distanceRemaining)
+        hasher.combine(durationRemaining)
+    }
+}
+
+public struct FfiConverterTypeTripProgress: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TripProgress {
+        try TripProgress(
+            distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
+            distanceRemaining: FfiConverterDouble.read(from: &buf),
+            durationRemaining: FfiConverterDouble.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: TripProgress, into buf: inout [UInt8]) {
+        FfiConverterDouble.write(value.distanceToNextManeuver, into: &buf)
+        FfiConverterDouble.write(value.distanceRemaining, into: &buf)
+        FfiConverterDouble.write(value.durationRemaining, into: &buf)
+    }
+}
+
+public func FfiConverterTypeTripProgress_lift(_ buf: RustBuffer) throws -> TripProgress {
+    try FfiConverterTypeTripProgress.lift(buf)
+}
+
+public func FfiConverterTypeTripProgress_lower(_ value: TripProgress) -> RustBuffer {
+    FfiConverterTypeTripProgress.lower(value)
+}
+
+/**
  * The location of the user that is navigating.
  *
  * In addition to coordinates, this includes estimated accuracy and course information,
@@ -2114,8 +2183,7 @@ public struct UserLocation {
     public var horizontalAccuracy: Double
     public var courseOverGround: CourseOverGround?
     public var timestamp: Date
-    public var speed: Double?
-    public var speedAccuracy: Double?
+    public var speed: Speed?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -2127,15 +2195,13 @@ public struct UserLocation {
         horizontalAccuracy: Double,
         courseOverGround: CourseOverGround?,
         timestamp: Date,
-        speed: Double?,
-        speedAccuracy: Double?
+        speed: Speed?
     ) {
         self.coordinates = coordinates
         self.horizontalAccuracy = horizontalAccuracy
         self.courseOverGround = courseOverGround
         self.timestamp = timestamp
         self.speed = speed
-        self.speedAccuracy = speedAccuracy
     }
 }
 
@@ -2156,9 +2222,6 @@ extension UserLocation: Equatable, Hashable {
         if lhs.speed != rhs.speed {
             return false
         }
-        if lhs.speedAccuracy != rhs.speedAccuracy {
-            return false
-        }
         return true
     }
 
@@ -2168,7 +2231,6 @@ extension UserLocation: Equatable, Hashable {
         hasher.combine(courseOverGround)
         hasher.combine(timestamp)
         hasher.combine(speed)
-        hasher.combine(speedAccuracy)
     }
 }
 
@@ -2179,8 +2241,7 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
             horizontalAccuracy: FfiConverterDouble.read(from: &buf),
             courseOverGround: FfiConverterOptionTypeCourseOverGround.read(from: &buf),
             timestamp: FfiConverterTimestamp.read(from: &buf),
-            speed: FfiConverterOptionDouble.read(from: &buf),
-            speedAccuracy: FfiConverterOptionDouble.read(from: &buf)
+            speed: FfiConverterOptionTypeSpeed.read(from: &buf)
         )
     }
 
@@ -2189,8 +2250,7 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
         FfiConverterDouble.write(value.horizontalAccuracy, into: &buf)
         FfiConverterOptionTypeCourseOverGround.write(value.courseOverGround, into: &buf)
         FfiConverterTimestamp.write(value.timestamp, into: &buf)
-        FfiConverterOptionDouble.write(value.speed, into: &buf)
-        FfiConverterOptionDouble.write(value.speedAccuracy, into: &buf)
+        FfiConverterOptionTypeSpeed.write(value.speed, into: &buf)
     }
 }
 
@@ -3094,11 +3154,10 @@ public enum TripState {
             */
         remainingWaypoints: [Waypoint],
         /**
-            * The arrival state includes all information needed to display distance & duration from the
-            * user's current location on the route/in the trip. It includes summary information as well
-            * as the distance to the next maneuver.
+            * The trip progress includes information that is useful for showing the
+            * user's progress along the full navigation trip, the route and its components.
             */
-        arrival: ArrivalState,
+        progress: TripProgress,
         /**
             * The route deviation status: is the user following the route or not?
             */
@@ -3127,7 +3186,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
-                arrival: FfiConverterTypeArrivalState.read(from: &buf),
+                progress: FfiConverterTypeTripProgress.read(from: &buf),
                 deviation: FfiConverterTypeRouteDeviation.read(from: &buf),
                 visualInstruction: FfiConverterOptionTypeVisualInstruction.read(from: &buf),
                 spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
@@ -3145,7 +3204,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             snappedUserLocation,
             remainingSteps,
             remainingWaypoints,
-            arrival,
+            progress,
             deviation,
             visualInstruction,
             spokenInstruction
@@ -3154,7 +3213,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
-            FfiConverterTypeArrivalState.write(arrival, into: &buf)
+            FfiConverterTypeTripProgress.write(progress, into: &buf)
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
             FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
@@ -3307,6 +3366,27 @@ private struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeCourseOverGround.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterOptionTypeSpeed: FfiConverterRustBuffer {
+    typealias SwiftType = Speed?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeSpeed.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeSpeed.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }

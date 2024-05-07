@@ -431,6 +431,7 @@ expression: routes
         - lat: 28.790106
           lng: -82.018021
       distance: 2089.442
+      duration: 301.262
       road_name: ""
       instruction: Drive southeast.
       visual_instructions:
@@ -454,6 +455,7 @@ expression: routes
         - lat: 28.790106
           lng: -82.018021
       distance: 0
+      duration: 0
       road_name: ""
       instruction: You have arrived at your destination.
       visual_instructions:

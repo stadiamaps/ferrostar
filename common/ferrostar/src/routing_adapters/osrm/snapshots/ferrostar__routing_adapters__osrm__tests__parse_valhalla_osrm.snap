@@ -317,6 +317,7 @@ expression: routes
         - lat: 59.442754
           lng: 24.763449
       distance: 111.251
+      duration: 90.107
       road_name: ""
       instruction: Walk west on the walkway.
       visual_instructions:
@@ -340,6 +341,7 @@ expression: routes
         - lat: 59.442671
           lng: 24.763423
       distance: 9
+      duration: 6.353
       road_name: ""
       instruction: Turn left onto the walkway.
       visual_instructions:
@@ -360,6 +362,7 @@ expression: routes
         - lat: 59.442709
           lng: 24.763155
       distance: 16
+      duration: 12.424
       road_name: Laeva
       instruction: Turn right onto Laeva.
       visual_instructions:
@@ -382,6 +385,7 @@ expression: routes
         - lat: 59.442819
           lng: 24.763
       distance: 15
+      duration: 11.224
       road_name: ""
       instruction: Bear right.
       visual_instructions:
@@ -406,6 +410,7 @@ expression: routes
         - lat: 59.442918
           lng: 24.762356
       distance: 38
+      duration: 26.824
       road_name: ""
       instruction: Bear left onto the walkway.
       visual_instructions:
@@ -426,6 +431,7 @@ expression: routes
         - lat: 59.442936
           lng: 24.762237
       distance: 7
+      duration: 4.941
       road_name: ""
       instruction: Continue.
       visual_instructions:
@@ -452,6 +458,7 @@ expression: routes
         - lat: 59.443526
           lng: 24.761765
       distance: 70
+      duration: 52.275
       road_name: Admiralisild; Admiral Bridge
       instruction: Turn right onto Admiralisild/Admiral Bridge.
       visual_instructions:
@@ -474,6 +481,7 @@ expression: routes
         - lat: 59.4439
           lng: 24.761432
       distance: 46
+      duration: 33.471
       road_name: ""
       instruction: Continue on the walkway.
       visual_instructions:
@@ -494,6 +502,7 @@ expression: routes
         - lat: 59.443487
           lng: 24.759273
       distance: 131
+      duration: 101.718
       road_name: ""
       instruction: Turn left onto the walkway.
       visual_instructions:
@@ -520,6 +529,7 @@ expression: routes
         - lat: 59.443712
           lng: 24.759127
       distance: 25
+      duration: 21.906
       road_name: ""
       instruction: Turn right onto the walkway.
       visual_instructions:
@@ -544,6 +554,7 @@ expression: routes
         - lat: 59.443674
           lng: 24.758853
       distance: 16
+      duration: 12.294
       road_name: ""
       instruction: Turn left onto the walkway.
       visual_instructions:
@@ -582,6 +593,7 @@ expression: routes
         - lat: 59.444448
           lng: 24.758392
       distance: 91
+      duration: 72.235
       road_name: Logi
       instruction: Turn right onto Logi.
       visual_instructions:
@@ -602,6 +614,7 @@ expression: routes
         - lat: 59.444431
           lng: 24.758246
       distance: 8
+      duration: 5.647
       road_name: ""
       instruction: Turn left onto the walkway.
       visual_instructions:
@@ -628,6 +641,7 @@ expression: routes
         - lat: 59.445069
           lng: 24.757636
       distance: 85
+      duration: 64.447
       road_name: ""
       instruction: Turn right onto the walkway.
       visual_instructions:
@@ -754,6 +768,7 @@ expression: routes
         - lat: 59.44946
           lng: 24.739543
       distance: 1254
+      duration: 966.424
       road_name: Kultuurikilomeeter
       instruction: Bear left onto Kultuurikilomeeter.
       visual_instructions:
@@ -776,6 +791,7 @@ expression: routes
         - lat: 59.449652
           lng: 24.739675
       distance: 23
+      duration: 18.235
       road_name: ""
       instruction: Turn right onto the walkway.
       visual_instructions:
@@ -798,6 +814,7 @@ expression: routes
         - lat: 59.449733
           lng: 24.739454
       distance: 16
+      duration: 11.294
       road_name: ""
       instruction: Turn left onto the walkway.
       visual_instructions:
@@ -856,6 +873,7 @@ expression: routes
         - lat: 59.450765
           lng: 24.733721
       distance: 347
+      duration: 263.849
       road_name: ""
       instruction: Turn left onto the crosswalk.
       visual_instructions:
@@ -876,6 +894,7 @@ expression: routes
         - lat: 59.450787
           lng: 24.733717
       distance: 2
+      duration: 1.412
       road_name: ""
       instruction: Turn right onto the walkway.
       visual_instructions:
@@ -922,6 +941,7 @@ expression: routes
         - lat: 59.451907
           lng: 24.730259
       distance: 241
+      duration: 184.456
       road_name: ""
       instruction: Turn left onto the walkway.
       visual_instructions:
@@ -942,6 +962,7 @@ expression: routes
         - lat: 59.452026
           lng: 24.729829
       distance: 28
+      duration: 20.951
       road_name: Allveelaeva
       instruction: Bear left onto Allveelaeva.
       visual_instructions:
@@ -964,6 +985,7 @@ expression: routes
         - lat: 59.452226
           lng: 24.730034
       distance: 25.099
+      duration: 24.804
       road_name: Peetri
       instruction: Turn right onto Peetri.
       visual_instructions:
@@ -984,6 +1006,7 @@ expression: routes
         - lat: 59.452226
           lng: 24.730034
       distance: 0
+      duration: 0
       road_name: Peetri
       instruction: You have arrived at your destination.
       visual_instructions:

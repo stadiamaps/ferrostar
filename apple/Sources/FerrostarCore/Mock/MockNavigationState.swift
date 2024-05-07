@@ -16,7 +16,7 @@ public extension NavigationState {
         ),
         fullRouteShape: samplePedestrianWaypoints,
         steps: [],
-        arrival: ArrivalState(
+        progress: TripProgress(
             distanceToNextManeuver: 0,
             distanceRemaining: 0,
             durationRemaining: 0
@@ -58,7 +58,7 @@ public extension NavigationState {
                 ],
                 spokenInstructions: []
             )],
-            arrival: ArrivalState(
+            progress: TripProgress(
                 distanceToNextManeuver: 5,
                 distanceRemaining: 100,
                 durationRemaining: 99
@@ -70,8 +70,7 @@ public extension NavigationState {
             horizontalAccuracy: 10,
             courseOverGround: CourseOverGround(degrees: 0, accuracy: 10),
             timestamp: Date(),
-            speed: 0,
-            speedAccuracy: 0
+            speed: Speed(value: 0, accuracy: 2)
         )
 
         return result

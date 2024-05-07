@@ -1,6 +1,6 @@
 use crate::{
-    models::{GeographicCoordinate, RouteStep, UserLocation}, 
-    navigation_controller::models::ArrivalState
+    models::{GeographicCoordinate, RouteStep, UserLocation},
+    navigation_controller::models::TripProgress,
 };
 use geo::{
     Closest, ClosestPoint, EuclideanDistance, HaversineDistance, HaversineLength, LineLocatePoint,
@@ -247,10 +247,7 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
 
 /// Computes the distance between a location and the end of the current route step.
 /// We assume that input location is pre-snapped to route step's linestring.
-fn distance_to_end_of_step(
-    snapped_location: &Point,
-    current_step_linestring: &LineString,
-) -> f64 {
+fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &LineString) -> f64 {
     let step_length = current_step_linestring.haversine_length();
     if let Some(traversed) = distance_along(snapped_location, current_step_linestring) {
         step_length - traversed
@@ -261,57 +258,52 @@ fn distance_to_end_of_step(
 
 /// Computes the arrival state for a snapped location along the route.
 /// This includes distances and durations.
-pub fn calculate_arrival(
+pub fn calculate_trip_progress(
     snapped_location: &Point,
     remaining_steps: &[RouteStep],
-) -> ArrivalState {
+) -> TripProgress {
     if remaining_steps.is_empty() {
-        return ArrivalState {
+        return TripProgress {
             distance_to_next_maneuver: 0.0,
             distance_remaining: 0.0,
             duration_remaining: 0.0,
         };
     }
 
-    let mut distance_remaining = 0.0;
-    let mut duration_remaining = 0.0;
-
+    // Calculate the next step.
     let current_step = remaining_steps.first().unwrap();
-    let distance_to_next_maneuver = distance_to_end_of_step(snapped_location, &current_step.get_linestring());
-    // Add the current step's distance to the total distance remaining
-    distance_remaining += distance_to_next_maneuver;
+    let distance_to_next_maneuver =
+        distance_to_end_of_step(snapped_location, &current_step.get_linestring());
 
     // TODO: Improve this logic? It may be solid, but seems we could improve it with actual speed data.
-    let pct_remaining_current_step = distance_to_next_maneuver / current_step.get_linestring().haversine_length();
+    let pct_remaining_current_step =
+        distance_to_next_maneuver / current_step.get_linestring().haversine_length();
 
     // Get the percentage of duration remaining in the current step.
     let duration_to_end_of_step = pct_remaining_current_step * current_step.duration;
-    // Add the current step's duration to the total distance remaining
-    duration_remaining += duration_to_end_of_step;
-    
+
     // Exit early if there is only the current step:
     if remaining_steps.len() == 1 {
-        return ArrivalState {
+        return TripProgress {
             distance_to_next_maneuver,
-            distance_remaining,
-            duration_remaining
+            distance_remaining: distance_to_next_maneuver,
+            duration_remaining: duration_to_end_of_step,
         };
     }
 
-    // Loop through the steps after the current and add their total duration/distance
     let steps_after_current = &remaining_steps[1..];
-    for step in steps_after_current {
-        distance_remaining += step.distance;
-        duration_remaining += step.duration;
-    }
+    let distance_remaining = distance_to_next_maneuver +
+        steps_after_current.iter().map(|step| step.distance).sum::<f64>();
 
-    ArrivalState {
+    let duration_remaining = duration_to_end_of_step
+        + steps_after_current.iter().map(|step| step.duration).sum::<f64>();
+        
+    TripProgress {
         distance_to_next_maneuver,
         distance_remaining,
-        duration_remaining
+        duration_remaining,
     }
 }
-
 
 #[cfg(test)]
 proptest! {
@@ -376,8 +368,7 @@ proptest! {
                 horizontal_accuracy: 0.0,
                 course_over_ground: None,
                 timestamp: SystemTime::now(),
-                speed: None,
-                speed_accuracy: None,
+                speed: None
             };
 
             let inaccurate_user_location = UserLocation {
@@ -439,8 +430,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         let user_location_point = Point::from(user_location);
         let distance_from_end_of_current_step = user_location_point.haversine_distance(&end_of_step.into());

@@ -35,7 +35,6 @@ fn same_location_results_in_identical_state() {
         course_over_ground: None,
         timestamp: SystemTime::now(),
         speed: None,
-            speed_accuracy: None,
     };
 
     let controller = NavigationController::new(
@@ -65,7 +64,6 @@ fn simple_route_state_machine_manual_advance() {
         course_over_ground: None,
         timestamp: SystemTime::now(),
         speed: None,
-            speed_accuracy: None,
     };
     let user_location_end_of_first_step = UserLocation {
         coordinates: *route.steps[0].geometry.last().unwrap(),
@@ -73,7 +71,6 @@ fn simple_route_state_machine_manual_advance() {
         course_over_ground: None,
         timestamp: SystemTime::now(),
         speed: None,
-            speed_accuracy: None,
     };
 
     let controller = NavigationController::new(
@@ -137,7 +134,6 @@ fn simple_route_state_machine_advances_with_location_change() {
         course_over_ground: None,
         timestamp: SystemTime::now(),
         speed: None,
-            speed_accuracy: None,
     };
     let user_location_end_of_first_step = UserLocation {
         coordinates: *route.steps[0].geometry.last().unwrap(),
@@ -145,7 +141,6 @@ fn simple_route_state_machine_advances_with_location_change() {
         course_over_ground: None,
         timestamp: SystemTime::now(),
         speed: None,
-            speed_accuracy: None,
     };
 
     let controller = NavigationController::new(

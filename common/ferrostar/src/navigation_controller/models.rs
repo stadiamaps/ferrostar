@@ -2,13 +2,13 @@ use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
 use geo::LineString;
 
-/// A subset of state values that are used to show the user their current progress along the full route/trip.
+/// A subset of state values that are used to show the user their current progress along the trip and it's components.
 #[derive(Debug, Clone, PartialEq, uniffi::Record)]
-pub struct ArrivalState {
+pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
     pub distance_to_next_maneuver: f64,
     /// The total distance remaining in the trip, in meters.
-    /// 
+    ///
     /// This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
     pub distance_remaining: f64,
     /// The total duration remaining in the trip, in seconds.
@@ -34,10 +34,9 @@ pub enum TripState {
         /// may have multiple intervening points that are visited along the route.)
         /// This list is updated as the user advances through the route.
         remaining_waypoints: Vec<Waypoint>,
-        /// The arrival state includes all information needed to display distance & duration from the 
-        /// user's current location on the route/in the trip. It includes summary information as well
-        /// as the distance to the next maneuver.
-        arrival: ArrivalState,
+        /// The trip progress includes information that is useful for showing the
+        /// user's progress along the full navigation trip, the route and its components.
+        progress: TripProgress,
         /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
         /// The visual instruction that should be displayed in the user interface.

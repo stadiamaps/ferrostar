@@ -130,6 +130,16 @@ impl CourseOverGround {
     }
 }
 
+/// The speed of the user from the location provider.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
+pub struct Speed {
+    /// The user's speed in meters per second.
+    pub value: f64,
+    /// The accuracy of the speed value, measured in meters per second.
+    pub accuracy: f64,
+}
+
 /// The location of the user that is navigating.
 ///
 /// In addition to coordinates, this includes estimated accuracy and course information,
@@ -146,8 +156,7 @@ pub struct UserLocation {
     pub course_over_ground: Option<CourseOverGround>,
     #[cfg_attr(test, serde(skip_serializing))]
     pub timestamp: SystemTime,
-    pub speed: Option<f64>,
-    pub speed_accuracy: Option<f64>
+    pub speed: Option<Speed>,
 }
 
 impl From<UserLocation> for Point {

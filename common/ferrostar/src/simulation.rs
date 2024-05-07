@@ -44,7 +44,6 @@ pub fn location_simulation_from_coordinates(
                 }),
                 timestamp: SystemTime::now(),
                 speed: None,
-                speed_accuracy: None,
             };
 
             let remaining_locations = if let Some(distance) = resample_distance {
@@ -147,7 +146,6 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
             }),
             timestamp: SystemTime::now(),
             speed: None,
-            speed_accuracy: None,
         };
 
         LocationSimulationState {

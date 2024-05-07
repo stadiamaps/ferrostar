@@ -132,8 +132,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         prop_assert_eq!(
             tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
@@ -150,8 +149,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         prop_assert_eq!(
             tracking.check_route_deviation(user_location_random, &route, &current_route_step),
@@ -196,8 +194,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         prop_assert_eq!(
             tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
@@ -214,8 +211,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         prop_assert_eq!(
             tracking.check_route_deviation(user_location_random, &route, &current_route_step),
@@ -261,8 +257,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         prop_assert_eq!(
             tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
@@ -281,8 +276,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         prop_assert_eq!(
             tracking.check_route_deviation(user_location_random, &route, &current_route_step),
@@ -320,8 +314,7 @@ proptest! {
             horizontal_accuracy,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         prop_assert_eq!(
             tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
@@ -340,8 +333,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         let deviation = deviation_from_line(&Point::from(coordinates), &current_route_step.get_linestring());
         match tracking.check_route_deviation(user_location_random, &route, &current_route_step) {
@@ -385,8 +377,7 @@ proptest! {
             horizontal_accuracy: horizontal_accuracy as f64,
             course_over_ground: None,
             timestamp: SystemTime::now(),
-            speed: None,
-            speed_accuracy: None,
+            speed: None
         };
         prop_assert_eq!(
             tracking.check_route_deviation(user_location_random, &route, &current_route_step),

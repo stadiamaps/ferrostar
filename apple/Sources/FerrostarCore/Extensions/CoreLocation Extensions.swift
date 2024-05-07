@@ -19,13 +19,14 @@ extension CLLocation {
             nil
         }
 
+        let ffiSpeed = ffiSpeed(speed, accuracy: speedAccuracy)
+        
         return UserLocation(
             coordinates: coordinate.geographicCoordinates,
             horizontalAccuracy: horizontalAccuracy,
             courseOverGround: ffiCourse,
             timestamp: timestamp,
-            speed: parseCLValidityToOptional(speed),
-            speedAccuracy: parseCLValidityToOptional(speedAccuracy)
+            speed: ffiSpeed
         )
     }
 
@@ -127,15 +128,14 @@ public extension UserLocation {
          course: CLLocationDirection,
          courseAccuracy: CLLocationDirectionAccuracy,
          timestamp: Date,
-         speed: Double?,
-         speedAccuracy: Double?)
+         speed: CLLocationSpeed?,
+         speedAccuracy: CLLocationSpeedAccuracy?)
     {
         self.init(coordinates: GeographicCoordinate(lat: latitude, lng: longitude),
                   horizontalAccuracy: horizontalAccuracy,
                   courseOverGround: CourseOverGround(course: course, courseAccuracy: courseAccuracy),
                   timestamp: timestamp,
-                  speed: parseCLValidityToOptional(speed),
-                  speedAccuracy: parseCLValidityToOptional(speedAccuracy)
+                  speed: ffiSpeed(speed, accuracy: speedAccuracy)
         )
     }
 
@@ -148,8 +148,7 @@ public extension UserLocation {
                   horizontalAccuracy: 0,
                   courseOverGround: nil,
                   timestamp: Date(),
-                  speed: nil,
-                  speedAccuracy: nil)
+                  speed: nil)
     }
 
     /// Initialize a UserLocation from an Apple CoreLocation CLLocation
@@ -166,8 +165,7 @@ public extension UserLocation {
                 courseAccuracy: clLocation.courseAccuracy
             ),
             timestamp: clLocation.timestamp,
-            speed: parseCLValidityToOptional(clLocation.speed),
-            speedAccuracy: parseCLValidityToOptional(clLocation.speedAccuracy)
+            speed: ffiSpeed(clLocation.speed, accuracy: clLocation.speedAccuracy)
         )
     }
 
@@ -182,6 +180,17 @@ public extension UserLocation {
             courseDegrees = -1
             courseAccuracy = -1
         }
+        
+        let clSpeed: CLLocationDirection
+        let clSpeedAccuracy: CLLocationDirectionAccuracy
+        
+        if let speed = speed {
+            clSpeed = speed.value
+            clSpeedAccuracy = speed.accuracy
+        } else {
+            clSpeed = -1
+            clSpeedAccuracy = -1
+        }
 
         // TODO: Get speed info into UserLocation
         return CLLocation(
@@ -191,11 +200,26 @@ public extension UserLocation {
             verticalAccuracy: -1,
             course: courseDegrees,
             courseAccuracy: courseAccuracy,
-            speed: speed ?? -1,
-            speedAccuracy: speedAccuracy ?? -1,
+            speed: clSpeed,
+            speedAccuracy: clSpeedAccuracy,
             timestamp: timestamp
         )
     }
+}
+
+/// Create an FFI Speed from CL Location speed and speed accuracy.
+///
+/// - Parameters:
+///   - speed: The CLLocation user speed in meters per second.
+///   - accuracy: The CLLocation user speed accuracy in meters per second.
+/// - Returns: The FFI Speed object for ferrostar.
+fileprivate func ffiSpeed(_ speed: CLLocationSpeed?, accuracy: CLLocationSpeedAccuracy?) -> Speed? {
+    guard let speed = parseCLValidityToOptional(speed),
+          let accuracy = parseCLValidityToOptional(accuracy) else {
+        return nil
+    }
+    
+    return Speed(value: speed, accuracy: accuracy)
 }
 
 fileprivate func parseCLValidityToOptional(_ value: Double?) -> Double? {
