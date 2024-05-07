@@ -20,7 +20,7 @@ extension CLLocation {
         }
 
         let ffiSpeed = ffiSpeed(speed, accuracy: speedAccuracy)
-        
+
         return UserLocation(
             coordinates: coordinate.geographicCoordinates,
             horizontalAccuracy: horizontalAccuracy,
@@ -135,8 +135,7 @@ public extension UserLocation {
                   horizontalAccuracy: horizontalAccuracy,
                   courseOverGround: CourseOverGround(course: course, courseAccuracy: courseAccuracy),
                   timestamp: timestamp,
-                  speed: ffiSpeed(speed, accuracy: speedAccuracy)
-        )
+                  speed: ffiSpeed(speed, accuracy: speedAccuracy))
     }
 
     /// Initialize a UserLocation with a coordinate only.
@@ -180,11 +179,11 @@ public extension UserLocation {
             courseDegrees = -1
             courseAccuracy = -1
         }
-        
+
         let clSpeed: CLLocationDirection
         let clSpeedAccuracy: CLLocationDirectionAccuracy
-        
-        if let speed = speed {
+
+        if let speed {
             clSpeed = speed.value
             clSpeedAccuracy = speed.accuracy
         } else {
@@ -213,19 +212,20 @@ public extension UserLocation {
 ///   - speed: The CLLocation user speed in meters per second.
 ///   - accuracy: The CLLocation user speed accuracy in meters per second.
 /// - Returns: The FFI Speed object for ferrostar.
-fileprivate func ffiSpeed(_ speed: CLLocationSpeed?, accuracy: CLLocationSpeedAccuracy?) -> Speed? {
+private func ffiSpeed(_ speed: CLLocationSpeed?, accuracy: CLLocationSpeedAccuracy?) -> Speed? {
     guard let speed = parseCLValidityToOptional(speed),
-          let accuracy = parseCLValidityToOptional(accuracy) else {
+          let accuracy = parseCLValidityToOptional(accuracy)
+    else {
         return nil
     }
-    
+
     return Speed(value: speed, accuracy: accuracy)
 }
 
-fileprivate func parseCLValidityToOptional(_ value: Double?) -> Double? {
+private func parseCLValidityToOptional(_ value: Double?) -> Double? {
     guard let value, value >= 0 else {
         return nil
     }
-    
+
     return value
 }

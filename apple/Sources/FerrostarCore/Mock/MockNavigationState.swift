@@ -41,7 +41,7 @@ public extension NavigationState {
             fullRouteShape: samplePedestrianWaypoints,
             steps: [RouteStep(
                 geometry: [lastUserLocation],
-                distance: 100, 
+                distance: 100,
                 duration: 99,
                 roadName: "Jefferson St.",
                 instruction: "Walk west on Jefferson St.",
