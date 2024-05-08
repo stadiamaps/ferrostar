@@ -13,6 +13,7 @@ public struct PortraitNavigationView: View {
     // TODO: Configurable camera and user "puck" rotation modes
 
     private var navigationState: NavigationState?
+    private let userLayers: [StyleLayerDefinition]
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
     @Binding var camera: MapViewCamera
@@ -25,12 +26,13 @@ public struct PortraitNavigationView: View {
         camera: Binding<MapViewCamera>,
         snappedZoom: Binding<Double>,
         useSnappedCamera: Binding<Bool>,
-        distanceFormatter: Formatter = MKDistanceFormatter()
-        // TODO: Add a symbol builder here for custom symbols along w/ route.
+        distanceFormatter: Formatter = MKDistanceFormatter(),
+        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.distanceFormatter = distanceFormatter
+        userLayers = makeMapContent()
         _camera = camera
         _snappedZoom = snappedZoom
         _useSnappedCamera = useSnappedCamera
@@ -44,7 +46,9 @@ public struct PortraitNavigationView: View {
                 camera: $camera,
                 snappedZoom: $snappedZoom,
                 useSnappedCamera: $useSnappedCamera
-            )
+            ) {
+                userLayers
+            }
             .navigationMapViewContentInset(.portrait(within: geometry))
             .overlay(alignment: .top, content: {
                 if let navigationState,

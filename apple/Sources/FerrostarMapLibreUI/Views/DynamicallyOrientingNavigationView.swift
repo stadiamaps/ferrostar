@@ -16,6 +16,7 @@ public struct DynamicallyOrientingNavigationView: View {
     // TODO: Configurable camera and user "puck" rotation modes
 
     private var navigationState: NavigationState?
+    private let userLayers: [StyleLayerDefinition]
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
     @Binding var camera: MapViewCamera
@@ -38,12 +39,13 @@ public struct DynamicallyOrientingNavigationView: View {
         camera: Binding<MapViewCamera>,
         snappedZoom: Binding<Double>,
         useSnappedCamera: Binding<Bool>,
-        distanceFormatter: Formatter = MKDistanceFormatter()
-        // TODO: Add a symbol builder here for custom symbols along w/ route.
+        distanceFormatter: Formatter = MKDistanceFormatter(),
+        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.distanceFormatter = distanceFormatter
+        userLayers = makeMapContent()
         _camera = camera
         _snappedZoom = snappedZoom
         _useSnappedCamera = useSnappedCamera
@@ -61,7 +63,9 @@ public struct DynamicallyOrientingNavigationView: View {
                 snappedZoom: $snappedZoom,
                 useSnappedCamera: $useSnappedCamera,
                 distanceFormatter: distanceFormatter
-            )
+            ) {
+                userLayers
+            }
         }
     }
 }

@@ -2,6 +2,8 @@ import CoreLocation
 import FerrostarCore
 import FerrostarCoreFFI
 import FerrostarMapLibreUI
+import MapLibre
+import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
@@ -11,6 +13,8 @@ private let initialLocation = CLLocation(latitude: 37.332726,
 
 struct DemoNavigationView: View {
     private let navigationDelegate = NavigationDelegate()
+    // NOTE: This is probably not ideal but works for demo purposes.
+    // This causes a thread performance checker warning log.
     private let spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
 
     private var locationProvider: LocationProviding
@@ -63,7 +67,16 @@ struct DemoNavigationView: View {
                 camera: $camera,
                 snappedZoom: .constant(18),
                 useSnappedCamera: .constant(true)
-            )
+            ) {
+                let source = ShapeSource(identifier: "userLocation") {
+                    // Demonstrate how to add a dynamic overlay;
+                    // also incidentally shows the extent of puck lag
+                    if let userLocation = locationProvider.lastLocation {
+                        MLNPointFeature(coordinate: userLocation.clLocation.coordinate)
+                    }
+                }
+                CircleStyleLayer(identifier: "foo", source: source)
+            }
             .overlay(alignment: .bottomLeading) {
                 VStack {
                     HStack {
@@ -194,7 +207,7 @@ struct DemoNavigationView: View {
         }
 
         // Configure the navigation session.
-        // You have a lot of flexibility here based on your use case
+        // You have a lot of flexibility here based on your use case.
         let config = SwiftNavigationControllerConfig(
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20)
@@ -204,7 +217,7 @@ struct DemoNavigationView: View {
             // This configures the simulator to the desired route.
             // The ferrostarCore.startNavigation will still start the location
             // provider/simulator.
-            try simulated.setSimulatedRoute(route)
+            try simulated.setSimulatedRoute(route, resampleDistance: 5)
             print("DemoApp: setting route to be simulated")
         }
 

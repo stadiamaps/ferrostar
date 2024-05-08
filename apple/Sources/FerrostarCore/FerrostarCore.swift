@@ -263,7 +263,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 self.state?.snappedLocation = snappedLocation
                 self.state?.currentStep = remainingSteps.first
                 self.state?.visualInstruction = visualInstruction
-                // TODO: Create a spoken instruction observer protocol and do something with this
                 self.state?.spokenInstruction = spokenInstruction
                 self.state?.progress = progress
 
@@ -317,7 +316,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
                 if let spokenInstruction, !self.queuedUtteranceIDs.contains(spokenInstruction.utteranceId) {
                     self.queuedUtteranceIDs.insert(spokenInstruction.utteranceId)
-                    self.spokenInstructionObserver?.spokenInstructionTriggered(spokenInstruction)
+
+                    // This sholud not happen on the main queue as it can block;
+                    // we'll probably remove the need for this eventually
+                    // by making FerrostarCore its own actor
+                    DispatchQueue.global(qos: .default).async {
+                        self.spokenInstructionObserver?.spokenInstructionTriggered(spokenInstruction)
+                    }
                 }
             case .complete:
                 // TODO: "You have arrived"?

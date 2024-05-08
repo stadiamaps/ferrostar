@@ -12,7 +12,7 @@ dependencyResolutionManagement {
             url = 'https://maven.pkg.github.com/Rallista/maplibre-compose-playground'
             credentials {
                 username = settings.ext.find('gpr.user') ?: System.getenv('GITHUB_ACTOR')
-                password = settings.ext.find('gpr.key') ?: System.getenv('GITHUB_TOKEN')
+                password = settings.ext.find('gpr.token') ?: System.getenv('GITHUB_TOKEN')
             }
         }
 
