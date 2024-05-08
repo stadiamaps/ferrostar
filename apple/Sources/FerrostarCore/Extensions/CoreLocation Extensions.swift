@@ -191,7 +191,6 @@ public extension UserLocation {
             clSpeedAccuracy = -1
         }
 
-        // TODO: Get speed info into UserLocation
         return CLLocation(
             coordinate: coordinates.clLocationCoordinate2D,
             altitude: 0,

@@ -260,6 +260,8 @@ fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &L
 /// This includes distances and durations.
 pub fn calculate_trip_progress(
     snapped_location: &Point,
+    current_step: &RouteStep,
+    current_step_linestring: &LineString,
     remaining_steps: &[RouteStep],
 ) -> TripProgress {
     if remaining_steps.is_empty() {
@@ -271,13 +273,12 @@ pub fn calculate_trip_progress(
     }
 
     // Calculate the next step.
-    let current_step = remaining_steps.first().unwrap();
     let distance_to_next_maneuver =
-        distance_to_end_of_step(snapped_location, &current_step.get_linestring());
+        distance_to_end_of_step(snapped_location, current_step_linestring);
 
     // TODO: Improve this logic? It may be solid, but seems we could improve it with actual speed data.
     let pct_remaining_current_step =
-        distance_to_next_maneuver / current_step.get_linestring().haversine_length();
+        distance_to_next_maneuver / current_step_linestring.haversine_length();
 
     // Get the percentage of duration remaining in the current step.
     let duration_to_end_of_step = pct_remaining_current_step * current_step.duration;

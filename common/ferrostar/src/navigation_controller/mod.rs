@@ -44,7 +44,12 @@ impl NavigationController {
 
         let current_step_linestring = current_route_step.get_linestring();
         let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
-        let progress = calculate_trip_progress(&snapped_user_location.into(), &remaining_steps);
+        let progress = calculate_trip_progress(
+            &snapped_user_location.into(),
+            current_route_step,
+            &current_step_linestring,
+            &remaining_steps,
+        );
         let deviation = self.config.route_deviation_tracking.check_route_deviation(
             location,
             &self.route,
@@ -117,6 +122,8 @@ impl NavigationController {
 
                         let progress = calculate_trip_progress(
                             &(*snapped_user_location).into(),
+                            &current_step,
+                            &linestring,
                             &remaining_steps,
                         );
 
@@ -171,8 +178,12 @@ impl NavigationController {
                 let current_step_linestring = current_step.get_linestring();
                 let snapped_user_location =
                     snap_user_location_to_line(location, &current_step_linestring);
-                let progress =
-                    calculate_trip_progress(&snapped_user_location.into(), &remaining_steps);
+                let progress = calculate_trip_progress(
+                    &snapped_user_location.into(),
+                    current_step,
+                    &current_step_linestring,
+                    remaining_steps,
+                );
                 let intermediate_state = TripState::Navigating {
                     snapped_user_location,
                     remaining_steps: remaining_steps.clone(),
