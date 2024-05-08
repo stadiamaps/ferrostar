@@ -6,7 +6,7 @@ use std::collections::HashMap;
 
 /// A route request generator for Valhalla backends operating over HTTP.
 ///
-/// Valhalla supports the [WaypointKind] field of [Waypoint]s. Variants have the same meaning as their
+/// Valhalla supports the [`WaypointKind`] field of [Waypoint]s. Variants have the same meaning as their
 /// [`type` strings in Valhalla API](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations)
 /// having the same name.
 #[derive(Debug)]

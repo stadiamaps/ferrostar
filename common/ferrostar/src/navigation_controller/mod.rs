@@ -11,7 +11,7 @@ use crate::{
     models::{Route, UserLocation},
 };
 use geo::{HaversineDistance, Point};
-use models::*;
+use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
 
 /// Manages the navigation lifecycle of a route, reacting to inputs like user location updates
 /// and returning a new state.
@@ -30,7 +30,7 @@ pub struct NavigationController {
 impl NavigationController {
     #[uniffi::constructor]
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
-        Self { config, route }
+        Self { route, config }
     }
 
     /// Returns initial trip state as if the user had just started the route with no progress.
