@@ -145,6 +145,7 @@ impl RouteStep {
             // TODO: Investigate using the haversine distance or geodesics to normalize.
             // Valhalla in particular is a bit nonstandard. See https://github.com/valhalla/valhalla/issues/1717
             distance: value.distance,
+            duration: value.duration,
             road_name: value.name.clone(),
             instruction: value.maneuver.get_instruction(),
             visual_instructions,

@@ -89,7 +89,8 @@ class FerrostarCoreTest {
                                   primaryContent = instructionContent,
                                   secondaryContent = null,
                                   triggerDistanceBeforeManeuver = 42.0)),
-                      spokenInstructions = listOf())))
+                      spokenInstructions = listOf(),
+                      duration = 0.0)))
 
   @Test
   fun test401UnauthorizedRouteResponse() = runTest {
@@ -120,9 +121,10 @@ class FerrostarCoreTest {
                           60.5347155,
                           -149.543469,
                       ),
-                  0.0,
-                  null,
-                  Instant.now()),
+                  horizontalAccuracy = 0.0,
+                  courseOverGround = null,
+                  timestamp = Instant.now(),
+                  speed = null),
           waypoints =
               listOf(
                   Waypoint(
@@ -162,7 +164,8 @@ class FerrostarCoreTest {
                         ),
                     horizontalAccuracy = 6.0,
                     courseOverGround = null,
-                    timestamp = Instant.now()),
+                    timestamp = Instant.now(),
+                    speed = null),
             waypoints =
                 listOf(
                     Waypoint(
@@ -208,7 +211,8 @@ class FerrostarCoreTest {
                         ),
                     horizontalAccuracy = 6.0,
                     courseOverGround = null,
-                    timestamp = Instant.now()),
+                    timestamp = Instant.now(),
+                    speed = null),
             waypoints =
                 listOf(
                     Waypoint(
@@ -279,7 +283,8 @@ class FerrostarCoreTest {
                         ),
                     horizontalAccuracy = 6.0,
                     courseOverGround = null,
-                    timestamp = Instant.now()),
+                    timestamp = Instant.now(),
+                    speed = null),
             waypoints =
                 listOf(
                     Waypoint(
@@ -287,7 +292,12 @@ class FerrostarCoreTest {
                         kind = WaypointKind.BREAK)))
 
     locationProvider.lastLocation =
-        UserLocation(GeographicCoordinate(0.0, 0.0), 6.0, null, Instant.now())
+        UserLocation(
+            coordinates = GeographicCoordinate(0.0, 0.0),
+            horizontalAccuracy = 6.0,
+            courseOverGround = null,
+            timestamp = Instant.now(),
+            speed = null)
     core.startNavigation(
         routes.first(),
         NavigationControllerConfig(

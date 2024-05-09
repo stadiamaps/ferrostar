@@ -14,7 +14,7 @@ public struct NavigationState: Hashable {
     public internal(set) var visualInstruction: VisualInstruction?
     // TODO: This probably gets removed once we have an observer protocol
     public internal(set) var spokenInstruction: SpokenInstruction?
-    public internal(set) var distanceToNextManeuver: CLLocationDistance?
+    public internal(set) var progress: TripProgress?
     /// Indicates when the core is calculating a new route due to the user being off route
     public internal(set) var isCalculatingNewRoute: Bool = false
     public internal(set) var routeDeviation: RouteDeviation?
@@ -23,14 +23,15 @@ public struct NavigationState: Hashable {
         snappedLocation: UserLocation,
         heading: Heading? = nil,
         fullRouteShape: [GeographicCoordinate],
-        steps: [RouteStep]
+        steps: [RouteStep],
+        progress: TripProgress? = nil
     ) {
         self.snappedLocation = snappedLocation
         self.heading = heading
         self.fullRouteShape = fullRouteShape
+        self.progress = progress
         currentStep = steps.first
         visualInstruction = currentStep?.visualInstructions.first
         spokenInstruction = currentStep?.spokenInstructions.first
-        distanceToNextManeuver = currentStep?.distance
     }
 }

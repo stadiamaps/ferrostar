@@ -74,7 +74,11 @@ Let's look at what's involved to get hacking on each platform.
 The Rust project is a cargo workspace,
 and nothing beyond the above should be needed to start hacking!
 
-Run `cargo fmt` from the `common` directory before committing to ensure consistent formatting.
+Before pushing, run the following in the `common` folder:
+
+1. Run `cargo fmt` to automatically format any new rust code.
+2. Run `cargo insta review` to update snapshot testing changes. 
+3. Run `cargo test` to validate testing and ensure snapshot changes were correctly applied by step 2. 
 
 ### iOS
 

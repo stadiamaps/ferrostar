@@ -130,6 +130,16 @@ impl CourseOverGround {
     }
 }
 
+/// The speed of the user from the location provider.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
+pub struct Speed {
+    /// The user's speed in meters per second.
+    pub value: f64,
+    /// The accuracy of the speed value, measured in meters per second.
+    pub accuracy: f64,
+}
+
 /// The location of the user that is navigating.
 ///
 /// In addition to coordinates, this includes estimated accuracy and course information,
@@ -146,6 +156,7 @@ pub struct UserLocation {
     pub course_over_ground: Option<CourseOverGround>,
     #[cfg_attr(test, serde(skip_serializing))]
     pub timestamp: SystemTime,
+    pub speed: Option<Speed>,
 }
 
 impl From<UserLocation> for Point {
@@ -193,6 +204,8 @@ pub struct RouteStep {
     pub geometry: Vec<GeographicCoordinate>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
+    /// The estimated duration, in seconds, that it will take to complete this step.
+    pub duration: f64,
     pub road_name: Option<String>,
     pub instruction: String,
     pub visual_instructions: Vec<VisualInstruction>,

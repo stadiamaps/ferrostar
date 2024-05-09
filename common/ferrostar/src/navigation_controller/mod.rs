@@ -5,7 +5,7 @@ pub(crate) mod test_helpers;
 
 use crate::{
     algorithms::{
-        advance_step, distance_to_end_of_step, should_advance_to_next_step,
+        advance_step, calculate_trip_progress, should_advance_to_next_step,
         snap_user_location_to_line,
     },
     models::{Route, UserLocation},
@@ -44,18 +44,22 @@ impl NavigationController {
 
         let current_step_linestring = current_route_step.get_linestring();
         let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
-        let distance_to_next_maneuver =
-            distance_to_end_of_step(&snapped_user_location.into(), &current_step_linestring);
+        let progress = calculate_trip_progress(
+            &snapped_user_location.into(),
+            current_route_step,
+            &current_step_linestring,
+            &remaining_steps,
+        );
         let deviation = self.config.route_deviation_tracking.check_route_deviation(
             location,
             &self.route,
             current_route_step,
         );
         let visual_instruction = current_route_step
-            .get_active_visual_instruction(distance_to_next_maneuver)
+            .get_active_visual_instruction(progress.distance_to_next_maneuver)
             .cloned();
         let spoken_instruction = current_route_step
-            .get_current_spoken_instruction(distance_to_next_maneuver)
+            .get_current_spoken_instruction(progress.distance_to_next_maneuver)
             .cloned();
 
         TripState::Navigating {
@@ -63,7 +67,7 @@ impl NavigationController {
             remaining_steps: remaining_steps.clone(),
             // Skip the first waypoint, as it is the current one
             remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
-            distance_to_next_maneuver,
+            progress,
             deviation,
             visual_instruction,
             spoken_instruction,
@@ -116,21 +120,25 @@ impl NavigationController {
                             remaining_waypoints.clone()
                         };
 
-                        let distance_to_next_maneuver =
-                            distance_to_end_of_step(&(*snapped_user_location).into(), &linestring);
+                        let progress = calculate_trip_progress(
+                            &(*snapped_user_location).into(),
+                            &current_step,
+                            &linestring,
+                            &remaining_steps,
+                        );
 
                         let visual_instruction = current_step
-                            .get_active_visual_instruction(distance_to_next_maneuver)
+                            .get_active_visual_instruction(progress.distance_to_next_maneuver)
                             .cloned();
                         let spoken_instruction = current_step
-                            .get_current_spoken_instruction(distance_to_next_maneuver)
+                            .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
 
                         TripState::Navigating {
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
-                            distance_to_next_maneuver,
+                            progress,
                             // NOTE: We *can't* run deviation calculations in this method,
                             // as it requires a non-snapped user location.
                             deviation: *deviation,
@@ -170,15 +178,17 @@ impl NavigationController {
                 let current_step_linestring = current_step.get_linestring();
                 let snapped_user_location =
                     snap_user_location_to_line(location, &current_step_linestring);
-                let distance_to_next_maneuver = distance_to_end_of_step(
+                let progress = calculate_trip_progress(
                     &snapped_user_location.into(),
+                    current_step,
                     &current_step_linestring,
+                    remaining_steps,
                 );
                 let intermediate_state = TripState::Navigating {
                     snapped_user_location,
                     remaining_steps: remaining_steps.clone(),
                     remaining_waypoints: remaining_waypoints.clone(),
-                    distance_to_next_maneuver,
+                    progress,
                     deviation: *deviation,
                     visual_instruction: visual_instruction.clone(),
                     spoken_instruction: spoken_instruction.clone(),
@@ -200,7 +210,7 @@ impl NavigationController {
                         snapped_user_location,
                         remaining_steps,
                         remaining_waypoints,
-                        distance_to_next_maneuver,
+                        progress,
                         deviation: _,
                         visual_instruction: _,
                         spoken_instruction: _,
@@ -217,17 +227,17 @@ impl NavigationController {
                         );
 
                         let visual_instruction = current_step
-                            .get_active_visual_instruction(distance_to_next_maneuver)
+                            .get_active_visual_instruction(progress.distance_to_next_maneuver)
                             .cloned();
                         let spoken_instruction = current_step
-                            .get_current_spoken_instruction(distance_to_next_maneuver)
+                            .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
 
                         TripState::Navigating {
                             snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
-                            distance_to_next_maneuver,
+                            progress,
                             deviation,
                             visual_instruction,
                             spoken_instruction,
