@@ -255,7 +255,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 snappedUserLocation: snappedLocation,
                 remainingSteps: remainingSteps,
                 remainingWaypoints: remainingWaypoints,
-                distanceToNextManeuver: distanceToNextManeuver,
+                progress: progress,
                 deviation: deviation,
                 visualInstruction: visualInstruction,
                 spokenInstruction: spokenInstruction
@@ -264,7 +264,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 self.state?.currentStep = remainingSteps.first
                 self.state?.visualInstruction = visualInstruction
                 self.state?.spokenInstruction = spokenInstruction
-                self.state?.distanceToNextManeuver = distanceToNextManeuver
+                self.state?.progress = progress
 
                 self.state?.routeDeviation = deviation
                 switch deviation {

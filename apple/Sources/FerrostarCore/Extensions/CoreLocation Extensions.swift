@@ -19,11 +19,14 @@ extension CLLocation {
             nil
         }
 
+        let ffiSpeed = ffiSpeed(speed, accuracy: speedAccuracy)
+
         return UserLocation(
             coordinates: coordinate.geographicCoordinates,
             horizontalAccuracy: horizontalAccuracy,
             courseOverGround: ffiCourse,
-            timestamp: timestamp
+            timestamp: timestamp,
+            speed: ffiSpeed
         )
     }
 
@@ -117,17 +120,22 @@ public extension UserLocation {
     ///   - course: The direction of travel measured in degrees clockwise from north.
     ///   - courseAccuracy: The course accuracy measured in degrees.
     ///   - timestamp: The timestamp of the location record.
+    ///   - speed: The speed in meters per second
+    ///   - speedAccuracy: The accuracy of the speed in meters per second
     init(latitude: CLLocationDegrees,
          longitude: CLLocationDegrees,
          horizontalAccuracy: CLLocationDistance,
          course: CLLocationDirection,
          courseAccuracy: CLLocationDirectionAccuracy,
-         timestamp: Date)
+         timestamp: Date,
+         speed: CLLocationSpeed?,
+         speedAccuracy: CLLocationSpeedAccuracy?)
     {
         self.init(coordinates: GeographicCoordinate(lat: latitude, lng: longitude),
                   horizontalAccuracy: horizontalAccuracy,
                   courseOverGround: CourseOverGround(course: course, courseAccuracy: courseAccuracy),
-                  timestamp: timestamp)
+                  timestamp: timestamp,
+                  speed: ffiSpeed(speed, accuracy: speedAccuracy))
     }
 
     /// Initialize a UserLocation with a coordinate only.
@@ -138,7 +146,8 @@ public extension UserLocation {
         self.init(coordinates: GeographicCoordinate(cl: clCoordinateLocation2D),
                   horizontalAccuracy: 0,
                   courseOverGround: nil,
-                  timestamp: Date())
+                  timestamp: Date(),
+                  speed: nil)
     }
 
     /// Initialize a UserLocation from an Apple CoreLocation CLLocation
@@ -154,7 +163,8 @@ public extension UserLocation {
                 course: clLocation.course,
                 courseAccuracy: clLocation.courseAccuracy
             ),
-            timestamp: clLocation.timestamp
+            timestamp: clLocation.timestamp,
+            speed: ffiSpeed(clLocation.speed, accuracy: clLocation.speedAccuracy)
         )
     }
 
@@ -170,7 +180,17 @@ public extension UserLocation {
             courseAccuracy = -1
         }
 
-        // TODO: Get speed info into UserLocation
+        let clSpeed: CLLocationDirection
+        let clSpeedAccuracy: CLLocationDirectionAccuracy
+
+        if let speed {
+            clSpeed = speed.value
+            clSpeedAccuracy = speed.accuracy
+        } else {
+            clSpeed = -1
+            clSpeedAccuracy = -1
+        }
+
         return CLLocation(
             coordinate: coordinates.clLocationCoordinate2D,
             altitude: 0,
@@ -178,9 +198,33 @@ public extension UserLocation {
             verticalAccuracy: -1,
             course: courseDegrees,
             courseAccuracy: courseAccuracy,
-            speed: 0,
-            speedAccuracy: -1,
+            speed: clSpeed,
+            speedAccuracy: clSpeedAccuracy,
             timestamp: timestamp
         )
     }
+}
+
+/// Create an FFI Speed from CL Location speed and speed accuracy.
+///
+/// - Parameters:
+///   - speed: The CLLocation user speed in meters per second.
+///   - accuracy: The CLLocation user speed accuracy in meters per second.
+/// - Returns: The FFI Speed object for ferrostar.
+private func ffiSpeed(_ speed: CLLocationSpeed?, accuracy: CLLocationSpeedAccuracy?) -> Speed? {
+    guard let speed = parseCLValidityToOptional(speed),
+          let accuracy = parseCLValidityToOptional(accuracy)
+    else {
+        return nil
+    }
+
+    return Speed(value: speed, accuracy: accuracy)
+}
+
+private func parseCLValidityToOptional(_ value: Double?) -> Double? {
+    guard let value, value >= 0 else {
+        return nil
+    }
+
+    return value
 }

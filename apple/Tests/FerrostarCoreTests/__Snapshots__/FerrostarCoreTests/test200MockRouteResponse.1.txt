@@ -18,6 +18,7 @@
     ▿ steps: 1 element
       ▿ RouteStep
         - distance: 1.0
+        - duration: 0.0
         ▿ geometry: 2 elements
           ▿ GeographicCoordinate
             - lat: 0.0

@@ -19,6 +19,7 @@ pub fn gen_dummy_route_step(
             },
         ],
         distance: 0.0,
+        duration: 0.0,
         road_name: None,
         instruction: "".to_string(),
         visual_instructions: vec![],
