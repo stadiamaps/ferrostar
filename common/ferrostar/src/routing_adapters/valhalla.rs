@@ -17,15 +17,11 @@ pub struct ValhallaHttpRequestGenerator {
     /// Users *may* include a query string with an API key.
     endpoint_url: String,
     profile: String,
-    costing_options: HashMap<String, HashMap<String, String>>,
+    costing_options: String,
 }
 
 impl ValhallaHttpRequestGenerator {
-    pub fn new(
-        endpoint_url: String,
-        profile: String,
-        costing_options: HashMap<String, HashMap<String, String>>,
-    ) -> Self {
+    pub fn new(endpoint_url: String, profile: String, costing_options: String) -> Self {
         Self {
             endpoint_url,
             profile,
@@ -68,6 +64,8 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                     })
                 }))
                 .collect();
+
+            let parsed_costing_options: JsonValue = serde_json::from_str(&self.costing_options)?;
             // NOTE: We currently use the OSRM format, as it is the richest one.
             // Though it would be nice to use PBF if we can get the required data.
             // However, certain info (like banners) are only available in the OSRM format.
@@ -87,7 +85,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 "voice_instructions": true,
                 "costing": &self.profile,
                 "locations": locations,
-                "costing_options": &self.costing_options,
+                "costing_options": parsed_costing_options,
             });
             let body = serde_json::to_vec(&args)?;
             Ok(RouteRequest::HttpPost {
@@ -140,7 +138,7 @@ mod tests {
         let generator = ValhallaHttpRequestGenerator::new(
             ENDPOINT_URL.to_string(),
             COSTING.to_string(),
-            HashMap::new(),
+            String::new(),
         );
 
         // At least two locations are required
@@ -153,7 +151,7 @@ mod tests {
     fn generate_body(
         user_location: UserLocation,
         waypoints: Vec<Waypoint>,
-        costing_options: HashMap<String, HashMap<String, String>>,
+        costing_options: String,
     ) -> JsonValue {
         let generator = ValhallaHttpRequestGenerator::new(
             ENDPOINT_URL.to_string(),
@@ -161,23 +159,26 @@ mod tests {
             costing_options,
         );
 
-        let RouteRequest::HttpPost {
-            url: request_url,
-            headers,
-            body,
-        } = generator
-            .generate_request(user_location, waypoints)
-            .unwrap();
-
-        assert_eq!(ENDPOINT_URL, request_url);
-        assert_eq!(headers["Content-Type"], "application/json".to_string());
-
-        from_slice(&body).expect("Failed to parse request body as JSON")
+        match generator.generate_request(user_location, waypoints) {
+            Ok(RouteRequest::HttpPost {
+                url: request_url,
+                headers,
+                body,
+            }) => {
+                assert_eq!(ENDPOINT_URL, request_url);
+                assert_eq!(headers["Content-Type"], "application/json".to_string());
+                from_slice(&body).expect("Failed to parse request body as JSON")
+            }
+            Err(e) => {
+                println!("Failed to generate request: {:?}", e);
+                json!(null)
+            }
+        }
     }
 
     #[test]
     fn request_body_without_course() {
-        let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec(), HashMap::new());
+        let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec(), "{}".to_string());
 
         assert_json_include!(
             actual: body_json,
@@ -207,7 +208,7 @@ mod tests {
         let body_json = generate_body(
             USER_LOCATION_WITH_COURSE,
             WAYPOINTS.to_vec(),
-            HashMap::new(),
+            "{}".to_string(),
         );
 
         assert_json_include!(
@@ -236,7 +237,7 @@ mod tests {
 
     #[test]
     fn request_body_without_costing_options() {
-        let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec(), HashMap::new());
+        let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec(), "{}".to_string());
 
         assert_json_include!(
             actual: body_json,
@@ -251,10 +252,7 @@ mod tests {
         let body_json = generate_body(
             USER_LOCATION,
             WAYPOINTS.to_vec(),
-            HashMap::from([(
-                "bicycle".to_string(),
-                HashMap::from([("bicycle_type".to_string(), "Road".to_string())]),
-            )]),
+            r#"{"bicycle": {"bicycle_type": "Road"}}"#.to_string(),
         );
 
         assert_json_include!(
@@ -274,7 +272,7 @@ mod tests {
         let generator = ValhallaHttpRequestGenerator::new(
             ENDPOINT_URL.to_string(),
             COSTING.to_string(),
-            HashMap::new(),
+            "{}".to_string(),
         );
         let location = UserLocation {
             coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },

@@ -7,6 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -107,10 +109,15 @@ class FerrostarCore(
       profile: String,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
-      costingOptions: Map<String, Map<String, String>> = emptyMap(),
+      costingOptions: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
-          RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile, costingOptions)),
+          RouteAdapter.newValhallaHttp(
+            valhallaEndpointURL.toString(), 
+            profile,
+            Json.encodeToString(costingOptions)
+          )
+        ),
       httpClient,
       locationProvider,
   )

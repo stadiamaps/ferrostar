@@ -108,18 +108,29 @@ public protocol FerrostarCoreDelegate: AnyObject {
         // Location provider setup
         locationProvider.delegate = self
     }
+    
+    enum ValhallaError: Error {
+        case invalidCostingOptions
+    }
 
     public convenience init(
         valhallaEndpointUrl: URL,
         profile: String,
         locationProvider: LocationProviding,
-        costingOptions: [String: [String: String]] = [:],
+        costingOptions: [String: Any] = [:],
         networkSession: URLRequestLoading = URLSession.shared
-    ) {
+    ) throws {
+        guard let jsonCostingOptions = String(
+            data: try JSONSerialization.data(withJSONObject: costingOptions),
+            encoding: .utf8
+        ) else {
+            throw ValhallaError.invalidCostingOptions
+        }
+        
         let adapter = RouteAdapter.newValhallaHttp(
             endpointUrl: valhallaEndpointUrl.absoluteString,
             profile: profile,
-            costingOptions: costingOptions
+            costingOptions: jsonCostingOptions
         )
         self.init(
             routeProvider: .routeAdapter(adapter),
