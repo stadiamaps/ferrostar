@@ -229,23 +229,34 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
         return Some(0.0);
     }
 
-    let (_, _, traversed) = linestring.lines().try_fold((0f64, f64::INFINITY, 06f64), |(cum_length, closest_dist_to_point, traversed), segment| {
-        // Convert to a LineString so we get haversine ops
-        let segment_linestring = LineString::from(segment);
+    let (_, _, traversed) = linestring.lines().try_fold(
+        (0f64, f64::INFINITY, 06f64),
+        |(cum_length, closest_dist_to_point, traversed), segment| {
+            // Convert to a LineString so we get haversine ops
+            let segment_linestring = LineString::from(segment);
 
-        // Compute distance to the line (sadly Euclidean only; no haversine_distance in GeoRust
-        // but this is probably OK for now)
-        let segment_distance_to_point = segment.euclidean_distance(point);
-        // Compute total segment length in meters
-        let segment_length = segment_linestring.haversine_length();
+            // Compute distance to the line (sadly Euclidean only; no haversine_distance in GeoRust
+            // but this is probably OK for now)
+            let segment_distance_to_point = segment.euclidean_distance(point);
+            // Compute total segment length in meters
+            let segment_length = segment_linestring.haversine_length();
 
-        if segment_distance_to_point < closest_dist_to_point {
-            let segment_fraction = segment.line_locate_point(point)?; // if any segment has a None fraction, return None
-            Some((cum_length + segment_length, segment_distance_to_point, cum_length + segment_fraction * segment_length))
-        } else {
-            Some((cum_length + segment_length, closest_dist_to_point, traversed))
-        }
-    })?;
+            if segment_distance_to_point < closest_dist_to_point {
+                let segment_fraction = segment.line_locate_point(point)?; // if any segment has a None fraction, return None
+                Some((
+                    cum_length + segment_length,
+                    segment_distance_to_point,
+                    cum_length + segment_fraction * segment_length,
+                ))
+            } else {
+                Some((
+                    cum_length + segment_length,
+                    closest_dist_to_point,
+                    traversed,
+                ))
+            }
+        },
+    )?;
     Some(traversed)
 }
 

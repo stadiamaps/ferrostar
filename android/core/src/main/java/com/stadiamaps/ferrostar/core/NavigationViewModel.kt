@@ -65,7 +65,7 @@ class NavigationViewModel(
 
 private fun distanceForState(newState: TripState) =
     when (newState) {
-      is TripState.Navigating -> newState.distanceToNextManeuver
+      is TripState.Navigating -> newState.progress.distanceToNextManeuver
       is TripState.Complete -> null
     }
 
