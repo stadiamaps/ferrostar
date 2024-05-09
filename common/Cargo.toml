@@ -10,7 +10,7 @@ authors = ["Ian Wagner <ian@stadiamaps.com>", "Jacob Fielding <jacob@rallista.ap
 license = "BSD-3-Clause"
 edition = "2021"
 repository = "https://github.com/stadiamaps/ferrostar"
-rust-version = "1.74.0"
+rust-version = "1.75.0"
 
 [profile.dev.package]
 insta.opt-level = 3
