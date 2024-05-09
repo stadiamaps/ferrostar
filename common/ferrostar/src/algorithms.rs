@@ -219,29 +219,33 @@ pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
     }
 }
 
+/// Computes the distance that a point lies along a linestring,
+/// assuming that units are latitude and longitude for the geometries.
+///
+/// The result is given in meters.
 fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
-    // TODO: This logic is definitely wrong, but *might* be a sortof usable starting point?
     let total_length = linestring.haversine_length();
     if total_length == 0.0 {
         return Some(0.0);
     }
 
-    let mut cum_length = 0f64;
-    let mut closest_dist_to_point = f64::INFINITY;
-    let mut traversed = 0f64;
-    for segment in linestring.lines() {
+    let (_, _, traversed) = linestring.lines().try_fold((0f64, f64::INFINITY, 06f64), |(cum_length, closest_dist_to_point, traversed), segment| {
         // Convert to a LineString so we get haversine ops
         let segment_linestring = LineString::from(segment);
-        // Compute distance to the line (sadly only Euclidean at this point)
+
+        // Compute distance to the line (sadly Euclidean only; no haversine_distance in GeoRust
+        // but this is probably OK for now)
         let segment_distance_to_point = segment.euclidean_distance(point);
+        // Compute total segment length in meters
         let segment_length = segment_linestring.haversine_length();
+
         if segment_distance_to_point < closest_dist_to_point {
             let segment_fraction = segment.line_locate_point(point)?; // if any segment has a None fraction, return None
-            closest_dist_to_point = segment_distance_to_point;
-            traversed = cum_length + segment_fraction * segment_length;
+            Some((cum_length + segment_length, segment_distance_to_point, cum_length + segment_fraction * segment_length))
+        } else {
+            Some((cum_length + segment_length, closest_dist_to_point, traversed))
         }
-        cum_length += segment_length;
-    }
+    })?;
     Some(traversed)
 }
 
@@ -272,23 +276,24 @@ pub fn calculate_trip_progress(
         };
     }
 
-    // Calculate the next step.
+    // Calculate the distance and duration till the end of the current route step.
     let distance_to_next_maneuver =
         distance_to_end_of_step(snapped_location, current_step_linestring);
 
-    // TODO: Improve this logic? It may be solid, but seems we could improve it with actual speed data.
+    // This could be improved with live traffic data along the route.
+    // TODO: Figure out the best way to enable this use case
     let pct_remaining_current_step =
         distance_to_next_maneuver / current_step_linestring.haversine_length();
 
     // Get the percentage of duration remaining in the current step.
-    let duration_to_end_of_step = pct_remaining_current_step * current_step.duration;
+    let duration_to_next_maneuver = pct_remaining_current_step * current_step.duration;
 
     // Exit early if there is only the current step:
     if remaining_steps.len() == 1 {
         return TripProgress {
             distance_to_next_maneuver,
             distance_remaining: distance_to_next_maneuver,
-            duration_remaining: duration_to_end_of_step,
+            duration_remaining: duration_to_next_maneuver,
         };
     }
 
@@ -299,7 +304,7 @@ pub fn calculate_trip_progress(
             .map(|step| step.distance)
             .sum::<f64>();
 
-    let duration_remaining = duration_to_end_of_step
+    let duration_remaining = duration_to_next_maneuver
         + steps_after_current
             .iter()
             .map(|step| step.duration)
