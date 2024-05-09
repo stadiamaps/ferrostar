@@ -45,7 +45,7 @@ pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> 
 ///
 /// The `decimal_digits` parameter refers to the number of digits after the point.
 pub(crate) fn trunc_float(value: f64, decimal_digits: u32) -> f64 {
-    let factor = 10i64.pow(decimal_digits) as f64;
+    let factor = 10_i64.pow(decimal_digits) as f64;
     (value * factor).round() / factor
 }
 
@@ -60,7 +60,7 @@ fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
     // Bail early when we have two essentially identical points.
     // This can cause some issues with edge cases (captured in proptest regressions)
     // with the underlying libraries.
-    if line.euclidean_distance(point) < 0.000001 {
+    if line.euclidean_distance(point) < 0.000_001 {
         return Some(*point);
     }
 
@@ -113,7 +113,7 @@ fn is_close_enough_to_end_of_linestring(
 /// Determines whether the navigation controller should complete the current route step
 /// and move to the next.
 ///
-/// NOTE: The [UserLocation] should *not* be snapped.
+/// NOTE: The [`UserLocation`] should *not* be snapped.
 pub fn should_advance_to_next_step(
     current_step_linestring: &LineString,
     next_route_step: Option<&RouteStep>,
@@ -134,7 +134,7 @@ pub fn should_advance_to_next_step(
                 is_close_enough_to_end_of_linestring(
                     &current_position,
                     current_step_linestring,
-                    distance as f64,
+                    f64::from(distance),
                 )
             }
         }
@@ -150,7 +150,7 @@ pub fn should_advance_to_next_step(
                     if is_close_enough_to_end_of_linestring(
                         &current_position,
                         current_step_linestring,
-                        distance as f64,
+                        f64::from(distance),
                     ) {
                         return true;
                     }

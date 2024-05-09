@@ -86,7 +86,7 @@ impl RouteResponseParser for OsrmResponseParser {
                     distance: route.distance,
                     waypoints: waypoints.clone(),
                     steps,
-                })
+                });
             }
         }
 

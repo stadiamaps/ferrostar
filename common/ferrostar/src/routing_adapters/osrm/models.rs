@@ -44,7 +44,7 @@ pub struct Route {
     ///
     /// NOTE: This library assumes that 1) an overview geometry will always be requested, and
     /// 2) that it will be a polyline (whether it is a polyline5 or polyline6 can be determined
-    /// by the [crate::routing_adapters::RouteResponseParser]).
+    /// by the [`crate::routing_adapters::RouteResponseParser`]).
     pub geometry: String,
     /// The legs between the given waypoints.
     pub legs: Vec<RouteLeg>,
@@ -85,6 +85,7 @@ pub struct Annotation {
     /// NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
     /// and Valhalla.
     #[serde(default, rename = "maxspeed")]
+    #[allow(dead_code)]
     max_speed: Vec<MaxSpeed>,
 }
 
@@ -185,7 +186,7 @@ pub struct StepManeuver {
     /// A string indicating the type of maneuver.
     ///
     /// Note that even though there are `new name` and `notification` instructions, the
-    /// `mode` and `name` (of the parent [RouteStep]) can change between *any* pair of instructions.
+    /// `mode` and `name` (of the parent [`RouteStep`]) can change between *any* pair of instructions.
     /// They only offer a fallback in case there is nothing else to report.
     /// TODO: Model this as an enum. Note that new types may be introduced, and anything unknown to the client should be handled like a turn.
     #[serde(rename = "type")]
@@ -202,7 +203,7 @@ impl StepManeuver {
     // Most commercial offerings offer server-side synthesis of voice instructions.
     // However, we might consider synthesizing these locally too.
     // This will be rather cumbersome with localization though.
-    fn synthesize_instruction(&self, locale: &str) -> String {
+    fn synthesize_instruction(&self, _locale: &str) -> String {
         String::from("TODO: OSRM instruction synthesis")
     }
 
@@ -269,7 +270,7 @@ pub struct Lane {
 
 #[derive(Deserialize, Debug)]
 pub struct Waypoint {
-    /// THe name of the street that the waypoint snapped to.
+    /// The name of the street that the waypoint snapped to.
     pub name: Option<String>,
     /// The distance (in meters) between the snapped point and the input coordinate.
     pub distance: Option<f64>,

@@ -50,7 +50,7 @@ impl RouteDeviationTracking {
                 minimum_horizontal_accuracy,
                 max_acceptable_deviation,
             } => {
-                if location.horizontal_accuracy < *minimum_horizontal_accuracy as f64 {
+                if location.horizontal_accuracy < f64::from(*minimum_horizontal_accuracy) {
                     // Check if the deviation from the route line is within tolerance,
                     // after sanity checking that the positioning signal is within accuracy tolerance.
                     deviation_from_line(

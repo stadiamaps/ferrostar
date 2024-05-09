@@ -1,5 +1,4 @@
 [workspace]
-
 members = [
     "uniffi-bindgen",
     "ferrostar",
@@ -11,7 +10,7 @@ authors = ["Ian Wagner <ian@stadiamaps.com>", "Jacob Fielding <jacob@rallista.ap
 license = "BSD-3-Clause"
 edition = "2021"
 repository = "https://github.com/stadiamaps/ferrostar"
-rust-version = "1.74.0"
+rust-version = "1.75.0"
 
 [profile.dev.package]
 insta.opt-level = 3
@@ -23,3 +22,16 @@ opt-level = "s"
 
 [workspace.dependencies]
 uniffi = "0.26.1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unused_qualifications = "warn"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+cast_possible_truncation = "allow"
+cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+missing_errors_doc = "allow"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"

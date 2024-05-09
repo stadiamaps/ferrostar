@@ -56,9 +56,9 @@ impl From<GeographicCoordinate> for Point {
 
 /// A waypoint along a route.
 ///
-/// Within the context of Ferrostar, a route request consists of exactly one [UserLocation]
+/// Within the context of Ferrostar, a route request consists of exactly one [`UserLocation`]
 /// and at least one [Waypoint]. The route starts from the user's location (which may
-/// contain other useful information like their current course for the [crate::routing_adapters::RouteRequestGenerator]
+/// contain other useful information like their current course for the [`crate::routing_adapters::RouteRequestGenerator`]
 /// to use) and proceeds through one or more waypoints.
 ///
 /// Waypoints are used during route calculation, are tracked throughout the lifecycle of a trip,
@@ -215,10 +215,13 @@ pub struct RouteStep {
 impl RouteStep {
     // TODO: Memoize or something later
     pub(crate) fn get_linestring(&self) -> LineString {
-        LineString::from_iter(self.geometry.iter().map(|coord| Coord {
-            x: coord.lng,
-            y: coord.lat,
-        }))
+        self.geometry
+            .iter()
+            .map(|coord| Coord {
+                x: coord.lng,
+                y: coord.lat,
+            })
+            .collect()
     }
 
     /// Gets the active visual instruction given the user's progress along the step.
@@ -276,7 +279,7 @@ pub struct SpokenInstruction {
 
 /// Indicates the type of maneuver to perform.
 ///
-/// Frequently used in conjunction with [ManeuverModifier].
+/// Frequently used in conjunction with [`ManeuverModifier`].
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, uniffi::Enum)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
@@ -306,7 +309,7 @@ pub enum ManeuverType {
     ExitRotary,
 }
 
-/// Specifies additional information about a [ManeuverType]
+/// Specifies additional information about a [`ManeuverType`]
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, uniffi::Enum)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
