@@ -13,6 +13,18 @@ Android sholud be beta quality soon
 The main areas where Android lags is in camera polish
 and hooking up live location services in a Google-independent manner.
 
+Here's a quick breakdown of support by platform.
+
+|   | iOS | Android |
+| - | --- | ------- |
+| Core library building | ✅ | ✅ |
+| High-level core bindings | ✅ | ✅ |
+| Simulated location provider | ✅ | ✅ |
+| Live location provider | ✅ | ❌ |
+| Composable UI - banners | ✅ | ✅ |
+| Composable UI - MapLibre integration | ✅ | 👨‍💻 |
+| Voice guidance (platform-native TTS) | ✅ | ✅ |
+
 While there are some rough edges, eager developers can start integrating.
 Note that the API is currently NOT stable and there will still be some breaking changes,
 but the release notes should include details.
