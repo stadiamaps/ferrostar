@@ -55,12 +55,12 @@ impl UniffiCustomTypeConverter for Uuid {
 fn create_valhalla_request_generator(
     endpoint_url: String,
     profile: String,
-    costing_options: String,
+    costing_options_json: Option<String>,
 ) -> Arc<dyn RouteRequestGenerator> {
     Arc::new(ValhallaHttpRequestGenerator::new(
         endpoint_url,
         profile,
-        costing_options,
+        costing_options_json,
     ))
 }
 

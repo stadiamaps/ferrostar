@@ -148,6 +148,34 @@ final class FerrostarCoreTests: XCTestCase {
     }
 
     @MainActor
+    func testValhalalCostingOptionsJSON() async throws {
+        let mockSession = MockURLSession()
+        mockSession.registerMock(forURL: valhallaEndpointUrl, withData: sampleRouteData, andResponse: successfulJSONResponse)
+
+        // The main feature of this test is that it uses this constructor,
+        // which can throw, and similarly getRoutes may not always work with invalid input
+        let core = try FerrostarCore(
+            valhallaEndpointUrl: valhallaEndpointUrl,
+            profile: "low_speed_vehicle",
+            locationProvider: SimulatedLocationProvider(),
+            costingOptions: ["low_speed_vehicle": ["vehicle_type": "golf_cart"]],
+            networkSession: mockSession
+        )
+
+        // Tests that the core generates a request and then the mocked parser returns the expected routes
+        let routes = try await core.getRoutes(
+            initialLocation: UserLocation(
+                coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
+                horizontalAccuracy: 0,
+                courseOverGround: nil,
+                timestamp: Date()
+            ),
+            waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
+        )
+        assertSnapshot(of: routes, as: .dump)
+    }
+
+    @MainActor
     func testCustomRouteProvider() async throws {
         let expectation = expectation(description: "The custom route provider should be called once")
         let mockSession = MockURLSession()

@@ -102,10 +102,10 @@ impl RouteAdapter {
     pub fn new_valhalla_http(
         endpoint_url: String,
         profile: String,
-        costing_options: String,
+        costing_options_json: Option<String>,
     ) -> Self {
         let request_generator =
-            create_valhalla_request_generator(endpoint_url, profile, costing_options);
+            create_valhalla_request_generator(endpoint_url, profile, costing_options_json);
         let response_parser = create_osrm_response_parser(6);
         Self::new(request_generator, response_parser)
     }

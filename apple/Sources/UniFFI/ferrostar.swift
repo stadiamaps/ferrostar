@@ -661,12 +661,14 @@ public class RouteAdapter:
         try! rustCall { uniffi_ferrostar_fn_free_routeadapter(pointer, $0) }
     }
 
-    public static func newValhallaHttp(endpointUrl: String, profile: String, costingOptions: String) -> RouteAdapter {
+    public static func newValhallaHttp(endpointUrl: String, profile: String,
+                                       costingOptionsJson: String?) -> RouteAdapter
+    {
         RouteAdapter(unsafeFromRawPointer: try! rustCall {
             uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
                 FfiConverterString.lower(endpointUrl),
                 FfiConverterString.lower(profile),
-                FfiConverterString.lower(costingOptions), $0
+                FfiConverterOptionString.lower(costingOptionsJson), $0
             )
         })
     }
@@ -3525,14 +3527,14 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
  * This is provided as a convenience for use from foreign code when creating your own [routing_adapters::RouteAdapter].
  */
 public func createValhallaRequestGenerator(endpointUrl: String, profile: String,
-                                           costingOptions: String) -> RouteRequestGenerator
+                                           costingOptionsJson: String?) -> RouteRequestGenerator
 {
     try! FfiConverterTypeRouteRequestGenerator.lift(
         try! rustCall {
             uniffi_ferrostar_fn_func_create_valhalla_request_generator(
                 FfiConverterString.lower(endpointUrl),
                 FfiConverterString.lower(profile),
-                FfiConverterString.lower(costingOptions), $0
+                FfiConverterOptionString.lower(costingOptionsJson), $0
             )
         }
     )
@@ -3629,7 +3631,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 28097 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 3174 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 40698 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 53320 {
@@ -3674,7 +3676,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 15081 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 14445 {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 19413 {
         return InitializationResult.apiChecksumMismatch
     }
 
