@@ -113,11 +113,20 @@ public protocol FerrostarCoreDelegate: AnyObject {
         valhallaEndpointUrl: URL,
         profile: String,
         locationProvider: LocationProviding,
+        costingOptions: [String: Any] = [:],
         networkSession: URLRequestLoading = URLSession.shared
-    ) {
-        let adapter = RouteAdapter.newValhallaHttp(
+    ) throws {
+        guard let jsonCostingOptions = try String(
+            data: JSONSerialization.data(withJSONObject: costingOptions),
+            encoding: .utf8
+        ) else {
+            throw InstantiationError.JsonError
+        }
+
+        let adapter = try RouteAdapter.newValhallaHttp(
             endpointUrl: valhallaEndpointUrl.absoluteString,
-            profile: profile
+            profile: profile,
+            costingOptionsJson: jsonCostingOptions
         )
         self.init(
             routeProvider: .routeAdapter(adapter),

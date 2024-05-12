@@ -661,11 +661,14 @@ public class RouteAdapter:
         try! rustCall { uniffi_ferrostar_fn_free_routeadapter(pointer, $0) }
     }
 
-    public static func newValhallaHttp(endpointUrl: String, profile: String) -> RouteAdapter {
-        RouteAdapter(unsafeFromRawPointer: try! rustCall {
+    public static func newValhallaHttp(endpointUrl: String, profile: String,
+                                       costingOptionsJson: String?) throws -> RouteAdapter
+    {
+        try RouteAdapter(unsafeFromRawPointer: rustCallWithError(FfiConverterTypeInstantiationError.lift) {
             uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
                 FfiConverterString.lower(endpointUrl),
-                FfiConverterString.lower(profile), $0
+                FfiConverterString.lower(profile),
+                FfiConverterOptionString.lower(costingOptionsJson), $0
             )
         })
     }
@@ -2470,6 +2473,38 @@ public func FfiConverterTypeWaypoint_lower(_ value: Waypoint) -> RustBuffer {
     FfiConverterTypeWaypoint.lower(value)
 }
 
+public enum InstantiationError {
+    case JsonError
+
+    fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
+        try FfiConverterTypeInstantiationError.lift(error)
+    }
+}
+
+public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
+    typealias SwiftType = InstantiationError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> InstantiationError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .JsonError
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: InstantiationError, into buf: inout [UInt8]) {
+        switch value {
+        case .JsonError:
+            writeInt(&buf, Int32(1))
+        }
+    }
+}
+
+extension InstantiationError: Equatable, Hashable {}
+
+extension InstantiationError: Error {}
+
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
@@ -3726,12 +3761,15 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
  *
  * This is provided as a convenience for use from foreign code when creating your own [`routing_adapters::RouteAdapter`].
  */
-public func createValhallaRequestGenerator(endpointUrl: String, profile: String) -> RouteRequestGenerator {
-    try! FfiConverterTypeRouteRequestGenerator.lift(
-        try! rustCall {
+public func createValhallaRequestGenerator(endpointUrl: String, profile: String,
+                                           costingOptionsJson: String?) throws -> RouteRequestGenerator
+{
+    try FfiConverterTypeRouteRequestGenerator.lift(
+        rustCallWithError(FfiConverterTypeInstantiationError.lift) {
             uniffi_ferrostar_fn_func_create_valhalla_request_generator(
                 FfiConverterString.lower(endpointUrl),
-                FfiConverterString.lower(profile), $0
+                FfiConverterString.lower(profile),
+                FfiConverterOptionString.lower(costingOptionsJson), $0
             )
         }
     )
@@ -3828,7 +3866,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 46856 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 27528 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 24001 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 53320 {
@@ -3873,7 +3911,7 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 15081 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 24553 {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 22565 {
         return InitializationResult.apiChecksumMismatch
     }
 

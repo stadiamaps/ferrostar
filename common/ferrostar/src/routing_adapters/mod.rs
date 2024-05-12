@@ -1,4 +1,5 @@
 use crate::models::Waypoint;
+use crate::routing_adapters::error::InstantiationError;
 use crate::{
     create_osrm_response_parser, create_valhalla_request_generator,
     models::{Route, UserLocation},
@@ -99,10 +100,15 @@ impl RouteAdapter {
     }
 
     #[uniffi::constructor]
-    pub fn new_valhalla_http(endpoint_url: String, profile: String) -> Self {
-        let request_generator = create_valhalla_request_generator(endpoint_url, profile);
+    pub fn new_valhalla_http(
+        endpoint_url: String,
+        profile: String,
+        costing_options_json: Option<String>,
+    ) -> Result<Self, InstantiationError> {
+        let request_generator =
+            create_valhalla_request_generator(endpoint_url, profile, costing_options_json)?;
         let response_parser = create_osrm_response_parser(6);
-        Self::new(request_generator, response_parser)
+        Ok(Self::new(request_generator, response_parser))
     }
 
     //

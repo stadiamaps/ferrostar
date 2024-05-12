@@ -1,5 +1,8 @@
 package com.stadiamaps.ferrostar.core
 
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.adapter
 import java.net.URL
 import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +30,10 @@ data class FerrostarCoreState(
     /** Indicates when the core is calculating a new route (ex: due to the user being off route). */
     val isCalculatingNewRoute: Boolean
 )
+
+private val moshi: Moshi = Moshi.Builder().build()
+@OptIn(ExperimentalStdlibApi::class)
+private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<String, Any>>()
 
 /**
  * This is the entrypoint for end users of Ferrostar on Android, and is responsible for "driving"
@@ -107,9 +114,11 @@ class FerrostarCore(
       profile: String,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
+      costingOptions: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
-          RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile)),
+          RouteAdapter.newValhallaHttp(
+              valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(costingOptions))),
       httpClient,
       locationProvider,
   )

@@ -4,6 +4,13 @@ use uniffi::UnexpectedUniFFICallbackError;
 // The trouble appears to be with generating "flat" enum bindings that are used with callback
 // interfaces when the underlying actually has fields.
 #[derive(Debug, thiserror::Error, uniffi::Error)]
+pub enum InstantiationError {
+    #[error("Error generating JSON for the request.")]
+    JsonError,
+}
+
+// TODO: See comment above
+#[derive(Debug, thiserror::Error, uniffi::Error)]
 pub enum RoutingRequestGenerationError {
     #[error("Too few waypoints were provided to compute a route.")]
     NotEnoughWaypoints,
@@ -16,6 +23,12 @@ pub enum RoutingRequestGenerationError {
 impl From<UnexpectedUniFFICallbackError> for RoutingRequestGenerationError {
     fn from(_: UnexpectedUniFFICallbackError) -> RoutingRequestGenerationError {
         RoutingRequestGenerationError::UnknownError
+    }
+}
+
+impl From<serde_json::Error> for InstantiationError {
+    fn from(_: serde_json::Error) -> Self {
+        InstantiationError::JsonError
     }
 }
 

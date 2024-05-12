@@ -14,7 +14,7 @@ final class ValhallaCoreTests: XCTestCase {
             andResponse: successfulJSONResponse
         )
 
-        let core = FerrostarCore(
+        let core = try FerrostarCore(
             valhallaEndpointUrl: valhallaEndpointUrl,
             profile: "auto",
             locationProvider: SimulatedLocationProvider(),

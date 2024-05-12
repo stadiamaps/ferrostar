@@ -21,6 +21,7 @@ use std::str::FromStr;
 use std::sync::Arc;
 use uuid::Uuid;
 
+use crate::routing_adapters::error::InstantiationError;
 use routing_adapters::{RouteRequestGenerator, RouteResponseParser};
 
 uniffi::setup_scaffolding!();
@@ -55,8 +56,15 @@ impl UniffiCustomTypeConverter for Uuid {
 fn create_valhalla_request_generator(
     endpoint_url: String,
     profile: String,
-) -> Arc<dyn RouteRequestGenerator> {
-    Arc::new(ValhallaHttpRequestGenerator::new(endpoint_url, profile))
+    costing_options_json: Option<String>,
+) -> Result<Arc<dyn RouteRequestGenerator>, InstantiationError> {
+    Ok(Arc::new(
+        ValhallaHttpRequestGenerator::with_costing_options_json(
+            endpoint_url,
+            profile,
+            costing_options_json,
+        )?,
+    ))
 }
 
 /// Creates a [`RouteResponseParser`] capable of parsing OSRM responses.
