@@ -1,4 +1,5 @@
 use crate::models::Waypoint;
+use crate::routing_adapters::error::InstantiationError;
 use crate::{
     create_osrm_response_parser, create_valhalla_request_generator,
     models::{Route, UserLocation},
@@ -7,7 +8,6 @@ use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::sync::Arc;
-use crate::routing_adapters::error::InstantiationError;
 
 pub mod error;
 pub mod osrm;

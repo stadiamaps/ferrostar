@@ -6,7 +6,8 @@ use uniffi::UnexpectedUniFFICallbackError;
 #[derive(Debug, thiserror::Error, uniffi::Error)]
 pub enum InstantiationError {
     #[error("Error generating JSON for the request.")]
-    JsonError, }
+    JsonError,
+}
 
 // TODO: See comment above
 #[derive(Debug, thiserror::Error, uniffi::Error)]

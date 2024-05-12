@@ -21,8 +21,8 @@ use std::str::FromStr;
 use std::sync::Arc;
 use uuid::Uuid;
 
-use routing_adapters::{RouteRequestGenerator, RouteResponseParser};
 use crate::routing_adapters::error::InstantiationError;
+use routing_adapters::{RouteRequestGenerator, RouteResponseParser};
 
 uniffi::setup_scaffolding!();
 
@@ -58,11 +58,13 @@ fn create_valhalla_request_generator(
     profile: String,
     costing_options_json: Option<String>,
 ) -> Result<Arc<dyn RouteRequestGenerator>, InstantiationError> {
-    Ok(Arc::new(ValhallaHttpRequestGenerator::with_costing_options_json(
-        endpoint_url,
-        profile,
-        costing_options_json,
-    )?))
+    Ok(Arc::new(
+        ValhallaHttpRequestGenerator::with_costing_options_json(
+            endpoint_url,
+            profile,
+            costing_options_json,
+        )?,
+    ))
 }
 
 /// Creates a [`RouteResponseParser`] capable of parsing OSRM responses.

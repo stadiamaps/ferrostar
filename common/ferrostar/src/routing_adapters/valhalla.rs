@@ -24,11 +24,7 @@ pub struct ValhallaHttpRequestGenerator {
 }
 
 impl ValhallaHttpRequestGenerator {
-    pub fn new(
-        endpoint_url: String,
-        profile: String,
-        costing_options: Option<JsonValue>,
-    ) -> Self {
+    pub fn new(endpoint_url: String, profile: String, costing_options: Option<JsonValue>) -> Self {
         Self {
             endpoint_url,
             profile,
@@ -178,7 +174,8 @@ mod tests {
             ENDPOINT_URL.to_string(),
             COSTING.to_string(),
             costing_options_json,
-        ).expect("Unable to create request generator");
+        )
+        .expect("Unable to create request generator");
 
         match generator.generate_request(user_location, waypoints) {
             Ok(RouteRequest::HttpPost {
