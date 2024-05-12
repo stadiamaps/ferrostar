@@ -116,8 +116,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         costingOptions: [String: Any] = [:],
         networkSession: URLRequestLoading = URLSession.shared
     ) throws {
-        guard let jsonCostingOptions = String(
-            data: try JSONSerialization.data(withJSONObject: costingOptions),
+        guard let jsonCostingOptions = try String(
+            data: JSONSerialization.data(withJSONObject: costingOptions),
             encoding: .utf8
         ) else {
             throw InstantiationError.JsonError

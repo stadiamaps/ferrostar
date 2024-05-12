@@ -175,7 +175,8 @@ final class FerrostarCoreTests: XCTestCase {
                 coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
                 horizontalAccuracy: 0,
                 courseOverGround: nil,
-                timestamp: Date()
+                timestamp: Date(),
+                speed: nil
             ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
