@@ -297,7 +297,7 @@ class ValhallaCoreTest {
       val routes =
           core.getRoutes(
               UserLocation(
-                  GeographicCoordinate(60.5347155, -149.543469), 12.0, null,  Instant.now(), null),
+                  GeographicCoordinate(60.5347155, -149.543469), 12.0, null, Instant.now(), null),
               waypoints =
                   listOf(
                       Waypoint(
