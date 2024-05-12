@@ -2,6 +2,19 @@ use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
 use geo::LineString;
 
+/// A subset of state values that are used to show the user their current progress along the trip and it's components.
+#[derive(Debug, Clone, PartialEq, uniffi::Record)]
+pub struct TripProgress {
+    /// The distance to the next maneuver, in meters.
+    pub distance_to_next_maneuver: f64,
+    /// The total distance remaining in the trip, in meters.
+    ///
+    /// This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
+    pub distance_remaining: f64,
+    /// The total duration remaining in the trip, in seconds.
+    pub duration_remaining: f64,
+}
+
 /// Internal state of the navigation controller.
 #[derive(Debug, Clone, PartialEq, uniffi::Enum)]
 pub enum TripState {
@@ -21,8 +34,9 @@ pub enum TripState {
         /// may have multiple intervening points that are visited along the route.)
         /// This list is updated as the user advances through the route.
         remaining_waypoints: Vec<Waypoint>,
-        /// The distance to the next maneuver, in meters.
-        distance_to_next_maneuver: f64,
+        /// The trip progress includes information that is useful for showing the
+        /// user's progress along the full navigation trip, the route and its components.
+        progress: TripProgress,
         /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
         /// The visual instruction that should be displayed in the user interface.
@@ -64,7 +78,7 @@ pub enum StepAdvanceMode {
         /// Values larger than this cannot trigger a step advance.
         minimum_horizontal_accuracy: u16,
         /// At this (optional) distance, navigation should advance to the next step regardless
-        /// of which LineString appears closer.
+        /// of which `LineString` appears closer.
         automatic_advance_distance: Option<u16>,
     },
 }

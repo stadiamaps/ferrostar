@@ -57,7 +57,7 @@ public struct PortraitNavigationView: View {
                     InstructionsView(
                         visualInstruction: visualInstructions,
                         distanceFormatter: distanceFormatter,
-                        distanceToNextManeuver: navigationState.distanceToNextManeuver
+                        distanceToNextManeuver: navigationState.progress?.distanceToNextManeuver
                     )
                 }
             })

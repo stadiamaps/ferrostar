@@ -32,7 +32,7 @@ impl UniffiCustomTypeConverter for Uuid {
     type Builtin = String;
 
     fn into_custom(val: Self::Builtin) -> uniffi::Result<Self> {
-        Uuid::from_str(&val).map_err(|e| e.into())
+        Ok(Uuid::from_str(&val)?)
     }
 
     fn from_custom(obj: Self) -> Self::Builtin {
@@ -48,10 +48,10 @@ impl UniffiCustomTypeConverter for Uuid {
 // Instead, we use top-level functions to return dynamic objects conforming to the trait.
 //
 
-/// Creates a [RouteRequestGenerator]
+/// Creates a [`RouteRequestGenerator`]
 /// which generates requests to an arbitrary Valhalla server (using the OSRM response format).
 ///
-/// This is provided as a convenience for use from foreign code when creating your own [routing_adapters::RouteAdapter].
+/// This is provided as a convenience for use from foreign code when creating your own [`routing_adapters::RouteAdapter`].
 #[uniffi::export]
 fn create_valhalla_request_generator(
     endpoint_url: String,
@@ -65,7 +65,7 @@ fn create_valhalla_request_generator(
     )?))
 }
 
-/// Creates a [RouteResponseParser] capable of parsing OSRM responses.
+/// Creates a [`RouteResponseParser`] capable of parsing OSRM responses.
 ///
 /// This response parser is designed to be fairly flexible,
 /// supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs

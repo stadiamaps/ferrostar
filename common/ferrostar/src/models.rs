@@ -56,9 +56,9 @@ impl From<GeographicCoordinate> for Point {
 
 /// A waypoint along a route.
 ///
-/// Within the context of Ferrostar, a route request consists of exactly one [UserLocation]
+/// Within the context of Ferrostar, a route request consists of exactly one [`UserLocation`]
 /// and at least one [Waypoint]. The route starts from the user's location (which may
-/// contain other useful information like their current course for the [crate::routing_adapters::RouteRequestGenerator]
+/// contain other useful information like their current course for the [`crate::routing_adapters::RouteRequestGenerator`]
 /// to use) and proceeds through one or more waypoints.
 ///
 /// Waypoints are used during route calculation, are tracked throughout the lifecycle of a trip,
@@ -130,6 +130,16 @@ impl CourseOverGround {
     }
 }
 
+/// The speed of the user from the location provider.
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[cfg_attr(test, derive(Serialize))]
+pub struct Speed {
+    /// The user's speed in meters per second.
+    pub value: f64,
+    /// The accuracy of the speed value, measured in meters per second.
+    pub accuracy: f64,
+}
+
 /// The location of the user that is navigating.
 ///
 /// In addition to coordinates, this includes estimated accuracy and course information,
@@ -146,6 +156,7 @@ pub struct UserLocation {
     pub course_over_ground: Option<CourseOverGround>,
     #[cfg_attr(test, serde(skip_serializing))]
     pub timestamp: SystemTime,
+    pub speed: Option<Speed>,
 }
 
 impl From<UserLocation> for Point {
@@ -193,6 +204,8 @@ pub struct RouteStep {
     pub geometry: Vec<GeographicCoordinate>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
+    /// The estimated duration, in seconds, that it will take to complete this step.
+    pub duration: f64,
     pub road_name: Option<String>,
     pub instruction: String,
     pub visual_instructions: Vec<VisualInstruction>,
@@ -202,10 +215,13 @@ pub struct RouteStep {
 impl RouteStep {
     // TODO: Memoize or something later
     pub(crate) fn get_linestring(&self) -> LineString {
-        LineString::from_iter(self.geometry.iter().map(|coord| Coord {
-            x: coord.lng,
-            y: coord.lat,
-        }))
+        self.geometry
+            .iter()
+            .map(|coord| Coord {
+                x: coord.lng,
+                y: coord.lat,
+            })
+            .collect()
     }
 
     /// Gets the active visual instruction given the user's progress along the step.
@@ -263,7 +279,7 @@ pub struct SpokenInstruction {
 
 /// Indicates the type of maneuver to perform.
 ///
-/// Frequently used in conjunction with [ManeuverModifier].
+/// Frequently used in conjunction with [`ManeuverModifier`].
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, uniffi::Enum)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
@@ -293,7 +309,7 @@ pub enum ManeuverType {
     ExitRotary,
 }
 
-/// Specifies additional information about a [ManeuverType]
+/// Specifies additional information about a [`ManeuverType`]
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, uniffi::Enum)]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]

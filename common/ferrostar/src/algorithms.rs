@@ -1,4 +1,7 @@
-use crate::models::{GeographicCoordinate, RouteStep, UserLocation};
+use crate::{
+    models::{GeographicCoordinate, RouteStep, UserLocation},
+    navigation_controller::models::TripProgress,
+};
 use geo::{
     Closest, ClosestPoint, EuclideanDistance, HaversineDistance, HaversineLength, LineLocatePoint,
     LineString, Point,
@@ -42,7 +45,7 @@ pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> 
 ///
 /// The `decimal_digits` parameter refers to the number of digits after the point.
 pub(crate) fn trunc_float(value: f64, decimal_digits: u32) -> f64 {
-    let factor = 10i64.pow(decimal_digits) as f64;
+    let factor = 10_i64.pow(decimal_digits) as f64;
     (value * factor).round() / factor
 }
 
@@ -57,7 +60,7 @@ fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
     // Bail early when we have two essentially identical points.
     // This can cause some issues with edge cases (captured in proptest regressions)
     // with the underlying libraries.
-    if line.euclidean_distance(point) < 0.000001 {
+    if line.euclidean_distance(point) < 0.000_001 {
         return Some(*point);
     }
 
@@ -110,7 +113,7 @@ fn is_close_enough_to_end_of_linestring(
 /// Determines whether the navigation controller should complete the current route step
 /// and move to the next.
 ///
-/// NOTE: The [UserLocation] should *not* be snapped.
+/// NOTE: The [`UserLocation`] should *not* be snapped.
 pub fn should_advance_to_next_step(
     current_step_linestring: &LineString,
     next_route_step: Option<&RouteStep>,
@@ -131,7 +134,7 @@ pub fn should_advance_to_next_step(
                 is_close_enough_to_end_of_linestring(
                     &current_position,
                     current_step_linestring,
-                    distance as f64,
+                    f64::from(distance),
                 )
             }
         }
@@ -147,7 +150,7 @@ pub fn should_advance_to_next_step(
                     if is_close_enough_to_end_of_linestring(
                         &current_position,
                         current_step_linestring,
-                        distance as f64,
+                        f64::from(distance),
                     ) {
                         return true;
                     }
@@ -216,43 +219,112 @@ pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
     }
 }
 
+/// Computes the distance that a point lies along a linestring,
+/// assuming that units are latitude and longitude for the geometries.
+///
+/// The result is given in meters.
 fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
-    // TODO: This logic is definitely wrong, but *might* be a sortof usable starting point?
     let total_length = linestring.haversine_length();
     if total_length == 0.0 {
         return Some(0.0);
     }
 
-    let mut cum_length = 0f64;
-    let mut closest_dist_to_point = f64::INFINITY;
-    let mut traversed = 0f64;
-    for segment in linestring.lines() {
-        // Convert to a LineString so we get haversine ops
-        let segment_linestring = LineString::from(segment);
-        // Compute distance to the line (sadly only Euclidean at this point)
-        let segment_distance_to_point = segment.euclidean_distance(point);
-        let segment_length = segment_linestring.haversine_length();
-        if segment_distance_to_point < closest_dist_to_point {
-            let segment_fraction = segment.line_locate_point(point)?; // if any segment has a None fraction, return None
-            closest_dist_to_point = segment_distance_to_point;
-            traversed = cum_length + segment_fraction * segment_length;
-        }
-        cum_length += segment_length;
-    }
+    let (_, _, traversed) = linestring.lines().try_fold(
+        (0f64, f64::INFINITY, 06f64),
+        |(cum_length, closest_dist_to_point, traversed), segment| {
+            // Convert to a LineString so we get haversine ops
+            let segment_linestring = LineString::from(segment);
+
+            // Compute distance to the line (sadly Euclidean only; no haversine_distance in GeoRust
+            // but this is probably OK for now)
+            let segment_distance_to_point = segment.euclidean_distance(point);
+            // Compute total segment length in meters
+            let segment_length = segment_linestring.haversine_length();
+
+            if segment_distance_to_point < closest_dist_to_point {
+                let segment_fraction = segment.line_locate_point(point)?; // if any segment has a None fraction, return None
+                Some((
+                    cum_length + segment_length,
+                    segment_distance_to_point,
+                    cum_length + segment_fraction * segment_length,
+                ))
+            } else {
+                Some((
+                    cum_length + segment_length,
+                    closest_dist_to_point,
+                    traversed,
+                ))
+            }
+        },
+    )?;
     Some(traversed)
 }
 
 /// Computes the distance between a location and the end of the current route step.
 /// We assume that input location is pre-snapped to route step's linestring.
-pub fn distance_to_end_of_step(
-    snapped_location: &Point,
-    current_step_linestring: &LineString,
-) -> f64 {
+fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &LineString) -> f64 {
     let step_length = current_step_linestring.haversine_length();
     if let Some(traversed) = distance_along(snapped_location, current_step_linestring) {
         step_length - traversed
     } else {
         0.0
+    }
+}
+
+/// Computes the arrival state for a snapped location along the route.
+/// This includes distances and durations.
+pub fn calculate_trip_progress(
+    snapped_location: &Point,
+    current_step: &RouteStep,
+    current_step_linestring: &LineString,
+    remaining_steps: &[RouteStep],
+) -> TripProgress {
+    if remaining_steps.is_empty() {
+        return TripProgress {
+            distance_to_next_maneuver: 0.0,
+            distance_remaining: 0.0,
+            duration_remaining: 0.0,
+        };
+    }
+
+    // Calculate the distance and duration till the end of the current route step.
+    let distance_to_next_maneuver =
+        distance_to_end_of_step(snapped_location, current_step_linestring);
+
+    // This could be improved with live traffic data along the route.
+    // TODO: Figure out the best way to enable this use case
+    let pct_remaining_current_step =
+        distance_to_next_maneuver / current_step_linestring.haversine_length();
+
+    // Get the percentage of duration remaining in the current step.
+    let duration_to_next_maneuver = pct_remaining_current_step * current_step.duration;
+
+    // Exit early if there is only the current step:
+    if remaining_steps.len() == 1 {
+        return TripProgress {
+            distance_to_next_maneuver,
+            distance_remaining: distance_to_next_maneuver,
+            duration_remaining: duration_to_next_maneuver,
+        };
+    }
+
+    let steps_after_current = &remaining_steps[1..];
+    let distance_remaining = distance_to_next_maneuver
+        + steps_after_current
+            .iter()
+            .map(|step| step.distance)
+            .sum::<f64>();
+
+    let duration_remaining = duration_to_next_maneuver
+        + steps_after_current
+            .iter()
+            .map(|step| step.duration)
+            .sum::<f64>();
+
+    TripProgress {
+        distance_to_next_maneuver,
+        distance_remaining,
+        duration_remaining,
     }
 }
 
@@ -319,6 +391,7 @@ proptest! {
                 horizontal_accuracy: 0.0,
                 course_over_ground: None,
                 timestamp: SystemTime::now(),
+                speed: None
             };
 
             let inaccurate_user_location = UserLocation {
@@ -380,6 +453,7 @@ proptest! {
             horizontal_accuracy: 0.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
+            speed: None
         };
         let user_location_point = Point::from(user_location);
         let distance_from_end_of_current_step = user_location_point.haversine_distance(&end_of_step.into());

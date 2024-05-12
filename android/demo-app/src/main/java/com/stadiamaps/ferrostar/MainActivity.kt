@@ -57,7 +57,11 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
 
   private val initialSimulatedLocation =
       UserLocation(
-          GeographicCoordinate(37.807770999999995, -122.41970699999999), 6.0, null, Instant.now())
+          GeographicCoordinate(37.807770999999995, -122.41970699999999),
+          6.0,
+          null,
+          Instant.now(),
+          null)
   private val locationProvider = SimulatedLocationProvider()
   private val httpClient = OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
 

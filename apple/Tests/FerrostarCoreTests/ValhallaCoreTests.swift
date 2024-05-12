@@ -27,7 +27,9 @@ final class ValhallaCoreTests: XCTestCase {
                 horizontalAccuracy: 0,
                 course: 0,
                 courseAccuracy: 0,
-                timestamp: Date()
+                timestamp: Date(),
+                speed: nil,
+                speedAccuracy: nil
             ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )

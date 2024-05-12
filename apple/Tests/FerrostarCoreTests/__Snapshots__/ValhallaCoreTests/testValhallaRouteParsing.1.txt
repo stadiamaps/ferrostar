@@ -42,6 +42,7 @@
     ▿ steps: 2 elements
       ▿ RouteStep
         - distance: 284.0
+        - duration: 11.488
         ▿ geometry: 10 elements
           ▿ GeographicCoordinate
             - lat: 60.534716
@@ -80,6 +81,7 @@
         - visualInstructions: 0 elements
       ▿ RouteStep
         - distance: 0.0
+        - duration: 0.0
         ▿ geometry: 2 elements
           ▿ GeographicCoordinate
             - lat: 60.534991

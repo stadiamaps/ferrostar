@@ -6,7 +6,7 @@ use std::collections::HashMap;
 
 /// A route request generator for Valhalla backends operating over HTTP.
 ///
-/// Valhalla supports the [WaypointKind] field of [Waypoint]s. Variants have the same meaning as their
+/// Valhalla supports the [`WaypointKind`] field of [Waypoint]s. Variants have the same meaning as their
 /// [`type` strings in Valhalla API](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations)
 /// having the same name.
 #[derive(Debug)]
@@ -134,6 +134,7 @@ mod tests {
         horizontal_accuracy: 6.0,
         course_over_ground: None,
         timestamp: SystemTime::UNIX_EPOCH,
+        speed: None,
     };
     const USER_LOCATION_WITH_COURSE: UserLocation = UserLocation {
         coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
@@ -143,6 +144,7 @@ mod tests {
             accuracy: 12,
         }),
         timestamp: SystemTime::UNIX_EPOCH,
+        speed: None,
     };
     const WAYPOINTS: [Waypoint; 2] = [
         Waypoint {
@@ -291,6 +293,7 @@ mod tests {
             horizontal_accuracy: -6.0,
             course_over_ground: None,
             timestamp: SystemTime::now(),
+            speed: None,
         };
 
         let RouteRequest::HttpPost {

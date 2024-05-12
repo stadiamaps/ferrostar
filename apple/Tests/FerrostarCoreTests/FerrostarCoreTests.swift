@@ -32,6 +32,7 @@ let mockRoute = Route(
     steps: [RouteStep(
         geometry: mockGeom,
         distance: 1,
+        duration: 0,
         roadName: "foo road",
         instruction: "Sail straight",
         visualInstructions: [VisualInstruction(
@@ -110,7 +111,8 @@ final class FerrostarCoreTests: XCTestCase {
                     coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
                     horizontalAccuracy: 0,
                     courseOverGround: nil,
-                    timestamp: Date()
+                    timestamp: Date(),
+                    speed: nil
                 ),
                 waypoints: [Waypoint(
                     coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806),
@@ -140,7 +142,8 @@ final class FerrostarCoreTests: XCTestCase {
                 coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
                 horizontalAccuracy: 0,
                 courseOverGround: nil,
-                timestamp: Date()
+                timestamp: Date(),
+                speed: nil
             ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
@@ -150,7 +153,11 @@ final class FerrostarCoreTests: XCTestCase {
     @MainActor
     func testValhalalCostingOptionsJSON() async throws {
         let mockSession = MockURLSession()
-        mockSession.registerMock(forURL: valhallaEndpointUrl, withData: sampleRouteData, andResponse: successfulJSONResponse)
+        mockSession.registerMock(
+            forURL: valhallaEndpointUrl,
+            withData: sampleRouteData,
+            andResponse: successfulJSONResponse
+        )
 
         // The main feature of this test is that it uses this constructor,
         // which can throw, and similarly getRoutes may not always work with invalid input
@@ -193,7 +200,8 @@ final class FerrostarCoreTests: XCTestCase {
                 coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
                 horizontalAccuracy: 0,
                 courseOverGround: nil,
-                timestamp: Date()
+                timestamp: Date(),
+                speed: nil
             ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
@@ -260,7 +268,8 @@ final class FerrostarCoreTests: XCTestCase {
                 coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
                 horizontalAccuracy: 0,
                 courseOverGround: nil,
-                timestamp: Date()
+                timestamp: Date(),
+                speed: nil
             ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )

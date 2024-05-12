@@ -10,10 +10,17 @@ public extension NavigationState {
             horizontalAccuracy: 0,
             course: 0,
             courseAccuracy: 0,
-            timestamp: Date()
+            timestamp: Date(),
+            speed: 0,
+            speedAccuracy: 0
         ),
         fullRouteShape: samplePedestrianWaypoints,
-        steps: []
+        steps: [],
+        progress: TripProgress(
+            distanceToNextManeuver: 0,
+            distanceRemaining: 0,
+            durationRemaining: 0
+        )
     )
 
     static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> NavigationState {
@@ -27,12 +34,16 @@ public extension NavigationState {
                 horizontalAccuracy: 0,
                 course: 0,
                 courseAccuracy: 0,
-                timestamp: Date()
+                timestamp: Date(),
+                speed: 0,
+                speedAccuracy: 0
             ),
             fullRouteShape: samplePedestrianWaypoints,
             steps: [RouteStep(
                 geometry: [lastUserLocation],
-                distance: 100, roadName: "Jefferson St.",
+                distance: 100,
+                duration: 99,
+                roadName: "Jefferson St.",
                 instruction: "Walk west on Jefferson St.",
                 visualInstructions: [
                     VisualInstruction(
@@ -46,14 +57,20 @@ public extension NavigationState {
                     ),
                 ],
                 spokenInstructions: []
-            )]
+            )],
+            progress: TripProgress(
+                distanceToNextManeuver: 5,
+                distanceRemaining: 100,
+                durationRemaining: 99
+            )
         )
 
         result.snappedLocation = UserLocation(
             coordinates: samplePedestrianWaypoints.first!,
             horizontalAccuracy: 10,
             courseOverGround: CourseOverGround(degrees: 0, accuracy: 10),
-            timestamp: Date()
+            timestamp: Date(),
+            speed: Speed(value: 0, accuracy: 2)
         )
 
         return result

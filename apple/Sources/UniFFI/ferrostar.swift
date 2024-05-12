@@ -587,10 +587,10 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
  * over a generic request/response flow (typically over a network;
  * local/offline routers **do not use this object** as the interaction patterns are different).
  *
- * This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
+ * This is essentially the composite of the [`RouteRequestGenerator`] and [`RouteResponseParser`]
  * traits, but it provides one further level of abstraction which is helpful to consumers.
  * As there is no way to signal compatibility between request generators and response parsers,
- * the [RouteAdapter] provides convenience constructors which take the guesswork out of it,
+ * the [`RouteAdapter`] provides convenience constructors which take the guesswork out of it,
  * while still leaving consumers free to implement one or both halves.
  *
  * In the future, we may provide additional methods or conveniences, and this
@@ -615,10 +615,10 @@ public protocol RouteAdapterProtocol: AnyObject {
  * over a generic request/response flow (typically over a network;
  * local/offline routers **do not use this object** as the interaction patterns are different).
  *
- * This is essentially the composite of the [RouteRequestGenerator] and [RouteResponseParser]
+ * This is essentially the composite of the [`RouteRequestGenerator`] and [`RouteResponseParser`]
  * traits, but it provides one further level of abstraction which is helpful to consumers.
  * As there is no way to signal compatibility between request generators and response parsers,
- * the [RouteAdapter] provides convenience constructors which take the guesswork out of it,
+ * the [`RouteAdapter`] provides convenience constructors which take the guesswork out of it,
  * while still leaving consumers free to implement one or both halves.
  *
  * In the future, we may provide additional methods or conveniences, and this
@@ -968,7 +968,7 @@ public func FfiConverterTypeRouteDeviationDetector_lower(_ value: RouteDeviation
 }
 
 /**
- * A trait describing any object capable of generating [RouteRequest]s.
+ * A trait describing any object capable of generating [`RouteRequest`]s.
  *
  * The interface is intentionally generic. Every routing backend has its own set of
  * parameters, including a "profile," max travel speed, units of speed and distance, and more.
@@ -989,7 +989,7 @@ public protocol RouteRequestGenerator: AnyObject {
 }
 
 /**
- * A trait describing any object capable of generating [RouteRequest]s.
+ * A trait describing any object capable of generating [`RouteRequest`]s.
  *
  * The interface is intentionally generic. Every routing backend has its own set of
  * parameters, including a "profile," max travel speed, units of speed and distance, and more.
@@ -1792,6 +1792,10 @@ public struct RouteStep {
      * The distance, in meters, to travel along the route after the maneuver to reach the next step.
      */
     public var distance: Double
+    /**
+     * The estimated duration, in seconds, that it will take to complete this step.
+     */
+    public var duration: Double
     public var roadName: String?
     public var instruction: String
     public var visualInstructions: [VisualInstruction]
@@ -1805,6 +1809,10 @@ public struct RouteStep {
             * The distance, in meters, to travel along the route after the maneuver to reach the next step.
             */
         distance: Double,
+        /**
+            * The estimated duration, in seconds, that it will take to complete this step.
+            */
+        duration: Double,
         roadName: String?,
         instruction: String,
         visualInstructions: [VisualInstruction],
@@ -1812,6 +1820,7 @@ public struct RouteStep {
     ) {
         self.geometry = geometry
         self.distance = distance
+        self.duration = duration
         self.roadName = roadName
         self.instruction = instruction
         self.visualInstructions = visualInstructions
@@ -1825,6 +1834,9 @@ extension RouteStep: Equatable, Hashable {
             return false
         }
         if lhs.distance != rhs.distance {
+            return false
+        }
+        if lhs.duration != rhs.duration {
             return false
         }
         if lhs.roadName != rhs.roadName {
@@ -1845,6 +1857,7 @@ extension RouteStep: Equatable, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(geometry)
         hasher.combine(distance)
+        hasher.combine(duration)
         hasher.combine(roadName)
         hasher.combine(instruction)
         hasher.combine(visualInstructions)
@@ -1857,6 +1870,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
         try RouteStep(
             geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
             distance: FfiConverterDouble.read(from: &buf),
+            duration: FfiConverterDouble.read(from: &buf),
             roadName: FfiConverterOptionString.read(from: &buf),
             instruction: FfiConverterString.read(from: &buf),
             visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf),
@@ -1867,6 +1881,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
     public static func write(_ value: RouteStep, into buf: inout [UInt8]) {
         FfiConverterSequenceTypeGeographicCoordinate.write(value.geometry, into: &buf)
         FfiConverterDouble.write(value.distance, into: &buf)
+        FfiConverterDouble.write(value.duration, into: &buf)
         FfiConverterOptionString.write(value.roadName, into: &buf)
         FfiConverterString.write(value.instruction, into: &buf)
         FfiConverterSequenceTypeVisualInstruction.write(value.visualInstructions, into: &buf)
@@ -1880,6 +1895,75 @@ public func FfiConverterTypeRouteStep_lift(_ buf: RustBuffer) throws -> RouteSte
 
 public func FfiConverterTypeRouteStep_lower(_ value: RouteStep) -> RustBuffer {
     FfiConverterTypeRouteStep.lower(value)
+}
+
+/**
+ * The speed of the user from the location provider.
+ */
+public struct Speed {
+    /**
+     * The user's speed in meters per second.
+     */
+    public var value: Double
+    /**
+     * The accuracy of the speed value, measured in meters per second.
+     */
+    public var accuracy: Double
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The user's speed in meters per second.
+         */
+        value: Double,
+        /**
+            * The accuracy of the speed value, measured in meters per second.
+            */
+        accuracy: Double
+    ) {
+        self.value = value
+        self.accuracy = accuracy
+    }
+}
+
+extension Speed: Equatable, Hashable {
+    public static func == (lhs: Speed, rhs: Speed) -> Bool {
+        if lhs.value != rhs.value {
+            return false
+        }
+        if lhs.accuracy != rhs.accuracy {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(value)
+        hasher.combine(accuracy)
+    }
+}
+
+public struct FfiConverterTypeSpeed: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Speed {
+        try Speed(
+            value: FfiConverterDouble.read(from: &buf),
+            accuracy: FfiConverterDouble.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: Speed, into buf: inout [UInt8]) {
+        FfiConverterDouble.write(value.value, into: &buf)
+        FfiConverterDouble.write(value.accuracy, into: &buf)
+    }
+}
+
+public func FfiConverterTypeSpeed_lift(_ buf: RustBuffer) throws -> Speed {
+    try FfiConverterTypeSpeed.lift(buf)
+}
+
+public func FfiConverterTypeSpeed_lower(_ value: Speed) -> RustBuffer {
+    FfiConverterTypeSpeed.lower(value)
 }
 
 /**
@@ -1998,6 +2082,94 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
 }
 
 /**
+ * A subset of state values that are used to show the user their current progress along the trip and it's components.
+ */
+public struct TripProgress {
+    /**
+     * The distance to the next maneuver, in meters.
+     */
+    public var distanceToNextManeuver: Double
+    /**
+     * The total distance remaining in the trip, in meters.
+     *
+     * This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
+     */
+    public var distanceRemaining: Double
+    /**
+     * The total duration remaining in the trip, in seconds.
+     */
+    public var durationRemaining: Double
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The distance to the next maneuver, in meters.
+         */
+        distanceToNextManeuver: Double,
+        /**
+            * The total distance remaining in the trip, in meters.
+            *
+            * This is the sum of the distance remaining in the current step and the distance remaining in all subsequent steps.
+            */
+        distanceRemaining: Double,
+        /**
+            * The total duration remaining in the trip, in seconds.
+            */
+        durationRemaining: Double
+    ) {
+        self.distanceToNextManeuver = distanceToNextManeuver
+        self.distanceRemaining = distanceRemaining
+        self.durationRemaining = durationRemaining
+    }
+}
+
+extension TripProgress: Equatable, Hashable {
+    public static func == (lhs: TripProgress, rhs: TripProgress) -> Bool {
+        if lhs.distanceToNextManeuver != rhs.distanceToNextManeuver {
+            return false
+        }
+        if lhs.distanceRemaining != rhs.distanceRemaining {
+            return false
+        }
+        if lhs.durationRemaining != rhs.durationRemaining {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(distanceToNextManeuver)
+        hasher.combine(distanceRemaining)
+        hasher.combine(durationRemaining)
+    }
+}
+
+public struct FfiConverterTypeTripProgress: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TripProgress {
+        try TripProgress(
+            distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
+            distanceRemaining: FfiConverterDouble.read(from: &buf),
+            durationRemaining: FfiConverterDouble.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: TripProgress, into buf: inout [UInt8]) {
+        FfiConverterDouble.write(value.distanceToNextManeuver, into: &buf)
+        FfiConverterDouble.write(value.distanceRemaining, into: &buf)
+        FfiConverterDouble.write(value.durationRemaining, into: &buf)
+    }
+}
+
+public func FfiConverterTypeTripProgress_lift(_ buf: RustBuffer) throws -> TripProgress {
+    try FfiConverterTypeTripProgress.lift(buf)
+}
+
+public func FfiConverterTypeTripProgress_lower(_ value: TripProgress) -> RustBuffer {
+    FfiConverterTypeTripProgress.lower(value)
+}
+
+/**
  * The location of the user that is navigating.
  *
  * In addition to coordinates, this includes estimated accuracy and course information,
@@ -2014,6 +2186,7 @@ public struct UserLocation {
     public var horizontalAccuracy: Double
     public var courseOverGround: CourseOverGround?
     public var timestamp: Date
+    public var speed: Speed?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -2024,12 +2197,14 @@ public struct UserLocation {
             */
         horizontalAccuracy: Double,
         courseOverGround: CourseOverGround?,
-        timestamp: Date
+        timestamp: Date,
+        speed: Speed?
     ) {
         self.coordinates = coordinates
         self.horizontalAccuracy = horizontalAccuracy
         self.courseOverGround = courseOverGround
         self.timestamp = timestamp
+        self.speed = speed
     }
 }
 
@@ -2047,6 +2222,9 @@ extension UserLocation: Equatable, Hashable {
         if lhs.timestamp != rhs.timestamp {
             return false
         }
+        if lhs.speed != rhs.speed {
+            return false
+        }
         return true
     }
 
@@ -2055,6 +2233,7 @@ extension UserLocation: Equatable, Hashable {
         hasher.combine(horizontalAccuracy)
         hasher.combine(courseOverGround)
         hasher.combine(timestamp)
+        hasher.combine(speed)
     }
 }
 
@@ -2064,7 +2243,8 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
             coordinates: FfiConverterTypeGeographicCoordinate.read(from: &buf),
             horizontalAccuracy: FfiConverterDouble.read(from: &buf),
             courseOverGround: FfiConverterOptionTypeCourseOverGround.read(from: &buf),
-            timestamp: FfiConverterTimestamp.read(from: &buf)
+            timestamp: FfiConverterTimestamp.read(from: &buf),
+            speed: FfiConverterOptionTypeSpeed.read(from: &buf)
         )
     }
 
@@ -2073,6 +2253,7 @@ public struct FfiConverterTypeUserLocation: FfiConverterRustBuffer {
         FfiConverterDouble.write(value.horizontalAccuracy, into: &buf)
         FfiConverterOptionTypeCourseOverGround.write(value.courseOverGround, into: &buf)
         FfiConverterTimestamp.write(value.timestamp, into: &buf)
+        FfiConverterOptionTypeSpeed.write(value.speed, into: &buf)
     }
 }
 
@@ -2228,9 +2409,9 @@ public func FfiConverterTypeVisualInstructionContent_lower(_ value: VisualInstru
 /**
  * A waypoint along a route.
  *
- * Within the context of Ferrostar, a route request consists of exactly one [UserLocation]
+ * Within the context of Ferrostar, a route request consists of exactly one [`UserLocation`]
  * and at least one [Waypoint]. The route starts from the user's location (which may
- * contain other useful information like their current course for the [crate::routing_adapters::RouteRequestGenerator]
+ * contain other useful information like their current course for the [`crate::routing_adapters::RouteRequestGenerator`]
  * to use) and proceeds through one or more waypoints.
  *
  * Waypoints are used during route calculation, are tracked throughout the lifecycle of a trip,
@@ -2327,7 +2508,7 @@ extension InstantiationError: Error {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * Specifies additional information about a [ManeuverType]
+ * Specifies additional information about a [`ManeuverType`]
  */
 public enum ManeuverModifier {
     case uTurn
@@ -2410,7 +2591,7 @@ extension ManeuverModifier: Equatable, Hashable {}
 /**
  * Indicates the type of maneuver to perform.
  *
- * Frequently used in conjunction with [ManeuverModifier].
+ * Frequently used in conjunction with [`ManeuverModifier`].
  */
 public enum ManeuverType {
     case turn
@@ -2719,7 +2900,7 @@ public func FfiConverterTypeRouteDeviationTracking_lower(_ value: RouteDeviation
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * A route request generated by a [RouteRequestGenerator].
+ * A route request generated by a [`RouteRequestGenerator`].
  */
 public enum RouteRequest {
     case httpPost(
@@ -2925,7 +3106,7 @@ public enum StepAdvanceMode {
         minimumHorizontalAccuracy: UInt16,
         /**
             * At this (optional) distance, navigation should advance to the next step regardless
-            * of which LineString appears closer.
+            * of which `LineString` appears closer.
             */
         automaticAdvanceDistance: UInt16?
     )
@@ -3008,9 +3189,10 @@ public enum TripState {
             */
         remainingWaypoints: [Waypoint],
         /**
-            * The distance to the next maneuver, in meters.
+            * The trip progress includes information that is useful for showing the
+            * user's progress along the full navigation trip, the route and its components.
             */
-        distanceToNextManeuver: Double,
+        progress: TripProgress,
         /**
             * The route deviation status: is the user following the route or not?
             */
@@ -3039,7 +3221,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
-                distanceToNextManeuver: FfiConverterDouble.read(from: &buf),
+                progress: FfiConverterTypeTripProgress.read(from: &buf),
                 deviation: FfiConverterTypeRouteDeviation.read(from: &buf),
                 visualInstruction: FfiConverterOptionTypeVisualInstruction.read(from: &buf),
                 spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
@@ -3057,7 +3239,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             snappedUserLocation,
             remainingSteps,
             remainingWaypoints,
-            distanceToNextManeuver,
+            progress,
             deviation,
             visualInstruction,
             spokenInstruction
@@ -3066,7 +3248,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
-            FfiConverterDouble.write(distanceToNextManeuver, into: &buf)
+            FfiConverterTypeTripProgress.write(progress, into: &buf)
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
             FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
@@ -3219,6 +3401,27 @@ private struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeCourseOverGround.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterOptionTypeSpeed: FfiConverterRustBuffer {
+    typealias SwiftType = Speed?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeSpeed.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeSpeed.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -3536,7 +3739,7 @@ public func advanceLocationSimulation(state: LocationSimulationState) -> Locatio
 }
 
 /**
- * Creates a [RouteResponseParser] capable of parsing OSRM responses.
+ * Creates a [`RouteResponseParser`] capable of parsing OSRM responses.
  *
  * This response parser is designed to be fairly flexible,
  * supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
@@ -3553,10 +3756,10 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
 }
 
 /**
- * Creates a [RouteRequestGenerator]
+ * Creates a [`RouteRequestGenerator`]
  * which generates requests to an arbitrary Valhalla server (using the OSRM response format).
  *
- * This is provided as a convenience for use from foreign code when creating your own [routing_adapters::RouteAdapter].
+ * This is provided as a convenience for use from foreign code when creating your own [`routing_adapters::RouteAdapter`].
  */
 public func createValhallaRequestGenerator(endpointUrl: String, profile: String,
                                            costingOptionsJson: String?) throws -> RouteRequestGenerator
@@ -3660,10 +3863,10 @@ private var initializationResult: InitializationResult {
     if uniffi_ferrostar_checksum_func_advance_location_simulation() != 62608 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 28097 {
+    if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 46856 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 11855 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 24001 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 53320 {
