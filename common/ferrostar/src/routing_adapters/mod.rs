@@ -7,6 +7,7 @@ use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::sync::Arc;
+use crate::routing_adapters::error::InstantiationError;
 
 pub mod error;
 pub mod osrm;
@@ -103,11 +104,11 @@ impl RouteAdapter {
         endpoint_url: String,
         profile: String,
         costing_options_json: Option<String>,
-    ) -> Self {
+    ) -> Result<Self, InstantiationError> {
         let request_generator =
-            create_valhalla_request_generator(endpoint_url, profile, costing_options_json);
+            create_valhalla_request_generator(endpoint_url, profile, costing_options_json)?;
         let response_parser = create_osrm_response_parser(6);
-        Self::new(request_generator, response_parser)
+        Ok(Self::new(request_generator, response_parser))
     }
 
     //

@@ -18,21 +18,38 @@ pub struct ValhallaHttpRequestGenerator {
     endpoint_url: String,
     /// The Valhalla costing model to use.
     profile: String,
-    /// A string serialization of the JSON options to pass as costing options.
-    costing_options_json: Option<String>,
+    // TODO: Language, units, and other top-level parameters
+    /// JSON costing options to pass through.
+    costing_options: JsonValue,
 }
 
 impl ValhallaHttpRequestGenerator {
     pub fn new(
         endpoint_url: String,
         profile: String,
-        costing_options_json: Option<String>,
+        costing_options: Option<JsonValue>,
     ) -> Self {
         Self {
             endpoint_url,
             profile,
-            costing_options_json,
+            costing_options: costing_options.unwrap_or(json!({})),
         }
+    }
+
+    pub fn with_costing_options_json(
+        endpoint_url: String,
+        profile: String,
+        costing_options_json: Option<String>,
+    ) -> Result<Self, serde_json::Error> {
+        let parsed_costing_options: JsonValue = match costing_options_json.as_deref() {
+            Some(options) => serde_json::from_str(options)?,
+            None => json!({}),
+        };
+        Ok(Self {
+            endpoint_url,
+            profile,
+            costing_options: parsed_costing_options,
+        })
     }
 }
 
@@ -71,11 +88,6 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 }))
                 .collect();
 
-            let parsed_costing_options: JsonValue = match self.costing_options_json.as_deref() {
-                Some(options) => serde_json::from_str(options)?,
-                None => json!({}),
-            };
-
             // NOTE: We currently use the OSRM format, as it is the richest one.
             // Though it would be nice to use PBF if we can get the required data.
             // However, certain info (like banners) are only available in the OSRM format.
@@ -95,7 +107,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 "voice_instructions": true,
                 "costing": &self.profile,
                 "locations": locations,
-                "costing_options": parsed_costing_options,
+                "costing_options": &self.costing_options,
             });
             let body = serde_json::to_vec(&args)?;
             Ok(RouteRequest::HttpPost {
@@ -160,11 +172,11 @@ mod tests {
         waypoints: Vec<Waypoint>,
         costing_options_json: Option<String>,
     ) -> JsonValue {
-        let generator = ValhallaHttpRequestGenerator::new(
+        let generator = ValhallaHttpRequestGenerator::with_costing_options_json(
             ENDPOINT_URL.to_string(),
             COSTING.to_string(),
             costing_options_json,
-        );
+        ).expect("Unable to create request generator");
 
         match generator.generate_request(user_location, waypoints) {
             Ok(RouteRequest::HttpPost {

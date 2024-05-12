@@ -72,6 +72,7 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
           profile = "bicycle",
           httpClient = httpClient,
           locationProvider = locationProvider,
+          costingOptions = mapOf("bicycle" to mapOf("use_roads" to 0.2))
       )
 
   private lateinit var ttsObserver: AndroidTtsObserver

@@ -109,10 +109,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.delegate = self
     }
 
-    enum ValhallaError: Error {
-        case unserializableCostingOptions
-    }
-
     public convenience init(
         valhallaEndpointUrl: URL,
         profile: String,
@@ -124,10 +120,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
             data: try JSONSerialization.data(withJSONObject: costingOptions),
             encoding: .utf8
         ) else {
-            throw ValhallaError.unserializableCostingOptions
+            throw InstantiationError.JsonError
         }
 
-        let adapter = RouteAdapter.newValhallaHttp(
+        let adapter = try RouteAdapter.newValhallaHttp(
             endpointUrl: valhallaEndpointUrl.absoluteString,
             profile: profile,
             costingOptionsJson: jsonCostingOptions

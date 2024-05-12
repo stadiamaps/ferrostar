@@ -37,12 +37,13 @@ struct DemoNavigationView: View {
         let simulated = SimulatedLocationProvider(location: initialLocation)
         simulated.warpFactor = 2
         locationProvider = simulated
-        ferrostarCore = FerrostarCore(
+        ferrostarCore = try! FerrostarCore(
             valhallaEndpointUrl: URL(
                 string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)"
             )!,
-            profile: "pedestrian",
-            locationProvider: locationProvider
+            profile: "bicycle",
+            locationProvider: locationProvider,
+            costingOptions: ["bicycle": ["use_roads": 0.2]]
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate

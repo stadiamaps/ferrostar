@@ -239,7 +239,7 @@ class ValhallaCoreTest {
         MockInterceptor().apply {
           rule(post, url eq valhallaEndpointUrl) { respond(simpleRoute, MEDIATYPE_JSON) }
 
-          rule(get) { respond { throw IllegalStateException("an IO error") } }
+          rule(get) { respond { throw IllegalStateException("Expected only one request") } }
         }
     val core =
         FerrostarCore(
@@ -274,6 +274,37 @@ class ValhallaCoreTest {
               GeographicCoordinate(60.534991, -149.548581),
           ),
           routes.first().geometry)
+    }
+  }
+
+  @Test
+  fun valhallaRequestWithCostingOptions(): TestResult {
+    val interceptor =
+        MockInterceptor().apply {
+          rule(post, url eq valhallaEndpointUrl) { respond(simpleRoute, MEDIATYPE_JSON) }
+
+          rule(get) { respond { throw IllegalStateException("Expected only one request") } }
+        }
+    val core =
+        FerrostarCore(
+            valhallaEndpointURL = URL(valhallaEndpointUrl),
+            profile = "auto",
+            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            locationProvider = SimulatedLocationProvider(),
+            costingOptions = mapOf("auto" to mapOf("useTolls" to 0)))
+
+    return runTest {
+      val routes =
+          core.getRoutes(
+              UserLocation(
+                  GeographicCoordinate(60.5347155, -149.543469), 12.0, null, Instant.now()),
+              waypoints =
+                  listOf(
+                      Waypoint(
+                          coordinate = GeographicCoordinate(60.5349908, -149.5485806),
+                          kind = WaypointKind.BREAK)))
+
+      assertEquals(routes.count(), 1)
     }
   }
 }
