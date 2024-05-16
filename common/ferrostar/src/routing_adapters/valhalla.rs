@@ -137,7 +137,7 @@ mod tests {
         horizontal_accuracy: 6.0,
         course_over_ground: Some(CourseOverGround {
             degrees: 42,
-            accuracy: 12,
+            accuracy: Some(12),
         }),
         timestamp: SystemTime::UNIX_EPOCH,
         speed: None,
