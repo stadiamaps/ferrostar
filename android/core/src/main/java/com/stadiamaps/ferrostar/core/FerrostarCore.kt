@@ -4,6 +4,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 import java.net.URL
+import java.time.Instant
 import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -194,10 +195,13 @@ class FerrostarCore(
             route,
             config,
         )
-    val startingLocation = locationProvider.lastLocation ?: throw UserLocationUnknown()
+    val startingLocation =
+        locationProvider.lastLocation
+            ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
     val initialTripState = controller.getInitialState(startingLocation)
-    val stateFlow = MutableStateFlow(FerrostarCoreState(tripState = initialTripState, false))
+    val stateFlow =
+        MutableStateFlow(FerrostarCoreState(tripState = initialTripState, route.geometry, false))
     handleStateUpdate(initialTripState, startingLocation)
 
     _navigationController = controller
@@ -205,7 +209,8 @@ class FerrostarCore(
 
     locationProvider.addListener(this, _executor)
 
-    return NavigationViewModel(stateFlow, startingLocation, route.geometry)
+    return NavigationViewModel(stateFlow, startingLocation)
+  }
   }
 
   fun advanceToNextStep() {
