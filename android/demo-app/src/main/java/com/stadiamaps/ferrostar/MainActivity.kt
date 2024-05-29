@@ -110,7 +110,8 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
     }
     core.alternativeRouteProcessor = AlternativeRouteProcessor { core, routes ->
       if (routes.isNotEmpty()) {
-        core.startNavigation(
+        // NB: Use `replaceRoute` for cases like this!!
+        core.replaceRoute(
             routes.first(),
             NavigationControllerConfig(
                 StepAdvanceMode.RelativeLineStringDistance(

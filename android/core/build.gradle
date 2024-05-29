@@ -92,7 +92,7 @@ android.libraryVariants.all { variant ->
     }
 
     def sourceSet = variant.sourceSets.find { it.name == variant.name }
-    sourceSet.java.srcDir new File(buildDir, "generated/source/uniffi/${variant.name}/java")
+    sourceSet.java.srcDir layout.buildDirectory.file("generated/source/uniffi/${variant.name}/java")
 
     // UniFFI tutorial notes that they made several attempts like this but were unsuccessful coming
     // to a good solution for forcing the directory to be marked as generated (short of checking in

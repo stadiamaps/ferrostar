@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavigationController
 import uniffi.ferrostar.NavigationControllerConfig
@@ -28,6 +29,7 @@ import uniffi.ferrostar.Waypoint
 data class FerrostarCoreState(
     /** The raw trip state from the core. */
     val tripState: TripState,
+    val routeGeometry: List<GeographicCoordinate>,
     /** Indicates when the core is calculating a new route (ex: due to the user being off route). */
     val isCalculatingNewRoute: Boolean
 )
@@ -53,6 +55,10 @@ class FerrostarCore(
     val httpClient: OkHttpClient,
     val locationProvider: LocationProvider,
 ) : LocationUpdateListener {
+  companion object {
+    private const val TAG = "FerrostarCore"
+  }
+
   /**
    * The minimum time to wait before initiating another route recalculation.
    *
@@ -100,7 +106,7 @@ class FerrostarCore(
   var isCalculatingNewRoute: Boolean = false
     private set
 
-  private val _executor = Executors.newSingleThreadExecutor()
+  private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
   private var _navigationController: NavigationController? = null
   private var _state: MutableStateFlow<FerrostarCoreState>? = null
@@ -185,6 +191,10 @@ class FerrostarCore(
    * subscribe to location provider updates. Returns a view model which is tied to the navigation
    * session. You can observe this in either your own or one of the provided navigation compose
    * views.
+   *
+   * WARNING: If you want to reuse the existing view model, ex: when getting a new route after going
+   * off course, use [replaceRoute] instead! Otherwise, you will miss out on updates as the old view
+   * model is "orphaned"!
    */
   @Throws(UserLocationUnknown::class)
   fun startNavigation(route: Route, config: NavigationControllerConfig): NavigationViewModel {
@@ -211,6 +221,34 @@ class FerrostarCore(
 
     return NavigationViewModel(stateFlow, startingLocation)
   }
+
+  /**
+   * Replace the currently running route with a new one.
+   *
+   * This allows you to reuse the existing view model. Do not call this method unless you are
+   * already navigating.
+   */
+  fun replaceRoute(route: Route, config: NavigationControllerConfig) {
+    val controller =
+        NavigationController(
+            route,
+            config,
+        )
+    val startingLocation =
+        locationProvider.lastLocation
+            ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
+
+    _navigationController = controller
+    if (_state == null) {
+      android.util.Log.e(TAG, "Unexpected null state")
+    }
+    _state?.update {
+      val newState = controller.getInitialState(startingLocation)
+
+      handleStateUpdate(newState, startingLocation)
+
+      FerrostarCoreState(tripState = newState, route.geometry, false)
+    }
   }
 
   fun advanceToNextStep() {
@@ -223,7 +261,7 @@ class FerrostarCore(
 
         handleStateUpdate(newState, location)
 
-        FerrostarCoreState(tripState = newState, isCalculatingNewRoute)
+        FerrostarCoreState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
       }
     }
   }
@@ -275,9 +313,11 @@ class FerrostarCore(
                       // Default behavior when there is no user-defined behavior:
                       // accept the first route, as this is what most users want when they go off
                       // route.
-                      startNavigation(routes.first(), config)
+                      replaceRoute(routes.first(), config)
                     }
                   }
+                } catch (e: Throwable) {
+                  android.util.Log.e(TAG, "Failed to recalculate route: $e")
                 } finally {
                   _lastAutomaticRecalculation = System.nanoTime()
                   isCalculatingNewRoute = false
@@ -301,6 +341,7 @@ class FerrostarCore(
     _lastLocation = location
     val controller = _navigationController
 
+    android.util.Log.i(TAG, "Location Updated: $location")
     if (controller != null) {
       _state?.update { currentValue ->
         val newState =
@@ -308,7 +349,7 @@ class FerrostarCore(
 
         handleStateUpdate(newState, location)
 
-        FerrostarCoreState(tripState = newState, isCalculatingNewRoute)
+        FerrostarCoreState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
       }
     }
   }

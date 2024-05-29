@@ -27,7 +27,6 @@ data class NavigationUiState(
 class NavigationViewModel(
     stateFlow: StateFlow<FerrostarCoreState>,
     initialUserLocation: UserLocation,
-    private val routeGeometry: List<GeographicCoordinate>,
 ) : ViewModel() {
   private var lastLocation: UserLocation = initialUserLocation
 
@@ -55,7 +54,7 @@ class NavigationViewModel(
           snappedLocation = location,
           // TODO: Heading/course over ground
           heading = null,
-          routeGeometry = routeGeometry,
+          routeGeometry = coreState.routeGeometry,
           visualInstruction = visualInstructionForState(coreState.tripState),
           spokenInstruction = null,
           distanceToNextManeuver = distanceForState(coreState.tripState),
