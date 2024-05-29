@@ -79,7 +79,6 @@ class AndroidSystemLocationProvider(context: Context) : LocationProvider {
       return
     }
     val androidListener = LocationListener {
-      android.util.Log.i("LocationListener", "Location Updated: $it")
       listener.onLocationUpdated(it.toUserLocation())
     }
     listeners[listener] = androidListener

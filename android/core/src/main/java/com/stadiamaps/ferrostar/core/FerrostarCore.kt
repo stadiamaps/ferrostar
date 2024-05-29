@@ -341,7 +341,6 @@ class FerrostarCore(
     _lastLocation = location
     val controller = _navigationController
 
-    android.util.Log.i(TAG, "Location Updated: $location")
     if (controller != null) {
       _state?.update { currentValue ->
         val newState =
