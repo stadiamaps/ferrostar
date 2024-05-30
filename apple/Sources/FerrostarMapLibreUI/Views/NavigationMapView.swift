@@ -118,8 +118,8 @@ public struct NavigationMapView: View {
         .gesture(
             DragGesture()
                 .onChanged { gesture in
-                    guard gesture.velocity.width > breakwayVelocity
-                        || gesture.velocity.height > breakwayVelocity
+                    guard abs(gesture.velocity.width) > breakwayVelocity
+                        || abs(gesture.velocity.height) > breakwayVelocity
                     else {
                         return
                     }
