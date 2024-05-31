@@ -109,6 +109,7 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
       CorrectiveAction.GetNewRoutes(remainingWaypoints)
     }
     core.alternativeRouteProcessor = AlternativeRouteProcessor { core, routes ->
+      android.util.Log.i(TAG, "Received alternate route(s): $routes")
       if (routes.isNotEmpty()) {
         // NB: Use `replaceRoute` for cases like this!!
         core.replaceRoute(
