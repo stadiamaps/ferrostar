@@ -125,8 +125,11 @@ to ensure consistent formatting.
    automatically build what it needs.
 
 ```sh
-cargo install cargo-ndk
+cargo install cargo-ndk --version 3.5.4
 ```
+
+NOTE: cargo-ndk is currently pinned due to [this issue](https://github.com/bbqsrc/cargo-ndk/issues/137)
+which breaks workspaces.
 
 3. Ensure that the latest NDK is installed
    (refer to the `ndkVersion` number in [`core/build.gradle`](android/core/build.gradle)
