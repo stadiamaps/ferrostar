@@ -30,7 +30,7 @@ jobs:
       working-directory: android
 
     - name: Install cargo-ndk
-      run: cargo install cargo-ndk --version 3.5.4
+      run: cargo install cargo-ndk
 
     - name: Touch local.properties (required for cargo-ndk)
       run: touch local.properties

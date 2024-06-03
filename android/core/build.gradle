@@ -69,6 +69,7 @@ dependencies {
 cargoNdk {
     module  = "../common"  // Directory containing Cargo.toml
     librariesNames = ["libferrostar.so"]
+    extraCargoBuildArguments = ["-p", "ferrostar"]
 }
 
 android.libraryVariants.all { variant ->
