@@ -9,7 +9,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332715
@@ -879,7 +879,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332695
@@ -1747,7 +1747,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332616
@@ -2613,7 +2613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332616
@@ -3477,7 +3477,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332616
@@ -4339,7 +4339,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332616
@@ -5199,7 +5199,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332616
@@ -6057,7 +6057,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332615
@@ -6913,7 +6913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332613
@@ -7767,7 +7767,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 92
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332612
@@ -8619,7 +8619,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332528
@@ -9469,7 +9469,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332445
@@ -10317,7 +10317,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332361
@@ -11163,7 +11163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332277
@@ -12007,7 +12007,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332193
@@ -12849,7 +12849,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33211
@@ -13689,7 +13689,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.332026
@@ -14527,7 +14527,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331942
@@ -15363,7 +15363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331911
@@ -16197,7 +16197,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331884
@@ -17029,7 +17029,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 126
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331857
@@ -17859,7 +17859,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 127
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331787
@@ -18687,7 +18687,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331764
@@ -19513,7 +19513,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 137
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331748
@@ -20337,7 +20337,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 225
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331692
@@ -21159,7 +21159,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331645
@@ -21979,7 +21979,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 182
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331626
@@ -22797,7 +22797,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 132
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.3316
@@ -23613,7 +23613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 135
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331601
@@ -24427,7 +24427,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331599
@@ -25239,7 +25239,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 92
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331598
@@ -26049,7 +26049,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 92
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331559
@@ -26857,7 +26857,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 186
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331506
@@ -27663,7 +27663,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 176
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331453
@@ -28467,7 +28467,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 177
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33139
@@ -29269,7 +29269,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331326
@@ -30069,7 +30069,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331253
@@ -30867,7 +30867,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 185
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331212
@@ -31663,7 +31663,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331171
@@ -32457,7 +32457,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331119
@@ -33249,7 +33249,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.331039
@@ -34039,7 +34039,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 159
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330957
@@ -34827,7 +34827,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 165
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330875
@@ -35613,7 +35613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 165
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330792
@@ -36397,7 +36397,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 165
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33071
@@ -37179,7 +37179,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 165
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330628
@@ -37959,7 +37959,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 165
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330618
@@ -38737,7 +38737,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 226
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330531
@@ -39513,7 +39513,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 166
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330457
@@ -40287,7 +40287,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 165
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330403
@@ -41059,7 +41059,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 165
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330413
@@ -41829,7 +41829,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 74
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330419
@@ -42597,7 +42597,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 85
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330406
@@ -43363,7 +43363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 103
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330393
@@ -44127,7 +44127,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 103
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330386
@@ -44889,7 +44889,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 101
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33038
@@ -45649,7 +45649,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 99
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330383
@@ -46407,7 +46407,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 82
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330398
@@ -47163,7 +47163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 72
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330424
@@ -47917,7 +47917,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 72
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33044
@@ -48669,7 +48669,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 75
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33044
@@ -49419,7 +49419,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330438
@@ -50167,7 +50167,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330426
@@ -50913,7 +50913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 106
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330412
@@ -51657,7 +51657,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 106
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330405
@@ -52399,7 +52399,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 103
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330401
@@ -53139,7 +53139,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 96
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330405
@@ -53877,7 +53877,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 86
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330413
@@ -54613,7 +54613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 80
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330413
@@ -55347,7 +55347,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330397
@@ -56079,7 +56079,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 114
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330359
@@ -56809,7 +56809,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 135
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330331
@@ -57537,7 +57537,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 125
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330325
@@ -58263,7 +58263,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 101
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330326
@@ -58987,7 +58987,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 88
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33034
@@ -59709,7 +59709,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 73
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330274
@@ -60429,7 +60429,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 172
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330237
@@ -61147,7 +61147,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 176
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330242
@@ -61863,7 +61863,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 85
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330207
@@ -62577,7 +62577,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 124
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330188
@@ -63289,7 +63289,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 128
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330188
@@ -63999,7 +63999,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330187
@@ -64707,7 +64707,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330187
@@ -65413,7 +65413,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330186
@@ -66117,7 +66117,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330186
@@ -66819,7 +66819,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330185
@@ -67519,7 +67519,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330185
@@ -68217,7 +68217,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330184
@@ -68913,7 +68913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330184
@@ -69607,7 +69607,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330184
@@ -70299,7 +70299,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330184
@@ -70989,7 +70989,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -71677,7 +71677,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -72363,7 +72363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -73047,7 +73047,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -73729,7 +73729,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -74409,7 +74409,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -75087,7 +75087,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -75763,7 +75763,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -76437,7 +76437,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -77109,7 +77109,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330175
@@ -77779,7 +77779,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 109
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330163
@@ -78447,7 +78447,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 124
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330173
@@ -79113,7 +79113,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 58
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330175
@@ -79777,7 +79777,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330177
@@ -80439,7 +80439,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 88
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330166
@@ -81099,7 +81099,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 135
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330176
@@ -81757,7 +81757,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 52
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330184
@@ -82413,7 +82413,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 70
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330184
@@ -83067,7 +83067,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330184
@@ -83719,7 +83719,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -84369,7 +84369,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -85017,7 +85017,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -85663,7 +85663,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -86307,7 +86307,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330183
@@ -86949,7 +86949,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330182
@@ -87589,7 +87589,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330182
@@ -88227,7 +88227,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330182
@@ -88863,7 +88863,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330182
@@ -89497,7 +89497,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330182
@@ -90129,7 +90129,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330182
@@ -90759,7 +90759,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330181
@@ -91387,7 +91387,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330181
@@ -92013,7 +92013,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330181
@@ -92637,7 +92637,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330181
@@ -93259,7 +93259,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330181
@@ -93879,7 +93879,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33018
@@ -94497,7 +94497,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33018
@@ -95113,7 +95113,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33018
@@ -95727,7 +95727,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330167
@@ -96339,7 +96339,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 112
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330155
@@ -96949,7 +96949,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 128
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330171
@@ -97557,7 +97557,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 43
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330171
@@ -98163,7 +98163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330171
@@ -98767,7 +98767,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330163
@@ -99369,7 +99369,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 114
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330171
@@ -99969,7 +99969,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 63
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330179
@@ -100567,7 +100567,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 66
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330179
@@ -101163,7 +101163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33018
@@ -101757,7 +101757,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33018
@@ -102349,7 +102349,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330181
@@ -102939,7 +102939,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330181
@@ -103527,7 +103527,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330173
@@ -104113,7 +104113,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 102
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330163
@@ -104697,7 +104697,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 115
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33018
@@ -105279,7 +105279,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 21
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330177
@@ -105859,7 +105859,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 94
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330174
@@ -106437,7 +106437,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 94
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33017
@@ -107013,7 +107013,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330158
@@ -107587,7 +107587,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 137
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330175
@@ -108159,7 +108159,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 61
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330177
@@ -108729,7 +108729,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330178
@@ -109297,7 +109297,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33018
@@ -109863,7 +109863,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330177
@@ -110427,7 +110427,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 94
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330173
@@ -110989,7 +110989,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 95
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330157
@@ -111549,7 +111549,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 104
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330142
@@ -112107,7 +112107,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 103
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330126
@@ -112663,7 +112663,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 104
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330108
@@ -113217,7 +113217,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 127
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330119
@@ -113769,7 +113769,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 49
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330113
@@ -114319,7 +114319,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 94
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330105
@@ -114867,7 +114867,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 95
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330094
@@ -115413,7 +115413,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 139
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330108
@@ -115957,7 +115957,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 63
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330103
@@ -116499,7 +116499,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330098
@@ -117039,7 +117039,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330093
@@ -117577,7 +117577,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330088
@@ -118113,7 +118113,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330083
@@ -118647,7 +118647,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330078
@@ -119179,7 +119179,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330074
@@ -119709,7 +119709,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330069
@@ -120237,7 +120237,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330064
@@ -120763,7 +120763,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330059
@@ -121287,7 +121287,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 93
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330055
@@ -121809,7 +121809,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 94
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.33005
@@ -122329,7 +122329,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 95
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330035
@@ -122847,7 +122847,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 100
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330019
@@ -123363,7 +123363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 109
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.330002
@@ -123877,7 +123877,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 110
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329965
@@ -124389,7 +124389,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 115
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329928
@@ -124899,7 +124899,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 115
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329909
@@ -125407,7 +125407,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 109
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329889
@@ -125913,7 +125913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 110
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329868
@@ -126417,7 +126417,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 106
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329847
@@ -126919,7 +126919,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 105
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329825
@@ -127419,7 +127419,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 106
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329804
@@ -127917,7 +127917,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 105
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329783
@@ -128413,7 +128413,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 106
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329759
@@ -128907,7 +128907,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 122
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329728
@@ -129399,7 +129399,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 160
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329639
@@ -129889,7 +129889,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32955
@@ -130377,7 +130377,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329461
@@ -130863,7 +130863,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329371
@@ -131347,7 +131347,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329282
@@ -131829,7 +131829,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329193
@@ -132309,7 +132309,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329104
@@ -132787,7 +132787,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.329015
@@ -133263,7 +133263,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328926
@@ -133737,7 +133737,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328837
@@ -134209,7 +134209,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328747
@@ -134679,7 +134679,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328658
@@ -135147,7 +135147,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328569
@@ -135613,7 +135613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32848
@@ -136077,7 +136077,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328391
@@ -136539,7 +136539,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328302
@@ -136999,7 +136999,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328213
@@ -137457,7 +137457,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328123
@@ -137913,7 +137913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.328034
@@ -138367,7 +138367,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327945
@@ -138819,7 +138819,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327856
@@ -139269,7 +139269,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327815
@@ -139717,7 +139717,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 161
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327768
@@ -140163,7 +140163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327681
@@ -140607,7 +140607,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327594
@@ -141049,7 +141049,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327507
@@ -141489,7 +141489,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32742
@@ -141927,7 +141927,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327333
@@ -142363,7 +142363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327246
@@ -142797,7 +142797,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327158
@@ -143229,7 +143229,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.327071
@@ -143659,7 +143659,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326984
@@ -144087,7 +144087,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326897
@@ -144513,7 +144513,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32681
@@ -144937,7 +144937,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326723
@@ -145359,7 +145359,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326656
@@ -145779,7 +145779,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326589
@@ -146197,7 +146197,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326521
@@ -146613,7 +146613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326453
@@ -147027,7 +147027,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32637
@@ -147439,7 +147439,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326286
@@ -147849,7 +147849,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326203
@@ -148257,7 +148257,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32612
@@ -148663,7 +148663,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.326037
@@ -149067,7 +149067,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325954
@@ -149469,7 +149469,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32587
@@ -149869,7 +149869,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325787
@@ -150267,7 +150267,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325702
@@ -150663,7 +150663,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325617
@@ -151057,7 +151057,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325532
@@ -151449,7 +151449,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325448
@@ -151839,7 +151839,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325363
@@ -152227,7 +152227,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325278
@@ -152613,7 +152613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325193
@@ -152997,7 +152997,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325108
@@ -153379,7 +153379,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.325023
@@ -153759,7 +153759,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324938
@@ -154137,7 +154137,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324854
@@ -154513,7 +154513,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324769
@@ -154887,7 +154887,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324684
@@ -155259,7 +155259,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324599
@@ -155629,7 +155629,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324561
@@ -155997,7 +155997,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 211
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32455
@@ -156363,7 +156363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 139
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324469
@@ -156727,7 +156727,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 175
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32439
@@ -157089,7 +157089,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 177
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324375
@@ -157449,7 +157449,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 100
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324361
@@ -157807,7 +157807,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324286
@@ -158163,7 +158163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324212
@@ -158517,7 +158517,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324137
@@ -158869,7 +158869,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.324075
@@ -159219,7 +159219,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323987
@@ -159567,7 +159567,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323899
@@ -159913,7 +159913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323812
@@ -160257,7 +160257,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323724
@@ -160599,7 +160599,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323636
@@ -160939,7 +160939,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323548
@@ -161277,7 +161277,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323505
@@ -161613,7 +161613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323434
@@ -161947,7 +161947,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323362
@@ -162279,7 +162279,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323291
@@ -162609,7 +162609,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323219
@@ -162937,7 +162937,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323153
@@ -163263,7 +163263,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323086
@@ -163587,7 +163587,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -163909,7 +163909,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -164229,7 +164229,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -164547,7 +164547,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -164863,7 +164863,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -165177,7 +165177,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -165489,7 +165489,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -165799,7 +165799,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -166107,7 +166107,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -166413,7 +166413,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -166717,7 +166717,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -167019,7 +167019,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -167319,7 +167319,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -167617,7 +167617,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -167913,7 +167913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -168207,7 +168207,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -168499,7 +168499,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -168789,7 +168789,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -169077,7 +169077,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -169363,7 +169363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -169647,7 +169647,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -169929,7 +169929,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -170209,7 +170209,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -170487,7 +170487,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -170763,7 +170763,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -171037,7 +171037,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323018
@@ -171309,7 +171309,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323019
@@ -171579,7 +171579,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -171847,7 +171847,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32302
@@ -172113,7 +172113,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323021
@@ -172377,7 +172377,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323022
@@ -172639,7 +172639,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323023
@@ -172899,7 +172899,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323024
@@ -173157,7 +173157,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323025
@@ -173413,7 +173413,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323026
@@ -173667,7 +173667,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323026
@@ -173919,7 +173919,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323027
@@ -174169,7 +174169,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323027
@@ -174417,7 +174417,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323028
@@ -174663,7 +174663,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323028
@@ -174907,7 +174907,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323029
@@ -175149,7 +175149,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323029
@@ -175389,7 +175389,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32303
@@ -175627,7 +175627,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323031
@@ -175863,7 +175863,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323031
@@ -176097,7 +176097,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323032
@@ -176329,7 +176329,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323032
@@ -176559,7 +176559,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323033
@@ -176787,7 +176787,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323033
@@ -177013,7 +177013,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323034
@@ -177237,7 +177237,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323035
@@ -177459,7 +177459,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323035
@@ -177679,7 +177679,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323036
@@ -177897,7 +177897,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -178113,7 +178113,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -178327,7 +178327,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -178539,7 +178539,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -178749,7 +178749,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -178957,7 +178957,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -179163,7 +179163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -179367,7 +179367,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -179569,7 +179569,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -179769,7 +179769,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -179967,7 +179967,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323038
@@ -180163,7 +180163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323038
@@ -180357,7 +180357,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323038
@@ -180549,7 +180549,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323038
@@ -180739,7 +180739,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323038
@@ -180927,7 +180927,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -181113,7 +181113,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -181297,7 +181297,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -181479,7 +181479,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -181659,7 +181659,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323036
@@ -181837,7 +181837,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323036
@@ -182013,7 +182013,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323036
@@ -182187,7 +182187,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323036
@@ -182359,7 +182359,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323036
@@ -182529,7 +182529,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -182697,7 +182697,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -182863,7 +182863,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -183027,7 +183027,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323037
@@ -183189,7 +183189,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323038
@@ -183349,7 +183349,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323038
@@ -183507,7 +183507,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323039
@@ -183663,7 +183663,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32304
@@ -183817,7 +183817,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323041
@@ -183969,7 +183969,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323041
@@ -184119,7 +184119,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323042
@@ -184267,7 +184267,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323042
@@ -184413,7 +184413,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323042
@@ -184557,7 +184557,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323043
@@ -184699,7 +184699,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 89
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323043
@@ -184839,7 +184839,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323043
@@ -184977,7 +184977,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323031
@@ -185113,7 +185113,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 106
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.323021
@@ -185247,7 +185247,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 115
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322977
@@ -185379,7 +185379,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 138
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322942
@@ -185509,7 +185509,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 138
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322906
@@ -185637,7 +185637,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 139
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32286
@@ -185763,7 +185763,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322813
@@ -185887,7 +185887,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322803
@@ -186009,7 +186009,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322782
@@ -186129,7 +186129,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322708
@@ -186247,7 +186247,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 177
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322633
@@ -186363,7 +186363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322563
@@ -186477,7 +186477,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322493
@@ -186589,7 +186589,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322404
@@ -186699,7 +186699,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322341
@@ -186807,7 +186807,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322267
@@ -186913,7 +186913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322192
@@ -187017,7 +187017,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.322111
@@ -187119,7 +187119,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32204
@@ -187219,7 +187219,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321968
@@ -187317,7 +187317,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321905
@@ -187413,7 +187413,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321842
@@ -187507,7 +187507,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321765
@@ -187599,7 +187599,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321688
@@ -187689,7 +187689,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 181
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321611
@@ -187777,7 +187777,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321529
@@ -187863,7 +187863,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321447
@@ -187947,7 +187947,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321365
@@ -188029,7 +188029,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321301
@@ -188109,7 +188109,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321238
@@ -188187,7 +188187,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321174
@@ -188263,7 +188263,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 180
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32114
@@ -188337,7 +188337,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 128
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321097
@@ -188409,7 +188409,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.321053
@@ -188479,7 +188479,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320979
@@ -188547,7 +188547,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320896
@@ -188613,7 +188613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 182
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320812
@@ -188677,7 +188677,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 182
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320728
@@ -188739,7 +188739,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 198
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.32067
@@ -188799,7 +188799,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320612
@@ -188857,7 +188857,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320532
@@ -188913,7 +188913,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320453
@@ -188967,7 +188967,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320373
@@ -189019,7 +189019,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320294
@@ -189069,7 +189069,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320214
@@ -189117,7 +189117,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320135
@@ -189163,7 +189163,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.320055
@@ -189207,7 +189207,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319999
@@ -189249,7 +189249,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 178
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319942
@@ -189289,7 +189289,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319942
@@ -189327,7 +189327,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319941
@@ -189363,7 +189363,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 91
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319941
@@ -189397,7 +189397,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 90
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319867
@@ -189429,7 +189429,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319792
@@ -189459,7 +189459,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319708
@@ -189487,7 +189487,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319623
@@ -189513,7 +189513,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319539
@@ -189537,7 +189537,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319454
@@ -189559,7 +189559,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.31937
@@ -189579,7 +189579,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319285
@@ -189597,7 +189597,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319223
@@ -189613,7 +189613,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.319162
@@ -189627,7 +189627,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 37.3191
@@ -189639,6 +189639,6 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 179
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations: []

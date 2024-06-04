@@ -6,12 +6,12 @@ Ferrostar is a FOSS navigation SDK built from the ground up for the future.
 
 ## Current status
 
-The project is under active development, but rapidly approaching beta.
-The core is quite functional.
-iOS is in a fairly solid beta state, and one of the developers is actively using it for cycling navigation.
-Android sholud be beta quality soon
-The main areas where Android lags is in camera polish
-and hooking up live location services in a Google-independent manner.
+The project is under active development, but rapidly approaching production usefulness.
+The core is functional (pun intended for you FP lovers)
+and complete enough to handle most use cases.
+One of the developers is actively using Ferrostar for cycling navigation on iOS.
+Android is slightly less polished on the UI side but is otherwise feature parity.
+See the issue tracker and guide for more details.
 
 Here's a quick breakdown of support by platform.
 
@@ -20,7 +20,7 @@ Here's a quick breakdown of support by platform.
 | Core library building | ✅ | ✅ |
 | High-level core bindings | ✅ | ✅ |
 | Simulated location provider | ✅ | ✅ |
-| Live location provider | ✅ | ❌ |
+| Live location provider | ✅ | ✅ |
 | Composable UI - banners | ✅ | ✅ |
 | Composable UI - MapLibre integration | ✅ | 👨‍💻 |
 | Voice guidance (platform-native TTS) | ✅ | ✅ |
@@ -35,7 +35,6 @@ The core devs are active there and we're happy to answer questions / help you ge
 ![A screenshot of the current status](screenshot.png)
 
 ## Getting Started
-
 
 ### As a User
 

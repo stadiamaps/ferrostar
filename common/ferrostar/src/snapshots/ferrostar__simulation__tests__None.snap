@@ -9,7 +9,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 45
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 0.0001
@@ -25,7 +25,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 45
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 0.0002
@@ -39,7 +39,7 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 45
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations:
     - lat: 0.0003
@@ -51,6 +51,6 @@ expression: states
     horizontal_accuracy: 0
     course_over_ground:
       degrees: 45
-      accuracy: 0
+      accuracy: ~
     speed: ~
   remaining_locations: []

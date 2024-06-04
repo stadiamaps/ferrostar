@@ -33,14 +33,14 @@ extension CLLocation {
     convenience init(userLocation: UserLocation) {
         let invalid: Double = -1.0
 
-        let courseDegrees: CLLocationDirection
-        let courseAccuracy: CLLocationDirectionAccuracy
-        if let course = userLocation.courseOverGround {
-            courseDegrees = CLLocationDirection(course.degrees)
-            courseAccuracy = CLLocationDirectionAccuracy(course.accuracy)
+        let courseDegrees = if let degrees = userLocation.courseOverGround?.degrees { CLLocationDirection(degrees)
         } else {
-            courseDegrees = invalid
-            courseAccuracy = invalid
+            invalid
+        }
+        let courseAccuracy = if let accuracy = userLocation.courseOverGround?.accuracy {
+            CLLocationDirectionAccuracy(accuracy)
+        } else {
+            invalid
         }
 
         self.init(
@@ -169,27 +169,21 @@ public extension UserLocation {
     }
 
     var clLocation: CLLocation {
-        let courseDegrees: CLLocationDirection
-        let courseAccuracy: CLLocationDirectionAccuracy
-
-        if let course = courseOverGround {
-            courseDegrees = CLLocationDirection(course.degrees)
-            courseAccuracy = CLLocationDirectionAccuracy(course.accuracy)
+        let courseDegrees: CLLocationDirection = if let degrees = courseOverGround?
+            .degrees
+        { CLLocationDirection(degrees)
         } else {
-            courseDegrees = -1
-            courseAccuracy = -1
+            -1
         }
 
-        let clSpeed: CLLocationDirection
-        let clSpeedAccuracy: CLLocationDirectionAccuracy
-
-        if let speed {
-            clSpeed = speed.value
-            clSpeedAccuracy = speed.accuracy
+        let courseAccuracy: CLLocationDirectionAccuracy = if let accuracy = courseOverGround?.accuracy {
+            CLLocationDirectionAccuracy(accuracy)
         } else {
-            clSpeed = -1
-            clSpeedAccuracy = -1
+            -1
         }
+
+        let clSpeed: CLLocationDirection = speed?.value ?? -1
+        let clSpeedAccuracy: CLLocationDirectionAccuracy = speed?.accuracy ?? -1
 
         return CLLocation(
             coordinate: coordinates.clLocationCoordinate2D,
