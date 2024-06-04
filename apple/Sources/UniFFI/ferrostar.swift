@@ -1382,7 +1382,7 @@ public struct CourseOverGround {
     /**
      * The accuracy of the course value, measured in degrees.
      */
-    public var accuracy: UInt16
+    public var accuracy: UInt16?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -1395,7 +1395,7 @@ public struct CourseOverGround {
         /**
             * The accuracy of the course value, measured in degrees.
             */
-        accuracy: UInt16
+        accuracy: UInt16?
     ) {
         self.degrees = degrees
         self.accuracy = accuracy
@@ -1423,13 +1423,13 @@ public struct FfiConverterTypeCourseOverGround: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CourseOverGround {
         try CourseOverGround(
             degrees: FfiConverterUInt16.read(from: &buf),
-            accuracy: FfiConverterUInt16.read(from: &buf)
+            accuracy: FfiConverterOptionUInt16.read(from: &buf)
         )
     }
 
     public static func write(_ value: CourseOverGround, into buf: inout [UInt8]) {
         FfiConverterUInt16.write(value.degrees, into: &buf)
-        FfiConverterUInt16.write(value.accuracy, into: &buf)
+        FfiConverterOptionUInt16.write(value.accuracy, into: &buf)
     }
 }
 
@@ -1908,7 +1908,7 @@ public struct Speed {
     /**
      * The accuracy of the speed value, measured in meters per second.
      */
-    public var accuracy: Double
+    public var accuracy: Double?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -1920,7 +1920,7 @@ public struct Speed {
         /**
             * The accuracy of the speed value, measured in meters per second.
             */
-        accuracy: Double
+        accuracy: Double?
     ) {
         self.value = value
         self.accuracy = accuracy
@@ -1948,13 +1948,13 @@ public struct FfiConverterTypeSpeed: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Speed {
         try Speed(
             value: FfiConverterDouble.read(from: &buf),
-            accuracy: FfiConverterDouble.read(from: &buf)
+            accuracy: FfiConverterOptionDouble.read(from: &buf)
         )
     }
 
     public static func write(_ value: Speed, into buf: inout [UInt8]) {
         FfiConverterDouble.write(value.value, into: &buf)
-        FfiConverterDouble.write(value.accuracy, into: &buf)
+        FfiConverterOptionDouble.write(value.accuracy, into: &buf)
     }
 }
 

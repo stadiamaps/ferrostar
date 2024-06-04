@@ -5,7 +5,10 @@ use crate::models::{
     GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
     VisualInstructionContent, Waypoint, WaypointKind,
 };
-use crate::routing_adapters::{osrm::models::RouteResponse, Route, RoutingResponseParseError};
+use crate::routing_adapters::{
+    osrm::models::{RouteResponse, RouteStep as OsrmRouteStep},
+    Route, RoutingResponseParseError,
+};
 use geo::BoundingRect;
 use polyline::decode_polyline;
 use std::collections::HashSet;
@@ -96,7 +99,7 @@ impl RouteResponseParser for OsrmResponseParser {
 
 impl RouteStep {
     fn from_osrm(
-        value: &models::RouteStep,
+        value: &OsrmRouteStep,
         polyline_precision: u32,
     ) -> Result<Self, RoutingResponseParseError> {
         let linestring = decode_polyline(&value.geometry, polyline_precision)
