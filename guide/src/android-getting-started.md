@@ -178,6 +178,32 @@ and (if simulating a route) set the location manually or enter a simulated route
 Similar to the Android location APIs you may already know,
 you can add or remove listeners which will receive updates.
 
+#### `AndroidSystemLocationProvider`
+
+The `AndroidSystemLocationProvider` uses the location provider
+from the Android open-source project.
+This is not as good as the proprietary Google fused location client,
+but it is the most compatible option
+as it will run even on “un-Googled” phones
+and can be used in apps distributed on F-Droid.
+
+Initializing this provider requires an Android `Context`,
+so you probably need to declare it as a `lateinit var` instance variable.
+
+```kotlin
+private lateinit var locationProvider: AndroidSystemLocationProvider
+```
+
+You can initialize it like so.
+In an `Activity`, the context is simply `this`.
+In other cases, get a context using an appropriate method.
+
+```kotlin
+locationProvider = AndroidSystemLocationProvider(context = this)
+```
+
+#### TODO: Google Play Fused Location Client
+
 #### `SimulatedLocationProvider`
 
 The `SimulatedLocationProvider` allows for simulating location within Ferrostar
@@ -211,8 +237,6 @@ locationProvider.setSimulatedRoute(route)
 You don’t need to do anything else after setting a simulated route;
 `FerrostarCore` will automatically add itself as a listener,
 which will trigger updates.
-
-#### TODO: Google Play Services-backed provider
 
 ## Configure an HTTP client
 
@@ -263,7 +287,7 @@ TODO documentation:
 
 * Android Manifest
 * Set the language
-* Additional config (you have full control)
+* Additional config (you have full control; link to Android docs)
 
 ## Getting a route
 
