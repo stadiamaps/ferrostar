@@ -1,6 +1,6 @@
 # Ferrostar
 
-Ferrostar is a modern SDK for building turn-by-turn navigation applications.
+[Ferrostar](https://github.com/stadiamaps/ferrostar) is a modern SDK for building turn-by-turn navigation applications.
 
 ## Ferrostar is...
 

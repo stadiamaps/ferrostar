@@ -29,12 +29,12 @@ This is a pretty standard adoption rate for iOS.
 
 ## Android
 
-Android *developers* should always build using the latest publicly available Android Studio version.
+Android *developers* should always build using the latest stable Android Studio version.
 
 However, Android *end users* are much slower to get new OS major versions
 for many reasons.
-We currently support **API level 25** and higher (with some caveats).
-At the time of this writing, it covers 96% of Android users.
+We currently support **API level 25** and higher.
+At the time of this writing, the support target covers 96% of Android users.
 We will use publicly available data on API levels and developer feedback
 to set API level requirements going forward.
 
@@ -43,8 +43,8 @@ to set API level requirements going forward.
 API levels lower than 26 do not include support for several Java 8 APIs.
 Crucially, the `Instant` API, which is essential for the library, is not present.
 We work around this using [Java 8+ API desugaring support](https://developer.android.com/studio/write/java8-support).
-As we are able to raise our support target, we will be able to remove this,
-but for the interim, we need the compatibility shims / backports.
+As we are able to raise our support target, we will remove the desugaring,
+but for now, we need the compatibility shims / backports.
 This requirement probably extends to your apps as well if you target API 25.
 
 Additionally, when running on Android API lower than 30,
