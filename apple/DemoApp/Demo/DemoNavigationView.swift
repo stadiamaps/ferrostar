@@ -161,7 +161,7 @@ struct DemoNavigationView: View {
                     }
                 }
                 .padding()
-                .padding(.bottom, 32)
+                .padding(.bottom, 72)
                 .task {
                     await getRoutes()
                 }

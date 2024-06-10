@@ -1,8 +1,12 @@
 import Foundation
 import MapKit
 
+/// A standard collection of arrival view formatters.
 public class ArrivalFormatters {
     
+    /// An MKDistance formatter with abbreviated units for the arrival view.
+    ///
+    /// E.g. 120 mi
     public static var distanceFormatter: MKDistanceFormatter {
         let formatter = MKDistanceFormatter()
         formatter.unitStyle = .abbreviated
@@ -10,6 +14,7 @@ public class ArrivalFormatters {
     }
     
     /// A standard formatter for estimated time of arrival.
+    ///
     /// E.g. `10:21 AM`
     public static var estimatedArrivalFormat: Date.FormatStyle {
         Date.FormatStyle()
@@ -17,7 +22,7 @@ public class ArrivalFormatters {
             .minute(.twoDigits)
     }
     
-    /// <#Description#>
+    /// The formatter for duration on the arrival view.
     public static var durationFormat: DateComponentsFormatter {
         let formatter = DateComponentsFormatter()
         formatter.allowedUnits = [.hour, .minute]

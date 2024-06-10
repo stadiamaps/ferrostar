@@ -1,7 +1,11 @@
 import SwiftUI
 
 public enum ArrivalViewStyle {
+    
+    ///
     case full
+    
+    ///
     case minimized
 }
 

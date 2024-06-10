@@ -34,6 +34,7 @@ public struct ArrivalView: View {
                 Text(estimatedArrivalFormatter.format(progress.estimatedArrival()))
                     .font(theme.measurementFont)
                     .foregroundStyle(theme.measurementColor)
+                    .multilineTextAlignment(.center)
                 
                 if theme.style == .full {
                     Text("Arrival")
@@ -48,6 +49,7 @@ public struct ArrivalView: View {
                         .font(theme.measurementFont)
                         .foregroundStyle(theme.measurementColor)
                         .frame(maxWidth: .infinity)
+                        .multilineTextAlignment(.center)
                     
                     if theme.style == .full {
                         Text("Duration")
@@ -61,6 +63,7 @@ public struct ArrivalView: View {
                 Text(distanceFormatter.string(for: progress.distanceRemaining) ?? "")
                     .font(theme.measurementFont)
                     .foregroundStyle(theme.measurementColor)
+                    .multilineTextAlignment(.center)
                 
                 if theme.style == .full {
                     Text("Distance")

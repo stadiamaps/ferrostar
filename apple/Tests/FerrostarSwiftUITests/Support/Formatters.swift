@@ -16,3 +16,10 @@ var germanDistanceFormatter: Formatter = {
 
     return formatter
 }()
+
+var longDurationFormatter: DateComponentsFormatter = {
+    let formatter = DateComponentsFormatter()
+    formatter.unitsStyle = .full
+    
+    return formatter
+}()
