@@ -121,11 +121,11 @@ pub struct CourseOverGround {
     /// true north (N = 0, E = 90, S = 180, W = 270).
     pub degrees: u16,
     /// The accuracy of the course value, measured in degrees.
-    pub accuracy: u16,
+    pub accuracy: Option<u16>,
 }
 
 impl CourseOverGround {
-    pub fn new(degrees: u16, accuracy: u16) -> Self {
+    pub fn new(degrees: u16, accuracy: Option<u16>) -> Self {
         Self { degrees, accuracy }
     }
 }
@@ -137,7 +137,7 @@ pub struct Speed {
     /// The user's speed in meters per second.
     pub value: f64,
     /// The accuracy of the speed value, measured in meters per second.
-    pub accuracy: f64,
+    pub accuracy: Option<f64>,
 }
 
 /// The location of the user that is navigating.

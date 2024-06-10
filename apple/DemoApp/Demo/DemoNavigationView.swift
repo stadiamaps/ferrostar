@@ -32,6 +32,7 @@ struct DemoNavigationView: View {
     }
 
     @State private var camera: MapViewCamera = .center(initialLocation.coordinate, zoom: 14)
+    @State private var snappedCamera = true
 
     init() {
         let simulated = SimulatedLocationProvider(location: initialLocation)
@@ -67,7 +68,7 @@ struct DemoNavigationView: View {
                 navigationState: ferrostarCore.state,
                 camera: $camera,
                 snappedZoom: .constant(18),
-                useSnappedCamera: .constant(true)
+                useSnappedCamera: $snappedCamera
             ) {
                 let source = ShapeSource(identifier: "userLocation") {
                     // Demonstrate how to add a dynamic overlay;

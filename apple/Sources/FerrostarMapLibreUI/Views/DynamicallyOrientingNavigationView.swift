@@ -18,7 +18,6 @@ public struct DynamicallyOrientingNavigationView: View {
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
-    @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
     @Binding var camera: MapViewCamera
     @Binding var snappedZoom: Double
     @Binding var useSnappedCamera: Bool

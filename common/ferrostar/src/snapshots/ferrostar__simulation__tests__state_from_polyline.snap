@@ -9,7 +9,7 @@ current_location:
   horizontal_accuracy: 0
   course_over_ground:
     degrees: 0
-    accuracy: 0
+    accuracy: ~
   speed: ~
 remaining_locations:
   - lat: 60.534782

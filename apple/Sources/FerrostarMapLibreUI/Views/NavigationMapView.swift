@@ -93,17 +93,7 @@ public struct NavigationMapView: View {
                                 identifier: "remaining-route-polyline")
             }
 
-            if let snappedLocation = navigationState?.snappedLocation {
-                locationManager.lastLocation = snappedLocation.clLocation
-
-                // TODO: Be less forceful about this.
-                DispatchQueue.main.async {
-                    if useSnappedCamera {
-                        camera = .trackUserLocationWithCourse(zoom: snappedZoom,
-                                                              pitch: .fixed(45))
-                    }
-                }
-            }
+            updateCameraIfNeeded()
 
             // Overlay any additional user layers.
             userLayers
@@ -118,8 +108,8 @@ public struct NavigationMapView: View {
         .gesture(
             DragGesture()
                 .onChanged { gesture in
-                    guard gesture.velocity.width > breakwayVelocity
-                        || gesture.velocity.height > breakwayVelocity
+                    guard abs(gesture.velocity.width) > breakwayVelocity
+                        || abs(gesture.velocity.height) > breakwayVelocity
                     else {
                         return
                     }
@@ -131,6 +121,25 @@ public struct NavigationMapView: View {
                 }
         )
         .ignoresSafeArea(.all)
+    }
+
+    private func updateCameraIfNeeded() {
+        if let snappedLocation = navigationState?.snappedLocation,
+           // There is no reason to push an update if the coordinate and heading are the same.
+           // That's all that gets displayed, so it's all that MapLibre should care about.
+           locationManager.lastLocation.coordinate != snappedLocation.coordinates
+           .clLocationCoordinate2D || locationManager.lastLocation.course != snappedLocation.clLocation.course
+        {
+            locationManager.lastLocation = snappedLocation.clLocation
+
+            // TODO: Be less forceful about this.
+            DispatchQueue.main.async {
+                if useSnappedCamera {
+                    camera = .trackUserLocationWithCourse(zoom: snappedZoom,
+                                                          pitch: .fixed(45))
+                }
+            }
+        }
     }
 }
 

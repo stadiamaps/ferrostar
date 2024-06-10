@@ -40,7 +40,7 @@ pub fn location_simulation_from_coordinates(
                 horizontal_accuracy: 0.0,
                 course_over_ground: Some(CourseOverGround {
                     degrees: bearing.round() as u16,
-                    accuracy: 0,
+                    accuracy: None,
                 }),
                 timestamp: SystemTime::now(),
                 speed: None,
@@ -142,7 +142,7 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
             horizontal_accuracy: 0.0,
             course_over_ground: Some(CourseOverGround {
                 degrees: bearing.round() as u16,
-                accuracy: 0,
+                accuracy: None,
             }),
             timestamp: SystemTime::now(),
             speed: None,
