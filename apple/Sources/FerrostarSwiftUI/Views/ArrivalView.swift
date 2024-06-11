@@ -8,7 +8,7 @@ public struct ArrivalView: View {
     let distanceFormatter: Formatter
     let estimatedArrivalFormatter: Date.FormatStyle
     let durationFromatter: DateComponentsFormatter
-    let theme: ArrivalViewTheme
+    let theme: any ArrivalViewTheme
     let onExpand: () -> Void
 
     public init(
@@ -16,7 +16,7 @@ public struct ArrivalView: View {
         distanceFormatter: Formatter = ArrivalFormatters.distanceFormatter,
         estimatedArrivalFormatter: Date.FormatStyle = ArrivalFormatters.estimatedArrivalFormat,
         durationFormatter: DateComponentsFormatter = ArrivalFormatters.durationFormat,
-        theme: ArrivalViewTheme = DefaultArrivalViewTheme(),
+        theme: any ArrivalViewTheme = DefaultArrivalViewTheme(),
         onExpand: @escaping () -> Void = {}
     ) {
         self.progress = progress
@@ -80,7 +80,7 @@ public struct ArrivalView: View {
 }
 
 #Preview {
-    var minimizedTheme: ArrivalViewTheme {
+    var minimizedTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
         theme.style = .minimized
         return theme

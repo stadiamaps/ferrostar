@@ -1,14 +1,14 @@
 import SwiftUI
 
-public enum ArrivalViewStyle {
-    ///
+public enum ArrivalViewStyle: Equatable {
+    /// The full size arrival view with captions.
     case full
 
-    ///
+    /// A reduced size arrival view without captions.
     case minimized
 }
 
-public protocol ArrivalViewTheme {
+public protocol ArrivalViewTheme: Equatable {
     /// The style of the arrival view controls the general theme.
     var style: ArrivalViewStyle { get }
 

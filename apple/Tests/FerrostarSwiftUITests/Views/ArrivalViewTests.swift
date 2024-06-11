@@ -3,7 +3,7 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class ArrivalViewTests: XCTestCase {
-    var minimizedTheme: ArrivalViewTheme {
+    var minimizedTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
         theme.style = .minimized
         return theme
@@ -18,6 +18,7 @@ final class ArrivalViewTests: XCTestCase {
                     durationRemaining: 150
                 )
             )
+            .frame(width: 400, height: 128)
         }
 
         assertView {
@@ -28,6 +29,8 @@ final class ArrivalViewTests: XCTestCase {
                     durationRemaining: 1234
                 )
             )
+            .padding()
+            .frame(width: 400, height: 128)
         }
 
         assertView {
@@ -38,6 +41,8 @@ final class ArrivalViewTests: XCTestCase {
                     durationRemaining: 520_800
                 )
             )
+            .padding()
+            .frame(width: 400, height: 128)
         }
     }
 
@@ -51,6 +56,8 @@ final class ArrivalViewTests: XCTestCase {
                 ),
                 theme: minimizedTheme
             )
+            .padding()
+            .frame(width: 400, height: 128)
         }
     }
 
@@ -66,6 +73,8 @@ final class ArrivalViewTests: XCTestCase {
                 estimatedArrivalFormatter: .dateTime,
                 durationFormatter: longDurationFormatter
             )
+            .padding()
+            .frame(width: 400, height: 128)
         }
     }
 }
