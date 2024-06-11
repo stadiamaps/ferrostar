@@ -36,7 +36,5 @@ public struct DefaultArrivalViewTheme: ArrivalViewTheme {
     public var secondaryFont: Font = .subheadline
     public var backgroundColor: Color = .init(.systemBackground)
 
-    public init() {
-        //
-    }
+    public init() {}
 }

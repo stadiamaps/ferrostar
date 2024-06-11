@@ -83,4 +83,20 @@ final class ArrivalViewTests: XCTestCase {
             )
         }
     }
+    
+    func testArrivalViewFormatters_de_DE() {
+        assertView {
+            ArrivalView(
+                progress: TripProgress(
+                    distanceToNextManeuver: 5420,
+                    distanceRemaining: 1_420_000,
+                    durationRemaining: 520_800
+                ),
+                distanceFormatter: germanDistanceFormatter,
+                estimatedArrivalFormatter: germanArrivalFormatter,
+                theme: minimizedTheme,
+                fromDate: referenceDate
+            )
+        }
+    }
 }

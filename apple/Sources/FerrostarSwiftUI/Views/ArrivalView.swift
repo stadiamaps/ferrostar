@@ -7,7 +7,7 @@ public struct ArrivalView: View {
     let progress: TripProgress
     let distanceFormatter: Formatter
     let estimatedArrivalFormatter: Date.FormatStyle
-    let durationFromatter: DateComponentsFormatter
+    let durationFormatter: DateComponentsFormatter
     let theme: any ArrivalViewTheme
     let fromDate: Date
 
@@ -22,16 +22,16 @@ public struct ArrivalView: View {
     ///   - fromDate: The date time to estimate arrival from, primarily for testing (default is now).
     public init(
         progress: TripProgress,
-        distanceFormatter: Formatter = ArrivalFormatters.distanceFormatter,
-        estimatedArrivalFormatter: Date.FormatStyle = ArrivalFormatters.estimatedArrivalFormat,
-        durationFormatter: DateComponentsFormatter = ArrivalFormatters.durationFormat,
+        distanceFormatter: Formatter = DefaultFormatters.distanceFormatter,
+        estimatedArrivalFormatter: Date.FormatStyle = DefaultFormatters.estimatedArrivalFormat,
+        durationFormatter: DateComponentsFormatter = DefaultFormatters.durationFormat,
         theme: any ArrivalViewTheme = DefaultArrivalViewTheme(),
         fromDate: Date = Date()
     ) {
         self.progress = progress
         self.distanceFormatter = distanceFormatter
         self.estimatedArrivalFormatter = estimatedArrivalFormatter
-        durationFromatter = durationFormatter
+        self.durationFormatter = durationFormatter
         self.theme = theme
         self.fromDate = fromDate
     }
@@ -51,7 +51,7 @@ public struct ArrivalView: View {
                 }
             }
 
-            if let formattedDuration = durationFromatter.string(from: progress.durationRemaining) {
+            if let formattedDuration = durationFormatter.string(from: progress.durationRemaining) {
                 VStack {
                     Text(formattedDuration)
                         .font(theme.measurementFont)
@@ -111,14 +111,15 @@ public struct ArrivalView: View {
                 durationRemaining: 1234
             )
         )
-
+        
         ArrivalView(
             progress: TripProgress(
-                distanceToNextManeuver: 5420,
-                distanceRemaining: 1_420_000,
-                durationRemaining: 520_800
+                distanceToNextManeuver: 123,
+                distanceRemaining: 14500,
+                durationRemaining: 1234
             )
         )
+        .environment(\.locale, .init(identifier: "de_DE"))
 
         ArrivalView(
             progress: TripProgress(
