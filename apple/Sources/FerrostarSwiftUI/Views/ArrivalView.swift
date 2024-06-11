@@ -111,7 +111,7 @@ public struct ArrivalView: View {
                 durationRemaining: 1234
             )
         )
-        
+
         ArrivalView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,

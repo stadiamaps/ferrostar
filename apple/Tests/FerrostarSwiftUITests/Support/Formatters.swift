@@ -1,6 +1,6 @@
+import FerrostarSwiftUI
 import Foundation
 import MapKit
-import FerrostarSwiftUI
 
 var americanDistanceFormatter: Formatter = {
     let formatter = MKDistanceFormatter()
@@ -21,7 +21,7 @@ var germanDistanceFormatter: Formatter = {
 var longDurationFormatter: DateComponentsFormatter = {
     let formatter = DateComponentsFormatter()
     formatter.unitsStyle = .full
-    
+
     return formatter
 }()
 

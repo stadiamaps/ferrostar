@@ -3,7 +3,6 @@ import MapKit
 
 /// A collection of arrival view formatters that work reasonably well for most applications.
 public class DefaultFormatters {
-    
     /// An MKDistance formatter with abbreviated units for the arrival view.
     ///
     /// E.g. 120 mi

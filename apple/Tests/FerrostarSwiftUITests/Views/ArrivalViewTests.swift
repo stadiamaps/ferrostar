@@ -83,7 +83,7 @@ final class ArrivalViewTests: XCTestCase {
             )
         }
     }
-    
+
     func testArrivalViewFormatters_de_DE() {
         assertView {
             ArrivalView(
