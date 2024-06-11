@@ -3,13 +3,12 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class ArrivalViewTests: XCTestCase {
-    
     var minimizedTheme: ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
         theme.style = .minimized
         return theme
     }
-    
+
     func testArrivalViewDefaultTheme() {
         assertView {
             ArrivalView(
@@ -30,38 +29,38 @@ final class ArrivalViewTests: XCTestCase {
                 )
             )
         }
-        
+
         assertView {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
-                    distanceRemaining: 1420000,
-                    durationRemaining: 520800
+                    distanceRemaining: 1_420_000,
+                    durationRemaining: 520_800
                 )
             )
         }
     }
-    
+
     func testArrivalViewCompactTheme() {
         assertView {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
-                    distanceRemaining: 1420000,
-                    durationRemaining: 520800
+                    distanceRemaining: 1_420_000,
+                    durationRemaining: 520_800
                 ),
                 theme: minimizedTheme
             )
         }
     }
-    
+
     func testArrivalViewFormatters() {
         assertView {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
-                    distanceRemaining: 1420000,
-                    durationRemaining: 520800
+                    distanceRemaining: 1_420_000,
+                    durationRemaining: 520_800
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: .dateTime,

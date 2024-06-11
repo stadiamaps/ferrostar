@@ -1,19 +1,17 @@
 import SwiftUI
 
 public enum ArrivalViewStyle {
-    
     ///
     case full
-    
+
     ///
     case minimized
 }
 
 public protocol ArrivalViewTheme {
-    
     /// The style of the arrival view controls the general theme.
     var style: ArrivalViewStyle { get }
-    
+
     /// The color for the measurement values (top row)
     var measurementColor: Color { get }
 
@@ -37,7 +35,7 @@ public struct DefaultArrivalViewTheme: ArrivalViewTheme {
     public var secondaryColor: Color = .secondary
     public var secondaryFont: Font = .subheadline
     public var backgroundColor: Color = .init(.systemBackground)
-    
+
     public init() {
         //
     }

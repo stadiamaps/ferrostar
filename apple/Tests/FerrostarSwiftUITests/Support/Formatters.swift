@@ -20,6 +20,6 @@ var germanDistanceFormatter: Formatter = {
 var longDurationFormatter: DateComponentsFormatter = {
     let formatter = DateComponentsFormatter()
     formatter.unitsStyle = .full
-    
+
     return formatter
 }()

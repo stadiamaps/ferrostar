@@ -3,7 +3,6 @@ import MapKit
 
 /// A standard collection of arrival view formatters.
 public class ArrivalFormatters {
-    
     /// An MKDistance formatter with abbreviated units for the arrival view.
     ///
     /// E.g. 120 mi
@@ -12,7 +11,7 @@ public class ArrivalFormatters {
         formatter.unitStyle = .abbreviated
         return formatter
     }
-    
+
     /// A standard formatter for estimated time of arrival.
     ///
     /// E.g. `10:21 AM`
@@ -21,7 +20,7 @@ public class ArrivalFormatters {
             .hour(.defaultDigits(amPM: .abbreviated))
             .minute(.twoDigits)
     }
-    
+
     /// The formatter for duration on the arrival view.
     public static var durationFormat: DateComponentsFormatter {
         let formatter = DateComponentsFormatter()

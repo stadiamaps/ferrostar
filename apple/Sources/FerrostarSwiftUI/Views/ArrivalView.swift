@@ -1,33 +1,32 @@
-import SwiftUI
-import MapKit
 import FerrostarCore
 import FerrostarCoreFFI
+import MapKit
+import SwiftUI
 
 public struct ArrivalView: View {
-    
     let progress: TripProgress
     let distanceFormatter: Formatter
     let estimatedArrivalFormatter: Date.FormatStyle
     let durationFromatter: DateComponentsFormatter
     let theme: ArrivalViewTheme
     let onExpand: () -> Void
-    
+
     public init(
         progress: TripProgress,
         distanceFormatter: Formatter = ArrivalFormatters.distanceFormatter,
         estimatedArrivalFormatter: Date.FormatStyle = ArrivalFormatters.estimatedArrivalFormat,
         durationFormatter: DateComponentsFormatter = ArrivalFormatters.durationFormat,
         theme: ArrivalViewTheme = DefaultArrivalViewTheme(),
-        onExpand: @escaping () -> Void = { }
+        onExpand: @escaping () -> Void = {}
     ) {
         self.progress = progress
         self.distanceFormatter = distanceFormatter
         self.estimatedArrivalFormatter = estimatedArrivalFormatter
-        self.durationFromatter = durationFormatter
+        durationFromatter = durationFormatter
         self.theme = theme
         self.onExpand = onExpand
     }
-    
+
     public var body: some View {
         HStack {
             VStack {
@@ -35,14 +34,14 @@ public struct ArrivalView: View {
                     .font(theme.measurementFont)
                     .foregroundStyle(theme.measurementColor)
                     .multilineTextAlignment(.center)
-                
+
                 if theme.style == .full {
                     Text("Arrival")
                         .font(theme.secondaryFont)
                         .foregroundStyle(theme.secondaryColor)
                 }
             }
-            
+
             if let formattedDuration = durationFromatter.string(from: progress.durationRemaining) {
                 VStack {
                     Text(formattedDuration)
@@ -50,7 +49,7 @@ public struct ArrivalView: View {
                         .foregroundStyle(theme.measurementColor)
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
-                    
+
                     if theme.style == .full {
                         Text("Duration")
                             .font(theme.secondaryFont)
@@ -58,13 +57,13 @@ public struct ArrivalView: View {
                     }
                 }
             }
-            
+
             VStack {
                 Text(distanceFormatter.string(for: progress.distanceRemaining) ?? "")
                     .font(theme.measurementFont)
                     .foregroundStyle(theme.measurementColor)
                     .multilineTextAlignment(.center)
-                
+
                 if theme.style == .full {
                     Text("Distance")
                         .font(theme.secondaryFont)
@@ -86,7 +85,7 @@ public struct ArrivalView: View {
         theme.style = .minimized
         return theme
     }
-    
+
     return VStack(spacing: 16) {
         ArrivalView(
             progress: TripProgress(
@@ -95,7 +94,7 @@ public struct ArrivalView: View {
                 durationRemaining: 150
             )
         )
-        
+
         ArrivalView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,
@@ -103,24 +102,24 @@ public struct ArrivalView: View {
                 durationRemaining: 1234
             )
         )
-        
+
         ArrivalView(
             progress: TripProgress(
                 distanceToNextManeuver: 5420,
-                distanceRemaining: 1420000,
-                durationRemaining: 520800
+                distanceRemaining: 1_420_000,
+                durationRemaining: 520_800
             )
         )
-        
+
         ArrivalView(
             progress: TripProgress(
                 distanceToNextManeuver: 5420,
-                distanceRemaining: 1420000,
-                durationRemaining: 520800
+                distanceRemaining: 1_420_000,
+                durationRemaining: 520_800
             ),
             theme: minimizedTheme
         )
-        
+
         Spacer()
     }
     .padding()
