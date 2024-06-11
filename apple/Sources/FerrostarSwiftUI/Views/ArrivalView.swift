@@ -44,7 +44,7 @@ public struct ArrivalView: View {
                     .foregroundStyle(theme.measurementColor)
                     .multilineTextAlignment(.center)
 
-                if theme.style == .full {
+                if theme.style == .informational {
                     Text("Arrival", bundle: .module)
                         .font(theme.secondaryFont)
                         .foregroundStyle(theme.secondaryColor)
@@ -59,7 +59,7 @@ public struct ArrivalView: View {
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
 
-                    if theme.style == .full {
+                    if theme.style == .informational {
                         Text("Duration", bundle: .module)
                             .font(theme.secondaryFont)
                             .foregroundStyle(theme.secondaryColor)
@@ -73,7 +73,7 @@ public struct ArrivalView: View {
                     .foregroundStyle(theme.measurementColor)
                     .multilineTextAlignment(.center)
 
-                if theme.style == .full {
+                if theme.style == .informational {
                     Text("Distance", bundle: .module)
                         .font(theme.secondaryFont)
                         .foregroundStyle(theme.secondaryColor)
@@ -89,9 +89,9 @@ public struct ArrivalView: View {
 }
 
 #Preview {
-    var minimizedTheme: any ArrivalViewTheme {
+    var informationalTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
-        theme.style = .minimized
+        theme.style = .informational
         return theme
     }
 
@@ -117,7 +117,8 @@ public struct ArrivalView: View {
                 distanceToNextManeuver: 123,
                 distanceRemaining: 14500,
                 durationRemaining: 1234
-            )
+            ),
+            theme: informationalTheme
         )
         .environment(\.locale, .init(identifier: "de_DE"))
 
@@ -127,7 +128,7 @@ public struct ArrivalView: View {
                 distanceRemaining: 1_420_000,
                 durationRemaining: 520_800
             ),
-            theme: minimizedTheme
+            theme: informationalTheme
         )
 
         Spacer()

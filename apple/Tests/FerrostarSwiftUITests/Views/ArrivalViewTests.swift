@@ -9,9 +9,9 @@ final class ArrivalViewTests: XCTestCase {
         .hour(.defaultDigits(amPM: .abbreviated))
         .minute(.twoDigits)
 
-    var minimizedTheme: any ArrivalViewTheme {
+    var informationalTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
-        theme.style = .minimized
+        theme.style = .informational
         return theme
     }
 
@@ -22,18 +22,6 @@ final class ArrivalViewTests: XCTestCase {
                     distanceToNextManeuver: 123,
                     distanceRemaining: 120,
                     durationRemaining: 150
-                ),
-                estimatedArrivalFormatter: etaFormatter,
-                fromDate: referenceDate
-            )
-        }
-
-        assertView {
-            ArrivalView(
-                progress: TripProgress(
-                    distanceToNextManeuver: 123,
-                    distanceRemaining: 14500,
-                    durationRemaining: 1234
                 ),
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate
@@ -62,7 +50,7 @@ final class ArrivalViewTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 estimatedArrivalFormatter: etaFormatter,
-                theme: minimizedTheme,
+                theme: informationalTheme,
                 fromDate: referenceDate
             )
         }
@@ -88,15 +76,30 @@ final class ArrivalViewTests: XCTestCase {
         assertView {
             ArrivalView(
                 progress: TripProgress(
+                    distanceToNextManeuver: 123,
+                    distanceRemaining: 14500,
+                    durationRemaining: 1234
+                ),
+                distanceFormatter: germanDistanceFormatter,
+                estimatedArrivalFormatter: germanArrivalFormatter,
+                fromDate: referenceDate
+            )
+            .environment(\.locale, .init(identifier: "de_DE"))
+        }
+
+        assertView {
+            ArrivalView(
+                progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
-                theme: minimizedTheme,
+                theme: informationalTheme,
                 fromDate: referenceDate
             )
+            .environment(\.locale, .init(identifier: "de_DE"))
         }
     }
 }

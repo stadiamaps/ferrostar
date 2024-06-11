@@ -1,11 +1,11 @@
 import SwiftUI
 
 public enum ArrivalViewStyle: Equatable {
-    /// The full size arrival view with captions.
-    case full
+    /// The simplified/default which only shows actual values
+    case simplified
 
-    /// A reduced size arrival view without captions.
-    case minimized
+    /// An expanded informational arrival view that labels each value.
+    case informational
 }
 
 public protocol ArrivalViewTheme: Equatable {
@@ -29,7 +29,7 @@ public protocol ArrivalViewTheme: Equatable {
 }
 
 public struct DefaultArrivalViewTheme: ArrivalViewTheme {
-    public var style: ArrivalViewStyle = .full
+    public var style: ArrivalViewStyle = .simplified
     public var measurementColor: Color = .primary
     public var measurementFont: Font = .title2.bold()
     public var secondaryColor: Color = .secondary
