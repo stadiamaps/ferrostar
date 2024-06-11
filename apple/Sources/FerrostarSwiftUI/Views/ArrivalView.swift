@@ -9,34 +9,43 @@ public struct ArrivalView: View {
     let estimatedArrivalFormatter: Date.FormatStyle
     let durationFromatter: DateComponentsFormatter
     let theme: any ArrivalViewTheme
-    let onExpand: () -> Void
-
+    let fromDate: Date
+    
+    /// Initialize the ArrivalView
+    ///
+    /// - Parameters:
+    ///   - progress: The current Trip Progress providing durations and distances.
+    ///   - distanceFormatter: The distance formatter to use when displaying the remaining trip distance.
+    ///   - estimatedArrivalFormatter: The estimated time of arrival Date-Time formatter.
+    ///   - durationFormatter: The duration remaining formatter.
+    ///   - theme: The arrival view theme.
+    ///   - fromDate: The date time to estimate arrival from, primarily for testing (default is now).
     public init(
         progress: TripProgress,
         distanceFormatter: Formatter = ArrivalFormatters.distanceFormatter,
         estimatedArrivalFormatter: Date.FormatStyle = ArrivalFormatters.estimatedArrivalFormat,
         durationFormatter: DateComponentsFormatter = ArrivalFormatters.durationFormat,
         theme: any ArrivalViewTheme = DefaultArrivalViewTheme(),
-        onExpand: @escaping () -> Void = {}
+        fromDate: Date = Date()
     ) {
         self.progress = progress
         self.distanceFormatter = distanceFormatter
         self.estimatedArrivalFormatter = estimatedArrivalFormatter
         durationFromatter = durationFormatter
         self.theme = theme
-        self.onExpand = onExpand
+        self.fromDate = fromDate
     }
 
     public var body: some View {
         HStack {
             VStack {
-                Text(estimatedArrivalFormatter.format(progress.estimatedArrival()))
+                Text(estimatedArrivalFormatter.format(progress.estimatedArrival(from: fromDate)))
                     .font(theme.measurementFont)
                     .foregroundStyle(theme.measurementColor)
                     .multilineTextAlignment(.center)
 
                 if theme.style == .full {
-                    Text("Arrival")
+                    Text("Arrival", bundle: .module)
                         .font(theme.secondaryFont)
                         .foregroundStyle(theme.secondaryColor)
                 }
@@ -51,7 +60,7 @@ public struct ArrivalView: View {
                         .multilineTextAlignment(.center)
 
                     if theme.style == .full {
-                        Text("Duration")
+                        Text("Duration", bundle: .module)
                             .font(theme.secondaryFont)
                             .foregroundStyle(theme.secondaryColor)
                     }
@@ -65,7 +74,7 @@ public struct ArrivalView: View {
                     .multilineTextAlignment(.center)
 
                 if theme.style == .full {
-                    Text("Distance")
+                    Text("Distance", bundle: .module)
                         .font(theme.secondaryFont)
                         .foregroundStyle(theme.secondaryColor)
                 }

@@ -36,6 +36,7 @@ if useLocalMapLibreSwiftUIDSL {
 
 let package = Package(
     name: "FerrostarCore",
+    defaultLocalization: "en",
     platforms: [
         .iOS(.v15),
     ],

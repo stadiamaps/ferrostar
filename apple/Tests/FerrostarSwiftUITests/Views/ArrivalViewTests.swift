@@ -3,6 +3,8 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class ArrivalViewTests: XCTestCase {
+    let referenceDate = Date(timeIntervalSince1970: 1718065239)
+    
     var minimizedTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
         theme.style = .minimized
@@ -16,9 +18,9 @@ final class ArrivalViewTests: XCTestCase {
                     distanceToNextManeuver: 123,
                     distanceRemaining: 120,
                     durationRemaining: 150
-                )
+                ),
+                fromDate: referenceDate
             )
-            .frame(width: 400, height: 128)
         }
 
         assertView {
@@ -27,10 +29,9 @@ final class ArrivalViewTests: XCTestCase {
                     distanceToNextManeuver: 123,
                     distanceRemaining: 14500,
                     durationRemaining: 1234
-                )
+                ),
+                fromDate: referenceDate
             )
-            .padding()
-            .frame(width: 400, height: 128)
         }
 
         assertView {
@@ -39,10 +40,9 @@ final class ArrivalViewTests: XCTestCase {
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
-                )
+                ),
+                fromDate: referenceDate
             )
-            .padding()
-            .frame(width: 400, height: 128)
         }
     }
 
@@ -54,10 +54,9 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
-                theme: minimizedTheme
+                theme: minimizedTheme,
+                fromDate: referenceDate
             )
-            .padding()
-            .frame(width: 400, height: 128)
         }
     }
 
@@ -71,10 +70,9 @@ final class ArrivalViewTests: XCTestCase {
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: .dateTime,
-                durationFormatter: longDurationFormatter
+                durationFormatter: longDurationFormatter,
+                fromDate: referenceDate
             )
-            .padding()
-            .frame(width: 400, height: 128)
         }
     }
 }
