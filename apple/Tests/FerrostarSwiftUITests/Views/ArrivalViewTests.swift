@@ -5,6 +5,11 @@ import XCTest
 final class ArrivalViewTests: XCTestCase {
     let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
 
+    var etaFormatter: Date.FormatStyle = {
+        let formatter = Date.FormatStyle(timeZone: .init(secondsFromGMT: 0)!)
+        return formatter
+    }()
+    
     var minimizedTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
         theme.style = .minimized
@@ -19,6 +24,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 120,
                     durationRemaining: 150
                 ),
+                estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate
             )
         }
@@ -30,6 +36,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 14500,
                     durationRemaining: 1234
                 ),
+                estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate
             )
         }
@@ -41,6 +48,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate
             )
         }
@@ -54,6 +62,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                estimatedArrivalFormatter: etaFormatter,
                 theme: minimizedTheme,
                 fromDate: referenceDate
             )
@@ -69,7 +78,7 @@ final class ArrivalViewTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: germanDistanceFormatter,
-                estimatedArrivalFormatter: .dateTime,
+                estimatedArrivalFormatter: etaFormatter,
                 durationFormatter: longDurationFormatter,
                 fromDate: referenceDate
             )
