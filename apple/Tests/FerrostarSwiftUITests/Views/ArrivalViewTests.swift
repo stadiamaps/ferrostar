@@ -3,8 +3,8 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class ArrivalViewTests: XCTestCase {
-    let referenceDate = Date(timeIntervalSince1970: 1718065239)
-    
+    let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
+
     var minimizedTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
         theme.style = .minimized

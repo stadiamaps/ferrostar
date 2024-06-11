@@ -10,7 +10,7 @@ public struct ArrivalView: View {
     let durationFromatter: DateComponentsFormatter
     let theme: any ArrivalViewTheme
     let fromDate: Date
-    
+
     /// Initialize the ArrivalView
     ///
     /// - Parameters:
