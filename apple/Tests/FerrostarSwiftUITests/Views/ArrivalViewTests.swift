@@ -6,8 +6,9 @@ final class ArrivalViewTests: XCTestCase {
     let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
 
     var etaFormatter: Date.FormatStyle = {
-        let formatter = Date.FormatStyle(timeZone: .init(secondsFromGMT: 0)!)
-        return formatter
+        return Date.FormatStyle(timeZone: .init(secondsFromGMT: 0)!)
+            .hour(.defaultDigits(amPM: .abbreviated))
+            .minute(.twoDigits)
     }()
     
     var minimizedTheme: any ArrivalViewTheme {
