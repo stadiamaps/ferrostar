@@ -23,7 +23,7 @@ final class DefaultFormatterTests: XCTestCase {
     func testEstimatedArrivalFormatter() {
         var formatter = DefaultFormatters.estimatedArrivalFormat
         formatter.timeZone = .init(secondsFromGMT: 0)!
-        
+
         XCTAssertEqual(referenceDate.formatted(formatter), "12:20 AM")
     }
 
@@ -31,7 +31,7 @@ final class DefaultFormatterTests: XCTestCase {
         var formatter = DefaultFormatters.estimatedArrivalFormat
             .locale(.init(identifier: "de_DE"))
         formatter.timeZone = .init(secondsFromGMT: 0)!
-        
+
         XCTAssertEqual(referenceDate.formatted(formatter), "0:20")
     }
 

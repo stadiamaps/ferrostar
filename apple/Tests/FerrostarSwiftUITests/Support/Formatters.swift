@@ -28,7 +28,7 @@ var longDurationFormatter: DateComponentsFormatter = {
 var germanArrivalFormatter: Date.FormatStyle = {
     var formatter = DefaultFormatters.estimatedArrivalFormat
         .locale(.init(identifier: "de_DE"))
-    
+
     formatter.timeZone = .init(secondsFromGMT: 0)!
 
     return formatter
