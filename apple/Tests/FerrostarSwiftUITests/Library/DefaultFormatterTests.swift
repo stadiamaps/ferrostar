@@ -21,14 +21,18 @@ final class DefaultFormatterTests: XCTestCase {
     // MARK: Estimated Time of Arrival (ETA) Formatter
 
     func testEstimatedArrivalFormatter() {
-        let formatter = DefaultFormatters.estimatedArrivalFormat
-        XCTAssertEqual(referenceDate.formatted(formatter), "5:20 PM")
+        var formatter = DefaultFormatters.estimatedArrivalFormat
+        formatter.timeZone = .init(secondsFromGMT: 0)!
+        
+        XCTAssertEqual(referenceDate.formatted(formatter), "12:20 AM")
     }
 
     func testEstimatedArrivalFormatter_de_DE() {
-        let formatter = DefaultFormatters.estimatedArrivalFormat
+        var formatter = DefaultFormatters.estimatedArrivalFormat
             .locale(.init(identifier: "de_DE"))
-        XCTAssertEqual(referenceDate.formatted(formatter), "17:20")
+        formatter.timeZone = .init(secondsFromGMT: 0)!
+        
+        XCTAssertEqual(referenceDate.formatted(formatter), "0:20")
     }
 
     // MARK: Duration Formatters
