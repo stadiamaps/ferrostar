@@ -61,6 +61,20 @@
           }
         }
       }
+    },
+    "Hello, World!" : {
+
+    },
+    "Speed Limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speed Limit"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
