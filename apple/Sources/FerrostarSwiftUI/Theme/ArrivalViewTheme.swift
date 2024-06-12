@@ -1,7 +1,6 @@
 import SwiftUI
 
 public enum ArrivalViewStyle: Equatable {
-    
     /// The simplified/default which only shows actual values
     case simplified
 

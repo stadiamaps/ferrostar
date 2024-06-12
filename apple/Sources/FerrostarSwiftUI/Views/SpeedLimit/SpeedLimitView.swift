@@ -1,13 +1,12 @@
 import SwiftUI
 
 public struct SpeedLimitView: View {
-    
     @Environment(\.locale) private var locale
-    
+
     var speedLimit: Measurement<UnitSpeed>
     var valueFormatter: NumberFormatter
     var unitFormatter: MeasurementFormatter
-    
+
     public init(
         speedLimit: Measurement<UnitSpeed>,
         valueFormatter: NumberFormatter = DefaultFormatters.speedFormatter,
@@ -17,7 +16,7 @@ public struct SpeedLimitView: View {
         self.valueFormatter = valueFormatter
         self.unitFormatter = unitFormatter
     }
-    
+
     public var body: some View {
         switch locale.identifier {
         case "en_US":
@@ -39,7 +38,7 @@ public struct SpeedLimitView: View {
 #Preview {
     VStack {
         SpeedLimitView(speedLimit: .init(value: 24.5, unit: .metersPerSecond))
-        
+
         SpeedLimitView(speedLimit: .init(value: 27.8, unit: .metersPerSecond))
             .environment(\.locale, .init(identifier: "fr_FR"))
     }

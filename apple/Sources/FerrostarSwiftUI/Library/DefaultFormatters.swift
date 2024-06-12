@@ -3,7 +3,6 @@ import MapKit
 
 /// A collection of arrival view formatters that work reasonably well for most applications.
 public class DefaultFormatters {
-    
     /// An MKDistance formatter with abbreviated units for the arrival view.
     ///
     /// E.g. 120 mi
@@ -30,16 +29,16 @@ public class DefaultFormatters {
         formatter.zeroFormattingBehavior = .dropAll
         return formatter
     }
-    
+
     // MARK: Speed
-    
+
     public static var speedWithUnitsFormatter: MeasurementFormatter {
         let formatter = MeasurementFormatter()
         formatter.unitOptions = .naturalScale
         formatter.unitStyle = .short
         return formatter
     }
-    
+
     /// A standard formatter for speed numbers without any decimal digits (e.g. for a speed limit)
     ///
     /// E.g. `50`
@@ -48,5 +47,4 @@ public class DefaultFormatters {
         formatter.maximumFractionDigits = 0
         return formatter
     }
-    
 }
