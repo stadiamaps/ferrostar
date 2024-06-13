@@ -1,7 +1,4 @@
-use alloc::{
-    string::{String, ToString},
-    vec::Vec,
-};
+use alloc::{string::String, vec::Vec};
 use geo::{Coord, LineString, Point, Rect};
 #[cfg(feature = "uniffi")]
 use polyline::encode_coordinates;
