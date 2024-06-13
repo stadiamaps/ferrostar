@@ -2,21 +2,33 @@ use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
 use polyline::decode_polyline;
+#[cfg(feature = "std")]
 use std::time::SystemTime;
+
+#[cfg(feature = "wasm_js")]
+use web_time::SystemTime;
+
+use alloc::{
+    string::{String, ToString},
+    vec::Vec,
+};
 
 #[cfg(test)]
 use serde::Serialize;
 
-#[derive(Debug, thiserror::Error, uniffi::Error)]
+#[derive(Debug)]
+#[cfg_attr(feature = "std", derive(thiserror::Error))]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum SimulationError {
-    #[error("Failed to parse polyline: {error}.")]
+    #[cfg_attr(feature = "std", error("Failed to parse polyline: {error}."))]
     PolylineError { error: String },
-    #[error("Not enough points (expected at least two).")]
+    #[cfg_attr(feature = "std", error("Not enough points (expected at least two)."))]
     NotEnoughPoints,
 }
 
-#[derive(uniffi::Record, Clone, PartialEq)]
+#[derive(Clone, PartialEq)]
 #[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct LocationSimulationState {
     pub current_location: UserLocation,
     remaining_locations: Vec<GeographicCoordinate>,
@@ -25,7 +37,7 @@ pub struct LocationSimulationState {
 /// Creates a location simulation from a set of coordinates.
 ///
 /// Optionally resamples the input line so that there is a maximum distance between points.
-#[uniffi::export]
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn location_simulation_from_coordinates(
     coordinates: Vec<GeographicCoordinate>,
     resample_distance: Option<f64>,
@@ -89,7 +101,7 @@ pub fn location_simulation_from_coordinates(
 /// Creates a location simulation from a route.
 ///
 /// Optionally resamples the route geometry so that there is no more than the specified maximum distance between points.
-#[uniffi::export]
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn location_simulation_from_route(
     route: &Route,
     resample_distance: Option<f64>,
@@ -102,7 +114,7 @@ pub fn location_simulation_from_route(
 /// Creates a location simulation from a polyline.
 ///
 /// Optionally resamples the input line so that there is no more than the specified maximum distance between points.
-#[uniffi::export]
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn location_simulation_from_polyline(
     polyline: String,
     precision: u32,
@@ -110,7 +122,7 @@ pub fn location_simulation_from_polyline(
 ) -> Result<LocationSimulationState, SimulationError> {
     let linestring =
         decode_polyline(&polyline, precision).map_err(|error| SimulationError::PolylineError {
-            error: error.clone(),
+            error: error.to_string(),
         })?;
     let coordinates: Vec<_> = linestring
         .coords()
@@ -127,7 +139,7 @@ pub fn location_simulation_from_polyline(
 /// (ex: calling 3x per second will be a triple speed simulation).
 ///
 /// When there are now more locations to visit, returns the same state forever.
-#[uniffi::export]
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationSimulationState {
     if let Some((next_coordinate, rest)) = state.remaining_locations.split_first() {
         let current_point = Point::from(state.current_location.coordinates);

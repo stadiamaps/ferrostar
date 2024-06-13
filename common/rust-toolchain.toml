@@ -24,5 +24,8 @@ targets = [
     "aarch64-apple-darwin",
     "x86_64-pc-windows-gnu",
     "x86_64-pc-windows-msvc",
+
+    # WebAssembly
+    "wasm32-unknown-unknown"
 ]
 components = ["clippy", "rustfmt"]

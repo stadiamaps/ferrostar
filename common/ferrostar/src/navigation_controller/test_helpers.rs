@@ -1,4 +1,5 @@
 use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoint, WaypointKind};
+use alloc::string::ToString;
 use geo::{BoundingRect, LineString, Point};
 
 pub fn gen_dummy_route_step(

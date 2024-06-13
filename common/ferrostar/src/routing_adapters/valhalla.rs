@@ -1,8 +1,17 @@
 use super::{RouteRequest, RoutingRequestGenerationError};
 use crate::models::{UserLocation, Waypoint, WaypointKind};
 use crate::routing_adapters::RouteRequestGenerator;
+#[cfg(not(feature = "std"))]
+use alloc::collections::BTreeMap as HashMap;
 use serde_json::{json, Value as JsonValue};
+#[cfg(feature = "std")]
 use std::collections::HashMap;
+
+use alloc::{
+    string::{String, ToString},
+    vec,
+    vec::Vec,
+};
 
 /// A route request generator for Valhalla backends operating over HTTP.
 ///
@@ -71,7 +80,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 start["heading"] = course.degrees.into();
             }
 
-            let locations: Vec<JsonValue> = std::iter::once(start)
+            let locations: Vec<JsonValue> = core::iter::once(start)
                 .chain(waypoints.iter().map(|waypoint| {
                     json!({
                         "lat": waypoint.coordinate.lat,

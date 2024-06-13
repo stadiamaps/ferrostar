@@ -1,9 +1,11 @@
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
+use alloc::vec::Vec;
 use geo::LineString;
 
 /// A subset of state values that are used to show the user their current progress along the trip and it's components.
-#[derive(Debug, Clone, PartialEq, uniffi::Record)]
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
     pub distance_to_next_maneuver: f64,
@@ -16,7 +18,8 @@ pub struct TripProgress {
 }
 
 /// Internal state of the navigation controller.
-#[derive(Debug, Clone, PartialEq, uniffi::Enum)]
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 pub enum TripState {
     Navigating {
         snapped_user_location: UserLocation,
@@ -59,7 +62,8 @@ pub enum StepAdvanceStatus {
     EndOfRoute,
 }
 
-#[derive(Debug, Copy, Clone, uniffi::Enum)]
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 pub enum StepAdvanceMode {
     /// Never advances to the next step automatically
     Manual,
@@ -83,7 +87,8 @@ pub enum StepAdvanceMode {
     },
 }
 
-#[derive(Clone, uniffi::Record)]
+#[derive(Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct NavigationControllerConfig {
     pub step_advance: StepAdvanceMode,
     pub route_deviation_tracking: RouteDeviationTracking,
