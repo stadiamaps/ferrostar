@@ -3,11 +3,12 @@ use crate::models::{Route, UserLocation};
 use crate::routing_adapters::error::InstantiationError;
 use error::{RoutingRequestGenerationError, RoutingResponseParseError};
 
-#[cfg(not(feature = "std"))]
+#[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
 #[cfg(feature = "std")]
 use std::{collections::HashMap, fmt::Debug};
 
+#[cfg(feature = "alloc")]
 use alloc::{string::String, sync::Arc, vec::Vec};
 
 use crate::routing_adapters::osrm::OsrmResponseParser;

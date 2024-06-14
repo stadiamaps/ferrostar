@@ -1,3 +1,4 @@
+#[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
 use geo::{Coord, LineString, Point, Rect};
 #[cfg(feature = "uniffi")]

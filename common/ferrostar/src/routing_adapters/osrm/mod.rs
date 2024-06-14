@@ -9,10 +9,8 @@ use crate::routing_adapters::{
     osrm::models::{RouteResponse, RouteStep as OsrmRouteStep},
     Route, RoutingResponseParseError,
 };
-#[cfg(not(feature = "std"))]
-use alloc::collections::BTreeSet as HashSet;
-use alloc::string::ToString;
-use alloc::{vec, vec::Vec};
+#[cfg(all(not(feature = "std"), feature = "alloc"))]
+use alloc::{collections::BTreeSet as HashSet, string::ToString, vec, vec::Vec};
 use geo::BoundingRect;
 use polyline::decode_polyline;
 #[cfg(feature = "std")]

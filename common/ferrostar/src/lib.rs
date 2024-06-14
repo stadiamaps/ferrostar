@@ -10,6 +10,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[cfg(feature = "alloc")]
 extern crate alloc;
 
 // Use `wee_alloc` as the global allocator (used on platforms like wasm)

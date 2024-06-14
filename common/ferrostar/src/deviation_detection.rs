@@ -1,5 +1,6 @@
 use crate::algorithms::deviation_from_line;
 use crate::models::{Route, RouteStep, UserLocation};
+#[cfg(feature = "alloc")]
 use alloc::sync::Arc;
 use geo::Point;
 

@@ -5,6 +5,7 @@
 //! needed for navigation.
 
 use crate::models::{ManeuverModifier, ManeuverType};
+#[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
 use serde::Deserialize;
 

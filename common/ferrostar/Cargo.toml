@@ -16,9 +16,10 @@ rust-version.workspace = true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-std = ["serde_json/std", "proptest/std"]
+alloc = []
+std = ["alloc", "serde_json/std", "proptest/std"]
 default = ["std", "uniffi"]
-wasm_js = ["wee_alloc", "getrandom/js", "wasm-bindgen", "web-time"]
+wasm_js = ["alloc", "wee_alloc", "getrandom/js", "wasm-bindgen", "web-time"]
 
 [dependencies]
 geo = "0.28.0"

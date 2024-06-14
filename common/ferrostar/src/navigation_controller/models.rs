@@ -1,5 +1,6 @@
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
+#[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use geo::LineString;
 

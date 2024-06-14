@@ -8,6 +8,7 @@ use std::time::SystemTime;
 #[cfg(feature = "wasm_js")]
 use web_time::SystemTime;
 
+#[cfg(feature = "alloc")]
 use alloc::{
     string::{String, ToString},
     vec::Vec,

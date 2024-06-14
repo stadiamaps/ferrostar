@@ -7,6 +7,7 @@ use serde_json::{json, Value as JsonValue};
 #[cfg(feature = "std")]
 use std::collections::HashMap;
 
+#[cfg(feature = "alloc")]
 use alloc::{
     string::{String, ToString},
     vec,

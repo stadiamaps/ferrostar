@@ -1,3 +1,4 @@
+#[cfg(feature = "alloc")]
 use alloc::string::{String, ToString};
 
 // TODO: This implementation seems less than ideal. In particular, it hides what sort of JSON error occurred due to an apparent bug in UniFFI.
