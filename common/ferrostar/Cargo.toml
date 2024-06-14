@@ -19,7 +19,7 @@ rust-version.workspace = true
 alloc = []
 std = ["alloc", "serde_json/std", "proptest/std"]
 default = ["std", "uniffi"]
-wasm_js = ["alloc", "wee_alloc", "getrandom/js", "wasm-bindgen", "web-time"]
+wasm_js = ["std", "getrandom/js", "wasm-bindgen", "web-time"]
 
 [dependencies]
 geo = "0.28.0"

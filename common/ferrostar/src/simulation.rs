@@ -2,10 +2,10 @@ use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
 use polyline::decode_polyline;
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
 
-#[cfg(feature = "wasm_js")]
+#[cfg(feature = "web-time")]
 use web_time::SystemTime;
 
 #[cfg(feature = "alloc")]

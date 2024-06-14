@@ -1,11 +1,11 @@
 use super::{RouteRequest, RoutingRequestGenerationError};
 use crate::models::{UserLocation, Waypoint, WaypointKind};
 use crate::routing_adapters::RouteRequestGenerator;
-#[cfg(not(feature = "std"))]
+#[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
-use serde_json::{json, Value as JsonValue};
 #[cfg(feature = "std")]
 use std::collections::HashMap;
+use serde_json::{json, Value as JsonValue};
 
 #[cfg(feature = "alloc")]
 use alloc::{

@@ -5,10 +5,10 @@ use geo::{Coord, LineString, Point, Rect};
 use polyline::encode_coordinates;
 use serde::Deserialize;
 
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
 
-#[cfg(feature = "wasm_js")]
+#[cfg(feature = "web-time")]
 use web_time::SystemTime;
 
 #[cfg(test)]
