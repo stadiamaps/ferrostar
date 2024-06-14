@@ -27,7 +27,7 @@ public struct InstructionsView: View {
     ///   - secondaryRowTheme: The theme for the secondary instruction.
     public init(
         visualInstruction: VisualInstruction,
-        distanceFormatter: Formatter = MKDistanceFormatter(),
+        distanceFormatter: Formatter = DefaultFormatters.distanceFormatter,
         distanceToNextManeuver: CLLocationDistance? = nil,
         primaryRowTheme: InstructionRowTheme = DefaultInstructionRowTheme(),
         secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme(),
@@ -94,7 +94,7 @@ public struct InstructionsView: View {
 
 #Preview {
     let germanFormatter = MKDistanceFormatter()
-    germanFormatter.locale = Locale(identifier: "de-DE")
+    germanFormatter.locale = Locale(identifier: "de_DE")
     germanFormatter.units = .metric
 
     return VStack {
