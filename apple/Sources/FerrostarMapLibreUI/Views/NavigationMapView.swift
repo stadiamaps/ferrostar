@@ -136,7 +136,7 @@ public struct NavigationMapView: View {
             DispatchQueue.main.async {
                 if useSnappedCamera {
                     camera = .trackUserLocationWithCourse(zoom: snappedZoom,
-                                                          pitch: .fixed(45))
+                                                          pitch: 45.0)
                 }
             }
         }
