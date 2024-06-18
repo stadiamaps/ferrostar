@@ -13,11 +13,6 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
-// Use `wee_alloc` as the global allocator (used on platforms like wasm)
-#[cfg(feature = "wee_alloc")]
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 pub mod algorithms;
 pub mod deviation_detection;
 pub mod models;
