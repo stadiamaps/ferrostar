@@ -37,7 +37,10 @@
         }
       }
     },
-    "Hello, World!" : {
+    "No Location Available" : {
+
+    },
+    "Rerouting..." : {
 
     },
     "Speed Limit" : {
@@ -50,6 +53,9 @@
           }
         }
       }
+    },
+    "Start Navigation" : {
+
     }
   },
   "version" : "1.0"

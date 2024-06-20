@@ -44,8 +44,6 @@ public struct ArrivalView: View {
             VStack {
                 Text(estimatedArrivalFormatter.format(progress.estimatedArrival(from: fromDate)))
                     .font(theme.measurementFont)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
                     .foregroundStyle(theme.measurementColor)
                     .multilineTextAlignment(.center)
 
@@ -60,8 +58,6 @@ public struct ArrivalView: View {
                 VStack {
                     Text(formattedDuration)
                         .font(theme.measurementFont)
-                        .minimumScaleFactor(0.6)
-                        .lineLimit(1)
                         .foregroundStyle(theme.measurementColor)
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
@@ -77,8 +73,6 @@ public struct ArrivalView: View {
             VStack {
                 Text(distanceFormatter.string(for: progress.distanceRemaining) ?? "")
                     .font(theme.measurementFont)
-                    .minimumScaleFactor(0.6)
-                    .lineLimit(1)
                     .foregroundStyle(theme.measurementColor)
                     .multilineTextAlignment(.center)
 
@@ -92,15 +86,10 @@ public struct ArrivalView: View {
             Button {
                 onTapExit()
             } label: {
-                Image(systemName: "xmark")
-                    .foregroundColor(theme.measurementColor)
+                Image(systemName: "x.mark")
             }
-            .padding()
-            .background(Color(.systemGroupedBackground))
-            .clipShape(Capsule())
         }
-        .padding(.leading, 32)
-        .padding(.trailing, 12)
+        .padding(.horizontal, 32)
         .padding(.vertical, 16)
         .background(theme.backgroundColor)
         .clipShape(.rect(cornerRadius: 48))
@@ -136,7 +125,7 @@ public struct ArrivalView: View {
             progress: TripProgress(
                 distanceToNextManeuver: 123,
                 distanceRemaining: 14500,
-                durationRemaining: 12234
+                durationRemaining: 1234
             ),
             theme: informationalTheme
         )
