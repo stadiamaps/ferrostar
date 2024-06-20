@@ -140,7 +140,7 @@ cargo install cargo-ndk
    
    ```
    gpr.user=username
-   gpr.key=key
+   gpr.token=token
    ```
 5. Open the Gradle workspace ('android/') in Android Studio.
    Gradle builds automatically ensure the core is built,
