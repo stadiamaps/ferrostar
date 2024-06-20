@@ -21,6 +21,7 @@ public struct ArrivalView: View {
     ///   - durationFormatter: The duration remaining formatter.
     ///   - theme: The arrival view theme.
     ///   - fromDate: The date time to estimate arrival from, primarily for testing (default is now).
+    ///   - onTapExit: The action to run when the exit button is tapped.
     public init(
         progress: TripProgress,
         distanceFormatter: Formatter = DefaultFormatters.distanceFormatter,
