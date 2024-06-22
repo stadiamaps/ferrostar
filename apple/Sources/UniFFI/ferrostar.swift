@@ -895,6 +895,7 @@ private let uniffiCallbackInterfaceRouteDeviationDetector: ForeignCallback = { (
         // Successful return
         // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
         return UNIFFI_CALLBACK_SUCCESS
+
     case 1:
         guard let cb = FfiConverterTypeRouteDeviationDetector.handleMap.get(handle: handle) else {
             out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
@@ -1080,6 +1081,7 @@ private let uniffiCallbackInterfaceRouteRequestGenerator: ForeignCallback = { (
         // Successful return
         // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
         return UNIFFI_CALLBACK_SUCCESS
+
     case 1:
         guard let cb = FfiConverterTypeRouteRequestGenerator.handleMap.get(handle: handle) else {
             out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
@@ -1246,6 +1248,7 @@ private let uniffiCallbackInterfaceRouteResponseParser: ForeignCallback = { (
         // Successful return
         // See docs of ForeignCallback in `uniffi_core/src/ffi/foreigncallbacks.rs`
         return UNIFFI_CALLBACK_SUCCESS
+
     case 1:
         guard let cb = FfiConverterTypeRouteResponseParser.handleMap.get(handle: handle) else {
             out_buf.pointee = FfiConverterString.lower("No callback in handlemap; this is a Uniffi bug")
@@ -2966,7 +2969,6 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
         case 1: return .NotEnoughWaypoints
         case 2: return .JsonError
         case 3: return .UnknownError
-
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3009,6 +3011,7 @@ public struct FfiConverterTypeRoutingResponseParseError: FfiConverterRustBuffer 
         case 1: return try .ParseError(
                 error: FfiConverterString.read(from: &buf)
             )
+
         case 2: return .UnknownError
 
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -3051,6 +3054,7 @@ public struct FfiConverterTypeSimulationError: FfiConverterRustBuffer {
         case 1: return try .PolylineError(
                 error: FfiConverterString.read(from: &buf)
             )
+
         case 2: return .NotEnoughPoints
 
         default: throw UniffiInternalError.unexpectedEnumCase
