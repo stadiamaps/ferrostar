@@ -60,6 +60,12 @@ public struct PortraitNavigationView: View {
                     )
                 }
             })
+            .overlay(alignment: .bottom) {
+                if let progress = navigationState?.progress {
+                    ArrivalView(progress: progress)
+                        .padding(.horizontal, 16)
+                }
+            }
         }
     }
 }

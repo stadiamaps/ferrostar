@@ -2952,7 +2952,6 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
         case 1: return .NotEnoughWaypoints
         case 2: return .JsonError
         case 3: return .UnknownError
-
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -2993,6 +2992,7 @@ public struct FfiConverterTypeRoutingResponseParseError: FfiConverterRustBuffer 
         case 1: return try .ParseError(
                 error: FfiConverterString.read(from: &buf)
             )
+
         case 2: return .UnknownError
 
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -3033,6 +3033,7 @@ public struct FfiConverterTypeSimulationError: FfiConverterRustBuffer {
         case 1: return try .PolylineError(
                 error: FfiConverterString.read(from: &buf)
             )
+
         case 2: return .NotEnoughPoints
 
         default: throw UniffiInternalError.unexpectedEnumCase
