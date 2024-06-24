@@ -1,27 +1,39 @@
-use uniffi::UnexpectedUniFFICallbackError;
+#[cfg(feature = "alloc")]
+use alloc::string::{String, ToString};
 
 // TODO: This implementation seems less than ideal. In particular, it hides what sort of JSON error occurred due to an apparent bug in UniFFI.
 // The trouble appears to be with generating "flat" enum bindings that are used with callback
 // interfaces when the underlying actually has fields.
-#[derive(Debug, thiserror::Error, uniffi::Error)]
+#[derive(Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
+#[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum InstantiationError {
-    #[error("Error generating JSON for the request.")]
+    #[cfg_attr(feature = "std", error("Error generating JSON for the request."))]
     JsonError,
 }
 
 // TODO: See comment above
-#[derive(Debug, thiserror::Error, uniffi::Error)]
+#[derive(Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
+#[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum RoutingRequestGenerationError {
-    #[error("Too few waypoints were provided to compute a route.")]
+    #[cfg_attr(
+        feature = "std",
+        error("Too few waypoints were provided to compute a route.")
+    )]
     NotEnoughWaypoints,
-    #[error("Error generating JSON for the request.")]
+    #[cfg_attr(feature = "std", error("Error generating JSON for the request."))]
     JsonError,
-    #[error("An unknown error generating a request was raised in foreign code.")]
+    #[cfg_attr(
+        feature = "std",
+        error("An unknown error generating a request was raised in foreign code.")
+    )]
     UnknownError,
 }
 
-impl From<UnexpectedUniFFICallbackError> for RoutingRequestGenerationError {
-    fn from(_: UnexpectedUniFFICallbackError) -> RoutingRequestGenerationError {
+#[cfg(feature = "uniffi")]
+impl From<uniffi::UnexpectedUniFFICallbackError> for RoutingRequestGenerationError {
+    fn from(_: uniffi::UnexpectedUniFFICallbackError) -> RoutingRequestGenerationError {
         RoutingRequestGenerationError::UnknownError
     }
 }
@@ -38,17 +50,23 @@ impl From<serde_json::Error> for RoutingRequestGenerationError {
     }
 }
 
-#[derive(Debug, thiserror::Error, uniffi::Error)]
+#[derive(Debug)]
+#[cfg_attr(feature = "std", derive(thiserror::Error))]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum RoutingResponseParseError {
     // TODO: Unable to find route and other common errors
-    #[error("Failed to parse route response: {error}.")]
+    #[cfg_attr(feature = "std", error("Failed to parse route response: {error}."))]
     ParseError { error: String },
-    #[error("An unknown error parsing a response was raised in foreign code.")]
+    #[cfg_attr(
+        feature = "std",
+        error("An unknown error parsing a response was raised in foreign code.")
+    )]
     UnknownError,
 }
 
-impl From<UnexpectedUniFFICallbackError> for RoutingResponseParseError {
-    fn from(_: UnexpectedUniFFICallbackError) -> RoutingResponseParseError {
+#[cfg(feature = "uniffi")]
+impl From<uniffi::UnexpectedUniFFICallbackError> for RoutingResponseParseError {
+    fn from(_: uniffi::UnexpectedUniFFICallbackError) -> RoutingResponseParseError {
         RoutingResponseParseError::UnknownError
     }
 }

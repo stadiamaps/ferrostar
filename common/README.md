@@ -7,7 +7,7 @@ via FFI bindings. Bindings are generated using [UniFFI](https://mozilla.github.i
 ## `ferrostar`
 
 This is the main crate. At a high level, this defines two critical pieces: the navigation controller
-and routing backends, which are described in detail in [ARCHITECTURE ](../ARCHITECTURE.md).
+and routing backends, which are described in detail in the [architecture section of the guide](https://stadiamaps.github.io/ferrostar/architecture.html).
 
 ## `uniffi-bindgen`
 

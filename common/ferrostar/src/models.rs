@@ -1,20 +1,34 @@
+#[cfg(feature = "alloc")]
+use alloc::{string::String, vec::Vec};
 use geo::{Coord, LineString, Point, Rect};
+#[cfg(feature = "uniffi")]
 use polyline::encode_coordinates;
 use serde::Deserialize;
+
+#[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
+
+#[cfg(feature = "web-time")]
+use web_time::SystemTime;
 
 #[cfg(test)]
 use serde::Serialize;
 use uuid::Uuid;
 
-#[derive(Debug, thiserror::Error, uniffi::Error)]
+#[derive(Debug)]
+#[cfg_attr(feature = "std", derive(thiserror::Error))]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum ModelError {
-    #[error("Failed to generate a polyline from route coordinates: {error}.")]
+    #[cfg_attr(
+        feature = "std",
+        error("Failed to generate a polyline from route coordinates: {error}.")
+    )]
     PolylineGenerationError { error: String },
 }
 
 /// A geographic coordinate in WGS84.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct GeographicCoordinate {
     pub lat: f64,
@@ -65,7 +79,8 @@ impl From<GeographicCoordinate> for Point {
 /// and are used for recalculating when the user deviates from the expected route.
 ///
 /// Note that support for properties beyond basic geographic coordinates varies by routing engine.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct Waypoint {
     pub coordinate: GeographicCoordinate,
@@ -73,7 +88,8 @@ pub struct Waypoint {
 }
 
 /// Describes characteristics of the waypoint for the routing backend.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Enum)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(test, derive(Serialize))]
 pub enum WaypointKind {
     /// Starts or ends a leg of the trip.
@@ -84,7 +100,8 @@ pub enum WaypointKind {
     Via,
 }
 
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct BoundingBox {
     pub sw: GeographicCoordinate,
@@ -103,7 +120,8 @@ impl From<Rect> for BoundingBox {
 /// The heading of the user/device.
 ///
 /// Ferrostar prefers course over ground, but may use heading in some cases.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct Heading {
     /// The heading in degrees relative to true north.
     pub true_heading: u16,
@@ -114,7 +132,8 @@ pub struct Heading {
 }
 
 /// The direction in which the user/device is observed to be traveling.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct CourseOverGround {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
@@ -131,7 +150,8 @@ impl CourseOverGround {
 }
 
 /// The speed of the user from the location provider.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct Speed {
     /// The user's speed in meters per second.
@@ -147,7 +167,8 @@ pub struct Speed {
 ///
 /// NOTE: Heading is absent on purpose.
 /// Heading updates are not related to a change in the user's location.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, uniffi::Record)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct UserLocation {
     pub coordinates: GeographicCoordinate,
@@ -169,7 +190,8 @@ impl From<UserLocation> for Point {
 ///
 /// NOTE: This type is unstable and is still under active development and should be
 /// considered unstable.
-#[derive(Clone, Debug, uniffi::Record)]
+#[derive(Clone, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinate>,
@@ -186,10 +208,14 @@ pub struct Route {
 /// Helper function for getting the route as an encoded polyline.
 ///
 /// Mostly used for debugging.
+#[cfg(feature = "uniffi")]
 #[uniffi::export]
 fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelError> {
-    encode_coordinates(route.geometry.iter().map(|c| Coord::from(*c)), precision)
-        .map_err(|error| ModelError::PolylineGenerationError { error })
+    encode_coordinates(route.geometry.iter().map(|c| Coord::from(*c)), precision).map_err(|error| {
+        ModelError::PolylineGenerationError {
+            error: error.to_string(),
+        }
+    })
 }
 
 /// A maneuver (such as a turn or merge) followed by travel of a certain distance until reaching
@@ -198,7 +224,8 @@ fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelErro
 /// NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
 /// but we will intentionally define this somewhat looser unless/until it becomes clear something
 ///
-#[derive(Clone, Debug, PartialEq, uniffi::Record)]
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct RouteStep {
     pub geometry: Vec<GeographicCoordinate>,
@@ -256,7 +283,8 @@ impl RouteStep {
 /// An instruction that can be synthesized using a TTS engine to announce an upcoming maneuver.
 ///
 /// Note that these do not have any locale information attached.
-#[derive(Debug, Clone, PartialEq, uniffi::Record)]
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct SpokenInstruction {
     /// Plain-text instruction which can be synthesized with a TTS engine.
@@ -280,7 +308,8 @@ pub struct SpokenInstruction {
 /// Indicates the type of maneuver to perform.
 ///
 /// Frequently used in conjunction with [`ManeuverModifier`].
-#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, uniffi::Enum)]
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverType {
@@ -310,7 +339,8 @@ pub enum ManeuverType {
 }
 
 /// Specifies additional information about a [`ManeuverType`]
-#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, uniffi::Enum)]
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(test, derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverModifier {
@@ -328,7 +358,8 @@ pub enum ManeuverModifier {
     SharpLeft,
 }
 
-#[derive(Debug, Clone, Eq, PartialEq, uniffi::Record)]
+#[derive(Debug, Clone, Eq, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct VisualInstructionContent {
     pub text: String,
@@ -337,7 +368,8 @@ pub struct VisualInstructionContent {
     pub roundabout_exit_degrees: Option<u16>,
 }
 
-#[derive(Debug, Clone, PartialEq, uniffi::Record)]
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct VisualInstruction {
     pub primary_content: VisualInstructionContent,

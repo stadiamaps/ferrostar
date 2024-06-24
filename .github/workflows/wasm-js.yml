@@ -1,0 +1,33 @@
+name: WASM (JS)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  msrv:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-hack
+      - run: >-
+          cargo hack check --rust-version --workspace --all-targets
+          --ignore-private
+        working-directory: common
+
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cargo Build
+        run: cargo build --verbose --lib --target wasm32-unknown-unknown --no-default-features --features wasm_js
+        working-directory: common
+      # TODO: Figure out a strategy for running unit tests; probably requires a web browser for time and randomness...

@@ -1,7 +1,8 @@
 use crate::algorithms::deviation_from_line;
 use crate::models::{Route, RouteStep, UserLocation};
+#[cfg(feature = "alloc")]
+use alloc::sync::Arc;
 use geo::Point;
-use std::sync::Arc;
 
 #[cfg(test)]
 use {
@@ -14,7 +15,8 @@ use {
 };
 
 /// Determines if the user has deviated from the expected route.
-#[derive(Clone, uniffi::Enum)]
+#[derive(Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
@@ -81,7 +83,8 @@ impl RouteDeviationTracking {
 ///
 /// Note that the name is intentionally a bit generic to allow for expansion of other states.
 /// For example, we could conceivably add a "wrong way" status in the future.
-#[derive(Debug, Copy, Clone, PartialEq, uniffi::Enum)]
+#[derive(Debug, Copy, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 pub enum RouteDeviation {
     /// The user is proceeding on course within the expected tolerances; everything is normal.
     NoDeviation,
@@ -92,7 +95,7 @@ pub enum RouteDeviation {
     },
 }
 
-#[uniffi::export(with_foreign)]
+#[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait RouteDeviationDetector: Send + Sync {
     /// Determines whether the user is following the route correctly or not.
     ///

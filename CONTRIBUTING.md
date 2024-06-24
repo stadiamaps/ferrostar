@@ -78,7 +78,19 @@ Before pushing, run the following in the `common` folder:
 
 1. Run `cargo fmt` to automatically format any new rust code.
 2. Run `cargo insta review` to update snapshot testing changes. 
-3. Run `cargo test` to validate testing and ensure snapshot changes were correctly applied by step 2. 
+3. Run `cargo test` to validate testing and ensure snapshot changes were correctly applied by step 2.
+
+#### WASM
+
+We support `wasm32-unknown-unknown` for use in a JavaScript environment.
+That last qualifier is important, as we currently depend on being able to get the system time in several places.
+This comes through crates that rely on a JS environment.
+
+You can build the wasm module like so:
+
+```shell
+cargo build --lib --release --target wasm32-unknown-unknown --no-default-features --features wasm_js
+```
 
 ### iOS
 
