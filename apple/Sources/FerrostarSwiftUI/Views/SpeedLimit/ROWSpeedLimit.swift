@@ -1,6 +1,8 @@
 import SwiftUI
 
-public struct ROWSpeedLimitView: View {
+/// The common speed circular limit sign with a white background and red border.
+/// Also known as the Vienna Convention Sign C14.
+public struct ViennaConventionStyleSpeedLimitView: View {
     var speedLimit: Measurement<UnitSpeed>
     var units: UnitSpeed
     var valueFormatter: NumberFormatter

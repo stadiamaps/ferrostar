@@ -44,7 +44,7 @@ public struct FerrostarBanner<Label: View>: View {
         case .error:
             Image(systemName: "exclamationmark.triangle")
         case .loading:
-            Image(systemName: "arrow.clockwise.circle.fill")
+            Image(systemName: "hourglass.circle.fill")
         }
     }
 }

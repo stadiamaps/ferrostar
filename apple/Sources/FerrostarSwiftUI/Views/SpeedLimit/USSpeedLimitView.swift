@@ -1,6 +1,7 @@
 import SwiftUI
 
-public struct USSpeedLimitView: View {
+/// A US-style speed limit sign using a rectangular white box and a black border.
+public struct USStyleSpeedLimitView: View {
     var speedLimit: Measurement<UnitSpeed>
     var units: UnitSpeed
     var valueFormatter: NumberFormatter

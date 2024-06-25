@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// When navigation is underway, we use this standardized grid view with pre-defined metadata and interactions.
-/// This is the default UI and can be customized to some extent, however more customization can be
-/// achieved using the ``InnerGridView``.
+/// This is the default UI and can be customized to some extent. If you need more customization,
+/// use the ``InnerGridView``.
 public struct NavigatingInnerGridView<
     TopCenter: View,
     TopTrailing: View,
@@ -31,7 +31,7 @@ public struct NavigatingInnerGridView<
     ///
     /// This view provides all default navigation UI views that are used in the open map area. This area is defined as
     /// between the header/banner view and footer/arrival view in portait mode.
-    /// On landscape mode it is the trialing half of the screen.
+    /// On landscape mode it is the trailing half of the screen.
     ///
     /// - Parameters:
     ///   - theme: The ferrostar theme is used to control the default styling and formatters
@@ -41,7 +41,7 @@ public struct NavigatingInnerGridView<
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
     ///   - showCentering: Whether to show the centering control. This is typically determined by the Map's centering
     /// state.
-    ///   - onCenter: The action that occurs when the user taps the centering control. Typically re-centering the user.
+    ///   - onTapCenter: The action that occurs when the user taps the centering control. Typically re-centering the user.
     ///   - topCenter: The customizable top center view. This is recommended for navigation alerts (e.g. toast style
     /// notices).
     ///   - topTrailing: The customizable top trailing view. This can be used for custom interactions or metadata views.
