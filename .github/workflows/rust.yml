@@ -32,6 +32,7 @@ jobs:
         uses: obi1kenobi/cargo-semver-checks-action@v2
         with:
           manifest-path: common/Cargo.toml
+          feature-group: default-features
 
   rustfmt:
     runs-on: macos-14

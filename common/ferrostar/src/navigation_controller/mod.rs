@@ -20,15 +20,15 @@ use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
 /// In the overall architecture, this is a mid-level construct. It wraps some lower
 /// level constructs like the route adapter, but a higher level wrapper handles things
 /// like feeding in user location updates, route recalculation behavior, etc.
-#[derive(uniffi::Object)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct NavigationController {
     route: Route,
     config: NavigationControllerConfig,
 }
 
-#[uniffi::export]
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationController {
-    #[uniffi::constructor]
+    #[cfg_attr(feature = "uniffi", uniffi::constructor)]
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
         Self { route, config }
     }

@@ -277,7 +277,7 @@ such as using a Valhalla [Route Provider](./route-providers.md#bundled-support).
 
 Ferrostar is able to process spoken instructions generated from some routing engines.
 The `com.stadiamaps.ferrostar.core.SpokenInstructionObserver` interface
-specifies haw to create your own observer.
+specifies how to create your own observer.
 A reference implementation is provided in the `AndroidTtsObserver` class,
 which uses the text-to-speech engine built into Android.
 PRs welcome for other popular services (ex: Amazon Polly;

@@ -9,8 +9,11 @@ use crate::routing_adapters::{
     osrm::models::{RouteResponse, RouteStep as OsrmRouteStep},
     Route, RoutingResponseParseError,
 };
+#[cfg(all(not(feature = "std"), feature = "alloc"))]
+use alloc::{collections::BTreeSet as HashSet, string::ToString, vec, vec::Vec};
 use geo::BoundingRect;
 use polyline::decode_polyline;
+#[cfg(feature = "std")]
 use std::collections::HashSet;
 use uuid::Uuid;
 
@@ -67,7 +70,7 @@ impl RouteResponseParser for OsrmResponseParser {
             let linestring =
                 decode_polyline(&route.geometry, self.polyline_precision).map_err(|error| {
                     RoutingResponseParseError::ParseError {
-                        error: error.clone(),
+                        error: error.to_string(),
                     }
                 })?;
             if let Some(bbox) = linestring.bounding_rect() {
@@ -102,8 +105,11 @@ impl RouteStep {
         value: &OsrmRouteStep,
         polyline_precision: u32,
     ) -> Result<Self, RoutingResponseParseError> {
-        let linestring = decode_polyline(&value.geometry, polyline_precision)
-            .map_err(|error| RoutingResponseParseError::ParseError { error })?;
+        let linestring = decode_polyline(&value.geometry, polyline_precision).map_err(|error| {
+            RoutingResponseParseError::ParseError {
+                error: error.to_string(),
+            }
+        })?;
         // TODO: Trait for this common pattern?
         let geometry = linestring
             .coords()

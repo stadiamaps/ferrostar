@@ -8,6 +8,11 @@
 //! We apologize for the mess, but should have the documentation in a much better state by version
 //! 0.1.0 (est. mid-April).
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(feature = "alloc")]
+extern crate alloc;
+
 pub mod algorithms;
 pub mod deviation_detection;
 pub mod models;
@@ -15,19 +20,23 @@ pub mod navigation_controller;
 pub mod routing_adapters;
 pub mod simulation;
 
-use crate::routing_adapters::osrm::OsrmResponseParser;
-use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
-use std::str::FromStr;
-use std::sync::Arc;
+#[cfg(feature = "uniffi")]
+use routing_adapters::{
+    error::InstantiationError, osrm::OsrmResponseParser, valhalla::ValhallaHttpRequestGenerator,
+    RouteRequestGenerator, RouteResponseParser,
+};
+#[cfg(feature = "uniffi")]
+use std::{str::FromStr, sync::Arc};
+#[cfg(feature = "uniffi")]
 use uuid::Uuid;
 
-use crate::routing_adapters::error::InstantiationError;
-use routing_adapters::{RouteRequestGenerator, RouteResponseParser};
-
+#[cfg(feature = "uniffi")]
 uniffi::setup_scaffolding!();
 
+#[cfg(feature = "uniffi")]
 uniffi::custom_type!(Uuid, String);
 
+#[cfg(feature = "uniffi")]
 impl UniffiCustomTypeConverter for Uuid {
     type Builtin = String;
 
@@ -52,6 +61,7 @@ impl UniffiCustomTypeConverter for Uuid {
 /// which generates requests to an arbitrary Valhalla server (using the OSRM response format).
 ///
 /// This is provided as a convenience for use from foreign code when creating your own [`routing_adapters::RouteAdapter`].
+#[cfg(feature = "uniffi")]
 #[uniffi::export]
 fn create_valhalla_request_generator(
     endpoint_url: String,
@@ -72,6 +82,7 @@ fn create_valhalla_request_generator(
 /// This response parser is designed to be fairly flexible,
 /// supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
 /// which contain richer information like banners and voice instructions for navigation.
+#[cfg(feature = "uniffi")]
 #[uniffi::export]
 fn create_osrm_response_parser(polyline_precision: u32) -> Arc<dyn RouteResponseParser> {
     Arc::new(OsrmResponseParser::new(polyline_precision))
