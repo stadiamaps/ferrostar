@@ -26,9 +26,9 @@ final class FerrostarBannerViewTests: XCTestCase {
             }
         }
     }
-    
+
     // MARK: Dark Mode
-    
+
     func testInfoBanner_darkMode() {
         assertView(colorScheme: .dark) {
             FerrostarBanner(severity: .info) {

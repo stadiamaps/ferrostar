@@ -25,7 +25,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
         }
 
@@ -38,7 +38,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
         }
     }
@@ -54,7 +54,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 estimatedArrivalFormatter: etaFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
         }
     }
@@ -71,7 +71,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 estimatedArrivalFormatter: etaFormatter,
                 durationFormatter: longDurationFormatter,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
         }
     }
@@ -87,7 +87,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
             .environment(\.locale, .init(identifier: "de_DE"))
         }
@@ -103,7 +103,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 estimatedArrivalFormatter: germanArrivalFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
             .environment(\.locale, .init(identifier: "de_DE"))
         }
@@ -121,7 +121,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
         }
 
@@ -134,7 +134,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
         }
     }
@@ -150,7 +150,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 estimatedArrivalFormatter: etaFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
         }
     }
@@ -167,7 +167,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 estimatedArrivalFormatter: etaFormatter,
                 durationFormatter: longDurationFormatter,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
         }
     }
@@ -183,7 +183,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
             .environment(\.locale, .init(identifier: "de_DE"))
         }
@@ -199,7 +199,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 estimatedArrivalFormatter: germanArrivalFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate,
-                onTapExit: { }
+                onTapExit: {}
             )
             .environment(\.locale, .init(identifier: "de_DE"))
         }
