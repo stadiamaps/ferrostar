@@ -2,40 +2,43 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class SpeedLimitViewTests: XCTestCase {
-    func testUSSpeedLimitViews() {
+    func testUSStyleSpeedLimitViews() {
         assertView {
-            USSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour))
+            USStyleSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour))
         }
 
         assertView {
-            USSpeedLimitView(speedLimit: .init(value: 100, unit: .milesPerHour))
+            USStyleSpeedLimitView(speedLimit: .init(value: 100, unit: .milesPerHour))
         }
 
         assertView {
-            USSpeedLimitView(speedLimit: .init(value: 10000, unit: .milesPerHour))
+            USStyleSpeedLimitView(speedLimit: .init(value: 10000, unit: .milesPerHour))
         }
 
         assertView {
-            USSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour),
-                             units: .kilometersPerHour)
+            USStyleSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour),
+                                  units: .kilometersPerHour)
         }
     }
 
-    func testROWSpeedLimitViews() {
+    func testViennaConventionStyleSpeedLimitViews() {
         assertView {
-            ROWSpeedLimitView(speedLimit: .init(value: 50, unit: .kilometersPerHour))
+            ViennaConventionStyleSpeedLimitView(speedLimit: .init(value: 50, unit: .kilometersPerHour))
         }
 
         assertView {
-            ROWSpeedLimitView(speedLimit: .init(value: 100, unit: .kilometersPerHour))
+            ViennaConventionStyleSpeedLimitView(speedLimit: .init(value: 100, unit: .kilometersPerHour))
         }
 
         assertView {
-            ROWSpeedLimitView(speedLimit: .init(value: 1000, unit: .kilometersPerHour))
+            ViennaConventionStyleSpeedLimitView(speedLimit: .init(value: 1000, unit: .kilometersPerHour))
         }
 
         assertView {
-            ROWSpeedLimitView(speedLimit: .init(value: 100, unit: .kilometersPerHour), units: .milesPerHour)
+            ViennaConventionStyleSpeedLimitView(
+                speedLimit: .init(value: 100, unit: .kilometersPerHour),
+                units: .milesPerHour
+            )
         }
     }
 

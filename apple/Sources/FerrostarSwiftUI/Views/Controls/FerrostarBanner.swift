@@ -7,7 +7,7 @@ public struct FerrostarBanner<Label: View>: View {
 
     var severity: Severity
     var backgroundColor: Color
-    @ViewBuilder var label: () -> Label
+    var label: Label
 
     /// The basic Ferrostar SwiftUI button style.
     ///
@@ -18,18 +18,18 @@ public struct FerrostarBanner<Label: View>: View {
     public init(
         severity: FerrostarBanner.Severity,
         backgroundColor: Color = Color(.systemBackground),
-        label: @escaping () -> Label
+        @ViewBuilder label: () -> Label
     ) {
         self.severity = severity
         self.backgroundColor = backgroundColor
-        self.label = label
+        self.label = label()
     }
 
     public var body: some View {
         HStack {
             image(for: severity)
 
-            label()
+            label
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
@@ -52,15 +52,15 @@ public struct FerrostarBanner<Label: View>: View {
 #Preview {
     VStack {
         FerrostarBanner(severity: .info) {
-            Text("Something Useful")
+            Text(verbatim: "Something Useful")
         }
 
         FerrostarBanner(severity: .loading) {
-            Text("Rerouting...")
+            Text(verbatim: "Rerouting...")
         }
 
         FerrostarBanner(severity: .error) {
-            Text("No Location Available")
+            Text(verbatim: "No Location Available")
         }
     }
     .padding()

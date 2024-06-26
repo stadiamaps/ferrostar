@@ -11,15 +11,15 @@ public struct InnerGridView<
     BottomCenter: View,
     BottomTrailing: View
 >: View {
-    @ViewBuilder var topLeading: () -> TopLeading
-    @ViewBuilder var topCenter: () -> TopCenter
-    @ViewBuilder var topTrailing: () -> TopTrailing
-    @ViewBuilder var midLeading: () -> MidLeading
-    @ViewBuilder var midCenter: () -> MidCenter
-    @ViewBuilder var midTrailing: () -> MidTrailing
-    @ViewBuilder var bottomLeading: () -> BottomLeading
-    @ViewBuilder var bottomCenter: () -> BottomCenter
-    @ViewBuilder var bottomTrailing: () -> BottomTrailing
+    var topLeading: TopLeading
+    var topCenter: TopCenter
+    var topTrailing: TopTrailing
+    var midLeading: MidLeading
+    var midCenter: MidCenter
+    var midTrailing: MidTrailing
+    var bottomLeading: BottomLeading
+    var bottomCenter: BottomCenter
+    var bottomTrailing: BottomTrailing
 
     /// A General purpose grid view used for overlaying alerts, controls and other UI components
     /// on top of the map's free space.
@@ -52,30 +52,30 @@ public struct InnerGridView<
         @ViewBuilder bottomCenter: @escaping () -> BottomCenter = { InfiniteSpacer() },
         @ViewBuilder bottomTrailing: @escaping () -> BottomTrailing = { InfiniteSpacer() }
     ) {
-        self.topLeading = topLeading
-        self.topCenter = topCenter
-        self.topTrailing = topTrailing
-        self.midLeading = midLeading
-        self.midCenter = midCenter
-        self.midTrailing = midTrailing
-        self.bottomLeading = bottomLeading
-        self.bottomCenter = bottomCenter
-        self.bottomTrailing = bottomTrailing
+        self.topLeading = topLeading()
+        self.topCenter = topCenter()
+        self.topTrailing = topTrailing()
+        self.midLeading = midLeading()
+        self.midCenter = midCenter()
+        self.midTrailing = midTrailing()
+        self.bottomLeading = bottomLeading()
+        self.bottomCenter = bottomCenter()
+        self.bottomTrailing = bottomTrailing()
     }
 
     public var body: some View {
         HStack {
             // Leading Column
             VStack(alignment: .leading) {
-                topLeading()
+                topLeading
 
                 Spacer()
 
-                midLeading()
+                midLeading
 
                 Spacer()
 
-                bottomLeading()
+                bottomLeading
             }
             .frame(
                 maxWidth: .infinity,
@@ -85,15 +85,15 @@ public struct InnerGridView<
 
             // Center Column
             VStack(alignment: .center) {
-                topCenter()
+                topCenter
 
                 Spacer()
 
-                midCenter()
+                midCenter
 
                 Spacer()
 
-                bottomCenter()
+                bottomCenter
             }
             .frame(
                 maxWidth: .infinity,
@@ -103,15 +103,15 @@ public struct InnerGridView<
 
             // Trailing Column
             VStack(alignment: .trailing) {
-                topTrailing()
+                topTrailing
 
                 Spacer()
 
-                midTrailing()
+                midTrailing
 
                 Spacer()
 
-                bottomTrailing()
+                bottomTrailing
             }
             .frame(
                 maxWidth: .infinity,

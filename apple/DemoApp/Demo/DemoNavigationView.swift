@@ -94,12 +94,12 @@ struct DemoNavigationView: View {
                     }
                 }
             } bottomTrailing: {
-                HStack {
-//                    Text(locationLabel)
-//                        .font(.caption)
-//                        .padding(.all, 8)
-//                        .foregroundColor(.white)
-//                        .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+                VStack {
+                    Text(locationLabel)
+                        .font(.caption)
+                        .padding(.all, 8)
+                        .foregroundColor(.white)
+                        .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
 
                     if locationServicesEnabled {
                         if ferrostarCore.state == nil {

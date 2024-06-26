@@ -13,10 +13,11 @@ public struct DynamicallyOrientingNavigationView<
     MidLeading: View,
     BottomTrailing: View
 >: View {
+    @Environment(\.ferrostarTheme) var ferrostarTheme: any FerrostarTheme
+    @Environment(\.ferrostarFormatters) var ferrostarFormatter: any FerrostarFormatters
+
     // TODO: Add orientation handling once the landscape view is constructed.
     @State private var orientation = UIDeviceOrientation.unknown
-
-    let theme: any FerrostarTheme
 
     let styleURL: URL
     // TODO: Configurable camera and user "puck" rotation modes
@@ -24,10 +25,10 @@ public struct DynamicallyOrientingNavigationView<
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
-    @ViewBuilder var topCenter: () -> TopCenter
-    @ViewBuilder var topTrailing: () -> TopTrailing
-    @ViewBuilder var midLeading: () -> MidLeading
-    @ViewBuilder var bottomTrailing: () -> BottomTrailing
+    var topCenter: TopCenter
+    var topTrailing: TopTrailing
+    var midLeading: MidLeading
+    var bottomTrailing: BottomTrailing
 
     @Binding var camera: MapViewCamera
     @Binding var snappedZoom: Double
@@ -46,29 +47,27 @@ public struct DynamicallyOrientingNavigationView<
     ///   - useSnappedCamera: Whether to use the ferrostar snapped camera or the camer binding itself.
     ///   - distanceFormatter: The formatter for distances in instruction views.
     public init(
-        theme: any FerrostarTheme = DefaultFerrostarTheme(),
         styleURL: URL,
         navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
         snappedZoom: Binding<Double>,
         useSnappedCamera: Binding<Bool>,
         onTapExit: @escaping () -> Void = {},
-        @MapViewContentBuilder mapContent: () -> [StyleLayerDefinition] = { [] },
-        @ViewBuilder topCenter: @escaping () -> TopCenter = { InfiniteSpacer() },
-        @ViewBuilder topTrailing: @escaping () -> TopTrailing = { InfiniteSpacer() },
-        @ViewBuilder midLeading: @escaping () -> MidLeading = { InfiniteSpacer() },
-        @ViewBuilder bottomTrailing: @escaping () -> BottomTrailing = { InfiniteSpacer() }
+        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
+        @ViewBuilder topCenter: () -> TopCenter = { InfiniteSpacer() },
+        @ViewBuilder topTrailing: () -> TopTrailing = { InfiniteSpacer() },
+        @ViewBuilder midLeading: () -> MidLeading = { InfiniteSpacer() },
+        @ViewBuilder bottomTrailing: () -> BottomTrailing = { InfiniteSpacer() }
     ) {
-        self.theme = theme
         self.styleURL = styleURL
         self.navigationState = navigationState
-        userLayers = mapContent()
         self.onTapExit = onTapExit
 
-        self.topCenter = topCenter
-        self.topTrailing = topTrailing
-        self.midLeading = midLeading
-        self.bottomTrailing = bottomTrailing
+        userLayers = makeMapContent()
+        self.topCenter = topCenter()
+        self.topTrailing = topTrailing()
+        self.midLeading = midLeading()
+        self.bottomTrailing = bottomTrailing()
 
         _camera = camera
         _snappedZoom = snappedZoom
@@ -81,18 +80,17 @@ public struct DynamicallyOrientingNavigationView<
             Text("TODO")
         default:
             PortraitNavigationView(
-                theme: theme,
                 styleURL: styleURL,
                 navigationState: navigationState,
                 camera: $camera,
                 snappedZoom: $snappedZoom,
                 useSnappedCamera: $useSnappedCamera,
                 onTapExit: onTapExit,
-                mapContent: { userLayers },
-                topCenter: topCenter,
-                topTrailing: topTrailing,
-                midLeading: midLeading,
-                bottomTrailing: bottomTrailing
+                makeMapContent: { userLayers },
+                topCenter: { topCenter },
+                topTrailing: { topTrailing },
+                midLeading: { midLeading },
+                bottomTrailing: { bottomTrailing }
             )
         }
     }
@@ -106,16 +104,14 @@ public struct DynamicallyOrientingNavigationView<
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
 
-    let theme = DefaultFerrostarTheme(distanceFormatter: formatter)
-
     return DynamicallyOrientingNavigationView(
-        theme: theme,
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         snappedZoom: .constant(18),
         useSnappedCamera: .constant(true)
     )
+    .ferrostarFormatters(DefaultFerrostarFormatters(distanceFormatter: formatter))
 }
 
 #Preview("Portrait Navigation View (Metric)") {
@@ -125,14 +121,12 @@ public struct DynamicallyOrientingNavigationView<
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .metric
 
-    let theme = DefaultFerrostarTheme(distanceFormatter: formatter)
-
     return DynamicallyOrientingNavigationView(
-        theme: theme,
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         snappedZoom: .constant(18),
         useSnappedCamera: .constant(true)
     )
+    .ferrostarFormatters(DefaultFerrostarFormatters(distanceFormatter: formatter))
 }

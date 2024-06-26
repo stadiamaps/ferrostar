@@ -54,20 +54,21 @@ public struct USStyleSpeedLimitView: View {
             .background(Color.white)
             .frame(width: 52, height: 76)
             .cornerRadius(4)
+            .colorScheme(.light)
         }
     }
 }
 
 #Preview {
     VStack {
-        USSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour))
+        USStyleSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour))
 
-        USSpeedLimitView(speedLimit: .init(value: 100, unit: .milesPerHour))
+        USStyleSpeedLimitView(speedLimit: .init(value: 100, unit: .milesPerHour))
 
-        USSpeedLimitView(speedLimit: .init(value: 10000, unit: .milesPerHour))
+        USStyleSpeedLimitView(speedLimit: .init(value: 10000, unit: .milesPerHour))
 
-        USSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour),
-                         units: .kilometersPerHour)
+        USStyleSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour),
+                              units: .kilometersPerHour)
     }
     .padding()
     .background(Color.green)

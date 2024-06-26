@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// A spacer with the frame
 public struct InfiniteSpacer: View {
     public init() {}
 

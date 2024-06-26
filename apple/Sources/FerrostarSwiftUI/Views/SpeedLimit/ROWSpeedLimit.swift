@@ -44,18 +44,22 @@ public struct ViennaConventionStyleSpeedLimitView: View {
             .frame(width: 56, height: 56)
         }
         .frame(width: 64, height: 64)
+        .colorScheme(.light)
     }
 }
 
 #Preview {
     VStack {
-        ROWSpeedLimitView(speedLimit: .init(value: 50, unit: .kilometersPerHour))
+        ViennaConventionStyleSpeedLimitView(speedLimit: .init(value: 50, unit: .kilometersPerHour))
 
-        ROWSpeedLimitView(speedLimit: .init(value: 100, unit: .kilometersPerHour))
+        ViennaConventionStyleSpeedLimitView(speedLimit: .init(value: 100, unit: .kilometersPerHour))
 
-        ROWSpeedLimitView(speedLimit: .init(value: 1000, unit: .kilometersPerHour))
+        ViennaConventionStyleSpeedLimitView(speedLimit: .init(value: 1000, unit: .kilometersPerHour))
 
-        ROWSpeedLimitView(speedLimit: .init(value: 100, unit: .kilometersPerHour), units: .milesPerHour)
+        ViennaConventionStyleSpeedLimitView(
+            speedLimit: .init(value: 100, unit: .kilometersPerHour),
+            units: .milesPerHour
+        )
     }
     .padding()
     .background(Color.green)

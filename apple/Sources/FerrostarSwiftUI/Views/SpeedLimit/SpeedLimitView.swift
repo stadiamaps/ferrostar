@@ -20,13 +20,13 @@ public struct SpeedLimitView: View {
     public var body: some View {
         switch locale.identifier {
         case "en_US":
-            USSpeedLimitView(
+            USStyleSpeedLimitView(
                 speedLimit: speedLimit,
                 valueFormatter: valueFormatter,
                 unitFormatter: unitFormatter
             )
         default:
-            ROWSpeedLimitView(
+            ViennaConventionStyleSpeedLimitView(
                 speedLimit: speedLimit,
                 valueFormatter: valueFormatter,
                 unitFormatter: unitFormatter

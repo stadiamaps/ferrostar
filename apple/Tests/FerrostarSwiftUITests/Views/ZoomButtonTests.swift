@@ -10,4 +10,15 @@ final class ZoomButtonTests: XCTestCase {
             )
         }
     }
+    
+    // MARK: Dark Mode
+    
+    func testZoomButton_darkMode() {
+        assertView(colorScheme: .dark) {
+            ZoomButton(
+                onZoomIn: {},
+                onZoomOut: {}
+            )
+        }
+    }
 }

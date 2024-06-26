@@ -9,7 +9,8 @@ public struct NavigatingInnerGridView<
     MidLeading: View,
     BottomTrailing: View
 >: View {
-    var theme: any FerrostarTheme
+    @Environment(\.ferrostarTheme) var ferrostarTheme: any FerrostarTheme
+    @Environment(\.ferrostarFormatters) var ferrostarFormatter: any FerrostarFormatters
 
     var speedLimit: Measurement<UnitSpeed>?
 
@@ -22,10 +23,10 @@ public struct NavigatingInnerGridView<
 
     // MARK: Customizable Containers
 
-    @ViewBuilder var topCenter: () -> TopCenter
-    @ViewBuilder var topTrailing: () -> TopTrailing
-    @ViewBuilder var midLeading: () -> MidLeading
-    @ViewBuilder var bottomTrailing: () -> BottomTrailing
+    var topCenter: TopCenter
+    var topTrailing: TopTrailing
+    var midLeading: MidLeading
+    var bottomTrailing: BottomTrailing
 
     /// The default navigation inner grid view.
     ///
@@ -41,7 +42,8 @@ public struct NavigatingInnerGridView<
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
     ///   - showCentering: Whether to show the centering control. This is typically determined by the Map's centering
     /// state.
-    ///   - onTapCenter: The action that occurs when the user taps the centering control. Typically re-centering the user.
+    ///   - onTapCenter: The action that occurs when the user taps the centering control. Typically re-centering the
+    /// user.
     ///   - topCenter: The customizable top center view. This is recommended for navigation alerts (e.g. toast style
     /// notices).
     ///   - topTrailing: The customizable top trailing view. This can be used for custom interactions or metadata views.
@@ -49,29 +51,28 @@ public struct NavigatingInnerGridView<
     ///   - bottomTrailing: The customizable bottom leading view. This can be used for custom interactions or metadata
     /// views.
     public init(
-        theme: any FerrostarTheme = DefaultFerrostarTheme(),
         speedLimit: Measurement<UnitSpeed>? = nil,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        @ViewBuilder topCenter: @escaping () -> TopCenter = { InfiniteSpacer() },
-        @ViewBuilder topTrailing: @escaping () -> TopTrailing = { InfiniteSpacer() },
-        @ViewBuilder midLeading: @escaping () -> MidLeading = { InfiniteSpacer() },
-        @ViewBuilder bottomTrailing: @escaping () -> BottomTrailing = { InfiniteSpacer() }
+        @ViewBuilder topCenter: () -> TopCenter = { InfiniteSpacer() },
+        @ViewBuilder topTrailing: () -> TopTrailing = { InfiniteSpacer() },
+        @ViewBuilder midLeading: () -> MidLeading = { InfiniteSpacer() },
+        @ViewBuilder bottomTrailing: () -> BottomTrailing = { InfiniteSpacer() }
     ) {
-        self.theme = theme
         self.speedLimit = speedLimit
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        self.topCenter = topCenter
-        self.topTrailing = topTrailing
-        self.midLeading = midLeading
-        self.bottomTrailing = bottomTrailing
+
+        self.topCenter = topCenter()
+        self.topTrailing = topTrailing()
+        self.midLeading = midLeading()
+        self.bottomTrailing = bottomTrailing()
     }
 
     public var body: some View {
@@ -80,14 +81,14 @@ public struct NavigatingInnerGridView<
                 if let speedLimit {
                     SpeedLimitView(
                         speedLimit: speedLimit,
-                        valueFormatter: theme.speedValueFormatter,
-                        unitFormatter: theme.speedWithUnitsFormatter
+                        valueFormatter: ferrostarFormatter.speedValueFormatter,
+                        unitFormatter: ferrostarFormatter.speedWithUnitsFormatter
                     )
                 }
             },
-            topCenter: { topCenter() },
-            topTrailing: { topTrailing() },
-            midLeading: { midLeading() },
+            topCenter: { topCenter },
+            topTrailing: { topTrailing },
+            midLeading: { midLeading },
             midCenter: {
                 // This view does not allow center content.
                 InfiniteSpacer()
@@ -117,7 +118,7 @@ public struct NavigatingInnerGridView<
                 // This view does not allow center content to prevent overlaying the puck.
                 InfiniteSpacer()
             },
-            bottomTrailing: { bottomTrailing() }
+            bottomTrailing: { bottomTrailing }
         )
     }
 }

@@ -18,4 +18,22 @@ final class FerrostarButtonTests: XCTestCase {
             }
         }
     }
+    
+    // MARK: Dark Mode
+    
+    func testImageButton_darkMode() {
+        assertView(colorScheme: .dark)  {
+            FerrostarButton {} label: {
+                Image(systemName: "location")
+            }
+        }
+    }
+
+    func testTextButton_darkMode() {
+        assertView(colorScheme: .dark) {
+            FerrostarButton {} label: {
+                Text("Start Navigation")
+            }
+        }
+    }
 }

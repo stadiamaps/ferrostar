@@ -10,7 +10,7 @@ public struct ArrivalView: View {
     let durationFormatter: DateComponentsFormatter
     let theme: any ArrivalViewTheme
     let fromDate: Date
-    let onTapExit: () -> Void
+    let onTapExit: (() -> Void)?
 
     /// Initialize the ArrivalView
     ///
@@ -29,7 +29,7 @@ public struct ArrivalView: View {
         durationFormatter: DateComponentsFormatter = DefaultFormatters.durationFormat,
         theme: any ArrivalViewTheme = DefaultArrivalViewTheme(),
         fromDate: Date = Date(),
-        onTapExit: @escaping () -> Void = {}
+        onTapExit: (() -> Void)? = nil
     ) {
         self.progress = progress
         self.distanceFormatter = distanceFormatter
@@ -90,15 +90,21 @@ public struct ArrivalView: View {
                 }
             }
 
-            Button {
-                onTapExit()
-            } label: {
-                Image(systemName: "xmark")
-                    .foregroundColor(theme.measurementColor)
+            if let onTapExit {
+                Button {
+                    onTapExit()
+                } label: {
+                    Image(systemName: "xmark")
+                        .foregroundColor(theme.measurementColor)
+                }
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .clipShape(Capsule())
+            } else {
+                Rectangle()
+                    .frame(width: 20, height: 10)
+                    .foregroundColor(.clear)
             }
-            .padding()
-            .background(Color(.systemGroupedBackground))
-            .clipShape(Capsule())
         }
         .padding(.leading, 32)
         .padding(.trailing, 12)
@@ -150,6 +156,59 @@ public struct ArrivalView: View {
                 durationRemaining: 520_800
             ),
             theme: informationalTheme
+        )
+
+        Spacer()
+    }
+    .padding()
+    .background(Color.green)
+}
+
+#Preview("ArrivalView With Action") {
+    var informationalTheme: any ArrivalViewTheme {
+        var theme = DefaultArrivalViewTheme()
+        theme.style = .informational
+        return theme
+    }
+
+    return VStack(spacing: 16) {
+        ArrivalView(
+            progress: TripProgress(
+                distanceToNextManeuver: 123,
+                distanceRemaining: 120,
+                durationRemaining: 150
+            ),
+            onTapExit: {}
+        )
+
+        ArrivalView(
+            progress: TripProgress(
+                distanceToNextManeuver: 123,
+                distanceRemaining: 14500,
+                durationRemaining: 1234
+            ),
+            onTapExit: {}
+        )
+
+        ArrivalView(
+            progress: TripProgress(
+                distanceToNextManeuver: 123,
+                distanceRemaining: 14500,
+                durationRemaining: 12234
+            ),
+            theme: informationalTheme,
+            onTapExit: {}
+        )
+        .environment(\.locale, .init(identifier: "de_DE"))
+
+        ArrivalView(
+            progress: TripProgress(
+                distanceToNextManeuver: 5420,
+                distanceRemaining: 1_420_000,
+                durationRemaining: 520_800
+            ),
+            theme: informationalTheme,
+            onTapExit: {}
         )
 
         Spacer()

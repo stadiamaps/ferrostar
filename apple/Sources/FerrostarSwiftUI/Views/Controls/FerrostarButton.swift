@@ -16,23 +16,23 @@ public struct FerrostarButtonStyle: ButtonStyle {
 
 public struct FerrostarButton<Label: View>: View {
     let action: () -> Void
-    @ViewBuilder var label: () -> Label
+    let label: Label
 
     /// The basic Ferrostar SwiftUI button style.
     ///
     /// - Parameters:
     ///   - action: The action the button performs on tap.
     ///   - label: The label subview.
-    public init(action: @escaping () -> Void, label: @escaping () -> Label) {
+    public init(action: @escaping () -> Void, label: () -> Label) {
         self.action = action
-        self.label = label
+        self.label = label()
     }
 
     public var body: some View {
         Button {
             action()
         } label: {
-            label()
+            label
         }
         .buttonStyle(FerrostarButtonStyle())
     }
