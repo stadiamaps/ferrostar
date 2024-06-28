@@ -52,9 +52,9 @@ final class SpeedLimitViewTests: XCTestCase {
                 .environment(\.locale, .init(identifier: "fr_FR"))
         }
     }
-    
+
     // MARK: Dark Mode
-    
+
     func testUSStyleSpeedLimitViews_darkMode() {
         assertView(colorScheme: .dark) {
             USStyleSpeedLimitView(speedLimit: .init(value: 50, unit: .milesPerHour))
