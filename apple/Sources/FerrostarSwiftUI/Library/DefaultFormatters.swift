@@ -32,6 +32,10 @@ public class DefaultFormatters {
 
     // MARK: Speed
 
+    /// The speed with units formatter is a measurement formatter used to format speed units for items like
+    /// the user's current speed, speed limit and other related measurements.
+    ///
+    /// E.g. `50 mi/hr` or `100 km/hr`
     public static var speedWithUnitsFormatter: MeasurementFormatter {
         let formatter = MeasurementFormatter()
         formatter.unitOptions = .naturalScale

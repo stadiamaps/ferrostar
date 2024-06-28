@@ -57,10 +57,10 @@ public struct NavigatingInnerGridView<
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        @ViewBuilder topCenter: () -> TopCenter = { InfiniteSpacer() },
-        @ViewBuilder topTrailing: () -> TopTrailing = { InfiniteSpacer() },
-        @ViewBuilder midLeading: () -> MidLeading = { InfiniteSpacer() },
-        @ViewBuilder bottomTrailing: () -> BottomTrailing = { InfiniteSpacer() }
+        @ViewBuilder topCenter: () -> TopCenter = { Spacer() },
+        @ViewBuilder topTrailing: () -> TopTrailing = { Spacer() },
+        @ViewBuilder midLeading: () -> MidLeading = { Spacer() },
+        @ViewBuilder bottomTrailing: () -> BottomTrailing = { Spacer() }
     ) {
         self.speedLimit = speedLimit
         self.showZoom = showZoom
@@ -91,14 +91,14 @@ public struct NavigatingInnerGridView<
             midLeading: { midLeading },
             midCenter: {
                 // This view does not allow center content.
-                InfiniteSpacer()
+                Spacer()
             },
             midTrailing: {
                 if showZoom {
                     ZoomButton(onZoomIn: onZoomIn, onZoomOut: onZoomOut)
                         .shadow(radius: 8)
                 } else {
-                    InfiniteSpacer()
+                    Spacer()
                 }
             },
             bottomLeading: {
@@ -111,12 +111,12 @@ public struct NavigatingInnerGridView<
                     }
                     .shadow(radius: 8)
                 } else {
-                    InfiniteSpacer()
+                    Spacer()
                 }
             },
             bottomCenter: {
                 // This view does not allow center content to prevent overlaying the puck.
-                InfiniteSpacer()
+                Spacer()
             },
             bottomTrailing: { bottomTrailing }
         )

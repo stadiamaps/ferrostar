@@ -36,10 +36,10 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
         useSnappedCamera: Binding<Bool>,
         onTapExit: @escaping () -> Void = {},
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
-        @ViewBuilder topCenter: () -> TopCenter = { InfiniteSpacer() },
-        @ViewBuilder topTrailing: () -> TopTrailing = { InfiniteSpacer() },
-        @ViewBuilder midLeading: () -> MidLeading = { InfiniteSpacer() },
-        @ViewBuilder bottomTrailing: () -> BottomTrailing = { InfiniteSpacer() }
+        @ViewBuilder topCenter: () -> TopCenter = { Spacer() },
+        @ViewBuilder topTrailing: () -> TopTrailing = { Spacer() },
+        @ViewBuilder midLeading: () -> MidLeading = { Spacer() },
+        @ViewBuilder bottomTrailing: () -> BottomTrailing = { Spacer() }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState

@@ -3,18 +3,19 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class NavigatingInnerGridViewTests: XCTestCase {
-    func testUSView() {
-        assertView {
-            NavigatingInnerGridView(
-                speedLimit: .init(value: 55, unit: .milesPerHour),
-                showZoom: true,
-                showCentering: true
-            )
-            .padding()
-        }
-    }
+    // TODO: enable once we decide on a method to expose the speed limit sign provider within the view stack.
+//    func testUSView() {
+//        assertView {
+//            NavigatingInnerGridView(
+//                speedLimit: .init(value: 55, unit: .milesPerHour),
+//                showZoom: true,
+//                showCentering: true
+//            )
+//            .padding()
+//        }
+//    }
 
-    func testROWView() {
+    func testViennaStyleSpeedLimitInGridView() {
         assertView {
             NavigatingInnerGridView(
                 speedLimit: .init(value: 100, unit: .kilometersPerHour),

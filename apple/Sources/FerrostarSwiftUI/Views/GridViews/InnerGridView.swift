@@ -42,15 +42,15 @@ public struct InnerGridView<
     ///   - bottomCenter: The bottom center corner view. Defaults to a Spacer()
     ///   - bottomTrailing: The bottom right corner view. Defaults to a Spacer()
     public init(
-        @ViewBuilder topLeading: @escaping () -> TopLeading = { InfiniteSpacer() },
-        @ViewBuilder topCenter: @escaping () -> TopCenter = { InfiniteSpacer() },
-        @ViewBuilder topTrailing: @escaping () -> TopTrailing = { InfiniteSpacer() },
-        @ViewBuilder midLeading: @escaping () -> MidLeading = { InfiniteSpacer() },
-        @ViewBuilder midCenter: @escaping () -> MidCenter = { InfiniteSpacer() },
-        @ViewBuilder midTrailing: @escaping () -> MidTrailing = { InfiniteSpacer() },
-        @ViewBuilder bottomLeading: @escaping () -> BottomLeading = { InfiniteSpacer() },
-        @ViewBuilder bottomCenter: @escaping () -> BottomCenter = { InfiniteSpacer() },
-        @ViewBuilder bottomTrailing: @escaping () -> BottomTrailing = { InfiniteSpacer() }
+        @ViewBuilder topLeading: @escaping () -> TopLeading = { Spacer() },
+        @ViewBuilder topCenter: @escaping () -> TopCenter = { Spacer() },
+        @ViewBuilder topTrailing: @escaping () -> TopTrailing = { Spacer() },
+        @ViewBuilder midLeading: @escaping () -> MidLeading = { Spacer() },
+        @ViewBuilder midCenter: @escaping () -> MidCenter = { Spacer() },
+        @ViewBuilder midTrailing: @escaping () -> MidTrailing = { Spacer() },
+        @ViewBuilder bottomLeading: @escaping () -> BottomLeading = { Spacer() },
+        @ViewBuilder bottomCenter: @escaping () -> BottomCenter = { Spacer() },
+        @ViewBuilder bottomTrailing: @escaping () -> BottomTrailing = { Spacer() }
     ) {
         self.topLeading = topLeading()
         self.topCenter = topCenter()
