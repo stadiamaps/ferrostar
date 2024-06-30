@@ -294,8 +294,12 @@ pub fn calculate_trip_progress(
 
     // This could be improved with live traffic data along the route.
     // TODO: Figure out the best way to enable this use case
-    let pct_remaining_current_step =
-        distance_to_next_maneuver / current_step_linestring.haversine_length();
+    let current_step_length = current_step.distance;
+    let pct_remaining_current_step = if current_step_length > 0f64 {
+        distance_to_next_maneuver / current_step_length
+    } else {
+        0f64
+    };
 
     // Get the percentage of duration remaining in the current step.
     let duration_to_next_maneuver = pct_remaining_current_step * current_step.duration;
@@ -477,6 +481,37 @@ proptest! {
             }), "Expected that the step should advance any time that the haversine distance to the end of the step is within the automatic advance threshold.");
         }
     }
+
+    #[test]
+    fn test_end_of_step_progress(
+        x1 in -180f64..180f64, y1 in -90f64..90f64,
+        x2 in -180f64..180f64, y2 in -90f64..90f64,
+    ) {
+        let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
+        let linestring = current_route_step.get_linestring();
+        let end = linestring.points().last().expect("Expected at least one point");
+        let progress = calculate_trip_progress(&end, &linestring, &[current_route_step]);
+
+        prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
+        prop_assert_eq!(progress.distance_remaining, 0f64);
+        prop_assert_eq!(progress.duration_remaining, 0f64);
+    }
+
+    #[test]
+    fn test_end_of_trip_progress_valhalla_arrival(
+        x1: f64, y1: f64,
+    ) {
+        // This may look wrong, but it's actually how Valhalla (and presumably others)
+        // represent a point geometry for the arrival step.
+        let current_route_step = gen_dummy_route_step(x1, y1, x1, y1);
+        let linestring = current_route_step.get_linestring();
+        let end = linestring.points().last().expect("Expected at least one point");
+        let progress = calculate_trip_progress(&end, &linestring, &[current_route_step]);
+
+        prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
+        prop_assert_eq!(progress.distance_remaining, 0f64);
+        prop_assert_eq!(progress.duration_remaining, 0f64);
+    }
 }
 
 #[cfg(test)]
@@ -515,6 +550,7 @@ mod tests {
                 < f64::EPSILON));
     }
 }
-// TODO: Unit tests
+
+// TODO: Other unit tests
 // - Under and over distance accuracy thresholds
 // - Equator and extreme latitude
