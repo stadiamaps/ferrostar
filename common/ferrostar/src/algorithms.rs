@@ -265,11 +265,13 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
 /// We assume that input location is pre-snapped to route step's linestring.
 ///
 /// The result may be [None] in case of invalid input such as infinite floats.
-fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &LineString) -> Option<f64> {
+fn distance_to_end_of_step(
+    snapped_location: &Point,
+    current_step_linestring: &LineString,
+) -> Option<f64> {
     let step_length = current_step_linestring.haversine_length();
-    distance_along(snapped_location, current_step_linestring).map(|traversed| {
-        step_length - traversed
-    })
+    distance_along(snapped_location, current_step_linestring)
+        .map(|traversed| step_length - traversed)
 }
 
 /// Computes the arrival state for a snapped location along the route.
@@ -291,7 +293,8 @@ pub fn calculate_trip_progress(
 
     // Calculate the distance and duration till the end of the current route step.
     let distance_to_next_maneuver =
-        distance_to_end_of_step(snapped_location, current_step_linestring).unwrap_or(current_step.distance);
+        distance_to_end_of_step(snapped_location, current_step_linestring)
+            .unwrap_or(current_step.distance);
 
     // This could be improved with live traffic data along the route.
     // TODO: Figure out the best way to enable this use case
