@@ -294,9 +294,8 @@ pub fn calculate_trip_progress(
 
     // This could be improved with live traffic data along the route.
     // TODO: Figure out the best way to enable this use case
-    let current_step_length = current_step.distance;
-    let pct_remaining_current_step = if current_step_length > 0f64 {
-        distance_to_next_maneuver / current_step_length
+    let pct_remaining_current_step = if current_step.distance > 0f64 {
+        distance_to_next_maneuver / current_step.distance
     } else {
         0f64
     };
