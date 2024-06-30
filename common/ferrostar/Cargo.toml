@@ -44,6 +44,3 @@ rstest = "0.21.0"
 
 [lib]
 crate-type = ["cdylib", "staticlib", "lib"]
-
-[profile.release]
-lto = "thin"
