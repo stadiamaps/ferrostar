@@ -273,19 +273,20 @@ fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &L
 
 /// Computes the arrival state for a snapped location along the route.
 /// This includes distances and durations.
+///
+/// NOTE: `remaining_steps` includes the current step.
 pub fn calculate_trip_progress(
     snapped_location: &Point,
-    current_step: &RouteStep,
     current_step_linestring: &LineString,
     remaining_steps: &[RouteStep],
 ) -> TripProgress {
-    if remaining_steps.is_empty() {
+    let Some(current_step) = remaining_steps.first() else {
         return TripProgress {
             distance_to_next_maneuver: 0.0,
             distance_remaining: 0.0,
             duration_remaining: 0.0,
         };
-    }
+    };
 
     // Calculate the distance and duration till the end of the current route step.
     let distance_to_next_maneuver =
