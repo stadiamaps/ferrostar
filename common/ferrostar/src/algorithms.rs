@@ -223,6 +223,7 @@ pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
 /// assuming that units are latitude and longitude for the geometries.
 ///
 /// The result is given in meters.
+/// The result may be [None] in case of invalid input such as infinite floats.
 fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
     let total_length = linestring.haversine_length();
     if total_length == 0.0 {
@@ -242,7 +243,7 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
             let segment_length = segment_linestring.haversine_length();
 
             if segment_distance_to_point < closest_dist_to_point {
-                let segment_fraction = segment.line_locate_point(point)?; // if any segment has a None fraction, return None
+                let segment_fraction = segment.line_locate_point(point)?;
                 Some((
                     cum_length + segment_length,
                     segment_distance_to_point,
@@ -262,13 +263,13 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
 
 /// Computes the distance between a location and the end of the current route step.
 /// We assume that input location is pre-snapped to route step's linestring.
-fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &LineString) -> f64 {
+///
+/// The result may be [None] in case of invalid input such as infinite floats.
+fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &LineString) -> Option<f64> {
     let step_length = current_step_linestring.haversine_length();
-    if let Some(traversed) = distance_along(snapped_location, current_step_linestring) {
+    distance_along(snapped_location, current_step_linestring).map(|traversed| {
         step_length - traversed
-    } else {
-        0.0
-    }
+    })
 }
 
 /// Computes the arrival state for a snapped location along the route.
@@ -290,7 +291,7 @@ pub fn calculate_trip_progress(
 
     // Calculate the distance and duration till the end of the current route step.
     let distance_to_next_maneuver =
-        distance_to_end_of_step(snapped_location, current_step_linestring);
+        distance_to_end_of_step(snapped_location, current_step_linestring).unwrap_or(current_step.distance);
 
     // This could be improved with live traffic data along the route.
     // TODO: Figure out the best way to enable this use case
