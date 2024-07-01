@@ -80,16 +80,27 @@ Before pushing, run the following in the `common` folder:
 2. Run `cargo insta review` to update snapshot testing changes. 
 3. Run `cargo test` to validate testing and ensure snapshot changes were correctly applied by step 2.
 
-#### WASM
+### Web
 
-We support `wasm32-unknown-unknown` for use in a JavaScript environment.
-That last qualifier is important, as we currently depend on being able to get the system time in several places.
-This comes through crates that rely on a JS environment.
-
-You can build the wasm module like so:
+1. Install `wasm-pack`:
 
 ```shell
-cargo build --lib --release --target wasm32-unknown-unknown --no-default-features --features wasm_js
+cargo install wasm-pack
+```
+
+2. Build the NPM package of the core:
+
+```shell
+cd common
+wasm-pack build --target web ferrostar --no-default-features --features wasm_js
+```
+
+3. Build the JS library:
+
+```shell
+cd web
+npm install
+npm run build
 ```
 
 ### iOS
@@ -165,6 +176,10 @@ Run the `ktfmtFormat` gradle action before committing to ensure consistent forma
 ### Common Core
 
 Run `cargo test -p ferrostar-core` from within the `common` directory to run tests.
+
+### Web
+
+Run `wasm-pack test --firefox --headless ferrostar --no-default-features --features wasm_js` from within the `common` directory to run tests.
 
 ### iOS
 
