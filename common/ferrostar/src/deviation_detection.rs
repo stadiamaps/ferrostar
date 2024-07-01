@@ -4,6 +4,9 @@ use crate::models::{Route, RouteStep, UserLocation};
 use alloc::sync::Arc;
 use geo::Point;
 
+#[cfg(feature = "wasm-bindgen")]
+use serde::{Deserialize, Serialize};
+
 #[cfg(test)]
 use {
     crate::{
@@ -17,6 +20,7 @@ use {
 /// Determines if the user has deviated from the expected route.
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
 pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
@@ -32,7 +36,9 @@ pub enum RouteDeviationTracking {
         max_acceptable_deviation: f64,
     },
     // TODO: Standard variants that account for mode of travel. For example, `DefaultFor(modeOfTravel: ModeOfTravel)` with sensible defaults for walking, driving, cycling, etc.
+    // TODO: Make the custom variant work with wasm-bindgen.
     /// Arbitrary custom code; you decide!
+    #[cfg_attr(feature = "wasm-bindgen", serde(skip))]
     Custom {
         detector: Arc<dyn RouteDeviationDetector>,
     },
@@ -85,6 +91,7 @@ impl RouteDeviationTracking {
 /// For example, we could conceivably add a "wrong way" status in the future.
 #[derive(Debug, Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 pub enum RouteDeviation {
     /// The user is proceeding on course within the expected tolerances; everything is normal.
     NoDeviation,

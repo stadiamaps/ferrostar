@@ -2,6 +2,11 @@ use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
 use polyline::decode_polyline;
+use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::{prelude::*, JsValue};
+
 #[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
 
@@ -14,10 +19,7 @@ use alloc::{
     vec::Vec,
 };
 
-#[cfg(test)]
-use serde::Serialize;
-
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum SimulationError {
@@ -27,8 +29,7 @@ pub enum SimulationError {
     NotEnoughPoints,
 }
 
-#[derive(Clone, PartialEq)]
-#[cfg_attr(test, derive(Serialize))]
+#[derive(Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct LocationSimulationState {
     pub current_location: UserLocation,
@@ -168,6 +169,54 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
     } else {
         state.clone()
     }
+}
+
+/// JavaScript wrapper for `location_simulation_from_coordinates`.
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = locationSimulationFromCoordinates))]
+pub fn js_location_simulation_from_coordinates(
+    coordinates: JsValue,
+    resample_distance: Option<f64>,
+) -> Result<JsValue, JsValue> {
+    let coordinates: Vec<GeographicCoordinate> = serde_wasm_bindgen::from_value(coordinates)
+        .map_err(|error| JsValue::from_str(&error.to_string()))?;
+
+    location_simulation_from_coordinates(coordinates, resample_distance)
+        .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
+        .map_err(|error| JsValue::from_str(&error.to_string()))
+}
+
+/// JavaScript wrapper for `location_simulation_from_route`.
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = locationSimulationFromRoute))]
+pub fn js_location_simulation_from_route(
+    route: JsValue,
+    resample_distance: Option<f64>,
+) -> Result<JsValue, JsValue> {
+    let route: Route = serde_wasm_bindgen::from_value(route)
+        .map_err(|error| JsValue::from_str(&error.to_string()))?;
+
+    location_simulation_from_route(&route, resample_distance)
+        .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
+        .map_err(|error| JsValue::from_str(&error.to_string()))
+}
+
+/// JavaScript wrapper for `location_simulation_from_polyline`.
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = locationSimulationFromPolyline))]
+pub fn js_location_simulation_from_polyline(
+    polyline: String,
+    precision: u32,
+    resample_distance: Option<f64>,
+) -> Result<JsValue, JsValue> {
+    location_simulation_from_polyline(polyline, precision, resample_distance)
+        .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
+        .map_err(|error| JsValue::from_str(&error.to_string()))
+}
+
+/// JavaScript wrapper for `advance_location_simulation`.
+#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = advanceLocationSimulation))]
+pub fn js_advance_location_simulation(state: JsValue) -> JsValue {
+    let state: LocationSimulationState = serde_wasm_bindgen::from_value(state).unwrap();
+    let new_state = advance_location_simulation(&state);
+    serde_wasm_bindgen::to_value(&new_state).unwrap()
 }
 
 #[cfg(test)]
