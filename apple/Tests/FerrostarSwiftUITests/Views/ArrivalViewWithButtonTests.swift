@@ -77,7 +77,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
     }
 
     func testArrivalViewFormatters_de_DE() {
-        assertView {
+        assertView(navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))) {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
@@ -89,10 +89,9 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 fromDate: referenceDate,
                 onTapExit: {}
             )
-            .environment(\.locale, .init(identifier: "de_DE"))
         }
 
-        assertView {
+        assertView(navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))) {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
@@ -105,7 +104,6 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 fromDate: referenceDate,
                 onTapExit: {}
             )
-            .environment(\.locale, .init(identifier: "de_DE"))
         }
     }
 
@@ -173,7 +171,10 @@ final class ArrivalViewWithButtonTests: XCTestCase {
     }
 
     func testArrivalViewFormatters_de_DE_darkMode() {
-        assertView(colorScheme: .dark) {
+        assertView(
+            colorScheme: .dark,
+            navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))
+        ) {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
@@ -185,10 +186,12 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 fromDate: referenceDate,
                 onTapExit: {}
             )
-            .environment(\.locale, .init(identifier: "de_DE"))
         }
 
-        assertView(colorScheme: .dark) {
+        assertView(
+            colorScheme: .dark,
+            navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))
+        ) {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
@@ -201,7 +204,6 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 fromDate: referenceDate,
                 onTapExit: {}
             )
-            .environment(\.locale, .init(identifier: "de_DE"))
         }
     }
 }

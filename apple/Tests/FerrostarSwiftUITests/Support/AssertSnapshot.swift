@@ -1,3 +1,4 @@
+import FerrostarSwiftUI
 import SnapshotTesting
 import SwiftUI
 import XCTest
@@ -7,6 +8,8 @@ extension XCTestCase {
         named name: String? = nil,
         record: Bool = false,
         colorScheme: ColorScheme = .light,
+        navigationUITheme: NavigationUITheme = DefaultNavigationUITheme(),
+        navigationFormatterCollection: FormatterCollection = TestingFormatterCollection(),
         frame: CGSize = CGSize(width: 430, height: 932),
         @ViewBuilder content: () -> some View,
         file: StaticString = #file,
@@ -15,6 +18,8 @@ extension XCTestCase {
     ) {
         let view = content()
             .environment(\.colorScheme, colorScheme)
+            .environment(\.navigationUITheme, navigationUITheme)
+            .environment(\.navigationFormatterCollection, navigationFormatterCollection)
             .frame(width: frame.width, height: frame.height)
             .background(Color.green)
 
