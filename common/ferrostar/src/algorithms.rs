@@ -223,6 +223,7 @@ pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
 /// assuming that units are latitude and longitude for the geometries.
 ///
 /// The result is given in meters.
+/// The result may be [None] in case of invalid input such as infinite floats.
 fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
     let total_length = linestring.haversine_length();
     if total_length == 0.0 {
@@ -242,7 +243,7 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
             let segment_length = segment_linestring.haversine_length();
 
             if segment_distance_to_point < closest_dist_to_point {
-                let segment_fraction = segment.line_locate_point(point)?; // if any segment has a None fraction, return None
+                let segment_fraction = segment.line_locate_point(point)?;
                 Some((
                     cum_length + segment_length,
                     segment_distance_to_point,
@@ -262,39 +263,46 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
 
 /// Computes the distance between a location and the end of the current route step.
 /// We assume that input location is pre-snapped to route step's linestring.
-fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &LineString) -> f64 {
+///
+/// The result may be [None] in case of invalid input such as infinite floats.
+fn distance_to_end_of_step(
+    snapped_location: &Point,
+    current_step_linestring: &LineString,
+) -> Option<f64> {
     let step_length = current_step_linestring.haversine_length();
-    if let Some(traversed) = distance_along(snapped_location, current_step_linestring) {
-        step_length - traversed
-    } else {
-        0.0
-    }
+    distance_along(snapped_location, current_step_linestring)
+        .map(|traversed| step_length - traversed)
 }
 
 /// Computes the arrival state for a snapped location along the route.
 /// This includes distances and durations.
+///
+/// NOTE: `remaining_steps` includes the current step.
 pub fn calculate_trip_progress(
     snapped_location: &Point,
-    current_step: &RouteStep,
     current_step_linestring: &LineString,
     remaining_steps: &[RouteStep],
 ) -> TripProgress {
-    if remaining_steps.is_empty() {
+    let Some(current_step) = remaining_steps.first() else {
         return TripProgress {
             distance_to_next_maneuver: 0.0,
             distance_remaining: 0.0,
             duration_remaining: 0.0,
         };
-    }
+    };
 
     // Calculate the distance and duration till the end of the current route step.
     let distance_to_next_maneuver =
-        distance_to_end_of_step(snapped_location, current_step_linestring);
+        distance_to_end_of_step(snapped_location, current_step_linestring)
+            .unwrap_or(current_step.distance);
 
     // This could be improved with live traffic data along the route.
     // TODO: Figure out the best way to enable this use case
-    let pct_remaining_current_step =
-        distance_to_next_maneuver / current_step_linestring.haversine_length();
+    let pct_remaining_current_step = if current_step.distance > 0f64 {
+        distance_to_next_maneuver / current_step.distance
+    } else {
+        0f64
+    };
 
     // Get the percentage of duration remaining in the current step.
     let duration_to_next_maneuver = pct_remaining_current_step * current_step.duration;
@@ -476,6 +484,37 @@ proptest! {
             }), "Expected that the step should advance any time that the haversine distance to the end of the step is within the automatic advance threshold.");
         }
     }
+
+    #[test]
+    fn test_end_of_step_progress(
+        x1 in -180f64..180f64, y1 in -90f64..90f64,
+        x2 in -180f64..180f64, y2 in -90f64..90f64,
+    ) {
+        let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
+        let linestring = current_route_step.get_linestring();
+        let end = linestring.points().last().expect("Expected at least one point");
+        let progress = calculate_trip_progress(&end, &linestring, &[current_route_step]);
+
+        prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
+        prop_assert_eq!(progress.distance_remaining, 0f64);
+        prop_assert_eq!(progress.duration_remaining, 0f64);
+    }
+
+    #[test]
+    fn test_end_of_trip_progress_valhalla_arrival(
+        x1: f64, y1: f64,
+    ) {
+        // This may look wrong, but it's actually how Valhalla (and presumably others)
+        // represent a point geometry for the arrival step.
+        let current_route_step = gen_dummy_route_step(x1, y1, x1, y1);
+        let linestring = current_route_step.get_linestring();
+        let end = linestring.points().last().expect("Expected at least one point");
+        let progress = calculate_trip_progress(&end, &linestring, &[current_route_step]);
+
+        prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
+        prop_assert_eq!(progress.distance_remaining, 0f64);
+        prop_assert_eq!(progress.duration_remaining, 0f64);
+    }
 }
 
 #[cfg(test)]
@@ -514,6 +553,7 @@ mod tests {
                 < f64::EPSILON));
     }
 }
-// TODO: Unit tests
+
+// TODO: Other unit tests
 // - Under and over distance accuracy thresholds
 // - Equator and extreme latitude
