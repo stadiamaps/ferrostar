@@ -3,11 +3,9 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class ArrivalViewTests: XCTestCase {
-    let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
+    let formatterCollection = TestingFormatterCollection()
 
-    var etaFormatter: Date.FormatStyle = .init(timeZone: .init(secondsFromGMT: 0)!)
-        .hour(.defaultDigits(amPM: .abbreviated))
-        .minute(.twoDigits)
+    let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
 
     var informationalTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
@@ -23,7 +21,8 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 120,
                     durationRemaining: 150
                 ),
-                estimatedArrivalFormatter: etaFormatter,
+                distanceFormatter: formatterCollection.distanceFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 fromDate: referenceDate
             )
         }
@@ -35,7 +34,8 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
-                estimatedArrivalFormatter: etaFormatter,
+                distanceFormatter: formatterCollection.distanceFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 fromDate: referenceDate
             )
         }
@@ -49,7 +49,8 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
-                estimatedArrivalFormatter: etaFormatter,
+                distanceFormatter: formatterCollection.distanceFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate
             )
@@ -65,7 +66,7 @@ final class ArrivalViewTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: germanDistanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 durationFormatter: longDurationFormatter,
                 fromDate: referenceDate
             )
@@ -73,7 +74,7 @@ final class ArrivalViewTests: XCTestCase {
     }
 
     func testArrivalViewFormatters_de_DE() {
-        assertView {
+        assertView(navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))) {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
@@ -84,10 +85,9 @@ final class ArrivalViewTests: XCTestCase {
                 estimatedArrivalFormatter: germanArrivalFormatter,
                 fromDate: referenceDate
             )
-            .environment(\.locale, .init(identifier: "de_DE"))
         }
 
-        assertView {
+        assertView(navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))) {
             ArrivalView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
@@ -99,7 +99,103 @@ final class ArrivalViewTests: XCTestCase {
                 theme: informationalTheme,
                 fromDate: referenceDate
             )
-            .environment(\.locale, .init(identifier: "de_DE"))
+        }
+    }
+
+    // MARK: Dark Mode
+
+    func testArrivalViewDefaultTheme_darkMode() {
+        assertView(colorScheme: .dark) {
+            ArrivalView(
+                progress: TripProgress(
+                    distanceToNextManeuver: 123,
+                    distanceRemaining: 120,
+                    durationRemaining: 150
+                ),
+                distanceFormatter: formatterCollection.distanceFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
+                fromDate: referenceDate
+            )
+        }
+
+        assertView(colorScheme: .dark) {
+            ArrivalView(
+                progress: TripProgress(
+                    distanceToNextManeuver: 5420,
+                    distanceRemaining: 1_420_000,
+                    durationRemaining: 520_800
+                ),
+                distanceFormatter: formatterCollection.distanceFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
+                fromDate: referenceDate
+            )
+        }
+    }
+
+    func testArrivalViewCompactTheme_darkMode() {
+        assertView(colorScheme: .dark) {
+            ArrivalView(
+                progress: TripProgress(
+                    distanceToNextManeuver: 5420,
+                    distanceRemaining: 1_420_000,
+                    durationRemaining: 520_800
+                ),
+                distanceFormatter: formatterCollection.distanceFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
+                theme: informationalTheme,
+                fromDate: referenceDate
+            )
+        }
+    }
+
+    func testArrivalViewFormatters_darkMode() {
+        assertView(colorScheme: .dark) {
+            ArrivalView(
+                progress: TripProgress(
+                    distanceToNextManeuver: 5420,
+                    distanceRemaining: 1_420_000,
+                    durationRemaining: 520_800
+                ),
+                distanceFormatter: germanDistanceFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
+                durationFormatter: longDurationFormatter,
+                fromDate: referenceDate
+            )
+        }
+    }
+
+    func testArrivalViewFormatters_de_DE_darkMode() {
+        assertView(
+            colorScheme: .dark,
+            navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))
+        ) {
+            ArrivalView(
+                progress: TripProgress(
+                    distanceToNextManeuver: 123,
+                    distanceRemaining: 14500,
+                    durationRemaining: 1234
+                ),
+                distanceFormatter: germanDistanceFormatter,
+                estimatedArrivalFormatter: germanArrivalFormatter,
+                fromDate: referenceDate
+            )
+        }
+
+        assertView(
+            colorScheme: .dark,
+            navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))
+        ) {
+            ArrivalView(
+                progress: TripProgress(
+                    distanceToNextManeuver: 5420,
+                    distanceRemaining: 1_420_000,
+                    durationRemaining: 520_800
+                ),
+                distanceFormatter: germanDistanceFormatter,
+                estimatedArrivalFormatter: germanArrivalFormatter,
+                theme: informationalTheme,
+                fromDate: referenceDate
+            )
         }
     }
 }

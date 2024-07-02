@@ -2,6 +2,7 @@ import CoreLocation
 import FerrostarCore
 import FerrostarCoreFFI
 import FerrostarMapLibreUI
+import FerrostarSwiftUI
 import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
@@ -68,7 +69,8 @@ struct DemoNavigationView: View {
                 navigationState: ferrostarCore.state,
                 camera: $camera,
                 snappedZoom: .constant(18),
-                useSnappedCamera: $snappedCamera
+                useSnappedCamera: $snappedCamera,
+                onTapExit: { stopNavigation() }
             ) {
                 let source = ShapeSource(identifier: "userLocation") {
                     // Demonstrate how to add a dynamic overlay;
@@ -78,58 +80,30 @@ struct DemoNavigationView: View {
                     }
                 }
                 CircleStyleLayer(identifier: "foo", source: source)
-            }
-            .overlay(alignment: .bottomLeading) {
-                VStack {
-                    HStack {
-                        if isFetchingRoutes {
-                            Text("Loading route...")
-                                .font(.caption)
-                                .padding(.all, 8)
-                                .foregroundColor(.white)
-                                .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
-                        }
-
-                        if let errorMessage {
-                            Text(errorMessage)
-                                .font(.caption)
-                                .padding(.all, 8)
-                                .foregroundColor(.white)
-                                .background(Color.red.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
-                                .onTapGesture {
-                                    self.errorMessage = nil
-                                }
-                        }
-
-                        Spacer()
-
-                        NavigationLink {
-                            ConfigurationView()
-                        } label: {
-                            Image(systemName: "gear")
-                        }
-                        .padding(.all, 8)
-                        .background(
-                            Color.white
-                                .clipShape(.buttonBorder, style: FillStyle())
-                                .shadow(radius: 4)
-                        )
-                        .padding(.top, 128) // TODO: Move the controls layer to a VStack w/ the InstructionsView
+            } topCenter: {
+                if let errorMessage {
+                    NavigationUIBanner(severity: .error) {
+                        Text(errorMessage)
                     }
+                    .onTapGesture {
+                        self.errorMessage = nil
+                    }
+                } else if isFetchingRoutes {
+                    NavigationUIBanner(severity: .loading) {
+                        Text("Loading route...")
+                    }
+                }
+            } bottomTrailing: {
+                VStack {
+                    Text(locationLabel)
+                        .font(.caption)
+                        .padding(.all, 8)
+                        .foregroundColor(.white)
+                        .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
 
-                    Spacer()
-
-                    HStack {
-                        Text(locationLabel)
-                            .font(.caption)
-                            .padding(.all, 8)
-                            .foregroundColor(.white)
-                            .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
-
-                        Spacer()
-
-                        if locationServicesEnabled {
-                            Button("Start Navigation") {
+                    if locationServicesEnabled {
+                        if ferrostarCore.state == nil {
+                            NavigationUIButton {
                                 Task {
                                     do {
                                         isFetchingRoutes = true
@@ -140,32 +114,24 @@ struct DemoNavigationView: View {
                                         errorMessage = "\(error.localizedDescription)"
                                     }
                                 }
+                            } label: {
+                                Text("Start Nav")
+                                    .font(.body.bold())
                             }
                             .disabled(routes?.isEmpty == true)
-                            .padding(.all, 8)
-                            .background(
-                                Color.white
-                                    .clipShape(.buttonBorder, style: FillStyle())
-                                    .shadow(radius: 4)
-                            )
-                        } else {
-                            Button("Enable Location Services") {
-                                // TODO: enable location services.
-                            }
-                            .padding(.all, 8)
-                            .background(
-                                Color.white
-                                    .clipShape(.buttonBorder, style: FillStyle())
-                                    .shadow(radius: 4)
-                            )
+                            .shadow(radius: 10)
+                        }
+                    } else {
+                        NavigationUIButton {
+                            // TODO: enable location services.
+                        } label: {
+                            Text("Enable Location Services")
                         }
                     }
                 }
-                .padding()
-                .padding(.bottom, 72)
-                .task {
-                    await getRoutes()
-                }
+            }
+            .task {
+                await getRoutes()
             }
         }
     }
@@ -230,6 +196,11 @@ struct DemoNavigationView: View {
             route: route,
             config: config
         )
+    }
+
+    func stopNavigation() {
+        ferrostarCore.stopNavigation()
+        camera = .center(initialLocation.coordinate, zoom: 14)
     }
 
     var locationLabel: String {

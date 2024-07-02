@@ -36,6 +36,20 @@
           }
         }
       }
+    },
+    "Speed Limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speed Limit"
+          }
+        }
+      }
+    },
+    "Start Navigation" : {
+
     }
   },
   "version" : "1.0"
