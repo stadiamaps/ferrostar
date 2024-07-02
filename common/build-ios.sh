@@ -63,11 +63,12 @@ build_xcframework() {
   fi
 }
 
-cargo build --lib --release --target x86_64-apple-ios
-cargo build --lib --release --target aarch64-apple-ios-sim
-cargo build --lib --release --target aarch64-apple-ios
-
 basename=ferrostar
+
+cargo build -p $basename --lib --release --target x86_64-apple-ios
+cargo build -p $basename --lib --release --target aarch64-apple-ios-sim
+cargo build -p $basename --lib --release --target aarch64-apple-ios
+
 generate_ffi $basename
 create_fat_simulator_lib $basename
 build_xcframework $basename

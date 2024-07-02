@@ -172,6 +172,7 @@ fn simple_route_state_machine_advances_with_location_change() {
     let TripState::Navigating {
         remaining_steps,
         remaining_waypoints,
+        progress,
         ..
     } = controller.update_user_location(user_location_end_of_first_step, &initial_state)
     else {
@@ -181,4 +182,8 @@ fn simple_route_state_machine_advances_with_location_change() {
     assert_ne!(remaining_steps, initial_remaining_steps);
     // In this case, the final step is the arrival point
     assert_eq!(remaining_waypoints.len(), 0);
+
+    assert_eq!(progress.distance_to_next_maneuver, 0f64);
+    assert_eq!(progress.distance_remaining, 0f64);
+    assert_eq!(progress.duration_remaining, 0f64);
 }
