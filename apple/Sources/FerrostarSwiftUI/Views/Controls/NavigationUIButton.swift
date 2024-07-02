@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct FerrostarButtonStyle: ButtonStyle {
+public struct NavigationUIButtonStyle: ButtonStyle {
     /// The ferrostar button style.
     public init() {}
 
@@ -14,7 +14,7 @@ public struct FerrostarButtonStyle: ButtonStyle {
     }
 }
 
-public struct FerrostarButton<Label: View>: View {
+public struct NavigationUIButton<Label: View>: View {
     let action: () -> Void
     let label: Label
 
@@ -34,17 +34,17 @@ public struct FerrostarButton<Label: View>: View {
         } label: {
             label
         }
-        .buttonStyle(FerrostarButtonStyle())
+        .buttonStyle(NavigationUIButtonStyle())
     }
 }
 
 #Preview {
     VStack {
-        FerrostarButton {} label: {
+        NavigationUIButton {} label: {
             Image(systemName: "location")
         }
 
-        FerrostarButton {} label: {
+        NavigationUIButton {} label: {
             Text("Start Navigation")
         }
     }

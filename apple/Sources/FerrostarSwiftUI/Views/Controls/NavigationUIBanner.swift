@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct FerrostarBanner<Label: View>: View {
+public struct NavigationUIBanner<Label: View>: View {
     public enum Severity {
         case info, error, loading
     }
@@ -16,7 +16,7 @@ public struct FerrostarBanner<Label: View>: View {
     ///   - backgroundColor: The capsule's background color.
     ///   - label: The label subview.
     public init(
-        severity: FerrostarBanner.Severity,
+        severity: NavigationUIBanner.Severity,
         backgroundColor: Color = Color(.systemBackground),
         @ViewBuilder label: () -> Label
     ) {
@@ -37,7 +37,7 @@ public struct FerrostarBanner<Label: View>: View {
         .clipShape(Capsule())
     }
 
-    @ViewBuilder func image(for severity: FerrostarBanner.Severity) -> some View {
+    @ViewBuilder func image(for severity: NavigationUIBanner.Severity) -> some View {
         switch severity {
         case .info:
             Image(systemName: "info.circle.fill")
@@ -51,15 +51,15 @@ public struct FerrostarBanner<Label: View>: View {
 
 #Preview {
     VStack {
-        FerrostarBanner(severity: .info) {
+        NavigationUIBanner(severity: .info) {
             Text(verbatim: "Something Useful")
         }
 
-        FerrostarBanner(severity: .loading) {
+        NavigationUIBanner(severity: .loading) {
             Text(verbatim: "Rerouting...")
         }
 
-        FerrostarBanner(severity: .error) {
+        NavigationUIBanner(severity: .error) {
             Text(verbatim: "No Location Available")
         }
     }

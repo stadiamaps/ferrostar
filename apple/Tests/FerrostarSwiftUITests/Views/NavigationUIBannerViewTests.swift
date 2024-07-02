@@ -2,10 +2,10 @@ import SwiftUI
 import XCTest
 @testable import FerrostarSwiftUI
 
-final class FerrostarBannerViewTests: XCTestCase {
+final class NavigationUIBannerViewTests: XCTestCase {
     func testInfoBanner() {
         assertView {
-            FerrostarBanner(severity: .info) {
+            NavigationUIBanner(severity: .info) {
                 Text("Something Useful")
             }
         }
@@ -13,7 +13,7 @@ final class FerrostarBannerViewTests: XCTestCase {
 
     func testLoadingBanner() {
         assertView {
-            FerrostarBanner(severity: .loading) {
+            NavigationUIBanner(severity: .loading) {
                 Text("Rerouting...")
             }
         }
@@ -21,7 +21,7 @@ final class FerrostarBannerViewTests: XCTestCase {
 
     func testErrorBanner() {
         assertView {
-            FerrostarBanner(severity: .error) {
+            NavigationUIBanner(severity: .error) {
                 Text("No Location Available")
             }
         }
@@ -31,7 +31,7 @@ final class FerrostarBannerViewTests: XCTestCase {
 
     func testInfoBanner_darkMode() {
         assertView(colorScheme: .dark) {
-            FerrostarBanner(severity: .info) {
+            NavigationUIBanner(severity: .info) {
                 Text("Something Useful")
             }
         }
@@ -39,7 +39,7 @@ final class FerrostarBannerViewTests: XCTestCase {
 
     func testLoadingBanner_darkMode() {
         assertView(colorScheme: .dark) {
-            FerrostarBanner(severity: .loading) {
+            NavigationUIBanner(severity: .loading) {
                 Text("Rerouting...")
             }
         }
@@ -47,7 +47,7 @@ final class FerrostarBannerViewTests: XCTestCase {
 
     func testErrorBanner_darkMode() {
         assertView(colorScheme: .dark) {
-            FerrostarBanner(severity: .error) {
+            NavigationUIBanner(severity: .error) {
                 Text("No Location Available")
             }
         }

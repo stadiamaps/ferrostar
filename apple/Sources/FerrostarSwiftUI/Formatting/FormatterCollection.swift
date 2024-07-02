@@ -5,7 +5,7 @@ import Foundation
 /// This is set in the SwiftUI environment to enable easy control across the whole UI. If you need fine-grained
 /// control over specific views, it's best to modify these directly using
 /// the formatter inputs and your own UI wrappers.
-public protocol FerrostarFormatters: AnyObject {
+public protocol FormatterCollection: AnyObject {
     /// The core distance formatter. This is used in views like the instructions banner and arrival view.
     var distanceFormatter: Formatter { get }
 
@@ -30,7 +30,8 @@ public protocol FerrostarFormatters: AnyObject {
 ///
 /// The default constructor uses formatters from ``DefaultFormatters``, which is what most applications want,
 /// as this automatically reflects user locale preferences.
-/// If you want to change any of the behaviors but still use `Foundation` formatters, you can pass a preconfigured formatter for any parameter.
+/// If you want to change any of the behaviors but still use `Foundation` formatters, you can pass a preconfigured
+/// formatter for any parameter.
 public class FoundationFormatterCollection: FormatterCollection {
     public var distanceFormatter: Formatter
     public var estimatedArrivalFormatter: Date.FormatStyle

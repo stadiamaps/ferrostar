@@ -82,14 +82,14 @@ struct DemoNavigationView: View {
                 CircleStyleLayer(identifier: "foo", source: source)
             } topCenter: {
                 if let errorMessage {
-                    FerrostarBanner(severity: .error) {
+                    NavigationUIBanner(severity: .error) {
                         Text(errorMessage)
                     }
                     .onTapGesture {
                         self.errorMessage = nil
                     }
                 } else if isFetchingRoutes {
-                    FerrostarBanner(severity: .loading) {
+                    NavigationUIBanner(severity: .loading) {
                         Text("Loading route...")
                     }
                 }
@@ -103,7 +103,7 @@ struct DemoNavigationView: View {
 
                     if locationServicesEnabled {
                         if ferrostarCore.state == nil {
-                            FerrostarButton {
+                            NavigationUIButton {
                                 Task {
                                     do {
                                         isFetchingRoutes = true
@@ -122,7 +122,7 @@ struct DemoNavigationView: View {
                             .shadow(radius: 10)
                         }
                     } else {
-                        FerrostarButton {
+                        NavigationUIButton {
                             // TODO: enable location services.
                         } label: {
                             Text("Enable Location Services")

@@ -1,10 +1,10 @@
 import XCTest
 @testable import FerrostarSwiftUI
 
-final class ZoomButtonTests: XCTestCase {
-    func testZoomButton() {
+final class NavigationUIZoomButtonTests: XCTestCase {
+    func testNavigationUIZoomButton() {
         assertView {
-            ZoomButton(
+            NavigationUIZoomButton(
                 onZoomIn: {},
                 onZoomOut: {}
             )
@@ -13,9 +13,9 @@ final class ZoomButtonTests: XCTestCase {
 
     // MARK: Dark Mode
 
-    func testZoomButton_darkMode() {
+    func testNavigationUIZoomButton_darkMode() {
         assertView(colorScheme: .dark) {
-            ZoomButton(
+            NavigationUIZoomButton(
                 onZoomIn: {},
                 onZoomOut: {}
             )

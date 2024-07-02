@@ -8,8 +8,7 @@ import SwiftUI
 
 /// A portrait orientation navigation view that includes the InstructionsView at the top.
 public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLeading: View, BottomTrailing: View>: View {
-    @Environment(\.ferrostarTheme) var ferrostarTheme: any FerrostarTheme
-    @Environment(\.ferrostarFormatters) var ferrostarFormatter: any FerrostarFormatters
+    @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
     // TODO: Configurable camera and user "puck" rotation modes
@@ -76,7 +75,7 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
                     {
                         InstructionsView(
                             visualInstruction: visualInstructions,
-                            distanceFormatter: ferrostarFormatter.distanceFormatter,
+                            distanceFormatter: formatterCollection.distanceFormatter,
                             distanceToNextManeuver: navigationState.progress?.distanceToNextManeuver
                         )
                     }
@@ -128,7 +127,7 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
         snappedZoom: .constant(18),
         useSnappedCamera: .constant(true)
     )
-    .ferrostarFormatters(DefaultFerrostarFormatters(distanceFormatter: formatter))
+    .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
 
 #Preview("Portrait Navigation View (Metric)") {
@@ -146,5 +145,5 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
         snappedZoom: .constant(18),
         useSnappedCamera: .constant(true)
     )
-    .ferrostarFormatters(DefaultFerrostarFormatters(distanceFormatter: formatter))
+    .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

@@ -9,8 +9,7 @@ public struct NavigatingInnerGridView<
     MidLeading: View,
     BottomTrailing: View
 >: View {
-    @Environment(\.ferrostarTheme) var ferrostarTheme: any FerrostarTheme
-    @Environment(\.ferrostarFormatters) var ferrostarFormatter: any FerrostarFormatters
+    @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     var speedLimit: Measurement<UnitSpeed>?
 
@@ -81,8 +80,8 @@ public struct NavigatingInnerGridView<
                 if let speedLimit {
                     SpeedLimitView(
                         speedLimit: speedLimit,
-                        valueFormatter: ferrostarFormatter.speedValueFormatter,
-                        unitFormatter: ferrostarFormatter.speedWithUnitsFormatter
+                        valueFormatter: formatterCollection.speedValueFormatter,
+                        unitFormatter: formatterCollection.speedWithUnitsFormatter
                     )
                 }
             },
@@ -95,7 +94,7 @@ public struct NavigatingInnerGridView<
             },
             midTrailing: {
                 if showZoom {
-                    ZoomButton(onZoomIn: onZoomIn, onZoomOut: onZoomOut)
+                    NavigationUIZoomButton(onZoomIn: onZoomIn, onZoomOut: onZoomOut)
                         .shadow(radius: 8)
                 } else {
                     Spacer()
@@ -103,7 +102,7 @@ public struct NavigatingInnerGridView<
             },
             bottomLeading: {
                 if showCentering {
-                    FerrostarButton(action: onCenter) {
+                    NavigationUIButton(action: onCenter) {
                         Image(systemName: "location.north.fill")
                             .resizable()
                             .aspectRatio(contentMode: .fit)

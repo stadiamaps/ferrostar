@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct ZoomButton: View {
+public struct NavigationUIZoomButton: View {
     let onZoomIn: () -> Void
     let onZoomOut: () -> Void
 
@@ -39,7 +39,7 @@ public struct ZoomButton: View {
 
 #Preview {
     VStack {
-        ZoomButton(
+        NavigationUIZoomButton(
             onZoomIn: {},
             onZoomOut: {}
         )

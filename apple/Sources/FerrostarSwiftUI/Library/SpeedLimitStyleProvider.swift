@@ -12,14 +12,14 @@ protocol SpeedLimitStyleProviding {
 // Region Codes: https://en.wikipedia.org/wiki/IETF_language_tag
 
 /// Always prefer US Style (MUTCD)
-class USSpeedLimitStyleProvider: SpeedLimitStyleProvider {
+class USSpeedLimitStyleProvider: SpeedLimitStyleProviding {
     func useUSStyle() -> Bool {
         true
     }
 }
 
 /// Always prefer Vienna Style
-class SpeedLimitFixedToViennaConventionStyle: SpeedLimitStyleProvider {
+class SpeedLimitFixedToViennaConventionStyle: SpeedLimitStyleProviding {
     func useUSStyle() -> Bool {
         false
     }

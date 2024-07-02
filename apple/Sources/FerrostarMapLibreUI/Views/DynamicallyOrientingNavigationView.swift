@@ -13,8 +13,7 @@ public struct DynamicallyOrientingNavigationView<
     MidLeading: View,
     BottomTrailing: View
 >: View {
-    @Environment(\.ferrostarTheme) var ferrostarTheme: any FerrostarTheme
-    @Environment(\.ferrostarFormatters) var ferrostarFormatter: any FerrostarFormatters
+    @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     // TODO: Add orientation handling once the landscape view is constructed.
     @State private var orientation = UIDeviceOrientation.unknown
@@ -111,7 +110,7 @@ public struct DynamicallyOrientingNavigationView<
         snappedZoom: .constant(18),
         useSnappedCamera: .constant(true)
     )
-    .ferrostarFormatters(DefaultFerrostarFormatters(distanceFormatter: formatter))
+    .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
 
 #Preview("Portrait Navigation View (Metric)") {
@@ -128,5 +127,5 @@ public struct DynamicallyOrientingNavigationView<
         snappedZoom: .constant(18),
         useSnappedCamera: .constant(true)
     )
-    .ferrostarFormatters(DefaultFerrostarFormatters(distanceFormatter: formatter))
+    .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

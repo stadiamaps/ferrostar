@@ -6,7 +6,7 @@ public protocol NavigationUITheme: AnyObject {
     var arrival: any ArrivalViewTheme { get }
 }
 
-public class DefaultNavigationUITheme: FerrostarTheme {
+public class DefaultNavigationUITheme: NavigationUITheme {
     public var primaryInstructionsRow: any InstructionRowTheme
     public var secondaryInstructionsRow: any InstructionRowTheme
     public var arrival: any ArrivalViewTheme

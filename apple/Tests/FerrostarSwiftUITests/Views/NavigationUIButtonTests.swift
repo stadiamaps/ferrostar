@@ -2,10 +2,10 @@ import SwiftUI
 import XCTest
 @testable import FerrostarSwiftUI
 
-final class FerrostarButtonTests: XCTestCase {
+final class NavigationUIButtonTests: XCTestCase {
     func testImageButton() {
         assertView {
-            FerrostarButton {} label: {
+            NavigationUIButton {} label: {
                 Image(systemName: "location")
             }
         }
@@ -13,7 +13,7 @@ final class FerrostarButtonTests: XCTestCase {
 
     func testTextButton() {
         assertView {
-            FerrostarButton {} label: {
+            NavigationUIButton {} label: {
                 Text("Start Navigation")
             }
         }
@@ -23,7 +23,7 @@ final class FerrostarButtonTests: XCTestCase {
 
     func testImageButton_darkMode() {
         assertView(colorScheme: .dark) {
-            FerrostarButton {} label: {
+            NavigationUIButton {} label: {
                 Image(systemName: "location")
             }
         }
@@ -31,7 +31,7 @@ final class FerrostarButtonTests: XCTestCase {
 
     func testTextButton_darkMode() {
         assertView(colorScheme: .dark) {
-            FerrostarButton {} label: {
+            NavigationUIButton {} label: {
                 Text("Start Navigation")
             }
         }

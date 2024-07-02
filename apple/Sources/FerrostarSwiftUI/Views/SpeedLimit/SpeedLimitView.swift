@@ -3,7 +3,7 @@ import SwiftUI
 public struct SpeedLimitView: View {
     /// The speed limit sign style toggling method. This is used to
     /// define the method for swapping between USStyle & ViennaConvention
-    public enum ToggleStyleBy {
+    public enum SignageStyle {
         // TODO: Add improved automatic methods (e.g. route admins, etc)
 
         /// Only use the US Style
@@ -22,11 +22,11 @@ public struct SpeedLimitView: View {
 
     public init(
         speedLimit: Measurement<UnitSpeed>,
-        toggleStyleBy: ToggleStyleBy = .viennaConvention, // Change the default once we have a better solution.
+        signageStyle: SignageStyle = .viennaConvention, // Change the default once we have a better solution.
         valueFormatter: NumberFormatter = DefaultFormatters.speedFormatter,
         unitFormatter: MeasurementFormatter = DefaultFormatters.speedWithUnitsFormatter
     ) {
-        self.toggleStyleBy = toggleStyleBy
+        self.signageStyle = signageStyle
         self.speedLimit = speedLimit
         self.valueFormatter = valueFormatter
         self.unitFormatter = unitFormatter
@@ -49,9 +49,9 @@ public struct SpeedLimitView: View {
     }
 
     private func useUSStyle() -> Bool {
-        switch toggleStyleBy {
+        switch signageStyle {
         case .usStyle:
-            SpeedLimitFixedToUSStyle().useUSStyle()
+            USSpeedLimitStyleProvider().useUSStyle()
         case .viennaConvention:
             SpeedLimitFixedToViennaConventionStyle().useUSStyle()
         }
