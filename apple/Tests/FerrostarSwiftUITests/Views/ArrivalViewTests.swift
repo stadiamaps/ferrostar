@@ -3,6 +3,8 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class ArrivalViewTests: XCTestCase {
+    let formatterCollection = TestingFormatterCollection()
+    
     let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
 
     var etaFormatter: Date.FormatStyle = .init(timeZone: .init(secondsFromGMT: 0)!)
@@ -23,6 +25,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 120,
                     durationRemaining: 150
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate
             )
@@ -35,6 +38,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate
             )
@@ -49,6 +53,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate
@@ -111,6 +116,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 120,
                     durationRemaining: 150
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate
             )
@@ -123,6 +129,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate
             )
@@ -137,6 +144,7 @@ final class ArrivalViewTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate

@@ -8,6 +8,7 @@ final class DefaultFormatterTests: XCTestCase {
 
     func testDistanceFormatter() {
         let formatter = DefaultFormatters.distanceFormatter
+        formatter.units = .imperial
         XCTAssertEqual(formatter.string(fromDistance: 150), "500 ft")
     }
 

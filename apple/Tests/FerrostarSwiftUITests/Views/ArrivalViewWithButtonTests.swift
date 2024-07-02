@@ -3,6 +3,8 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class ArrivalViewWithButtonTests: XCTestCase {
+    let formatterCollection = TestingFormatterCollection()
+    
     let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
 
     var etaFormatter: Date.FormatStyle = .init(timeZone: .init(secondsFromGMT: 0)!)
@@ -23,6 +25,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     distanceRemaining: 120,
                     durationRemaining: 150
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
@@ -36,6 +39,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
@@ -51,6 +55,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate,
@@ -117,6 +122,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     distanceRemaining: 120,
                     durationRemaining: 150
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
@@ -130,6 +136,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
@@ -145,6 +152,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     distanceRemaining: 1_420_000,
                     durationRemaining: 520_800
                 ),
+                distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: etaFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate,

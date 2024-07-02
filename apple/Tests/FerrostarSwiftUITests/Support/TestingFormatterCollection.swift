@@ -12,6 +12,7 @@ class TestingFormatterCollection: FormatterCollection {
         let formatter = MKDistanceFormatter()
         formatter.unitStyle = .abbreviated
         formatter.locale = Locale(identifier: "en_US")
+        formatter.units = .imperial
         return formatter
     }()
 
