@@ -506,13 +506,12 @@ private struct FfiConverterTimestamp: FfiConverterRustBuffer {
 }
 
 /**
- * Manages the navigation lifecycle of a route, reacting to inputs like user location updates
- * and returning a new state.
- * If you want to recalculate a new route, you need to create a new navigation controller.
+ * Manages the navigation lifecycle through a route,
+ * returning an updated state given inputs like user location.
  *
- * In the overall architecture, this is a mid-level construct. It wraps some lower
- * level constructs like the route adapter, but a higher level wrapper handles things
- * like feeding in user location updates, route recalculation behavior, etc.
+ * Notes for implementing a new platform:
+ * - A controller is bound to a single route; if you want recalculation, create a new instance.
+ * - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutable state.
  */
 public protocol NavigationControllerProtocol: AnyObject {
     /**
@@ -536,13 +535,12 @@ public protocol NavigationControllerProtocol: AnyObject {
 }
 
 /**
- * Manages the navigation lifecycle of a route, reacting to inputs like user location updates
- * and returning a new state.
- * If you want to recalculate a new route, you need to create a new navigation controller.
+ * Manages the navigation lifecycle through a route,
+ * returning an updated state given inputs like user location.
  *
- * In the overall architecture, this is a mid-level construct. It wraps some lower
- * level constructs like the route adapter, but a higher level wrapper handles things
- * like feeding in user location updates, route recalculation behavior, etc.
+ * Notes for implementing a new platform:
+ * - A controller is bound to a single route; if you want recalculation, create a new instance.
+ * - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutable state.
  */
 open class NavigationController:
     NavigationControllerProtocol
@@ -576,6 +574,9 @@ open class NavigationController:
         try! rustCall { uniffi_ferrostar_fn_clone_navigationcontroller(self.pointer, $0) }
     }
 
+    /**
+     * Create a navigation controller for a route and configuration.
+     */
     public convenience init(route: Route, config: NavigationControllerConfig) {
         let pointer =
             try! rustCall {
@@ -843,17 +844,31 @@ public func FfiConverterTypeRouteAdapter_lower(_ value: RouteAdapter) -> UnsafeM
     FfiConverterTypeRouteAdapter.lower(value)
 }
 
+/**
+ * A custom deviation detector (for extending the behavior of [`RouteDeviationTracking`]).
+ *
+ * This allows for arbitrarily complex implementations when the provided ones are not enough.
+ * For example, detecting that the user is proceeding the wrong direction by keeping a ring buffer
+ * of recent locations, or perform local map matching.
+ */
 public protocol RouteDeviationDetector: AnyObject {
     /**
      * Determines whether the user is following the route correctly or not.
      *
-     * NOTE: This function is merely for reporting the tracking status based on available information.
-     * A return value indicating that the user is off route does not necessarily mean
-     * that a new route will be recalculated immediately.
+     * NOTE: This function has a single responsibility.
+     * Side-effects like whether to recalculate a route are left to higher levels,
+     * and implementations should only be concerned with determining the facts.
      */
     func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation
 }
 
+/**
+ * A custom deviation detector (for extending the behavior of [`RouteDeviationTracking`]).
+ *
+ * This allows for arbitrarily complex implementations when the provided ones are not enough.
+ * For example, detecting that the user is proceeding the wrong direction by keeping a ring buffer
+ * of recent locations, or perform local map matching.
+ */
 open class RouteDeviationDetectorImpl:
     RouteDeviationDetector
 {
@@ -899,9 +914,9 @@ open class RouteDeviationDetectorImpl:
     /**
      * Determines whether the user is following the route correctly or not.
      *
-     * NOTE: This function is merely for reporting the tracking status based on available information.
-     * A return value indicating that the user is off route does not necessarily mean
-     * that a new route will be recalculated immediately.
+     * NOTE: This function has a single responsibility.
+     * Side-effects like whether to recalculate a route are left to higher levels,
+     * and implementations should only be concerned with determining the facts.
      */
     open func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation {
         try! FfiConverterTypeRouteDeviation.lift(try! rustCall {
@@ -1204,7 +1219,7 @@ public func FfiConverterTypeRouteRequestGenerator_lower(_ value: RouteRequestGen
 
 /**
  * A generic interface describing any object capable of parsing a response from a routing
- * backend into one or more [Route]s.
+ * backend into one or more [`Route`]s.
  */
 public protocol RouteResponseParser: AnyObject {
     /**
@@ -1218,7 +1233,7 @@ public protocol RouteResponseParser: AnyObject {
 
 /**
  * A generic interface describing any object capable of parsing a response from a routing
- * backend into one or more [Route]s.
+ * backend into one or more [`Route`]s.
  */
 open class RouteResponseParserImpl:
     RouteResponseParser
@@ -1363,13 +1378,29 @@ public func FfiConverterTypeRouteResponseParser_lower(_ value: RouteResponsePars
     FfiConverterTypeRouteResponseParser.lower(value)
 }
 
+/**
+ * A geographic bounding box defined by its corners.
+ */
 public struct BoundingBox {
+    /**
+     * The southwest corner of the bounding box.
+     */
     public var sw: GeographicCoordinate
+    /**
+     * The northeast corner of the bounding box.
+     */
     public var ne: GeographicCoordinate
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(sw: GeographicCoordinate, ne: GeographicCoordinate) {
+    public init(
+        /**
+         * The southwest corner of the bounding box.
+         */ sw: GeographicCoordinate,
+        /**
+            * The northeast corner of the bounding box.
+            */ ne: GeographicCoordinate
+    ) {
         self.sw = sw
         self.ne = ne
     }
@@ -1487,12 +1518,25 @@ public func FfiConverterTypeCourseOverGround_lower(_ value: CourseOverGround) ->
  * A geographic coordinate in WGS84.
  */
 public struct GeographicCoordinate {
+    /**
+     * The latitude (in degrees).
+     */
     public var lat: Double
+    /**
+     * The Longitude (in degrees).
+     */
     public var lng: Double
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(lat: Double, lng: Double) {
+    public init(
+        /**
+         * The latitude (in degrees).
+         */ lat: Double,
+        /**
+            * The Longitude (in degrees).
+            */ lng: Double
+    ) {
         self.lat = lat
         self.lng = lng
     }
@@ -1539,8 +1583,6 @@ public func FfiConverterTypeGeographicCoordinate_lower(_ value: GeographicCoordi
 
 /**
  * The heading of the user/device.
- *
- * Ferrostar prefers course over ground, but may use heading in some cases.
  */
 public struct Heading {
     /**
@@ -1620,6 +1662,9 @@ public func FfiConverterTypeHeading_lower(_ value: Heading) -> RustBuffer {
     FfiConverterTypeHeading.lower(value)
 }
 
+/**
+ * The current state of the simulation.
+ */
 public struct LocationSimulationState {
     public var currentLocation: UserLocation
     public var remainingLocations: [GeographicCoordinate]
@@ -1806,10 +1851,6 @@ public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
 /**
  * A maneuver (such as a turn or merge) followed by travel of a certain distance until reaching
  * the next step.
- *
- * NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
- * but we will intentionally define this somewhat looser unless/until it becomes clear something
-
  */
 public struct RouteStep {
     public var geometry: [GeographicCoordinate]
@@ -1821,9 +1862,25 @@ public struct RouteStep {
      * The estimated duration, in seconds, that it will take to complete this step.
      */
     public var duration: Double
+    /**
+     * The name of the road being traveled on (useful for certain UI styles).
+     */
     public var roadName: String?
+    /**
+     * A description of the maneuver (ex: "Turn wright onto main street").
+     *
+     * Note for UI implementers: the context this appears in (or doesn't)
+     * depends somewhat on your use case and routing engine.
+     * For example, this field is useful as a written instruction in Valhalla.
+     */
     public var instruction: String
+    /**
+     * A list of instructions for visual display (usually as banners) at specific points along the step.
+     */
     public var visualInstructions: [VisualInstruction]
+    /**
+     * A list of prompts to announce (via speech synthesis) at specific points along the step.
+     */
     public var spokenInstructions: [SpokenInstruction]
 
     // Default memberwise initializers are never public by default, so we
@@ -1834,9 +1891,23 @@ public struct RouteStep {
                     */ distance: Double,
                 /**
                     * The estimated duration, in seconds, that it will take to complete this step.
-                    */ duration: Double, roadName: String?, instruction: String,
-                visualInstructions: [VisualInstruction],
-                spokenInstructions: [SpokenInstruction])
+                    */ duration: Double,
+                /**
+                    * The name of the road being traveled on (useful for certain UI styles).
+                    */ roadName: String?,
+                /**
+                    * A description of the maneuver (ex: "Turn wright onto main street").
+                    *
+                    * Note for UI implementers: the context this appears in (or doesn't)
+                    * depends somewhat on your use case and routing engine.
+                    * For example, this field is useful as a written instruction in Valhalla.
+                    */ instruction: String,
+                /**
+                    * A list of instructions for visual display (usually as banners) at specific points along the step.
+                    */ visualInstructions: [VisualInstruction],
+                /**
+                    * A list of prompts to announce (via speech synthesis) at specific points along the step.
+                    */ spokenInstructions: [SpokenInstruction])
     {
         self.geometry = geometry
         self.distance = distance
@@ -2096,7 +2167,7 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
 }
 
 /**
- * A subset of state values that are used to show the user their current progress along the trip and it's components.
+ * High-level state describing progress through a route.
  */
 public struct TripProgress {
     /**
@@ -2271,8 +2342,19 @@ public func FfiConverterTypeUserLocation_lower(_ value: UserLocation) -> RustBuf
     FfiConverterTypeUserLocation.lower(value)
 }
 
+/**
+ * An instruction for visual display (usually as banners) at a specific point along a [`RouteStep`].
+ */
 public struct VisualInstruction {
+    /**
+     * The primary instruction content.
+     *
+     * This is usually given more visual weight.
+     */
     public var primaryContent: VisualInstructionContent
+    /**
+     * Optional secondary instruction content.
+     */
     public var secondaryContent: VisualInstructionContent?
     /**
      * How far (in meters) from the upcoming maneuver the instruction should start being displayed
@@ -2281,11 +2363,19 @@ public struct VisualInstruction {
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(primaryContent: VisualInstructionContent, secondaryContent: VisualInstructionContent?,
-                /**
-                    * How far (in meters) from the upcoming maneuver the instruction should start being displayed
-                    */ triggerDistanceBeforeManeuver: Double)
-    {
+    public init(
+        /**
+         * The primary instruction content.
+         *
+         * This is usually given more visual weight.
+         */ primaryContent: VisualInstructionContent,
+        /**
+            * Optional secondary instruction content.
+            */ secondaryContent: VisualInstructionContent?,
+        /**
+            * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+            */ triggerDistanceBeforeManeuver: Double
+    ) {
         self.primaryContent = primaryContent
         self.secondaryContent = secondaryContent
         self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
@@ -2337,19 +2427,50 @@ public func FfiConverterTypeVisualInstruction_lower(_ value: VisualInstruction) 
     FfiConverterTypeVisualInstruction.lower(value)
 }
 
+/**
+ * The content of a visual instruction.
+ */
 public struct VisualInstructionContent {
+    /**
+     * The text to display.
+     */
     public var text: String
+    /**
+     * A standardized maneuver type (if any).
+     */
     public var maneuverType: ManeuverType?
+    /**
+     * A standardized maneuver modifier (if any).
+     */
     public var maneuverModifier: ManeuverModifier?
+    /**
+     * If applicable, the number of degrees you need to go around the roundabout before exiting.
+     *
+     * For example, entering and exiting the roundabout in the same direction of travel
+     * (as if you had gone straight, apart from the detour)
+     * would be an exit angle of 180 degrees.
+     */
     public var roundaboutExitDegrees: UInt16?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
     public init(
-        text: String,
-        maneuverType: ManeuverType?,
-        maneuverModifier: ManeuverModifier?,
-        roundaboutExitDegrees: UInt16?
+        /**
+         * The text to display.
+         */ text: String,
+        /**
+            * A standardized maneuver type (if any).
+            */ maneuverType: ManeuverType?,
+        /**
+            * A standardized maneuver modifier (if any).
+            */ maneuverModifier: ManeuverModifier?,
+        /**
+            * If applicable, the number of degrees you need to go around the roundabout before exiting.
+            *
+            * For example, entering and exiting the roundabout in the same direction of travel
+            * (as if you had gone straight, apart from the detour)
+            * would be an exit angle of 180 degrees.
+            */ roundaboutExitDegrees: UInt16?
     ) {
         self.text = text
         self.maneuverType = maneuverType
@@ -2413,7 +2534,7 @@ public func FfiConverterTypeVisualInstructionContent_lower(_ value: VisualInstru
  * A waypoint along a route.
  *
  * Within the context of Ferrostar, a route request consists of exactly one [`UserLocation`]
- * and at least one [Waypoint]. The route starts from the user's location (which may
+ * and at least one [`Waypoint`]. The route starts from the user's location (which may
  * contain other useful information like their current course for the [`crate::routing_adapters::RouteRequestGenerator`]
  * to use) and proceeds through one or more waypoints.
  *
@@ -2508,7 +2629,7 @@ extension InstantiationError: Foundation.LocalizedError {
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * Specifies additional information about a [`ManeuverType`]
+ * Additional information to further specify a [`ManeuverType`].
  */
 
 public enum ManeuverModifier {
@@ -2590,9 +2711,9 @@ extension ManeuverModifier: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * Indicates the type of maneuver to perform.
+ * The broad class of maneuver to perform.
  *
- * Frequently used in conjunction with [`ManeuverModifier`].
+ * This is usually combined with [`ManeuverModifier`] in [`VisualInstructionContent`].
  */
 
 public enum ManeuverType {
@@ -2826,7 +2947,7 @@ public enum RouteDeviationTracking {
      */
     case none
     /**
-     * Uses a configurable static distance threshold to determine if the user has deviated from the route.
+     * Detects deviation from the route using a configurable static distance threshold from the route line.
      */
     case staticThreshold(
         /**
@@ -2841,7 +2962,8 @@ public enum RouteDeviationTracking {
             */ maxAcceptableDeviation: Double
     )
     /**
-     * Arbitrary custom code; you decide!
+     * An arbitrary user-defined implementation.
+     * You decide with your own [`RouteDeviationDetector`] implementation!
      */
     case custom(detector: RouteDeviationDetector)
 }
@@ -3020,7 +3142,13 @@ extension RoutingResponseParseError: Foundation.LocalizedError {
 }
 
 public enum SimulationError {
+    /**
+     * Errors decoding the polyline string.
+     */
     case PolylineError(error: String)
+    /**
+     * Not enough points in the input.
+     */
     case NotEnoughPoints
 }
 
@@ -3062,10 +3190,17 @@ extension SimulationError: Foundation.LocalizedError {
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * The step advance mode describes when the current maneuver has been successfully completed,
+ * and we should advance to the next step.
+ */
 
 public enum StepAdvanceMode {
     /**
-     * Never advances to the next step automatically
+     * Never advances to the next step automatically;
+     * requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
+     *
+     * You can use this to implement custom behaviors in external code.
      */
     case manual
     /**
@@ -3860,7 +3995,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 47311 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 58272 {
+    if uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 50476 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 63458 {
@@ -3869,7 +4004,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 38851 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 13511 {
+    if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 60881 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 32290 {

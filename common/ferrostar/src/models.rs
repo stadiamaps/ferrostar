@@ -1,3 +1,12 @@
+//! Common data models.
+//!
+//! Quick tour:
+//! - [Route]: Common notion of what a route is; You can go top-down from here if you're curious.
+//! - [Waypoint]: Points that a user is intending to traverse; interesting because there are multiple kinds of them.
+//! - [SpokenInstruction] and [VisualInstruction]: Audiovisual prompts as the user progresses through the route.
+//! - [GeographicCoordinate] and [BoundingBox]: Geographic primitives
+//!   (providing a shared language and type definition across multiple platforms).
+
 #[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
 use geo::{Coord, LineString, Point, Rect};
@@ -31,7 +40,9 @@ pub enum ModelError {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct GeographicCoordinate {
+    /// The latitude (in degrees).
     pub lat: f64,
+    /// The Longitude (in degrees).
     pub lng: f64,
 }
 
@@ -71,7 +82,7 @@ impl From<GeographicCoordinate> for Point {
 /// A waypoint along a route.
 ///
 /// Within the context of Ferrostar, a route request consists of exactly one [`UserLocation`]
-/// and at least one [Waypoint]. The route starts from the user's location (which may
+/// and at least one [`Waypoint`]. The route starts from the user's location (which may
 /// contain other useful information like their current course for the [`crate::routing_adapters::RouteRequestGenerator`]
 /// to use) and proceeds through one or more waypoints.
 ///
@@ -100,11 +111,14 @@ pub enum WaypointKind {
     Via,
 }
 
+/// A geographic bounding box defined by its corners.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct BoundingBox {
+    /// The southwest corner of the bounding box.
     pub sw: GeographicCoordinate,
+    /// The northeast corner of the bounding box.
     pub ne: GeographicCoordinate,
 }
 
@@ -118,8 +132,6 @@ impl From<Rect> for BoundingBox {
 }
 
 /// The heading of the user/device.
-///
-/// Ferrostar prefers course over ground, but may use heading in some cases.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct Heading {
@@ -220,10 +232,6 @@ fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelErro
 
 /// A maneuver (such as a turn or merge) followed by travel of a certain distance until reaching
 /// the next step.
-///
-/// NOTE: OSRM specifies this rather precisely as "travel along a single way to the subsequent step"
-/// but we will intentionally define this somewhat looser unless/until it becomes clear something
-///
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
@@ -233,9 +241,17 @@ pub struct RouteStep {
     pub distance: f64,
     /// The estimated duration, in seconds, that it will take to complete this step.
     pub duration: f64,
+    /// The name of the road being traveled on (useful for certain UI styles).
     pub road_name: Option<String>,
+    /// A description of the maneuver (ex: "Turn wright onto main street").
+    ///
+    /// Note for UI implementers: the context this appears in (or doesn't)
+    /// depends somewhat on your use case and routing engine.
+    /// For example, this field is useful as a written instruction in Valhalla.
     pub instruction: String,
+    /// A list of instructions for visual display (usually as banners) at specific points along the step.
     pub visual_instructions: Vec<VisualInstruction>,
+    /// A list of prompts to announce (via speech synthesis) at specific points along the step.
     pub spoken_instructions: Vec<SpokenInstruction>,
 }
 
@@ -251,7 +267,7 @@ impl RouteStep {
             .collect()
     }
 
-    /// Gets the active visual instruction given the user's progress along the step.
+    /// Gets the active visual instruction at a specific point along the step.
     pub fn get_active_visual_instruction(
         &self,
         distance_to_end_of_step: f64,
@@ -265,7 +281,15 @@ impl RouteStep {
         })
     }
 
-    /// Gets the current (latest?) spoken instruction given the user's progress along the step.
+    /// Gets the spoken instruction at a specific point along the step.
+    ///
+    /// Note to platform implementers: some care is needed with this.
+    /// Unlike visual instructions, which can be changed without much consequence,
+    /// speech synthesis takes time to complete.
+    /// Take care to characteristics of your synthesis engine,
+    /// including whether utterances are queued or cut off the currently playing one.
+    /// You will also need some sort of check to ensure you don't make the same announcement
+    /// more times than necessary.
     pub fn get_current_spoken_instruction(
         &self,
         distance_to_end_of_step: f64,
@@ -305,9 +329,9 @@ pub struct SpokenInstruction {
     pub utterance_id: Uuid,
 }
 
-/// Indicates the type of maneuver to perform.
+/// The broad class of maneuver to perform.
 ///
-/// Frequently used in conjunction with [`ManeuverModifier`].
+/// This is usually combined with [`ManeuverModifier`] in [`VisualInstructionContent`].
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(test, derive(Serialize))]
@@ -338,7 +362,7 @@ pub enum ManeuverType {
     ExitRotary,
 }
 
-/// Specifies additional information about a [`ManeuverType`]
+/// Additional information to further specify a [`ManeuverType`].
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(test, derive(Serialize))]
@@ -358,21 +382,35 @@ pub enum ManeuverModifier {
     SharpLeft,
 }
 
+/// The content of a visual instruction.
 #[derive(Debug, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct VisualInstructionContent {
+    /// The text to display.
     pub text: String,
+    /// A standardized maneuver type (if any).
     pub maneuver_type: Option<ManeuverType>,
+    /// A standardized maneuver modifier (if any).
     pub maneuver_modifier: Option<ManeuverModifier>,
+    /// If applicable, the number of degrees you need to go around the roundabout before exiting.
+    ///
+    /// For example, entering and exiting the roundabout in the same direction of travel
+    /// (as if you had gone straight, apart from the detour)
+    /// would be an exit angle of 180 degrees.
     pub roundabout_exit_degrees: Option<u16>,
 }
 
+/// An instruction for visual display (usually as banners) at a specific point along a [`RouteStep`].
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(test, derive(Serialize))]
 pub struct VisualInstruction {
+    /// The primary instruction content.
+    ///
+    /// This is usually given more visual weight.
     pub primary_content: VisualInstructionContent,
+    /// Optional secondary instruction content.
     pub secondary_content: Option<VisualInstructionContent>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
     pub trigger_distance_before_maneuver: f64,

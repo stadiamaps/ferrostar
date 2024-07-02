@@ -251,7 +251,7 @@ pub struct Intersections {
     #[serde(default)]
     #[serde(rename = "out")]
     pub intersection_out: usize,
-    /// A list of turn [Lane]s available at the intersection (if info is available).
+    /// A list of turn [`Lane`]s available at the intersection (if info is available).
     ///
     /// Lanes are listed in left-to-right order.
     #[serde(default)]

@@ -6,10 +6,10 @@ Ferrostar is a FOSS navigation SDK built from the ground up for the future.
 
 ## Current status
 
-The project is under active development, but rapidly approaching production usefulness.
+The project is under active development, is currently in beta, and is rapidly approaching production readiness for many use cases.
 The core is functional (pun intended for you FP lovers)
 and complete enough to handle most use cases.
-One of the developers is actively using Ferrostar for cycling navigation on iOS.
+One of the developers is actively using Ferrostar for cycling and automotive navigation on iOS.
 Android is slightly less polished on the UI side but is otherwise feature parity.
 See the issue tracker and guide for more details.
 
@@ -25,9 +25,8 @@ Here's a quick breakdown of support by platform.
 | Composable UI - MapLibre integration | ✅ | 👨‍💻 |
 | Voice guidance (platform-native TTS) | ✅ | ✅ |
 
-While there are some rough edges, eager developers can start integrating.
-Note that the API is currently NOT stable and there will still be some breaking changes,
-but the release notes should include details.
+While there are some rough edges, ambitious developers can start integrating.
+There are integrations underway in multiple production apps that the core devs are aware of.
 
 Join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.us/) for updates + discussion.
 The core devs are active there and we're happy to answer questions / help you get started!
