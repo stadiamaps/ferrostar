@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ferrostar Web Demo</title>
+    <link rel="stylesheet" href="./src/index.css" />
+    <script type="module" src="/src/ferrostar-core.ts"></script>
+  </head>
+  <body>
+    <ferrostar-core
+      id="core"
+      valhallaEndpointUrl="https://valhalla1.openstreetmap.de/route"
+      profile="bicycle"
+      httpClient="${fetch}"
+      locationProvider="${locationProvider}"
+    ></ferrostar-core>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const core = document.getElementById("core");
+
+        // FIXME: implement simulated location provider and get rid of these hardcoded values
+        const DELETE_ME_INITIAL_LOCATION = { lat: 37.807587, lng: -122.428411 };
+        const DELETE_ME_WAYPOINTS = [
+          { coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" },
+          { coordinate: { lat: 37.8077, lng: -122.429 }, kind: "Break" },
+        ];
+
+        const routes = await core.getRoutes(DELETE_ME_INITIAL_LOCATION, DELETE_ME_WAYPOINTS);
+        const route = routes[0];
+
+        const config = {
+          stepAdvanceMode: {
+            minimumHorizontalAccuracy: 25,
+            automaticAdvanceDistance: 10,
+          },
+          routeDeviationTracking: {
+            staticThreshold: {
+              distance: 25,
+              duration: 10.0,
+            },
+          },
+        };
+
+        core.startNavigation(route, config);
+      });
+    </script>
+  </body>
+</html>
