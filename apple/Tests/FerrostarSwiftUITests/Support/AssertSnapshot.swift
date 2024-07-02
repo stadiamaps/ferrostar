@@ -21,7 +21,7 @@ extension XCTestCase {
             .environment(\.navigationUITheme, navigationUITheme)
             .environment(\.navigationFormatterCollection, navigationFormatterCollection)
             .frame(width: frame.width, height: frame.height)
-            .background(Color(red: 130/255, green: 203/255, blue: 114/255))
+            .background(Color(red: 130 / 255, green: 203 / 255, blue: 114 / 255))
 
         assertSnapshot(of: view,
                        as: .image,

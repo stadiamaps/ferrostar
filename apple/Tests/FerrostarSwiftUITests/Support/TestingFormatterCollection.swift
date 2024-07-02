@@ -16,11 +16,9 @@ class TestingFormatterCollection: FormatterCollection {
         return formatter
     }()
 
-    var estimatedArrivalFormatter: Date.FormatStyle = {
-        return Date.FormatStyle(date: .omitted, time: .shortened)
-            .hour(.twoDigits(amPM: .abbreviated))
-            .minute(.twoDigits)
-    }()
+    var estimatedArrivalFormatter: Date.FormatStyle = .init(date: .omitted, time: .shortened)
+        .hour(.twoDigits(amPM: .abbreviated))
+        .minute(.twoDigits)
 
     var durationFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()

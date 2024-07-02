@@ -4,7 +4,7 @@ import XCTest
 
 final class ArrivalViewWithButtonTests: XCTestCase {
     let formatterCollection = TestingFormatterCollection()
-    
+
     let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
 
     var etaFormatter: Date.FormatStyle = .init(timeZone: .init(secondsFromGMT: 0)!)
