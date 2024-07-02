@@ -7,10 +7,6 @@ final class ArrivalViewWithButtonTests: XCTestCase {
 
     let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
 
-    var etaFormatter: Date.FormatStyle = .init(timeZone: .init(secondsFromGMT: 0)!)
-        .hour(.defaultDigits(amPM: .abbreviated))
-        .minute(.twoDigits)
-
     var informationalTheme: any ArrivalViewTheme {
         var theme = DefaultArrivalViewTheme()
         theme.style = .informational
@@ -26,7 +22,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     durationRemaining: 150
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
             )
@@ -40,7 +36,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
             )
@@ -56,7 +52,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate,
                 onTapExit: {}
@@ -73,7 +69,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: germanDistanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 durationFormatter: longDurationFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
@@ -123,7 +119,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     durationRemaining: 150
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
             )
@@ -137,7 +133,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}
             )
@@ -153,7 +149,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 theme: informationalTheme,
                 fromDate: referenceDate,
                 onTapExit: {}
@@ -170,7 +166,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                     durationRemaining: 520_800
                 ),
                 distanceFormatter: germanDistanceFormatter,
-                estimatedArrivalFormatter: etaFormatter,
+                estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 durationFormatter: longDurationFormatter,
                 fromDate: referenceDate,
                 onTapExit: {}

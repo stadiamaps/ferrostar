@@ -20,7 +20,8 @@
   Ferrostar's aim is to make simple things simple, and complex things possible.
 * **Vendor-neutral** - As a corollary to its extensibility, Ferrostar is vendor-neutral,
   and welcomes PRs to add support for additional [vendors](./vendors.md).
-  We do not collect telemetry for any vendor (though developers may of course add their own when needed).
+	The core Ferrostar components do not upload telemetry to any vendor
+	(though developers may add their own).
 * **Open-source** - Ferrostar is open-source. No funky strings; just BSD.
 
 ## Ferrostar is not...
