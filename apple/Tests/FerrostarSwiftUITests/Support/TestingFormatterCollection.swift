@@ -19,9 +19,9 @@ class TestingFormatterCollection: FormatterCollection {
     }()
 
     var estimatedArrivalFormatter: Date.FormatStyle = .init(timeZone: .init(secondsFromGMT: 0)!)
-               .hour(.defaultDigits(amPM: .abbreviated))
-               .minute(.twoDigits)
-               .locale(enUS)
+        .hour(.defaultDigits(amPM: .abbreviated))
+        .minute(.twoDigits)
+        .locale(enUS)
 
     var durationFormatter: DateComponentsFormatter = {
         let formatter = DateComponentsFormatter()
