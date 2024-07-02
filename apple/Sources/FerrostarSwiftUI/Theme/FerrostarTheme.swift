@@ -1,12 +1,12 @@
 import Foundation
 
-public protocol FerrostarTheme: AnyObject {
+public protocol NavigationUITheme: AnyObject {
     var primaryInstructionsRow: InstructionRowTheme { get }
     var secondaryInstructionsRow: InstructionRowTheme { get }
     var arrival: any ArrivalViewTheme { get }
 }
 
-public class DefaultFerrostarTheme: FerrostarTheme {
+public class DefaultNavigationUITheme: FerrostarTheme {
     public var primaryInstructionsRow: any InstructionRowTheme
     public var secondaryInstructionsRow: any InstructionRowTheme
     public var arrival: any ArrivalViewTheme

@@ -2,8 +2,8 @@ import Foundation
 
 /// A group of formatters to apply to the UI stack.
 ///
-/// This allows easily controlling the formatters throughout the UI. If fine grained
-/// control over specific views is required, it's best to modify these directly using
+/// This is set in the SwiftUI environment to enable easy control across the whole UI. If you need fine-grained
+/// control over specific views, it's best to modify these directly using
 /// the formatter inputs and your own UI wrappers.
 public protocol FerrostarFormatters: AnyObject {
     /// The core distance formatter. This is used in views like the instructions banner and arrival view.
@@ -26,12 +26,12 @@ public protocol FerrostarFormatters: AnyObject {
     var speedWithUnitsFormatter: MeasurementFormatter { get }
 }
 
-/// A default formatter collection.
+/// An adaptable collection of `Foundation` formatters.
 ///
-/// This formatter combines our default formatters for application in the UI stack. Typical formatters
-/// are very limited in configuration to accept the default iOS system behaviors for locale, etc. This can be customized
-/// or you can create your own FerrostarFormatters definition to apply to the UI stack.
-public class DefaultFerrostarFormatters: FerrostarFormatters {
+/// The default constructor uses formatters from ``DefaultFormatters``, which is what most applications want,
+/// as this automatically reflects user locale preferences.
+/// If you want to change any of the behaviors but still use `Foundation` formatters, you can pass a preconfigured formatter for any parameter.
+public class FoundationFormatterCollection: FormatterCollection {
     public var distanceFormatter: Formatter
     public var estimatedArrivalFormatter: Date.FormatStyle
     public var durationFormatter: DateComponentsFormatter

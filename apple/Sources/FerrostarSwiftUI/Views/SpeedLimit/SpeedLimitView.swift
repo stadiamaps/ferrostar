@@ -15,7 +15,7 @@ public struct SpeedLimitView: View {
 
     @Environment(\.locale) private var locale
 
-    var toggleStyleBy: ToggleStyleBy
+    var signageStyle: SignageStyle
     var speedLimit: Measurement<UnitSpeed>
     var valueFormatter: NumberFormatter
     var unitFormatter: MeasurementFormatter
