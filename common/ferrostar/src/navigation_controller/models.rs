@@ -3,9 +3,11 @@ use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstructio
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use geo::LineString;
+#[cfg(feature = "wasm-bindgen")]
+use serde::{Deserialize, Serialize};
 
 /// A subset of state values that are used to show the user their current progress along the trip and it's components.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
@@ -21,6 +23,7 @@ pub struct TripProgress {
 /// Internal state of the navigation controller.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 pub enum TripState {
     Navigating {
         snapped_user_location: UserLocation,
@@ -65,6 +68,7 @@ pub enum StepAdvanceStatus {
 
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
 pub enum StepAdvanceMode {
     /// Never advances to the next step automatically
     Manual,
@@ -90,6 +94,7 @@ pub enum StepAdvanceMode {
 
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
 pub struct NavigationControllerConfig {
     pub step_advance: StepAdvanceMode,
     pub route_deviation_tracking: RouteDeviationTracking,
