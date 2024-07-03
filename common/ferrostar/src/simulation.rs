@@ -1,3 +1,43 @@
+//! Tools for simulating progress along a route.
+//!
+//! # Example
+//!
+//! Here's an example usage with the polyline constructor.
+//! This can serve as a template for writing your own test code.
+//! You may also get some inspiration from the [Swift](https://github.com/stadiamaps/ferrostar/blob/main/apple/Sources/FerrostarCore/Location.swift)
+//! or [Kotlin](https://github.com/stadiamaps/ferrostar/blob/main/android/core/src/main/java/com/stadiamaps/ferrostar/core/Location.kt)
+//! `SimulatedLocationProvider` implementations which wrap this.
+//!
+//! ```
+//! use ferrostar::simulation::{advance_location_simulation, location_simulation_from_polyline};
+//! # use std::error::Error;
+//! # fn main() -> Result<(), Box<dyn Error>> {
+//!
+//! let polyline_precision = 6;
+//! // Build the initial state from an encoded polyline.
+//! // You can create a simulation from coordinates or even a [Route] as well.
+//! let mut state = location_simulation_from_polyline(
+//!     "wzvmrBxalf|GcCrX}A|Nu@jI}@pMkBtZ{@x^_Afj@Inn@`@veB",
+//!     polyline_precision,
+//!     // Passing `Some(number)` will resample your polyline at uniform distances.
+//!     // This is often desirable to create a smooth simulated movement when you don't have a GPS trace.
+//!     None,
+//! )?;
+//!
+//! loop {
+//!     let mut new_state = advance_location_simulation(&state);
+//!     if new_state == state {
+//!         // When the simulation reaches the end, it keeps yielding the input state.
+//!         break;
+//!     }
+//!     state = new_state;
+//!     // Do something; maybe sleep for some period of time until the next timestamp?
+//! }
+//! #
+//! # Ok(())
+//! # }
+//! ```
+
 use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
@@ -22,11 +62,14 @@ use serde::Serialize;
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum SimulationError {
     #[cfg_attr(feature = "std", error("Failed to parse polyline: {error}."))]
+    /// Errors decoding the polyline string.
     PolylineError { error: String },
     #[cfg_attr(feature = "std", error("Not enough points (expected at least two)."))]
+    /// Not enough points in the input.
     NotEnoughPoints,
 }
 
+/// The current state of the simulation.
 #[derive(Clone, PartialEq)]
 #[cfg_attr(test, derive(Serialize))]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]

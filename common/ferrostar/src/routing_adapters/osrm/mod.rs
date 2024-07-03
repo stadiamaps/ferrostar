@@ -1,3 +1,5 @@
+//! Response parsing for OSRM-compatible JSON (including Stadia Maps, Valhalla, Mapbox, etc.).
+
 pub(crate) mod models;
 
 use super::RouteResponseParser;

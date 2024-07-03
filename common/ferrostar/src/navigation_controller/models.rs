@@ -1,10 +1,12 @@
+//! State and configuration data models.
+
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use geo::LineString;
 
-/// A subset of state values that are used to show the user their current progress along the trip and it's components.
+/// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct TripProgress {
@@ -63,10 +65,15 @@ pub enum StepAdvanceStatus {
     EndOfRoute,
 }
 
+/// The step advance mode describes when the current maneuver has been successfully completed,
+/// and we should advance to the next step.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 pub enum StepAdvanceMode {
-    /// Never advances to the next step automatically
+    /// Never advances to the next step automatically;
+    /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
+    ///
+    /// You can use this to implement custom behaviors in external code.
     Manual,
     /// Automatically advances when the user's location is close enough to the end of the step
     DistanceToEndOfStep {
