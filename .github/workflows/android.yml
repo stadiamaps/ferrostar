@@ -57,3 +57,37 @@ jobs:
         target: aosp_atd
         script: ./gradlew connectedCheck
         working-directory: android
+
+  verify-snapshots:
+
+    runs-on: macos-13
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      working-directory: android
+
+    - name: Install cargo-ndk
+      run: cargo install cargo-ndk
+
+    - name: Touch local.properties (required for cargo-ndk)
+      run: touch local.properties
+      working-directory: android
+
+    - name: Verify snapshots
+      run: ./gradlew verifyPaparazziDebug
+      working-directory: android

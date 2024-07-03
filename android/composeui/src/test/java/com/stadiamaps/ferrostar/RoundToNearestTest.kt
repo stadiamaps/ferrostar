@@ -1,6 +1,6 @@
 package com.stadiamaps.ferrostar
 
-import com.stadiamaps.ferrostar.composeui.roundToNearest
+import com.stadiamaps.ferrostar.composeui.formatting.roundToNearest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
