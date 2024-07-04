@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui
+package com.stadiamaps.ferrostar.composeui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

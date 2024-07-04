@@ -17,7 +17,7 @@ import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.ramani.LocationPriority
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
-import com.stadiamaps.ferrostar.composeui.BannerInstructionView
+import com.stadiamaps.ferrostar.composeui.views.InstructionsView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.toAndroidLocation
@@ -37,7 +37,7 @@ fun NavigationMapView(
             .build(),
     bannerContentBuilder: @Composable (VisualInstruction, Double?) -> Unit =
         { instruction, distanceToNextManeuver ->
-          BannerInstructionView(instruction, distanceToNextManeuver)
+          InstructionsView(instruction, distanceToNextManeuver)
         },
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
