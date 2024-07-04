@@ -66,6 +66,7 @@ class FerrostarCore extends LitElement {
       horizontal_accuracy: 6.0,
       course_over_ground: null,
       timestamp: timestamp,
+      speed: null,
     };
 
     const body = this.routeAdapter.generate_request(userLocation, waypoints).get("body");
