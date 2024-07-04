@@ -83,6 +83,25 @@ class FerrostarCore extends LitElement {
 
   // FIXME: type
   async startNavigation(route: any, config: any) {
+    this.navigationController = new NavigationController(route, config);
+
+    const timestamp = {
+      secs_since_epoch: Math.round(new Date().getTime() / 1000),
+      nanos_since_epoch: 0,
+    };
+
+    const startingLocation = this.locationProvider.lastLocation ? {
+      coordinates: route.geometry[0],
+      horizontal_accuracy: 0.0,
+      course_over_ground: null,
+      timestamp: timestamp,
+      speed: null,
+    } : this.locationProvider.lastLocation;
+
+    // FIXME: should be camelCase
+    const initialTripState = this.navigationController.get_initial_state(startingLocation);
+    this.handleStateUpdate(initialTripState, startingLocation);
+
     // FIXME: since simulated location provider is not implemented yet, we are not moving in the map!
     const polyline = L.polyline(route.geometry, { color: "red" }).addTo(this.map!);
     this.map!.fitBounds(polyline.getBounds());
