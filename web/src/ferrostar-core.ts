@@ -91,13 +91,15 @@ class FerrostarCore extends LitElement {
       nanos_since_epoch: 0,
     };
 
-    const startingLocation = this.locationProvider.lastLocation ? {
-      coordinates: route.geometry[0],
-      horizontal_accuracy: 0.0,
-      course_over_ground: null,
-      timestamp: timestamp,
-      speed: null,
-    } : this.locationProvider.lastLocation;
+    const startingLocation = this.locationProvider.lastLocation
+      ? this.locationProvider.lastLocation
+      : {
+          coordinates: route.geometry[0],
+          horizontal_accuracy: 0.0,
+          course_over_ground: null,
+          timestamp: timestamp,
+          speed: null,
+        };
 
     // FIXME: should be camelCase
     const initialTripState = this.navigationController.get_initial_state(startingLocation);
