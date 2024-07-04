@@ -30,15 +30,18 @@
         const routes = await core.getRoutes(DELETE_ME_INITIAL_LOCATION, DELETE_ME_WAYPOINTS);
         const route = routes[0];
 
+        // FIXME: type + should be camelCase
         const config = {
-          stepAdvanceMode: {
-            minimumHorizontalAccuracy: 25,
-            automaticAdvanceDistance: 10,
+          step_advance: {
+            RelativeLineStringDistance: {
+              minimum_horizontal_accuracy: 25,
+              automatic_advance_distance: 10,
+            },
           },
-          routeDeviationTracking: {
-            staticThreshold: {
-              distance: 25,
-              duration: 10.0,
+          route_deviation_tracking: {
+            StaticThreshold: {
+              minimum_horizontal_accuracy: 25,
+              max_acceptable_deviation: 10.0,
             },
           },
         };
