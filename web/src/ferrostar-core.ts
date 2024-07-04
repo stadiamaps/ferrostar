@@ -19,6 +19,10 @@ class FerrostarCore extends LitElement {
   @property()
   locationProvider!: any;
 
+  // FIXME: type
+  @property({ type: Object })
+  costingOptions!: any;
+
   routeAdapter: RouteAdapter | null = null;
   map: L.Map | null = null;
   navigationController: NavigationController | null = null;
