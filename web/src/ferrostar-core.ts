@@ -91,18 +91,17 @@ class FerrostarCore extends LitElement {
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     this.navigationController = new NavigationController(route, config);
 
-    const timestamp = {
-      secs_since_epoch: Math.round(new Date().getTime() / 1000),
-      nanos_since_epoch: 0,
-    };
-
     const startingLocation = this.locationProvider.lastLocation
       ? this.locationProvider.lastLocation
       : {
           coordinates: route.geometry[0],
           horizontal_accuracy: 0.0,
           course_over_ground: null,
-          timestamp: timestamp,
+          // FIXME: find a better way to create the timestamp?
+          timestamp: {
+            secs_since_epoch: Math.floor(Date.now() / 1000),
+            nanos_since_epoch: 0,
+          },
           speed: null,
         };
 

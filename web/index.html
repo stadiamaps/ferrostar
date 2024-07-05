@@ -30,7 +30,7 @@
           course_over_ground: null,
           // FIXME: find a better way to create the timestamp?
           timestamp: {
-            secs_since_epoch: Math.round(new Date().getTime() / 1000),
+            secs_since_epoch: Math.floor(Date.now() / 1000),
             nanos_since_epoch: 0,
           },
           speed: null,
