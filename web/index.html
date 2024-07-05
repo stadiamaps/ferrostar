@@ -6,6 +6,7 @@
     <title>Ferrostar Web Demo</title>
     <link rel="stylesheet" href="./src/index.css" />
     <script type="module" src="/src/ferrostar-core.ts"></script>
+    <script type="module" src="/src/location.ts"></script>
   </head>
   <body>
     <ferrostar-core
@@ -13,22 +14,31 @@
       valhallaEndpointUrl="https://valhalla1.openstreetmap.de/route"
       profile="bicycle"
       httpClient="${fetch}"
-      locationProvider="${locationProvider}"
+      lastLocation="${locationProvider}"
       costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
     ></ferrostar-core>
 
-    <script>
+    <script type="module">
+      import { SimulatedLocationProvider } from "/src/location.ts";
+
       document.addEventListener("DOMContentLoaded", async () => {
         const core = document.getElementById("core");
 
-        // FIXME: implement simulated location provider and get rid of these hardcoded values
-        const DELETE_ME_INITIAL_LOCATION = { lat: 37.807587, lng: -122.428411 };
-        const DELETE_ME_WAYPOINTS = [
-          { coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" },
-          { coordinate: { lat: 37.8077, lng: -122.429 }, kind: "Break" },
-        ];
+        const initialSimulatedLocation = {
+          coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
+          horizontal_accuracy: 6.0,
+          course_over_ground: null,
+          // FIXME: find a better way to create the timestamp?
+          timestamp: {
+            secs_since_epoch: Math.round(new Date().getTime() / 1000),
+            nanos_since_epoch: 0,
+          },
+          speed: null,
+        };
 
-        const routes = await core.getRoutes(DELETE_ME_INITIAL_LOCATION, DELETE_ME_WAYPOINTS);
+        const waypoints = [{ coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" }];
+
+        const routes = await core.getRoutes(initialSimulatedLocation, waypoints);
         const route = routes[0];
 
         // FIXME: type + should be camelCase
@@ -47,6 +57,13 @@
           },
         };
 
+        const locationProvider = new SimulatedLocationProvider();
+        locationProvider.lastLocation = initialSimulatedLocation;
+        locationProvider.warpFactor = 2;
+        locationProvider.setSimulatedRoute(route);
+
+        // FIXME: we shouldn't need to set the locationProvider again
+        core.locationProvider = locationProvider;
         core.startNavigation(route, config);
       });
     </script>
