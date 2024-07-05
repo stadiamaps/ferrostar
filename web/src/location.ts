@@ -39,3 +39,39 @@ export class SimulatedLocationProvider {
     this.simulationState = null;
   }
 }
+
+export class BrowserLocationProvider {
+  private geolocationWatchId: number | null = null;
+  lastLocation: any = null;
+  lastHeading = null;
+  warpFactor = 1;
+
+  updateCallback: () => void;
+
+  async start() {
+    if (navigator.geolocation) {
+      this.geolocationWatchId = navigator.geolocation.watchPosition((position) => {
+        this.lastLocation = {
+          coordinates: { lat: position.coords.latitude, lng: position.coords.longitude},
+          horizontal_accuracy: position.coords.accuracy,
+          course_over_ground: position.coords.heading,
+          timestamp: {
+            secs_since_epoch: Math.floor(position.timestamp / 1000),
+            nanos_since_epoch: 0,
+          },
+          speed: position.coords.speed,
+        };
+
+        if (this.updateCallback) {
+          this.updateCallback();
+        }
+      });
+    }
+  }
+
+  stop() {
+    if (navigator.geolocation && this.geolocationWatchId) {
+      navigator.geolocation.clearWatch(this.geolocationWatchId);
+    }
+  }
+}
