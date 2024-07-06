@@ -15,7 +15,10 @@ class InstructionViewTest {
 
   @get:Rule
   val paparazzi =
-      Paparazzi(deviceConfig = PIXEL_5, theme = "android:Theme.Material.Light.NoActionBar")
+      Paparazzi(
+          deviceConfig = PIXEL_5,
+          theme = "android:Theme.Material.Light.NoActionBar",
+          maxPercentDifference = 0.01)
 
   @Test
   fun testInstructionView() {

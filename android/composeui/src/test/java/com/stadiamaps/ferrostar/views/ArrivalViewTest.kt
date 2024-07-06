@@ -16,7 +16,10 @@ class ArrivalViewTest {
 
   @get:Rule
   val paparazzi =
-      Paparazzi(deviceConfig = PIXEL_5.copy(), theme = "android:Theme.Material.Light.NoActionBar")
+      Paparazzi(
+          deviceConfig = PIXEL_5.copy(),
+          theme = "android:Theme.Material.Light.NoActionBar",
+          maxPercentDifference = 0.01)
 
   @Test
   fun testArrivalView() {
