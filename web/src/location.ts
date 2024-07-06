@@ -48,6 +48,10 @@ export class BrowserLocationProvider {
 
   updateCallback: () => void;
 
+  requestPermission() {
+    navigator.permissions.query({ name: "geolocation" });
+  }
+
   async start() {
     if (navigator.geolocation) {
       this.geolocationWatchId = navigator.geolocation.watchPosition((position) => {
