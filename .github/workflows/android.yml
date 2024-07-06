@@ -157,6 +157,7 @@ jobs:
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
+      if: success() || failure()
       with:
         name: paparazzi-report.html
         path: android/composeui/build/reports/paparazzi/debug/index.html
