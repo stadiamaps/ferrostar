@@ -160,7 +160,7 @@ jobs:
       if: success() || failure()
       with:
         name: paparazzi-report.html
-        path: android/composeui/build/reports/paparazzi/debug/index.html
+        path: android/composeui/build/reports/tests/testDebugUnitTest/index.html
         retention-days: 5
 
   connected-check:
