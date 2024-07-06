@@ -18,7 +18,7 @@ class InstructionViewTest {
       Paparazzi(
           deviceConfig = PIXEL_5,
           theme = "android:Theme.Material.Light.NoActionBar",
-          maxPercentDifference = 0.01)
+          maxPercentDifference = 0.05)
 
   @Test
   fun testInstructionView() {

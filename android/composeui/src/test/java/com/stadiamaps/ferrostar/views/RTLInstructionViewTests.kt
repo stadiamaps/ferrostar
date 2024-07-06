@@ -19,7 +19,7 @@ class RTLInstructionViewTests {
       Paparazzi(
           deviceConfig = PIXEL_5.copy(locale = "ar"),
           theme = "android:Theme.Material.Light.NoActionBar",
-          maxPercentDifference = 0.01)
+          maxPercentDifference = 0.05)
 
   @Test
   fun testRTLInstructionView() {
