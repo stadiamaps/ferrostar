@@ -163,8 +163,8 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: paparazzi
-        path: android/composeui/build/reports/paparazzi/debug/
+        name: reports
+        path: android/composeui/build/reports
         retention-days: 5
 
   connected-check:
