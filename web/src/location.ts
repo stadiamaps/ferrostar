@@ -7,9 +7,9 @@ export class SimulatedLocationProvider {
   lastHeading = null;
   warpFactor = 1;
 
-  updateCallback: () => void;
+  updateCallback: () => void = () => {};
 
-  setSimulatedRoute(route) {
+  setSimulatedRoute(route: any) {
     this.simulationState = locationSimulationFromRoute(route, 10.0);
     this.startSimulation();
   }
@@ -46,7 +46,7 @@ export class BrowserLocationProvider {
   lastHeading = null;
   warpFactor = 1;
 
-  updateCallback: () => void;
+  updateCallback: () => void = () => {};
 
   requestPermission() {
     navigator.permissions.query({ name: "geolocation" });
@@ -56,7 +56,7 @@ export class BrowserLocationProvider {
     if (navigator.geolocation) {
       this.geolocationWatchId = navigator.geolocation.watchPosition((position) => {
         this.lastLocation = {
-          coordinates: { lat: position.coords.latitude, lng: position.coords.longitude},
+          coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },
           horizontal_accuracy: position.coords.accuracy,
           course_over_ground: position.coords.heading,
           timestamp: {
