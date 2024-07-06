@@ -155,16 +155,14 @@ jobs:
       run: ./gradlew verifyPaparazziDebug
       working-directory: android
 
-    - name: List folders
-      run: ls -R android/composeui/build/reports
-      if: always()
-
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
         name: reports
-        path: android/composeui/build/reports
+        path: |
+          android/composeui/build/reports
+          android/composeui/build/paparazzi
         retention-days: 5
 
   connected-check:
