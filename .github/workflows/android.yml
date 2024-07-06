@@ -156,7 +156,7 @@ jobs:
       working-directory: android
 
     - name: List artifacts
-      run: ls -l android/composeui/build/reports/paparazzi/debug
+      run: ls -l android/composeui/build/reports
       if: always()
 
     - name: 'Upload Artifact'
