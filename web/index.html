@@ -18,53 +18,93 @@
       costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
     ></ferrostar-core>
 
+    <p class="controls">
+      <input type="text" id="destination" placeholder="Where do you want to go?" />
+      <span>
+        <button id="start">Start Navigation</button>
+        or
+        <button id="simulate">Simulate Navigation</button>
+      </span>
+    </p>
+
     <script type="module">
-      import { SimulatedLocationProvider } from "/src/location.ts";
+      import { SimulatedLocationProvider, BrowserLocationProvider } from "/src/location.ts";
+
+      // FIXME: type + should be camelCase
+      const config = {
+        step_advance: {
+          RelativeLineStringDistance: {
+            minimum_horizontal_accuracy: 25,
+            automatic_advance_distance: 10,
+          },
+        },
+        route_deviation_tracking: {
+          StaticThreshold: {
+            minimum_horizontal_accuracy: 25,
+            max_acceptable_deviation: 10.0,
+          },
+        },
+      };
 
       document.addEventListener("DOMContentLoaded", async () => {
         const core = document.getElementById("core");
+        const destinationInput = document.getElementById("destination");
+        const startNavigationButton = document.getElementById("start");
+        const simulateNavigationButton = document.getElementById("simulate");
 
-        const initialSimulatedLocation = {
-          coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
-          horizontal_accuracy: 6.0,
-          course_over_ground: null,
-          // FIXME: find a better way to create the timestamp?
-          timestamp: {
-            secs_since_epoch: Math.floor(Date.now() / 1000),
-            nanos_since_epoch: 0,
-          },
-          speed: null,
-        };
+        startNavigationButton.addEventListener("click", async () => {
+          const destination = destinationInput.value;
 
-        const waypoints = [{ coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" }];
+          const { lat, lon } = await fetch("https://nominatim.openstreetmap.org/search?q=" + destination + "&format=json")
+            .then((response) => response.json())
+            .then((data) => data[0]);
 
-        const routes = await core.getRoutes(initialSimulatedLocation, waypoints);
-        const route = routes[0];
+          const waypoints = [{ coordinate: { lat: parseFloat(lat), lng: parseFloat(lon) }, kind: "Break" }];
 
-        // FIXME: type + should be camelCase
-        const config = {
-          step_advance: {
-            RelativeLineStringDistance: {
-              minimum_horizontal_accuracy: 25,
-              automatic_advance_distance: 10,
+          const locationProvider = new BrowserLocationProvider();
+          locationProvider.requestPermission();
+          locationProvider.start();
+
+          // This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
+          while (!locationProvider.lastLocation) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          }
+
+          const routes = await core.getRoutes(locationProvider.lastLocation, waypoints);
+          const route = routes[0];
+
+          // FIXME: we shouldn't need to set the locationProvider again
+          core.locationProvider = locationProvider;
+          core.startNavigation(route, config);
+        });
+
+        simulateNavigationButton.addEventListener("click", async () => {
+          const initialSimulatedLocation = {
+            coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
+            horizontal_accuracy: 6.0,
+            course_over_ground: null,
+            // FIXME: find a better way to create the timestamp?
+            timestamp: {
+              secs_since_epoch: Math.floor(Date.now() / 1000),
+              nanos_since_epoch: 0,
             },
-          },
-          route_deviation_tracking: {
-            StaticThreshold: {
-              minimum_horizontal_accuracy: 25,
-              max_acceptable_deviation: 10.0,
-            },
-          },
-        };
+            speed: null,
+          };
 
-        const locationProvider = new SimulatedLocationProvider();
-        locationProvider.lastLocation = initialSimulatedLocation;
-        locationProvider.warpFactor = 2;
-        locationProvider.setSimulatedRoute(route);
+          const simulatedWaypoints = [{ coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" }];
 
-        // FIXME: we shouldn't need to set the locationProvider again
-        core.locationProvider = locationProvider;
-        core.startNavigation(route, config);
+          const routes = await core.getRoutes(initialSimulatedLocation, simulatedWaypoints);
+          const route = routes[0];
+
+          const locationProvider = new SimulatedLocationProvider();
+          locationProvider.lastLocation = initialSimulatedLocation;
+          locationProvider.warpFactor = 2;
+          locationProvider.setSimulatedRoute(route);
+
+          // FIXME: we shouldn't need to set the locationProvider again
+          core.locationProvider = locationProvider;
+          core.startNavigation(route, config);
+        });
       });
     </script>
   </body>
