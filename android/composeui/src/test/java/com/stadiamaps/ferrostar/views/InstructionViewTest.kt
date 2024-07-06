@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.views
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
 import app.cash.paparazzi.Paparazzi
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
+import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import org.junit.Rule
 import org.junit.Test
 import uniffi.ferrostar.ManeuverModifier
@@ -30,7 +31,9 @@ class InstructionViewTest {
             triggerDistanceBeforeManeuver = 42.0)
 
     paparazzi.snapshot {
-      InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
+        withSnapshotBackground {
+            InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
+        }
     }
   }
 }

@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp'
     implementation 'com.squareup.moshi:moshi:1.15.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-datetime:0.6.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3'
 
     implementation "net.java.dev.jna:jna:5.12.1@aar"

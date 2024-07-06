@@ -43,7 +43,6 @@ fun InstructionsView(
   Column(
       modifier =
           Modifier.fillMaxWidth()
-              .padding(horizontal = 16.dp)
               .shadow(elevation = 5.dp, RoundedCornerShape(10.dp))
               .background(MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
               .padding(8.dp)) {
