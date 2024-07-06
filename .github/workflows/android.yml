@@ -155,6 +155,9 @@ jobs:
       run: ./gradlew verifyPaparazziDebug
       working-directory: android
 
+    - name: List folders
+      run: ls -R android/composeui/build/reports
+
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
       if: success() || failure()
