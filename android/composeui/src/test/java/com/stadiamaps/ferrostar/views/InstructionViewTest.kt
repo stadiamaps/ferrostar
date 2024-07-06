@@ -31,9 +31,9 @@ class InstructionViewTest {
             triggerDistanceBeforeManeuver = 42.0)
 
     paparazzi.snapshot {
-        withSnapshotBackground {
-            InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
-        }
+      withSnapshotBackground {
+        InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
+      }
     }
   }
 }

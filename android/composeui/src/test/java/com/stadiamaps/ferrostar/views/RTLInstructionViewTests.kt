@@ -34,12 +34,12 @@ class RTLInstructionViewTests {
             triggerDistanceBeforeManeuver = 42.0)
 
     paparazzi.snapshot {
-        withSnapshotBackground {
-            InstructionsView(
-                instructions = instructions,
-                distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
-                distanceToNextManeuver = 42.0)
-        }
+      withSnapshotBackground {
+        InstructionsView(
+            instructions = instructions,
+            distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
+            distanceToNextManeuver = 42.0)
+      }
     }
   }
 }

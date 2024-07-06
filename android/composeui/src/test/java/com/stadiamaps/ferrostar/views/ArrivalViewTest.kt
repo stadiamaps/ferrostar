@@ -33,30 +33,18 @@ class ArrivalViewTest {
     }
   }
 
-    @Test
-    fun testArrivalViewInformationalStyle() {
-        paparazzi.snapshot {
-            withSnapshotBackground {
-                ArrivalViewInformationalPreview()
-            }
-        }
-    }
+  @Test
+  fun testArrivalViewInformationalStyle() {
+    paparazzi.snapshot { withSnapshotBackground { ArrivalViewInformationalPreview() } }
+  }
 
-    @Test
-    fun testArrivalViewWithExit() {
-        paparazzi.snapshot {
-            withSnapshotBackground {
-                ArrivalViewWithExitPreview()
-            }
-        }
-    }
+  @Test
+  fun testArrivalViewWithExit() {
+    paparazzi.snapshot { withSnapshotBackground { ArrivalViewWithExitPreview() } }
+  }
 
-    @Test
-    fun testArrivalView24Hour() {
-        paparazzi.snapshot {
-            withSnapshotBackground {
-                ArrivalView24HourPreview()
-            }
-        }
-    }
+  @Test
+  fun testArrivalView24Hour() {
+    paparazzi.snapshot { withSnapshotBackground { ArrivalView24HourPreview() } }
+  }
 }

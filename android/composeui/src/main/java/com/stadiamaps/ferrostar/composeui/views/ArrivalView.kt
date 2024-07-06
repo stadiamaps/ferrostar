@@ -52,7 +52,8 @@ import uniffi.ferrostar.TripProgress
  * @param durationFormatter The formatter to use for the duration.
  * @param progress The progress of the trip.
  * @param fromDate The date to use as the reference for the estimated arrival time.
- * @param onTapExit An optional callback to invoke when the exit button is tapped. If null, the exit button is not displayed.
+ * @param onTapExit An optional callback to invoke when the exit button is tapped. If null, the exit
+ *   button is not displayed.
  */
 @Composable
 fun ArrivalView(
@@ -68,7 +69,8 @@ fun ArrivalView(
   Box(modifier) {
     Row(
         modifier =
-            Modifier.shadow(12.dp).background(color = theme.backgroundColor, shape = RoundedCornerShape(50))
+            Modifier.shadow(12.dp)
+                .background(color = theme.backgroundColor, shape = RoundedCornerShape(50))
                 .padding(start = 32.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically) {
@@ -180,10 +182,7 @@ fun ArrivalViewInformationalPreview() {
           @Composable get() = MaterialTheme.colorScheme.background
       }
 
-  ArrivalView(
-      progress = progress,
-      theme = theme,
-      fromDate = Instant.fromEpochSeconds(1720283624))
+  ArrivalView(progress = progress, theme = theme, fromDate = Instant.fromEpochSeconds(1720283624))
 }
 
 @Preview
@@ -204,18 +203,18 @@ fun ArrivalViewWithExitPreview() {
 @Preview(locale = "de_DE")
 @Composable
 fun ArrivalView24HourPreview() {
-    val estimatedArrivalFormatter = EstimatedArrivalDateTimeFormatter(localeOverride = ULocale.GERMANY)
+  val estimatedArrivalFormatter =
+      EstimatedArrivalDateTimeFormatter(localeOverride = ULocale.GERMANY)
 
-    val progress =
-        TripProgress(
-            distanceRemaining = 2442522.0,
-            durationRemaining = 52012.0,
-            distanceToNextManeuver = 500.0)
+  val progress =
+      TripProgress(
+          distanceRemaining = 2442522.0,
+          durationRemaining = 52012.0,
+          distanceToNextManeuver = 500.0)
 
-    ArrivalView(
-        progress = progress,
-        estimatedArrivalFormatter = estimatedArrivalFormatter,
-        fromDate = Instant.fromEpochSeconds(1720283624),
-        onTapExit = { /* no-op */})
+  ArrivalView(
+      progress = progress,
+      estimatedArrivalFormatter = estimatedArrivalFormatter,
+      fromDate = Instant.fromEpochSeconds(1720283624),
+      onTapExit = { /* no-op */})
 }
-

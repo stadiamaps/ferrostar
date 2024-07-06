@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * A composable that wraps the content in a box with a green background and padding.
- * This provides a contrasting and consistent background for snapshot tests.
+ * A composable that wraps the content in a box with a green background and padding. This provides a
+ * contrasting and consistent background for snapshot tests.
  */
 @Composable
 fun withSnapshotBackground(content: @Composable () -> Unit) {
