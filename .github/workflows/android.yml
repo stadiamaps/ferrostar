@@ -157,6 +157,7 @@ jobs:
 
     - name: List folders
       run: ls -R android/composeui/build/reports
+      if: always()
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
