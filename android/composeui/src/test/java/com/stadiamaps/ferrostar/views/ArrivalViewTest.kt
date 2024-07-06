@@ -1,25 +1,20 @@
 package com.stadiamaps.ferrostar.views
 
-import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
-import app.cash.paparazzi.Paparazzi
 import com.stadiamaps.ferrostar.composeui.views.ArrivalView
 import com.stadiamaps.ferrostar.composeui.views.ArrivalView24HourPreview
 import com.stadiamaps.ferrostar.composeui.views.ArrivalViewInformationalPreview
 import com.stadiamaps.ferrostar.composeui.views.ArrivalViewWithExitPreview
+import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import org.junit.Rule
 import org.junit.Test
 import uniffi.ferrostar.TripProgress
 
 class ArrivalViewTest {
 
-  @get:Rule
-  val paparazzi =
-      Paparazzi(
-          deviceConfig = PIXEL_5.copy(),
-          theme = "android:Theme.Material.Light.NoActionBar",
-          maxPercentDifference = 0.05)
+  @get:Rule val paparazzi = paparazziDefault()
 
   @Test
   fun testArrivalView() {
@@ -31,7 +26,8 @@ class ArrivalViewTest {
                     distanceRemaining = 124252.0,
                     durationRemaining = 52012.0,
                     distanceToNextManeuver = 1257.0),
-            fromDate = Instant.fromEpochSeconds(1720283624))
+            fromDate = Instant.fromEpochSeconds(1720283624),
+            timeZone = TimeZone.UTC)
       }
     }
   }

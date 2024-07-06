@@ -1,8 +1,7 @@
 package com.stadiamaps.ferrostar.views
 
-import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
-import app.cash.paparazzi.Paparazzi
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
+import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import org.junit.Rule
 import org.junit.Test
@@ -13,12 +12,7 @@ import uniffi.ferrostar.VisualInstructionContent
 
 class InstructionViewTest {
 
-  @get:Rule
-  val paparazzi =
-      Paparazzi(
-          deviceConfig = PIXEL_5,
-          theme = "android:Theme.Material.Light.NoActionBar",
-          maxPercentDifference = 0.05)
+  @get:Rule val paparazzi = paparazziDefault()
 
   @Test
   fun testInstructionView() {

@@ -18,8 +18,7 @@ class RTLInstructionViewTests {
   val paparazzi =
       Paparazzi(
           deviceConfig = PIXEL_5.copy(locale = "ar"),
-          theme = "android:Theme.Material.Light.NoActionBar",
-          maxPercentDifference = 0.05)
+          theme = "android:Theme.Material.Light.NoActionBar")
 
   @Test
   fun testRTLInstructionView() {

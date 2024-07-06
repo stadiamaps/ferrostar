@@ -7,6 +7,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import app.cash.paparazzi.Paparazzi
+
+fun paparazziDefault(): Paparazzi {
+  return Paparazzi(
+      deviceConfig = app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5.copy(),
+      theme = "android:Theme.Material.Light.NoActionBar",
+      maxPercentDifference = 0.05)
+}
 
 /**
  * A composable that wraps the content in a box with a green background and padding. This provides a

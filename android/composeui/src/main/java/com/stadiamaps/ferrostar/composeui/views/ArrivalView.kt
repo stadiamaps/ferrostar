@@ -39,6 +39,7 @@ import com.stadiamaps.ferrostar.composeui.theme.DefaultArrivalViewTheme
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
 import uniffi.ferrostar.TripProgress
 
 /**
@@ -52,6 +53,7 @@ import uniffi.ferrostar.TripProgress
  * @param durationFormatter The formatter to use for the duration.
  * @param progress The progress of the trip.
  * @param fromDate The date to use as the reference for the estimated arrival time.
+ * @param timeZone The time zone used for the estimated arrival time formatter.
  * @param onTapExit An optional callback to invoke when the exit button is tapped. If null, the exit
  *   button is not displayed.
  */
@@ -64,6 +66,7 @@ fun ArrivalView(
     durationFormatter: DurationFormatter = LocalizedDurationFormatter(),
     progress: TripProgress,
     fromDate: Instant = Clock.System.now(),
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
     onTapExit: (() -> Unit)? = null
 ) {
   Box(modifier) {
@@ -78,7 +81,8 @@ fun ArrivalView(
               modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text =
-                        estimatedArrivalFormatter.format(progress.estimatedArrivalTime(fromDate)),
+                        estimatedArrivalFormatter.format(
+                            progress.estimatedArrivalTime(fromDate, timeZone)),
                     style = theme.measurementTextStyle,
                     color = theme.measurementColor)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
@@ -144,7 +148,8 @@ fun ArrivalViewPreview() {
               distanceRemaining = 124252.0,
               durationRemaining = 52012.0,
               distanceToNextManeuver = 1257.0),
-      fromDate = Instant.fromEpochSeconds(1720283624))
+      fromDate = Instant.fromEpochSeconds(1720283624),
+      timeZone = TimeZone.of("America/Los_Angeles"))
 }
 
 @Preview
@@ -182,7 +187,11 @@ fun ArrivalViewInformationalPreview() {
           @Composable get() = MaterialTheme.colorScheme.background
       }
 
-  ArrivalView(progress = progress, theme = theme, fromDate = Instant.fromEpochSeconds(1720283624))
+  ArrivalView(
+      progress = progress,
+      theme = theme,
+      fromDate = Instant.fromEpochSeconds(1720283624),
+      timeZone = TimeZone.of("America/Los_Angeles"))
 }
 
 @Preview
@@ -197,6 +206,7 @@ fun ArrivalViewWithExitPreview() {
   ArrivalView(
       progress = progress,
       fromDate = Instant.fromEpochSeconds(1720283624),
+      timeZone = TimeZone.of("America/Los_Angeles"),
       onTapExit = { /* no-op */})
 }
 
@@ -216,5 +226,6 @@ fun ArrivalView24HourPreview() {
       progress = progress,
       estimatedArrivalFormatter = estimatedArrivalFormatter,
       fromDate = Instant.fromEpochSeconds(1720283624),
+      timeZone = TimeZone.of("Europe/Berlin"),
       onTapExit = { /* no-op */})
 }
