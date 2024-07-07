@@ -147,10 +147,12 @@ impl RouteAdapter {
 }
 
 /// JavaScript wrapper for `RouteAdapter`.
-#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = RouteAdapter))]
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen(js_name = RouteAdapter)]
 pub struct JsRouteAdapter(RouteAdapter);
 
-#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_class = RouteAdapter))]
+#[cfg(feature = "wasm-bindgen")]
+#[ wasm_bindgen(js_class = RouteAdapter)]
 impl JsRouteAdapter {
     /// Creates a new RouteAdapter with a Valhalla HTTP request generator and an OSRM response parser.
     /// At the moment, this is the only supported combination.
@@ -198,3 +200,81 @@ impl JsRouteAdapter {
     }
 }
 
+// #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = RouteResponseParser))]
+// #[derive(Clone)]
+// pub enum JsRouteResponseParser(RouteResponseParser) {
+//     Osrm(JsOsrmResponseParser),
+// }
+
+// /// A wrapper for ValhallaHttpRequestGenerator that can be used from JavaScript.
+// #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = ValhallaHttpRequestGenerator))]
+// pub struct JsValhallaHttpRequestGenerator(ValhallaHttpRequestGenerator);
+
+// #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_class = ValhallaHttpRequestGenerator))]
+// impl JsValhallaHttpRequestGenerator {
+//     #[wasm_bindgen(constructor)]
+//     pub fn new(endpoint_url: String, profile: String, costing_options: Option<String>) -> Self {
+//         Self(ValhallaHttpRequestGenerator::new(
+//             endpoint_url,
+//             profile,
+//             costing_options.map(|s| serde_json::from_str(&s).unwrap_or(json!({}))),
+//         ))
+//     }
+
+//     pub fn with_costing_options_json(
+//         endpoint_url: String,
+//         profile: String,
+//         costing_options_json: Option<String>,
+//     ) -> Result<JsValhallaHttpRequestGenerator, JsValue> {
+//         ValhallaHttpRequestGenerator::with_costing_options_json(
+//             endpoint_url,
+//             profile,
+//             costing_options_json,
+//         )
+//         .map(Self)
+//         .map_err(|e| JsValue::from_str(&e.to_string()))
+//     }
+
+//     pub fn generate_request(
+//         &self,
+//         user_location: JsValue,
+//         waypoints: JsValue,
+//     ) -> Result<JsValue, JsValue> {
+//         let user_location: UserLocation = serde_wasm_bindgen::from_value(user_location)
+//             .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+//         let waypoints: Vec<Waypoint> = serde_wasm_bindgen::from_value(waypoints)
+//             .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+//         match self.0.generate_request(user_location, waypoints) {
+//             Ok(RouteRequest::HttpPost { url, headers, body }) => {
+//                 serde_wasm_bindgen::to_value(&json!({
+//                     "url": url,
+//                     "headers": headers,
+//                     "body": body,
+//                 }))
+//                 .map_err(|e| JsValue::from_str(&e.to_string()))
+//             }
+//             Err(e) => Err(JsValue::from_str(&e.to_string())),
+//         }
+//     }
+// }
+
+// /// A wrapper for OsrmResponseParser that can be used from JavaScript.
+// #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = OsrmResponseParser))]
+// pub struct JsOsrmResponseParser(OsrmResponseParser);
+
+// #[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_class = OsrmResponseParser))]
+// impl JsOsrmResponseParser {
+//     #[wasm_bindgen(constructor)]
+//     pub fn new(polyline_precision: u32) -> Self {
+//         Self(OsrmResponseParser::new(polyline_precision))
+//     }
+
+//     pub fn parse_response(&self, response: &str) -> Result<JsValue, JsValue> {
+//         match self.0.parse_response(response.into()) {
+//             Ok(routes) => serde_wasm_bindgen::to_value(&routes).map_err(JsValue::from),
+//             Err(error) => Err(JsValue::from_str(&error.to_string())),
+//         }
+//     }
+// }

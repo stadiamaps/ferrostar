@@ -256,10 +256,12 @@ impl NavigationController {
 }
 
 /// JavaScript wrapper for `NavigationController`.
-#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_name = NavigationController))]
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen(js_name = NavigationController)]
 pub struct JsNavigationController(NavigationController);
 
-#[cfg_attr(feature = "wasm-bindgen", wasm_bindgen(js_class = NavigationController))]
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen(js_class = NavigationController)]
 impl JsNavigationController {
     #[wasm_bindgen(constructor)]
     pub fn new(route: JsValue, config: JsValue) -> Result<JsNavigationController, JsValue> {

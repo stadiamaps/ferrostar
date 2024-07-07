@@ -30,7 +30,7 @@ pub enum ModelError {
 /// A geographic coordinate in WGS84.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct GeographicCoordinate {
     pub lat: f64,
     pub lng: f64,
