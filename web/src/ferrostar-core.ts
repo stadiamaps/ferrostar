@@ -18,11 +18,11 @@ class FerrostarCore extends LitElement {
   @property({ attribute: false })
   httpClient?: Function = fetch;
 
-  // FIXME: type
+  // TODO: type
   @property({ type: Object })
   locationProvider!: any;
 
-  // FIXME: type
+  // TODO: type
   @property({ type: Object })
   costingOptions!: any;
 
@@ -43,10 +43,12 @@ class FerrostarCore extends LitElement {
 
   constructor() {
     super();
+
     // A workaround for avoiding "Illegal invocation"
     if (this.httpClient === fetch) {
       this.httpClient = this.httpClient.bind(window);
     }
+
     // A workaround for loading the marker icon images in Vite
     L.Icon.Default.prototype.options.iconUrl = markerIconUrl;
     L.Icon.Default.prototype.options.iconRetinaUrl = markerIconRetinaUrl;
@@ -68,7 +70,7 @@ class FerrostarCore extends LitElement {
     }).addTo(this.map);
   }
 
-  // FIXME: type
+  // TODO: type
   async getRoutes(initialLocation: any, waypoints: any) {
     await init();
     this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile);
@@ -86,7 +88,7 @@ class FerrostarCore extends LitElement {
     return routes;
   }
 
-  // FIXME: type
+  // TODO: type
   async startNavigation(route: any, config: any) {
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     this.navigationController = new NavigationController(route, config);
@@ -97,7 +99,7 @@ class FerrostarCore extends LitElement {
           coordinates: route.geometry[0],
           horizontal_accuracy: 0.0,
           course_over_ground: null,
-          // FIXME: find a better way to create the timestamp?
+          // TODO: find a better way to create the timestamp?
           timestamp: {
             secs_since_epoch: Math.floor(Date.now() / 1000),
             nanos_since_epoch: 0,
