@@ -27,7 +27,7 @@ class ArrivalViewTest {
                     durationRemaining = 52012.0,
                     distanceToNextManeuver = 1257.0),
             fromDate = Instant.fromEpochSeconds(1720283624),
-            timeZone = TimeZone.UTC)
+            timeZone = TimeZone.of("America/Los_Angeles"))
       }
     }
   }
