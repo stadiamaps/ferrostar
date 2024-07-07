@@ -122,7 +122,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: reports
+        name: test-reports
         path: |
           android/**/build/reports
         retention-days: 5
@@ -168,7 +168,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: reports
+        name: snapshot-reports
         path: |
           android/**/build/reports
           android/**/build/paparazzi
@@ -221,7 +221,7 @@ jobs:
       uses: actions/upload-artifact@v4
       if: success() || failure()
       with:
-        name: reports
+        name: connected-reports
         path: |
           android/**/build/reports
         retention-days: 5
