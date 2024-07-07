@@ -7,8 +7,9 @@ use geo::LineString;
 use serde::{Deserialize, Serialize};
 
 /// A subset of state values that are used to show the user their current progress along the trip and it's components.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
     pub distance_to_next_maneuver: f64,

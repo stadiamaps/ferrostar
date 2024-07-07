@@ -2,7 +2,12 @@ use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
 use polyline::decode_polyline;
-use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "wasm-bindgen")]
+use serde::Deserialize;
+
+#[cfg(any(test, feature = "wasm-bindgen"))]
+use serde::Serialize;
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::*, JsValue};
@@ -19,9 +24,10 @@ use alloc::{
     vec::Vec,
 };
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 pub enum SimulationError {
     #[cfg_attr(feature = "std", error("Failed to parse polyline: {error}."))]
     PolylineError { error: String },
@@ -29,8 +35,9 @@ pub enum SimulationError {
     NotEnoughPoints,
 }
 
-#[derive(Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct LocationSimulationState {
     pub current_location: UserLocation,
     remaining_locations: Vec<GeographicCoordinate>,
