@@ -33,7 +33,7 @@ public struct DynamicallyOrientingNavigationView<
     @Binding var snappedZoom: Double
     @Binding var useSnappedCamera: Bool
 
-    var onTapExit: () -> Void
+    var onTapExit: (() -> Void)?
 
     /// Initialize a map view tuned for turn by turn navigation.
     ///
@@ -51,8 +51,8 @@ public struct DynamicallyOrientingNavigationView<
         camera: Binding<MapViewCamera>,
         snappedZoom: Binding<Double>,
         useSnappedCamera: Binding<Bool>,
-        onTapExit: @escaping () -> Void = {},
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
+        onTapExit: (() -> Void)? = nil,
         @ViewBuilder topCenter: () -> TopCenter = { Spacer() },
         @ViewBuilder topTrailing: () -> TopTrailing = { Spacer() },
         @ViewBuilder midLeading: () -> MidLeading = { Spacer() },

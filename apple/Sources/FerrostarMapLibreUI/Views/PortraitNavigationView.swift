@@ -25,7 +25,7 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
     @Binding var snappedZoom: Double
     @Binding var useSnappedCamera: Bool
 
-    var onTapExit: () -> Void
+    var onTapExit: (() -> Void)?
 
     public init(
         styleURL: URL,
@@ -33,7 +33,7 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
         camera: Binding<MapViewCamera>,
         snappedZoom: Binding<Double>,
         useSnappedCamera: Binding<Bool>,
-        onTapExit: @escaping () -> Void = {},
+        onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
         @ViewBuilder topCenter: () -> TopCenter = { Spacer() },
         @ViewBuilder topTrailing: () -> TopTrailing = { Spacer() },
