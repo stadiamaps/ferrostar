@@ -4,7 +4,7 @@ use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
 use polyline::decode_polyline;
 
 #[cfg(any(test, feature = "wasm-bindgen"))]
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::*, JsValue};
