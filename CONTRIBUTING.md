@@ -98,7 +98,7 @@ wasm-pack build --target web ferrostar --no-default-features --features wasm_js
 3. Build the JS library:
 
 ```shell
-cd web
+cd ../web
 npm install
 npm run build
 ```

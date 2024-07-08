@@ -228,7 +228,7 @@ pub fn js_location_simulation_from_coordinates(
     let coordinates: Vec<GeographicCoordinate> = serde_wasm_bindgen::from_value(coordinates)
         .map_err(|error| JsValue::from_str(&error.to_string()))?;
 
-    location_simulation_from_coordinates(coordinates, resample_distance)
+    location_simulation_from_coordinates(&coordinates, resample_distance)
         .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
         .map_err(|error| JsValue::from_str(&error.to_string()))
 }
@@ -252,7 +252,7 @@ pub fn js_location_simulation_from_route(
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = locationSimulationFromPolyline)]
 pub fn js_location_simulation_from_polyline(
-    polyline: String,
+    polyline: &str,
     precision: u32,
     resample_distance: Option<f64>,
 ) -> Result<JsValue, JsValue> {
