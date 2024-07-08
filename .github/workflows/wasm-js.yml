@@ -11,22 +11,13 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  msrv:
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: cargo-hack
-      - run: >-
-          cargo hack check --rust-version --workspace --all-targets
-          --ignore-private
-        working-directory: common
-
   build:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
         
       - name: WASM Build
         run: wasm-pack build --target web ferrostar --no-default-features --features wasm_js
