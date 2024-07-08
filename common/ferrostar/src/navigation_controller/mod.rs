@@ -1,3 +1,5 @@
+//! The navigation state machine.
+
 pub mod models;
 
 #[cfg(test)]
@@ -16,13 +18,12 @@ use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
-/// Manages the navigation lifecycle of a route, reacting to inputs like user location updates
-/// and returning a new state.
-/// If you want to recalculate a new route, you need to create a new navigation controller.
+/// Manages the navigation lifecycle through a route,
+/// returning an updated state given inputs like user location.
 ///
-/// In the overall architecture, this is a mid-level construct. It wraps some lower
-/// level constructs like the route adapter, but a higher level wrapper handles things
-/// like feeding in user location updates, route recalculation behavior, etc.
+/// Notes for implementing a new platform:
+/// - A controller is bound to a single route; if you want recalculation, create a new instance.
+/// - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutable state.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct NavigationController {
     route: Route,
@@ -32,6 +33,7 @@ pub struct NavigationController {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationController {
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
+    /// Create a navigation controller for a route and configuration.
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
         Self { route, config }
     }
@@ -49,7 +51,6 @@ impl NavigationController {
         let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
         let progress = calculate_trip_progress(
             &snapped_user_location.into(),
-            current_route_step,
             &current_step_linestring,
             &remaining_steps,
         );
@@ -125,7 +126,6 @@ impl NavigationController {
 
                         let progress = calculate_trip_progress(
                             &(*snapped_user_location).into(),
-                            &current_step,
                             &linestring,
                             &remaining_steps,
                         );
@@ -183,7 +183,6 @@ impl NavigationController {
                     snap_user_location_to_line(location, &current_step_linestring);
                 let progress = calculate_trip_progress(
                     &snapped_user_location.into(),
-                    current_step,
                     &current_step_linestring,
                     remaining_steps,
                 );

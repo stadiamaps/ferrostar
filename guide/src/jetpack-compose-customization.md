@@ -55,7 +55,7 @@ If you find an edge case, please file a bug report (and PR if possible)!
 
 ### Banner instruction composables
 
-The `com.stadiamaps.ferrostar.composeui.BannerInstructionView` composable
+The `com.stadiamaps.ferrostar.composeui.views.InstructionsView` composable
 comes with sensible defaults, with plenty of override hooks.
 The default behavior is to use Mapbox’s public domain iconography,
 format distances using the device’s locale preferences,
@@ -68,5 +68,5 @@ more control than our defaults derived from the Material theme.
 Finally, you can override the leading edge content.
 Just write your own composable content block rather than accept the default.
 
-If you need even more control, you can use the `com.stadiamaps.ferrostar.composeui.ManeuverInstructionView` directly,
-or write your own, optionally using the `MapboxManeuverIcon`.
+If you need even more control, you can use the `com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverInstructionView` directly,
+or write your own, optionally using the `ManeuverImage`.

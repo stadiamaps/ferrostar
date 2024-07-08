@@ -29,4 +29,26 @@ public class DefaultFormatters {
         formatter.zeroFormattingBehavior = .dropAll
         return formatter
     }
+
+    // MARK: Speed
+
+    /// The speed with units formatter is a measurement formatter used to format speed units for items like
+    /// the user's current speed, speed limit and other related measurements.
+    ///
+    /// E.g. `50 mi/hr` or `100 km/hr`
+    public static var speedWithUnitsFormatter: MeasurementFormatter {
+        let formatter = MeasurementFormatter()
+        formatter.unitOptions = .naturalScale
+        formatter.unitStyle = .short
+        return formatter
+    }
+
+    /// A standard formatter for speed numbers without any decimal digits (e.g. for a speed limit)
+    ///
+    /// E.g. `50`
+    public static var speedFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 0
+        return formatter
+    }
 }

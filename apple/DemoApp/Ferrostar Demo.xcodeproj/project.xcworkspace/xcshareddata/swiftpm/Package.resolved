@@ -1,5 +1,5 @@
 {
-  "originHash" : "744a0ae659b64807871ea942d6e59965bff2d0e86920ea6d1ba0dc9587578660",
+  "originHash" : "2de37ddd210ec3a7ac1bb31b310d6cec67f2fc16d8665c70ac79a0a5df2a8d43",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
       "state" : {
-        "revision" : "aa159ad30abe1f27c37640147d984f610c992676",
-        "version" : "0.0.16"
+        "revision" : "50673f08fa9c150bbed0de7364f67a7ae0b894d2",
+        "version" : "0.0.18"
       }
     },
     {

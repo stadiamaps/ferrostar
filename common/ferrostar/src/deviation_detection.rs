@@ -1,3 +1,17 @@
+//! Tools for deciding when the user has sufficiently deviated from a route.
+//!
+//! The types in this module are designed around route deviation detection as a single responsibility:
+//!
+//! While the most common use for this is triggering route recalculation,
+//! the decision to reroute (or display an overlay on screen, or any other action) lies with higher levels.
+//!
+//! For example, on iOS and Android, the `FerrostarCore` class is in charge of deciding
+//! when to kick off a new route request.
+//! Similarly, you may observe this in your own UI layer and display an overlay under certain conditions.
+//!
+//! When architecting a Ferrostar core integration for a new platform,
+//! we suggest enforcing a similar separation of concerns.
+
 use crate::algorithms::deviation_from_line;
 use crate::models::{Route, RouteStep, UserLocation};
 #[cfg(feature = "alloc")]
@@ -24,7 +38,7 @@ use {
 pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
-    /// Uses a configurable static distance threshold to determine if the user has deviated from the route.
+    /// Detects deviation from the route using a configurable static distance threshold from the route line.
     StaticThreshold {
         /// The minimum required horizontal accuracy of the user location, in meters.
         /// Values larger than this will not trigger route deviation warnings.
@@ -36,8 +50,8 @@ pub enum RouteDeviationTracking {
         max_acceptable_deviation: f64,
     },
     // TODO: Standard variants that account for mode of travel. For example, `DefaultFor(modeOfTravel: ModeOfTravel)` with sensible defaults for walking, driving, cycling, etc.
-    // TODO: Make the custom variant work with wasm-bindgen.
-    /// Arbitrary custom code; you decide!
+    /// An arbitrary user-defined implementation.
+    /// You decide with your own [`RouteDeviationDetector`] implementation!
     #[cfg_attr(feature = "wasm-bindgen", serde(skip))]
     Custom {
         detector: Arc<dyn RouteDeviationDetector>,
@@ -102,13 +116,18 @@ pub enum RouteDeviation {
     },
 }
 
+/// A custom deviation detector (for extending the behavior of [`RouteDeviationTracking`]).
+///
+/// This allows for arbitrarily complex implementations when the provided ones are not enough.
+/// For example, detecting that the user is proceeding the wrong direction by keeping a ring buffer
+/// of recent locations, or perform local map matching.
 #[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait RouteDeviationDetector: Send + Sync {
     /// Determines whether the user is following the route correctly or not.
     ///
-    /// NOTE: This function is merely for reporting the tracking status based on available information.
-    /// A return value indicating that the user is off route does not necessarily mean
-    /// that a new route will be recalculated immediately.
+    /// NOTE: This function has a single responsibility.
+    /// Side-effects like whether to recalculate a route are left to higher levels,
+    /// and implementations should only be concerned with determining the facts.
     #[must_use]
     fn check_route_deviation(
         &self,
@@ -120,7 +139,7 @@ pub trait RouteDeviationDetector: Send + Sync {
 
 #[cfg(test)]
 proptest! {
-    /// Tests [RouteDeviationTracking::None] behavior,
+    /// Tests [`RouteDeviationTracking::None`] behavior,
     /// which never reports that the user is off route, even when they obviously are.
     #[test]
     fn no_deviation_tracking(
@@ -167,7 +186,7 @@ proptest! {
         );
     }
 
-    /// Implements the same behavior as [RouteDeviationTracking::None]
+    /// Implements the same behavior as [`RouteDeviationTracking::None`]
     /// with user-supplied code.
     #[test]
     fn custom_no_deviation_mode(
@@ -296,8 +315,8 @@ proptest! {
         );
     }
 
-    /// Tests [RouteDeviationTracking::StaticThreshold] behavior,
-    /// using [crate::algorithms::deviation_from_line]
+    /// Tests [`RouteDeviationTracking::StaticThreshold`] behavior,
+    /// using [`algorithms::deviation_from_line`](crate::algorithms::deviation_from_line)
     #[test]
     fn static_threshold_oracle_test(
         x1: f64, y1: f64,
@@ -361,7 +380,7 @@ proptest! {
         }
     }
 
-    /// Tests [RouteDeviationTracking::StaticThreshold] behavior
+    /// Tests [`RouteDeviationTracking::StaticThreshold`] behavior
     /// for values which are not accurate enough.
     #[test]
     fn static_threshold_ignores_inaccurate_location_updates(

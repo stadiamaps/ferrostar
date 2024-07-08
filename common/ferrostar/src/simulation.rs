@@ -1,3 +1,43 @@
+//! Tools for simulating progress along a route.
+//!
+//! # Example
+//!
+//! Here's an example usage with the polyline constructor.
+//! This can serve as a template for writing your own test code.
+//! You may also get some inspiration from the [Swift](https://github.com/stadiamaps/ferrostar/blob/main/apple/Sources/FerrostarCore/Location.swift)
+//! or [Kotlin](https://github.com/stadiamaps/ferrostar/blob/main/android/core/src/main/java/com/stadiamaps/ferrostar/core/Location.kt)
+//! `SimulatedLocationProvider` implementations which wrap this.
+//!
+//! ```
+//! use ferrostar::simulation::{advance_location_simulation, location_simulation_from_polyline};
+//! # use std::error::Error;
+//! # fn main() -> Result<(), Box<dyn Error>> {
+//!
+//! let polyline_precision = 6;
+//! // Build the initial state from an encoded polyline.
+//! // You can create a simulation from coordinates or even a [Route] as well.
+//! let mut state = location_simulation_from_polyline(
+//!     "wzvmrBxalf|GcCrX}A|Nu@jI}@pMkBtZ{@x^_Afj@Inn@`@veB",
+//!     polyline_precision,
+//!     // Passing `Some(number)` will resample your polyline at uniform distances.
+//!     // This is often desirable to create a smooth simulated movement when you don't have a GPS trace.
+//!     None,
+//! )?;
+//!
+//! loop {
+//!     let mut new_state = advance_location_simulation(&state);
+//!     if new_state == state {
+//!         // When the simulation reaches the end, it keeps yielding the input state.
+//!         break;
+//!     }
+//!     state = new_state;
+//!     // Do something; maybe sleep for some period of time until the next timestamp?
+//! }
+//! #
+//! # Ok(())
+//! # }
+//! ```
+
 use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
@@ -27,11 +67,14 @@ use alloc::{
 #[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 pub enum SimulationError {
     #[cfg_attr(feature = "std", error("Failed to parse polyline: {error}."))]
+    /// Errors decoding the polyline string.
     PolylineError { error: String },
     #[cfg_attr(feature = "std", error("Not enough points (expected at least two)."))]
+    /// Not enough points in the input.
     NotEnoughPoints,
 }
 
+/// The current state of the simulation.
 #[derive(Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
@@ -45,7 +88,7 @@ pub struct LocationSimulationState {
 /// Optionally resamples the input line so that there is a maximum distance between points.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn location_simulation_from_coordinates(
-    coordinates: Vec<GeographicCoordinate>,
+    coordinates: &[GeographicCoordinate],
     resample_distance: Option<f64>,
 ) -> Result<LocationSimulationState, SimulationError> {
     if let Some((current, rest)) = coordinates.split_first() {
@@ -114,7 +157,7 @@ pub fn location_simulation_from_route(
 ) -> Result<LocationSimulationState, SimulationError> {
     // This function is purely a convenience for now,
     // but we eventually expand the simulation to be aware of route timing
-    location_simulation_from_coordinates(route.geometry.clone(), resample_distance)
+    location_simulation_from_coordinates(&route.geometry, resample_distance)
 }
 
 /// Creates a location simulation from a polyline.
@@ -122,19 +165,19 @@ pub fn location_simulation_from_route(
 /// Optionally resamples the input line so that there is no more than the specified maximum distance between points.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn location_simulation_from_polyline(
-    polyline: String,
+    polyline: &str,
     precision: u32,
     resample_distance: Option<f64>,
 ) -> Result<LocationSimulationState, SimulationError> {
     let linestring =
-        decode_polyline(&polyline, precision).map_err(|error| SimulationError::PolylineError {
+        decode_polyline(polyline, precision).map_err(|error| SimulationError::PolylineError {
             error: error.to_string(),
         })?;
     let coordinates: Vec<_> = linestring
         .coords()
         .map(|c| GeographicCoordinate::from(*c))
         .collect();
-    location_simulation_from_coordinates(coordinates, resample_distance)
+    location_simulation_from_coordinates(&coordinates, resample_distance)
 }
 
 /// Returns the next simulation state based on the desired strategy.
@@ -239,7 +282,7 @@ mod tests {
     #[case(Some(10.0))]
     fn advance_to_next_location(#[case] resample_distance: Option<f64>) {
         let mut state = location_simulation_from_coordinates(
-            vec![
+            &[
                 GeographicCoordinate { lng: 0.0, lat: 0.0 },
                 GeographicCoordinate {
                     lng: 0.0001,
@@ -275,7 +318,7 @@ mod tests {
     #[test]
     fn state_from_polyline() {
         let state = location_simulation_from_polyline(
-            "wzvmrBxalf|GcCrX}A|Nu@jI}@pMkBtZ{@x^_Afj@Inn@`@veB".to_string(),
+            "wzvmrBxalf|GcCrX}A|Nu@jI}@pMkBtZ{@x^_Afj@Inn@`@veB",
             6,
             None,
         )
@@ -287,9 +330,8 @@ mod tests {
     fn test_extended_interpolation_simulation() {
         let polyline = r#"umrefAzifwgF?yJf@?|C@?sJ?iL@_BBqD@cDzh@L|@?jBuDjCCl@u@^f@nB?|ABd@s@r@_AAiBBiC@kAlAHrEQ|F@pCNpA?pAAfB?~CkAtXsGRXlDw@rCo@jBc@SwAKoDr@}GLyAJ}AEs@]qBs@gE_@qC?aBBqAVkBZwBLmAFcBG_DOuB?}A^wAjA}Av@eBJoAAyA[sBbCUhAEIoCdAaCd@{@Fer@@ae@?aD?o[Ny@Vk@Sg@C_FCcDT[S_@Ow@F}oCXoAVe@_@e@?mE?cDNm@Og@Ok@Ck^N_BRu@a@OJqFFyDV[a@kAIkSLcF|AgNb@{@U_@JaEN}ETW[cA\_TbAkm@P_H\sE`AgFrCkKlAuGrEo\n@_B|@[~sBa@pAc@|AAh`Aa@jGEnGCrh@AfiAAjAx@TW`DO|CK\mEZ?~LBzBA|_@GtA?zPGlKQ?op@?uO@ggA?wE@uFEwXEyOCeFAkMAsKIot@?_FEoYAsI?yC?eH?}C?}GAy]Bux@Aog@AmKCmFC}YA}WVgBRu@vAaBlC{CxDCR?h@AhHQvGApDA|BAhHA`DC|GGzFDlM@jNA|J?bAkBtACvAArCClINfDdAfFGzW[|HI`FE@eMhHEt^KpJE"#;
         let max_distance = 10.0;
-        let mut state =
-            location_simulation_from_polyline(polyline.to_string(), 6, Some(max_distance))
-                .expect("Unable to create initial state");
+        let mut state = location_simulation_from_polyline(polyline, 6, Some(max_distance))
+            .expect("Unable to create initial state");
         let original_linestring = decode_polyline(polyline, 6).expect("Unable to decode polyline");
 
         // Loop until state no longer changes

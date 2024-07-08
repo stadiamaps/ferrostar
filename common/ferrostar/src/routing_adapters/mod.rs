@@ -1,3 +1,37 @@
+//! The bridge between routing engines and Ferrostar in high-level platform frameworks.
+//!
+//! This module provides:
+//! - Important traits for framework implementers
+//! - Generic HTTP request generation and response parsing for common routing APIs
+//!
+//! If you're reading this module documentation,
+//! you are probably bringing Ferrostar to a new platform
+//! where no high-level library like the native iOS and Android `FerrostarCore` exists.
+//!
+//! The first thing you should know is that
+//! there isn't anything inherently special about the types at the root of this module.
+//! These types are designed to be integral to higher-level platform libraries
+//! (like those for iOS and Android) to ensure extensibility.
+//! But they aren't used anywhere else in the crate.
+//!
+//! If you're implementing Ferrostar bindings for a new platform,
+//! have a look at the [iOS implementation](https://github.com/stadiamaps/ferrostar/blob/main/apple/Sources/FerrostarCore/FerrostarCore.swift),
+//! particularly how the initializer requires a [`RouteProvider`](https://github.com/stadiamaps/ferrostar/blob/main/apple/Sources/FerrostarCore/RouteProvider.swift).
+//! All routing in the `FerrostarCore` class goes through this,
+//! with the heavy lifting done by either a [`RouteAdapter`] or a custom provider
+//! (native arbitrary code).
+//! We suggest that other platforms follow a similar approach to maximize extensibility.
+//!
+//! If you're doing a direct integration calling this library directly,
+//! you can probably go straight to the submodules for integrations with major routing engines
+//! and then construct a [`NavigationController`](crate::navigation_controller::NavigationController)
+//! with a route and configuration.
+//! PRs are welcome for any routing API with an open specification (even if it's a commercial offering).
+//!
+//! Ferrostar also fully supports proprietary and on-device routing.
+//! All you need to do is convert your routes into Ferrostar [Route]s,
+//! and nothing in this module is strictly required to do that.
+
 use crate::models::Waypoint;
 use crate::models::{Route, UserLocation};
 use crate::routing_adapters::error::InstantiationError;
@@ -61,7 +95,7 @@ pub trait RouteRequestGenerator: Send + Sync {
 }
 
 /// A generic interface describing any object capable of parsing a response from a routing
-/// backend into one or more [Route]s.
+/// backend into one or more [`Route`]s.
 #[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait RouteResponseParser: Send + Sync {
     /// Parses a raw response from the routing backend into a route.

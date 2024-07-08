@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui
+package com.stadiamaps.ferrostar.composeui.formatting
 
 import android.icu.number.NumberFormatter
 import android.icu.number.Precision

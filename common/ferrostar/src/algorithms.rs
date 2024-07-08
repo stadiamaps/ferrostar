@@ -1,3 +1,5 @@
+//! Common spatial algorithms which are useful for navigation.
+
 use crate::{
     models::{GeographicCoordinate, RouteStep, UserLocation},
     navigation_controller::models::TripProgress,
@@ -21,6 +23,9 @@ use {
 };
 
 /// Snaps a user location to the closest point on a route line.
+///
+/// If the location cannot be snapped (should only be possible with an invalid coordinate or geometry),
+/// the location is returned unaltered.
 pub fn snap_user_location_to_line(location: UserLocation, line: &LineString) -> UserLocation {
     let original_point = Point::from(location);
 
@@ -83,6 +88,46 @@ fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
     }
 }
 
+/// Calculates the distance a point is from a line (route segment), in meters.
+///
+/// This function should return a value for valid inputs,
+/// but due to the vagaries of floating point numbers
+/// (infinity and `NaN` being possible inputs),
+/// we return an optional to insulate callers from edge cases.
+///
+/// # Example
+///
+/// ```
+/// // Diagonal line from the origin to (1,1)
+/// use geo::{coord, LineString, point};
+/// use ferrostar::algorithms::deviation_from_line;
+///
+/// let linestring = LineString::new(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]);
+///
+/// let origin = point! {
+///     x: 0.0,
+///     y: 0.0,
+/// };
+/// let midpoint = point! {
+///     x: 0.5,
+///     y: 0.5,
+/// };
+/// let off_line = point! {
+///     x: 1.0,
+/// y: 0.5,
+/// };
+///
+/// // The origin is directly on the line
+/// assert_eq!(deviation_from_line(&origin, &linestring), Some(0.0));
+///
+/// // The midpoint is also directly on the line
+/// assert_eq!(deviation_from_line(&midpoint, &linestring), Some(0.0));
+///
+/// // This point, however is off the line.
+/// // That's a huge number, because we're dealing with degrees ;)
+/// assert!(deviation_from_line(&off_line, &linestring)
+///     .map_or(false, |deviation| deviation - 39312.21257675703 < f64::EPSILON));
+/// ```
 pub fn deviation_from_line(point: &Point, line: &LineString) -> Option<f64> {
     snap_point_to_line(point, line).and_then(|snapped| {
         let distance = snapped.haversine_distance(point);
@@ -223,6 +268,7 @@ pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
 /// assuming that units are latitude and longitude for the geometries.
 ///
 /// The result is given in meters.
+/// The result may be [`None`] in case of invalid input such as infinite floats.
 fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
     let total_length = linestring.haversine_length();
     if total_length == 0.0 {
@@ -242,7 +288,7 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
             let segment_length = segment_linestring.haversine_length();
 
             if segment_distance_to_point < closest_dist_to_point {
-                let segment_fraction = segment.line_locate_point(point)?; // if any segment has a None fraction, return None
+                let segment_fraction = segment.line_locate_point(point)?;
                 Some((
                     cum_length + segment_length,
                     segment_distance_to_point,
@@ -262,39 +308,45 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
 
 /// Computes the distance between a location and the end of the current route step.
 /// We assume that input location is pre-snapped to route step's linestring.
-fn distance_to_end_of_step(snapped_location: &Point, current_step_linestring: &LineString) -> f64 {
+///
+/// The result may be [`None`] in case of invalid input such as infinite floats.
+fn distance_to_end_of_step(
+    snapped_location: &Point,
+    current_step_linestring: &LineString,
+) -> Option<f64> {
     let step_length = current_step_linestring.haversine_length();
-    if let Some(traversed) = distance_along(snapped_location, current_step_linestring) {
-        step_length - traversed
-    } else {
-        0.0
-    }
+    distance_along(snapped_location, current_step_linestring)
+        .map(|traversed| step_length - traversed)
 }
 
-/// Computes the arrival state for a snapped location along the route.
-/// This includes distances and durations.
+/// Computes the user's progress along the current trip (distance to destination, ETA, etc.).
+///
+/// NOTE to callers: `remaining_steps` includes the current step!
 pub fn calculate_trip_progress(
     snapped_location: &Point,
-    current_step: &RouteStep,
     current_step_linestring: &LineString,
     remaining_steps: &[RouteStep],
 ) -> TripProgress {
-    if remaining_steps.is_empty() {
+    let Some(current_step) = remaining_steps.first() else {
         return TripProgress {
             distance_to_next_maneuver: 0.0,
             distance_remaining: 0.0,
             duration_remaining: 0.0,
         };
-    }
+    };
 
     // Calculate the distance and duration till the end of the current route step.
     let distance_to_next_maneuver =
-        distance_to_end_of_step(snapped_location, current_step_linestring);
+        distance_to_end_of_step(snapped_location, current_step_linestring)
+            .unwrap_or(current_step.distance);
 
     // This could be improved with live traffic data along the route.
     // TODO: Figure out the best way to enable this use case
-    let pct_remaining_current_step =
-        distance_to_next_maneuver / current_step_linestring.haversine_length();
+    let pct_remaining_current_step = if current_step.distance > 0f64 {
+        distance_to_next_maneuver / current_step.distance
+    } else {
+        0f64
+    };
 
     // Get the percentage of duration remaining in the current step.
     let duration_to_next_maneuver = pct_remaining_current_step * current_step.duration;
@@ -476,44 +528,39 @@ proptest! {
             }), "Expected that the step should advance any time that the haversine distance to the end of the step is within the automatic advance threshold.");
         }
     }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use geo::{coord, point};
 
     #[test]
-    fn test_deviation_from_line() {
-        // Diagonal line from the origin to (1,1)
-        let linestring = LineString::new(vec![coord! {x: 0.0, y: 0.0}, coord! {x: 1.0, y: 1.0}]);
+    fn test_end_of_step_progress(
+        x1 in -180f64..180f64, y1 in -90f64..90f64,
+        x2 in -180f64..180f64, y2 in -90f64..90f64,
+    ) {
+        let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
+        let linestring = current_route_step.get_linestring();
+        let end = linestring.points().last().expect("Expected at least one point");
+        let progress = calculate_trip_progress(&end, &linestring, &[current_route_step]);
 
-        let origin = point! {
-            x: 0.0,
-            y: 0.0,
-        };
-        let midpoint = point! {
-            x: 0.5,
-            y: 0.5,
-        };
-        let off_line = point! {
-            x: 1.0,
-            y: 0.5,
-        };
+        prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
+        prop_assert_eq!(progress.distance_remaining, 0f64);
+        prop_assert_eq!(progress.duration_remaining, 0f64);
+    }
 
-        // The origin is directly on the line
-        assert_eq!(deviation_from_line(&origin, &linestring), Some(0.0));
+    #[test]
+    fn test_end_of_trip_progress_valhalla_arrival(
+        x1: f64, y1: f64,
+    ) {
+        // This may look wrong, but it's actually how Valhalla (and presumably others)
+        // represent a point geometry for the arrival step.
+        let current_route_step = gen_dummy_route_step(x1, y1, x1, y1);
+        let linestring = current_route_step.get_linestring();
+        let end = linestring.points().last().expect("Expected at least one point");
+        let progress = calculate_trip_progress(&end, &linestring, &[current_route_step]);
 
-        // The midpoint is also directly on the line
-        assert_eq!(deviation_from_line(&midpoint, &linestring), Some(0.0));
-
-        // This point however is off the line.
-        // We assume the underlying library functions are tested and this is just a sanity check.
-        assert!(deviation_from_line(&off_line, &linestring)
-            .map_or(false, |deviation| deviation - 39312.21257675703
-                < f64::EPSILON));
+        prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
+        prop_assert_eq!(progress.distance_remaining, 0f64);
+        prop_assert_eq!(progress.duration_remaining, 0f64);
     }
 }
-// TODO: Unit tests
+
+// TODO: Other unit tests
 // - Under and over distance accuracy thresholds
 // - Equator and extreme latitude

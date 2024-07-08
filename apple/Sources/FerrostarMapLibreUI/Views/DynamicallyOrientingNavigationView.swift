@@ -7,20 +7,33 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View {
+public struct DynamicallyOrientingNavigationView<
+    TopCenter: View,
+    TopTrailing: View,
+    MidLeading: View,
+    BottomTrailing: View
+>: View {
+    @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
+
     // TODO: Add orientation handling once the landscape view is constructed.
     @State private var orientation = UIDeviceOrientation.unknown
 
     let styleURL: URL
-    let distanceFormatter: Formatter
     // TODO: Configurable camera and user "puck" rotation modes
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
+    var topCenter: TopCenter
+    var topTrailing: TopTrailing
+    var midLeading: MidLeading
+    var bottomTrailing: BottomTrailing
+
     @Binding var camera: MapViewCamera
     @Binding var snappedZoom: Double
     @Binding var useSnappedCamera: Bool
+
+    var onTapExit: () -> Void
 
     /// Initialize a map view tuned for turn by turn navigation.
     ///
@@ -38,13 +51,23 @@ public struct DynamicallyOrientingNavigationView: View {
         camera: Binding<MapViewCamera>,
         snappedZoom: Binding<Double>,
         useSnappedCamera: Binding<Bool>,
-        distanceFormatter: Formatter = MKDistanceFormatter(),
-        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+        onTapExit: @escaping () -> Void = {},
+        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
+        @ViewBuilder topCenter: () -> TopCenter = { Spacer() },
+        @ViewBuilder topTrailing: () -> TopTrailing = { Spacer() },
+        @ViewBuilder midLeading: () -> MidLeading = { Spacer() },
+        @ViewBuilder bottomTrailing: () -> BottomTrailing = { Spacer() }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
-        self.distanceFormatter = distanceFormatter
+        self.onTapExit = onTapExit
+
         userLayers = makeMapContent()
+        self.topCenter = topCenter()
+        self.topTrailing = topTrailing()
+        self.midLeading = midLeading()
+        self.bottomTrailing = bottomTrailing()
+
         _camera = camera
         _snappedZoom = snappedZoom
         _useSnappedCamera = useSnappedCamera
@@ -61,10 +84,13 @@ public struct DynamicallyOrientingNavigationView: View {
                 camera: $camera,
                 snappedZoom: $snappedZoom,
                 useSnappedCamera: $useSnappedCamera,
-                distanceFormatter: distanceFormatter
-            ) {
-                userLayers
-            }
+                onTapExit: onTapExit,
+                makeMapContent: { userLayers },
+                topCenter: { topCenter },
+                topTrailing: { topTrailing },
+                midLeading: { midLeading },
+                bottomTrailing: { bottomTrailing }
+            )
         }
     }
 }
@@ -72,6 +98,7 @@ public struct DynamicallyOrientingNavigationView: View {
 #Preview("Portrait Navigation View (Imperial)") {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
+
     let formatter = MKDistanceFormatter()
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
@@ -81,9 +108,9 @@ public struct DynamicallyOrientingNavigationView: View {
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         snappedZoom: .constant(18),
-        useSnappedCamera: .constant(true),
-        distanceFormatter: formatter
+        useSnappedCamera: .constant(true)
     )
+    .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
 
 #Preview("Portrait Navigation View (Metric)") {
@@ -98,7 +125,7 @@ public struct DynamicallyOrientingNavigationView: View {
         navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         snappedZoom: .constant(18),
-        useSnappedCamera: .constant(true),
-        distanceFormatter: formatter
+        useSnappedCamera: .constant(true)
     )
+    .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

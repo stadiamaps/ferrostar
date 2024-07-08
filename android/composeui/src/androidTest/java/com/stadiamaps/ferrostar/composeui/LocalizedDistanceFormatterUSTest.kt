@@ -2,6 +2,7 @@ package com.stadiamaps.ferrostar.composeui
 
 import android.icu.util.ULocale
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

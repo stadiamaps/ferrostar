@@ -17,10 +17,10 @@ but occasional divergences will pop up here to accommodate platform norms (ex: a
 Breaking down the responsibilities by layer:
 
 * Core (Rust)
-  - Common data models
+  - Common data models (standard definitions for what a “route” is, for example)
   - Request generation and response parsing for APIs (ex: Valhalla and OSRM)
   - Spatial algorithms like line snapping and distance calculations
-  - Navigation state machine (which step are we on? sholud we advance to the next one? etc.)
+  - Navigation state machine (which step are we on? should we advance to the next one? etc.)
 * Bindings (UniFFI; Swift and Kotlin)
   - Auto-generated direct bindings to the core (models, navigation state machine, etc.)
 * Platform code (Swift and Kotlin)

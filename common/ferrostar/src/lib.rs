@@ -2,11 +2,16 @@
 //!
 //! Ferrostar is a modern SDK for building turn-by-turn navigation applications.
 //!
-//! Check out the [User Guide](https://stadiamaps.github.io/ferrostar/) for an introduction,
-//! or poke around here for the public API reference!
+//! Check out the [User Guide](https://stadiamaps.github.io/ferrostar/) for an introduction
+//! and tutorials for major platforms like iOS and Android.
 //!
-//! We apologize for the mess, but should have the documentation in a much better state by version
-//! 0.1.0 (est. mid-April).
+//! This is the [core](https://stadiamaps.github.io/ferrostar/architecture.html) of Ferrostar,
+//! which contains common data models, traits and integrations with common routing backends
+//! like Valhalla, spatial algorithms, and the navigation state machine.
+//!
+//! If you're looking to build a navigation experience for a new platform,
+//! or you just want to use the primitives in your existing architecture,
+//! this crate is for you.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
