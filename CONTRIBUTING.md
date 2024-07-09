@@ -95,11 +95,20 @@ cd common
 wasm-pack build --target web ferrostar --no-default-features --features wasm_js
 ```
 
-3. Build the JS library:
+3. Install dependencies:
 
 ```shell
 cd ../web
 npm install
+```
+
+4. Run a local dev server or do a release build:
+
+```shell
+# This will start a local web server where you can access the demo page
+npm run preview
+
+# Or you can do a release build (we test this in CI)
 npm run build
 ```
 
