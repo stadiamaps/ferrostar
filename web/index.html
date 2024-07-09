@@ -29,18 +29,18 @@
     <script type="module">
       import { SimulatedLocationProvider, BrowserLocationProvider } from "/src/location.ts";
 
-      // FIXME: type + should be camelCase
+      // TODO: type + use TypeScript enum
       const config = {
-        step_advance: {
+        stepAdvance: {
           RelativeLineStringDistance: {
-            minimum_horizontal_accuracy: 25,
-            automatic_advance_distance: 10,
+            minimumHorizontalAccuracy: 25,
+            automaticAdvanceDistance: 10,
           },
         },
-        route_deviation_tracking: {
+        routeDeviationTracking: {
           StaticThreshold: {
-            minimum_horizontal_accuracy: 25,
-            max_acceptable_deviation: 10.0,
+            minimumHorizontalAccuracy: 25,
+            maxAcceptableDeviation: 10.0,
           },
         },
       };
@@ -79,8 +79,8 @@
         simulateNavigationButton.addEventListener("click", async () => {
           const initialSimulatedLocation = {
             coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
-            horizontal_accuracy: 6.0,
-            course_over_ground: null,
+            horizontalAccuracy: 6.0,
+            courseOverGround: null,
             // TODO: find a better way to create the timestamp?
             timestamp: {
               secs_since_epoch: Math.floor(Date.now() / 1000),
