@@ -186,7 +186,7 @@ impl RouteAdapter {
 pub struct JsRouteAdapter(RouteAdapter);
 
 #[cfg(feature = "wasm-bindgen")]
-#[ wasm_bindgen(js_class = RouteAdapter)]
+#[wasm_bindgen(js_class = RouteAdapter)]
 impl JsRouteAdapter {
     /// Creates a new RouteAdapter with a Valhalla HTTP request generator and an OSRM response parser.
     /// At the moment, this is the only supported combination.
@@ -202,6 +202,7 @@ impl JsRouteAdapter {
         // TODO: We should have a better error handling strategy here. Same for the other methods.
     }
 
+    #[wasm_bindgen(js_name = generateRequest)]
     pub fn generate_request(
         &self,
         user_location: JsValue,
@@ -226,6 +227,7 @@ impl JsRouteAdapter {
         }
     }
 
+    #[wasm_bindgen(js_name = parseResponse)]
     pub fn parse_response(&self, response: Vec<u8>) -> Result<JsValue, JsValue> {
         match self.0.parse_response(response.into()) {
             Ok(routes) => serde_wasm_bindgen::to_value(&routes).map_err(JsValue::from),

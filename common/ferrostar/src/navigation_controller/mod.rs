@@ -272,6 +272,7 @@ impl JsNavigationController {
         )))
     }
 
+    #[wasm_bindgen(js_name = getInitialState)]
     pub fn get_initial_state(&self, location: JsValue) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
 
@@ -286,6 +287,7 @@ impl JsNavigationController {
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
+    #[wasm_bindgen(js_name = updateUserLocation)]
     pub fn update_user_location(
         &self,
         location: JsValue,
