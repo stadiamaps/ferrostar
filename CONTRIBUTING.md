@@ -105,8 +105,8 @@ npm install
 4. Run a local dev server or do a release build:
 
 ```shell
-# This will start a local web server where you can access the demo page
-npm run preview
+# This will start a local web server for the demo app with hot reload
+npm run dev
 
 # Or you can do a release build (we test this in CI)
 npm run build
