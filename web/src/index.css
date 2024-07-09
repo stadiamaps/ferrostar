@@ -1,0 +1,20 @@
+html, body{
+  height: 100%;
+}
+
+ferrostar-core {
+  height: 90%;
+  width: 100%;
+  display: block;
+}
+
+.controls {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+#destination {
+  width: 100%;
+  max-width: 300px;
+}

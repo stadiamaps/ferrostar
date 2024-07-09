@@ -19,8 +19,13 @@ use {
     crate::navigation_controller::test_helpers::gen_dummy_route_step,
     geo::{coord, point},
     proptest::prelude::*,
-    std::time::SystemTime,
 };
+
+#[cfg(all(test, feature = "std", not(feature = "web-time")))]
+use std::time::SystemTime;
+
+#[cfg(all(test, feature = "web-time"))]
+use web_time::SystemTime;
 
 /// Snaps a user location to the closest point on a route line.
 ///

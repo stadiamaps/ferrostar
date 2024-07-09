@@ -18,6 +18,9 @@ use crate::models::{Route, RouteStep, UserLocation};
 use alloc::sync::Arc;
 use geo::Point;
 
+#[cfg(feature = "wasm-bindgen")]
+use serde::{Deserialize, Serialize};
+
 #[cfg(test)]
 use {
     crate::{
@@ -25,12 +28,18 @@ use {
         navigation_controller::test_helpers::{gen_dummy_route_step, gen_route_from_steps},
     },
     proptest::prelude::*,
-    std::time::SystemTime,
 };
+
+#[cfg(all(test, feature = "std", not(feature = "web-time")))]
+use std::time::SystemTime;
+
+#[cfg(all(test, feature = "web-time"))]
+use web_time::SystemTime;
 
 /// Determines if the user has deviated from the expected route.
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
 pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
@@ -48,6 +57,7 @@ pub enum RouteDeviationTracking {
     // TODO: Standard variants that account for mode of travel. For example, `DefaultFor(modeOfTravel: ModeOfTravel)` with sensible defaults for walking, driving, cycling, etc.
     /// An arbitrary user-defined implementation.
     /// You decide with your own [`RouteDeviationDetector`] implementation!
+    #[cfg_attr(feature = "wasm-bindgen", serde(skip))]
     Custom {
         detector: Arc<dyn RouteDeviationDetector>,
     },
@@ -100,6 +110,7 @@ impl RouteDeviationTracking {
 /// For example, we could conceivably add a "wrong way" status in the future.
 #[derive(Debug, Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 pub enum RouteDeviation {
     /// The user is proceeding on course within the expected tolerances; everything is normal.
     NoDeviation,

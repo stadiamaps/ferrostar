@@ -20,8 +20,9 @@ use std::time::SystemTime;
 #[cfg(feature = "web-time")]
 use web_time::SystemTime;
 
-#[cfg(test)]
+#[cfg(any(test, feature = "wasm-bindgen"))]
 use serde::Serialize;
+
 use uuid::Uuid;
 
 #[derive(Debug)]
@@ -38,7 +39,7 @@ pub enum ModelError {
 /// A geographic coordinate in WGS84.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct GeographicCoordinate {
     /// The latitude (in degrees).
     pub lat: f64,
@@ -92,7 +93,7 @@ impl From<GeographicCoordinate> for Point {
 /// Note that support for properties beyond basic geographic coordinates varies by routing engine.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct Waypoint {
     pub coordinate: GeographicCoordinate,
     pub kind: WaypointKind,
@@ -101,7 +102,7 @@ pub struct Waypoint {
 /// Describes characteristics of the waypoint for the routing backend.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub enum WaypointKind {
     /// Starts or ends a leg of the trip.
     ///
@@ -114,7 +115,7 @@ pub enum WaypointKind {
 /// A geographic bounding box defined by its corners.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct BoundingBox {
     /// The southwest corner of the bounding box.
     pub sw: GeographicCoordinate,
@@ -146,7 +147,7 @@ pub struct Heading {
 /// The direction in which the user/device is observed to be traveling.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct CourseOverGround {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
     /// true north (N = 0, E = 90, S = 180, W = 270).
@@ -164,7 +165,7 @@ impl CourseOverGround {
 /// The speed of the user from the location provider.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct Speed {
     /// The user's speed in meters per second.
     pub value: f64,
@@ -181,7 +182,7 @@ pub struct Speed {
 /// Heading updates are not related to a change in the user's location.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct UserLocation {
     pub coordinates: GeographicCoordinate,
     /// The estimated accuracy of the coordinate (in meters)
@@ -204,7 +205,7 @@ impl From<UserLocation> for Point {
 /// considered unstable.
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinate>,
     pub bbox: BoundingBox,
@@ -234,7 +235,7 @@ fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelErro
 /// the next step.
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct RouteStep {
     pub geometry: Vec<GeographicCoordinate>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
@@ -309,7 +310,7 @@ impl RouteStep {
 /// Note that these do not have any locale information attached.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct SpokenInstruction {
     /// Plain-text instruction which can be synthesized with a TTS engine.
     pub text: String,
@@ -334,7 +335,7 @@ pub struct SpokenInstruction {
 /// This is usually combined with [`ManeuverModifier`] in [`VisualInstructionContent`].
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(test, feature = "wasm-bindgen"), derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverType {
     Turn,
@@ -365,7 +366,7 @@ pub enum ManeuverType {
 /// Additional information to further specify a [`ManeuverType`].
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(test, feature = "wasm-bindgen"), derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverModifier {
     UTurn,
@@ -385,7 +386,7 @@ pub enum ManeuverModifier {
 /// The content of a visual instruction.
 #[derive(Debug, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct VisualInstructionContent {
     /// The text to display.
     pub text: String,
@@ -404,7 +405,7 @@ pub struct VisualInstructionContent {
 /// An instruction for visual display (usually as banners) at a specific point along a [`RouteStep`].
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(test, derive(Serialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct VisualInstruction {
     /// The primary instruction content.
     ///
@@ -417,6 +418,7 @@ pub struct VisualInstruction {
 }
 
 #[cfg(test)]
+#[cfg(feature = "uniffi")]
 mod tests {
     use super::*;
 

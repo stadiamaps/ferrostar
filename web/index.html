@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ferrostar Web Demo</title>
+    <link rel="stylesheet" href="./src/index.css" />
+    <script type="module" src="/src/ferrostar-core.ts"></script>
+    <script type="module" src="/src/location.ts"></script>
+  </head>
+  <body>
+    <ferrostar-core
+      id="core"
+      valhallaEndpointUrl="https://valhalla1.openstreetmap.de/route"
+      profile="bicycle"
+      httpClient="${fetch}"
+      costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
+    ></ferrostar-core>
+
+    <p class="controls">
+      <input type="text" id="destination" placeholder="Where do you want to go?" />
+      <span>
+        <button id="start">Start Navigation</button>
+        or
+        <button id="simulate">Simulate Navigation</button>
+      </span>
+    </p>
+
+    <script type="module">
+      import { SimulatedLocationProvider, BrowserLocationProvider } from "/src/location.ts";
+
+      // FIXME: type + should be camelCase
+      const config = {
+        step_advance: {
+          RelativeLineStringDistance: {
+            minimum_horizontal_accuracy: 25,
+            automatic_advance_distance: 10,
+          },
+        },
+        route_deviation_tracking: {
+          StaticThreshold: {
+            minimum_horizontal_accuracy: 25,
+            max_acceptable_deviation: 10.0,
+          },
+        },
+      };
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const core = document.getElementById("core");
+        const destinationInput = document.getElementById("destination");
+        const startNavigationButton = document.getElementById("start");
+        const simulateNavigationButton = document.getElementById("simulate");
+
+        startNavigationButton.addEventListener("click", async () => {
+          const destination = destinationInput.value;
+
+          const { lat, lon } = await fetch("https://nominatim.openstreetmap.org/search?q=" + destination + "&format=json")
+            .then((response) => response.json())
+            .then((data) => data[0]);
+
+          const waypoints = [{ coordinate: { lat: parseFloat(lat), lng: parseFloat(lon) }, kind: "Break" }];
+
+          const locationProvider = new BrowserLocationProvider();
+          locationProvider.requestPermission();
+          locationProvider.start();
+
+          // This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
+          while (!locationProvider.lastLocation) {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          }
+
+          const routes = await core.getRoutes(locationProvider.lastLocation, waypoints);
+          const route = routes[0];
+
+          core.locationProvider = locationProvider;
+          core.startNavigation(route, config);
+        });
+
+        simulateNavigationButton.addEventListener("click", async () => {
+          const initialSimulatedLocation = {
+            coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
+            horizontal_accuracy: 6.0,
+            course_over_ground: null,
+            // TODO: find a better way to create the timestamp?
+            timestamp: {
+              secs_since_epoch: Math.floor(Date.now() / 1000),
+              nanos_since_epoch: 0,
+            },
+            speed: null,
+          };
+
+          const simulatedWaypoints = [{ coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" }];
+
+          const routes = await core.getRoutes(initialSimulatedLocation, simulatedWaypoints);
+          const route = routes[0];
+
+          const locationProvider = new SimulatedLocationProvider();
+          locationProvider.lastLocation = initialSimulatedLocation;
+          locationProvider.warpFactor = 2;
+          locationProvider.setSimulatedRoute(route);
+
+          core.locationProvider = locationProvider;
+          core.startNavigation(route, config);
+        });
+      });
+    </script>
+  </body>
+</html>

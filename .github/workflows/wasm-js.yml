@@ -11,23 +11,28 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  msrv:
-    runs-on: macos-14
-    steps:
-      - uses: actions/checkout@v4
-      - uses: taiki-e/install-action@v2
-        with:
-          tool: cargo-hack
-      - run: >-
-          cargo hack check --rust-version --workspace --all-targets
-          --ignore-private
-        working-directory: common
-
   build:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Cargo Build
-        run: cargo build --verbose --lib --target wasm32-unknown-unknown --no-default-features --features wasm_js
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
+        
+      - name: WASM Build
+        run: wasm-pack build --target web ferrostar --no-default-features --features wasm_js
         working-directory: common
-      # TODO: Figure out a strategy for running unit tests; probably requires a web browser for time and randomness...
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          
+      - run: npm ci
+        working-directory: web
+
+      - run: npm run build
+        working-directory: web
+
+      - name: WASM unit tests
+        run: wasm-pack test --firefox --headless ferrostar --no-default-features --features wasm_js
+        working-directory: common
