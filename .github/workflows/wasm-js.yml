@@ -35,3 +35,4 @@ jobs:
 
       - name: WASM unit tests
         run: wasm-pack test --firefox --headless ferrostar --no-default-features --features wasm_js
+        working-directory: common
