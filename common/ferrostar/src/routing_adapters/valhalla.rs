@@ -133,8 +133,12 @@ mod tests {
     use crate::models::{CourseOverGround, GeographicCoordinate};
     use assert_json_diff::assert_json_include;
     use serde_json::{from_slice, json};
+
+    #[cfg(all(feature = "std", not(feature = "web-time")))]
     use std::time::SystemTime;
 
+    #[cfg(feature = "web-time")]
+    use web_time::SystemTime;
     const ENDPOINT_URL: &str = "https://api.stadiamaps.com/route/v1";
     const COSTING: &str = "bicycle";
     const USER_LOCATION: UserLocation = UserLocation {

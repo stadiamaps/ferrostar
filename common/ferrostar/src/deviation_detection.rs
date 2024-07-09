@@ -28,8 +28,13 @@ use {
         navigation_controller::test_helpers::{gen_dummy_route_step, gen_route_from_steps},
     },
     proptest::prelude::*,
-    std::time::SystemTime,
 };
+
+#[cfg(all(test, feature = "std", not(feature = "web-time")))]
+use std::time::SystemTime;
+
+#[cfg(all(test, feature = "web-time"))]
+use web_time::SystemTime;
 
 /// Determines if the user has deviated from the expected route.
 #[derive(Clone)]

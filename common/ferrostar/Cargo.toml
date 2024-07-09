@@ -42,6 +42,7 @@ assert-json-diff = "2.0.2"
 proptest = { version = "1.4.0", default-features = false }
 insta = { version = "1.33.0", features = ["yaml"] }
 rstest = "0.21.0"
+wasm-bindgen-test = "0.3"
 
 [lib]
 crate-type = ["cdylib", "staticlib", "lib"]
