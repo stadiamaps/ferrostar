@@ -14,7 +14,6 @@
       valhallaEndpointUrl="https://valhalla1.openstreetmap.de/route"
       profile="bicycle"
       httpClient="${fetch}"
-      lastLocation="${locationProvider}"
       costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
     ></ferrostar-core>
 
@@ -73,7 +72,6 @@
           const routes = await core.getRoutes(locationProvider.lastLocation, waypoints);
           const route = routes[0];
 
-          // FIXME: we shouldn't need to set the locationProvider again
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
         });
@@ -101,7 +99,6 @@
           locationProvider.warpFactor = 2;
           locationProvider.setSimulatedRoute(route);
 
-          // FIXME: we shouldn't need to set the locationProvider again
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
         });
