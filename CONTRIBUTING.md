@@ -184,7 +184,7 @@ Run the `ktfmtFormat` gradle action before committing to ensure consistent forma
 
 ### Common Core
 
-Run `cargo test -p ferrostar-core` from within the `common` directory to run tests.
+Run `cargo test -p ferrostar` from within the `common` directory to run tests.
 
 ### Web
 
