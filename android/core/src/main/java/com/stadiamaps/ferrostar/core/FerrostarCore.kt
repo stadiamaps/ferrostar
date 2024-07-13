@@ -26,13 +26,16 @@ import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 
-data class FerrostarCoreState(
+/** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
+data class NavigationState(
     /** The raw trip state from the core. */
     val tripState: TripState,
     val routeGeometry: List<GeographicCoordinate>,
     /** Indicates when the core is calculating a new route (ex: due to the user being off route). */
     val isCalculatingNewRoute: Boolean
-)
+) {
+  companion object
+}
 
 private val moshi: Moshi = Moshi.Builder().build()
 @OptIn(ExperimentalStdlibApi::class)
@@ -109,7 +112,7 @@ class FerrostarCore(
   private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
   private var _navigationController: NavigationController? = null
-  private var _state: MutableStateFlow<FerrostarCoreState>? = null
+  private var _state: MutableStateFlow<NavigationState>? = null
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
   private var _lastLocation: UserLocation? = null
@@ -211,7 +214,7 @@ class FerrostarCore(
 
     val initialTripState = controller.getInitialState(startingLocation)
     val stateFlow =
-        MutableStateFlow(FerrostarCoreState(tripState = initialTripState, route.geometry, false))
+        MutableStateFlow(NavigationState(tripState = initialTripState, route.geometry, false))
     handleStateUpdate(initialTripState, startingLocation)
 
     _navigationController = controller
@@ -247,7 +250,7 @@ class FerrostarCore(
 
       handleStateUpdate(newState, startingLocation)
 
-      FerrostarCoreState(tripState = newState, route.geometry, false)
+      NavigationState(tripState = newState, route.geometry, false)
     }
   }
 
@@ -261,7 +264,7 @@ class FerrostarCore(
 
         handleStateUpdate(newState, location)
 
-        FerrostarCoreState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
+        NavigationState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
       }
     }
   }
@@ -348,7 +351,7 @@ class FerrostarCore(
 
         handleStateUpdate(newState, location)
 
-        FerrostarCoreState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
+        NavigationState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
       }
     }
   }

@@ -67,7 +67,7 @@ dependencies {
     implementation project(':core')
     implementation project(':maplibreui')
 
-    implementation 'io.github.rallista:maplibre-compose:0.0.7'
+    implementation 'io.github.rallista:maplibre-compose:0.0.9'
 
     implementation platform("com.squareup.okhttp3:okhttp-bom:4.11.0")
     implementation 'com.squareup.okhttp3:okhttp'

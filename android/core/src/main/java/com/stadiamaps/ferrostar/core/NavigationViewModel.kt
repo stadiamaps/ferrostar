@@ -25,7 +25,7 @@ data class NavigationUiState(
 )
 
 class NavigationViewModel(
-    stateFlow: StateFlow<FerrostarCoreState>,
+    stateFlow: StateFlow<NavigationState>,
     initialUserLocation: UserLocation,
 ) : ViewModel() {
   private var lastLocation: UserLocation = initialUserLocation
@@ -49,7 +49,7 @@ class NavigationViewModel(
               started = SharingStarted.WhileSubscribed(),
               initialValue = uiState(stateFlow.value, initialUserLocation))
 
-  private fun uiState(coreState: FerrostarCoreState, location: UserLocation) =
+  private fun uiState(coreState: NavigationState, location: UserLocation) =
       NavigationUiState(
           snappedLocation = location,
           // TODO: Heading/course over ground

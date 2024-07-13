@@ -44,6 +44,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.lifecycle:lifecycle-runtime-compose-android:2.8.3'
+
     // For as long as we support API 25; once we can raise support to 26, all is fine
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
@@ -60,7 +62,7 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3'
 
-    api 'io.github.rallista:maplibre-compose:0.0.7'
+    api 'io.github.rallista:maplibre-compose:0.0.9'
 
     implementation project(':core')
     implementation project(':composeui')
