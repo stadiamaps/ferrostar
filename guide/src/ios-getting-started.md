@@ -23,10 +23,6 @@ or, if you’re using raw keys, `NSLocationWhenInUseUsageDescription`.
 Fill in a description of why your app needs access to their location.
 Presumably something related to navigation ;)
 
-If you want to access the user’s location while the app is in the background,
-you also need to declare the location updates background mode.
-You can find more details [in the Apple documentation](https://developer.apple.com/documentation/corelocation/handling-location-updates-in-the-background).
-
 ### Location providers
 
 You'll need to configure a provider to get location updates.
@@ -49,10 +45,12 @@ for getting location updates from GNSS.
 It will automatically request permissions for you as part of initialization.
 
 ```swift
-@StateObject private var locationProvider = CoreLocationProvider(activityType: .otherNavigation)
-// Required for background location updates
-@State private var backgroundActivitySession = CLBackgroundActivitySession()
+@StateObject private var locationProvider = CoreLocationProvider(activityType: .otherNavigation, allowBackgroundLocationUpdates: true)
 ```
+
+NOTE: If you want to access the user’s location while the app is in the background,
+you need to declare the location updates background mode in your `Info.plist`.
+You can find more details [in the Apple documentation](https://developer.apple.com/documentation/corelocation/handling-location-updates-in-the-background).
 
 #### `SimulatedLocationProvider`
 
