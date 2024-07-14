@@ -51,7 +51,6 @@ fun InnerGridView(
     bottomCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     bottomEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) }
 ) {
-  // TODO: This
   Box(modifier) {
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
       Row(

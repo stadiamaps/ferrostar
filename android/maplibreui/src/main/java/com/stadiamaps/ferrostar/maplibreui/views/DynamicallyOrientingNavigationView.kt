@@ -38,16 +38,17 @@ fun DynamicallyOrientingNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
+    onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
 ) {
   when (orientation) {
     Configuration.ORIENTATION_LANDSCAPE -> {
       LandscapeNavigationView(
-          modifier, styleUrl, camera, viewModel, locationRequestProperties, content)
+          modifier, styleUrl, camera, viewModel, locationRequestProperties, onTapExit, content)
     }
     else -> {
       PortraitNavigationView(
-          modifier, styleUrl, camera, viewModel, locationRequestProperties, content)
+          modifier, styleUrl, camera, viewModel, locationRequestProperties, onTapExit, content)
     }
   }
 }

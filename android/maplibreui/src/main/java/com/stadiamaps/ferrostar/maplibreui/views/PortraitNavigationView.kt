@@ -18,6 +18,7 @@ import com.maplibre.compose.camera.incrementZoom
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
+import com.stadiamaps.ferrostar.composeui.views.ArrivalView
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
 import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridView
 import com.stadiamaps.ferrostar.core.NavigationState
@@ -46,6 +47,7 @@ fun PortraitNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
+    onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
   val uiState = viewModel.uiState.collectAsState()
@@ -56,17 +58,19 @@ fun PortraitNavigationView(
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
       uiState.value.visualInstruction?.let { instructions ->
         InstructionsView(
-            instructions, distanceToNextManeuver = uiState.value.distanceToNextManeuver)
+            instructions, distanceToNextManeuver = uiState.value.progress?.distanceToNextManeuver)
       }
 
       NavigatingInnerGridView(
-          modifier = Modifier.fillMaxSize(),
+          modifier = Modifier.fillMaxSize().weight(1f).padding(bottom = 16.dp),
           onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
           onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
           showCentering = camera.value.state != CameraState.TrackingUserLocationWithBearing,
           onClickCenter = { camera.value = MapViewCamera.NavigationDefault() })
 
-      // TODO: Add ArrivalView
+      uiState.value.progress?.let { progress ->
+        ArrivalView(progress = progress, onTapExit = onTapExit)
+      }
     }
   }
 }

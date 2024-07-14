@@ -1,12 +1,23 @@
 package com.stadiamaps.ferrostar.views
 
+import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridViewPreview
+import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridViewSampleLayoutPreview
+import com.stadiamaps.ferrostar.support.paparazziDefault
+import com.stadiamaps.ferrostar.support.withSnapshotBackground
+import org.junit.Rule
 import org.junit.Test
 
 class InnerGridViewTest {
 
+  @get:Rule val paparazzi = paparazziDefault()
+
   @Test
   fun testInnerGridViewAll() {
-    // TODO: Implement test when ArrivalView PR is merged
-    assert(false)
+    paparazzi.snapshot { withSnapshotBackground { InnerGridViewPreview() } }
+  }
+
+  @Test
+  fun testInnerGridViewSpecialized() {
+    paparazzi.snapshot { withSnapshotBackground { InnerGridViewSampleLayoutPreview() } }
   }
 }
