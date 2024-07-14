@@ -196,18 +196,20 @@ Run unit tests as usual from within Xcode.
 
 ### Android
 
-At the moment, we need to use Android tests,
-but want to remove this requirement in the future as it is extremely expensive.
-So, the recommended way to run all tests is `./gradlew connectedCheck`. 
+Android uses both tests and androidTests (connectedChecks) to verify functionality. Included in normal unit tests are paparazzi snapshot tests for UI components.
+
+#### Recording Snapshots
+
+Run the gradle task `recordPaparazziDebug`. This can be done from the gradle menu under `verification`.
 
 ## Code Conventions
 
 * Format all Rust code using `cargo fmt`
 * Run `cargo clippy` and either fix any warnings or document clearly why you think the linter should be ignored
 * All iOS code must be written in Swift
-* TODO: Swiftlint and swift-format?
+* SwiftFormat is used to automatically format all swift code. This must be run manually from within the project folder using the command line tool `swiftformat .`. For more information on installation see [SwiftFormat/Installation](https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#how-do-i-install-it)
 * All Android code must be written in Kotlin
-* TODO: ktlint
+* ktfmt is used to automatically format all kotlin code. This can be run using the `ktfmtFormat` step under `formatting` in the gradle menu.
 
 ## Changelog Conventions
 

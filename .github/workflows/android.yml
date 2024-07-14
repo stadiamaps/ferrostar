@@ -118,6 +118,15 @@ jobs:
       run: ./gradlew test
       working-directory: android
 
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: test-reports
+        path: |
+          android/**/build/reports
+        retention-days: 5
+
   verify-snapshots:
 
     runs-on: macos-13
@@ -157,9 +166,12 @@ jobs:
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
+      if: success() || failure()
       with:
-        name: paparazzi-report.html
-        path: android/composeui/build/reports/paparazzi/debug/index.html
+        name: snapshot-reports
+        path: |
+          android/**/build/reports
+          android/**/build/paparazzi
         retention-days: 5
 
   connected-check:
@@ -204,3 +216,12 @@ jobs:
         target: aosp_atd
         script: ./gradlew connectedCheck
         working-directory: android
+
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v4
+      if: success() || failure()
+      with:
+        name: connected-reports
+        path: |
+          android/**/build/reports
+        retention-days: 5
