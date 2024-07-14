@@ -32,7 +32,7 @@ jobs:
       - name: Build Book
         run: mdbook build
         working-directory: guide
-      - name: Setup Pages
+      - name: Set up Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1

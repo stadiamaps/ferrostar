@@ -12,7 +12,8 @@ You can search for the repository via its URL:
 
 ## Configure location services
 
-In order to access the user’s location, you’ll need to set a key in your Info.plist or similar file.
+To access the user’s real location,
+you first need to set a key in your Info.plist or similar file.
 This is something you can set in Xcode by going to your project,
 selecting the target, and going to the Info tab.
 
@@ -21,6 +22,10 @@ You need to add row for “Privacy - Location When In Use Usage Description”
 or, if you’re using raw keys, `NSLocationWhenInUseUsageDescription`.
 Fill in a description of why your app needs access to their location.
 Presumably something related to navigation ;)
+
+If you want to access the user’s location while the app is in the background,
+you also need to declare the location updates background mode.
+You can find more details [in the Apple documentation](https://developer.apple.com/documentation/corelocation/handling-location-updates-in-the-background).
 
 ### Location providers
 
@@ -45,6 +50,8 @@ It will automatically request permissions for you as part of initialization.
 
 ```swift
 @StateObject private var locationProvider = CoreLocationProvider(activityType: .otherNavigation)
+// Required for background location updates
+@State private var backgroundActivitySession = CLBackgroundActivitySession()
 ```
 
 #### `SimulatedLocationProvider`
