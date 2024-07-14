@@ -69,8 +69,7 @@ struct DemoNavigationView: View {
                 navigationState: ferrostarCore.state,
                 camera: $camera,
                 snappedZoom: .constant(18),
-                useSnappedCamera: $snappedCamera,
-                onTapExit: { stopNavigation() }
+                useSnappedCamera: $snappedCamera
             ) {
                 let source = ShapeSource(identifier: "userLocation") {
                     // Demonstrate how to add a dynamic overlay;
@@ -80,59 +79,60 @@ struct DemoNavigationView: View {
                     }
                 }
                 CircleStyleLayer(identifier: "foo", source: source)
-            } topCenter: {
-                if let errorMessage {
-                    NavigationUIBanner(severity: .error) {
-                        Text(errorMessage)
+            } onTapExit: { stopNavigation() }
+                topCenter: {
+                    if let errorMessage {
+                        NavigationUIBanner(severity: .error) {
+                            Text(errorMessage)
+                        }
+                        .onTapGesture {
+                            self.errorMessage = nil
+                        }
+                    } else if isFetchingRoutes {
+                        NavigationUIBanner(severity: .loading) {
+                            Text("Loading route...")
+                        }
                     }
-                    .onTapGesture {
-                        self.errorMessage = nil
-                    }
-                } else if isFetchingRoutes {
-                    NavigationUIBanner(severity: .loading) {
-                        Text("Loading route...")
-                    }
-                }
-            } bottomTrailing: {
-                VStack {
-                    Text(locationLabel)
-                        .font(.caption)
-                        .padding(.all, 8)
-                        .foregroundColor(.white)
-                        .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+                } bottomTrailing: {
+                    VStack {
+                        Text(locationLabel)
+                            .font(.caption)
+                            .padding(.all, 8)
+                            .foregroundColor(.white)
+                            .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
 
-                    if locationServicesEnabled {
-                        if ferrostarCore.state == nil {
-                            NavigationUIButton {
-                                Task {
-                                    do {
-                                        isFetchingRoutes = true
-                                        try await startNavigation()
-                                        isFetchingRoutes = false
-                                    } catch {
-                                        isFetchingRoutes = false
-                                        errorMessage = "\(error.localizedDescription)"
+                        if locationServicesEnabled {
+                            if ferrostarCore.state == nil {
+                                NavigationUIButton {
+                                    Task {
+                                        do {
+                                            isFetchingRoutes = true
+                                            try await startNavigation()
+                                            isFetchingRoutes = false
+                                        } catch {
+                                            isFetchingRoutes = false
+                                            errorMessage = "\(error.localizedDescription)"
+                                        }
                                     }
+                                } label: {
+                                    Text("Start Nav")
+                                        .font(.body.bold())
                                 }
-                            } label: {
-                                Text("Start Nav")
-                                    .font(.body.bold())
+                                .disabled(routes?.isEmpty == true)
+                                .shadow(radius: 10)
                             }
-                            .disabled(routes?.isEmpty == true)
-                            .shadow(radius: 10)
-                        }
-                    } else {
-                        NavigationUIButton {
-                            // TODO: enable location services.
-                        } label: {
-                            Text("Enable Location Services")
+                        } else {
+                            NavigationUIButton {
+                                // TODO: enable location services.
+                            } label: {
+                                Text("Enable Location Services")
+                            }
                         }
                     }
                 }
-            }
-            .task {
-                await getRoutes()
-            }
+                .task {
+                    await getRoutes()
+                }
         }
     }
 

@@ -42,6 +42,11 @@ use alloc::collections::BTreeMap as HashMap;
 #[cfg(feature = "std")]
 use std::{collections::HashMap, fmt::Debug};
 
+#[cfg(feature = "wasm-bindgen")]
+use serde_json::json;
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+
 #[cfg(feature = "alloc")]
 use alloc::{string::String, sync::Arc, vec::Vec};
 
@@ -172,5 +177,59 @@ impl RouteAdapter {
         response: Vec<u8>,
     ) -> Result<Vec<Route>, RoutingResponseParseError> {
         self.response_parser.parse_response(response)
+    }
+}
+
+/// JavaScript wrapper for `RouteAdapter`.
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen(js_name = RouteAdapter)]
+pub struct JsRouteAdapter(RouteAdapter);
+
+#[cfg(feature = "wasm-bindgen")]
+#[ wasm_bindgen(js_class = RouteAdapter)]
+impl JsRouteAdapter {
+    /// Creates a new RouteAdapter with a Valhalla HTTP request generator and an OSRM response parser.
+    /// At the moment, this is the only supported combination.
+    #[wasm_bindgen(constructor)]
+    pub fn new(
+        endpoint_url: String,
+        profile: String,
+        costing_options_json: Option<String>,
+    ) -> Result<JsRouteAdapter, JsValue> {
+        RouteAdapter::new_valhalla_http(endpoint_url, profile, costing_options_json)
+            .map(JsRouteAdapter)
+            .map_err(|e| JsValue::from_str(&format!("{}", e)))
+        // TODO: We should have a better error handling strategy here. Same for the other methods.
+    }
+
+    pub fn generate_request(
+        &self,
+        user_location: JsValue,
+        waypoints: JsValue,
+    ) -> Result<JsValue, JsValue> {
+        let user_location: UserLocation = serde_wasm_bindgen::from_value(user_location)
+            .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+        let waypoints: Vec<Waypoint> = serde_wasm_bindgen::from_value(waypoints)
+            .map_err(|e| JsValue::from_str(&e.to_string()))?;
+
+        match self.0.generate_request(user_location, waypoints) {
+            Ok(RouteRequest::HttpPost { url, headers, body }) => {
+                serde_wasm_bindgen::to_value(&json!({
+                    "url": url,
+                    "headers": headers,
+                    "body": body,
+                }))
+                .map_err(|e| JsValue::from_str(&e.to_string()))
+            }
+            Err(e) => Err(JsValue::from_str(&e.to_string())),
+        }
+    }
+
+    pub fn parse_response(&self, response: Vec<u8>) -> Result<JsValue, JsValue> {
+        match self.0.parse_response(response.into()) {
+            Ok(routes) => serde_wasm_bindgen::to_value(&routes).map_err(JsValue::from),
+            Err(error) => Err(JsValue::from_str(&error.to_string())),
+        }
     }
 }

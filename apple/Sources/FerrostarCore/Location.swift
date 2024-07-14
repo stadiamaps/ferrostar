@@ -33,7 +33,7 @@ public class CoreLocationProvider: NSObject, ObservableObject {
     /// (rarely necessary except for significant change monitoring and geofencing notifications),
     /// you will need to request this access yourself.
     /// Refer to the CoreLocation framework guides for further information.
-    public init(activityType: CLActivityType) {
+    public init(activityType: CLActivityType, allowBackgroundLocationUpdates: Bool) {
         locationManager = CLLocationManager()
         authorizationStatus = locationManager.authorizationStatus
 
@@ -41,6 +41,7 @@ public class CoreLocationProvider: NSObject, ObservableObject {
 
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        locationManager.allowsBackgroundLocationUpdates = allowBackgroundLocationUpdates
 
         switch locationManager.authorizationStatus {
         case .notDetermined:

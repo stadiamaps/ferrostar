@@ -80,16 +80,36 @@ Before pushing, run the following in the `common` folder:
 2. Run `cargo insta review` to update snapshot testing changes. 
 3. Run `cargo test` to validate testing and ensure snapshot changes were correctly applied by step 2.
 
-#### WASM
+### Web
 
-We support `wasm32-unknown-unknown` for use in a JavaScript environment.
-That last qualifier is important, as we currently depend on being able to get the system time in several places.
-This comes through crates that rely on a JS environment.
-
-You can build the wasm module like so:
+1. Install `wasm-pack`:
 
 ```shell
-cargo build --lib --release --target wasm32-unknown-unknown --no-default-features --features wasm_js
+cargo install wasm-pack
+```
+
+2. Build the NPM package of the core:
+
+```shell
+cd common
+wasm-pack build --target web ferrostar --no-default-features --features wasm_js
+```
+
+3. Install dependencies:
+
+```shell
+cd ../web
+npm install
+```
+
+4. Run a local dev server or do a release build:
+
+```shell
+# This will start a local web server for the demo app with hot reload
+npm run dev
+
+# Or you can do a release build (we test this in CI)
+npm run build
 ```
 
 ### iOS
@@ -164,7 +184,11 @@ Run the `ktfmtFormat` gradle action before committing to ensure consistent forma
 
 ### Common Core
 
-Run `cargo test -p ferrostar-core` from within the `common` directory to run tests.
+Run `cargo test -p ferrostar` from within the `common` directory to run tests.
+
+### Web
+
+Run `wasm-pack test --firefox --headless ferrostar --no-default-features --features wasm_js` from within the `common` directory to run tests.
 
 ### iOS
 
@@ -172,18 +196,20 @@ Run unit tests as usual from within Xcode.
 
 ### Android
 
-At the moment, we need to use Android tests,
-but want to remove this requirement in the future as it is extremely expensive.
-So, the recommended way to run all tests is `./gradlew connectedCheck`. 
+Android uses both tests and androidTests (connectedChecks) to verify functionality. Included in normal unit tests are paparazzi snapshot tests for UI components.
+
+#### Recording Snapshots
+
+Run the gradle task `recordPaparazziDebug`. This can be done from the gradle menu under `verification`.
 
 ## Code Conventions
 
 * Format all Rust code using `cargo fmt`
 * Run `cargo clippy` and either fix any warnings or document clearly why you think the linter should be ignored
 * All iOS code must be written in Swift
-* TODO: Swiftlint and swift-format?
+* SwiftFormat is used to automatically format all swift code. This must be run manually from within the project folder using the command line tool `swiftformat .`. For more information on installation see [SwiftFormat/Installation](https://github.com/nicklockwood/SwiftFormat?tab=readme-ov-file#how-do-i-install-it)
 * All Android code must be written in Kotlin
-* TODO: ktlint
+* ktfmt is used to automatically format all kotlin code. This can be run using the `ktfmtFormat` step under `formatting` in the gradle menu.
 
 ## Changelog Conventions
 

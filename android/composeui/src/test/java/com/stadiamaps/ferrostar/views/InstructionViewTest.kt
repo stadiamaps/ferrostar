@@ -1,8 +1,8 @@
 package com.stadiamaps.ferrostar.views
 
-import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
-import app.cash.paparazzi.Paparazzi
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
+import com.stadiamaps.ferrostar.support.paparazziDefault
+import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import org.junit.Rule
 import org.junit.Test
 import uniffi.ferrostar.ManeuverModifier
@@ -12,9 +12,7 @@ import uniffi.ferrostar.VisualInstructionContent
 
 class InstructionViewTest {
 
-  @get:Rule
-  val paparazzi =
-      Paparazzi(deviceConfig = PIXEL_5, theme = "android:Theme.Material.Light.NoActionBar")
+  @get:Rule val paparazzi = paparazziDefault()
 
   @Test
   fun testInstructionView() {
@@ -30,7 +28,9 @@ class InstructionViewTest {
             triggerDistanceBeforeManeuver = 42.0)
 
     paparazzi.snapshot {
-      InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
+      withSnapshotBackground {
+        InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
+      }
     }
   }
 }
