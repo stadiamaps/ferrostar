@@ -1,7 +1,7 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'com.ncorti.ktfmt.gradle'
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.jetbrainsKotlinAndroid
+    alias libs.plugins.ktfmt
 }
 
 android {
@@ -45,34 +45,32 @@ android {
 
 dependencies {
     // For as long as we support API 25; once we can raise support to 26, all is fine
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    coreLibraryDesugaring libs.desugar.jdk.libs
 
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation platform('org.jetbrains.kotlin:kotlin-bom:1.9.24')
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.activity:activity-compose:1.9.0'
+    implementation libs.androidx.ktx
+    implementation platform(libs.kotlin.bom)
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.lifecycle.viewmodel.compose
 
-    implementation platform('androidx.compose:compose-bom:2024.06.00')
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.graphics
+    implementation libs.androidx.compose.ui.tooling
+    implementation libs.androidx.compose.material3
 
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3'
-
-    api 'io.github.rallista:maplibre-compose:0.0.7'
+    api libs.maplibre.compose
 
     implementation project(':core')
     implementation project(':composeui')
 
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
 
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-
-    androidTestImplementation platform('androidx.compose:compose-bom:2024.06.00')
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+//    androidTestImplementation platform('androidx.compose:compose-bom:2024.06.00')
+//    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation libs.androidx.compose.ui.test.manifest
 }
 
 publishing {

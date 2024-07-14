@@ -1,7 +1,7 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'com.ncorti.ktfmt.gradle'
+    alias libs.plugins.androidApplication
+    alias libs.plugins.jetbrainsKotlinAndroid
+    alias libs.plugins.ktfmt
 }
 
 android {
@@ -50,35 +50,33 @@ android {
 
 dependencies {
     // Temporary until we can drop support for API < 26
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    coreLibraryDesugaring libs.desugar.jdk.libs
 
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.3'
-    implementation 'androidx.activity:activity-compose:1.9.0'
+    implementation libs.androidx.ktx
+    implementation libs.androidx.lifecycle.runtime.ktx
+    implementation libs.androidx.activity.compose
 
-    implementation platform('androidx.compose:compose-bom:2024.06.00')
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-
-    implementation 'androidx.compose.ui:ui-tooling-preview'
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.graphics
+    implementation libs.androidx.compose.ui.tooling
+    implementation libs.androidx.compose.material3
 
     implementation project(':core')
     implementation project(':maplibreui')
 
-    implementation 'io.github.rallista:maplibre-compose:0.0.7'
+    implementation libs.maplibre.compose
 
-    implementation platform("com.squareup.okhttp3:okhttp-bom:4.11.0")
-    implementation 'com.squareup.okhttp3:okhttp'
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp.core)
 
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
 
-    androidTestImplementation platform('androidx.compose:compose-bom:2024.06.00')
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
+//    androidTestImplementation platform('androidx.compose:compose-bom:2024.06.00')
+    androidTestImplementation libs.androidx.compose.ui.test.junit4
 
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+//    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation libs.androidx.compose.ui.test.manifest
 }
