@@ -16,9 +16,9 @@ import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.StepAdvanceMode
 
 /**
- * A basic sample of a dependency inject module for the demo app. This is only used to demonstrate
- * and test the basics of FerrostarCore with a dependency injection like stack. In a real a app, use
- * your preferred injection system.
+ * A basic sample of a dependency injection module for the demo app. This is only used to
+ * demonstrate and test the basics of FerrostarCore with a dependency injection like stack. In a
+ * real a app, use your preferred injection system.
  */
 object AppModule {
   private const val TAG = "AppModule"

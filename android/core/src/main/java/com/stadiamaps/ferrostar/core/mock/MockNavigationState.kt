@@ -14,6 +14,7 @@ import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 import uniffi.ferrostar.VisualInstructionContent
 
+/** Mocked example for UI testing. */
 fun UserLocation.Companion.pedestrianExample(): UserLocation {
   return UserLocation(
       GeographicCoordinate(37.81, -122.42),
@@ -23,6 +24,7 @@ fun UserLocation.Companion.pedestrianExample(): UserLocation {
       speed = Speed(1.0, 1.0))
 }
 
+/** Mocked example for UI testing. */
 fun NavigationState.Companion.pedestrianExample(): NavigationState {
   return NavigationState(
       tripState =

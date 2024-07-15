@@ -53,8 +53,8 @@ fun NavigationMapView(
         // Set the camera to navigation on resume.
         camera.value = MapViewCamera.NavigationDefault()
 
-        // Any addition map view related setup should happen here to ensure the map is ready (style
-        // is loaded).
+        // Any additional map view related setup should happen here to ensure the map is ready
+        // (style is loaded).
       },
   ) {
     BorderedPolyline(
