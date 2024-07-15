@@ -1,8 +1,8 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
-    id 'com.github.willir.rust.cargo-ndk-android'
-    id 'com.ncorti.ktfmt.gradle'
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.jetbrainsKotlinAndroid
+    alias libs.plugins.cargo.ndk
+    alias libs.plugins.ktfmt
 }
 
 android {
@@ -41,30 +41,33 @@ android {
 }
 
 dependencies {
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
 
     // For as long as we support API 25; once we can raise support to 26, all is fine
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    coreLibraryDesugaring libs.desugar.jdk.libs
 
-    implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'com.squareup.okhttp3:okhttp'
-    implementation 'com.squareup.moshi:moshi:1.15.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-datetime:0.6.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3'
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
 
+    implementation libs.kotlinx.coroutines
+    implementation libs.kotlinx.datetime
+    implementation libs.androidx.lifecycle.viewmodel.ktx
+
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp.core)
+    implementation libs.moshi
+
+    // TODO: Migrate version to TOML (doesn't work). Likely related issue: https://github.com/gradle/gradle/issues/21267
+    //noinspection UseTomlInstead
     implementation "net.java.dev.jna:jna:5.12.1@aar"
 
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation libs.junit
 
     // These probably shouldn't have to be androidTestImplementation... see rant in
     // ValhallaCoreTest.kt
-    androidTestImplementation 'com.github.gmazzo:okhttp-mock:1.5.0'
-    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
-
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation libs.okhttp.mock
+    androidTestImplementation libs.kotlinx.coroutines.test
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
 }
 
 cargoNdk {

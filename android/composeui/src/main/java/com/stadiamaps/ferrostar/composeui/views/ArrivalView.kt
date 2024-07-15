@@ -207,7 +207,7 @@ fun ArrivalViewWithExitPreview() {
       progress = progress,
       fromDate = Instant.fromEpochSeconds(1720283624),
       timeZone = TimeZone.of("America/Los_Angeles"),
-      onTapExit = { /* no-op */})
+      onTapExit = { /* no-op */ })
 }
 
 @Preview(locale = "de_DE")
@@ -227,5 +227,5 @@ fun ArrivalView24HourPreview() {
       estimatedArrivalFormatter = estimatedArrivalFormatter,
       fromDate = Instant.fromEpochSeconds(1720283624),
       timeZone = TimeZone.of("Europe/Berlin"),
-      onTapExit = { /* no-op */})
+      onTapExit = { /* no-op */ })
 }
