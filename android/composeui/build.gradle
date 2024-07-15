@@ -3,6 +3,7 @@ plugins {
     alias libs.plugins.jetbrainsKotlinAndroid
     alias libs.plugins.ktfmt
     alias libs.plugins.paparazzi
+    alias libs.plugins.compose.compiler
 }
 
 android {
@@ -33,9 +34,6 @@ android {
     buildFeatures {
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.14'
-    }
     publishing {
         singleVariant('release') {
             withSourcesJar()
@@ -49,7 +47,9 @@ dependencies {
     coreLibraryDesugaring libs.desugar.jdk.libs
 
     implementation platform(libs.kotlin.bom)
-    implementation libs.kotlinx.datetime
+
+    // Used in the public API
+    api libs.kotlinx.datetime
 
     implementation libs.androidx.ktx
     implementation libs.androidx.appcompat
@@ -58,15 +58,19 @@ dependencies {
     implementation platform(libs.androidx.compose.bom)
     implementation libs.androidx.compose.ui
     implementation libs.androidx.compose.ui.graphics
-    implementation libs.androidx.compose.ui.tooling
+    implementation libs.androidx.compose.ui.tooling.preview
     implementation libs.androidx.compose.material3
+    implementation libs.androidx.compose.material.icon.extended
 
     implementation project(':core')
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
+
+    implementation libs.androidx.compose.ui.tooling.preview
     debugImplementation libs.androidx.compose.ui.tooling
+
     debugImplementation libs.androidx.compose.ui.test.manifest
 }
 

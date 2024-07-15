@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.stateIn
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.SpokenInstruction
+import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
@@ -19,13 +20,13 @@ data class NavigationUiState(
     val routeGeometry: List<GeographicCoordinate>,
     val visualInstruction: VisualInstruction?,
     val spokenInstruction: SpokenInstruction?,
-    val distanceToNextManeuver: Double?,
+    val progress: TripProgress?,
     val isCalculatingNewRoute: Boolean?,
     val routeDeviation: RouteDeviation?
 )
 
 class NavigationViewModel(
-    stateFlow: StateFlow<FerrostarCoreState>,
+    stateFlow: StateFlow<NavigationState>,
     initialUserLocation: UserLocation,
 ) : ViewModel() {
   private var lastLocation: UserLocation = initialUserLocation
@@ -49,7 +50,7 @@ class NavigationViewModel(
               started = SharingStarted.WhileSubscribed(),
               initialValue = uiState(stateFlow.value, initialUserLocation))
 
-  private fun uiState(coreState: FerrostarCoreState, location: UserLocation) =
+  private fun uiState(coreState: NavigationState, location: UserLocation) =
       NavigationUiState(
           snappedLocation = location,
           // TODO: Heading/course over ground
@@ -57,14 +58,14 @@ class NavigationViewModel(
           routeGeometry = coreState.routeGeometry,
           visualInstruction = visualInstructionForState(coreState.tripState),
           spokenInstruction = null,
-          distanceToNextManeuver = distanceForState(coreState.tripState),
+          progress = progressForState(coreState.tripState),
           isCalculatingNewRoute = coreState.isCalculatingNewRoute,
           routeDeviation = deviationForState(coreState.tripState))
 }
 
-private fun distanceForState(newState: TripState) =
+private fun progressForState(newState: TripState) =
     when (newState) {
-      is TripState.Navigating -> newState.progress.distanceToNextManeuver
+      is TripState.Navigating -> newState.progress
       is TripState.Complete -> null
     }
 
