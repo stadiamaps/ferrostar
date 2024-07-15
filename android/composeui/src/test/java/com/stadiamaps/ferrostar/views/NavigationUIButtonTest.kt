@@ -24,7 +24,7 @@ class NavigationUIButtonTest {
   fun testNavigationUIButton() {
     paparazzi.snapshot {
       Box(modifier = Modifier.width(56.dp).height(56.dp).padding(16.dp)) {
-        NavigationUIButton(onClick = { /* no action */}) {
+        NavigationUIButton(onClick = { /* no action */ }) {
           Icon(Icons.Filled.Adb, contentDescription = "ADB")
         }
       }
@@ -36,7 +36,7 @@ class NavigationUIButtonTest {
     paparazzi.snapshot {
       Box(modifier = Modifier.width(56.dp).height(56.dp).padding(16.dp)) {
         NavigationUIButton(
-            onClick = { /* no action */},
+            onClick = { /* no action */ },
             containerColor = Color.Black,
             contentColor = Color.White) {
               Icon(Icons.Filled.Adb, contentDescription = "ADB")
@@ -50,7 +50,7 @@ class NavigationUIButtonTest {
     paparazzi.snapshot {
       Box(modifier = Modifier.width(56.dp).height(56.dp).padding(16.dp)) {
         NavigationUIZoomButton(
-            onClickZoomIn = { /* no action */}, onClickZoomOut = { /* no action */})
+            onClickZoomIn = { /* no action */ }, onClickZoomOut = { /* no action */ })
       }
     }
   }
@@ -60,8 +60,8 @@ class NavigationUIButtonTest {
     paparazzi.snapshot {
       Box(modifier = Modifier.width(56.dp).height(56.dp).padding(16.dp)) {
         NavigationUIZoomButton(
-            onClickZoomIn = { /* no action */},
-            onClickZoomOut = { /* no action */},
+            onClickZoomIn = { /* no action */ },
+            onClickZoomOut = { /* no action */ },
             containerColor = Color.Black,
             contentColor = Color.White)
       }
