@@ -44,8 +44,6 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.lifecycle:lifecycle-runtime-compose-android:2.8.3'
-
     // For as long as we support API 25; once we can raise support to 26, all is fine
     coreLibraryDesugaring libs.desugar.jdk.libs
 
@@ -53,6 +51,7 @@ dependencies {
     implementation platform(libs.kotlin.bom)
     implementation libs.androidx.appcompat
     implementation libs.androidx.activity.compose
+    implementation libs.androidx.lifecycle.runtime.compose.android
     implementation libs.androidx.lifecycle.viewmodel.compose
 
     implementation platform(libs.androidx.compose.bom)
