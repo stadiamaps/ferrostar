@@ -56,7 +56,7 @@ dependencies {
     implementation(libs.okhttp.core)
     implementation libs.moshi
 
-    // TODO: Fix this. Maybe related?: https://github.com/gradle/gradle/issues/21267
+    // TODO: Migrate version to TOML (doesn't work). Likely related issue: https://github.com/gradle/gradle/issues/21267
     //noinspection UseTomlInstead
     implementation "net.java.dev.jna:jna:5.12.1@aar"
 
