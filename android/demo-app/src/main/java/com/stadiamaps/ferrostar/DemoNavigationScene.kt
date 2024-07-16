@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mapbox.mapboxsdk.geometry.LatLng
 import com.maplibre.compose.symbols.Circle
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -28,6 +27,7 @@ import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationV
 import com.stadiamaps.ferrostar.support.initialSimulatedLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.maplibre.android.geometry.LatLng
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
