@@ -28,6 +28,7 @@ pub struct TripProgress {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 pub enum TripState {
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     Navigating {
         snapped_user_location: UserLocation,
         /// The ordered list of steps that remain in the trip.
@@ -81,6 +82,7 @@ pub enum StepAdvanceMode {
     /// You can use this to implement custom behaviors in external code.
     Manual,
     /// Automatically advances when the user's location is close enough to the end of the step
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     DistanceToEndOfStep {
         /// Distance to the last waypoint in the step, measured in meters, at which to advance.
         distance: u16,
@@ -90,6 +92,7 @@ pub enum StepAdvanceMode {
     },
     /// Automatically advances when the user's distance to the *next* step's linestring  is less
     /// than the distance to the current step's linestring.
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     RelativeLineStringDistance {
         /// The minimum required horizontal accuracy of the user location, in meters.
         /// Values larger than this cannot trigger a step advance.
@@ -103,6 +106,7 @@ pub enum StepAdvanceMode {
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 pub struct NavigationControllerConfig {
     pub step_advance: StepAdvanceMode,
     pub route_deviation_tracking: RouteDeviationTracking,

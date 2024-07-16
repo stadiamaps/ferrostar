@@ -44,6 +44,7 @@ pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
     /// Detects deviation from the route using a configurable static distance threshold from the route line.
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     StaticThreshold {
         /// The minimum required horizontal accuracy of the user location, in meters.
         /// Values larger than this will not trigger route deviation warnings.
@@ -115,6 +116,7 @@ pub enum RouteDeviation {
     /// The user is proceeding on course within the expected tolerances; everything is normal.
     NoDeviation,
     /// The user is off the expected route.
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     OffRoute {
         /// The deviation from the route line, in meters.
         deviation_from_route_line: f64,

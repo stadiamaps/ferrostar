@@ -73,17 +73,20 @@ class FerrostarCore extends LitElement {
   // TODO: type
   async getRoutes(initialLocation: any, waypoints: any) {
     await init();
+
     this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile);
 
-    const body = this.routeAdapter.generate_request(initialLocation, waypoints).get("body");
+    const body = this.routeAdapter.generateRequest(initialLocation, waypoints).get("body");
+
     // FIXME: assert httpClient is not null
     const response = await this.httpClient!(this.valhallaEndpointUrl, {
       method: "POST",
       // FIXME: assert body is not null
       body: new Uint8Array(body).buffer,
     });
+
     const responseData = new Uint8Array(await response.arrayBuffer());
-    const routes = this.routeAdapter.parse_response(responseData);
+    const routes = this.routeAdapter.parseResponse(responseData);
 
     return routes;
   }
@@ -97,8 +100,8 @@ class FerrostarCore extends LitElement {
       ? this.locationProvider.lastLocation
       : {
           coordinates: route.geometry[0],
-          horizontal_accuracy: 0.0,
-          course_over_ground: null,
+          horizontalAccuracy: 0.0,
+          courseOverGround: null,
           // TODO: find a better way to create the timestamp?
           timestamp: {
             secs_since_epoch: Math.floor(Date.now() / 1000),
@@ -107,8 +110,7 @@ class FerrostarCore extends LitElement {
           speed: null,
         };
 
-    // FIXME: should be camelCase
-    const initialTripState = this.navigationController.get_initial_state(startingLocation);
+    const initialTripState = this.navigationController.getInitialState(startingLocation);
     this.handleStateUpdate(initialTripState, startingLocation);
 
     const polyline = L.polyline(route.geometry, { color: "red" }).addTo(this.map!);
