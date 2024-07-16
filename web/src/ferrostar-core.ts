@@ -56,7 +56,7 @@ class FerrostarCore extends LitElement {
   }
 
   updated(changedProperties: any) {
-    if (changedProperties.has('locationProvider') && this.locationProvider) {
+    if (changedProperties.has("locationProvider") && this.locationProvider) {
       this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     }
   }
@@ -113,6 +113,8 @@ class FerrostarCore extends LitElement {
     const initialTripState = this.navigationController.getInitialState(startingLocation);
     this.handleStateUpdate(initialTripState, startingLocation);
 
+    this.resetMap();
+
     const polyline = L.polyline(route.geometry, { color: "red" }).addTo(this.map!);
     this.map!.fitBounds(polyline.getBounds());
 
@@ -137,6 +139,14 @@ class FerrostarCore extends LitElement {
 
   private onLocationUpdated() {
     this.currentLocationMapMarker!.setLatLng(this.locationProvider.lastLocation.coordinates);
+  }
+
+  private resetMap() {
+    this.map!.eachLayer((layer) => {
+      if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+        this.map!.removeLayer(layer);
+      }
+    });
   }
 
   render() {
