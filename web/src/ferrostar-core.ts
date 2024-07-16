@@ -8,7 +8,7 @@ import markerShadowUrl from "../node_modules/leaflet/dist/images/marker-shadow.p
 import init, { NavigationController, RouteAdapter } from "ferrostar";
 
 @customElement("ferrostar-core")
-class FerrostarCore extends LitElement {
+export class FerrostarCore extends LitElement {
   @property()
   valhallaEndpointUrl: string = "";
 
