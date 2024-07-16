@@ -14,9 +14,9 @@ fun MapViewCamera.Companion.NavigationCentered(): MapViewCamera {
 }
 
 /**
- * The landscape camera configuration for navigation. This configuration sets the camera to track the
- * user, with a bearing of 18 degrees and a pitch of 45 degrees as well as a padding to ensure the user puck
- * is centered at the bottom of the screen.
+ * The landscape camera configuration for navigation. This configuration sets the camera to track
+ * the user, with a bearing of 18 degrees and a pitch of 45 degrees as well as a padding to ensure
+ * the user puck is centered at the bottom of the screen.
  *
  * @return The navigation MapViewCamera
  */
@@ -27,8 +27,8 @@ fun MapViewCamera.Companion.NavigationLandscape(): MapViewCamera {
 
 /**
  * The portrait camera configuration for navigation. This configuration sets the camera to track the
- * user, with a bearing of 18 degrees and a pitch of 45 degrees as well as a padding to ensure the user puck
- * is centered at the bottom end (right) of the screen.
+ * user, with a bearing of 18 degrees and a pitch of 45 degrees as well as a padding to ensure the
+ * user puck is centered at the bottom end (right) of the screen.
  *
  * @return The navigation MapViewCamera
  */
