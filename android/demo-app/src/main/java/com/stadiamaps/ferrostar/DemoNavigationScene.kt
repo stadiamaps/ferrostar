@@ -103,7 +103,8 @@ fun DemoNavigationScene(
     DynamicallyOrientingNavigationView(
         modifier = Modifier.fillMaxSize(),
         // These are demo tiles and not very useful.
-        // Check https://stadiamaps.github.io/ferrostar/vendors.html for some vendors of vector tiles.
+        // Check https://stadiamaps.github.io/ferrostar/vendors.html for some vendors of vector
+        // tiles.
         // Most vendors offer free API keys for development use.
         styleUrl = "https://demotiles.maplibre.org/style.json",
         viewModel = viewModel!!) { uiState ->
