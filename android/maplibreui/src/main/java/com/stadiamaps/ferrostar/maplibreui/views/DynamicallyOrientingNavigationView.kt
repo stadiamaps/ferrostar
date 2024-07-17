@@ -13,6 +13,7 @@ import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 
 /**
  * A dynamically orienting navigation view that switches between portrait and landscape orientations
@@ -31,24 +32,25 @@ import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
  */
 @Composable
 fun DynamicallyOrientingNavigationView(
-    modifier: Modifier,
-    orientation: Int = LocalConfiguration.current.orientation,
-    styleUrl: String,
-    camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
-    viewModel: NavigationViewModel,
-    locationRequestProperties: LocationRequestProperties =
+  modifier: Modifier,
+  orientation: Int = LocalConfiguration.current.orientation,
+  styleUrl: String,
+  camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
+  navigationCamera: MapViewCamera = navigationMapViewCamera(),
+  viewModel: NavigationViewModel,
+  locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    onTapExit: (() -> Unit)? = null,
-    content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
+  onTapExit: (() -> Unit)? = null,
+  content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
 ) {
   when (orientation) {
     Configuration.ORIENTATION_LANDSCAPE -> {
       LandscapeNavigationView(
-          modifier, styleUrl, camera, viewModel, locationRequestProperties, onTapExit, content)
+          modifier, styleUrl, camera, navigationCamera, viewModel, locationRequestProperties, onTapExit, content)
     }
     else -> {
       PortraitNavigationView(
-          modifier, styleUrl, camera, viewModel, locationRequestProperties, onTapExit, content)
+          modifier, styleUrl, camera, navigationCamera, viewModel, locationRequestProperties, onTapExit, content)
     }
   }
 }

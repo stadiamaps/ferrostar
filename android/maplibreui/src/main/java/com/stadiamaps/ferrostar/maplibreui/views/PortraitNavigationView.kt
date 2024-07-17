@@ -33,7 +33,7 @@ import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationPortrait
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import kotlinx.coroutines.flow.MutableStateFlow
 import uniffi.ferrostar.UserLocation
 
@@ -48,14 +48,15 @@ import uniffi.ferrostar.UserLocation
  */
 @Composable
 fun PortraitNavigationView(
-    modifier: Modifier,
-    styleUrl: String,
-    camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
-    viewModel: NavigationViewModel,
-    locationRequestProperties: LocationRequestProperties =
+  modifier: Modifier,
+  styleUrl: String,
+  camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
+  navigationCamera: MapViewCamera = navigationMapViewCamera(),
+  viewModel: NavigationViewModel,
+  locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    onTapExit: (() -> Unit)? = null,
-    content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
+  onTapExit: (() -> Unit)? = null,
+  content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
   val uiState = viewModel.uiState.collectAsState()
 
@@ -75,7 +76,7 @@ fun PortraitNavigationView(
         camera,
         viewModel,
         locationRequestProperties,
-        onMapReadyCallback = { camera.value = MapViewCamera.NavigationPortrait() },
+        onMapReadyCallback = { camera.value = navigationCamera },
         content)
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
@@ -89,7 +90,7 @@ fun PortraitNavigationView(
           onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
           onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
           showCentering = camera.value.state !is CameraState.TrackingUserLocationWithBearing,
-          onClickCenter = { camera.value = MapViewCamera.NavigationPortrait() })
+          onClickCenter = { camera.value = navigationCamera })
 
       uiState.value.progress?.let { progress ->
         ArrivalView(progress = progress, onTapExit = onTapExit)

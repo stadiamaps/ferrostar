@@ -37,7 +37,7 @@ import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationLandscape
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import kotlinx.coroutines.flow.MutableStateFlow
 import uniffi.ferrostar.UserLocation
 
@@ -55,6 +55,7 @@ fun LandscapeNavigationView(
     modifier: Modifier,
     styleUrl: String,
     camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
+    navigationCamera: MapViewCamera = navigationMapViewCamera(),
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
@@ -79,11 +80,15 @@ fun LandscapeNavigationView(
         camera,
         viewModel,
         locationRequestProperties,
-        onMapReadyCallback = { camera.value = MapViewCamera.NavigationLandscape() },
+        onMapReadyCallback = { camera.value = navigationCamera },
         content)
 
-    Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-      Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
+    Row(modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp)) {
+      Column(modifier = Modifier
+        .fillMaxHeight()
+        .fillMaxWidth(0.5f)) {
         uiState.value.visualInstruction?.let { instructions ->
           InstructionsView(
               instructions, distanceToNextManeuver = uiState.value.progress?.distanceToNextManeuver)
@@ -104,7 +109,7 @@ fun LandscapeNavigationView(
             onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
             onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
             showCentering = camera.value.state !is CameraState.TrackingUserLocationWithBearing,
-            onClickCenter = { camera.value = MapViewCamera.NavigationLandscape() })
+            onClickCenter = { camera.value = navigationCamera })
       }
     }
   }
