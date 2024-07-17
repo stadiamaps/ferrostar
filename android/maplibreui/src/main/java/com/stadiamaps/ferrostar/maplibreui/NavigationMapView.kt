@@ -19,8 +19,8 @@ import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.toAndroidLocation
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationCentered
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import org.maplibre.android.geometry.LatLng
-import org.maplibre.android.maps.Style
+import com.mapbox.mapboxsdk.geometry.LatLng
+import com.mapbox.mapboxsdk.maps.Style
 
 /**
  * The base MapLibre MapView configured for navigation with a polyline representing the route.

@@ -2,7 +2,7 @@ package com.stadiamaps.ferrostar.maplibreui
 
 import androidx.compose.runtime.Composable
 import com.maplibre.compose.symbols.Polyline
-import org.maplibre.android.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLng
 
 @Composable
 fun BorderedPolyline(

@@ -18,9 +18,9 @@ import com.maplibre.compose.camera.cameraPaddingFractionOfScreen
 @Composable
 fun navigationMapViewCamera(zoom: Double = 18.0, pitch: Double = 45.0): MapViewCamera {
   val screenOrientation = LocalConfiguration.current.orientation
-  val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 0.8f else 0.0f
+  val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 0.5f else 0.0f
 
-  val cameraPadding = cameraPaddingFractionOfScreen(start = start, top = 1.4f)
+  val cameraPadding = cameraPaddingFractionOfScreen(start = start, top = 0.7f)
 
   return MapViewCamera.TrackingUserLocationWithBearing(
       zoom = zoom, pitch = pitch, padding = cameraPadding)

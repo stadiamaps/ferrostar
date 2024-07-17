@@ -27,7 +27,7 @@ import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationV
 import com.stadiamaps.ferrostar.support.initialSimulatedLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.maplibre.android.geometry.LatLng
+import com.mapbox.mapboxsdk.geometry.LatLng
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
