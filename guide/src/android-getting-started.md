@@ -3,24 +3,18 @@
 This section of the guide covers how to integrate Ferrostar into an Android app.
 We'll cover the "batteries included" approach, but flag areas for customization and overrides along the way.
 
-Note that while this section is WIP, we have a well-documented [demo app](https://github.com/stadiamaps/ferrostar/tree/main/android/demo-app).
-The TODOs will get filled in eventually, but the demo app is a good reference for now.
+## Gradle setup
 
-## Minimum requirements
-
-See the [platform support targets](./platform-support-targets.md) document
-for details on supported Android versions.
-
-## Add dependencies
+### GitHub Packages
 
 Ferrostar releases are hosted on GitHub Packages.
 You’ll need to authenticate first in order to access them.
 GitHub has a [guide on setting this up](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#authenticating-to-github-packages).
 
-### Maven repository setup
+(We’re [working on getting a Maven Central account](https://github.com/stadiamaps/ferrostar/issues/139) to make this easier)
 
 Once you’ve configured GitHub credentials as project properties or environment variables,
-Add the repository to your build script.
+add the repository to your build script.
 
 If you are using `settings.gradle` for your dependency resolution management,
 you’ll end up with something like along these lines:
@@ -71,8 +65,8 @@ repositories {
     maven {
         url = uri("https://maven.pkg.github.com/Rallista/maplibre-compose-playground")
         credentials {
-            username = settings.ext.find("gpr.user") ?: System.getenv("USERNAME")
-            password = settings.ext.find("gpr.token") ?: System.getenv("TOKEN")
+            username = settings.ext.find("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = settings.ext.find("gpr.token") ?: System.getenv("GITHUB_TOKEN")
         }
     }
 }
@@ -85,7 +79,7 @@ repositories {
 If you’re using the classic `build.gradle`
 with `implementation` strings using hard-coded versions,
 here’s how to set things up.
-Replace `X.Y.Z` with an [appropriate version](https://github.com/orgs/stadiamaps/packages?repo_name=ferrostar).
+Replace `X.Y.Z` with the latest [release version](https://github.com/orgs/stadiamaps/packages?repo_name=ferrostar).
 
 ```groovy
 dependencies {
@@ -164,7 +158,7 @@ This may be confusing if you’re new to mobile development.
 On Android, we can use something called a *foreground service*
 which lets us keep getting location updates even when the app isn’t front and center.
 
-TODO: Tutorial on this
+**TODO: Tutorial on foreground services**
 
 ### Location providers
 
@@ -283,7 +277,7 @@ which uses the text-to-speech engine built into Android.
 PRs welcome for other popular services (ex: Amazon Polly;
 note that some APIs also provide SSML instructions which work great with this!).
 
-TODO documentation:
+**TODO documentation:**
 
 * Android Manifest
 * Set the language
@@ -348,19 +342,18 @@ set the route:
 locationProvider.setSimulatedRoute(route)
 ```
 
-## Using the `NavigationMapView`
+## Using the `DynamicallyOrientingNavigationView`
 
 We’re finally ready to turn that view model into a beautiful navigation map!
-It’s really as simple as creating a `NavigationMapView` with the view model.
+It’s really as simple as creating a `DynamicallyOrientingNavigationView` with the view model.
 Here’s an example:
 
 ```kotlin
  val viewModel = navigationViewModel
  if (viewModel != null) {
-     // Demo tiles illustrate a basic integration without any API key required,
-     // but you can replace the styleURL with any valid MapLibre style URL.
-     // See https://stadiamaps.github.io/ferrostar/vendors.html for some vendors.
-     NavigationMapView(
+     // You can get a free Stadia Maps API key at https://client.stadiamaps.com.
+     // See https://stadiamaps.github.io/ferrostar/vendors.html for additional vendors
+     DynamicallyOrientingNavigationView(
          styleUrl =
          "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey",
          viewModel = viewModel) { uiState ->
@@ -384,6 +377,6 @@ We've put together a minimal [demo app](https://github.com/stadiamaps/ferrostar/
 
 ## Going deeper
 
-This covers the basic “batteries included” configuration which works for simple apps.
+This covers the basic “batteries included” configuration and pre-built UI.
 But there’s a lot of room for customization!
 Skip on over to the customization chapters that interest you.

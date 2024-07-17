@@ -128,7 +128,7 @@ try ferrostarCore.startNavigation(route: route, config: SwiftNavigationControlle
 From this point, `FerrostarCore` automatically starts the `LocationProvider` updates,
 and will use Combine, the SwiftUI observation framework, to publish state changes.
 
-## Using the NavigationMapView
+## Using the `DynamicallyOrientingNavigationView`
 
 So now navigation is “started” but what does that mean?
 Let’s turn these state updates into a familiar map-centric experience!
@@ -139,7 +139,8 @@ See the class documentation for details on each parameter,
 but you have the ability to customize most of the camera behavior.
 
 ```swift
-// NOTE: You can get a free Stadia Maps API key at https://client.stadiamaps.com
+// You can get a free Stadia Maps API key at https://client.stadiamaps.com
+// See https://stadiamaps.github.io/ferrostar/vendors.html for additional vendors
 let styleURL = URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(stadiaMapsAPIKey)")!
 DynamicallyOrientingNavigationView(
     styleURL: styleURL,
@@ -156,6 +157,6 @@ We've put together a minimal [demo app](https://github.com/stadiamaps/ferrostar/
 
 ## Going deeper
 
-This covers the basic “batteries included” configuration which works for simple apps.
+This covers the basic “batteries included” configuration and pre-built UI.
 But there’s a lot of room for customization!
 Skip on over to the customization chapters that interest you.

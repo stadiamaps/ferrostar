@@ -2,37 +2,6 @@
 
 Ferrostar is a FOSS navigation SDK built from the ground up for the future.
 
-[Why a new SDK?](https://stadiamaps.notion.site/Next-Gen-Navigation-SDK-f16f987bfa5a455296b0671636033cdb)
-
-## Current status
-
-The project is under active development, is currently in beta, and is rapidly approaching production readiness for many use cases.
-The core is functional (pun intended for you FP lovers)
-and complete enough to handle most use cases.
-One of the developers is actively using Ferrostar for cycling and automotive navigation on iOS.
-Android is slightly less polished on the UI side but is otherwise feature parity.
-See the issue tracker and guide for more details.
-
-Here's a quick breakdown of support by platform.
-
-|   | iOS | Android |
-| - | --- | ------- |
-| Core library building | ✅ | ✅ |
-| High-level core bindings | ✅ | ✅ |
-| Simulated location provider | ✅ | ✅ |
-| Live location provider | ✅ | ✅ |
-| Composable UI - banners | ✅ | ✅ |
-| Composable UI - MapLibre integration | ✅ | 👨‍💻 |
-| Voice guidance (platform-native TTS) | ✅ | ✅ |
-
-While there are some rough edges, ambitious developers can start integrating.
-There are integrations underway in multiple production apps that the core devs are aware of.
-
-Join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.us/) for updates + discussion.
-The core devs are active there and we're happy to answer questions / help you get started!
-
-![A screenshot of the current status](screenshot.png)
-
 ## Getting Started
 
 ### As a User
@@ -43,3 +12,39 @@ Check out the [guide](https://stadiamaps.github.io/ferrostar/)!
 
 See our [CONTRIBUTING](CONTRIBUTING.md) guide
 for info on expectations and dev environment setup.
+
+
+## Current status
+
+The project is under active development, and is currently in **beta**.
+It is already production-ready for certain use cases,
+but there are still some rough edges and missing features.
+
+Here's a quick breakdown of support by platform.
+
+|  | iOS | Android | Web |
+|---|---|---|---|
+| Core library building | ✅ | ✅ | ✅ |
+| High-level core bindings | ✅ | ✅ | 👨‍💻 |
+| Simulated location provider | ✅ | ✅ | ✅ |
+| Live location provider | ✅ | ✅ | ✅ |
+| Composable UI - banners | ✅ | ✅ | ❌ |
+| Composable UI - MapLibre integration | ✅ | ✅ | 👨‍💻 |
+| Voice guidance (platform-native TTS) | ✅ | ✅ | ❌ |
+
+The core is fully functional (pun intended for you FP lovers)
+and complete enough to handle most use cases.
+So if you're looking to roll a completely custom UI, you can start integrating today!
+
+iOS and Android now have reasonably complete UIs,
+but there are still some notable gaps and bugs
+(open an issue or comment on existing ones if you're missing something)!
+Multiple production app integrations are underway,
+and the core developers are dogfooding in their own apps.
+
+Join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.us/) for updates + discussion.
+The core devs are active there and we're happy to answer questions / help you get started!
+
+![A screenshot of a demo application running on iOS](screenshot.png)
+
+![A screenshot of a demo application running on Android](screenshot-android.png)

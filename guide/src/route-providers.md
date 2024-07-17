@@ -155,4 +155,5 @@ sequenceDiagram
 
 This part of the platform layer follows the
 [Hollywood principle](https://en.wiktionary.org/wiki/Hollywood_principle).
-This provides elegant ways of configuring rerouting, which we’ll cover next.
+This provides elegant ways of configuring rerouting, which we cover in
+[Configuring the Navigation Controller](./configuring-the-navigation-controller.md).

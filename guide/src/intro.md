@@ -28,7 +28,6 @@
 
 - Aiming for compatibility with ancient SDKs / API levels, except where it’s easy; this is a rare chance for a fresh start.
 - A routing engine; there are many good [vendors](./vendors.md) that provide hosted APIs and offline route generation, as well as a rich ecosystem of FOSS software if you're looking to host your own for a smaller deployment.
-- Optimized for a "free roam" experience without any specific route (though it *should* totally be possible to plug Ferrostar into such an experience!).
 - Building UI components for addresses search (look at [vendor](./vendors.md) SDKs that can help with this) or complex trip planning.
 
 ## Terminology and conventions
@@ -63,9 +62,15 @@ Then you can pretty much skip around at will.
 
 If you want to go deeper and customize the user experience,
 check out the chapters on customization.
-If you can’t find what you want, feel free to [open an issue on GitHub](https://github.com/stadiamaps/ferrostar/issues/new/choose).
 
 The architecture section documents the design of Ferrostar and its various components.
 If you want to add support for a new routing API, post-process location updates,
 or contribute to the development of Ferrostar, this is where the authoritative docs live.
 (If you want to contribute, be sure to check out [CONTRIBUTING.md](https://github.com/stadiamaps/ferrostar/blob/main/CONTRIBUTING.md)!)
+
+## Getting help
+
+If you can’t find what you want,
+feel free to [open an issue or discussion on GitHub](https://github.com/stadiamaps/ferrostar/).
+You can also join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.us/) for updates + discussion.
+The core devs are active there and we're happy to answer questions / help you get started!
