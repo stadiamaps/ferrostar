@@ -32,25 +32,39 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  */
 @Composable
 fun DynamicallyOrientingNavigationView(
-  modifier: Modifier,
-  orientation: Int = LocalConfiguration.current.orientation,
-  styleUrl: String,
-  camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
-  navigationCamera: MapViewCamera = navigationMapViewCamera(),
-  viewModel: NavigationViewModel,
-  locationRequestProperties: LocationRequestProperties =
+    modifier: Modifier,
+    orientation: Int = LocalConfiguration.current.orientation,
+    styleUrl: String,
+    camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
+    navigationCamera: MapViewCamera = navigationMapViewCamera(),
+    viewModel: NavigationViewModel,
+    locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-  onTapExit: (() -> Unit)? = null,
-  content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
+    onTapExit: (() -> Unit)? = null,
+    content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
 ) {
   when (orientation) {
     Configuration.ORIENTATION_LANDSCAPE -> {
       LandscapeNavigationView(
-          modifier, styleUrl, camera, navigationCamera, viewModel, locationRequestProperties, onTapExit, content)
+          modifier,
+          styleUrl,
+          camera,
+          navigationCamera,
+          viewModel,
+          locationRequestProperties,
+          onTapExit,
+          content)
     }
     else -> {
       PortraitNavigationView(
-          modifier, styleUrl, camera, navigationCamera, viewModel, locationRequestProperties, onTapExit, content)
+          modifier,
+          styleUrl,
+          camera,
+          navigationCamera,
+          viewModel,
+          locationRequestProperties,
+          onTapExit,
+          content)
     }
   }
 }

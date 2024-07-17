@@ -48,15 +48,15 @@ import uniffi.ferrostar.UserLocation
  */
 @Composable
 fun PortraitNavigationView(
-  modifier: Modifier,
-  styleUrl: String,
-  camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
-  navigationCamera: MapViewCamera = navigationMapViewCamera(),
-  viewModel: NavigationViewModel,
-  locationRequestProperties: LocationRequestProperties =
+    modifier: Modifier,
+    styleUrl: String,
+    camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
+    navigationCamera: MapViewCamera = navigationMapViewCamera(),
+    viewModel: NavigationViewModel,
+    locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-  onTapExit: (() -> Unit)? = null,
-  content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
+    onTapExit: (() -> Unit)? = null,
+    content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
   val uiState = viewModel.uiState.collectAsState()
 

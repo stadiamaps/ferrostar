@@ -83,12 +83,8 @@ fun LandscapeNavigationView(
         onMapReadyCallback = { camera.value = navigationCamera },
         content)
 
-    Row(modifier = Modifier
-      .fillMaxSize()
-      .padding(16.dp)) {
-      Column(modifier = Modifier
-        .fillMaxHeight()
-        .fillMaxWidth(0.5f)) {
+    Row(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+      Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
         uiState.value.visualInstruction?.let { instructions ->
           InstructionsView(
               instructions, distanceToNextManeuver = uiState.value.progress?.distanceToNextManeuver)

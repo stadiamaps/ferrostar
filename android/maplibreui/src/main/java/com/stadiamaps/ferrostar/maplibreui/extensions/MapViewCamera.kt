@@ -1,7 +1,6 @@
 package com.stadiamaps.ferrostar.maplibreui.extensions
 
 import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.camera.models.CameraPadding
 
 /**
  * The centered camera configuration for navigation. This configuration sets the camera to track the
