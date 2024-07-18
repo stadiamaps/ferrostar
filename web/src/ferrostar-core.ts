@@ -130,7 +130,11 @@ export class FerrostarCore extends LitElement {
   }
 
   async stopNavigation() {
-    // TODO
+    this.resetMap();
+    this.routeAdapter = null;
+    this.locationProvider.updateCallback = null;
+    this.navigationController = null;
+    this.currentLocationMapMarker = null;
   }
 
   private async handleStateUpdate(newState: any, location: any) {
