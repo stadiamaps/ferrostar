@@ -22,17 +22,15 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
     var bottomTrailing: BottomTrailing
 
     @Binding var camera: MapViewCamera
-    @Binding var snappedZoom: Double
-    @Binding var useSnappedCamera: Bool
+    let navigationCamera: MapViewCamera
 
     var onTapExit: (() -> Void)?
 
     public init(
         styleURL: URL,
-        navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
-        snappedZoom: Binding<Double>,
-        useSnappedCamera: Binding<Bool>,
+        navigationCamera: MapViewCamera = .navigation(),
+        navigationState: NavigationState?,
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
         @ViewBuilder topCenter: () -> TopCenter = { Spacer() },
@@ -51,8 +49,7 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
         self.bottomTrailing = bottomTrailing()
 
         _camera = camera
-        _snappedZoom = snappedZoom
-        _useSnappedCamera = useSnappedCamera
+        self.navigationCamera = navigationCamera
     }
 
     public var body: some View {
@@ -60,10 +57,11 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
             ZStack {
                 NavigationMapView(
                     styleURL: styleURL,
-                    navigationState: navigationState,
                     camera: $camera,
-                    snappedZoom: $snappedZoom,
-                    useSnappedCamera: $useSnappedCamera
+                    navigationState: navigationState,
+                    onStyleLoaded: { _ in
+                        camera = .navigation()
+                    }
                 ) {
                     userLayers
                 }
@@ -78,6 +76,7 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
                             distanceFormatter: formatterCollection.distanceFormatter,
                             distanceToNextManeuver: navigationState.progress?.distanceToNextManeuver
                         )
+                        .padding(.horizontal, 16)
                     }
 
                     // The inner content is displayed vertically full screen
@@ -87,11 +86,11 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
                     // TODO: Add dynamic speed, zoom & centering.
                     NavigatingInnerGridView(
                         speedLimit: nil,
-                        showZoom: false,
-                        onZoomIn: {},
-                        onZoomOut: {},
-                        showCentering: false,
-                        onCenter: {},
+                        showZoom: true,
+                        onZoomIn: { camera.incrementZoom(by: 1) },
+                        onZoomOut: { camera.incrementZoom(by: -1) },
+                        showCentering: !camera.isTrackingUserLocationWithCourse,
+                        onCenter: { camera = navigationCamera },
                         topCenter: { topCenter },
                         topTrailing: { topTrailing },
                         midLeading: { midLeading },
@@ -122,10 +121,8 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
 
     return PortraitNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
-        snappedZoom: .constant(18),
-        useSnappedCamera: .constant(true)
+        navigationState: state
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
@@ -140,10 +137,8 @@ public struct PortraitNavigationView<TopCenter: View, TopTrailing: View, MidLead
 
     return PortraitNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
-        snappedZoom: .constant(18),
-        useSnappedCamera: .constant(true)
+        navigationState: state
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

@@ -6,17 +6,12 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-/// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView<
-    TopCenter: View,
-    TopTrailing: View,
-    MidLeading: View,
-    BottomTrailing: View
->: View {
+/// A portrait orientation navigation view that includes the InstructionsView at the top.
+public struct LandscapeNavigationView<TopCenter: View, TopTrailing: View, MidLeading: View,
+    BottomTrailing: View>: View
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
-    @State private var orientation = UIDevice.current.orientation
-    
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
@@ -31,16 +26,6 @@ public struct DynamicallyOrientingNavigationView<
 
     var onTapExit: (() -> Void)?
 
-    /// Initialize a map view tuned for turn by turn navigation.
-    ///
-    /// - Parameters:
-    ///   - styleURL: The style URL for the map. This can dynamically change between light and dark mode.
-    ///   - navigationState: The ferrostar navigations state. This is used primarily to drive user location on the map.
-    ///   - camera: The camera which is controlled by the navigation state, but may also be pushed to for other cases
-    /// (e.g. user pan).
-    ///   - snappedZoom: The zoom for the snapped camera. This can be fixed, customized or controlled by the camera.
-    ///   - useSnappedCamera: Whether to use the ferrostar snapped camera or the camer binding itself.
-    ///   - distanceFormatter: The formatter for distances in instruction views.
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,
@@ -68,45 +53,70 @@ public struct DynamicallyOrientingNavigationView<
     }
 
     public var body: some View {
-        Group {
-            switch orientation {
-            case .landscapeLeft, .landscapeRight:
-                LandscapeNavigationView(
+        GeometryReader { geometry in
+            ZStack {
+                NavigationMapView(
                     styleURL: styleURL,
                     camera: $camera,
-                    navigationCamera: navigationCamera,
                     navigationState: navigationState,
-                    onTapExit: onTapExit,
-                    makeMapContent: { userLayers },
-                    topCenter: { topCenter },
-                    topTrailing: { topTrailing },
-                    midLeading: { midLeading },
-                    bottomTrailing: { bottomTrailing }
-                )
-            default:
-                PortraitNavigationView(
-                    styleURL: styleURL,
-                    camera: $camera,
-                    navigationCamera: navigationCamera,
-                    navigationState: navigationState,
-                    onTapExit: onTapExit,
-                    makeMapContent: { userLayers },
-                    topCenter: { topCenter },
-                    topTrailing: { topTrailing },
-                    midLeading: { midLeading },
-                    bottomTrailing: { bottomTrailing }
-                )
+                    onStyleLoaded: { _ in
+                        camera = .navigation()
+                    }
+                ) {
+                    userLayers
+                }
+                .navigationMapViewContentInset(.landscape(within: geometry))
+
+                HStack {
+                    VStack {
+                        if let navigationState,
+                           let visualInstructions = navigationState.visualInstruction
+                        {
+                            InstructionsView(
+                                visualInstruction: visualInstructions,
+                                distanceFormatter: formatterCollection.distanceFormatter,
+                                distanceToNextManeuver: navigationState.progress?.distanceToNextManeuver
+                            )
+                            .padding(.top, 16)
+                        }
+
+                        Spacer()
+
+                        if let progress = navigationState?.progress {
+                            ArrivalView(
+                                progress: progress,
+                                onTapExit: onTapExit
+                            )
+                        }
+                    }
+
+                    Spacer().frame(width: 16)
+
+                    // The inner content is displayed vertically full screen
+                    // when both the visualInstructions and progress are nil.
+                    // It will automatically reduce height if and when either
+                    // view appears
+                    // TODO: Add dynamic speed, zoom & centering.
+                    NavigatingInnerGridView(
+                        speedLimit: nil,
+                        showZoom: true,
+                        onZoomIn: { camera.incrementZoom(by: 1) },
+                        onZoomOut: { camera.incrementZoom(by: -1) },
+                        showCentering: !camera.isTrackingUserLocationWithCourse,
+                        onCenter: { camera = navigationCamera },
+                        topCenter: { topCenter },
+                        topTrailing: { topTrailing },
+                        midLeading: { midLeading },
+                        bottomTrailing: { bottomTrailing }
+                    )
+                }
             }
-        }
-        .onReceive(
-            NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
-        ) { _ in
-            orientation = UIDevice.current.orientation
         }
     }
 }
 
-#Preview("Portrait Navigation View (Imperial)") {
+@available(iOS 17, *)
+#Preview("Landscape Navigation View (Imperial)", traits: .landscapeLeft) {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
 
@@ -114,7 +124,7 @@ public struct DynamicallyOrientingNavigationView<
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
 
-    return DynamicallyOrientingNavigationView(
+    return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         navigationState: state
@@ -122,14 +132,16 @@ public struct DynamicallyOrientingNavigationView<
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
 
-#Preview("Portrait Navigation View (Metric)") {
+@available(iOS 17, *)
+#Preview("Landscape Navigation View (Metric)", traits: .landscapeLeft) {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
+
     let formatter = MKDistanceFormatter()
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .metric
 
-    return DynamicallyOrientingNavigationView(
+    return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         navigationState: state

@@ -15,6 +15,7 @@ import SwiftUI
 public struct NavigationMapView: View {
     let styleURL: URL
     var mapViewContentInset: UIEdgeInsets = .zero
+    var onStyleLoaded: (MLNStyle) -> Void
     let userLayers: [StyleLayerDefinition]
 
     // TODO: Configurable camera and user "puck" rotation modes
@@ -26,23 +27,6 @@ public struct NavigationMapView: View {
     // MARK: Camera Settings
 
     @Binding var camera: MapViewCamera
-
-    /// The snapped camera zoom. This is used to override the camera zoom whenever snapping is active.
-    @Binding var snappedZoom: Double
-
-    /// Whether to snap the camera on the next navigation status update. When this is false,
-    /// the user can browse the map freely.
-    @Binding var useSnappedCamera: Bool
-
-    /// The MapViewPort is used to construct the camera at the end of a drag gesture.
-    @State private var mapViewPort: MapViewPort?
-
-    /// The breakway velocity is used on the drag gesture to determine when allow a drag to
-    /// disable the snapped camera (assuming it's not constant(true).
-    ///
-    /// Tune this value to reduce the number of accidental drags that detach the camera
-    /// from the snapped user location.
-    private let breakwayVelocity: CGFloat
 
     /// Initialize a map view tuned for turn by turn navigation.
     ///
@@ -58,19 +42,15 @@ public struct NavigationMapView: View {
     ///   - content: Any additional MapLibre symbols to show on the map.
     public init(
         styleURL: URL,
-        navigationState: NavigationState?,
         camera: Binding<MapViewCamera>,
-        snappedZoom: Binding<Double>,
-        useSnappedCamera: Binding<Bool>,
-        snappingBreakawayVelocity: CGFloat = 25,
+        navigationState: NavigationState?,
+        onStyleLoaded: @escaping ((MLNStyle) -> Void),
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
-        self.navigationState = navigationState
         _camera = camera
-        _snappedZoom = snappedZoom
-        _useSnappedCamera = useSnappedCamera
-        breakwayVelocity = snappingBreakawayVelocity
+        self.navigationState = navigationState
+        self.onStyleLoaded = onStyleLoaded
         userLayers = makeMapContent()
     }
 
@@ -102,24 +82,7 @@ public struct NavigationMapView: View {
         .mapControls {
             // No controls
         }
-        .onMapViewPortUpdate { mapViewPort in
-            self.mapViewPort = mapViewPort
-        }
-        .gesture(
-            DragGesture()
-                .onChanged { gesture in
-                    guard abs(gesture.velocity.width) > breakwayVelocity
-                        || abs(gesture.velocity.height) > breakwayVelocity
-                    else {
-                        return
-                    }
-
-                    useSnappedCamera = false
-                    if let mapViewPort {
-                        camera = mapViewPort.asMapViewCamera()
-                    }
-                }
-        )
+        .onStyleLoaded(onStyleLoaded)
         .ignoresSafeArea(.all)
     }
 
@@ -131,14 +94,6 @@ public struct NavigationMapView: View {
            .clLocationCoordinate2D || locationManager.lastLocation.course != snappedLocation.clLocation.course
         {
             locationManager.lastLocation = snappedLocation.clLocation
-
-            // TODO: Be less forceful about this.
-            DispatchQueue.main.async {
-                if useSnappedCamera {
-                    camera = .trackUserLocationWithCourse(zoom: snappedZoom,
-                                                          pitch: 45.0)
-                }
-            }
         }
     }
 }
@@ -149,9 +104,8 @@ public struct NavigationMapView: View {
 
     return NavigationMapView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        navigationState: state,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
-        snappedZoom: .constant(18),
-        useSnappedCamera: .constant(true)
+        navigationState: state,
+        onStyleLoaded: { _ in }
     )
 }
