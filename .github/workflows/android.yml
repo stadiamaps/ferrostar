@@ -10,6 +10,9 @@ jobs:
   build:
 
     runs-on: macos-13
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-android-build
+      cancel-in-progress: true
     permissions:
       contents: read
       packages: read
@@ -47,6 +50,9 @@ jobs:
   check-ktfmt:
 
     runs-on: macos-13
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-android-ktfmt
+      cancel-in-progress: true
     permissions:
       contents: read
       packages: read
@@ -84,6 +90,9 @@ jobs:
   test:
 
     runs-on: macos-13
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-android-test
+      cancel-in-progress: true
     permissions:
       contents: read
       packages: read
@@ -130,6 +139,9 @@ jobs:
   verify-snapshots:
 
     runs-on: macos-13
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-android-snapshots
+      cancel-in-progress: true
     permissions:
       contents: read
       packages: read
@@ -177,6 +189,9 @@ jobs:
   connected-check:
 
     runs-on: macos-13
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-android-connected-check
+      cancel-in-progress: true
     permissions:
       contents: read
       packages: read
