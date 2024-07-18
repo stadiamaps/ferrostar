@@ -2,15 +2,14 @@ import Foundation
 import MapLibreSwiftUI
 
 public extension MapViewCamera {
-    
     /// Is the camera currently tracking (navigating)
     var isTrackingUserLocationWithCourse: Bool {
-        if case .trackingUserLocationWithCourse = self.state {
+        if case .trackingUserLocationWithCourse = state {
             return true
         }
         return false
     }
-        
+
     /// The default camera configured for navigation.
     ///
     /// - Parameters:

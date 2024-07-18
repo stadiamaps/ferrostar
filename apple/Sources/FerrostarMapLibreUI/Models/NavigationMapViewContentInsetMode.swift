@@ -2,7 +2,6 @@ import SwiftUI
 import UIKit
 
 public enum NavigationMapViewContentInsetMode {
-    
     /// A predefined mode for landscape navigation map views
     /// where the user location should appear toward the bottom of the map.
     ///
