@@ -6,6 +6,8 @@ import markerIconUrl from "../node_modules/leaflet/dist/images/marker-icon.png";
 import markerIconRetinaUrl from "../node_modules/leaflet/dist/images/marker-icon-2x.png";
 import markerShadowUrl from "../node_modules/leaflet/dist/images/marker-shadow.png";
 import init, { NavigationController, RouteAdapter } from "ferrostar";
+import "./instructions-view";
+import "./arrival-view";
 
 @customElement("ferrostar-core")
 export class FerrostarCore extends LitElement {
@@ -40,6 +42,27 @@ export class FerrostarCore extends LitElement {
       #map {
         height: 100%;
         width: 100%;
+      }
+
+      instructions-view,
+      arrival-view {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 80%;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+      }
+
+      #top-component {
+        top: 10px;
+      }
+
+      #bottom-component {
+        bottom: 10px;
       }
     `,
   ];
@@ -159,6 +182,11 @@ export class FerrostarCore extends LitElement {
   }
 
   render() {
-    return html`<div id="map"></div>`;
+    return html`
+      <div id="map">
+        <instructions-view .tripState=${this.tripState} id="top-component"></instructions-view>
+        <arrival-view .tripState=${this.tripState} id="bottom-component"></arrival-view>
+      </div>
+    `;
   }
 }
