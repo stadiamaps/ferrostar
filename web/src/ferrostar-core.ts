@@ -28,13 +28,14 @@ export class FerrostarCore extends LitElement {
   @property({ type: Object })
   costingOptions!: any;
 
+  // TODO: type
+  @property({ type: Object })
+  tripState: any = null;
+
   routeAdapter: RouteAdapter | null = null;
   map: L.Map | null = null;
   navigationController: NavigationController | null = null;
   currentLocationMapMarker: L.Marker | null = null;
-
-  // TODO: type
-  tripState: any = null;
 
   static styles = [
     unsafeCSS(leafletStyles),
