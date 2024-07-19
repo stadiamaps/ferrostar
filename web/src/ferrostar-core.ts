@@ -31,6 +31,9 @@ export class FerrostarCore extends LitElement {
   navigationController: NavigationController | null = null;
   currentLocationMapMarker: L.Marker | null = null;
 
+  // TODO: type
+  tripState: any = null;
+
   static styles = [
     unsafeCSS(leafletStyles),
     css`
@@ -111,6 +114,7 @@ export class FerrostarCore extends LitElement {
         };
 
     const initialTripState = this.navigationController.getInitialState(startingLocation);
+    this.tripState = initialTripState;
     this.handleStateUpdate(initialTripState, startingLocation);
 
     this.resetMap();
@@ -142,6 +146,7 @@ export class FerrostarCore extends LitElement {
   }
 
   private onLocationUpdated() {
+    this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
     this.currentLocationMapMarker!.setLatLng(this.locationProvider.lastLocation.coordinates);
   }
 
