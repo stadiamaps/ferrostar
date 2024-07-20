@@ -17,17 +17,6 @@ export class ArrivalView extends LitElement {
     `,
   ];
 
-  firstUpdated() {
-    console.log("ArrivalView firstUpdated");
-    console.log(this.tripState?.Navigating.visualInstruction);
-  }
-
-  // updated(changedProperties: any) {
-  //   if (changedProperties.has("visualInstruction") && this.visualInstruction) {
-  //     console.log(this.visualInstruction);
-  //   }
-  // }
-
   getArrivalTime(seconds: number) {
     const now = new Date();
     const minutesToAdd = Math.round(seconds / 60);

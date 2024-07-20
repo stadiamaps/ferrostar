@@ -6,16 +6,6 @@ export class InstructionsView extends LitElement {
   @property()
   tripState: any = null;
 
-  firstUpdated() {
-    console.log("InstructionsView firstUpdated");
-    console.log(this.tripState?.Navigating.visualInstruction);
-  }
-
-  // updated(changedProperties: any) {
-  //   if (changedProperties.has("visualInstruction") && this.visualInstruction) {
-  //     console.log(this.visualInstruction);
-  //   }
-  // }
   static styles = [
     css`
       #view-card {
