@@ -13,6 +13,9 @@ env:
 jobs:
   msrv:
     runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-rust-msrv
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
       - uses: taiki-e/install-action@v2
@@ -25,6 +28,9 @@ jobs:
 
   semver-checks:
     runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-rust-semver
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,6 +42,9 @@ jobs:
 
   rustfmt:
     runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-rust-rustfmt
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,6 +54,9 @@ jobs:
 
   build:
     runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-rust-build
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
       - name: Cargo Build
