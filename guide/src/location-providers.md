@@ -46,5 +46,5 @@ Ferrostar includes the following live location providers:
 * iOS
   - `CoreLocationProvider` - Location backed by a `CLLocationManager`. See the [iOS tutorial](./ios-getting-started.md) for a usage example.
 * Android
+  - [`AndroidSystemLocationProvider`] - Location backed by a android.location.LocationManger` (the class that is included in AOSP). See the [Android tutorial](./android-getting-started.md) for a usage example.
   - TODO: Provider backed by the Google Fused Location Client
-  - TODO: AOSP provider

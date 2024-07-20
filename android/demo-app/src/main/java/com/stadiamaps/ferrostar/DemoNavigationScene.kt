@@ -99,8 +99,13 @@ fun DemoNavigationScene(
     // Demo tiles illustrate a basic integration without any API key required,
     // but you can replace the styleURL with any valid MapLibre style URL.
     // See https://stadiamaps.github.io/ferrostar/vendors.html for some vendors.
+    // Most vendors offer free API keys for development use.
     DynamicallyOrientingNavigationView(
         modifier = Modifier.fillMaxSize(),
+        // These are demo tiles and not very useful.
+        // Check https://stadiamaps.github.io/ferrostar/vendors.html for some vendors of vector
+        // tiles.
+        // Most vendors offer free API keys for development use.
         styleUrl = "https://demotiles.maplibre.org/style.json",
         viewModel = viewModel!!) { uiState ->
           // Trivial, if silly example of how to add your own overlay layers.

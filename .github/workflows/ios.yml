@@ -9,6 +9,9 @@ on:
 jobs:
   format-lint:
     runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-ios-swiftformat
+      cancel-in-progress: true
 
     steps:
     - name: Upgrade swiftformat to latest
@@ -22,6 +25,9 @@ jobs:
       
   build-ferrostar:
     runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-ios-build-lib
+      cancel-in-progress: true
 
     steps:
     - name: Checkout repo
@@ -40,6 +46,9 @@ jobs:
 
   build-demo:
     runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-ios-build-demo
+      cancel-in-progress: true
     needs: build-ferrostar
     strategy:
       matrix:
@@ -88,6 +97,9 @@ jobs:
 
   test:
     runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-ios-test
+      cancel-in-progress: true
     needs: build-ferrostar
     strategy:
       matrix:

@@ -29,7 +29,7 @@ This is a pretty standard adoption rate for iOS.
 
 ## Android
 
-Android *developers* should always build using the latest stable Android Studio version.
+Android developers should always build using the latest stable Android Studio version.
 
 However, Android *end users* are much slower to get new OS major versions
 for many reasons.

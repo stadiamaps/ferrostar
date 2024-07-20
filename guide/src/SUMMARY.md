@@ -14,13 +14,13 @@
 - [General](./general-customization.md)
 - [SwiftUI](./swiftui-customization.md)
 - [Jetpack Compose](./jetpack-compose-customization.md)
+- [Configuring the Navigation Controller](./configuring-the-navigation-controller.md)
 
 # Architecture
 
 - [Architecture Overview](./architecture.md)
 - [Route Providers](./route-providers.md)
 - [Location Providers](./location-providers.md)
-- [Configuring the Navigation Controller](./configuration-the-navigation-controller.md)
 
 # Appendices
 

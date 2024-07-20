@@ -5,9 +5,12 @@ PRs welcome to expand the list or to add support!
 
 ## Routing
 
-* [Stadia Maps](https://stadiamaps.com/) - Valhalla-based API, either hosted (free keys for evaluation available) or on prem
-* [GIS • OPS](https://gis-ops.com/) - Valhalla or OSRM; custom deployments and integration of proprietary data
-
+* [Stadia Maps](https://stadiamaps.com/)
+	* Global hosted Valhalla API (free keys for evaluation available)
+	* Custom deployments with proprietary data integrations possible
+* [GIS • OPS](https://gis-ops.com/)
+	* Routing specialists, with an emphasis on Valhalla
+	* Specializes in custom deployments and integration of proprietary data
 
 ## Basemaps
 
