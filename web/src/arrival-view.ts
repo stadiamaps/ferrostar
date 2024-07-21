@@ -40,9 +40,9 @@ export class ArrivalView extends LitElement {
     if (this.tripState?.Navigating) {
       return html`
         <div id="view-card">
-          <p>${this.getArrivalTime(this.tripState.Navigating.progress.duration_remaining)}</p>
-          <p>${this.getDistanceRemaining(this.tripState.Navigating.progress.distance_remaining)}</p>
-          <p>${this.getDurationRemaining(this.tripState.Navigating.progress.duration_remaining)}</p>
+          <p>${this.getArrivalTime(this.tripState.Navigating.progress.durationRemaining)}</p>
+          <p>${this.getDistanceRemaining(this.tripState.Navigating.progress.distanceRemaining)}</p>
+          <p>${this.getDurationRemaining(this.tripState.Navigating.progress.durationRemaining)}</p>
         </div>
       `;
     }

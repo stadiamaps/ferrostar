@@ -28,7 +28,7 @@ export class InstructionsView extends LitElement {
           <p>${this.tripState.Navigating.visualInstruction.primaryContent.maneuverModifier}</p>
           <p>${this.tripState.Navigating.visualInstruction.primaryContent.maneuverType}</p>
           <p>${this.tripState.Navigating.visualInstruction.primaryContent.text}</p>
-          <p>${this.roundToNearestTen(this.tripState.Navigating.progress.distance_to_next_maneuver)}m</p>
+          <p>${this.roundToNearestTen(this.tripState.Navigating.progress.distanceToNextManeuver)}m</p>
         </div>
       `;
     }
