@@ -135,7 +135,6 @@ export class FerrostarCore extends LitElement {
 
     const initialTripState = this.navigationController.getInitialState(startingLocation);
     this.tripState = initialTripState;
-    this.handleStateUpdate(initialTripState, startingLocation);
 
     this.resetMap();
 
@@ -145,24 +144,12 @@ export class FerrostarCore extends LitElement {
     this.currentLocationMapMarker = L.marker(route.geometry[0]).addTo(this.map!);
   }
 
-  async replaceRoute(route: any, config: any) {
-    // TODO
-  }
-
-  async advanceToNextStep() {
-    // TODO
-  }
-
   async stopNavigation() {
     this.resetMap();
     this.routeAdapter = null;
     this.locationProvider.updateCallback = null;
     this.navigationController = null;
     this.currentLocationMapMarker = null;
-  }
-
-  private async handleStateUpdate(newState: any, location: any) {
-    // TODO
   }
 
   private onLocationUpdated() {
