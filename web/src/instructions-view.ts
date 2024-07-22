@@ -1,5 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import "./maneuver-image";
 
 @customElement("instructions-view")
 export class InstructionsView extends LitElement {
@@ -25,8 +26,7 @@ export class InstructionsView extends LitElement {
     if (this.tripState?.Navigating) {
       return html`
         <div id="view-card">
-          <p>${this.tripState.Navigating.visualInstruction.primaryContent.maneuverModifier}</p>
-          <p>${this.tripState.Navigating.visualInstruction.primaryContent.maneuverType}</p>
+          <maneuver-image .visualInstruction=${this.tripState.Navigating.visualInstruction}></maneuver-image>
           <p>${this.tripState.Navigating.visualInstruction.primaryContent.text}</p>
           <p>${this.roundToNearestTen(this.tripState.Navigating.progress.distanceToNextManeuver)}m</p>
         </div>
