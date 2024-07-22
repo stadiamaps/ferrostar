@@ -8,11 +8,19 @@ export class ArrivalView extends LitElement {
 
   static styles = [
     css`
-      #view-card {
-        padding: 10px;
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      .arrival-view-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 20px;
+        background-color: white;
+        border-radius: 50px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .arrival-text {
+        font-size: x-large;
+        margin: 0 15px;
       }
     `,
   ];
@@ -38,11 +46,12 @@ export class ArrivalView extends LitElement {
 
   render() {
     if (this.tripState?.Navigating) {
+      console.log(this.tripState);
       return html`
-        <div id="view-card">
-          <p>${this.getArrivalTime(this.tripState.Navigating.progress.durationRemaining)}</p>
-          <p>${this.getDistanceRemaining(this.tripState.Navigating.progress.distanceRemaining)}</p>
-          <p>${this.getDurationRemaining(this.tripState.Navigating.progress.durationRemaining)}</p>
+        <div class="arrival-view-card">
+          <p class="arrival-text">${this.getArrivalTime(this.tripState.Navigating.progress.durationRemaining)}</p>
+          <p class="arrival-text">${this.getDistanceRemaining(this.tripState.Navigating.progress.distanceRemaining)}</p>
+          <p class="arrival-text">${this.getDurationRemaining(this.tripState.Navigating.progress.durationRemaining)}</p>
         </div>
       `;
     }

@@ -9,11 +9,37 @@ export class InstructionsView extends LitElement {
 
   static styles = [
     css`
-      #view-card {
-        padding: 10px;
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      .instructions-view-card {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      maneuver-image {
+        flex: 1;
+        max-width: 100px;
+        min-width: 50px;
+        height: auto;
+        margin-right: 20px;
+      }
+
+      .text-container {
+        display: flex;
+        flex-direction: column;
+        font-size: x-large
+      }
+
+      .distance-text {
+        color: purple;
+        margin: 0;
+      }
+
+      .instruction-text {
+        color: black;
+        margin: 0;
       }
     `,
   ];
@@ -25,10 +51,12 @@ export class InstructionsView extends LitElement {
   render() {
     if (this.tripState?.Navigating) {
       return html`
-        <div id="view-card">
+        <div class="instructions-view-card">
           <maneuver-image .visualInstruction=${this.tripState.Navigating.visualInstruction}></maneuver-image>
-          <p>${this.tripState.Navigating.visualInstruction.primaryContent.text}</p>
-          <p>${this.roundToNearestTen(this.tripState.Navigating.progress.distanceToNextManeuver)}m</p>
+          <div class="text-container">
+            <p class="distance-text">${this.tripState.Navigating.visualInstruction.primaryContent.text}</p>
+            <p class="instruction-text">${this.roundToNearestTen(this.tripState.Navigating.progress.distanceToNextManeuver)}m</p>
+          </div>
         </div>
       `;
     }
