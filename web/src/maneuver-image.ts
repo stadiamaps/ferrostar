@@ -24,7 +24,7 @@ export class ManeuverImage extends LitElement {
   }
 
   getFilename() {
-    return `${this.getManeuverType().replace(" ", "_")}_${this.getManeuverModifier().replace(" ", "_")}.svg`;
+    return `${this.getManeuverType().replaceAll(" ", "_")}_${this.getManeuverModifier().replaceAll(" ", "_")}.svg`;
   }
 
   render() {
