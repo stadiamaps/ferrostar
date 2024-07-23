@@ -28,7 +28,6 @@ export class ManeuverImage extends LitElement {
   }
 
   render() {
-    console.log(this.getFilename())
     return html`<img src="/src/assets/directions/${this.getFilename()}" alt="${this.getManeuverType()} ${this.getManeuverModifier()} maneuver" />`;
   }
 }

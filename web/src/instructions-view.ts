@@ -29,7 +29,7 @@ export class InstructionsView extends LitElement {
       .text-container {
         display: flex;
         flex-direction: column;
-        font-size: x-large
+        font-size: x-large;
       }
 
       .distance-text {

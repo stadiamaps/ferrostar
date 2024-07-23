@@ -46,7 +46,6 @@ export class ArrivalView extends LitElement {
 
   render() {
     if (this.tripState?.Navigating) {
-      console.log(this.tripState);
       return html`
         <div class="arrival-view-card">
           <p class="arrival-text">${this.getArrivalTime(this.tripState.Navigating.progress.durationRemaining)}</p>
