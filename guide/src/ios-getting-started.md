@@ -150,6 +150,19 @@ DynamicallyOrientingNavigationView(
     useSnappedCamera: .constant(true))
 ```
 
+## Preventing the screen from sleeping
+
+If you’re navigating, you probably don’t want the screen to go to sleep.
+You can prevent this by setting the `isIdleTimerDisabled` property on the `UIApplication.shared` object.
+
+```swift
+UIApplication.shared.isIdleTimerDisabled = true
+
+// Don't forget to re-enable it when you're done!
+UIApplication.shared.isIdleTimerDisabled = false
+```
+
+Refer to the [Apple documentation](https://developer.apple.com/documentation/uikit/uiapplication/1623070-isidletimerdisabled) for more information.
 
 ## Demo app
 

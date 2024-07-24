@@ -196,11 +196,14 @@ struct DemoNavigationView: View {
             route: route,
             config: config
         )
+
+        preventAutoLock()
     }
 
     func stopNavigation() {
         ferrostarCore.stopNavigation()
         camera = .center(initialLocation.coordinate, zoom: 14)
+        allowAutoLock()
     }
 
     var locationLabel: String {
@@ -209,6 +212,14 @@ struct DemoNavigationView: View {
         }
 
         return "±\(Int(userLocation.horizontalAccuracy))m accuracy"
+    }
+
+    private func preventAutoLock() {
+        UIApplication.shared.isIdleTimerDisabled = true
+    }
+
+    private func allowAutoLock() {
+        UIApplication.shared.isIdleTimerDisabled = false
     }
 }
 
