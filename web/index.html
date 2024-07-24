@@ -17,7 +17,7 @@
       costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
     ></ferrostar-core>
 
-    <p class="controls controls-start">
+    <p class="controls" id="controls-start">
       <input type="text" id="destination" placeholder="Where do you want to go?" />
       <span>
         <button id="start">Start Navigation</button>
@@ -26,7 +26,7 @@
       </span>
     </p>
 
-    <p class="controls controls-stop">
+    <p class="controls" id="controls-stop">
       <button id="stop">Stop Navigation</button>
     </p>
 
@@ -79,8 +79,8 @@
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
 
-          document.getElementsByClassName("controls-start")[0].style.display = "none";
-          document.getElementsByClassName("controls-stop")[0].style.display = "block";
+          document.getElementById("controls-start").style.display = "none";
+          document.getElementById("controls-stop").style.display = "block";
         });
 
         simulateNavigationButton.addEventListener("click", async () => {
@@ -109,15 +109,15 @@
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
 
-          document.getElementsByClassName("controls-start")[0].style.display = "none";
-          document.getElementsByClassName("controls-stop")[0].style.display = "block";
+          document.getElementById("controls-start").style.display = "none";
+          document.getElementById("controls-stop").style.display = "block";
         });
 
         document.getElementById("stop").addEventListener("click", () => {
           core.stopNavigation();
           
-          document.getElementsByClassName("controls-start")[0].style.display = "block";
-          document.getElementsByClassName("controls-stop")[0].style.display = "none";
+          document.getElementById("controls-start").style.display = "block";
+          document.getElementById("controls-stop").style.display = "none";
         });
       });
     </script>

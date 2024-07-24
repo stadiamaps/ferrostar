@@ -14,7 +14,7 @@ ferrostar-core {
   gap: 10px;
 }
 
-.controls-stop {
+#controls-stop {
   display: none;
 }
 
