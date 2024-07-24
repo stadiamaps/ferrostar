@@ -28,7 +28,7 @@ export class ArrivalView extends LitElement {
   getArrivalTime(seconds: number) {
     const now = new Date();
     const minutesToAdd = Math.round(seconds / 60);
-    const arrivalTime = new Date(now.getTime() + minutesToAdd * 60000);
+    const arrivalTime = new Date(now.getTime() + minutesToAdd * 60 * 1000);
     const hours = arrivalTime.getHours();
     const minutes = arrivalTime.getMinutes();
     return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
