@@ -6,9 +6,11 @@ import markerIconUrl from "../node_modules/leaflet/dist/images/marker-icon.png";
 import markerIconRetinaUrl from "../node_modules/leaflet/dist/images/marker-icon-2x.png";
 import markerShadowUrl from "../node_modules/leaflet/dist/images/marker-shadow.png";
 import init, { NavigationController, RouteAdapter } from "ferrostar";
+import "./instructions-view";
+import "./arrival-view";
 
 @customElement("ferrostar-core")
-class FerrostarCore extends LitElement {
+export class FerrostarCore extends LitElement {
   @property()
   valhallaEndpointUrl: string = "";
 
@@ -26,6 +28,10 @@ class FerrostarCore extends LitElement {
   @property({ type: Object })
   costingOptions!: any;
 
+  // TODO: type
+  @property({ type: Object })
+  tripState: any = null;
+
   routeAdapter: RouteAdapter | null = null;
   map: L.Map | null = null;
   navigationController: NavigationController | null = null;
@@ -37,6 +43,23 @@ class FerrostarCore extends LitElement {
       #map {
         height: 100%;
         width: 100%;
+      }
+
+      instructions-view,
+      arrival-view {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 80%;
+        z-index: 1000;
+      }
+
+      #top-component {
+        top: 10px;
+      }
+
+      #bottom-component {
+        bottom: 10px;
       }
     `,
   ];
@@ -111,7 +134,7 @@ class FerrostarCore extends LitElement {
         };
 
     const initialTripState = this.navigationController.getInitialState(startingLocation);
-    this.handleStateUpdate(initialTripState, startingLocation);
+    this.tripState = initialTripState;
 
     this.resetMap();
 
@@ -121,23 +144,17 @@ class FerrostarCore extends LitElement {
     this.currentLocationMapMarker = L.marker(route.geometry[0]).addTo(this.map!);
   }
 
-  async replaceRoute(route: any, config: any) {
-    // TODO
-  }
-
-  async advanceToNextStep() {
-    // TODO
-  }
-
   async stopNavigation() {
-    // TODO
-  }
-
-  private async handleStateUpdate(newState: any, location: any) {
-    // TODO
+    // TODO: Factor out the UI layer from the core
+    this.resetMap();
+    this.routeAdapter = null;
+    this.locationProvider.updateCallback = null;
+    this.navigationController = null;
+    this.currentLocationMapMarker = null;
   }
 
   private onLocationUpdated() {
+    this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
     this.currentLocationMapMarker!.setLatLng(this.locationProvider.lastLocation.coordinates);
   }
 
@@ -150,6 +167,11 @@ class FerrostarCore extends LitElement {
   }
 
   render() {
-    return html`<div id="map"></div>`;
+    return html`
+      <div id="map">
+        <instructions-view .tripState=${this.tripState} id="top-component"></instructions-view>
+        <arrival-view .tripState=${this.tripState} id="bottom-component"></arrival-view>
+      </div>
+    `;
   }
 }
