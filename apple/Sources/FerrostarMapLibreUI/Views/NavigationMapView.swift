@@ -31,15 +31,11 @@ public struct NavigationMapView: View {
     /// Initialize a map view tuned for turn by turn navigation.
     ///
     /// - Parameters:
-    ///   - styleURL: The style URL for the map. This can dynamically change between light and dark mode.
-    ///   - navigationState: The ferrostar navigations state. This is used primarily to drive user location on the map.
-    ///   - camera: The camera which is controlled by the navigation state, but may also be pushed to for other cases
-    /// (e.g. user pan).
-    ///   - snappedZoom: The zoom for the snapped camera. This can be fixed, customized or controlled by the camera.
-    ///   - useSnappedCamera: Whether to use the ferrostar snapped camera or the camer binding itself.
-    ///   - snappingBreakawayVelocity: The drag gesture velocity used to disable snapping. This can be tuned to prevent
-    /// accidental drags.
-    ///   - content: Any additional MapLibre symbols to show on the map.
+    ///   - styleURL: The map's style url.
+    ///   - camera: The camera binding that represents the current camera on the map.
+    ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
+    ///   - onStyleLoaded: The map's style has loaded and the camera can be manipulated (e.g. to user tracking).
+    ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,

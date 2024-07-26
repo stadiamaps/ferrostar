@@ -61,7 +61,6 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
             // when both the visualInstructions and progress are nil.
             // It will automatically reduce height if and when either
             // view appears
-            // TODO: Add dynamic speed, zoom & centering.
             NavigatingInnerGridView(
                 speedLimit: speedLimit,
                 showZoom: showZoom,
