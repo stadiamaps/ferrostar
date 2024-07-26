@@ -9,6 +9,14 @@ public protocol CustomizableNavigatingInnerGridView where Self: View {
 
 public extension CustomizableNavigatingInnerGridView {
     
+    /// Customize views on the navigating inner grid view that are not already being used.
+    ///
+    /// - Parameters:
+    ///   - topCenter: The top center view content.
+    ///   - topTrailing: The top trailing view content.
+    ///   - midLeading: The mid leading view content.
+    ///   - bottomTrailing: The bottom trailing view content.
+    /// - Returns: The modified view.
     func innerGrid(
         @ViewBuilder topCenter: @escaping () -> some View = { Spacer() },
         @ViewBuilder topTrailing: @escaping () -> some View = { Spacer() },
