@@ -11,7 +11,8 @@
   "dependencies": {
     "ferrostar": "file:../common/ferrostar/pkg",
     "leaflet": "^1.9.4",
-    "lit": "^3.1.4"
+    "lit": "^3.1.4",
+    "maplibre-gl": "^4.5.0"
   },
   "devDependencies": {
     "@types/leaflet": "^1.9.12",
