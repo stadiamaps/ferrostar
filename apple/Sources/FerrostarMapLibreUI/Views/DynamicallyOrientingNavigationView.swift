@@ -7,12 +7,7 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView<
-    TopCenter: View,
-    TopTrailing: View,
-    MidLeading: View,
-    BottomTrailing: View
->: View {
+public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     @State private var orientation = UIDevice.current.orientation
@@ -24,78 +19,97 @@ public struct DynamicallyOrientingNavigationView<
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
-    var topCenter: TopCenter
-    var topTrailing: TopTrailing
-    var midLeading: MidLeading
-    var bottomTrailing: BottomTrailing
-
+    public var topCenter: (() -> AnyView)?
+    public var topTrailing: (() -> AnyView)?
+    public var midLeading: (() -> AnyView)?
+    public var bottomTrailing: (() -> AnyView)?
+    
     var onTapExit: (() -> Void)?
-
-    /// Initialize a map view tuned for turn by turn navigation.
+    
+    /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portait and landscape orientations.
     ///
     /// - Parameters:
-    ///   - styleURL: The style URL for the map. This can dynamically change between light and dark mode.
-    ///   - navigationState: The ferrostar navigations state. This is used primarily to drive user location on the map.
-    ///   - camera: The camera which is controlled by the navigation state, but may also be pushed to for other cases
-    /// (e.g. user pan).
-    ///   - snappedZoom: The zoom for the snapped camera. This can be fixed, customized or controlled by the camera.
-    ///   - useSnappedCamera: Whether to use the ferrostar snapped camera or the camer binding itself.
-    ///   - distanceFormatter: The formatter for distances in instruction views.
+    ///   - styleURL: The map's style url.
+    ///   - camera: The camera binding that represents the current camera on the map.
+    ///   - navigationCamera: The default navigation camera. This sets the initial camera & is also used when the center on user button it tapped.
+    ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
+    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the exit button is hidden.
+    ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,
-        navigationCamera: MapViewCamera = .navigation(),
+        navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
         onTapExit: (() -> Void)? = nil,
-        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
-        @ViewBuilder topCenter: () -> TopCenter = { Spacer() },
-        @ViewBuilder topTrailing: () -> TopTrailing = { Spacer() },
-        @ViewBuilder midLeading: () -> MidLeading = { Spacer() },
-        @ViewBuilder bottomTrailing: () -> BottomTrailing = { Spacer() }
+        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
-        self.topCenter = topCenter()
-        self.topTrailing = topTrailing()
-        self.midLeading = midLeading()
-        self.bottomTrailing = bottomTrailing()
 
         _camera = camera
         self.navigationCamera = navigationCamera
     }
 
     public var body: some View {
-        Group {
-            switch orientation {
-            case .landscapeLeft, .landscapeRight:
-                LandscapeNavigationView(
+        GeometryReader { geometry in
+            ZStack {
+                NavigationMapView(
                     styleURL: styleURL,
                     camera: $camera,
-                    navigationCamera: navigationCamera,
                     navigationState: navigationState,
-                    onTapExit: onTapExit,
-                    makeMapContent: { userLayers },
-                    topCenter: { topCenter },
-                    topTrailing: { topTrailing },
-                    midLeading: { midLeading },
-                    bottomTrailing: { bottomTrailing }
-                )
-            default:
-                PortraitNavigationView(
-                    styleURL: styleURL,
-                    camera: $camera,
-                    navigationCamera: navigationCamera,
-                    navigationState: navigationState,
-                    onTapExit: onTapExit,
-                    makeMapContent: { userLayers },
-                    topCenter: { topCenter },
-                    topTrailing: { topTrailing },
-                    midLeading: { midLeading },
-                    bottomTrailing: { bottomTrailing }
-                )
+                    onStyleLoaded: { _ in
+                        camera = navigationCamera
+                    }
+                ) {
+                    userLayers
+                }
+                .navigationMapViewContentInset(NavigationMapViewContentInsetMode(orientation: orientation, geometry: geometry))
+                
+                switch orientation {
+                case .landscapeLeft, .landscapeRight:
+                    LandscapeNavigationOverlayView(
+                        navigationState: navigationState,
+                        speedLimit: nil,
+                        showZoom: true,
+                        onZoomIn: { camera.incrementZoom(by: 1) },
+                        onZoomOut: { camera.incrementZoom(by: -1) },
+                        showCentering: !camera.isTrackingUserLocationWithCourse,
+                        onCenter: { camera = navigationCamera },
+                        onTapExit: onTapExit
+                    )
+                    .innerGrid {
+                        topCenter?()
+                    } topTrailing: {
+                        topTrailing?()
+                    } midLeading: {
+                        midLeading?()
+                    } bottomTrailing: {
+                        bottomTrailing?()
+                    }
+                default:
+                    PortraitNavigationOverlayView(
+                        navigationState: navigationState,
+                        speedLimit: nil,
+                        showZoom: true,
+                        onZoomIn: { camera.incrementZoom(by: 1) },
+                        onZoomOut: { camera.incrementZoom(by: -1) },
+                        showCentering: !camera.isTrackingUserLocationWithCourse,
+                        onCenter: { camera = navigationCamera },
+                        onTapExit: onTapExit
+                    )
+                    .innerGrid {
+                        topCenter?()
+                    } topTrailing: {
+                        topTrailing?()
+                    } midLeading: {
+                        midLeading?()
+                    } bottomTrailing: {
+                        bottomTrailing?()
+                    }
+                }
             }
         }
         .onReceive(

@@ -6,10 +6,9 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-/// A portrait orientation navigation view that includes the InstructionsView at the top.
-public struct LandscapeNavigationView<TopCenter: View, TopTrailing: View, MidLeading: View,
-    BottomTrailing: View>: View
-{
+/// A landscape orientation navigation view that includes the InstructionsView and ArrivalView on the
+/// leading half of the screen.
+public struct LandscapeNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -19,35 +18,36 @@ public struct LandscapeNavigationView<TopCenter: View, TopTrailing: View, MidLea
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
-    var topCenter: TopCenter
-    var topTrailing: TopTrailing
-    var midLeading: MidLeading
-    var bottomTrailing: BottomTrailing
+    public var topCenter: (() -> AnyView)?
+    public var topTrailing: (() -> AnyView)?
+    public var midLeading: (() -> AnyView)?
+    public var bottomTrailing: (() -> AnyView)?
 
     var onTapExit: (() -> Void)?
-
+    
+    /// Create a landscape navigation view. This view is optimized for display on a landscape screen where the instructions are on the leading half of the screen
+    /// and the user puck and route are on the trailing half of the screen.
+    ///
+    /// - Parameters:
+    ///   - styleURL: The map's style url.
+    ///   - camera: The camera binding that represents the current camera on the map.
+    ///   - navigationCamera: The default navigation camera. This sets the initial camera & is also used when the center on user button it tapped.
+    ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
+    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the exit button is hidden.
+    ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,
-        navigationCamera: MapViewCamera = .navigation(),
+        navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
         onTapExit: (() -> Void)? = nil,
-        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
-        @ViewBuilder topCenter: () -> TopCenter = { Spacer() },
-        @ViewBuilder topTrailing: () -> TopTrailing = { Spacer() },
-        @ViewBuilder midLeading: () -> MidLeading = { Spacer() },
-        @ViewBuilder bottomTrailing: () -> BottomTrailing = { Spacer() }
+        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
-        self.topCenter = topCenter()
-        self.topTrailing = topTrailing()
-        self.midLeading = midLeading()
-        self.bottomTrailing = bottomTrailing()
-
         _camera = camera
         self.navigationCamera = navigationCamera
     }
@@ -60,55 +60,31 @@ public struct LandscapeNavigationView<TopCenter: View, TopTrailing: View, MidLea
                     camera: $camera,
                     navigationState: navigationState,
                     onStyleLoaded: { _ in
-                        camera = .navigation()
+                        camera = navigationCamera
                     }
                 ) {
                     userLayers
                 }
                 .navigationMapViewContentInset(.landscape(within: geometry))
 
-                HStack {
-                    VStack {
-                        if let navigationState,
-                           let visualInstructions = navigationState.visualInstruction
-                        {
-                            InstructionsView(
-                                visualInstruction: visualInstructions,
-                                distanceFormatter: formatterCollection.distanceFormatter,
-                                distanceToNextManeuver: navigationState.progress?.distanceToNextManeuver
-                            )
-                            .padding(.top, 16)
-                        }
-
-                        Spacer()
-
-                        if let progress = navigationState?.progress {
-                            ArrivalView(
-                                progress: progress,
-                                onTapExit: onTapExit
-                            )
-                        }
-                    }
-
-                    Spacer().frame(width: 16)
-
-                    // The inner content is displayed vertically full screen
-                    // when both the visualInstructions and progress are nil.
-                    // It will automatically reduce height if and when either
-                    // view appears
-                    // TODO: Add dynamic speed, zoom & centering.
-                    NavigatingInnerGridView(
-                        speedLimit: nil,
-                        showZoom: true,
-                        onZoomIn: { camera.incrementZoom(by: 1) },
-                        onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
-                        topCenter: { topCenter },
-                        topTrailing: { topTrailing },
-                        midLeading: { midLeading },
-                        bottomTrailing: { bottomTrailing }
-                    )
+                LandscapeNavigationOverlayView(
+                    navigationState: navigationState,
+                    speedLimit: nil,
+                    showZoom: true,
+                    onZoomIn: { camera.incrementZoom(by: 1) },
+                    onZoomOut: { camera.incrementZoom(by: -1) },
+                    showCentering: !camera.isTrackingUserLocationWithCourse,
+                    onCenter: { camera = navigationCamera },
+                    onTapExit: onTapExit
+                )
+                .innerGrid {
+                    topCenter?()
+                } topTrailing: {
+                    topTrailing?()
+                } midLeading: {
+                    midLeading?()
+                } bottomTrailing: {
+                    bottomTrailing?()
                 }
             }
         }
