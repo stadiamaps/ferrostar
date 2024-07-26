@@ -23,17 +23,20 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
-    
+
     var onTapExit: (() -> Void)?
-    
-    /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portait and landscape orientations.
+
+    /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portait
+    /// and landscape orientations.
     ///
     /// - Parameters:
     ///   - styleURL: The map's style url.
     ///   - camera: The camera binding that represents the current camera on the map.
-    ///   - navigationCamera: The default navigation camera. This sets the initial camera & is also used when the center on user button it tapped.
+    ///   - navigationCamera: The default navigation camera. This sets the initial camera & is also used when the center
+    /// on user button it tapped.
     ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
-    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the exit button is hidden.
+    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the
+    /// exit button is hidden.
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(
         styleURL: URL,
@@ -66,8 +69,11 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(NavigationMapViewContentInsetMode(orientation: orientation, geometry: geometry))
-                
+                .navigationMapViewContentInset(NavigationMapViewContentInsetMode(
+                    orientation: orientation,
+                    geometry: geometry
+                ))
+
                 switch orientation {
                 case .landscapeLeft, .landscapeRight:
                     LandscapeNavigationOverlayView(

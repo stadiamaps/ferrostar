@@ -5,23 +5,23 @@ import SwiftUI
 /// use the ``InnerGridView``.
 public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
-    
+
     var speedLimit: Measurement<UnitSpeed>?
-    
+
     var showZoom: Bool
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
-    
+
     var showCentering: Bool
     var onCenter: () -> Void
-    
+
     // MARK: Customizable Containers
-    
+
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
-    
+
     /// The default navigation inner grid view.
     ///
     /// This view provides all default navigation UI views that are used in the open map area. This area is defined as
@@ -34,8 +34,10 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     ///   - showZoom: Whether to show the zoom control or not. This is typically yes.
     ///   - onZoomIn: The on zoom in tapped action. This should be used to zoom the user in one increment.
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
-    ///   - showCentering: Whether to show the centering control. This is typically determined by the Map's centering state.
-    ///   - onTapCenter: The action that occurs when the user taps the centering control. Typically re-centering the user.
+    ///   - showCentering: Whether to show the centering control. This is typically determined by the Map's centering
+    /// state.
+    ///   - onTapCenter: The action that occurs when the user taps the centering control. Typically re-centering the
+    /// user.
     ///   - topCenter: The customizable top center view. This is recommended for navigation alerts (e.g. toast style
     ///         notices).
     public init(
@@ -53,7 +55,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         self.showCentering = showCentering
         self.onCenter = onCenter
     }
-    
+
     public var body: some View {
         InnerGridView(
             topLeading: {

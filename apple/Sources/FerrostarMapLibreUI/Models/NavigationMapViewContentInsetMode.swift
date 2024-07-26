@@ -19,14 +19,13 @@ public enum NavigationMapViewContentInsetMode {
 
     public init(orientation: UIDeviceOrientation, geometry: GeometryProxy) {
         switch orientation {
-
         case .landscapeLeft, .landscapeRight:
             self = .landscape(within: geometry)
         default:
             self = .portrait(within: geometry)
         }
     }
-    
+
     var uiEdgeInsets: UIEdgeInsets {
         switch self {
         case let .landscape(geometry, verticalPct, horizontalPct):

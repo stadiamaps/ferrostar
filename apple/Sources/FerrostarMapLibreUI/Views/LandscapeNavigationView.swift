@@ -24,16 +24,19 @@ public struct LandscapeNavigationView: View {
     public var bottomTrailing: (() -> AnyView)?
 
     var onTapExit: (() -> Void)?
-    
-    /// Create a landscape navigation view. This view is optimized for display on a landscape screen where the instructions are on the leading half of the screen
+
+    /// Create a landscape navigation view. This view is optimized for display on a landscape screen where the
+    /// instructions are on the leading half of the screen
     /// and the user puck and route are on the trailing half of the screen.
     ///
     /// - Parameters:
     ///   - styleURL: The map's style url.
     ///   - camera: The camera binding that represents the current camera on the map.
-    ///   - navigationCamera: The default navigation camera. This sets the initial camera & is also used when the center on user button it tapped.
+    ///   - navigationCamera: The default navigation camera. This sets the initial camera & is also used when the center
+    /// on user button it tapped.
     ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
-    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the exit button is hidden.
+    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the
+    /// exit button is hidden.
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(
         styleURL: URL,

@@ -63,7 +63,7 @@ struct DemoNavigationView: View {
         let locationServicesEnabled = locationProvider.authorizationStatus == .authorizedAlways
             || locationProvider.authorizationStatus == .authorizedWhenInUse
 
-        NavigationStack {            
+        NavigationStack {
             DynamicallyOrientingNavigationView(
                 styleURL: style,
                 camera: $camera,
@@ -102,7 +102,7 @@ struct DemoNavigationView: View {
                             .padding(.all, 8)
                             .foregroundColor(.white)
                             .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
-                        
+
                         if locationServicesEnabled {
                             if ferrostarCore.state == nil {
                                 NavigationUIButton {

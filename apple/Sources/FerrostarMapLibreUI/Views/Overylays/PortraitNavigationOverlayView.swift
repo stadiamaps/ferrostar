@@ -7,7 +7,6 @@ import MapLibreSwiftUI
 import SwiftUI
 
 struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
-    
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     private var navigationState: NavigationState?
@@ -16,7 +15,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
     var bottomTrailing: (() -> AnyView)?
-    
+
     var speedLimit: Measurement<UnitSpeed>?
     var showZoom: Bool
     var onZoomIn: () -> Void
@@ -24,7 +23,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     var showCentering: Bool
     var onCenter: () -> Void
     var onTapExit: (() -> Void)?
-    
+
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
@@ -44,7 +43,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         self.onCenter = onCenter
         self.onTapExit = onTapExit
     }
-    
+
     var body: some View {
         VStack {
             if let navigationState,

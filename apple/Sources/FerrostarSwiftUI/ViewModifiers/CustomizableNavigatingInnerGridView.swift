@@ -8,7 +8,6 @@ public protocol CustomizableNavigatingInnerGridView where Self: View {
 }
 
 public extension CustomizableNavigatingInnerGridView {
-    
     /// Customize views on the navigating inner grid view that are not already being used.
     ///
     /// - Parameters:

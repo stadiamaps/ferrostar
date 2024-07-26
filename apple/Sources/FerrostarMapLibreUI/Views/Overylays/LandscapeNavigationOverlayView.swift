@@ -7,7 +7,6 @@ import MapLibreSwiftUI
 import SwiftUI
 
 struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
-    
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     private var navigationState: NavigationState?
@@ -24,7 +23,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var showCentering: Bool
     var onCenter: () -> Void
     var onTapExit: (() -> Void)?
-    
+
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
@@ -44,7 +43,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.onCenter = onCenter
         self.onTapExit = onTapExit
     }
-    
+
     var body: some View {
         HStack {
             VStack {
@@ -84,7 +83,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                 onCenter: onCenter
             )
             .innerGrid {
-                topCenter?() 
+                topCenter?()
             } topTrailing: {
                 topTrailing?()
             } midLeading: {
