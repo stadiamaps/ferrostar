@@ -25,6 +25,7 @@ final class InstructionsViewTests: XCTestCase {
                 primaryRowTheme: TestingInstructionRowTheme(),
                 secondaryRowTheme: TestingInstructionRowTheme()
             )
+            .padding()
         }
     }
 
@@ -45,6 +46,7 @@ final class InstructionsViewTests: XCTestCase {
                 primaryRowTheme: TestingInstructionRowTheme(),
                 secondaryRowTheme: TestingInstructionRowTheme()
             )
+            .padding()
         }
     }
 
@@ -66,6 +68,7 @@ final class InstructionsViewTests: XCTestCase {
                 secondaryRowTheme: TestingInstructionRowTheme(),
                 showPillControl: true
             )
+            .padding()
         }
     }
 
@@ -87,6 +90,7 @@ final class InstructionsViewTests: XCTestCase {
                 primaryRowTheme: TestingInstructionRowTheme(),
                 secondaryRowTheme: TestingInstructionRowTheme()
             )
+            .padding()
         }
     }
 }

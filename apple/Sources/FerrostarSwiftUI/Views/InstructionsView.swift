@@ -79,7 +79,6 @@ public struct InstructionsView: View {
         }
         .background(primaryRowTheme.backgroundColor)
         .clipShape(.rect(cornerRadius: 12))
-        .padding()
         .shadow(radius: 12)
     }
 
@@ -97,7 +96,7 @@ public struct InstructionsView: View {
     germanFormatter.locale = Locale(identifier: "de_DE")
     germanFormatter.units = .metric
 
-    return VStack {
+    return VStack(spacing: 16) {
         InstructionsView(
             visualInstruction: VisualInstruction(
                 primaryContent: VisualInstructionContent(
@@ -147,5 +146,6 @@ public struct InstructionsView: View {
 
         Spacer()
     }
+    .padding()
     .background(Color.green)
 }

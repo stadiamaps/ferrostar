@@ -6,11 +6,10 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-/// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView {
+/// A landscape orientation navigation view that includes the InstructionsView and ArrivalView on the
+/// leading half of the screen.
+public struct LandscapeNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
-
-    @State private var orientation = UIDevice.current.orientation
 
     let styleURL: URL
     @Binding var camera: MapViewCamera
@@ -26,8 +25,9 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
     var onTapExit: (() -> Void)?
 
-    /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portait
-    /// and landscape orientations.
+    /// Create a landscape navigation view. This view is optimized for display on a landscape screen where the
+    /// instructions are on the leading half of the screen
+    /// and the user puck and route are on the trailing half of the screen.
     ///
     /// - Parameters:
     ///   - styleURL: The map's style url.
@@ -51,7 +51,6 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
-
         _camera = camera
         self.navigationCamera = navigationCamera
     }
@@ -69,64 +68,34 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(NavigationMapViewContentInsetMode(
-                    orientation: orientation,
-                    geometry: geometry
-                ))
+                .navigationMapViewContentInset(.landscape(within: geometry))
 
-                switch orientation {
-                case .landscapeLeft, .landscapeRight:
-                    LandscapeNavigationOverlayView(
-                        navigationState: navigationState,
-                        speedLimit: nil,
-                        showZoom: true,
-                        onZoomIn: { camera.incrementZoom(by: 1) },
-                        onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
-                        onTapExit: onTapExit
-                    )
-                    .innerGrid {
-                        topCenter?()
-                    } topTrailing: {
-                        topTrailing?()
-                    } midLeading: {
-                        midLeading?()
-                    } bottomTrailing: {
-                        bottomTrailing?()
-                    }
-                default:
-                    PortraitNavigationOverlayView(
-                        navigationState: navigationState,
-                        speedLimit: nil,
-                        showZoom: true,
-                        onZoomIn: { camera.incrementZoom(by: 1) },
-                        onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
-                        onTapExit: onTapExit
-                    )
-                    .innerGrid {
-                        topCenter?()
-                    } topTrailing: {
-                        topTrailing?()
-                    } midLeading: {
-                        midLeading?()
-                    } bottomTrailing: {
-                        bottomTrailing?()
-                    }
+                LandscapeNavigationOverlayView(
+                    navigationState: navigationState,
+                    speedLimit: nil,
+                    showZoom: true,
+                    onZoomIn: { camera.incrementZoom(by: 1) },
+                    onZoomOut: { camera.incrementZoom(by: -1) },
+                    showCentering: !camera.isTrackingUserLocationWithCourse,
+                    onCenter: { camera = navigationCamera },
+                    onTapExit: onTapExit
+                )
+                .innerGrid {
+                    topCenter?()
+                } topTrailing: {
+                    topTrailing?()
+                } midLeading: {
+                    midLeading?()
+                } bottomTrailing: {
+                    bottomTrailing?()
                 }
             }
-        }
-        .onReceive(
-            NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
-        ) { _ in
-            orientation = UIDevice.current.orientation
         }
     }
 }
 
-#Preview("Portrait Navigation View (Imperial)") {
+@available(iOS 17, *)
+#Preview("Landscape Navigation View (Imperial)", traits: .landscapeLeft) {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
 
@@ -134,7 +103,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
 
-    return DynamicallyOrientingNavigationView(
+    return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         navigationState: state
@@ -142,14 +111,16 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
 
-#Preview("Portrait Navigation View (Metric)") {
+@available(iOS 17, *)
+#Preview("Landscape Navigation View (Metric)", traits: .landscapeLeft) {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
+
     let formatter = MKDistanceFormatter()
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .metric
 
-    return DynamicallyOrientingNavigationView(
+    return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(state.snappedLocation.clLocation.coordinate, zoom: 12)),
         navigationState: state

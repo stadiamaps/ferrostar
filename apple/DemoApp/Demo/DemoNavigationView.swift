@@ -66,20 +66,21 @@ struct DemoNavigationView: View {
         NavigationStack {
             DynamicallyOrientingNavigationView(
                 styleURL: style,
-                navigationState: ferrostarCore.state,
                 camera: $camera,
-                snappedZoom: .constant(18),
-                useSnappedCamera: $snappedCamera
-            ) {
-                let source = ShapeSource(identifier: "userLocation") {
-                    // Demonstrate how to add a dynamic overlay;
-                    // also incidentally shows the extent of puck lag
-                    if let userLocation = locationProvider.lastLocation {
-                        MLNPointFeature(coordinate: userLocation.clLocation.coordinate)
+                navigationState: ferrostarCore.state,
+                onTapExit: { stopNavigation() },
+                makeMapContent: {
+                    let source = ShapeSource(identifier: "userLocation") {
+                        // Demonstrate how to add a dynamic overlay;
+                        // also incidentally shows the extent of puck lag
+                        if let userLocation = locationProvider.lastLocation {
+                            MLNPointFeature(coordinate: userLocation.clLocation.coordinate)
+                        }
                     }
+                    CircleStyleLayer(identifier: "foo", source: source)
                 }
-                CircleStyleLayer(identifier: "foo", source: source)
-            } onTapExit: { stopNavigation() }
+            )
+            .innerGrid(
                 topCenter: {
                     if let errorMessage {
                         NavigationUIBanner(severity: .error) {
@@ -93,7 +94,8 @@ struct DemoNavigationView: View {
                             Text("Loading route...")
                         }
                     }
-                } bottomTrailing: {
+                },
+                bottomTrailing: {
                     VStack {
                         Text(locationLabel)
                             .font(.caption)
@@ -130,9 +132,10 @@ struct DemoNavigationView: View {
                         }
                     }
                 }
-                .task {
-                    await getRoutes()
-                }
+            )
+            .task {
+                await getRoutes()
+            }
         }
     }
 

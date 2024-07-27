@@ -6,7 +6,7 @@ public enum NavigationMapViewContentInsetMode {
     /// where the user location should appear toward the bottom of the map.
     ///
     /// This is used to accommodate a left InstructionView
-    case landscape(within: GeometryProxy, verticalPct: CGFloat = 0.75, horizontalPct: CGFloat = 0.75)
+    case landscape(within: GeometryProxy, verticalPct: CGFloat = 0.75, horizontalPct: CGFloat = 0.5)
 
     /// A predefined mode for landscape navigation map views
     /// where the user location should appear toward the bottom of the map.
@@ -16,6 +16,15 @@ public enum NavigationMapViewContentInsetMode {
 
     /// Custom edge insets to manually control where the center of the map is.
     case edgeInset(UIEdgeInsets)
+
+    public init(orientation: UIDeviceOrientation, geometry: GeometryProxy) {
+        switch orientation {
+        case .landscapeLeft, .landscapeRight:
+            self = .landscape(within: geometry)
+        default:
+            self = .portrait(within: geometry)
+        }
+    }
 
     var uiEdgeInsets: UIEdgeInsets {
         switch self {
