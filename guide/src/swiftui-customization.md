@@ -1,10 +1,9 @@
-# SwiftUI
+# UI customization with SwiftUI
 
-The tutorial get you set up with defaults using a “batteries included” UI,
-but realistically this doesn’t work for every use case.
+The [iOS tutorial](ios-getting-started.md) gets you set up with a “batteries included” UI
+and sane defaults,
+but this doesn’t work for every use case.
 This page walks you through the ways to customize the SwiftUI frontend to your liking.
-
-Note that this section is very much WIP.
 
 ## Customizing the map
 
@@ -15,8 +14,8 @@ first we’d love to hear why via an issue on GitHub!
 In the case that you want complete control though,
 the map view itself is actually not that complex.
 
-TODO: Write-up on the views as these are still in flux.
-See the demo app for a high-level example and look at the views it uses for now.
+The demo app is designed to be instructive in showing many available options,
+so be sure to look at that to build intuition.
 
 ### Style
 
@@ -28,6 +27,13 @@ TODO: Passing a view builder to add layers to the map (WIP)
 ### Camera
 
 TODO: Ability to override the built-in camera behavior (probably define a protocol for this).
+
+### Adding map layers
+
+You can add your own overlays too!
+The `makeMapContent` closure argument of the various map and navigation views
+enables you to add more layers.
+See the demo app for an example.
 
 ## Customizing the instruction banners
 
@@ -58,3 +64,22 @@ You can also build your own custom banners using the provided components,
 or start from scratch.
 
 TODO: Expose a view builder argument so that users can easily swap for their own view.
+
+## Customizing the navigation view grid
+
+The batteries included UI has a lot of widgets,
+like zoom buttons and a status bar showing your ETA.
+
+This grid is completely customizable!
+You can add, move, or replace widgets from the defaults.
+
+Refer to the `CustomizableNavigatingInnerGridView` public protocol and extension.
+The `PortraitNavigationOverlayView` and `LandscapeNavigationOverlayView`
+are complete overlay configuration examples.
+Specifically, they are the ones used by default (in the `DynamicallyOrientingNavigationView`).
+With this context, you should be able to see how the default views are composed
+from others,
+and design your own custom overlay configuration,
+mixing the views provided in `FerrostarMapLibre` with your own!
+
+TODO: deeper guide / example.

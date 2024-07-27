@@ -12,9 +12,9 @@
 # Customization
 
 - [General](./general-customization.md)
+- [Navigation Behavior](./configuring-the-navigation-controller.md)
 - [SwiftUI](./swiftui-customization.md)
 - [Jetpack Compose](./jetpack-compose-customization.md)
-- [Configuring the Navigation Controller](./configuring-the-navigation-controller.md)
 
 # Architecture
 

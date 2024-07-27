@@ -1,4 +1,4 @@
-# Configuring the Navigation Controller
+# Configuring Navigation Behavior
 
 Not all navigation experiences should behave the same,
 so Ferrostar lets you customize many important aspects of navigation.

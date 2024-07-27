@@ -1,4 +1,4 @@
-# Jetpack Compose
+# UI customization with Jetpack Compose
 
 The tutorial get you set up with defaults using a “batteries included” UI,
 but realistically this doesn’t work for every use case.
@@ -15,8 +15,6 @@ first we’d love to hear why via an issue on GitHub!
 In the case that you want complete control though,
 the map view itself is actually not that complex.
 
-TODO: Passing a composable to add layers to the map (WIP)
-
 ### Style
 
 The demo app uses the MapLibre demo tiles, but you’ll need a proper basemap eventually.
@@ -26,6 +24,12 @@ See the [vendors page](./vendors.md) for some ideas.
 ### Camera
 
 TODO: Ability to override the built-in camera behavior (probably define a protocol for this).
+
+### Adding map layers
+
+You can add your own overlays to the map as well (any class, including `DynamicallyOrientingNavigationView`)!
+The `content` closure argument lets you add more layers.
+See the demo app for an example.
 
 ## Customizing the instruction banners
 
