@@ -39,7 +39,7 @@ export class InstructionsView extends LitElement {
 
       .instruction-text {
         color: black;
-        margin: 0;
+        margin: 10px 0 0 0;
       }
     `,
   ];
