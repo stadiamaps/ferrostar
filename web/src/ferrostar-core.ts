@@ -31,9 +31,8 @@ export class FerrostarCore extends LitElement {
 
   routeAdapter: RouteAdapter | null = null;
   map: maplibregl.Map | null = null;
-  markers: maplibregl.Marker[] = [];
   navigationController: NavigationController | null = null;
-  currentLocationMapMarker: L.Marker | null = null;
+  currentLocationMapMarker: maplibregl.Marker | null = null;
 
   static styles = [
     unsafeCSS(maplibreglStyles),
@@ -158,10 +157,11 @@ export class FerrostarCore extends LitElement {
     });
 
     this.map?.setCenter(route.geometry[0]);
+    const bounds = new maplibregl.LngLatBounds();
+    route.geometry.forEach((coord: maplibregl.LngLatLike | maplibregl.LngLatBoundsLike) => bounds.extend(coord));
+    this.map?.fitBounds(bounds, { padding: 100 });
 
-    const marker = new maplibregl.Marker().setLngLat(route.geometry[0]).addTo(this.map!);
-
-    this.markers.push(marker);
+    this.currentLocationMapMarker = new maplibregl.Marker().setLngLat(route.geometry[0]).addTo(this.map!);
   }
 
   async stopNavigation() {
@@ -175,14 +175,13 @@ export class FerrostarCore extends LitElement {
 
   private onLocationUpdated() {
     this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
-    this.currentLocationMapMarker!.setLatLng(this.locationProvider.lastLocation.coordinates);
+    this.currentLocationMapMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
   }
 
   private clearMap() {
     this.map?.getLayer("route") && this.map?.removeLayer("route");
     this.map?.getSource("route") && this.map?.removeSource("route");
-    this.markers.forEach((marker) => marker.remove());
-    this.markers = [];
+    this.currentLocationMapMarker?.remove();
   }
 
   render() {
