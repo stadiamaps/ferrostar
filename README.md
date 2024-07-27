@@ -28,7 +28,7 @@ Here's a quick breakdown of support by platform.
 | High-level core bindings | ✅ | ✅ | 👨‍💻 |
 | Simulated location provider | ✅ | ✅ | ✅ |
 | Live location provider | ✅ | ✅ | ✅ |
-| Composable UI - banners | ✅ | ✅ | ❌ |
+| Composable UI - banners | ✅ | ✅ | ✅ |
 | Composable UI - MapLibre integration | ✅ | ✅ | 👨‍💻 |
 | Voice guidance (platform-native TTS) | ✅ | ✅ | ❌ |
 
