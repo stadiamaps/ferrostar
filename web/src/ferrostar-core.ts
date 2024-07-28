@@ -157,9 +157,7 @@ export class FerrostarCore extends LitElement {
     });
 
     this.map?.setCenter(route.geometry[0]);
-    const bounds = new maplibregl.LngLatBounds();
-    route.geometry.forEach((coord: maplibregl.LngLatLike | maplibregl.LngLatBoundsLike) => bounds.extend(coord));
-    this.map?.fitBounds(bounds, { padding: 100 });
+    this.map?.setZoom(16);
 
     this.currentLocationMapMarker = new maplibregl.Marker().setLngLat(route.geometry[0]).addTo(this.map!);
   }
@@ -176,6 +174,7 @@ export class FerrostarCore extends LitElement {
   private onLocationUpdated() {
     this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
     this.currentLocationMapMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
+    this.map?.flyTo({ center: this.locationProvider.lastLocation.coordinates });
   }
 
   private clearMap() {
