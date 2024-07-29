@@ -86,7 +86,7 @@ export class FerrostarCore extends LitElement {
       center: [0, 0],
       pitch: 60,
       bearing: 0,
-      zoom: 1,
+      zoom: 20,
     });
   }
 
@@ -162,7 +162,6 @@ export class FerrostarCore extends LitElement {
     });
 
     this.map?.setCenter(route.geometry[0]);
-    this.map?.setZoom(16);
 
     this.currentLocationMapMarker = new maplibregl.Marker().setLngLat(route.geometry[0]).addTo(this.map!);
   }
