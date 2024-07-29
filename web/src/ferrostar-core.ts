@@ -12,6 +12,9 @@ export class FerrostarCore extends LitElement {
   valhallaEndpointUrl: string = "";
 
   @property()
+  styleUrl: string = "";
+
+  @property()
   profile: string = "";
 
   @property({ attribute: false })
@@ -79,7 +82,7 @@ export class FerrostarCore extends LitElement {
   firstUpdated() {
     this.map = new maplibregl.Map({
       container: this.shadowRoot!.getElementById("map")!,
-      style: "https://demotiles.maplibre.org/style.json",
+      style: this.styleUrl ? this.styleUrl : "https://demotiles.maplibre.org/style.json",
       center: [0, 0],
       zoom: 1,
     });
