@@ -33,12 +33,13 @@ export class InstructionsView extends LitElement {
       }
 
       .distance-text {
-        color: purple;
+        color: black;
+        font-weight: bold;
         margin: 0;
       }
 
       .instruction-text {
-        color: black;
+        color: #424242;
         margin: 10px 0 0 0;
       }
     `,
