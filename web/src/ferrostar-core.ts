@@ -142,7 +142,7 @@ export class FerrostarCore extends LitElement {
         properties: {},
         geometry: {
           type: "LineString",
-          coordinates: route.geometry,
+          coordinates: route.geometry.map((point: { lat: number; lng: number }) => [point.lng, point.lat]),
         },
       },
     });
@@ -156,7 +156,7 @@ export class FerrostarCore extends LitElement {
         "line-cap": "round",
       },
       paint: {
-        "line-color": "#888",
+        "line-color": "#3700B3",
         "line-width": 8,
       },
     });
