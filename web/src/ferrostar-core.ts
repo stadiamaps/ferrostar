@@ -84,6 +84,8 @@ export class FerrostarCore extends LitElement {
       container: this.shadowRoot!.getElementById("map")!,
       style: this.styleUrl ? this.styleUrl : "https://demotiles.maplibre.org/style.json",
       center: [0, 0],
+      pitch: 60,
+      bearing: 0,
       zoom: 1,
     });
   }
@@ -177,7 +179,10 @@ export class FerrostarCore extends LitElement {
   private onLocationUpdated() {
     this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
     this.currentLocationMapMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
-    this.map?.flyTo({ center: this.locationProvider.lastLocation.coordinates });
+    this.map?.easeTo({
+      center: this.locationProvider.lastLocation.coordinates,
+      bearing: this.locationProvider.lastLocation.courseOverGround.degrees
+    });
   }
 
   private clearMap() {
