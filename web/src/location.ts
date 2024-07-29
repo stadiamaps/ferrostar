@@ -58,7 +58,9 @@ export class BrowserLocationProvider {
         this.lastLocation = {
           coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },
           horizontalAccuracy: position.coords.accuracy,
-          courseOverGround: position.coords.heading,
+          courseOverGround: {
+            degrees: Math.floor(position.coords.heading || 0),
+          },
           timestamp: {
             secs_since_epoch: Math.floor(position.timestamp / 1000),
             nanos_since_epoch: 0,

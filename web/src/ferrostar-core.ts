@@ -180,7 +180,7 @@ export class FerrostarCore extends LitElement {
     this.currentLocationMapMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
     this.map?.easeTo({
       center: this.locationProvider.lastLocation.coordinates,
-      bearing: this.locationProvider.lastLocation.courseOverGround.degrees
+      bearing: this.locationProvider.lastLocation.courseOverGround.degrees || 0,
     });
   }
 
