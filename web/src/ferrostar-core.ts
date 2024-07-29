@@ -86,7 +86,7 @@ export class FerrostarCore extends LitElement {
       center: [0, 0],
       pitch: 60,
       bearing: 0,
-      zoom: 20,
+      zoom: 18,
     });
   }
 
