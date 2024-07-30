@@ -44,6 +44,7 @@ data class NavigationUiState(
 
 interface NavigationViewModel {
   val uiState: StateFlow<NavigationUiState>
+
   fun stopNavigation()
 }
 
