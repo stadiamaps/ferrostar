@@ -83,7 +83,7 @@ export class FerrostarCore extends LitElement {
     this.map = new maplibregl.Map({
       container: this.shadowRoot!.getElementById("map")!,
       style: this.styleUrl ? this.styleUrl : "https://demotiles.maplibre.org/style.json",
-      center: [0, 0],
+      center: [-122.42, 37.81],
       pitch: 60,
       bearing: 0,
       zoom: 18,
