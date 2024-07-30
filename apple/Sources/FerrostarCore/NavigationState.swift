@@ -20,34 +20,4 @@ public struct NavigationState: Hashable {
         self.routeGeometry = routeGeometry
         self.isCalculatingNewRoute = isCalculatingNewRoute
     }
-
-    // TODO: Delete once using tripState
-//    public internal(set) var snappedLocation: UserLocation
-//    public internal(set) var routeDeviation: RouteDeviation?
-//    public internal(set) var spokenInstruction: SpokenInstruction?
-//    public internal(set) var visualInstruction: VisualInstruction?
-//    public internal(set) var progress: TripProgress?
-
-    // TODO: This may be part of TripState?
-//    public internal(set) var heading: Heading?
-//    public internal(set) var currentStep: RouteStep?
-
-    // TODO: Delete once using routeGeometry
-//    public internal(set) var fullRouteShape: [GeographicCoordinate]
-
-//    init(
-//        snappedLocation: UserLocation,
-//        heading: Heading? = nil,
-//        fullRouteShape: [GeographicCoordinate],
-//        steps: [RouteStep],
-//        progress: TripProgress? = nil
-//    ) {
-//        self.snappedLocation = snappedLocation
-//        self.heading = heading
-//        self.fullRouteShape = fullRouteShape
-//        self.progress = progress
-//        currentStep = steps.first
-//        visualInstruction = currentStep?.visualInstructions.first
-//        spokenInstruction = currentStep?.spokenInstructions.first
-//    }
 }
