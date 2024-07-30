@@ -2,6 +2,9 @@ package com.stadiamaps.ferrostar.core
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stadiamaps.ferrostar.core.extensions.deviation
+import com.stadiamaps.ferrostar.core.extensions.progress
+import com.stadiamaps.ferrostar.core.extensions.visualInstruction
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -23,21 +26,48 @@ data class NavigationUiState(
     val progress: TripProgress?,
     val isCalculatingNewRoute: Boolean?,
     val routeDeviation: RouteDeviation?
-)
+) {
+  companion object {
+    fun fromFerrostar(coreState: NavigationState, userLocation: UserLocation): NavigationUiState =
+        NavigationUiState(
+            snappedLocation = userLocation,
+            // TODO: Heading/course over ground
+            heading = null,
+            routeGeometry = coreState.routeGeometry,
+            visualInstruction = coreState.tripState.visualInstruction(),
+            spokenInstruction = null,
+            progress = coreState.tripState.progress(),
+            isCalculatingNewRoute = coreState.isCalculatingNewRoute,
+            routeDeviation = coreState.tripState.deviation())
+  }
+}
 
-class NavigationViewModel(
-    stateFlow: StateFlow<NavigationState>,
-    initialUserLocation: UserLocation,
-) : ViewModel() {
-  private var lastLocation: UserLocation = initialUserLocation
+interface NavigationViewModel {
+  val uiState: StateFlow<NavigationUiState>
+}
 
-  val uiState =
-      stateFlow
+class DefaultNavigationViewModel(
+    private val ferrostarCore: FerrostarCore,
+    locationProvider: LocationProvider
+) : ViewModel(), NavigationViewModel {
+
+  private var lastLocation: UserLocation
+
+  init {
+    lastLocation =
+        requireNotNull(locationProvider.lastLocation) {
+          "LocationProvider must have a last location."
+        }
+  }
+
+  override val uiState =
+      ferrostarCore.state
           .map { coreState ->
             lastLocation =
                 when (coreState.tripState) {
                   is TripState.Navigating -> coreState.tripState.snappedUserLocation
-                  is TripState.Complete -> lastLocation
+                  is TripState.Complete,
+                  TripState.Idle -> lastLocation
                 }
 
             uiState(coreState, lastLocation)
@@ -48,39 +78,12 @@ class NavigationViewModel(
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
-              initialValue = uiState(stateFlow.value, initialUserLocation))
+              initialValue = uiState(ferrostarCore.state.value, lastLocation))
+
+  fun stopNavigation() {
+    ferrostarCore.stopNavigation()
+  }
 
   private fun uiState(coreState: NavigationState, location: UserLocation) =
-      NavigationUiState(
-          snappedLocation = location,
-          // TODO: Heading/course over ground
-          heading = null,
-          routeGeometry = coreState.routeGeometry,
-          visualInstruction = visualInstructionForState(coreState.tripState),
-          spokenInstruction = null,
-          progress = progressForState(coreState.tripState),
-          isCalculatingNewRoute = coreState.isCalculatingNewRoute,
-          routeDeviation = deviationForState(coreState.tripState))
+      NavigationUiState.fromFerrostar(coreState, location)
 }
-
-private fun progressForState(newState: TripState) =
-    when (newState) {
-      is TripState.Navigating -> newState.progress
-      is TripState.Complete -> null
-    }
-
-private fun visualInstructionForState(newState: TripState) =
-    try {
-      when (newState) {
-        is TripState.Navigating -> newState.visualInstruction
-        is TripState.Complete -> null
-      }
-    } catch (_: NoSuchElementException) {
-      null
-    }
-
-private fun deviationForState(newState: TripState) =
-    when (newState) {
-      is TripState.Navigating -> newState.deviation
-      is TripState.Complete -> null
-    }

@@ -46,13 +46,13 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
     var body: some View {
         VStack {
-            if let navigationState,
-               let visualInstructions = navigationState.visualInstruction
+            if case let .navigating(_, _, _, progress: progress, _, visualInstruction: visualInstruction, _) = navigationState?.tripState,
+               let visualInstruction
             {
                 InstructionsView(
-                    visualInstruction: visualInstructions,
+                    visualInstruction: visualInstruction,
                     distanceFormatter: formatterCollection.distanceFormatter,
-                    distanceToNextManeuver: navigationState.progress?.distanceToNextManeuver
+                    distanceToNextManeuver: progress.distanceToNextManeuver
                 )
                 .padding(.horizontal, 16)
             }
@@ -80,7 +80,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
             }
             .padding(.horizontal, 16)
 
-            if let progress = navigationState?.progress {
+            if case let .navigating(_, _, _, progress: progress, _, _, _) = navigationState?.tripState {
                 ArrivalView(
                     progress: progress,
                     onTapExit: onTapExit

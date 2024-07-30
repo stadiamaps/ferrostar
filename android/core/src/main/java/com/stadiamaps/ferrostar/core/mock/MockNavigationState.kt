@@ -1,7 +1,11 @@
 package com.stadiamaps.ferrostar.core.mock
 
+import androidx.lifecycle.ViewModel
 import com.stadiamaps.ferrostar.core.NavigationState
+import com.stadiamaps.ferrostar.core.NavigationUiState
+import com.stadiamaps.ferrostar.core.NavigationViewModel
 import java.time.Instant
+import kotlinx.coroutines.flow.StateFlow
 import uniffi.ferrostar.CourseOverGround
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
@@ -53,3 +57,9 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
       routeGeometry = listOf(),
       isCalculatingNewRoute = false)
 }
+
+fun NavigationUiState.Companion.pedestrianExample(): NavigationUiState =
+    fromFerrostar(NavigationState.pedestrianExample(), UserLocation.pedestrianExample())
+
+class MockNavigationViewModel(override val uiState: StateFlow<NavigationUiState>) :
+    ViewModel(), NavigationViewModel

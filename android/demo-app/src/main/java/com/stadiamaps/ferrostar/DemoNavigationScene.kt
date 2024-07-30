@@ -29,9 +29,6 @@ import com.stadiamaps.ferrostar.support.initialSimulatedLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.NavigationControllerConfig
-import uniffi.ferrostar.RouteDeviationTracking
-import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
 
@@ -81,15 +78,7 @@ fun DemoNavigationScene(
               ))
 
       val route = routes.first()
-      viewModel =
-          core.startNavigation(
-              route = route,
-              config =
-                  NavigationControllerConfig(
-                      StepAdvanceMode.RelativeLineStringDistance(
-                          minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                      RouteDeviationTracking.StaticThreshold(25U, 10.0)),
-          )
+      viewModel = core.startNavigation(route = route)
 
       locationProvider.setSimulatedRoute(route)
     }

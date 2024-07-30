@@ -29,6 +29,8 @@ pub struct TripProgress {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 pub enum TripState {
+    /// The navigation controller is idle
+    Idle,
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     Navigating {
         snapped_user_location: UserLocation,
@@ -58,6 +60,7 @@ pub enum TripState {
         /// Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
         spoken_instruction: Option<SpokenInstruction>,
     },
+    /// The navigation controller has reached the end of the route.
     Complete,
 }
 

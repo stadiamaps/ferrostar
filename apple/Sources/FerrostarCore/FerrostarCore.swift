@@ -85,24 +85,25 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private let routeProvider: RouteProvider
     private let locationProvider: LocationProviding
     private var navigationController: NavigationControllerProtocol?
-    private var tripState: TripState?
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
     private var lastLocation: UserLocation? = nil
     private var recalculationTask: Task<Void, Never>?
     private var queuedUtteranceIDs: Set<String> = Set()
 
-    private var config: SwiftNavigationControllerConfig?
+    private var config: SwiftNavigationControllerConfig
 
     public init(
         routeProvider: RouteProvider,
         locationProvider: LocationProviding,
+        navigationControllerConfig: SwiftNavigationControllerConfig,
         networkSession: URLRequestLoading
     ) {
         self.routeProvider = routeProvider
         self.locationProvider = locationProvider
+        self.config = navigationControllerConfig
         self.networkSession = networkSession
-
+        
         super.init()
 
         // Location provider setup
@@ -113,6 +114,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         valhallaEndpointUrl: URL,
         profile: String,
         locationProvider: LocationProviding,
+        navigationControllerConfig: SwiftNavigationControllerConfig,
         costingOptions: [String: Any] = [:],
         networkSession: URLRequestLoading = URLSession.shared
     ) throws {
@@ -131,6 +133,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         self.init(
             routeProvider: .routeAdapter(adapter),
             locationProvider: locationProvider,
+            navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession
         )
     }
@@ -138,11 +141,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public convenience init(
         routeAdapter: RouteAdapterProtocol,
         locationProvider: LocationProviding,
+        navigationControllerConfig: SwiftNavigationControllerConfig,
         networkSession: URLRequestLoading = URLSession.shared
     ) {
         self.init(
             routeProvider: .routeAdapter(routeAdapter),
             locationProvider: locationProvider,
+            navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession
         )
     }
@@ -150,11 +155,13 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public convenience init(
         customRouteProvider: CustomRouteProvider,
         locationProvider: LocationProviding,
+        navigationControllerConfig: SwiftNavigationControllerConfig,
         networkSession: URLRequestLoading = URLSession.shared
     ) {
         self.init(
             routeProvider: .customProvider(customRouteProvider),
             locationProvider: locationProvider,
+            navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession
         )
     }
@@ -206,7 +213,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     /// Starts navigation with the given route. Any previous navigation session is dropped.
-    public func startNavigation(route: Route, config: SwiftNavigationControllerConfig) throws {
+    ///
+    /// - Parameters:
+    ///   - route: The route to navigate.
+    ///   - config: Override the configuration for the navigation session. This was provided on init.
+    public func startNavigation(route: Route, config: SwiftNavigationControllerConfig? = nil) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
@@ -215,25 +226,27 @@ public protocol FerrostarCoreDelegate: AnyObject {
         }
         // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
 
-        self.config = config
-
+        // Apply the new config if one was provided to override.
+        self.config = config ?? self.config
+        
+        // Configure the navigation controller. This is required to build the initial state.
+        let controller = NavigationController(route: route, config: self.config.ffiValue)
+        navigationController = controller
+        
         locationProvider.startUpdating()
 
         state = NavigationState(
-            snappedLocation: location,
-            heading: locationProvider.lastHeading,
-            fullRouteShape: route.geometry,
-            steps: route.steps
+            tripState: controller.getInitialState(location: location),
+            routeGeometry: route.geometry
         )
-        let controller = NavigationController(route: route, config: config.ffiValue)
-        navigationController = controller
+        
         DispatchQueue.main.async {
             self.update(newState: controller.getInitialState(location: location), location: location)
         }
     }
 
     public func advanceToNextStep() {
-        guard let controller = navigationController, let tripState, let lastLocation else {
+        guard let controller = navigationController, let tripState = state?.tripState, let lastLocation else {
             return
         }
 
@@ -247,7 +260,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public func stopNavigation() {
         navigationController = nil
         state = nil
-        tripState = nil
         queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()
     }
@@ -257,25 +269,18 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// You should call this rather than setting properties directly
     private func update(newState: TripState, location: UserLocation) {
         DispatchQueue.main.async {
-            self.tripState = newState
+            self.state?.tripState = newState
 
             switch newState {
             case let .navigating(
-                snappedUserLocation: snappedLocation,
-                remainingSteps: remainingSteps,
+                snappedUserLocation: _,
+                remainingSteps: _,
                 remainingWaypoints: remainingWaypoints,
-                progress: progress,
+                progress: _,
                 deviation: deviation,
-                visualInstruction: visualInstruction,
+                visualInstruction: _,
                 spokenInstruction: spokenInstruction
             ):
-                self.state?.snappedLocation = snappedLocation
-                self.state?.currentStep = remainingSteps.first
-                self.state?.visualInstruction = visualInstruction
-                self.state?.spokenInstruction = spokenInstruction
-                self.state?.progress = progress
-
-                self.state?.routeDeviation = deviation
                 switch deviation {
                 case .noDeviation:
                     // No action
@@ -306,10 +311,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
                                 )
                                 if let delegate = self.delegate {
                                     delegate.core(self, loadedAlternateRoutes: routes)
-                                } else if let route = routes.first, let config = self.config {
+                                } else if let route = routes.first {
                                     // Default behavior when no delegate is assigned:
                                     // accept the first route, as this is what most users want when they go off route.
-                                    try self.startNavigation(route: route, config: config)
+                                    try self.startNavigation(route: route, config: self.config)
                                 }
                             } catch {
                                 // Do nothing; this exists to enable us to run what amounts to an "async defer"
@@ -333,12 +338,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         self.spokenInstructionObserver?.spokenInstructionTriggered(spokenInstruction)
                     }
                 }
-            case .complete:
-                // TODO: "You have arrived"?
-                self.state?.visualInstruction = nil
-                self.state?.snappedLocation = location
-                self.state?.spokenInstruction = nil
-                self.state?.routeDeviation = nil
+            default:
+                break
             }
         }
     }
@@ -348,7 +349,7 @@ extension FerrostarCore: LocationManagingDelegate {
     @MainActor
     public func locationManager(_: LocationProviding, didUpdateLocations locations: [UserLocation]) {
         guard let location = locations.last,
-              let state = tripState,
+              let state = state?.tripState,
               let newState = navigationController?.updateUserLocation(location: location, state: state)
         else {
             return
@@ -360,7 +361,8 @@ extension FerrostarCore: LocationManagingDelegate {
     }
 
     public func locationManager(_: LocationProviding, didUpdateHeading newHeading: Heading) {
-        state?.heading = newHeading
+        // TODO: Make use of heading in TripState?
+//        state?.heading = newHeading
     }
 
     public func locationManager(_: LocationProviding, didFailWithError _: Error) {

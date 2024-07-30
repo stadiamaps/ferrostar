@@ -9,6 +9,8 @@ import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -29,10 +31,10 @@ import uniffi.ferrostar.Waypoint
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
 data class NavigationState(
     /** The raw trip state from the core. */
-    val tripState: TripState,
-    val routeGeometry: List<GeographicCoordinate>,
+    val tripState: TripState = TripState.Idle,
+    val routeGeometry: List<GeographicCoordinate> = emptyList(),
     /** Indicates when the core is calculating a new route (ex: due to the user being off route). */
-    val isCalculatingNewRoute: Boolean
+    val isCalculatingNewRoute: Boolean = false
 ) {
   companion object
 }
@@ -57,6 +59,7 @@ class FerrostarCore(
     val routeProvider: RouteProvider,
     val httpClient: OkHttpClient,
     val locationProvider: LocationProvider,
+    navigationControllerConfig: NavigationControllerConfig,
 ) : LocationUpdateListener {
   companion object {
     private const val TAG = "FerrostarCore"
@@ -112,18 +115,26 @@ class FerrostarCore(
   private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
   private var _navigationController: NavigationController? = null
-  private var _state: MutableStateFlow<NavigationState>? = null
+  private var _state: MutableStateFlow<NavigationState> = MutableStateFlow(NavigationState())
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
   private var _lastLocation: UserLocation? = null
 
-  private var _config: NavigationControllerConfig? = null
+  private var _config: NavigationControllerConfig = navigationControllerConfig
+
+  /**
+   * The current state of the navigation session. This can be used in a custom ViewModel or
+   * elsewhere. If using the default behavior, use the NavigationViewModel provided by
+   * startNavigation().
+   */
+  var state: StateFlow<NavigationState> = _state.asStateFlow()
 
   constructor(
       valhallaEndpointURL: URL,
       profile: String,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
+      navigationControllerConfig: NavigationControllerConfig,
       costingOptions: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
@@ -131,27 +142,29 @@ class FerrostarCore(
               valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(costingOptions))),
       httpClient,
       locationProvider,
-  )
+      navigationControllerConfig)
 
   constructor(
       routeAdapter: RouteAdapter,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
+      navigationControllerConfig: NavigationControllerConfig,
   ) : this(
       RouteProvider.RouteAdapter(routeAdapter),
       httpClient,
       locationProvider,
-  )
+      navigationControllerConfig)
 
   constructor(
       customRouteProvider: CustomRouteProvider,
-      httpClient: OkHttpClient,
+      httpClient: OkHttpClient = OkHttpClient(),
       locationProvider: LocationProvider,
+      navigationControllerConfig: NavigationControllerConfig,
   ) : this(
       RouteProvider.CustomProvider(customRouteProvider),
       httpClient,
       locationProvider,
-  )
+      navigationControllerConfig)
 
   suspend fun getRoutes(initialLocation: UserLocation, waypoints: List<Waypoint>): List<Route> =
       try {
@@ -198,31 +211,42 @@ class FerrostarCore(
    * WARNING: If you want to reuse the existing view model, ex: when getting a new route after going
    * off course, use [replaceRoute] instead! Otherwise, you will miss out on updates as the old view
    * model is "orphaned"!
+   *
+   * @param route the route to navigate.
+   * @param config Override the configuration for the navigation session. This was provided on init.
+   * @return a view model tied to the navigation session. This can be ignored if you're injecting
+   *   the [NavigationViewModel]/[DefaultNavigationViewModel].
+   * @throws UserLocationUnknown if the location provider has no last known location.
    */
   @Throws(UserLocationUnknown::class)
-  fun startNavigation(route: Route, config: NavigationControllerConfig): NavigationViewModel {
+  fun startNavigation(
+      route: Route,
+      config: NavigationControllerConfig? = null
+  ): NavigationViewModel {
     stopNavigation()
+
+    // Apply the new config if provided, otherwise use the original.
+    _config = config ?: _config
 
     val controller =
         NavigationController(
             route,
-            config,
+            _config,
         )
     val startingLocation =
         locationProvider.lastLocation
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
     val initialTripState = controller.getInitialState(startingLocation)
-    val stateFlow =
-        MutableStateFlow(NavigationState(tripState = initialTripState, route.geometry, false))
+    val newState = NavigationState(tripState = initialTripState, route.geometry, false)
     handleStateUpdate(initialTripState, startingLocation)
 
     _navigationController = controller
-    _state = stateFlow
+    _state.value = newState
 
     locationProvider.addListener(this, _executor)
 
-    return NavigationViewModel(stateFlow, startingLocation)
+    return DefaultNavigationViewModel(this, locationProvider)
   }
 
   /**
@@ -242,10 +266,7 @@ class FerrostarCore(
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
     _navigationController = controller
-    if (_state == null) {
-      android.util.Log.e(TAG, "Unexpected null state")
-    }
-    _state?.update {
+    _state.update {
       val newState = controller.getInitialState(startingLocation)
 
       handleStateUpdate(newState, startingLocation)
@@ -259,7 +280,7 @@ class FerrostarCore(
     val location = _lastLocation
 
     if (controller != null && location != null) {
-      _state?.update { currentValue ->
+      _state.update { currentValue ->
         val newState = controller.advanceToNextStep(state = currentValue.tripState)
 
         handleStateUpdate(newState, location)
@@ -273,7 +294,7 @@ class FerrostarCore(
     locationProvider.removeListener(this)
     _navigationController?.destroy()
     _navigationController = null
-    _state = null
+    _state.value = NavigationState()
     _queuedUtteranceIds.clear()
   }
 

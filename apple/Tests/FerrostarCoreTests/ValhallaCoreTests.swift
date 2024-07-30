@@ -17,7 +17,8 @@ final class ValhallaCoreTests: XCTestCase {
         let core = try FerrostarCore(
             valhallaEndpointUrl: valhallaEndpointUrl,
             profile: "auto",
-            locationProvider: SimulatedLocationProvider(),
+            locationProvider: SimulatedLocationProvider(), 
+            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
             networkSession: mockSession
         )
         let routes = try await core.getRoutes(

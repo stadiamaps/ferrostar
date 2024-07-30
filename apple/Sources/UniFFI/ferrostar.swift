@@ -3288,6 +3288,10 @@ extension StepAdvanceMode: Equatable, Hashable {}
  */
 
 public enum TripState {
+    /**
+     * The navigation controller is idle
+     */
+    case idle
     case navigating(snappedUserLocation: UserLocation,
                     /**
                         * The ordered list of steps that remain in the trip.
@@ -3320,6 +3324,9 @@ public enum TripState {
                         *
                         * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
                         */ spokenInstruction: SpokenInstruction?)
+    /**
+     * The navigation controller has reached the end of the route.
+     */
     case complete
 }
 
@@ -3329,7 +3336,9 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TripState {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        case 1: return try .navigating(
+        case 1: return .idle
+
+        case 2: return try .navigating(
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
@@ -3339,7 +3348,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
                 spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
             )
 
-        case 2: return .complete
+        case 3: return .complete
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -3347,6 +3356,9 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
 
     public static func write(_ value: TripState, into buf: inout [UInt8]) {
         switch value {
+        case .idle:
+            writeInt(&buf, Int32(1))
+
         case let .navigating(
             snappedUserLocation,
             remainingSteps,
@@ -3356,7 +3368,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             visualInstruction,
             spokenInstruction
         ):
-            writeInt(&buf, Int32(1))
+            writeInt(&buf, Int32(2))
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
@@ -3366,7 +3378,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
 
         case .complete:
-            writeInt(&buf, Int32(2))
+            writeInt(&buf, Int32(3))
         }
     }
 }
