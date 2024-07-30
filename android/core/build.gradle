@@ -25,7 +25,7 @@ android {
         }
     }
     compileOptions {
-//        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -43,7 +43,7 @@ android {
 dependencies {
 
     // For as long as we support API 25; once we can raise support to 26, all is fine
-//    coreLibraryDesugaring libs.desugar.jdk.libs
+    coreLibraryDesugaring libs.desugar.jdk.libs
 
     implementation libs.androidx.ktx
     implementation libs.androidx.appcompat

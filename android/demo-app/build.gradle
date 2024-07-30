@@ -29,7 +29,7 @@ android {
         }
     }
     compileOptions {
-//        coreLibraryDesugaringEnabled true
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -48,7 +48,7 @@ android {
 
 dependencies {
     // Temporary until we can drop support for API < 26
-//    coreLibraryDesugaring libs.desugar.jdk.libs
+    coreLibraryDesugaring libs.desugar.jdk.libs
 
     implementation libs.androidx.ktx
     implementation libs.androidx.lifecycle.runtime.ktx
