@@ -23,11 +23,12 @@ export class ManeuverImage extends LitElement {
     return this.visualInstruction.primaryContent.maneuverModifier;
   }
 
-  getFilename() {
-    return `${this.getManeuverType().replaceAll(" ", "_")}_${this.getManeuverModifier().replaceAll(" ", "_")}.svg`;
+  getImageUrl() {
+    const filename = `${this.getManeuverType().replaceAll(" ", "_")}_${this.getManeuverModifier().replaceAll(" ", "_")}.svg`;
+    return new URL(`./assets/directions/${filename}`, import.meta.url).href;
   }
 
   render() {
-    return html`<img src="/src/assets/directions/${this.getFilename()}" alt="${this.getManeuverType()} ${this.getManeuverModifier()} maneuver" />`;
+    return html`<img src="${this.getImageUrl()}" alt="${this.getManeuverType()} ${this.getManeuverModifier()} maneuver" />`;
   }
 }
