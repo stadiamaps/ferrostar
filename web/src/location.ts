@@ -57,8 +57,10 @@ export class BrowserLocationProvider {
       this.geolocationWatchId = navigator.geolocation.watchPosition((position) => {
         this.lastLocation = {
           coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },
-          horizontal_accuracy: position.coords.accuracy,
-          course_over_ground: position.coords.heading,
+          horizontalAccuracy: position.coords.accuracy,
+          courseOverGround: {
+            degrees: Math.floor(position.coords.heading || 0),
+          },
           timestamp: {
             secs_since_epoch: Math.floor(position.timestamp / 1000),
             nanos_since_epoch: 0,
