@@ -47,8 +47,9 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var body: some View {
         HStack {
             VStack {
-                if case let .navigating(_, _, _, progress: progress, _, visualInstruction: visualInstruction, _) = navigationState?.tripState,
-                   let visualInstruction
+                if case let .navigating(_, _, _, progress: progress, _, visualInstruction: visualInstruction,
+                                        _) = navigationState?.tripState,
+                    let visualInstruction
                 {
                     InstructionsView(
                         visualInstruction: visualInstruction,

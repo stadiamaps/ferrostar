@@ -99,7 +99,7 @@ final class FerrostarCoreTests: XCTestCase {
 
         let core = FerrostarCore(
             routeAdapter: routeAdapter,
-            locationProvider: SimulatedLocationProvider(), 
+            locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
             networkSession: mockSession
         )
@@ -194,7 +194,7 @@ final class FerrostarCoreTests: XCTestCase {
 
         let core = FerrostarCore(
             customRouteProvider: mockCustomRouteProvider,
-            locationProvider: SimulatedLocationProvider(), 
+            locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
             networkSession: mockSession
         )
@@ -231,7 +231,7 @@ final class FerrostarCoreTests: XCTestCase {
 
         let core = FerrostarCore(
             routeAdapter: mockRouteAdapter,
-            locationProvider: locationProvider, 
+            locationProvider: locationProvider,
             navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
             networkSession: mockSession
         )

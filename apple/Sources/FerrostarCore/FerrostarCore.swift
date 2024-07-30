@@ -101,9 +101,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ) {
         self.routeProvider = routeProvider
         self.locationProvider = locationProvider
-        self.config = navigationControllerConfig
+        config = navigationControllerConfig
         self.networkSession = networkSession
-        
+
         super.init()
 
         // Location provider setup
@@ -228,18 +228,18 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         // Apply the new config if one was provided to override.
         self.config = config ?? self.config
-        
+
         // Configure the navigation controller. This is required to build the initial state.
         let controller = NavigationController(route: route, config: self.config.ffiValue)
         navigationController = controller
-        
+
         locationProvider.startUpdating()
 
         state = NavigationState(
             tripState: controller.getInitialState(location: location),
             routeGeometry: route.geometry
         )
-        
+
         DispatchQueue.main.async {
             self.update(newState: controller.getInitialState(location: location), location: location)
         }
@@ -360,7 +360,7 @@ extension FerrostarCore: LocationManagingDelegate {
         update(newState: newState, location: location)
     }
 
-    public func locationManager(_: LocationProviding, didUpdateHeading newHeading: Heading) {
+    public func locationManager(_: LocationProviding, didUpdateHeading _: Heading) {
         // TODO: Make use of heading in TripState?
 //        state?.heading = newHeading
     }

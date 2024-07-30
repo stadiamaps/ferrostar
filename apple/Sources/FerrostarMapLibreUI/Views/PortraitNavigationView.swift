@@ -107,7 +107,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     guard case let .navigating(snappedUserLocation: userLocation, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
-    
+
     return PortraitNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
@@ -127,7 +127,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     guard case let .navigating(snappedUserLocation: userLocation, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
-    
+
     return PortraitNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),

@@ -46,8 +46,9 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
     var body: some View {
         VStack {
-            if case let .navigating(_, _, _, progress: progress, _, visualInstruction: visualInstruction, _) = navigationState?.tripState,
-               let visualInstruction
+            if case let .navigating(_, _, _, progress: progress, _, visualInstruction: visualInstruction,
+                                    _) = navigationState?.tripState,
+                let visualInstruction
             {
                 InstructionsView(
                     visualInstruction: visualInstruction,

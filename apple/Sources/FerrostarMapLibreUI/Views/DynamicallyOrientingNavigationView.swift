@@ -137,7 +137,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     guard case let .navigating(snappedUserLocation: userLocation, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
-    
+
     return DynamicallyOrientingNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
@@ -156,7 +156,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     guard case let .navigating(snappedUserLocation: userLocation, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
-    
+
     return DynamicallyOrientingNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),

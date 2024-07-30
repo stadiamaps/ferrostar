@@ -65,7 +65,7 @@ public extension NavigationState {
                             ),
                         ],
                         spokenInstructions: []
-                    )
+                    ),
                 ],
                 remainingWaypoints: [],
                 progress: TripProgress(
@@ -75,11 +75,12 @@ public extension NavigationState {
                 ),
                 deviation: .noDeviation,
                 visualInstruction: nil,
-                spokenInstruction: nil),
+                spokenInstruction: nil
+            ),
             routeGeometry: samplePedestrianWaypoints,
             isCalculatingNewRoute: false
         )
-        
+
         // TODO: Move this to the NavigationState?
 //        result.snappedLocation = UserLocation(
 //            coordinates: samplePedestrianWaypoints.first!,
