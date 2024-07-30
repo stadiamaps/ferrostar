@@ -157,7 +157,7 @@ class FerrostarCore(
 
   constructor(
       customRouteProvider: CustomRouteProvider,
-      httpClient: OkHttpClient = OkHttpClient(),
+      httpClient: OkHttpClient,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
   ) : this(
