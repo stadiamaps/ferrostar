@@ -32,8 +32,27 @@ jobs:
       - name: Build Book
         run: mdbook build
         working-directory: guide
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack
+      - name: WASM Build
+        run: wasm-pack build --target web ferrostar --no-default-features --features wasm_js
+        working-directory: common
+        
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - run: npm ci
+        working-directory: web
+      - run: npm run build
+        working-directory: web
+
+      - name: Stage web demo files
+        run: mv web/dist guide/book/web-demo
+        
       - name: Set up Pages
         uses: actions/configure-pages@v2
+        
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
