@@ -9,9 +9,15 @@
     <script type="module" src="/src/location.ts"></script>
   </head>
   <body>
+    <!--
+	This should not require any API key if run via `npm run dev`.
+	Learn how to get a free prod API key here: https://docs.stadiamaps.com/authentication/.
+	See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap vendors.
+      -->
     <ferrostar-core
       id="core"
       valhallaEndpointUrl="https://valhalla1.openstreetmap.de/route"
+      styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
       profile="bicycle"
       httpClient="${fetch}"
       costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
