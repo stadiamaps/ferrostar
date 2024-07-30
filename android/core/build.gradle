@@ -11,7 +11,7 @@ android {
     ndkVersion "26.2.11394342"
 
     defaultConfig {
-        minSdk 26
+        minSdk 25
         targetSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
