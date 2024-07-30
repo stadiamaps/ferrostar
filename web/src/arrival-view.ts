@@ -21,6 +21,7 @@ export class ArrivalView extends LitElement {
       .arrival-text {
         font-size: x-large;
         margin: 0 15px;
+        white-space: nowrap;
       }
     `,
   ];
