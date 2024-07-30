@@ -34,17 +34,14 @@ public extension NavigationState {
         let remainingLocations = Array(samplePedestrianWaypoints.dropFirst(n))
         let lastUserLocation = remainingLocations.first!
 
-        var result = NavigationState(
+        return NavigationState(
             tripState: .navigating(
                 snappedUserLocation: UserLocation(
-                    latitude: samplePedestrianWaypoints.first!.lat,
-                    longitude: samplePedestrianWaypoints.first!.lng,
-                    horizontalAccuracy: 0,
-                    course: 0,
-                    courseAccuracy: 0,
+                    coordinates: samplePedestrianWaypoints.first!,
+                    horizontalAccuracy: 10,
+                    courseOverGround: CourseOverGround(degrees: 0, accuracy: 10),
                     timestamp: Date(),
-                    speed: 0,
-                    speedAccuracy: 0
+                    speed: Speed(value: 0, accuracy: 2)
                 ),
                 remainingSteps: [
                     RouteStep(
@@ -80,17 +77,6 @@ public extension NavigationState {
             routeGeometry: samplePedestrianWaypoints,
             isCalculatingNewRoute: false
         )
-
-        // TODO: Move this to the NavigationState?
-//        result.snappedLocation = UserLocation(
-//            coordinates: samplePedestrianWaypoints.first!,
-//            horizontalAccuracy: 10,
-//            courseOverGround: CourseOverGround(degrees: 0, accuracy: 10),
-//            timestamp: Date(),
-//            speed: Speed(value: 0, accuracy: 2)
-//        )
-
-        return result
     }
 }
 
