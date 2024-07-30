@@ -124,8 +124,8 @@ class FerrostarCore(
 
   /**
    * The current state of the navigation session. This can be used in a custom ViewModel or
-   * elsewhere. If using the default behavior, use the NavigationViewModel provided by
-   * startNavigation().
+   * elsewhere. If using the default behavior, use the DefaultNavigationViewModel by injection or
+   * as provided by startNavigation().
    */
   var state: StateFlow<NavigationState> = _state.asStateFlow()
 
@@ -222,7 +222,7 @@ class FerrostarCore(
   fun startNavigation(
       route: Route,
       config: NavigationControllerConfig? = null
-  ): NavigationViewModel {
+  ): DefaultNavigationViewModel {
     stopNavigation()
 
     // Apply the new config if provided, otherwise use the original.
