@@ -24,6 +24,9 @@ import okhttp3.mock.url
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import uniffi.ferrostar.GeographicCoordinate
+import uniffi.ferrostar.NavigationControllerConfig
+import uniffi.ferrostar.RouteDeviationTracking
+import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
@@ -246,7 +249,9 @@ class ValhallaCoreTest {
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-            locationProvider = SimulatedLocationProvider())
+            locationProvider = SimulatedLocationProvider(),
+            navigationControllerConfig =
+                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
 
     return runTest {
       val routes =
@@ -291,6 +296,8 @@ class ValhallaCoreTest {
             profile = "auto",
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+            navigationControllerConfig =
+                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None),
             costingOptions = mapOf("auto" to mapOf("useTolls" to 0)))
 
     return runTest {

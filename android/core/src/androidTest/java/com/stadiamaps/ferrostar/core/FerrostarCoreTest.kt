@@ -108,7 +108,9 @@ class FerrostarCoreTest {
                     requestGenerator = MockRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf())),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-            locationProvider = SimulatedLocationProvider())
+            locationProvider = SimulatedLocationProvider(),
+            navigationControllerConfig =
+                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
 
     try {
       // Tests that the core generates a request and attempts to process it, but throws due to the
@@ -152,7 +154,9 @@ class FerrostarCoreTest {
                     requestGenerator = MockRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-            locationProvider = SimulatedLocationProvider())
+            locationProvider = SimulatedLocationProvider(),
+            navigationControllerConfig =
+                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -199,7 +203,9 @@ class FerrostarCoreTest {
         FerrostarCore(
             customRouteProvider = routeProvider,
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-            locationProvider = SimulatedLocationProvider())
+            locationProvider = SimulatedLocationProvider(),
+            navigationControllerConfig =
+                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -264,7 +270,9 @@ class FerrostarCoreTest {
                     requestGenerator = MockRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
-            locationProvider = locationProvider)
+            locationProvider = locationProvider,
+            navigationControllerConfig =
+                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
 
     val deviationHandler = DeviationHandler()
     core.deviationHandler = deviationHandler

@@ -39,12 +39,21 @@ struct DemoNavigationView: View {
         let simulated = SimulatedLocationProvider(location: initialLocation)
         simulated.warpFactor = 2
         locationProvider = simulated
+
+        // Configure the navigation session.
+        // You have a lot of flexibility here based on your use case.
+        let config = SwiftNavigationControllerConfig(
+            stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
+            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20)
+        )
+
         ferrostarCore = try! FerrostarCore(
             valhallaEndpointUrl: URL(
                 string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)"
             )!,
             profile: "bicycle",
             locationProvider: locationProvider,
+            navigationControllerConfig: config,
             costingOptions: ["bicycle": ["use_roads": 0.2]]
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
@@ -177,13 +186,6 @@ struct DemoNavigationView: View {
             return
         }
 
-        // Configure the navigation session.
-        // You have a lot of flexibility here based on your use case.
-        let config = SwiftNavigationControllerConfig(
-            stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
-            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20)
-        )
-
         if let simulated = locationProvider as? SimulatedLocationProvider {
             // This configures the simulator to the desired route.
             // The ferrostarCore.startNavigation will still start the location
@@ -195,10 +197,7 @@ struct DemoNavigationView: View {
         // Starts the navigation state machine.
         // It's worth having a look through the parameters,
         // as most of the configuration happens here.
-        try ferrostarCore.startNavigation(
-            route: route,
-            config: config
-        )
+        try ferrostarCore.startNavigation(route: route)
 
         preventAutoLock()
     }
