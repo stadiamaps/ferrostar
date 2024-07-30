@@ -44,6 +44,7 @@ data class NavigationUiState(
 
 interface NavigationViewModel {
   val uiState: StateFlow<NavigationUiState>
+  fun stopNavigation()
 }
 
 class DefaultNavigationViewModel(
@@ -80,7 +81,7 @@ class DefaultNavigationViewModel(
               started = SharingStarted.WhileSubscribed(),
               initialValue = uiState(ferrostarCore.state.value, lastLocation))
 
-  fun stopNavigation() {
+  override fun stopNavigation() {
     ferrostarCore.stopNavigation()
   }
 
