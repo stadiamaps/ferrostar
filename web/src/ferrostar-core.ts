@@ -2,9 +2,12 @@ import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import maplibregl from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
+import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
+import "@stadiamaps/maplibre-search-box/dist/style.css";
 import init, { NavigationController, RouteAdapter } from "ferrostar";
 import "./instructions-view";
 import "./arrival-view";
+import { BrowserLocationProvider } from "./location";
 
 @customElement("ferrostar-core")
 export class FerrostarCore extends LitElement {
@@ -80,6 +83,12 @@ export class FerrostarCore extends LitElement {
   }
 
   firstUpdated() {
+    const control = new MapLibreSearchControl({
+      onResultSelected: (feature) => {
+        this.startNavigationFromSearch(feature.geometry.coordinates);
+      },
+    });
+
     this.map = new maplibregl.Map({
       container: this.shadowRoot!.getElementById("map")!,
       style: this.styleUrl ? this.styleUrl : "https://demotiles.maplibre.org/style.json",
@@ -88,6 +97,8 @@ export class FerrostarCore extends LitElement {
       bearing: 0,
       zoom: 18,
     });
+
+    this.map.addControl(control, "bottom-left");
   }
 
   // TODO: type
@@ -164,6 +175,45 @@ export class FerrostarCore extends LitElement {
     this.map?.setCenter(route.geometry[0]);
 
     this.currentLocationMapMarker = new maplibregl.Marker().setLngLat(route.geometry[0]).addTo(this.map!);
+  }
+
+  async startNavigationFromSearch(coordinates: any) {
+    this.stopNavigation();
+
+    const waypoints = [{ coordinate: { lat: coordinates[1], lng: coordinates[0] }, kind: "Break" }];
+
+    const locationProvider = new BrowserLocationProvider();
+    locationProvider.requestPermission();
+    locationProvider.start();
+
+    // TODO: This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
+    while (!locationProvider.lastLocation) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    // Use the acquired user location to request the route
+    const routes = await this.getRoutes(locationProvider.lastLocation, waypoints);
+    const route = routes[0];
+
+    // TODO: type + use TypeScript enum
+    const config = {
+      stepAdvance: {
+        RelativeLineStringDistance: {
+          minimumHorizontalAccuracy: 25,
+          automaticAdvanceDistance: 10,
+        },
+      },
+      routeDeviationTracking: {
+        StaticThreshold: {
+          minimumHorizontalAccuracy: 25,
+          maxAcceptableDeviation: 10.0,
+        },
+      },
+    };
+
+    // Start the navigation
+    this.locationProvider = locationProvider;
+    this.startNavigation(route, config);
   }
 
   async stopNavigation() {
