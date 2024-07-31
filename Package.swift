@@ -30,7 +30,7 @@ if useLocalMapLibreSwiftUIDSL {
 } else {
     maplibreSwiftUIDSLPackage = .package(
         url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
-        from: "0.0.18"
+        exact: "0.0.18"
     )
 }
 
