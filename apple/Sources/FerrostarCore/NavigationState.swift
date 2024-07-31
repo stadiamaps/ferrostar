@@ -7,31 +7,17 @@ import Foundation
 /// While the core generally does not include UI, this is purely at the model layer and should be implemented
 /// the same for all frontends.
 public struct NavigationState: Hashable {
-    public internal(set) var snappedLocation: UserLocation
-    public internal(set) var heading: Heading?
-    public internal(set) var fullRouteShape: [GeographicCoordinate]
-    public internal(set) var currentStep: RouteStep?
-    public internal(set) var visualInstruction: VisualInstruction?
+    public internal(set) var tripState: TripState
+    public internal(set) var routeGeometry: [GeographicCoordinate]
+
     // TODO: This probably gets removed once we have an observer protocol
-    public internal(set) var spokenInstruction: SpokenInstruction?
-    public internal(set) var progress: TripProgress?
+
     /// Indicates when the core is calculating a new route due to the user being off route
     public internal(set) var isCalculatingNewRoute: Bool = false
-    public internal(set) var routeDeviation: RouteDeviation?
 
-    init(
-        snappedLocation: UserLocation,
-        heading: Heading? = nil,
-        fullRouteShape: [GeographicCoordinate],
-        steps: [RouteStep],
-        progress: TripProgress? = nil
-    ) {
-        self.snappedLocation = snappedLocation
-        self.heading = heading
-        self.fullRouteShape = fullRouteShape
-        self.progress = progress
-        currentStep = steps.first
-        visualInstruction = currentStep?.visualInstructions.first
-        spokenInstruction = currentStep?.spokenInstructions.first
+    init(tripState: TripState, routeGeometry: [GeographicCoordinate], isCalculatingNewRoute: Bool = false) {
+        self.tripState = tripState
+        self.routeGeometry = routeGeometry
+        self.isCalculatingNewRoute = isCalculatingNewRoute
     }
 }

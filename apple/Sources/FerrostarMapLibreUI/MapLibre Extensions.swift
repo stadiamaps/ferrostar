@@ -4,11 +4,11 @@ import MapLibre
 
 extension NavigationState {
     var routePolyline: MLNPolyline {
-        MLNPolylineFeature(coordinates: fullRouteShape.map(\.clLocationCoordinate2D))
+        MLNPolylineFeature(coordinates: routeGeometry.map(\.clLocationCoordinate2D))
     }
 
     var remainingRoutePolyline: MLNPolyline {
         // FIXME:
-        MLNPolylineFeature(coordinates: fullRouteShape.map(\.clLocationCoordinate2D))
+        MLNPolylineFeature(coordinates: routeGeometry.map(\.clLocationCoordinate2D))
     }
 }

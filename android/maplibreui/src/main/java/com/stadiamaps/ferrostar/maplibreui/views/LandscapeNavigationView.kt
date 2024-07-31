@@ -31,15 +31,15 @@ import com.maplibre.compose.settings.MarginInsets
 import com.stadiamaps.ferrostar.composeui.views.ArrivalView
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
 import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridView
-import com.stadiamaps.ferrostar.core.NavigationState
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
+import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import kotlinx.coroutines.flow.MutableStateFlow
-import uniffi.ferrostar.UserLocation
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * A portrait orientation of the navigation view with instructions, default controls and the
@@ -117,9 +117,8 @@ fun LandscapeNavigationView(
 @Composable
 private fun LandscapeNavigationViewPreview() {
   val viewModel =
-      NavigationViewModel(
-          MutableStateFlow<NavigationState>(NavigationState.pedestrianExample()),
-          initialUserLocation = UserLocation.pedestrianExample())
+      MockNavigationViewModel(
+          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
 
   LandscapeNavigationView(
       Modifier.fillMaxSize(), "https://demotiles.maplibre.org/style.json", viewModel = viewModel)

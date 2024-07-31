@@ -48,7 +48,7 @@ fun NavigationMapView(
   val uiState = viewModel.uiState.collectAsState()
 
   val locationEngine = remember { StaticLocationEngine() }
-  locationEngine.lastLocation = uiState.value.snappedLocation.toAndroidLocation()
+  locationEngine.lastLocation = uiState.value.snappedLocation?.toAndroidLocation()
 
   MapView(
       modifier = Modifier.fillMaxSize(),

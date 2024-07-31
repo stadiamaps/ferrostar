@@ -29,9 +29,6 @@ import com.stadiamaps.ferrostar.support.initialSimulatedLocation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.NavigationControllerConfig
-import uniffi.ferrostar.RouteDeviationTracking
-import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
 
@@ -81,15 +78,7 @@ fun DemoNavigationScene(
               ))
 
       val route = routes.first()
-      viewModel =
-          core.startNavigation(
-              route = route,
-              config =
-                  NavigationControllerConfig(
-                      StepAdvanceMode.RelativeLineStringDistance(
-                          minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                      RouteDeviationTracking.StaticThreshold(25U, 10.0)),
-          )
+      viewModel = core.startNavigation(route = route)
 
       locationProvider.setSimulatedRoute(route)
     }
@@ -111,15 +100,14 @@ fun DemoNavigationScene(
           // Trivial, if silly example of how to add your own overlay layers.
           // (Also incidentally highlights the lag inherent in MapLibre location tracking
           // as-is.)
-          Circle(
-              center =
-                  LatLng(
-                      uiState.value.snappedLocation.coordinates.lat,
-                      uiState.value.snappedLocation.coordinates.lng),
-              radius = 10f,
-              color = "Blue",
-              zIndex = 2,
-          )
+          uiState.value.snappedLocation?.let {
+            Circle(
+                center = LatLng(it.coordinates.lat, it.coordinates.lng),
+                radius = 10f,
+                color = "Blue",
+                zIndex = 2,
+            )
+          }
         }
   } else {
     // Loading indicator

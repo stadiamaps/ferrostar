@@ -18,6 +18,7 @@ final class ValhallaCoreTests: XCTestCase {
             valhallaEndpointUrl: valhallaEndpointUrl,
             profile: "auto",
             locationProvider: SimulatedLocationProvider(),
+            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
             networkSession: mockSession
         )
         let routes = try await core.getRoutes(

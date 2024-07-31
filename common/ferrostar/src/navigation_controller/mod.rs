@@ -85,6 +85,7 @@ impl NavigationController {
     /// urban tunnel). We leave this decision to the app developer and provide this as a convenience.
     pub fn advance_to_next_step(&self, state: &TripState) -> TripState {
         match state {
+            TripState::Idle => TripState::Idle,
             TripState::Navigating {
                 snapped_user_location,
                 ref remaining_steps,
@@ -161,6 +162,7 @@ impl NavigationController {
     /// Updates the user's current location and updates the navigation state accordingly.
     pub fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
         match state {
+            TripState::Idle => TripState::Idle,
             TripState::Navigating {
                 ref remaining_steps,
                 ref remaining_waypoints,
@@ -208,6 +210,7 @@ impl NavigationController {
                     // Do not advance
                     intermediate_state
                 } {
+                    TripState::Idle => TripState::Idle,
                     TripState::Navigating {
                         snapped_user_location,
                         remaining_steps,

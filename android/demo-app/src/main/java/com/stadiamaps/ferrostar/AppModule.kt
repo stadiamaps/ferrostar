@@ -46,6 +46,11 @@ object AppModule {
             profile = "bicycle",
             httpClient = httpClient,
             locationProvider = locationProvider,
+            navigationControllerConfig =
+                NavigationControllerConfig(
+                    StepAdvanceMode.RelativeLineStringDistance(
+                        minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
+                    RouteDeviationTracking.StaticThreshold(25U, 10.0)),
             costingOptions = mapOf("bicycle" to mapOf("use_roads" to 0.2)))
 
     // Not all navigation apps will require this sort of extra configuration.
