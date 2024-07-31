@@ -35,6 +35,10 @@ export class FerrostarCore extends LitElement {
   @property({ type: Object })
   tripState: any = null;
 
+  // TODO: type
+  @property()
+  useIntegratedSearchBox: boolean = true;
+
   routeAdapter: RouteAdapter | null = null;
   map: maplibregl.Map | null = null;
   navigationController: NavigationController | null = null;
@@ -83,12 +87,6 @@ export class FerrostarCore extends LitElement {
   }
 
   firstUpdated() {
-    const control = new MapLibreSearchControl({
-      onResultSelected: (feature) => {
-        this.startNavigationFromSearch(feature.geometry.coordinates);
-      },
-    });
-
     this.map = new maplibregl.Map({
       container: this.shadowRoot!.getElementById("map")!,
       style: this.styleUrl ? this.styleUrl : "https://demotiles.maplibre.org/style.json",
@@ -98,7 +96,14 @@ export class FerrostarCore extends LitElement {
       zoom: 18,
     });
 
-    this.map.addControl(control, "bottom-left");
+    if (this.useIntegratedSearchBox) {
+      const control = new MapLibreSearchControl({
+        onResultSelected: (feature) => {
+          this.startNavigationFromSearch(feature.geometry.coordinates);
+        },
+      });
+      this.map.addControl(control, "bottom-left");
+    }
   }
 
   // TODO: type
