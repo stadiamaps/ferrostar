@@ -100,15 +100,14 @@ fun DemoNavigationScene(
           // Trivial, if silly example of how to add your own overlay layers.
           // (Also incidentally highlights the lag inherent in MapLibre location tracking
           // as-is.)
-          Circle(
-              center =
-                  LatLng(
-                      uiState.value.snappedLocation.coordinates.lat,
-                      uiState.value.snappedLocation.coordinates.lng),
-              radius = 10f,
-              color = "Blue",
-              zIndex = 2,
-          )
+          uiState.value.snappedLocation?.let {
+            Circle(
+                center = LatLng(it.coordinates.lat, it.coordinates.lng),
+                radius = 10f,
+                color = "Blue",
+                zIndex = 2,
+            )
+          }
         }
   } else {
     // Loading indicator

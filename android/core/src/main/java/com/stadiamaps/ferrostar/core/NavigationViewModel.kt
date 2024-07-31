@@ -18,7 +18,7 @@ import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 
 data class NavigationUiState(
-    val snappedLocation: UserLocation,
+    val snappedLocation: UserLocation?,
     val heading: Float?,
     val routeGeometry: List<GeographicCoordinate>,
     val visualInstruction: VisualInstruction?,
@@ -28,7 +28,7 @@ data class NavigationUiState(
     val routeDeviation: RouteDeviation?
 ) {
   companion object {
-    fun fromFerrostar(coreState: NavigationState, userLocation: UserLocation): NavigationUiState =
+    fun fromFerrostar(coreState: NavigationState, userLocation: UserLocation?): NavigationUiState =
         NavigationUiState(
             snappedLocation = userLocation,
             // TODO: Heading/course over ground
@@ -53,14 +53,7 @@ class DefaultNavigationViewModel(
     locationProvider: LocationProvider
 ) : ViewModel(), NavigationViewModel {
 
-  private var lastLocation: UserLocation
-
-  init {
-    lastLocation =
-        requireNotNull(locationProvider.lastLocation) {
-          "LocationProvider must have a last location."
-        }
-  }
+  private var lastLocation: UserLocation? = locationProvider.lastLocation
 
   override val uiState =
       ferrostarCore.state
@@ -69,7 +62,7 @@ class DefaultNavigationViewModel(
                 when (coreState.tripState) {
                   is TripState.Navigating -> coreState.tripState.snappedUserLocation
                   is TripState.Complete,
-                  TripState.Idle -> lastLocation
+                  TripState.Idle -> locationProvider.lastLocation
                 }
 
             uiState(coreState, lastLocation)
@@ -86,6 +79,6 @@ class DefaultNavigationViewModel(
     ferrostarCore.stopNavigation()
   }
 
-  private fun uiState(coreState: NavigationState, location: UserLocation) =
+  private fun uiState(coreState: NavigationState, location: UserLocation?) =
       NavigationUiState.fromFerrostar(coreState, location)
 }
