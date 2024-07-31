@@ -177,7 +177,10 @@ export class FerrostarCore extends LitElement {
       },
     });
 
-    this.map?.setCenter(route.geometry[0]);
+    this.map?.easeTo({
+      center: route.geometry[0],
+      bearing: startingLocation.courseOverGround?.degrees || 0,
+    });
 
     this.currentLocationMapMarker = new maplibregl.Marker().setLngLat(route.geometry[0]).addTo(this.map!);
   }
