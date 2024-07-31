@@ -79,7 +79,7 @@ Before pushing, run the following in the `common` folder:
 1. Run `cargo fmt` to automatically format any new rust code.
 2. Run `cargo insta review` to update snapshot testing changes. 
 3. Run `cargo test` to validate testing and ensure snapshot changes were correctly applied by step 2.
-4. Manually bump the version on the ferrostar Cargo.toml at `common/ferrostar/Cargo.toml`. This will fail the rust semver check 
+4. Manually bump the version on the ferrostar Cargo.toml at `common/ferrostar/Cargo.toml`. If you forget to do this and make breaking changes, CI will fail.
 if you don't.
 
 ### Web
