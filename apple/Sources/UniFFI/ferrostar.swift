@@ -3289,9 +3289,12 @@ extension StepAdvanceMode: Equatable, Hashable {}
 
 public enum TripState {
     /**
-     * The navigation controller is idle
+     * The navigation controller is idle and there is no active trip.
      */
     case idle
+    /**
+     * The navigation controller is actively navigating a trip.
+     */
     case navigating(snappedUserLocation: UserLocation,
                     /**
                         * The ordered list of steps that remain in the trip.
@@ -3325,7 +3328,7 @@ public enum TripState {
                         * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
                         */ spokenInstruction: SpokenInstruction?)
     /**
-     * The navigation controller has reached the end of the route.
+     * The navigation controller has reached the end of the trip.
      */
     case complete
 }
