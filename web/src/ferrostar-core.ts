@@ -36,7 +36,7 @@ export class FerrostarCore extends LitElement {
   tripState: any = null;
 
   // TODO: type
-  @property()
+  @property({ type: Boolean })
   useIntegratedSearchBox: boolean = true;
 
   routeAdapter: RouteAdapter | null = null;
