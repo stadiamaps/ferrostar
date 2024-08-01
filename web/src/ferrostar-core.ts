@@ -41,6 +41,7 @@ export class FerrostarCore extends LitElement {
 
   routeAdapter: RouteAdapter | null = null;
   map: maplibregl.Map | null = null;
+  searchBox: MapLibreSearchControl | null = null;
   navigationController: NavigationController | null = null;
   currentLocationMapMarker: maplibregl.Marker | null = null;
 
@@ -97,12 +98,12 @@ export class FerrostarCore extends LitElement {
     });
 
     if (this.useIntegratedSearchBox) {
-      const control = new MapLibreSearchControl({
+      this.searchBox = new MapLibreSearchControl({
         onResultSelected: (feature) => {
           this.startNavigationFromSearch(feature.geometry.coordinates);
         },
       });
-      this.map.addControl(control, "bottom-left");
+      this.map.addControl(this.searchBox, "bottom-left");
     }
   }
 
@@ -129,6 +130,8 @@ export class FerrostarCore extends LitElement {
 
   // TODO: type
   async startNavigation(route: any, config: any) {
+    if (this.useIntegratedSearchBox) this.map?.removeControl(this.searchBox!);
+
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     this.navigationController = new NavigationController(route, config);
 
@@ -186,8 +189,6 @@ export class FerrostarCore extends LitElement {
   }
 
   async startNavigationFromSearch(coordinates: any) {
-    this.stopNavigation();
-
     const waypoints = [{ coordinate: { lat: coordinates[1], lng: coordinates[0] }, kind: "Break" }];
 
     const locationProvider = new BrowserLocationProvider();
@@ -231,11 +232,9 @@ export class FerrostarCore extends LitElement {
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
-    // this.locationProvider.updateCallback = null;
-    if (this.locationProvider) {
-      this.locationProvider.updateCallback = null;
-    }
-    this.currentLocationMapMarker = null;
+    this.tripState = null;
+    if (this.locationProvider) this.locationProvider.updateCallback = null;
+    if (this.useIntegratedSearchBox) this.map?.addControl(this.searchBox!, "bottom-left");
   }
 
   private onLocationUpdated() {
