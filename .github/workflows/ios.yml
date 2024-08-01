@@ -37,6 +37,11 @@ jobs:
       run: ./build-ios.sh --release
       working-directory: common
 
+    - name: Commit changed files (it is easy to forget about ferrostar.swift)
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        file_pattern: 'apple/Sources/UniFFI/*'
+
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
       with:
