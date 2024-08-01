@@ -227,9 +227,14 @@ export class FerrostarCore extends LitElement {
   async stopNavigation() {
     // TODO: Factor out the UI layer from the core
     this.clearMap();
+    this.routeAdapter?.free();
     this.routeAdapter = null;
-    this.locationProvider.updateCallback = null;
+    this.navigationController?.free();
     this.navigationController = null;
+    // this.locationProvider.updateCallback = null;
+    if (this.locationProvider) {
+      this.locationProvider.updateCallback = null;
+    }
     this.currentLocationMapMarker = null;
   }
 
