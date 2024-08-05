@@ -327,14 +327,13 @@ class FerrostarCore(
                   val routes = getRoutes(location, action.waypoints)
                   val config = _config
                   val processor = alternativeRouteProcessor
-                  val state = _state?.value
+                  val state = _state.value
                   // Make sure we are still navigating and the new route is still relevant
-                  if (state != null &&
-                      state.tripState is TripState.Navigating &&
+                  if (state.tripState is TripState.Navigating &&
                       state.tripState.deviation is RouteDeviation.OffRoute) {
                     if (processor != null) {
                       processor.loadedAlternativeRoutes(this@FerrostarCore, routes)
-                    } else if (routes.count() > 1 && config != null) {
+                    } else if (routes.isNotEmpty()) {
                       // Default behavior when there is no user-defined behavior:
                       // accept the first route, as this is what most users want when they go off
                       // route.
@@ -367,7 +366,7 @@ class FerrostarCore(
     val controller = _navigationController
 
     if (controller != null) {
-      _state?.update { currentValue ->
+      _state.update { currentValue ->
         val newState =
             controller.updateUserLocation(location = location, state = currentValue.tripState)
 
