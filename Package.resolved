@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "3f712ee1e65ef7ed6ca6db07658689aa3d185064",
-        "version" : "6.5.0"
+        "revision" : "cf66f087af489ebc091c03cbd4f38d0540135871",
+        "version" : "6.5.3"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
       "state" : {
-        "revision" : "d52adbcbfaf96bd0723a156bd838826916ff7a69",
-        "version" : "0.0.3"
+        "revision" : "236215c13bff962009e0f0257d6d8349be33442f",
+        "version" : "0.0.4"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
       "state" : {
-        "revision" : "50673f08fa9c150bbed0de7364f67a7ae0b894d2",
-        "version" : "0.0.18"
+        "revision" : "02f5a62009bc991a9dc59011785c83c347d7eea6",
+        "version" : "0.0.23"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "revision" : "3b79620f2b916941035b5544bbca321fa7b33ed4",
-        "version" : "0.0.3"
+        "revision" : "81ccaead99a3c038c09345caa2888ae74b644ee9",
+        "version" : "0.0.9"
       }
     },
     {
@@ -41,14 +41,14 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
       "state" : {
-        "revision" : "8ddd519780452729c6634ad6bd0d2595938e9ea3",
-        "version" : "1.16.1"
+        "revision" : "e883fc9ea51e76dc9ed13fd4a92b0ee258a1e8c9",
+        "version" : "1.17.3"
       }
     },
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-syntax.git",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
         "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
         "version" : "509.1.1"
