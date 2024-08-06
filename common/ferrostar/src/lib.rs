@@ -25,9 +25,15 @@ pub mod navigation_controller;
 pub mod routing_adapters;
 pub mod simulation;
 
+use models::Route;
 #[cfg(feature = "uniffi")]
 use routing_adapters::{
-    error::InstantiationError, osrm::OsrmResponseParser, valhalla::ValhallaHttpRequestGenerator,
+    error::{InstantiationError, OsrmParsingError},
+    osrm::{
+        models::{Route as OsrmRoute, Waypoint as OsrmWaypoint},
+        OsrmResponseParser,
+    },
+    valhalla::ValhallaHttpRequestGenerator,
     RouteRequestGenerator, RouteResponseParser,
 };
 #[cfg(feature = "uniffi")]
@@ -91,4 +97,23 @@ fn create_valhalla_request_generator(
 #[uniffi::export]
 fn create_osrm_response_parser(polyline_precision: u32) -> Arc<dyn RouteResponseParser> {
     Arc::new(OsrmResponseParser::new(polyline_precision))
+}
+
+// MARK: OSRM Route Conversion
+
+/// Creates a [`Route`] from OSRM data.
+///
+/// This uses the same logic as the [`OsrmResponseParser`] and is designed to be fairly flexible,
+/// supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
+/// which contain richer information like banners and voice instructions for navigation.
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+fn create_route_from_osrm(
+    route_data: Vec<u8>,
+    waypoint_data: Vec<u8>,
+    polyline_precision: u32,
+) -> Result<Route, OsrmParsingError> {
+    let route: OsrmRoute = serde_json::from_slice(&route_data)?;
+    let waypoints: Vec<OsrmWaypoint> = serde_json::from_slice(&waypoint_data)?;
+    return Route::from_osrm(&route, &waypoints, polyline_precision);
 }
