@@ -2,12 +2,6 @@ import CoreLocation
 import FerrostarCoreFFI
 import Foundation
 
-public extension Route {
-    func getPolyline(precision: UInt32) throws -> String {
-        try getRoutePolyline(route: self, precision: precision)
-    }
-}
-
 private class DetectorImpl: RouteDeviationDetector {
     let detectorFunc: (UserLocation, Route, RouteStep) -> RouteDeviation
 

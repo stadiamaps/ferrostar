@@ -35,7 +35,7 @@
 use crate::models::Waypoint;
 use crate::models::{Route, UserLocation};
 use crate::routing_adapters::error::InstantiationError;
-use error::{RoutingRequestGenerationError, RoutingResponseParseError};
+use error::{OsrmParsingError, RoutingRequestGenerationError};
 
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
@@ -102,7 +102,7 @@ pub trait RouteResponseParser: Send + Sync {
     ///
     /// We use a sequence of octets as a common interchange format.
     /// as this works for all currently conceivable formats (JSON, PBF, etc.).
-    fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, RoutingResponseParseError>;
+    fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, OsrmParsingError>;
 }
 
 /// The route adapter bridges between the common core and a routing backend where interaction takes place
@@ -172,10 +172,7 @@ impl RouteAdapter {
             .generate_request(user_location, waypoints)
     }
 
-    pub fn parse_response(
-        &self,
-        response: Vec<u8>,
-    ) -> Result<Vec<Route>, RoutingResponseParseError> {
+    pub fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, OsrmParsingError> {
         self.response_parser.parse_response(response)
     }
 }
