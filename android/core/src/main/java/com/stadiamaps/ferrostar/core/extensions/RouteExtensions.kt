@@ -14,6 +14,10 @@ import uniffi.ferrostar.createRouteFromOsrm
  * @param polylinePrecision The polyline precision.
  * @return The navigation [Route]
  */
-fun Route.Companion.fromOsrm(route: ByteArray, waypoints: ByteArray, polylinePrecision: UInt): Route {
-    return createRouteFromOsrm(routeData = route, waypointData = waypoints, polylinePrecision)
+fun Route.Companion.fromOsrm(
+    route: ByteArray,
+    waypoints: ByteArray,
+    polylinePrecision: UInt
+): Route {
+  return createRouteFromOsrm(routeData = route, waypointData = waypoints, polylinePrecision)
 }
