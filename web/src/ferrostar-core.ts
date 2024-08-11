@@ -48,13 +48,17 @@ export class FerrostarCore extends LitElement {
   static styles = [
     unsafeCSS(maplibreglStyles),
     css`
+      [hidden] {
+        display: none !important;
+      }
+
       #map {
         height: 100%;
         width: 100%;
       }
 
-      instructions-view,
-      arrival-view {
+      instructions-view {
+        top: 10px;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
@@ -62,12 +66,36 @@ export class FerrostarCore extends LitElement {
         z-index: 1000;
       }
 
-      #top-component {
-        top: 10px;
-      }
-
       #bottom-component {
         bottom: 10px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 80%;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      #stop-button {
+        display: flex;
+        padding: 20px;
+        background-color: white;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: background-color 0.3s, filter 0.3s;
+      }
+
+      #stop-button .icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      #stop-button:hover {
+        background-color: #e0e0e0;
       }
     `,
   ];
@@ -251,8 +279,13 @@ export class FerrostarCore extends LitElement {
   render() {
     return html`
       <div id="map">
-        <instructions-view .tripState=${this.tripState} id="top-component"></instructions-view>
-        <arrival-view .tripState=${this.tripState} id="bottom-component"></arrival-view>
+        <instructions-view .tripState=${this.tripState}></instructions-view>
+        <div id="bottom-component">
+          <arrival-view .tripState=${this.tripState}></arrival-view>
+          <button id="stop-button" @click=${this.stopNavigation} ?hidden=${!this.tripState}>
+            <img src="/src/assets/directions/close.svg" alt="Stop navigation" class="icon" />
+          </button>
+        </div>
       </div>
     `;
   }
