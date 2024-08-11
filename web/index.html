@@ -67,11 +67,7 @@
             coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
             horizontalAccuracy: 6.0,
             courseOverGround: null,
-            // TODO: find a better way to create the timestamp?
-            timestamp: {
-              secs_since_epoch: Math.floor(Date.now() / 1000),
-              nanos_since_epoch: 0,
-            },
+            timestamp: Date.now(),
             speed: null,
           };
 

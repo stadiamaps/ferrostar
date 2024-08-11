@@ -141,11 +141,7 @@ export class FerrostarCore extends LitElement {
           coordinates: route.geometry[0],
           horizontalAccuracy: 0.0,
           courseOverGround: null,
-          // TODO: find a better way to create the timestamp?
-          timestamp: {
-            secs_since_epoch: Math.floor(Date.now() / 1000),
-            nanos_since_epoch: 0,
-          },
+          timestamp: Date.now(),
           speed: null,
         };
 
