@@ -61,10 +61,7 @@ export class BrowserLocationProvider {
           courseOverGround: {
             degrees: Math.floor(position.coords.heading || 0),
           },
-          timestamp: {
-            secs_since_epoch: Math.floor(position.timestamp / 1000),
-            nanos_since_epoch: 0,
-          },
+          timestamp: Date.now(),
           speed: position.coords.speed,
         };
 
