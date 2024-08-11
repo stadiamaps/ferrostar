@@ -24,15 +24,11 @@
       useIntegratedSearchBox="true"
     ></ferrostar-core>
 
-    <p class="controls" id="controls-start">
+    <p>
       <span>
         Search and select a destination, or
         <button id="simulate">Simulate Navigation</button>
       </span>
-    </p>
-
-    <p class="controls" id="controls-stop">
-      <button id="stop">Stop Navigation</button>
     </p>
 
     <script type="module">
@@ -86,19 +82,6 @@
           // Start the navigation
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
-
-          // Hide the start button and show the stop button
-          document.getElementById("controls-start").style.display = "none";
-          document.getElementById("controls-stop").style.display = "block";
-        });
-
-        // Button to stop the navigation
-        document.getElementById("stop").addEventListener("click", () => {
-          core.stopNavigation();
-          
-          // Hide the stop button and show the start button
-          document.getElementById("controls-start").style.display = "block";
-          document.getElementById("controls-stop").style.display = "none";
         });
       });
     </script>
