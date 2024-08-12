@@ -49,6 +49,7 @@ proptest = { version = "1.4.0", default-features = false }
 insta = { version = "1.33.0", features = ["yaml"] }
 rstest = "0.21.0"
 wasm-bindgen-test = "0.3"
+ts-rs = { git = "https://github.com/Aleph-Alpha/ts-rs", features = ["uuid-impl"] }
 
 [lib]
 crate-type = ["cdylib", "staticlib", "lib"]
