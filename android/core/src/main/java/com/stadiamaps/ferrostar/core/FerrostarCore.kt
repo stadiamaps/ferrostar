@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.core
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
+import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Instant
 import java.util.concurrent.Executors
@@ -56,10 +57,11 @@ private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<Strin
  * access the user's location.
  */
 class FerrostarCore(
-    val routeProvider: RouteProvider,
-    val httpClient: OkHttpClient,
-    val locationProvider: LocationProvider,
-    navigationControllerConfig: NavigationControllerConfig,
+  val routeProvider: RouteProvider,
+  val httpClient: OkHttpClient,
+  val locationProvider: LocationProvider,
+  val foregroundService: ForegroundServiceManager,
+  navigationControllerConfig: NavigationControllerConfig,
 ) : LocationUpdateListener {
   companion object {
     private const val TAG = "FerrostarCore"
@@ -130,40 +132,46 @@ class FerrostarCore(
   var state: StateFlow<NavigationState> = _state.asStateFlow()
 
   constructor(
-      valhallaEndpointURL: URL,
-      profile: String,
-      httpClient: OkHttpClient,
-      locationProvider: LocationProvider,
-      navigationControllerConfig: NavigationControllerConfig,
-      costingOptions: Map<String, Any> = emptyMap(),
+    valhallaEndpointURL: URL,
+    profile: String,
+    httpClient: OkHttpClient,
+    locationProvider: LocationProvider,
+    foregroundService: ForegroundServiceManager,
+    navigationControllerConfig: NavigationControllerConfig,
+    costingOptions: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
           RouteAdapter.newValhallaHttp(
               valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(costingOptions))),
       httpClient,
       locationProvider,
+      foregroundService,
       navigationControllerConfig)
 
   constructor(
-      routeAdapter: RouteAdapter,
-      httpClient: OkHttpClient,
-      locationProvider: LocationProvider,
-      navigationControllerConfig: NavigationControllerConfig,
+    routeAdapter: RouteAdapter,
+    httpClient: OkHttpClient,
+    locationProvider: LocationProvider,
+    foregroundService: ForegroundServiceManager,
+    navigationControllerConfig: NavigationControllerConfig,
   ) : this(
       RouteProvider.RouteAdapter(routeAdapter),
       httpClient,
       locationProvider,
+      foregroundService,
       navigationControllerConfig)
 
   constructor(
-      customRouteProvider: CustomRouteProvider,
-      httpClient: OkHttpClient,
-      locationProvider: LocationProvider,
-      navigationControllerConfig: NavigationControllerConfig,
+    customRouteProvider: CustomRouteProvider,
+    httpClient: OkHttpClient,
+    locationProvider: LocationProvider,
+    foregroundService: ForegroundServiceManager,
+    navigationControllerConfig: NavigationControllerConfig,
   ) : this(
       RouteProvider.CustomProvider(customRouteProvider),
       httpClient,
       locationProvider,
+      foregroundService,
       navigationControllerConfig)
 
   suspend fun getRoutes(initialLocation: UserLocation, waypoints: List<Waypoint>): List<Route> =
@@ -226,6 +234,9 @@ class FerrostarCore(
   ): DefaultNavigationViewModel {
     stopNavigation()
 
+    // Start the foreground notification service
+    foregroundService.startService()
+
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
@@ -255,12 +266,19 @@ class FerrostarCore(
    *
    * This allows you to reuse the existing view model. Do not call this method unless you are
    * already navigating.
+   *
+   * @param route the route to navigate.
+   * @param config change the configuration in the core before staring navigation. This was
+   *   originally provided on init, but you can set a new value for future sessions.
    */
-  fun replaceRoute(route: Route, config: NavigationControllerConfig) {
+  fun replaceRoute(route: Route, config: NavigationControllerConfig? = null) {
+    // Apply the new config if provided, otherwise use the original.
+    _config = config ?: _config
+
     val controller =
         NavigationController(
             route,
-            config,
+            _config,
         )
     val startingLocation =
         locationProvider.lastLocation

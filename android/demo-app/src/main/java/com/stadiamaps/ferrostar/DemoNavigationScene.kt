@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,6 +41,18 @@ fun DemoNavigationScene(
 ) {
   var viewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
 
+  val notificationPermissionLauncher =
+      rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+        granted ->
+        if (granted) {
+          // TODO
+          // onAccess()
+        } else {
+          // TODO
+          // onFailed()
+        }
+      }
+
   // Get location permissions.
   // NOTE: This is NOT a robust suggestion for how to get permissions in a production app.
   // THis is simply minimal sample code in as few lines as possible.
@@ -65,6 +78,11 @@ fun DemoNavigationScene(
       }
 
   LaunchedEffect(savedInstanceState) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    // Request location permissions
     permissionsLauncher.launch(locationPermissions)
     // Fetch a route in the background
     launch(Dispatchers.IO) {

@@ -8,6 +8,8 @@ import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
+import com.stadiamaps.ferrostar.service.FerrostarForegroundService
+import com.stadiamaps.ferrostar.service.FerrostarServiceManager
 import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
@@ -34,6 +36,12 @@ object AppModule {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
   }
 
+  val foregroundService: com.stadiamaps.ferrostar.service.FerrostarServiceManager by lazy {
+    com.stadiamaps.ferrostar.service.FerrostarServiceManager(
+      appContext
+    )
+  }
+
   // NOTE: This is a public instance which is suitable for development, but not for heavy use.
   // This server is suitable for testing and building your app, but once you are ready to go live,
   // YOU MUST USE ANOTHER SERVER.
@@ -46,6 +54,7 @@ object AppModule {
             profile = "bicycle",
             httpClient = httpClient,
             locationProvider = locationProvider,
+          foregroundService = foregroundService,
             navigationControllerConfig =
                 NavigationControllerConfig(
                     StepAdvanceMode.RelativeLineStringDistance(

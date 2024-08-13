@@ -13,19 +13,24 @@ interface InstructionRowTheme {
   @get:Composable val instructionTextStyle: TextStyle
   /** The color of the icon. */
   @get:Composable val iconTintColor: Color
+  /** The background color for the view. */
+  @get:Composable val backgroundColor: Color
 }
 
 /** Default theme using the material theme. */
 object DefaultInstructionRowTheme : InstructionRowTheme {
   override val distanceTextStyle: TextStyle
     @Composable
-    get() = MaterialTheme.typography.titleLarge.merge(color = MaterialTheme.colorScheme.primary)
+    get() = MaterialTheme.typography.titleLarge.merge(color = MaterialTheme.colorScheme.onSurface)
 
   override val instructionTextStyle: TextStyle
     @Composable
     get() =
-        MaterialTheme.typography.headlineSmall.merge(color = MaterialTheme.colorScheme.secondary)
+        MaterialTheme.typography.headlineSmall.merge(color = MaterialTheme.colorScheme.onSurfaceVariant)
 
   override val iconTintColor: Color
-    @Composable get() = MaterialTheme.colorScheme.primary
+    @Composable get() = MaterialTheme.colorScheme.onSurface
+
+  override val backgroundColor: Color
+    @Composable get() = MaterialTheme.colorScheme.surface
 }

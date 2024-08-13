@@ -83,13 +83,11 @@ fun ArrivalView(
                     text =
                         estimatedArrivalFormatter.format(
                             progress.estimatedArrivalTime(fromDate, timeZone)),
-                    style = theme.measurementTextStyle,
-                    color = theme.measurementColor)
+                    style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
                   Text(
                       text = "Arrival",
-                      style = theme.secondaryTextStyle,
-                      color = theme.secondaryColor)
+                      style = theme.secondaryTextStyle)
                 }
               }
 
@@ -97,13 +95,11 @@ fun ArrivalView(
               modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = durationFormatter.format(progress.durationRemaining),
-                    style = theme.measurementTextStyle,
-                    color = theme.measurementColor)
+                    style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
                   Text(
                       text = "Duration",
-                      style = theme.secondaryTextStyle,
-                      color = theme.secondaryColor)
+                      style = theme.secondaryTextStyle)
                 }
               }
 
@@ -111,13 +107,11 @@ fun ArrivalView(
               modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = distanceFormatter.format(progress.distanceRemaining),
-                    style = theme.measurementTextStyle,
-                    color = theme.measurementColor)
+                    style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
                   Text(
                       text = "Distance",
-                      style = theme.secondaryTextStyle,
-                      color = theme.secondaryColor)
+                      style = theme.secondaryTextStyle)
                 }
               }
 
@@ -127,12 +121,12 @@ fun ArrivalView(
                 onClick = { onTapExit() },
                 modifier = Modifier.size(50.dp),
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = theme.secondaryColor),
+                colors = ButtonDefaults.buttonColors(containerColor = theme.exitButtonBackgroundColor),
                 contentPadding = PaddingValues(0.dp)) {
                   Icon(
                       imageVector = Icons.Filled.Close,
                       contentDescription = "Close",
-                      tint = Color.White)
+                      tint = theme.exitIconColor)
                 }
           }
         }
@@ -164,18 +158,17 @@ fun ArrivalViewInformationalPreview() {
         override val style: ArrivalViewStyle
           @Composable get() = ArrivalViewStyle.INFORMATIONAL
 
-        override val measurementColor: Color
-          @Composable get() = MaterialTheme.colorScheme.onBackground
-
         override val measurementTextStyle: TextStyle
           @Composable
-          get() = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
-
-        override val secondaryColor: Color
-          @Composable get() = MaterialTheme.colorScheme.secondary
+          get() = MaterialTheme.typography.titleLarge.copy(
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.SemiBold
+          )
 
         override val secondaryTextStyle: TextStyle
-          @Composable get() = MaterialTheme.typography.labelSmall
+          @Composable get() = MaterialTheme.typography.labelSmall.copy(
+            color = MaterialTheme.colorScheme.onSecondary
+          )
 
         override val exitIconColor: Color
           @Composable get() = MaterialTheme.colorScheme.onSecondary
