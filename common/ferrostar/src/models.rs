@@ -1,10 +1,10 @@
 //! Common data models.
 //!
 //! Quick tour:
-//! - [Route]: Common notion of what a route is; You can go top-down from here if you're curious.
-//! - [Waypoint]: Points that a user is intending to traverse; interesting because there are multiple kinds of them.
-//! - [SpokenInstruction] and [VisualInstruction]: Audiovisual prompts as the user progresses through the route.
-//! - [GeographicCoordinate] and [BoundingBox]: Geographic primitives
+//! - [`Route`]: Common notion of what a route is; You can go top-down from here if you're curious.
+//! - [`Waypoint`]: Points that a user is intending to traverse; interesting because there are multiple kinds of them.
+//! - [`SpokenInstruction`] and [`VisualInstruction`]: Audiovisual prompts as the user progresses through the route.
+//! - [`GeographicCoordinate`] and [`BoundingBox`]: Geographic primitives
 //!   (providing a shared language and type definition across multiple platforms).
 
 #[cfg(feature = "alloc")]

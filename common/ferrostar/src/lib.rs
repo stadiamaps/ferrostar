@@ -109,11 +109,11 @@ fn create_osrm_response_parser(polyline_precision: u32) -> Arc<dyn RouteResponse
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 fn create_route_from_osrm(
-    route_data: Vec<u8>,
-    waypoint_data: Vec<u8>,
+    route_data: &[u8],
+    waypoint_data: &[u8],
     polyline_precision: u32,
 ) -> Result<Route, ParsingError> {
-    let route: OsrmRoute = serde_json::from_slice(&route_data)?;
-    let waypoints: Vec<OsrmWaypoint> = serde_json::from_slice(&waypoint_data)?;
-    return Route::from_osrm(&route, &waypoints, polyline_precision);
+    let route: OsrmRoute = serde_json::from_slice(route_data)?;
+    let waypoints: Vec<OsrmWaypoint> = serde_json::from_slice(waypoint_data)?;
+    Route::from_osrm(&route, &waypoints, polyline_precision)
 }
