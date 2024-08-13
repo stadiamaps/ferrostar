@@ -14,6 +14,9 @@ interface SpokenInstructionObserver {
    */
   fun onSpokenInstructionTrigger(spokenInstruction: SpokenInstruction)
 
+  /** Stops speech and clears the queue of spoken utterances. */
+  fun stopAndClearQueue()
+
   var isMuted: Boolean
 }
 
@@ -120,6 +123,10 @@ class AndroidTtsObserver(
     }
 
     statusObserver?.onTtsInitialized(tts, status)
+  }
+
+  override fun stopAndClearQueue() {
+    tts?.stop()
   }
 
   /**
