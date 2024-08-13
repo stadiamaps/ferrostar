@@ -132,7 +132,7 @@ export class FerrostarCore extends LitElement {
           this.startNavigationFromSearch(feature.geometry.coordinates);
         },
       });
-      this.map.addControl(this.searchBox, "bottom-left");
+      this.map.addControl(this.searchBox, "top-left");
     }
   }
 
@@ -256,7 +256,7 @@ export class FerrostarCore extends LitElement {
     this.navigationController = null;
     this.tripState = null;
     if (this.locationProvider) this.locationProvider.updateCallback = null;
-    if (this.useIntegratedSearchBox) this.map?.addControl(this.searchBox!, "bottom-left");
+    if (this.useIntegratedSearchBox) this.map?.addControl(this.searchBox!, "top-left");
   }
 
   private onLocationUpdated() {
