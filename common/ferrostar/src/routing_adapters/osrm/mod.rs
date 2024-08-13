@@ -11,7 +11,7 @@ use crate::routing_adapters::{
     osrm::models::{
         Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep, Waypoint as OsrmWaypoint,
     },
-    OsrmParsingError, Route,
+    ParsingError, Route,
 };
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::{collections::BTreeSet as HashSet, string::ToString, vec, vec::Vec};
@@ -37,7 +37,7 @@ impl OsrmResponseParser {
 }
 
 impl RouteResponseParser for OsrmResponseParser {
-    fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, OsrmParsingError> {
+    fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, ParsingError> {
         let res: RouteResponse = serde_json::from_slice(&response)?;
 
         // This isn't the most functional in style, but it's a bit difficult to construct a pipeline
@@ -58,7 +58,7 @@ impl Route {
         route: &OsrmRoute,
         waypoints: &Vec<OsrmWaypoint>,
         polyline_precision: u32,
-    ) -> Result<Self, OsrmParsingError> {
+    ) -> Result<Self, ParsingError> {
         let via_waypoint_indices: Vec<_> = route
             .legs
             .iter()
@@ -82,7 +82,7 @@ impl Route {
             .collect();
 
         let linestring = decode_polyline(&route.geometry, polyline_precision).map_err(|error| {
-            OsrmParsingError::ParseError {
+            ParsingError::ParseError {
                 error: error.to_string(),
             }
         })?;
@@ -107,7 +107,7 @@ impl Route {
                 steps,
             });
         } else {
-            Err(OsrmParsingError::ParseError {
+            Err(ParsingError::ParseError {
                 error: "Bounding box could not be calculated".to_string(),
             })
         }
@@ -115,12 +115,9 @@ impl Route {
 }
 
 impl RouteStep {
-    pub fn from_osrm(
-        value: &OsrmRouteStep,
-        polyline_precision: u32,
-    ) -> Result<Self, OsrmParsingError> {
+    fn from_osrm(value: &OsrmRouteStep, polyline_precision: u32) -> Result<Self, ParsingError> {
         let linestring = decode_polyline(&value.geometry, polyline_precision).map_err(|error| {
-            OsrmParsingError::ParseError {
+            ParsingError::ParseError {
                 error: error.to_string(),
             }
         })?;

@@ -799,7 +799,7 @@ open class RouteAdapter:
     }
 
     open func parseResponse(response: Data) throws -> [Route] {
-        try FfiConverterSequenceTypeRoute.lift(rustCallWithError(FfiConverterTypeOsrmParsingError.lift) {
+        try FfiConverterSequenceTypeRoute.lift(rustCallWithError(FfiConverterTypeParsingError.lift) {
             uniffi_ferrostar_fn_method_routeadapter_parse_response(self.uniffiClonePointer(),
                                                                    FfiConverterData.lower(response), $0)
         })
@@ -1284,7 +1284,7 @@ open class RouteResponseParserImpl:
      * as this works for all currently conceivable formats (JSON, PBF, etc.).
      */
     open func parseResponse(response: Data) throws -> [Route] {
-        try FfiConverterSequenceTypeRoute.lift(rustCallWithError(FfiConverterTypeOsrmParsingError.lift) {
+        try FfiConverterSequenceTypeRoute.lift(rustCallWithError(FfiConverterTypeParsingError.lift) {
             uniffi_ferrostar_fn_method_routeresponseparser_parse_response(self.uniffiClonePointer(),
                                                                           FfiConverterData.lower(response), $0)
         })
@@ -1318,7 +1318,7 @@ private enum UniffiCallbackInterfaceRouteResponseParser {
                 callStatus: uniffiCallStatus,
                 makeCall: makeCall,
                 writeReturn: writeReturn,
-                lowerError: FfiConverterTypeOsrmParsingError.lower
+                lowerError: FfiConverterTypeParsingError.lower
             )
         },
         uniffiFree: { (uniffiHandle: UInt64) in
@@ -2875,15 +2875,15 @@ extension ModelError: Foundation.LocalizedError {
     }
 }
 
-public enum OsrmParsingError {
+public enum ParsingError {
     case ParseError(error: String)
     case UnknownError
 }
 
-public struct FfiConverterTypeOsrmParsingError: FfiConverterRustBuffer {
-    typealias SwiftType = OsrmParsingError
+public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
+    typealias SwiftType = ParsingError
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> OsrmParsingError {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ParsingError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
         case 1: return try .ParseError(
@@ -2896,7 +2896,7 @@ public struct FfiConverterTypeOsrmParsingError: FfiConverterRustBuffer {
         }
     }
 
-    public static func write(_ value: OsrmParsingError, into buf: inout [UInt8]) {
+    public static func write(_ value: ParsingError, into buf: inout [UInt8]) {
         switch value {
         case let .ParseError(error):
             writeInt(&buf, Int32(1))
@@ -2908,9 +2908,9 @@ public struct FfiConverterTypeOsrmParsingError: FfiConverterRustBuffer {
     }
 }
 
-extension OsrmParsingError: Equatable, Hashable {}
+extension ParsingError: Equatable, Hashable {}
 
-extension OsrmParsingError: Foundation.LocalizedError {
+extension ParsingError: Foundation.LocalizedError {
     public var errorDescription: String? {
         String(reflecting: self)
     }
@@ -3887,7 +3887,7 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
  * which contain richer information like banners and voice instructions for navigation.
  */
 public func createRouteFromOsrm(routeData: Data, waypointData: Data, polylinePrecision: UInt32) throws -> Route {
-    try FfiConverterTypeRoute.lift(rustCallWithError(FfiConverterTypeOsrmParsingError.lift) {
+    try FfiConverterTypeRoute.lift(rustCallWithError(FfiConverterTypeParsingError.lift) {
         uniffi_ferrostar_fn_func_create_route_from_osrm(
             FfiConverterData.lower(routeData),
             FfiConverterData.lower(waypointData),
@@ -3997,7 +3997,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 16550 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_route_from_osrm() != 51476 {
+    if uniffi_ferrostar_checksum_func_create_route_from_osrm() != 42270 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 62919 {
@@ -4027,7 +4027,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 38083 {
+    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 34481 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 50476 {
@@ -4036,7 +4036,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 63458 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 8927 {
+    if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 44735 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 60881 {

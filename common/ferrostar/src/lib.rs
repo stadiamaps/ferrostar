@@ -28,7 +28,7 @@ pub mod simulation;
 use models::Route;
 #[cfg(feature = "uniffi")]
 use routing_adapters::{
-    error::{InstantiationError, OsrmParsingError},
+    error::{InstantiationError, ParsingError},
     osrm::{
         models::{Route as OsrmRoute, Waypoint as OsrmWaypoint},
         OsrmResponseParser,
@@ -112,7 +112,7 @@ fn create_route_from_osrm(
     route_data: Vec<u8>,
     waypoint_data: Vec<u8>,
     polyline_precision: u32,
-) -> Result<Route, OsrmParsingError> {
+) -> Result<Route, ParsingError> {
     let route: OsrmRoute = serde_json::from_slice(&route_data)?;
     let waypoints: Vec<OsrmWaypoint> = serde_json::from_slice(&waypoint_data)?;
     return Route::from_osrm(&route, &waypoints, polyline_precision);
