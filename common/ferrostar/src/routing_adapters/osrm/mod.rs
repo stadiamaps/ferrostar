@@ -87,11 +87,14 @@ impl Route {
                 .map(|coord| GeographicCoordinate::from(*coord))
                 .collect();
 
-            let steps = route.legs.iter().flat_map(|leg| {
-                leg.steps
-                    .iter()
-                    .map(|step| RouteStep::from_osrm(step, polyline_precision))
-            })
+            let steps = route
+                .legs
+                .iter()
+                .flat_map(|leg| {
+                    leg.steps
+                        .iter()
+                        .map(|step| RouteStep::from_osrm(step, polyline_precision))
+                })
                 .collect::<Result<Vec<_>, _>>()?;
             Ok(Route {
                 geometry,
