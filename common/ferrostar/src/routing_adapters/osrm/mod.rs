@@ -87,20 +87,19 @@ impl Route {
                 .map(|coord| GeographicCoordinate::from(*coord))
                 .collect();
 
-            let mut steps = vec![];
-            for leg in &route.legs {
-                for step in &leg.steps {
-                    steps.push(RouteStep::from_osrm(&step, polyline_precision)?);
-                }
-            }
-
-            return Ok(Route {
+            let steps = route.legs.iter().flat_map(|leg| {
+                leg.steps
+                    .iter()
+                    .map(|step| RouteStep::from_osrm(step, polyline_precision))
+            })
+                .collect::<Result<Vec<_>, _>>()?;
+            Ok(Route {
                 geometry,
                 bbox: bbox.into(),
                 distance: route.distance,
                 waypoints: waypoints.clone(),
                 steps,
-            });
+            })
         } else {
             Err(ParsingError::ParseError {
                 error: "Bounding box could not be calculated".to_string(),
