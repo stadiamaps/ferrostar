@@ -40,16 +40,9 @@ impl RouteResponseParser for OsrmResponseParser {
     fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, ParsingError> {
         let res: RouteResponse = serde_json::from_slice(&response)?;
 
-        // This isn't the most functional in style, but it's a bit difficult to construct a pipeline
-        // today. Stabilization of try_collect may help.
-        let mut routes = vec![];
-        for route in res.routes {
-            if let Ok(route) = Route::from_osrm(&route, &res.waypoints, self.polyline_precision) {
-                routes.push(route)
-            }
-        }
-
-        Ok(routes)
+        return res.routes.iter().map(|route| {
+            Route::from_osrm(route, &res.waypoints, self.polyline_precision)
+        }).collect::<Result<Vec<_>, _>>();
     }
 }
 
