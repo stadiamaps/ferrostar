@@ -10,6 +10,9 @@ public protocol SpokenInstructionObserver {
     /// for the same instruction during a navigation session.
     func spokenInstructionTriggered(_ instruction: SpokenInstruction)
 
+    /// Stops speech and clears the queue of spoken utterances.
+    func stopAndClearQueue()
+
     var isMuted: Bool { get set }
 }
 
@@ -43,5 +46,9 @@ public class AVSpeechSpokenInstructionObserver: SpokenInstructionObserver {
         }
 
         synthesizer.speak(utterance)
+    }
+
+    public func stopAndClearQueue() {
+        synthesizer.stopSpeaking(at: .immediate)
     }
 }

@@ -262,6 +262,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         state = nil
         queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()
+        spokenInstructionObserver?.stopAndClearQueue()
     }
 
     /// Internal state update.
