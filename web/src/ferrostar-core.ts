@@ -2,9 +2,12 @@ import { LitElement, html, css, unsafeCSS } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import maplibregl from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
+import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
+import searchBoxStyles from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
 import init, { NavigationController, RouteAdapter } from "ferrostar";
 import "./instructions-view";
 import "./arrival-view";
+import { BrowserLocationProvider } from "./location";
 
 @customElement("ferrostar-core")
 export class FerrostarCore extends LitElement {
@@ -32,21 +35,31 @@ export class FerrostarCore extends LitElement {
   @property({ type: Object })
   tripState: any = null;
 
+  // TODO: type
+  @property({ type: Boolean })
+  useIntegratedSearchBox: boolean = true;
+
   routeAdapter: RouteAdapter | null = null;
   map: maplibregl.Map | null = null;
+  searchBox: MapLibreSearchControl | null = null;
   navigationController: NavigationController | null = null;
   currentLocationMapMarker: maplibregl.Marker | null = null;
 
   static styles = [
     unsafeCSS(maplibreglStyles),
+    unsafeCSS(searchBoxStyles),
     css`
+      [hidden] {
+        display: none !important;
+      }
+
       #map {
         height: 100%;
         width: 100%;
       }
 
-      instructions-view,
-      arrival-view {
+      instructions-view {
+        top: 10px;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
@@ -54,12 +67,36 @@ export class FerrostarCore extends LitElement {
         z-index: 1000;
       }
 
-      #top-component {
-        top: 10px;
-      }
-
       #bottom-component {
         bottom: 10px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 80%;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      #stop-button {
+        display: flex;
+        padding: 20px;
+        background-color: white;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: background-color 0.3s, filter 0.3s;
+      }
+
+      #stop-button .icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      #stop-button:hover {
+        background-color: #e0e0e0;
       }
     `,
   ];
@@ -88,6 +125,15 @@ export class FerrostarCore extends LitElement {
       bearing: 0,
       zoom: 18,
     });
+
+    if (this.useIntegratedSearchBox) {
+      this.searchBox = new MapLibreSearchControl({
+        onResultSelected: (feature) => {
+          this.startNavigationFromSearch(feature.geometry.coordinates);
+        },
+      });
+      this.map.addControl(this.searchBox, "top-left");
+    }
   }
 
   // TODO: type
@@ -113,6 +159,8 @@ export class FerrostarCore extends LitElement {
 
   // TODO: type
   async startNavigation(route: any, config: any) {
+    if (this.useIntegratedSearchBox) this.map?.removeControl(this.searchBox!);
+
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     this.navigationController = new NavigationController(route, config);
 
@@ -122,11 +170,7 @@ export class FerrostarCore extends LitElement {
           coordinates: route.geometry[0],
           horizontalAccuracy: 0.0,
           courseOverGround: null,
-          // TODO: find a better way to create the timestamp?
-          timestamp: {
-            secs_since_epoch: Math.floor(Date.now() / 1000),
-            nanos_since_epoch: 0,
-          },
+          timestamp: Date.now(),
           speed: null,
         };
 
@@ -166,13 +210,53 @@ export class FerrostarCore extends LitElement {
     this.currentLocationMapMarker = new maplibregl.Marker().setLngLat(route.geometry[0]).addTo(this.map!);
   }
 
+  async startNavigationFromSearch(coordinates: any) {
+    const waypoints = [{ coordinate: { lat: coordinates[1], lng: coordinates[0] }, kind: "Break" }];
+
+    const locationProvider = new BrowserLocationProvider();
+    locationProvider.requestPermission();
+    locationProvider.start();
+
+    // TODO: This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
+    while (!locationProvider.lastLocation) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+
+    // Use the acquired user location to request the route
+    const routes = await this.getRoutes(locationProvider.lastLocation, waypoints);
+    const route = routes[0];
+
+    // TODO: type + use TypeScript enum
+    const config = {
+      stepAdvance: {
+        RelativeLineStringDistance: {
+          minimumHorizontalAccuracy: 25,
+          automaticAdvanceDistance: 10,
+        },
+      },
+      routeDeviationTracking: {
+        StaticThreshold: {
+          minimumHorizontalAccuracy: 25,
+          maxAcceptableDeviation: 10.0,
+        },
+      },
+    };
+
+    // Start the navigation
+    this.locationProvider = locationProvider;
+    this.startNavigation(route, config);
+  }
+
   async stopNavigation() {
     // TODO: Factor out the UI layer from the core
     this.clearMap();
+    this.routeAdapter?.free();
     this.routeAdapter = null;
-    this.locationProvider.updateCallback = null;
+    this.navigationController?.free();
     this.navigationController = null;
-    this.currentLocationMapMarker = null;
+    this.tripState = null;
+    if (this.locationProvider) this.locationProvider.updateCallback = null;
+    if (this.useIntegratedSearchBox) this.map?.addControl(this.searchBox!, "top-left");
   }
 
   private onLocationUpdated() {
@@ -193,8 +277,13 @@ export class FerrostarCore extends LitElement {
   render() {
     return html`
       <div id="map">
-        <instructions-view .tripState=${this.tripState} id="top-component"></instructions-view>
-        <arrival-view .tripState=${this.tripState} id="bottom-component"></arrival-view>
+        <instructions-view .tripState=${this.tripState}></instructions-view>
+        <div id="bottom-component">
+          <arrival-view .tripState=${this.tripState}></arrival-view>
+          <button id="stop-button" @click=${this.stopNavigation} ?hidden=${!this.tripState}>
+            <img src="/src/assets/directions/close.svg" alt="Stop navigation" class="icon" />
+          </button>
+        </div>
       </div>
     `;
   }

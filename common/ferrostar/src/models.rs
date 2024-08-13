@@ -173,6 +173,36 @@ pub struct Speed {
     pub accuracy: Option<f64>,
 }
 
+#[cfg(any(test, feature = "wasm-bindgen"))]
+mod system_time_format {
+    use serde::{self, Deserialize, Deserializer, Serializer};
+
+    #[cfg(all(feature = "std", not(feature = "web-time")))]
+    use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+    #[cfg(feature = "web-time")]
+    use web_time::{Duration, SystemTime, UNIX_EPOCH};
+
+    pub fn serialize<S>(time: &SystemTime, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let duration = time
+            .duration_since(UNIX_EPOCH)
+            .map_err(serde::ser::Error::custom)?;
+        let millis = duration.as_secs() * 1000 + duration.subsec_millis() as u64;
+        serializer.serialize_u64(millis)
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<SystemTime, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let millis = u64::deserialize(deserializer)?;
+        Ok(UNIX_EPOCH + Duration::from_millis(millis))
+    }
+}
+
 /// The location of the user that is navigating.
 ///
 /// In addition to coordinates, this includes estimated accuracy and course information,
@@ -190,6 +220,7 @@ pub struct UserLocation {
     pub horizontal_accuracy: f64,
     pub course_over_ground: Option<CourseOverGround>,
     #[cfg_attr(test, serde(skip_serializing))]
+    #[cfg_attr(feature = "wasm-bindgen", serde(with = "system_time_format"))]
     pub timestamp: SystemTime,
     pub speed: Option<Speed>,
 }
