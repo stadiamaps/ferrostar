@@ -53,7 +53,7 @@ impl From<serde_json::Error> for RoutingRequestGenerationError {
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
-pub enum RoutingResponseParseError {
+pub enum ParsingError {
     // TODO: Unable to find route and other common errors
     #[cfg_attr(feature = "std", error("Failed to parse route response: {error}."))]
     ParseError { error: String },
@@ -65,15 +65,15 @@ pub enum RoutingResponseParseError {
 }
 
 #[cfg(feature = "uniffi")]
-impl From<uniffi::UnexpectedUniFFICallbackError> for RoutingResponseParseError {
-    fn from(_: uniffi::UnexpectedUniFFICallbackError) -> RoutingResponseParseError {
-        RoutingResponseParseError::UnknownError
+impl From<uniffi::UnexpectedUniFFICallbackError> for ParsingError {
+    fn from(_: uniffi::UnexpectedUniFFICallbackError) -> ParsingError {
+        ParsingError::UnknownError
     }
 }
 
-impl From<serde_json::Error> for RoutingResponseParseError {
+impl From<serde_json::Error> for ParsingError {
     fn from(e: serde_json::Error) -> Self {
-        RoutingResponseParseError::ParseError {
+        ParsingError::ParseError {
             error: e.to_string(),
         }
     }

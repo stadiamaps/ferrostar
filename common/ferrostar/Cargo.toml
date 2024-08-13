@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.6.1"
+version = "0.7.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
@@ -19,14 +19,20 @@ rust-version.workspace = true
 alloc = []
 std = ["alloc", "serde_json/std", "proptest/std"]
 default = ["std", "uniffi"]
-wasm_js = ["std", "getrandom/js", "serde-wasm-bindgen", "wasm-bindgen", "web-time"]
+wasm_js = [
+    "std",
+    "getrandom/js",
+    "serde-wasm-bindgen",
+    "wasm-bindgen",
+    "web-time",
+]
 
 [dependencies]
 geo = "0.28.0"
 polyline = "0.11.0"
 serde = { version = "1.0.162", features = ["derive"] }
 serde_json = { version = "1.0.117", default-features = false }
-serde-wasm-bindgen = { version = "0.6.5", optional = true}
+serde-wasm-bindgen = { version = "0.6.5", optional = true }
 thiserror = "1.0.40"
 uniffi = { workspace = true, optional = true }
 uuid = { version = "1.8.0", features = ["v4", "serde"] }
