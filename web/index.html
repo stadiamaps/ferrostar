@@ -9,6 +9,13 @@
     <script type="module" src="./src/location.ts"></script>
   </head>
   <body>
+    <p>
+      <span>
+        Search and select a destination, or
+        <button id="simulate">Simulate Navigation</button>
+      </span>
+    </p>
+
     <!--
 	This should not require any API key if run via `npm run dev`.
 	Learn how to get a free prod API key here: https://docs.stadiamaps.com/authentication/.
@@ -23,13 +30,6 @@
       costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
       useIntegratedSearchBox="true"
     ></ferrostar-core>
-
-    <p>
-      <span>
-        Search and select a destination, or
-        <button id="simulate">Simulate Navigation</button>
-      </span>
-    </p>
 
     <script type="module">
       import { SimulatedLocationProvider, BrowserLocationProvider } from "./src/location.ts";

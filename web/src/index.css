@@ -1,9 +1,17 @@
-html, body{
+html,
+body {
   height: 100%;
 }
 
+body {
+  height: calc(100% - 8px - 8px);
+  margin: 0 8px 8px 8px;
+  display: flex;
+  flex-direction: column;
+}
+
 ferrostar-core {
-  height: 90%;
+  height: calc(100% - 48px);
   width: 100%;
   display: block;
 }
