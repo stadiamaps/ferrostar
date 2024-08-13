@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import maplibregl from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
 import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
-import "@stadiamaps/maplibre-search-box/dist/style.css";
+import searchBoxStyles from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
 import init, { NavigationController, RouteAdapter } from "ferrostar";
 import "./instructions-view";
 import "./arrival-view";
@@ -47,6 +47,7 @@ export class FerrostarCore extends LitElement {
 
   static styles = [
     unsafeCSS(maplibreglStyles),
+    unsafeCSS(searchBoxStyles),
     css`
       [hidden] {
         display: none !important;
