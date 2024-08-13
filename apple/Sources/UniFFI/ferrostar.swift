@@ -530,6 +530,11 @@ public protocol NavigationControllerProtocol: AnyObject {
 
     /**
      * Updates the user's current location and updates the navigation state accordingly.
+     *
+     * # Panics
+     *
+     * If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
+     * this function will panic.
      */
     func updateUserLocation(location: UserLocation, state: TripState) -> TripState
 }
@@ -624,6 +629,11 @@ open class NavigationController:
 
     /**
      * Updates the user's current location and updates the navigation state accordingly.
+     *
+     * # Panics
+     *
+     * If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
+     * this function will panic.
      */
     open func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
         try! FfiConverterTypeTripState.lift(try! rustCall {
@@ -4021,7 +4031,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 63862 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 43166 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 3165 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034 {
