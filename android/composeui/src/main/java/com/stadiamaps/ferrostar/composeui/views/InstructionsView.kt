@@ -44,7 +44,7 @@ fun InstructionsView(
       modifier =
           Modifier.fillMaxWidth()
               .shadow(elevation = 5.dp, RoundedCornerShape(10.dp))
-              .background(MaterialTheme.colorScheme.background, RoundedCornerShape(10.dp))
+              .background(theme.backgroundColor, RoundedCornerShape(10.dp))
               .padding(8.dp)) {
         ManeuverInstructionView(
             text = instructions.primaryContent.text,
