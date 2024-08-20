@@ -17,12 +17,8 @@ enum class ArrivalViewStyle {
 interface ArrivalViewTheme {
   /** The text style for the step distance (or distance to step). */
   @get:Composable val style: ArrivalViewStyle
-  /** The color for the measurement/value. */
-  @get:Composable val measurementColor: Color
   /** The text style for the measurement/value. */
   @get:Composable val measurementTextStyle: TextStyle
-  /** The color for the secondary content (label caption). */
-  @get:Composable val secondaryColor: Color
   /** The text style for the secondary content (label caption). */
   @get:Composable val secondaryTextStyle: TextStyle
   /** The exit button icon color. */
@@ -37,17 +33,16 @@ object DefaultArrivalViewTheme : ArrivalViewTheme {
   override val style: ArrivalViewStyle
     @Composable get() = ArrivalViewStyle.SIMPLIFIED
 
-  override val measurementColor: Color
-    @Composable get() = MaterialTheme.colorScheme.onBackground
-
   override val measurementTextStyle: TextStyle
-    @Composable get() = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
-
-  override val secondaryColor: Color
-    @Composable get() = MaterialTheme.colorScheme.secondary
+    @Composable
+    get() =
+        MaterialTheme.typography.titleLarge.copy(
+            color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
 
   override val secondaryTextStyle: TextStyle
-    @Composable get() = MaterialTheme.typography.labelSmall
+    @Composable
+    get() =
+        MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
 
   override val exitIconColor: Color
     @Composable get() = MaterialTheme.colorScheme.onSecondary
@@ -56,5 +51,5 @@ object DefaultArrivalViewTheme : ArrivalViewTheme {
     @Composable get() = MaterialTheme.colorScheme.secondary
 
   override val backgroundColor: Color
-    @Composable get() = MaterialTheme.colorScheme.background
+    @Composable get() = MaterialTheme.colorScheme.surface
 }
