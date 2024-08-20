@@ -10,8 +10,8 @@ fun BorderedPolyline(
     zIndex: Int = 1,
     color: String = "#3583dd",
     borderColor: String = "#ffffff",
-    lineWidth: Float = 6f,
-    borderWidth: Float = 2f,
+    lineWidth: Float = 10f,
+    borderWidth: Float = 3f
 ) {
   Polyline(
       points = points,
