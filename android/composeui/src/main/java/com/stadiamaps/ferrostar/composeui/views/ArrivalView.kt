@@ -85,9 +85,7 @@ fun ArrivalView(
                             progress.estimatedArrivalTime(fromDate, timeZone)),
                     style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
-                  Text(
-                      text = "Arrival",
-                      style = theme.secondaryTextStyle)
+                  Text(text = "Arrival", style = theme.secondaryTextStyle)
                 }
               }
 
@@ -97,9 +95,7 @@ fun ArrivalView(
                     text = durationFormatter.format(progress.durationRemaining),
                     style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
-                  Text(
-                      text = "Duration",
-                      style = theme.secondaryTextStyle)
+                  Text(text = "Duration", style = theme.secondaryTextStyle)
                 }
               }
 
@@ -109,9 +105,7 @@ fun ArrivalView(
                     text = distanceFormatter.format(progress.distanceRemaining),
                     style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
-                  Text(
-                      text = "Distance",
-                      style = theme.secondaryTextStyle)
+                  Text(text = "Distance", style = theme.secondaryTextStyle)
                 }
               }
 
@@ -121,7 +115,8 @@ fun ArrivalView(
                 onClick = { onTapExit() },
                 modifier = Modifier.size(50.dp),
                 shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = theme.exitButtonBackgroundColor),
+                colors =
+                    ButtonDefaults.buttonColors(containerColor = theme.exitButtonBackgroundColor),
                 contentPadding = PaddingValues(0.dp)) {
                   Icon(
                       imageVector = Icons.Filled.Close,
@@ -160,15 +155,15 @@ fun ArrivalViewInformationalPreview() {
 
         override val measurementTextStyle: TextStyle
           @Composable
-          get() = MaterialTheme.typography.titleLarge.copy(
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.SemiBold
-          )
+          get() =
+              MaterialTheme.typography.titleLarge.copy(
+                  color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.SemiBold)
 
         override val secondaryTextStyle: TextStyle
-          @Composable get() = MaterialTheme.typography.labelSmall.copy(
-            color = MaterialTheme.colorScheme.onSecondary
-          )
+          @Composable
+          get() =
+              MaterialTheme.typography.labelSmall.copy(
+                  color = MaterialTheme.colorScheme.onSecondary)
 
         override val exitIconColor: Color
           @Composable get() = MaterialTheme.colorScheme.onSecondary

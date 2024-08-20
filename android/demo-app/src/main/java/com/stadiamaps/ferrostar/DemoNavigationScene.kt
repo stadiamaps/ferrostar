@@ -42,8 +42,7 @@ fun DemoNavigationScene(
   var viewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
 
   val notificationPermissionLauncher =
-      rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-        granted ->
+      rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) {
           // TODO
           // onAccess()

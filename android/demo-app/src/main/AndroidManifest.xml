@@ -22,9 +22,9 @@
 
         <!-- Foreground Service -->
         <service
-            android:name="com.stadiamaps.ferrostar.service.FerrostarForegroundService"
+            android:name="com.stadiamaps.ferrostar.core.service.FerrostarForegroundService"
             android:foregroundServiceType="location"
-            android:exported="false">
+            >
         </service>
 
         <activity

@@ -57,11 +57,11 @@ private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<Strin
  * access the user's location.
  */
 class FerrostarCore(
-  val routeProvider: RouteProvider,
-  val httpClient: OkHttpClient,
-  val locationProvider: LocationProvider,
-  val foregroundService: ForegroundServiceManager,
-  navigationControllerConfig: NavigationControllerConfig,
+    val routeProvider: RouteProvider,
+    val httpClient: OkHttpClient,
+    val locationProvider: LocationProvider,
+    val foregroundServiceManager: ForegroundServiceManager,
+    navigationControllerConfig: NavigationControllerConfig,
 ) : LocationUpdateListener {
   companion object {
     private const val TAG = "FerrostarCore"
@@ -132,46 +132,46 @@ class FerrostarCore(
   var state: StateFlow<NavigationState> = _state.asStateFlow()
 
   constructor(
-    valhallaEndpointURL: URL,
-    profile: String,
-    httpClient: OkHttpClient,
-    locationProvider: LocationProvider,
-    foregroundService: ForegroundServiceManager,
-    navigationControllerConfig: NavigationControllerConfig,
-    costingOptions: Map<String, Any> = emptyMap(),
+      valhallaEndpointURL: URL,
+      profile: String,
+      httpClient: OkHttpClient,
+      locationProvider: LocationProvider,
+      foregroundServiceManager: ForegroundServiceManager,
+      navigationControllerConfig: NavigationControllerConfig,
+      costingOptions: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
           RouteAdapter.newValhallaHttp(
               valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(costingOptions))),
       httpClient,
       locationProvider,
-      foregroundService,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   constructor(
-    routeAdapter: RouteAdapter,
-    httpClient: OkHttpClient,
-    locationProvider: LocationProvider,
-    foregroundService: ForegroundServiceManager,
-    navigationControllerConfig: NavigationControllerConfig,
+      routeAdapter: RouteAdapter,
+      httpClient: OkHttpClient,
+      locationProvider: LocationProvider,
+      foregroundServiceManager: ForegroundServiceManager,
+      navigationControllerConfig: NavigationControllerConfig,
   ) : this(
       RouteProvider.RouteAdapter(routeAdapter),
       httpClient,
       locationProvider,
-      foregroundService,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   constructor(
-    customRouteProvider: CustomRouteProvider,
-    httpClient: OkHttpClient,
-    locationProvider: LocationProvider,
-    foregroundService: ForegroundServiceManager,
-    navigationControllerConfig: NavigationControllerConfig,
+      customRouteProvider: CustomRouteProvider,
+      httpClient: OkHttpClient,
+      locationProvider: LocationProvider,
+      foregroundServiceManager: ForegroundServiceManager,
+      navigationControllerConfig: NavigationControllerConfig,
   ) : this(
       RouteProvider.CustomProvider(customRouteProvider),
       httpClient,
       locationProvider,
-      foregroundService,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   suspend fun getRoutes(initialLocation: UserLocation, waypoints: List<Waypoint>): List<Route> =
@@ -235,7 +235,7 @@ class FerrostarCore(
     stopNavigation()
 
     // Start the foreground notification service
-    foregroundService.startService()
+    foregroundServiceManager.startService()
 
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
@@ -292,6 +292,9 @@ class FerrostarCore(
 
       NavigationState(tripState = newState, route.geometry, false)
     }
+
+    // Update the notification
+    foregroundServiceManager.onNavigationState(_state.value)
   }
 
   fun advanceToNextStep() {
@@ -306,10 +309,14 @@ class FerrostarCore(
 
         NavigationState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
       }
+
+      // Update the notification
+      foregroundServiceManager.onNavigationState(_state.value)
     }
   }
 
   fun stopNavigation() {
+    foregroundServiceManager.startService()
     locationProvider.removeListener(this)
     _navigationController?.destroy()
     _navigationController = null
@@ -392,6 +399,9 @@ class FerrostarCore(
 
         NavigationState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
       }
+
+      // Update the notification
+      foregroundServiceManager.onNavigationState(_state.value)
     }
   }
 

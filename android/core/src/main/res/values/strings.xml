@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="end_navigation">End Navigation</string>
-    <string name="maneuver_instruction_image">Maneuver instruction image</string>
+    <string name="notification_channel_description">Channel for navigation instructions</string>
 </resources>

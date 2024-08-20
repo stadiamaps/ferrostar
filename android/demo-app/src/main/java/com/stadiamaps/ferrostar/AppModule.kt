@@ -2,14 +2,16 @@ package com.stadiamaps.ferrostar
 
 import android.content.Context
 import android.util.Log
+import com.stadiamaps.ferrostar.composeui.notification.DefaultForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
-import com.stadiamaps.ferrostar.service.FerrostarForegroundService
-import com.stadiamaps.ferrostar.service.FerrostarServiceManager
+import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
+import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
+import java.lang.ref.WeakReference
 import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
@@ -36,10 +38,9 @@ object AppModule {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
   }
 
-  val foregroundService: com.stadiamaps.ferrostar.service.FerrostarServiceManager by lazy {
-    com.stadiamaps.ferrostar.service.FerrostarServiceManager(
-      appContext
-    )
+  private val foregroundServiceManager: ForegroundServiceManager by lazy {
+    FerrostarForegroundServiceManager(
+        appContext, DefaultForegroundNotificationBuilder(appContext))
   }
 
   // NOTE: This is a public instance which is suitable for development, but not for heavy use.
@@ -54,7 +55,7 @@ object AppModule {
             profile = "bicycle",
             httpClient = httpClient,
             locationProvider = locationProvider,
-          foregroundService = foregroundService,
+            foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
                 NavigationControllerConfig(
                     StepAdvanceMode.RelativeLineStringDistance(
