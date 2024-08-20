@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@stadiamaps/maplibre-search-box": "^1.0.1",
     "ferrostar": "file:../common/ferrostar/pkg",
     "lit": "^3.1.4",
     "maplibre-gl": "^4.5.0"

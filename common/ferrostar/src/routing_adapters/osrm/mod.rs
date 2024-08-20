@@ -8,15 +8,15 @@ use crate::models::{
     VisualInstructionContent, Waypoint, WaypointKind,
 };
 use crate::routing_adapters::{
-    osrm::models::{RouteResponse, RouteStep as OsrmRouteStep},
-    Route, RoutingResponseParseError,
+    osrm::models::{
+        Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep, Waypoint as OsrmWaypoint,
+    },
+    ParsingError, Route,
 };
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
-use alloc::{collections::BTreeSet as HashSet, string::ToString, vec, vec::Vec};
+use alloc::{string::ToString, vec, vec::Vec};
 use geo::BoundingRect;
 use polyline::decode_polyline;
-#[cfg(feature = "std")]
-use std::collections::HashSet;
 use uuid::Uuid;
 
 /// A response parser for OSRM-compatible routing backends.
@@ -35,21 +35,29 @@ impl OsrmResponseParser {
 }
 
 impl RouteResponseParser for OsrmResponseParser {
-    fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, RoutingResponseParseError> {
+    fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, ParsingError> {
         let res: RouteResponse = serde_json::from_slice(&response)?;
-        let via_waypoint_indices: HashSet<_> = res
-            .routes
+
+        res.routes
             .iter()
-            .flat_map(|route| {
-                route
-                    .legs
-                    .iter()
-                    .flat_map(|leg| leg.via_waypoints.iter().map(|via| via.waypoint_index))
-            })
+            .map(|route| Route::from_osrm(route, &res.waypoints, self.polyline_precision))
+            .collect::<Result<Vec<_>, _>>()
+    }
+}
+
+impl Route {
+    pub fn from_osrm(
+        route: &OsrmRoute,
+        waypoints: &[OsrmWaypoint],
+        polyline_precision: u32,
+    ) -> Result<Self, ParsingError> {
+        let via_waypoint_indices: Vec<_> = route
+            .legs
+            .iter()
+            .flat_map(|leg| leg.via_waypoints.iter().map(|via| via.waypoint_index))
             .collect();
 
-        let waypoints: Vec<_> = res
-            .waypoints
+        let waypoints: Vec<_> = waypoints
             .iter()
             .enumerate()
             .map(|(idx, waypoint)| Waypoint {
@@ -65,50 +73,45 @@ impl RouteResponseParser for OsrmResponseParser {
             })
             .collect();
 
-        // This isn't the most functional in style, but it's a bit difficult to construct a pipeline
-        // today. Stabilization of try_collect may help.
-        let mut routes = vec![];
-        for route in res.routes {
-            let linestring =
-                decode_polyline(&route.geometry, self.polyline_precision).map_err(|error| {
-                    RoutingResponseParseError::ParseError {
-                        error: error.to_string(),
-                    }
-                })?;
-            if let Some(bbox) = linestring.bounding_rect() {
-                let geometry = linestring
-                    .coords()
-                    .map(|coord| GeographicCoordinate::from(*coord))
-                    .collect();
-
-                let mut steps = vec![];
-                for leg in route.legs {
-                    for step in leg.steps {
-                        steps.push(RouteStep::from_osrm(&step, self.polyline_precision)?);
-                    }
-                }
-
-                routes.push(Route {
-                    geometry,
-                    bbox: bbox.into(),
-                    distance: route.distance,
-                    waypoints: waypoints.clone(),
-                    steps,
-                });
+        let linestring = decode_polyline(&route.geometry, polyline_precision).map_err(|error| {
+            ParsingError::ParseError {
+                error: error.to_string(),
             }
-        }
+        })?;
+        if let Some(bbox) = linestring.bounding_rect() {
+            let geometry = linestring
+                .coords()
+                .map(|coord| GeographicCoordinate::from(*coord))
+                .collect();
 
-        Ok(routes)
+            let steps = route
+                .legs
+                .iter()
+                .flat_map(|leg| {
+                    leg.steps
+                        .iter()
+                        .map(|step| RouteStep::from_osrm(step, polyline_precision))
+                })
+                .collect::<Result<Vec<_>, _>>()?;
+            Ok(Route {
+                geometry,
+                bbox: bbox.into(),
+                distance: route.distance,
+                waypoints: waypoints.clone(),
+                steps,
+            })
+        } else {
+            Err(ParsingError::ParseError {
+                error: "Bounding box could not be calculated".to_string(),
+            })
+        }
     }
 }
 
 impl RouteStep {
-    fn from_osrm(
-        value: &OsrmRouteStep,
-        polyline_precision: u32,
-    ) -> Result<Self, RoutingResponseParseError> {
+    fn from_osrm(value: &OsrmRouteStep, polyline_precision: u32) -> Result<Self, ParsingError> {
         let linestring = decode_polyline(&value.geometry, polyline_precision).map_err(|error| {
-            RoutingResponseParseError::ParseError {
+            ParsingError::ParseError {
                 error: error.to_string(),
             }
         })?;

@@ -19,7 +19,7 @@ import com.maplibre.compose.settings.MapControls
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.toAndroidLocation
-import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationCentered
+import com.stadiamaps.ferrostar.maplibreui.extensions.AutomotiveNavigationCentered
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 
 /**
@@ -42,7 +42,9 @@ fun NavigationMapView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    onMapReadyCallback: (Style) -> Unit = { camera.value = MapViewCamera.NavigationCentered() },
+    onMapReadyCallback: (Style) -> Unit = {
+      camera.value = MapViewCamera.AutomotiveNavigationCentered()
+    },
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
   val uiState = viewModel.uiState.collectAsState()

@@ -9,6 +9,13 @@
     <script type="module" src="./src/location.ts"></script>
   </head>
   <body>
+    <p>
+      <span>
+        Search and select a destination, or
+        <button id="simulate">Simulate Navigation</button>
+      </span>
+    </p>
+
     <!--
 	This should not require any API key if run via `npm run dev`.
 	Learn how to get a free prod API key here: https://docs.stadiamaps.com/authentication/.
@@ -21,20 +28,8 @@
       profile="bicycle"
       httpClient="${fetch}"
       costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
+      useIntegratedSearchBox="true"
     ></ferrostar-core>
-
-    <p class="controls" id="controls-start">
-      <input type="text" id="destination" placeholder="Where do you want to go?" />
-      <span>
-        <button id="start">Start Navigation</button>
-        or
-        <button id="simulate">Simulate Navigation</button>
-      </span>
-    </p>
-
-    <p class="controls" id="controls-stop">
-      <button id="stop">Stop Navigation</button>
-    </p>
 
     <script type="module">
       import { SimulatedLocationProvider, BrowserLocationProvider } from "./src/location.ts";
@@ -59,42 +54,7 @@
       document.addEventListener("DOMContentLoaded", async () => {
         const core = document.getElementById("core");
         const destinationInput = document.getElementById("destination");
-        const startNavigationButton = document.getElementById("start");
         const simulateNavigationButton = document.getElementById("simulate");
-
-        // Button to start real navigation
-        startNavigationButton.addEventListener("click", async () => {
-          // Get the destination coordinates
-          const destination = destinationInput.value;
-
-          const { lat, lon } = await fetch("https://nominatim.openstreetmap.org/search?q=" + destination + "&format=json")
-            .then((response) => response.json())
-            .then((data) => data[0]);
-
-          const waypoints = [{ coordinate: { lat: parseFloat(lat), lng: parseFloat(lon) }, kind: "Break" }];
-
-          // Request location permission and start location updates
-          const locationProvider = new BrowserLocationProvider();
-          locationProvider.requestPermission();
-          locationProvider.start();
-
-          // TODO: This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
-          while (!locationProvider.lastLocation) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
-          }
-
-          // Use the acquired user location to request the route
-          const routes = await core.getRoutes(locationProvider.lastLocation, waypoints);
-          const route = routes[0];
-
-          // Start the navigation
-          core.locationProvider = locationProvider;
-          core.startNavigation(route, config);
-
-          // Hide the start button and show the stop button
-          document.getElementById("controls-start").style.display = "none";
-          document.getElementById("controls-stop").style.display = "block";
-        });
 
         // Button to start simulated navigation
         simulateNavigationButton.addEventListener("click", async () => {
@@ -103,11 +63,7 @@
             coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
             horizontalAccuracy: 6.0,
             courseOverGround: null,
-            // TODO: find a better way to create the timestamp?
-            timestamp: {
-              secs_since_epoch: Math.floor(Date.now() / 1000),
-              nanos_since_epoch: 0,
-            },
+            timestamp: Date.now(),
             speed: null,
           };
 
@@ -126,19 +82,6 @@
           // Start the navigation
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
-
-          // Hide the start button and show the stop button
-          document.getElementById("controls-start").style.display = "none";
-          document.getElementById("controls-stop").style.display = "block";
-        });
-
-        // Button to stop the navigation
-        document.getElementById("stop").addEventListener("click", () => {
-          core.stopNavigation();
-          
-          // Hide the stop button and show the start button
-          document.getElementById("controls-start").style.display = "block";
-          document.getElementById("controls-stop").style.display = "none";
         });
       });
     </script>

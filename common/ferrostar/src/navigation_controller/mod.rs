@@ -160,6 +160,11 @@ impl NavigationController {
     }
 
     /// Updates the user's current location and updates the navigation state accordingly.
+    ///
+    /// # Panics
+    ///
+    /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
+    /// this function will panic.
     pub fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
         match state {
             TripState::Idle => TripState::Idle,

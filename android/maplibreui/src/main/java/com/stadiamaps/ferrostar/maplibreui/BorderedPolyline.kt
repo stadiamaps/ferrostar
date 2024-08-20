@@ -11,7 +11,7 @@ fun BorderedPolyline(
     color: String = "#3583dd",
     borderColor: String = "#ffffff",
     lineWidth: Float = 10f,
-    borderWidth: Float = 3f,
+    borderWidth: Float = 3f
 ) {
   Polyline(
       points = points,

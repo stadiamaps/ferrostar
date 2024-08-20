@@ -322,6 +322,7 @@ class FerrostarCore(
     _navigationController = null
     _state.value = NavigationState()
     _queuedUtteranceIds.clear()
+    spokenInstructionObserver?.stopAndClearQueue()
   }
 
   /**

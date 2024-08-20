@@ -530,6 +530,11 @@ public protocol NavigationControllerProtocol: AnyObject {
 
     /**
      * Updates the user's current location and updates the navigation state accordingly.
+     *
+     * # Panics
+     *
+     * If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
+     * this function will panic.
      */
     func updateUserLocation(location: UserLocation, state: TripState) -> TripState
 }
@@ -624,6 +629,11 @@ open class NavigationController:
 
     /**
      * Updates the user's current location and updates the navigation state accordingly.
+     *
+     * # Panics
+     *
+     * If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
+     * this function will panic.
      */
     open func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
         try! FfiConverterTypeTripState.lift(try! rustCall {
@@ -799,7 +809,7 @@ open class RouteAdapter:
     }
 
     open func parseResponse(response: Data) throws -> [Route] {
-        try FfiConverterSequenceTypeRoute.lift(rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
+        try FfiConverterSequenceTypeRoute.lift(rustCallWithError(FfiConverterTypeParsingError.lift) {
             uniffi_ferrostar_fn_method_routeadapter_parse_response(self.uniffiClonePointer(),
                                                                    FfiConverterData.lower(response), $0)
         })
@@ -1284,7 +1294,7 @@ open class RouteResponseParserImpl:
      * as this works for all currently conceivable formats (JSON, PBF, etc.).
      */
     open func parseResponse(response: Data) throws -> [Route] {
-        try FfiConverterSequenceTypeRoute.lift(rustCallWithError(FfiConverterTypeRoutingResponseParseError.lift) {
+        try FfiConverterSequenceTypeRoute.lift(rustCallWithError(FfiConverterTypeParsingError.lift) {
             uniffi_ferrostar_fn_method_routeresponseparser_parse_response(self.uniffiClonePointer(),
                                                                           FfiConverterData.lower(response), $0)
         })
@@ -1318,7 +1328,7 @@ private enum UniffiCallbackInterfaceRouteResponseParser {
                 callStatus: uniffiCallStatus,
                 makeCall: makeCall,
                 writeReturn: writeReturn,
-                lowerError: FfiConverterTypeRoutingResponseParseError.lower
+                lowerError: FfiConverterTypeParsingError.lower
             )
         },
         uniffiFree: { (uniffiHandle: UInt64) in
@@ -2875,6 +2885,47 @@ extension ModelError: Foundation.LocalizedError {
     }
 }
 
+public enum ParsingError {
+    case ParseError(error: String)
+    case UnknownError
+}
+
+public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
+    typealias SwiftType = ParsingError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ParsingError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return try .ParseError(
+                error: FfiConverterString.read(from: &buf)
+            )
+
+        case 2: return .UnknownError
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ParsingError, into buf: inout [UInt8]) {
+        switch value {
+        case let .ParseError(error):
+            writeInt(&buf, Int32(1))
+            FfiConverterString.write(error, into: &buf)
+
+        case .UnknownError:
+            writeInt(&buf, Int32(2))
+        }
+    }
+}
+
+extension ParsingError: Equatable, Hashable {}
+
+extension ParsingError: Foundation.LocalizedError {
+    public var errorDescription: String? {
+        String(reflecting: self)
+    }
+}
+
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
@@ -3095,47 +3146,6 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
 extension RoutingRequestGenerationError: Equatable, Hashable {}
 
 extension RoutingRequestGenerationError: Foundation.LocalizedError {
-    public var errorDescription: String? {
-        String(reflecting: self)
-    }
-}
-
-public enum RoutingResponseParseError {
-    case ParseError(error: String)
-    case UnknownError
-}
-
-public struct FfiConverterTypeRoutingResponseParseError: FfiConverterRustBuffer {
-    typealias SwiftType = RoutingResponseParseError
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RoutingResponseParseError {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        case 1: return try .ParseError(
-                error: FfiConverterString.read(from: &buf)
-            )
-
-        case 2: return .UnknownError
-
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: RoutingResponseParseError, into buf: inout [UInt8]) {
-        switch value {
-        case let .ParseError(error):
-            writeInt(&buf, Int32(1))
-            FfiConverterString.write(error, into: &buf)
-
-        case .UnknownError:
-            writeInt(&buf, Int32(2))
-        }
-    }
-}
-
-extension RoutingResponseParseError: Equatable, Hashable {}
-
-extension RoutingResponseParseError: Foundation.LocalizedError {
     public var errorDescription: String? {
         String(reflecting: self)
     }
@@ -3880,6 +3890,23 @@ public func createOsrmResponseParser(polylinePrecision: UInt32) -> RouteResponse
 }
 
 /**
+ * Creates a [`Route`] from OSRM data.
+ *
+ * This uses the same logic as the [`OsrmResponseParser`] and is designed to be fairly flexible,
+ * supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
+ * which contain richer information like banners and voice instructions for navigation.
+ */
+public func createRouteFromOsrm(routeData: Data, waypointData: Data, polylinePrecision: UInt32) throws -> Route {
+    try FfiConverterTypeRoute.lift(rustCallWithError(FfiConverterTypeParsingError.lift) {
+        uniffi_ferrostar_fn_func_create_route_from_osrm(
+            FfiConverterData.lower(routeData),
+            FfiConverterData.lower(waypointData),
+            FfiConverterUInt32.lower(polylinePrecision), $0
+        )
+    })
+}
+
+/**
  * Creates a [`RouteRequestGenerator`]
  * which generates requests to an arbitrary Valhalla server (using the OSRM response format).
  *
@@ -3980,6 +4007,9 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 16550 {
         return InitializationResult.apiChecksumMismatch
     }
+    if uniffi_ferrostar_checksum_func_create_route_from_osrm() != 42270 {
+        return InitializationResult.apiChecksumMismatch
+    }
     if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 62919 {
         return InitializationResult.apiChecksumMismatch
     }
@@ -4001,13 +4031,13 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 63862 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 43166 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 3165 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 47311 {
+    if uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 34481 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 50476 {
@@ -4016,7 +4046,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 63458 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 38851 {
+    if uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 44735 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 60881 {
