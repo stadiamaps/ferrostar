@@ -163,7 +163,7 @@ fun ArrivalViewInformationalPreview() {
           @Composable
           get() =
               MaterialTheme.typography.labelSmall.copy(
-                  color = MaterialTheme.colorScheme.onSecondary)
+                  color = MaterialTheme.colorScheme.onBackground)
 
         override val exitIconColor: Color
           @Composable get() = MaterialTheme.colorScheme.onSecondary
