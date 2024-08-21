@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.core
 
+import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -49,6 +50,23 @@ class MockRouteRequestGenerator : RouteRequestGenerator {
 
 class MockRouteResponseParser(private val routes: List<Route>) : RouteResponseParser {
   override fun parseResponse(response: ByteArray): List<Route> = routes
+}
+
+class MockForegroundNotificationManager: ForegroundServiceManager {
+  var startCalled = false
+  override fun startService(stopNavigation: () -> Unit) {
+    startCalled = true
+  }
+
+  var stopCalled = false
+  override fun stopService() {
+    stopCalled = true
+  }
+
+  var onCurrentStateUpdated: ((NavigationState) -> Unit)? = null
+  override fun onNavigationState(state: NavigationState) {
+    onCurrentStateUpdated?.invoke(state)
+  }
 }
 
 class FerrostarCoreTest {
@@ -109,6 +127,7 @@ class FerrostarCoreTest {
                     responseParser = MockRouteResponseParser(routes = listOf())),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
 
@@ -155,6 +174,7 @@ class FerrostarCoreTest {
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+          foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
     val routes =
@@ -204,6 +224,7 @@ class FerrostarCoreTest {
             customRouteProvider = routeProvider,
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
     val routes =
@@ -238,6 +259,8 @@ class FerrostarCoreTest {
           rule(post, url eq valhallaEndpointUrl) { respond(200, "".toResponseBody()) }
         }
 
+    val foregroundServiceManager = MockForegroundNotificationManager()
+
     class DeviationHandler : RouteDeviationHandler {
       var called = false
 
@@ -271,6 +294,7 @@ class FerrostarCoreTest {
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = locationProvider,
+          foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
                 NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
 
@@ -323,6 +347,7 @@ class FerrostarCoreTest {
                           }
                         })))
 
+    assert(foregroundServiceManager.startCalled)
     assert(deviationHandler.called)
 
     // TODO: Figure out how to test this properly with Kotlin coroutines + JUnit in the way.

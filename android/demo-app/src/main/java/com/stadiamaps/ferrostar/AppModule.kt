@@ -11,7 +11,6 @@ import com.stadiamaps.ferrostar.core.RouteDeviationHandler
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
-import java.lang.ref.WeakReference
 import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
@@ -39,8 +38,7 @@ object AppModule {
   }
 
   private val foregroundServiceManager: ForegroundServiceManager by lazy {
-    FerrostarForegroundServiceManager(
-        appContext, DefaultForegroundNotificationBuilder(appContext))
+    FerrostarForegroundServiceManager(appContext, DefaultForegroundNotificationBuilder(appContext))
   }
 
   // NOTE: This is a public instance which is suitable for development, but not for heavy use.

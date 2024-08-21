@@ -235,7 +235,7 @@ class FerrostarCore(
     stopNavigation()
 
     // Start the foreground notification service
-    foregroundServiceManager.startService()
+    foregroundServiceManager.startService { stopNavigation() }
 
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
@@ -316,7 +316,7 @@ class FerrostarCore(
   }
 
   fun stopNavigation() {
-    foregroundServiceManager.startService()
+    foregroundServiceManager.stopService()
     locationProvider.removeListener(this)
     _navigationController?.destroy()
     _navigationController = null

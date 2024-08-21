@@ -2,10 +2,8 @@ package com.stadiamaps.ferrostar.composeui.notification
 
 import android.annotation.SuppressLint
 import android.app.Notification
-import android.app.PendingIntent
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.widget.RemoteViews
 import com.stadiamaps.ferrostar.composeui.R
 import com.stadiamaps.ferrostar.composeui.formatting.DateTimeFormatter
@@ -17,36 +15,24 @@ import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDurationFormatter
 import com.stadiamaps.ferrostar.composeui.views.maneuver.maneuverIcon
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import com.stadiamaps.ferrostar.core.service.ForegroundNotificationBuilder
-import java.lang.ref.WeakReference
 import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.VisualInstruction
 
 class DefaultForegroundNotificationBuilder(
-  context: Context,
-  private var estimatedArrivalFormatter: DateTimeFormatter = EstimatedArrivalDateTimeFormatter(),
-  private var distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
-  private var durationFormatter: DurationFormatter = LocalizedDurationFormatter(),
-) : ForegroundNotificationBuilder {
-
-  private val weakContext: WeakReference<Context> = WeakReference(context)
-
-  override var channelId: String? = null
-  override var openPendingIntent: PendingIntent? = null
-  override var stopPendingIntent: PendingIntent? = null
+    context: Context,
+    private var estimatedArrivalFormatter: DateTimeFormatter = EstimatedArrivalDateTimeFormatter(),
+    private var distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
+    private var durationFormatter: DurationFormatter = LocalizedDurationFormatter(),
+) : ForegroundNotificationBuilder(context) {
 
   override fun build(tripState: TripState?): Notification {
-    val context = weakContext.get() ?: throw IllegalStateException("Context is null")
-
     if (channelId == null) {
       throw IllegalStateException("channelId must be set before building the notification.")
     }
 
-    if (openPendingIntent == null || stopPendingIntent == null) {
-      throw IllegalStateException(
-          "open and stop pending intents must be set before building the notification.")
-    }
-
+    // Generate the notification builder. Note that channelId is set on newer versions of Android.
+    // The channel is used to associate the notification in settings.
     val builder: Notification.Builder =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
           Notification.Builder(context, channelId)
@@ -88,6 +74,7 @@ class DefaultForegroundNotificationBuilder(
     }
 
     return builder
+        .setOngoing(true)
         .setContentIntent(openPendingIntent)
         .setVisibility(Notification.VISIBILITY_PUBLIC)
         .build()
@@ -99,8 +86,6 @@ class DefaultForegroundNotificationBuilder(
       visualInstruction: VisualInstruction,
       expanded: Boolean = false
   ): RemoteViews {
-    val context = weakContext.get() ?: throw IllegalStateException("Context is null")
-
     val remoteViews =
         if (expanded) {
           RemoteViews(context.packageName, R.layout.expanded_navigation_notification)
