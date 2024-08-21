@@ -59,7 +59,7 @@ class FerrostarForegroundService : Service(), NavigationStateObserver {
 
   // Callback for NavigationState changes
 
-  override fun onNavigationState(state: NavigationState) {
+  override fun onNavigationStateUpdated(state: NavigationState) {
     val notification = buildNotification(state)
     notificationManager.notify(NOTIFICATION_ID, notification)
   }

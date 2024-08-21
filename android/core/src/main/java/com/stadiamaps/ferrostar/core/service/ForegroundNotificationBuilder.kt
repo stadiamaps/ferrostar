@@ -13,11 +13,7 @@ import uniffi.ferrostar.TripState
  * See DefaultForegroundNotificationBuilder in the composeui module for an example/default
  * implementation.
  */
-interface ForegroundNotificationBuilding {
-  fun build(tripState: TripState?): Notification
-}
-
-abstract class ForegroundNotificationBuilder(context: Context) : ForegroundNotificationBuilding {
+abstract class ForegroundNotificationBuilder(context: Context) {
 
   var channelId: String? = null
   val openPendingIntent: PendingIntent by lazy { createOpenAppIntent() }
@@ -63,4 +59,6 @@ abstract class ForegroundNotificationBuilder(context: Context) : ForegroundNotif
     val intent = Intent(STOP_NAVIGATION_INTENT)
     return PendingIntent.getBroadcast(context, 0, intent, INTENT_FLAGS)
   }
+
+  abstract fun build(tripState: TripState?): Notification
 }

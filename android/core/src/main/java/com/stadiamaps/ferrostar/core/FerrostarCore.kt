@@ -235,7 +235,7 @@ class FerrostarCore(
     stopNavigation()
 
     // Start the foreground notification service
-    foregroundServiceManager.startService { stopNavigation() }
+    foregroundServiceManager.startService(this::stopNavigation)
 
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
@@ -292,9 +292,6 @@ class FerrostarCore(
 
       NavigationState(tripState = newState, route.geometry, false)
     }
-
-    // Update the notification
-    foregroundServiceManager.onNavigationState(_state.value)
   }
 
   fun advanceToNextStep() {
@@ -309,9 +306,6 @@ class FerrostarCore(
 
         NavigationState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
       }
-
-      // Update the notification
-      foregroundServiceManager.onNavigationState(_state.value)
     }
   }
 
@@ -385,6 +379,9 @@ class FerrostarCore(
         }
       }
     }
+
+    // Update the notification manager (this propagates the state to the notification)
+    foregroundServiceManager.onNavigationStateUpdated(_state.value)
   }
 
   override fun onLocationUpdated(location: UserLocation) {
@@ -400,9 +397,6 @@ class FerrostarCore(
 
         NavigationState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
       }
-
-      // Update the notification
-      foregroundServiceManager.onNavigationState(_state.value)
     }
   }
 

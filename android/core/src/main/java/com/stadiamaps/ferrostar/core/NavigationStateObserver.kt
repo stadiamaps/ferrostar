@@ -1,5 +1,5 @@
 package com.stadiamaps.ferrostar.core
 
 interface NavigationStateObserver {
-  fun onNavigationState(state: NavigationState)
+  fun onNavigationStateUpdated(state: NavigationState)
 }

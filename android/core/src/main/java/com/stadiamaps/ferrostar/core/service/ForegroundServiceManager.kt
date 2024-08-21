@@ -21,6 +21,14 @@ interface ForegroundServiceManager : NavigationStateObserver {
   fun stopService()
 }
 
+/**
+ * A manager for the FerrostarForegroundService. This class is responsible for starting and stopping
+ * the service, as well as updating the navigation state. It effectively acts as a bridge between
+ * [FerrostarCore] and the [FerrostarForegroundService].
+ *
+ * @param T The notification builder. This can be [DefaultForegroundNotificationBuilder] or a custom
+ *   implementation of [ForegroundNotificationBuilder]. See the default for an example.
+ */
 class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
     context: Context,
     private val notificationBuilder: T
@@ -105,8 +113,8 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
 
   // Methods for navigation state.
 
-  override fun onNavigationState(state: NavigationState) {
-    service?.onNavigationState(state)
+  override fun onNavigationStateUpdated(state: NavigationState) {
+    service?.onNavigationStateUpdated(state)
   }
 
   // Methods from ServiceConnection
