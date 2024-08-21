@@ -30,9 +30,6 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    // Enable edge-to-edge display to hide the status bar for map view.
-    //    enableEdgeToEdge()
-
     // Set up the App Module
     AppModule.init(this)
 
