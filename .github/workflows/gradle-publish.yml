@@ -13,7 +13,7 @@ jobs:
     runs-on: macos-13
     permissions:
       contents: read
-      packages: write
+      packages: read
 
     steps:
     - name: Check out repo
@@ -45,3 +45,6 @@ jobs:
         ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.MAVEN_GPG_SECRET_KEY }}
         ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        # TODO: Remove these once Rallista's compose wrapper moves to Maven Central
+        GITHUB_ACTOR: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
