@@ -1,8 +1,12 @@
+import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     alias libs.plugins.androidLibrary
     alias libs.plugins.jetbrainsKotlinAndroid
     alias libs.plugins.ktfmt
     alias libs.plugins.compose.compiler
+    alias libs.plugins.mavenPublish
 }
 
 android {
@@ -33,12 +37,6 @@ android {
     buildFeatures {
         compose true
     }
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
 }
 
 dependencies {
@@ -66,19 +64,22 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
+
     debugImplementation libs.androidx.compose.ui.test.manifest
 }
 
-publishing {
-    publications {
-        "${project.name}-release"(MavenPublication) {
-            groupId = 'com.stadiamaps.ferrostar'
-            artifactId = 'maplibreui'
-            version = project.version
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 
-            afterEvaluate {
-                from components.release
-            }
-        }
+    configure(new AndroidMultiVariantLibrary(true, true))
+
+    apply from: "${rootProject.projectDir}/common-pom.gradle"
+
+    pom {
+        name = "Ferrostar MapLibre UI"
+        description = "Composable map UI components for Ferrostar built with MapLibre"
+
+        commonPomConfig(it, true)
     }
 }

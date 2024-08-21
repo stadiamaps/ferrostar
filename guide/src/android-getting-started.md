@@ -7,12 +7,11 @@ We'll cover the "batteries included" approach, but flag areas for customization 
 
 ### GitHub Packages
 
-Ferrostar releases are hosted on GitHub Packages.
-You’ll need to authenticate first in order to access them.
+Ferrostar releases (since 0.8.0) are hosted on Maven Central.
+However, we are still in the process of transitioning the MapLibre composable UI  wrapper.
+In the meantime, you will still need to set up GitHub Packages, which requires authentication.
+
 GitHub has a [guide on setting this up](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#authenticating-to-github-packages).
-
-(We’re [working on getting a Maven Central account](https://github.com/stadiamaps/ferrostar/issues/139) to make this easier)
-
 Once you’ve configured GitHub credentials as project properties or environment variables,
 add the repository to your build script.
 
@@ -23,14 +22,6 @@ you’ll end up with something like along these lines:
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven {
-            url = 'https://maven.pkg.github.com/stadiamaps/ferrostar'
-            credentials {
-                username = settings.ext.find('gpr.user') ?: System.getenv('GITHUB_ACTOR')
-                password = settings.ext.find('gpr.token') ?: System.getenv('GITHUB_TOKEN')
-            }
-        }
-        
         // For the MapLibre compose integration
         maven {
             url = 'https://maven.pkg.github.com/Rallista/maplibre-compose-playground'
@@ -52,14 +43,6 @@ And if you’re doing this directly in `build.gradle`, things look slightly diff
 repositories {
     google()
     mavenCentral()
-
-    maven {
-        url = uri("https://maven.pkg.github.com/stadiamaps/ferrostar")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-            password = project.findProperty("gpr.token") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
     
     // For the MapLibre compose integration
     maven {

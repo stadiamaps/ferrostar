@@ -1,9 +1,13 @@
+import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     alias libs.plugins.androidLibrary
     alias libs.plugins.jetbrainsKotlinAndroid
     alias libs.plugins.ktfmt
     alias libs.plugins.paparazzi
     alias libs.plugins.compose.compiler
+    alias libs.plugins.mavenPublish
 }
 
 android {
@@ -34,12 +38,6 @@ android {
     buildFeatures {
         compose true
     }
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-            withJavadocJar()
-        }
-    }
 }
 
 dependencies {
@@ -69,21 +67,22 @@ dependencies {
     androidTestImplementation libs.androidx.test.espresso
 
     implementation libs.androidx.compose.ui.tooling.preview
-    debugImplementation libs.androidx.compose.ui.tooling
 
+    debugImplementation libs.androidx.compose.ui.tooling
     debugImplementation libs.androidx.compose.ui.test.manifest
 }
 
-publishing {
-    publications {
-        "${project.name}-release"(MavenPublication) {
-            groupId = 'com.stadiamaps.ferrostar'
-            artifactId = 'composeui'
-            version = project.version
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 
-            afterEvaluate {
-                from components.release
-            }
-        }
+    configure(new AndroidMultiVariantLibrary(true, true))
+
+    apply from: "${rootProject.projectDir}/common-pom.gradle"
+
+    pom {
+        name = "Ferrostar Composable UI"
+        description = "Composable non-map UI components for Ferrostar"
+        commonPomConfig(it, true)
     }
 }

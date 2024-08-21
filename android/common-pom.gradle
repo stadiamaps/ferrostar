@@ -1,0 +1,40 @@
+ext {
+    // Add an optional parameter includeGoogleRepo with a default value of false
+    commonPomConfig = { pom, includeGoogleRepo = false ->
+        pom.url = "https://github.com/stadiamaps/ferrostar"
+        pom.inceptionYear = "2023"
+        pom.licenses {
+            license {
+                name = "BSD-3-Clause"
+                url = "https://spdx.org/licenses/BSD-3-Clause.html"
+            }
+        }
+        pom.developers {
+            developer {
+                name = "Ian Wagner"
+                organization = "Stadia Maps"
+                organizationUrl = "https://stadiamaps.com/"
+            }
+            developer {
+                name = "Jacob Fielding"
+                organization = "Rallista"
+                organizationUrl = "https://rallista.app/"
+            }
+        }
+        pom.scm {
+            connection = "scm:git:https://github.com/stadiamaps/ferrostar.git"
+            developerConnection = "scm:git:ssh://github.com/stadiamaps/ferrostar.git"
+            url = "http://github.com/stadiamaps/ferrostar"
+        }
+
+        // Conditional inclusion of the Google repository
+        if (includeGoogleRepo) {
+            pom.withXml {
+                def repo = asNode().appendNode('repositories').appendNode('repository')
+                repo.appendNode('name', 'Google')
+                repo.appendNode('id', 'google')
+                repo.appendNode('url', 'https://maven.google.com/')
+            }
+        }
+    }
+}
