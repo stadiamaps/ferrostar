@@ -5,6 +5,7 @@ name: Publish to Maven Central
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -38,6 +39,7 @@ jobs:
 
     - name: Publish to Maven Central
       run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+      working-directory: android
       env:
         ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
         ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
