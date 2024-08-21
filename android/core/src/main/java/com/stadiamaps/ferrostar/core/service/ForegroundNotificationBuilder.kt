@@ -10,7 +10,7 @@ import uniffi.ferrostar.TripState
 /**
  * A builder for creating a foreground notification for the Ferrostar navigation service.
  *
- * See DefaultForegroundNotificationBuilder in the composeui module for an example/default
+ * See [DefaultForegroundNotificationBuilder] in the composeui module for an example/default
  * implementation.
  */
 abstract class ForegroundNotificationBuilder(context: Context) {
