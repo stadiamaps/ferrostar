@@ -9,7 +9,6 @@ import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.ServiceCompat
 import com.stadiamaps.ferrostar.core.NavigationState
 import com.stadiamaps.ferrostar.core.NavigationStateObserver
@@ -17,7 +16,6 @@ import com.stadiamaps.ferrostar.core.NavigationStateObserver
 class FerrostarForegroundService : Service(), NavigationStateObserver {
 
   companion object {
-    const val TAG = "FerrostarForegroundService"
     const val NOTIFICATION_ID = 501
   }
 
@@ -40,19 +38,11 @@ class FerrostarForegroundService : Service(), NavigationStateObserver {
   }
 
   override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-    Log.d(TAG, "onStartCommand")
     return START_STICKY
   }
 
-  override fun onDestroy() {
-    Log.d(TAG, "onDestroy")
-    super.onDestroy()
-  }
-
   fun start() {
-    Log.d(TAG, "Starting service")
     val notification = buildNotification(null)
-    // TODO: Anything else?
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
       ServiceCompat.startForeground(
