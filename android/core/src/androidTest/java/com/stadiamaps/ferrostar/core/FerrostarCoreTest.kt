@@ -52,18 +52,21 @@ class MockRouteResponseParser(private val routes: List<Route>) : RouteResponsePa
   override fun parseResponse(response: ByteArray): List<Route> = routes
 }
 
-class MockForegroundNotificationManager: ForegroundServiceManager {
+class MockForegroundNotificationManager : ForegroundServiceManager {
   var startCalled = false
+
   override fun startService(stopNavigation: () -> Unit) {
     startCalled = true
   }
 
   var stopCalled = false
+
   override fun stopService() {
     stopCalled = true
   }
 
   var onCurrentStateUpdated: ((NavigationState) -> Unit)? = null
+
   override fun onNavigationState(state: NavigationState) {
     onCurrentStateUpdated?.invoke(state)
   }
@@ -174,7 +177,7 @@ class FerrostarCoreTest {
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
-          foregroundServiceManager = MockForegroundNotificationManager(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
     val routes =
@@ -294,7 +297,7 @@ class FerrostarCoreTest {
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = locationProvider,
-          foregroundServiceManager = foregroundServiceManager,
+            foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
                 NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
 
