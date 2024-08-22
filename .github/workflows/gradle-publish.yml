@@ -1,7 +1,6 @@
-# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
+# This workflow will build a package using Gradle and then publish it to Maven Central when a release is published.
 
-name: Gradle Package
+name: Publish to Maven Central
 
 on:
   release:
@@ -13,16 +12,17 @@ jobs:
     runs-on: macos-13
     permissions:
       contents: read
-      packages: write
+      packages: read
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Check out repo
+      uses: actions/checkout@v4
+
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         cache: gradle
 
     - name: Grant execute permission for gradlew
@@ -36,11 +36,14 @@ jobs:
       run: touch local.properties
       working-directory: android
 
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
-    - name: Publish to GitHub Packages
-      run: ./gradlew publish
+    - name: Publish to Maven Central
+      run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
       working-directory: android
       env:
+        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.MAVEN_GPG_SECRET_KEY }}
+        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        # TODO: Remove these once Rallista's compose wrapper moves to Maven Central
         GITHUB_ACTOR: ${{ github.actor }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

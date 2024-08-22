@@ -7,23 +7,10 @@ plugins {
     alias libs.plugins.ktfmt apply false
     alias libs.plugins.paparazzi apply false
     alias libs.plugins.compose.compiler apply false
-    id 'maven-publish'
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/stadiamaps/ferrostar")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
+    alias libs.plugins.mavenPublish apply false
 }
 
 allprojects {
     group = "com.stadiamaps.ferrostar"
-    version = "0.7.2"
+    version = "0.8.0"
 }

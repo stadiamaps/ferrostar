@@ -1,8 +1,12 @@
+import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     alias libs.plugins.androidLibrary
     alias libs.plugins.jetbrainsKotlinAndroid
     alias libs.plugins.cargo.ndk
     alias libs.plugins.ktfmt
+    alias libs.plugins.mavenPublish
 }
 
 android {
@@ -31,12 +35,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-    }
-    publishing {
-        singleVariant('release') {
-            withSourcesJar()
-            withJavadocJar()
-        }
     }
 }
 
@@ -77,9 +75,10 @@ cargoNdk {
 }
 
 android.libraryVariants.all { variant ->
+    def bDir = layout.buildDirectory.dir("generated/source/uniffi/${variant.name}/java").get()
     def generateBindings = tasks.register("generate${variant.name.capitalize()}UniFFIBindings", Exec) {
         workingDir '../../common'
-        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', '../android/core/src/main/jniLibs/arm64-v8a/libferrostar.so', '--language', 'kotlin', '--out-dir', "${buildDir}/generated/source/uniffi/${variant.name}/java"
+        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', '../android/core/src/main/jniLibs/arm64-v8a/libferrostar.so', '--language', 'kotlin', '--out-dir', bDir
 
         dependsOn "buildCargoNdk${variant.name.capitalize()}"
     }
@@ -103,20 +102,19 @@ android.libraryVariants.all { variant ->
     // to a good solution for forcing the directory to be marked as generated (short of checking in
     // project files, I suppose).
 //    idea.module.generatedSourceDirs += file("${buildDir}/generated/source/uniffi/${variant.name}/java/uniffi")
-
-    sourceSet.java.srcDir 'src/main/java'
 }
 
-publishing {
-    publications {
-        "${project.name}-release"(MavenPublication) {
-            groupId = 'com.stadiamaps.ferrostar'
-            artifactId = 'core'
-            version = project.version
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 
-            afterEvaluate {
-                from components.release
-            }
-        }
+    configure(new AndroidMultiVariantLibrary(true, true))
+
+    apply from: "${rootProject.projectDir}/common-pom.gradle"
+
+    pom {
+        name = "Ferrostar Core"
+        description = "Core libray, models, and navigation business logic for Ferrostar"
+        commonPomConfig(it)
     }
 }
