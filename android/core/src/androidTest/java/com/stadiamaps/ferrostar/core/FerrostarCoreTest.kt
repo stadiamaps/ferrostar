@@ -67,7 +67,7 @@ class MockForegroundNotificationManager : ForegroundServiceManager {
 
   var onCurrentStateUpdated: ((NavigationState) -> Unit)? = null
 
-  override fun onNavigationState(state: NavigationState) {
+  override fun onNavigationStateUpdated(state: NavigationState) {
     onCurrentStateUpdated?.invoke(state)
   }
 }
