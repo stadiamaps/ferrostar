@@ -259,6 +259,7 @@ private val core =
           profile = "bicycle",
           httpClient = httpClient,
           locationProvider = locationProvider,
+          foregroundServiceManager = foregroundServiceManager
       )
 ```
 
@@ -266,6 +267,10 @@ private val core =
 such as using a Valhalla [Route Provider](./route-providers.md#bundled-support).
 
 `FerrostarCore` automatically subscribes to location updates from the `LocationProvider`.
+
+## Set up the foreground service and notification
+
+See [Foreground Service](./android/foreground-service.md)
 
 ## Set up voice guidance
 

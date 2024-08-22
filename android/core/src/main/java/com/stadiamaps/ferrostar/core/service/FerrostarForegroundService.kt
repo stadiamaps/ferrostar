@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.core.service
 
 import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
@@ -12,6 +13,7 @@ import android.os.IBinder
 import androidx.core.app.ServiceCompat
 import com.stadiamaps.ferrostar.core.NavigationState
 import com.stadiamaps.ferrostar.core.NavigationStateObserver
+import com.stadiamaps.ferrostar.core.R
 
 /**
  * A foreground service for the Ferrostar navigation service. This service is responsible for
@@ -49,6 +51,7 @@ class FerrostarForegroundService : Service(), NavigationStateObserver {
   }
 
   fun start() {
+    createNotificationChannel()
     val notification = buildNotification(null)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -62,6 +65,22 @@ class FerrostarForegroundService : Service(), NavigationStateObserver {
   fun stop() {
     notificationManager.cancel(NOTIFICATION_ID)
     stopSelf()
+  }
+
+  private fun createNotificationChannel() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      val channelId =
+          notificationBuilder?.channelId
+              ?: throw IllegalStateException("Notification channel ID is null")
+
+      val channel =
+          NotificationChannel(
+              channelId,
+              this.getString(R.string.notification_channel_description),
+              NotificationManager.IMPORTANCE_LOW // TODO: Learn about Importance
+              )
+      notificationManager.createNotificationChannel(channel)
+    }
   }
 
   // Callback for NavigationState changes
