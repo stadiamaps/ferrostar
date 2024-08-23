@@ -8,6 +8,7 @@ import init, { NavigationController, RouteAdapter } from "ferrostar";
 import "./instructions-view";
 import "./arrival-view";
 import { BrowserLocationProvider } from "./location";
+import CloseSvg from "./assets/directions/close.svg";
 
 @customElement("ferrostar-core")
 export class FerrostarCore extends LitElement {
@@ -281,7 +282,7 @@ export class FerrostarCore extends LitElement {
         <div id="bottom-component">
           <arrival-view .tripState=${this.tripState}></arrival-view>
           <button id="stop-button" @click=${this.stopNavigation} ?hidden=${!this.tripState}>
-            <img src="/src/assets/directions/close.svg" alt="Stop navigation" class="icon" />
+            <img src=${CloseSvg} alt="Stop navigation" class="icon" />
           </button>
         </div>
       </div>
