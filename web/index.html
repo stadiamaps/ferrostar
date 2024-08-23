@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ferrostar Web Demo</title>
     <link rel="stylesheet" href="./src/index.css" />
-    <script type="module" src="./src/ferrostar-core.ts"></script>
-    <script type="module" src="./src/location.ts"></script>
   </head>
   <body>
     <p>
@@ -32,7 +30,7 @@
     ></ferrostar-core>
 
     <script type="module">
-      import { SimulatedLocationProvider, BrowserLocationProvider } from "./src/location.ts";
+      import { FerrostarCore, SimulatedLocationProvider, BrowserLocationProvider } from "ferrostar-components";
 
       // TODO: type + use TypeScript enum
       const config = {
