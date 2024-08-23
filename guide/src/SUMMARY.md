@@ -7,6 +7,7 @@
 
 - [iOS](./ios-getting-started.md)
 - [Android](./android-getting-started.md)
+- [Web](./web-getting-started.md)
 - [Rust](./rust-getting-started.md)
 
 # Customization
