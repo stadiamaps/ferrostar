@@ -141,12 +141,16 @@ export class FerrostarCore extends LitElement {
 
   // TODO: type
   async getRoutes(initialLocation: any, waypoints: any) {
+    // Initialize the Ferrostar core WebAssembly module
     await init();
 
+    // Initialize the route adapter
     this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile);
 
+    // Generate the request body
     const body = this.routeAdapter.generateRequest(initialLocation, waypoints).get("body");
 
+    // Send the request to the Valhalla endpoint
     // FIXME: assert httpClient is not null
     const response = await this.httpClient!(this.valhallaEndpointUrl, {
       method: "POST",
@@ -162,11 +166,14 @@ export class FerrostarCore extends LitElement {
 
   // TODO: type
   async startNavigation(route: any, config: any) {
+    // Remove the search box when navigation starts
     if (this.useIntegratedSearchBox) this.map?.removeControl(this.searchBox!);
 
+    // Initialize the navigation controller
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     this.navigationController = new NavigationController(route, config);
 
+    // Initialize the trip state
     const startingLocation = this.locationProvider.lastLocation
       ? this.locationProvider.lastLocation
       : {
@@ -180,6 +187,7 @@ export class FerrostarCore extends LitElement {
     const initialTripState = this.navigationController.getInitialState(startingLocation);
     this.tripState = initialTripState;
 
+    // Update the UI with the initial trip state
     this.clearMap();
 
     this.map?.addSource("route", {
@@ -263,8 +271,13 @@ export class FerrostarCore extends LitElement {
   }
 
   private onLocationUpdated() {
+    // Update the trip state with the new location
     this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
+
+    // Update the user's location on the map
     this.currentLocationMapMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
+
+    // Center the map on the user's location
     this.map?.easeTo({
       center: this.locationProvider.lastLocation.coordinates,
       bearing: this.locationProvider.lastLocation.courseOverGround.degrees || 0,
