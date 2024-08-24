@@ -307,7 +307,7 @@ export class FerrostarCore extends LitElement {
         <div id="bottom-component">
           <arrival-view .tripState=${this.tripState}></arrival-view>
           <button id="stop-button" @click=${this.stopNavigation} ?hidden=${!this.tripState}>
-            <img src="${CloseSvg}" alt="Stop navigation" class="icon" />
+            <img src=${CloseSvg} alt="Stop navigation" class="icon" />
           </button>
         </div>
       </div>
