@@ -1,9 +1,19 @@
 # Getting Started on the Web
 
 This section of the guide covers how to integrate Ferrostar into a web app.
+While there are limitations to the web [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
+(notably no background updates),
+PWAs and other mobile-optimized sites
+can be a great solution when a native iOS/Android app is impractical or prohibitively expensive.
+
 We'll cover the "batteries included" approach, but flag areas for customization and overrides along the way.
 
-## Add the NPM package dependency
+## Add the package dependency
+
+### Installing with `npm`
+
+NOTE: Currently you need to build the package locally.
+We intend to publish to npmjs.com very soon.
 
 In your web app, you can add the Ferrostar NPM package as a dependency.
 You will need to install [Rust](https://www.rust-lang.org/) and `wasm-pack` to build the NPM package.
@@ -12,45 +22,53 @@ You will need to install [Rust](https://www.rust-lang.org/) and `wasm-pack` to b
 cargo install wasm-pack
 ```
 
-Then, in your web app, install the Ferrostar NPM package:
+Head to the local path where you have checked out Ferrostar,
+go to the `web` directory, and build the module:
+
+```shell
+npm install && npm run build
+```
+
+Then, in your project, install the Ferrostar package using the local path:
 
 ```shell
 npm install /path/to/ferrostar/web
 ```
 
-## Add Ferrostar web components to your app
+### Using unpkg
 
-Ferrostar web SDK is provided as web components.
-To import the components, add the following line:
+TODO after publishing to npm.
+
+## Add Ferrostar web components to your web app
+
+The Ferrostar web SDK uses the [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
+to ensure maximum compatibility across frontend frameworks.
+You can import the components just like other things you’re used to in JavaScript.
 
 ```javascript
 import { FerrostarCore, BrowserLocationProvider } from "ferrostar-components";
 ```
 
-### Route providers
+## Configure the `<ferrostar-core>` component
 
-You’ll need to decide on a route provider when you set up your `FerrostarCore` instance.
-For limited testing, FOSSGIS maintains a public server with the URL `https://valhalla1.openstreetmap.de/route`.
-For production use, you’ll need another solution like a [commercial vendor](./vendors.md)
-or self-hosting.
-
-### Map style providers
-
-You can get a free Stadia Maps API key at https://client.stadiamaps.com
-See https://stadiamaps.github.io/ferrostar/vendors.html for additional vendors.
-
-Then, you can use the components in your HTML like this, for example:
+Now you can use Ferrostar in your HTML like this:
 
 ```html
 <ferrostar-core
   id="core"
-  valhallaEndpointUrl="https://valhalla1.openstreetmap.de/route"
-  styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json?api_key=YOUR_API_KEY"
+  valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
+  styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
   profile="bicycle"
 ></ferrostar-core>
 ```
 
-NOTE: `<ferrostar-core>` requires setting CSS manually or it will be invisible.
+Here we have used Stadia Maps URLs, which should work without authentication for local development.
+(Refer to the [authentication docs](https://docs.stadiamaps.com/authentication/)
+for network deployment details; you can start with a free account.)
+
+See the [vendors appendix](./vendors.md) for a list of other compatible vendors.
+
+`<ferrostar-core>`  additionally requires setting some CSS manually, or it will be invisible!
 
 ```css
 ferrostar-core {
@@ -60,100 +78,28 @@ ferrostar-core {
 }
 ```
 
-`<ferrostar-core>` web SDK contains an integrated search box, and you can already use it for navigation without any additional setup.
+That’s all you need to get started!
 
-## Configure the `<ferrostar-core>` component
+### Configuration explained
 
 `<ferrostar-core>` provides a few properties to configure.
 Here are the most important ones:
 
-- `httpClient`: You can set your own fetch-compatible HTTP client to make requests to the Valhalla endpoint.
-- `costingOptions`: You can set the costing options for the Ferrostar routing engine.
-- `useIntegratedSearchBox`: You can disable the integrated search box and use your own code to handle navigation.
+- `valhallaEndpointUrl`: The Valhalla routing endpoint to use. You can use any reasonably up-to-date Valhalla server, including your own. See [vendors](./vendor.md#routing) for a list of known compatible vendors.
+- `httpClient`: You can set your own fetch-compatible HTTP client to make requests to the routing API (ex: Valhalla).
+- `costingOptions`: You can set the costing options for the route provider (ex: Valhalla JSON options).
+- `useIntegratedSearchBox`: Ferrostar web includes a search box powered by Stadia Maps, but you can disable this and replace with your own.
 
-## Use your own code to handle navigation
-
-If you want to use your own code to handle navigation instead of the integrated search box, you can do so by the following steps:
-
-### (Optional) Implement your own search box
-
-You can use this code to retrieve the latitude and longitude of a destination:
-
-```javascript
-const destination = "One Apple Park Way";
-
-const { lat, lon } = await fetch("https://nominatim.openstreetmap.org/search?q=" + destination + "&format=json")
-  .then((response) => response.json())
-  .then((data) => data[0]);
-```
-
-### Configure the Ferrostar Core
-
-(TODO)
-Here's an example:
-
-```javascript
-const config = {
-  stepAdvance: {
-    RelativeLineStringDistance: {
-      minimumHorizontalAccuracy: 25,
-      automaticAdvanceDistance: 10,
-    },
-  },
-  routeDeviationTracking: {
-    StaticThreshold: {
-      minimumHorizontalAccuracy: 25,
-      maxAcceptableDeviation: 10.0,
-    },
-  },
-};
-```
-
-### Getting a route
-
-Before getting routes, you’ll need the user’s current location.
-You can get this from the location provider.
-`BrowserLocationProvider` is a location provider that uses the browser's geolocation API.
-
-```javascript
-// Request location permission and start location updates
-const locationProvider = new BrowserLocationProvider();
-locationProvider.requestPermission();
-locationProvider.start();
-
-// TODO: This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
-while (!locationProvider.lastLocation) {
-  await new Promise((resolve) => setTimeout(resolve, 100));
-}
-```
-
-Next, you’ll need a set of waypoints to visit.
-
-```javascript
-const waypoints = [{ coordinate: { lat: parseFloat(lat), lng: parseFloat(lon) }, kind: "Break" }];
-```
-
-Finally, you can use the asynchronous `getRoutes` method on `FerrostarCore`.
-Here’s an example:
-
-```javascript
-const core = document.getElementById("core");
-const routes = await core.getRoutes(locationProvider.lastLocation, waypoints);
-const route = routes[0];
-```
-
-### Start the navigation
-
-Once you or the user has selected a route, it’s time to start navigating!
-
-```javascript
-core.locationProvider = locationProvider;
-core.startNavigation(route, config);
-```
+NOTE: The JavaScript API is currently limited to Valhalla,
+but support for arbitrary providers (like we already have on iOS and Android)
+is [tracked in this issue](https://github.com/stadiamaps/ferrostar/issues/191).
 
 ## Demo app
 
-We've put together a minimal [demo app](https://github.com/stadiamaps/ferrostar/tree/main/web/index.html) with an example integration.
+We've put together a minimal demo app with an example integration.
+Check out the [source code](https://github.com/stadiamaps/ferrostar/tree/main/web/index.html)
+or try the [hosted demo](https://stadiamaps.github.io/ferrostar/web-demo)
+(works best from a phone if you want to use real geolocation).
 
 ## Going deeper
 

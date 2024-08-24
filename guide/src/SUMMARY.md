@@ -16,6 +16,7 @@
 - [Navigation Behavior](./configuring-the-navigation-controller.md)
 - [SwiftUI](./swiftui-customization.md)
 - [Jetpack Compose](./jetpack-compose-customization.md)
+- [Web](./web-customization.md)
 
 # Architecture
 
