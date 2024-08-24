@@ -35,15 +35,18 @@ export class FerrostarCore extends LitElement {
   @property({ type: Object })
   tripState: any = null;
 
-  // TODO: type
   @property({ type: Boolean })
   useIntegratedSearchBox: boolean = true;
+
+  @property({ type: Boolean })
+  useVoiceGuidance: boolean = false;
 
   routeAdapter: RouteAdapter | null = null;
   map: maplibregl.Map | null = null;
   searchBox: MapLibreSearchControl | null = null;
   navigationController: NavigationController | null = null;
   currentLocationMapMarker: maplibregl.Marker | null = null;
+  lastSpokenInstructionText: string | null = null;
 
   static styles = [
     unsafeCSS(maplibreglStyles),
@@ -266,6 +269,15 @@ export class FerrostarCore extends LitElement {
       center: this.locationProvider.lastLocation.coordinates,
       bearing: this.locationProvider.lastLocation.courseOverGround.degrees || 0,
     });
+
+    // Speak the next instruction if voice guidance is enabled
+    if (this.useVoiceGuidance) {
+      if (this.tripState.Navigating?.spokenInstruction && this.tripState.Navigating?.spokenInstruction.text !== this.lastSpokenInstructionText) {
+        this.lastSpokenInstructionText = this.tripState.Navigating?.spokenInstruction.text;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.tripState.Navigating?.spokenInstruction.text));
+      }
+    }
   }
 
   private clearMap() {
