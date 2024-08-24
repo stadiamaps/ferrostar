@@ -9,8 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.composeui.R
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.VisualInstructionContent
@@ -35,7 +37,7 @@ fun ManeuverImage(content: VisualInstructionContent, tint: Color = LocalContentC
   if (resourceId != 0) {
     Icon(
         painter = painterResource(id = resourceId),
-        contentDescription = "Description for accessibility",
+        contentDescription = stringResource(id = R.string.maneuver_image),
         tint = tint,
         modifier = Modifier.size(64.dp))
   } else {

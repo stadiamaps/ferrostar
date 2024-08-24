@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.composeui.R
 
 /**
  * A FloatingActionButton styled for use in the navigation UI.
@@ -36,7 +38,10 @@ fun NavigationUIButton(
 ) {
   FloatingActionButton(
       onClick,
-      modifier = Modifier.width(56.dp).height(56.dp).shadow(6.dp, shape = CircleShape),
+      modifier = Modifier
+        .width(56.dp)
+        .height(56.dp)
+        .shadow(6.dp, shape = CircleShape),
       shape = CircleShape,
       containerColor,
       contentColor) {
@@ -47,7 +52,10 @@ fun NavigationUIButton(
 @Preview
 @Composable
 fun NavigationUIButtonPreview() {
-  Box(Modifier.background(Color.LightGray).padding(16.dp)) {
-    NavigationUIButton({}) { Icon(Icons.Filled.Close, contentDescription = "Close") }
+  Box(
+    Modifier
+      .background(Color.LightGray)
+      .padding(16.dp)) {
+    NavigationUIButton({}) { Icon(Icons.Filled.Close, contentDescription = stringResource(id = R.string.end_navigation)) }
   }
 }

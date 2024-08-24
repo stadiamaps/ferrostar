@@ -23,10 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.composeui.R
 import com.stadiamaps.ferrostar.composeui.formatting.DateTimeFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.DistanceFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.DurationFormatter
@@ -72,9 +74,10 @@ fun ArrivalView(
   Box(modifier) {
     Row(
         modifier =
-            Modifier.shadow(12.dp, shape = RoundedCornerShape(50))
-                .background(color = theme.backgroundColor, shape = RoundedCornerShape(50))
-                .padding(start = 32.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
+        Modifier
+          .shadow(12.dp, shape = RoundedCornerShape(50))
+          .background(color = theme.backgroundColor, shape = RoundedCornerShape(50))
+          .padding(start = 32.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically) {
           Column(
@@ -85,7 +88,7 @@ fun ArrivalView(
                             progress.estimatedArrivalTime(fromDate, timeZone)),
                     style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
-                  Text(text = "Arrival", style = theme.secondaryTextStyle)
+                  Text(text = stringResource(id = R.string.arrival), style = theme.secondaryTextStyle)
                 }
               }
 
@@ -95,7 +98,7 @@ fun ArrivalView(
                     text = durationFormatter.format(progress.durationRemaining),
                     style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
-                  Text(text = "Duration", style = theme.secondaryTextStyle)
+                  Text(text = stringResource(id = R.string.duration), style = theme.secondaryTextStyle)
                 }
               }
 
@@ -105,7 +108,7 @@ fun ArrivalView(
                     text = distanceFormatter.format(progress.distanceRemaining),
                     style = theme.measurementTextStyle)
                 if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
-                  Text(text = "Distance", style = theme.secondaryTextStyle)
+                  Text(text = stringResource(id = R.string.distance), style = theme.secondaryTextStyle)
                 }
               }
 
@@ -120,7 +123,7 @@ fun ArrivalView(
                 contentPadding = PaddingValues(0.dp)) {
                   Icon(
                       imageVector = Icons.Filled.Close,
-                      contentDescription = "Close",
+                      contentDescription = stringResource(id = R.string.end_navigation),
                       tint = theme.exitIconColor)
                 }
           }

@@ -3,4 +3,11 @@
     <string name="recenter">Recenter Map</string>
     <string name="unmute_description">Unmute</string>
     <string name="mute_description">Mute</string>
+    <string name="zoom_in">Zoom In</string>
+    <string name="zoom_out">Zoom Out</string>
+    <string name="arrival">Arrival</string>
+    <string name="distance">Distance</string>
+    <string name="duration">Duration</string>
+    <string name="end_navigation">End Navigation</string>
+    <string name="maneuver_image">Maneuver direction image</string>
 </resources>
