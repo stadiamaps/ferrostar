@@ -56,7 +56,7 @@ export class BrowserLocationProvider {
     if (navigator.geolocation) {
       const options = {
         enableHighAccuracy: true,
-      }
+      };
       this.geolocationWatchId = navigator.geolocation.watchPosition((position) => {
         this.lastLocation = {
           coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },

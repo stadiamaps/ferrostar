@@ -1,13 +1,14 @@
-import { LitElement, html, css, unsafeCSS } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import {css, html, LitElement, unsafeCSS} from "lit";
+import {customElement, property} from "lit/decorators.js";
 import maplibregl from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
-import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
-import searchBoxStyles from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
-import init, { NavigationController, RouteAdapter } from "ferrostar";
+import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
+import searchBoxStyles
+  from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
+import init, {NavigationController, RouteAdapter} from "ferrostar";
 import "./instructions-view";
 import "./arrival-view";
-import { BrowserLocationProvider } from "./location";
+import {BrowserLocationProvider} from "./location";
 import CloseSvg from "./assets/directions/close.svg";
 
 @customElement("ferrostar-core")
@@ -132,8 +133,8 @@ export class FerrostarCore extends LitElement {
 
     if (this.useIntegratedSearchBox) {
       this.searchBox = new MapLibreSearchControl({
-        onResultSelected: (feature) => {
-          this.startNavigationFromSearch(feature.geometry.coordinates);
+        onResultSelected: async (feature) => {
+          await this.startNavigationFromSearch(feature.geometry.coordinates);
         },
       });
       this.map.addControl(this.searchBox, "top-left");
@@ -160,9 +161,7 @@ export class FerrostarCore extends LitElement {
     });
 
     const responseData = new Uint8Array(await response.arrayBuffer());
-    const routes = this.routeAdapter.parseResponse(responseData);
-
-    return routes;
+    return this.routeAdapter.parseResponse(responseData);
   }
 
   // TODO: type
@@ -185,8 +184,7 @@ export class FerrostarCore extends LitElement {
           speed: null,
         };
 
-    const initialTripState = this.navigationController.getInitialState(startingLocation);
-    this.tripState = initialTripState;
+    this.tripState = this.navigationController.getInitialState(startingLocation);
 
     // Update the UI with the initial trip state
     this.clearMap();
@@ -227,7 +225,7 @@ export class FerrostarCore extends LitElement {
 
     const locationProvider = new BrowserLocationProvider();
     locationProvider.requestPermission();
-    locationProvider.start();
+    await locationProvider.start();
 
     // TODO: This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
     while (!locationProvider.lastLocation) {
@@ -256,7 +254,7 @@ export class FerrostarCore extends LitElement {
 
     // Start the navigation
     this.locationProvider = locationProvider;
-    this.startNavigation(route, config);
+    await this.startNavigation(route, config);
   }
 
   async stopNavigation() {
