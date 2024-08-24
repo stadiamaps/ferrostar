@@ -38,32 +38,30 @@ fun NavigationUIZoomButton(
   Column(modifier = Modifier.shadow(6.dp, shape = RoundedCornerShape(50))) {
     FloatingActionButton(
         onClick = onClickZoomIn,
-        modifier = Modifier
-          .height(56.dp)
-          .width(56.dp),
+        modifier = Modifier.height(56.dp).width(56.dp),
         shape = RoundedCornerShape(topStartPercent = 50, topEndPercent = 50),
         containerColor = containerColor,
         contentColor = contentColor,
         elevation = elevation) {
-          Icon(imageVector = Icons.Filled.Add, contentDescription = stringResource(id = R.string.zoom_in))
+          Icon(
+              imageVector = Icons.Filled.Add,
+              contentDescription = stringResource(id = R.string.zoom_in))
         }
 
-    Box(modifier = Modifier
-      .height(1.dp)
-      .width(56.dp)) {
+    Box(modifier = Modifier.height(1.dp).width(56.dp)) {
       HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
     }
 
     FloatingActionButton(
         onClick = onClickZoomOut,
-        modifier = Modifier
-          .height(56.dp)
-          .width(56.dp),
+        modifier = Modifier.height(56.dp).width(56.dp),
         shape = RoundedCornerShape(bottomStartPercent = 50, bottomEndPercent = 50),
         containerColor = containerColor,
         contentColor = contentColor,
         elevation = elevation) {
-          Icon(imageVector = Icons.Filled.Remove, contentDescription = stringResource(id = R.string.zoom_out))
+          Icon(
+              imageVector = Icons.Filled.Remove,
+              contentDescription = stringResource(id = R.string.zoom_out))
         }
   }
 }
@@ -71,8 +69,5 @@ fun NavigationUIZoomButton(
 @Preview
 @Composable
 fun NavigationUIZoomButtonPreview() {
-  Box(
-    Modifier
-      .background(Color.LightGray)
-      .padding(16.dp)) { NavigationUIZoomButton({}, {}) }
+  Box(Modifier.background(Color.LightGray).padding(16.dp)) { NavigationUIZoomButton({}, {}) }
 }

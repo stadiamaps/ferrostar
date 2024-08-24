@@ -44,9 +44,13 @@ fun NavigatingInnerGridView(
         if (showMute && isMuted != null) {
           NavigationUIButton(onClick = onClickMute) {
             if (isMuted) {
-              Icon(Icons.AutoMirrored.Filled.VolumeOff, contentDescription = stringResource(id = R.string.unmute_description))
+              Icon(
+                  Icons.AutoMirrored.Filled.VolumeOff,
+                  contentDescription = stringResource(id = R.string.unmute_description))
             } else {
-              Icon(Icons.AutoMirrored.Filled.VolumeUp, contentDescription = stringResource(id = R.string.mute_description))
+              Icon(
+                  Icons.AutoMirrored.Filled.VolumeUp,
+                  contentDescription = stringResource(id = R.string.mute_description))
             }
           }
         }
@@ -60,7 +64,9 @@ fun NavigatingInnerGridView(
       bottomStart = {
         if (showCentering) {
           NavigationUIButton(onClick = onClickCenter) {
-            Icon(Icons.Filled.Navigation, contentDescription = stringResource(id = R.string.recenter))
+            Icon(
+                Icons.Filled.Navigation,
+                contentDescription = stringResource(id = R.string.recenter))
           }
         }
       },

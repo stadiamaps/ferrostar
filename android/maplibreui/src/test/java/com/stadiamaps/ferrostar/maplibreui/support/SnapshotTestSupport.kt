@@ -12,9 +12,8 @@ import com.android.resources.ScreenOrientation
 
 fun paparazziDefault(orientation: ScreenOrientation = ScreenOrientation.PORTRAIT): Paparazzi {
   return Paparazzi(
-      deviceConfig = app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5.copy(
-        orientation = orientation
-      ),
+      deviceConfig =
+          app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5.copy(orientation = orientation),
       theme = "android:Theme.Material.Light.NoActionBar",
       maxPercentDifference = 0.05)
 }

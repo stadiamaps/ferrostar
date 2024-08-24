@@ -38,10 +38,7 @@ fun NavigationUIButton(
 ) {
   FloatingActionButton(
       onClick,
-      modifier = Modifier
-        .width(56.dp)
-        .height(56.dp)
-        .shadow(6.dp, shape = CircleShape),
+      modifier = Modifier.width(56.dp).height(56.dp).shadow(6.dp, shape = CircleShape),
       shape = CircleShape,
       containerColor,
       contentColor) {
@@ -52,10 +49,9 @@ fun NavigationUIButton(
 @Preview
 @Composable
 fun NavigationUIButtonPreview() {
-  Box(
-    Modifier
-      .background(Color.LightGray)
-      .padding(16.dp)) {
-    NavigationUIButton({}) { Icon(Icons.Filled.Close, contentDescription = stringResource(id = R.string.end_navigation)) }
+  Box(Modifier.background(Color.LightGray).padding(16.dp)) {
+    NavigationUIButton({}) {
+      Icon(Icons.Filled.Close, contentDescription = stringResource(id = R.string.end_navigation))
+    }
   }
 }

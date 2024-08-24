@@ -22,7 +22,6 @@ import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.config.mapControlsFor
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationActivity
 import com.stadiamaps.ferrostar.maplibreui.runtime.SystemUIDisposableEffect
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.LandscapeNavigationOverlayView
@@ -77,7 +76,7 @@ fun DynamicallyOrientingNavigationView(
         LandscapeNavigationOverlayView(
             modifier =
                 Modifier.fillMaxSize()
-                  // TODO: DO NOT MERGE - Finalize w/ device
+                    // TODO: DO NOT MERGE - Finalize w/ device
                     .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             camera = camera,
             viewModel = viewModel,

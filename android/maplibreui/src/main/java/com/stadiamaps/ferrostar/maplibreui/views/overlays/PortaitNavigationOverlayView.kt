@@ -63,13 +63,12 @@ fun PortraitNavigationOverlayView(
 @Preview
 fun PortraitNavigationOverlayViewPreview() {
   val viewModel =
-    MockNavigationViewModel(
-      MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+      MockNavigationViewModel(
+          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
 
   PortraitNavigationOverlayView(
-    modifier = Modifier.fillMaxSize(),
-    camera = rememberSaveableMapViewCamera(),
-    viewModel = viewModel,
-    onTapExit = { }
-  )
+      modifier = Modifier.fillMaxSize(),
+      camera = rememberSaveableMapViewCamera(),
+      viewModel = viewModel,
+      onTapExit = {})
 }

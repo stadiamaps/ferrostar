@@ -72,17 +72,16 @@ fun LandscapeNavigationOverlayView(
 
 @Composable
 @Preview(
-  device =
-  "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+    device =
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 fun LandscapeNavigationOverlayViewPreview() {
   val viewModel =
-    MockNavigationViewModel(
-      MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+      MockNavigationViewModel(
+          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
 
   LandscapeNavigationOverlayView(
       modifier = Modifier.fillMaxSize(),
       camera = rememberSaveableMapViewCamera(),
       viewModel = viewModel,
-      onTapExit = { }
-  )
+      onTapExit = {})
 }
