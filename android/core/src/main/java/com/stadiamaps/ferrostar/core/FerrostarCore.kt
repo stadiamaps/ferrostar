@@ -247,7 +247,7 @@ class FerrostarCore(
 
     locationProvider.addListener(this, _executor)
 
-    return DefaultNavigationViewModel(this, locationProvider)
+    return DefaultNavigationViewModel(this, spokenInstructionObserver, locationProvider)
   }
 
   /**

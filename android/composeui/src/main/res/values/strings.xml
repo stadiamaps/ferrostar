@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="recenter">Recenter Map</string>
+    <string name="unmute_description">Unmute</string>
+    <string name="mute_description">Mute</string>
+</resources>
