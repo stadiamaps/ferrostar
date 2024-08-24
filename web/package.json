@@ -12,11 +12,10 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
     "prepare:core": "cd ../common && wasm-pack build --target web ferrostar --no-default-features --features wasm_js",
-    "prepare": "npm run prepare:core && tsc && vite build"
+    "build": "npm run prepare:core && tsc && vite build"
   },
   "dependencies": {
     "@stadiamaps/maplibre-search-box": "^1.0.1",
@@ -26,6 +25,7 @@
   },
   "devDependencies": {
     "typescript": "^5.2.2",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "vitest": "^2.0.5"
   }
 }
