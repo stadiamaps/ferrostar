@@ -300,13 +300,14 @@ export class FerrostarCore extends LitElement {
   }
 
   render() {
+    const stopIcon = new URL(`./assets/directions/close.svg`, import.meta.url).href;
     return html`
       <div id="map">
         <instructions-view .tripState=${this.tripState}></instructions-view>
         <div id="bottom-component">
           <arrival-view .tripState=${this.tripState}></arrival-view>
           <button id="stop-button" @click=${this.stopNavigation} ?hidden=${!this.tripState}>
-            <img src="/src/assets/directions/close.svg" alt="Stop navigation" class="icon" />
+            <img src="${stopIcon}" alt="Stop navigation" class="icon" />
           </button>
         </div>
       </div>
