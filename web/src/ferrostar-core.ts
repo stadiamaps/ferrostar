@@ -36,7 +36,7 @@ export class FerrostarCore extends LitElement {
   tripState: any = null;
 
   @property({ type: Boolean })
-  useIntegratedSearchBox: boolean = true;
+  useIntegratedSearchBox: boolean = false;
 
   @property({ type: Boolean })
   useVoiceGuidance: boolean = false;
