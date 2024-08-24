@@ -54,6 +54,9 @@ export class BrowserLocationProvider {
 
   async start() {
     if (navigator.geolocation) {
+      // Start fresh
+      stop();
+
       const options = {
         enableHighAccuracy: true,
       };
@@ -76,6 +79,7 @@ export class BrowserLocationProvider {
   }
 
   stop() {
+    this.lastLocation = null;
     if (navigator.geolocation && this.geolocationWatchId) {
       navigator.geolocation.clearWatch(this.geolocationWatchId);
     }
