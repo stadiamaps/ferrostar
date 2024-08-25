@@ -84,23 +84,23 @@ if you don't.
 
 ### Web
 
+Perform all commands unless otherwise noted from the `web` directory.
+
 1. Install `wasm-pack`:
 
 ```shell
 cargo install wasm-pack
 ```
 
-2. Build the NPM package of the core:
+2. Build the WASM package for the core:
 
 ```shell
-cd common
-wasm-pack build --target web ferrostar --no-default-features --features wasm_js
+npm run prepare:core
 ```
 
 3. Install dependencies:
 
 ```shell
-cd ../web
 npm install
 ```
 
