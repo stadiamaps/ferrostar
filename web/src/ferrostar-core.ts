@@ -1,13 +1,14 @@
-import { LitElement, html, css, unsafeCSS } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import {css, html, LitElement, unsafeCSS} from "lit";
+import {customElement, property} from "lit/decorators.js";
 import maplibregl from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
-import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
-import searchBoxStyles from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
-import init, { NavigationController, RouteAdapter } from "ferrostar";
+import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
+import searchBoxStyles
+  from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
+import init, {NavigationController, RouteAdapter} from "ferrostar";
 import "./instructions-view";
 import "./arrival-view";
-import { BrowserLocationProvider } from "./location";
+import {BrowserLocationProvider} from "./location";
 import CloseSvg from "./assets/directions/close.svg";
 
 @customElement("ferrostar-core")
@@ -36,15 +37,18 @@ export class FerrostarCore extends LitElement {
   @property({ type: Object })
   tripState: any = null;
 
-  // TODO: type
   @property({ type: Boolean })
-  useIntegratedSearchBox: boolean = true;
+  useIntegratedSearchBox: boolean = false;
+
+  @property({ type: Boolean })
+  useVoiceGuidance: boolean = false;
 
   routeAdapter: RouteAdapter | null = null;
   map: maplibregl.Map | null = null;
   searchBox: MapLibreSearchControl | null = null;
   navigationController: NavigationController | null = null;
   currentLocationMapMarker: maplibregl.Marker | null = null;
+  lastSpokenInstructionText: string | null = null;
 
   static styles = [
     unsafeCSS(maplibreglStyles),
@@ -129,8 +133,8 @@ export class FerrostarCore extends LitElement {
 
     if (this.useIntegratedSearchBox) {
       this.searchBox = new MapLibreSearchControl({
-        onResultSelected: (feature) => {
-          this.startNavigationFromSearch(feature.geometry.coordinates);
+        onResultSelected: async (feature) => {
+          await this.startNavigationFromSearch(feature.geometry.coordinates);
         },
       });
       this.map.addControl(this.searchBox, "top-left");
@@ -139,12 +143,16 @@ export class FerrostarCore extends LitElement {
 
   // TODO: type
   async getRoutes(initialLocation: any, waypoints: any) {
+    // Initialize the Ferrostar core WebAssembly module
     await init();
 
+    // Initialize the route adapter
     this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile);
 
+    // Generate the request body
     const body = this.routeAdapter.generateRequest(initialLocation, waypoints).get("body");
 
+    // Send the request to the Valhalla endpoint
     // FIXME: assert httpClient is not null
     const response = await this.httpClient!(this.valhallaEndpointUrl, {
       method: "POST",
@@ -153,18 +161,19 @@ export class FerrostarCore extends LitElement {
     });
 
     const responseData = new Uint8Array(await response.arrayBuffer());
-    const routes = this.routeAdapter.parseResponse(responseData);
-
-    return routes;
+    return this.routeAdapter.parseResponse(responseData);
   }
 
   // TODO: type
   async startNavigation(route: any, config: any) {
+    // Remove the search box when navigation starts
     if (this.useIntegratedSearchBox) this.map?.removeControl(this.searchBox!);
 
+    // Initialize the navigation controller
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     this.navigationController = new NavigationController(route, config);
 
+    // Initialize the trip state
     const startingLocation = this.locationProvider.lastLocation
       ? this.locationProvider.lastLocation
       : {
@@ -175,9 +184,9 @@ export class FerrostarCore extends LitElement {
           speed: null,
         };
 
-    const initialTripState = this.navigationController.getInitialState(startingLocation);
-    this.tripState = initialTripState;
+    this.tripState = this.navigationController.getInitialState(startingLocation);
 
+    // Update the UI with the initial trip state
     this.clearMap();
 
     this.map?.addSource("route", {
@@ -216,7 +225,7 @@ export class FerrostarCore extends LitElement {
 
     const locationProvider = new BrowserLocationProvider();
     locationProvider.requestPermission();
-    locationProvider.start();
+    await locationProvider.start();
 
     // TODO: This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
     while (!locationProvider.lastLocation) {
@@ -245,7 +254,7 @@ export class FerrostarCore extends LitElement {
 
     // Start the navigation
     this.locationProvider = locationProvider;
-    this.startNavigation(route, config);
+    await this.startNavigation(route, config);
   }
 
   async stopNavigation() {
@@ -261,12 +270,26 @@ export class FerrostarCore extends LitElement {
   }
 
   private onLocationUpdated() {
+    // Update the trip state with the new location
     this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
+
+    // Update the user's location on the map
     this.currentLocationMapMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
+
+    // Center the map on the user's location
     this.map?.easeTo({
       center: this.locationProvider.lastLocation.coordinates,
       bearing: this.locationProvider.lastLocation.courseOverGround.degrees || 0,
     });
+
+    // Speak the next instruction if voice guidance is enabled
+    if (this.useVoiceGuidance) {
+      if (this.tripState.Navigating?.spokenInstruction && this.tripState.Navigating?.spokenInstruction.text !== this.lastSpokenInstructionText) {
+        this.lastSpokenInstructionText = this.tripState.Navigating?.spokenInstruction.text;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.tripState.Navigating?.spokenInstruction.text));
+      }
+    }
   }
 
   private clearMap() {

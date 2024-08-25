@@ -8,10 +8,13 @@
   </head>
   <body>
     <p>
-      <span>
-        Search and select a destination, or
-        <button id="simulate">Simulate Navigation</button>
-      </span>
+      Search and select a destination, or
+      <button id="simulate">Simulate Navigation</button>
+    </p>
+
+    <p style="margin-top: 0;">
+      <input type="checkbox" id="voiceGuidance" />
+      <label for="voiceGuidance">Enable voice guidance (sound on)</label>
     </p>
 
     <!--
@@ -21,7 +24,7 @@
       -->
     <ferrostar-core
       id="core"
-      valhallaEndpointUrl="https://valhalla1.openstreetmap.de/route"
+      valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
       styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
       profile="bicycle"
       httpClient="${fetch}"
@@ -81,6 +84,12 @@
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
         });
+      });
+
+      const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
+      voiceGuidanceCheckbox.addEventListener("change", (event) => {
+        const core = document.getElementById("core");
+        core.useVoiceGuidance = event.target.checked;
       });
     </script>
   </body>

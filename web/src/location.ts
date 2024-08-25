@@ -54,6 +54,12 @@ export class BrowserLocationProvider {
 
   async start() {
     if (navigator.geolocation) {
+      // Start fresh
+      stop();
+
+      const options = {
+        enableHighAccuracy: true,
+      };
       this.geolocationWatchId = navigator.geolocation.watchPosition((position) => {
         this.lastLocation = {
           coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },
@@ -68,11 +74,12 @@ export class BrowserLocationProvider {
         if (this.updateCallback) {
           this.updateCallback();
         }
-      });
+      }, null, options);
     }
   }
 
   stop() {
+    this.lastLocation = null;
     if (navigator.geolocation && this.geolocationWatchId) {
       navigator.geolocation.clearWatch(this.geolocationWatchId);
     }
