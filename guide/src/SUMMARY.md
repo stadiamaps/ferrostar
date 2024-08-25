@@ -1,6 +1,7 @@
 # Summary
 
 [Introduction](./intro.md)
+[Terminology and Conventions](./terminology-and-conventions.md)
 [Platform Support Targets](./platform-support-targets.md)
 
 # Tutorial
@@ -26,4 +27,4 @@
 
 # Appendices
 
-- [Vendors](./vendors.md)
+- [Routing and Basemap Vendors](./vendors.md)
