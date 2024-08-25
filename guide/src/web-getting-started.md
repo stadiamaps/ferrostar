@@ -59,6 +59,7 @@ Now you can use Ferrostar in your HTML like this:
   valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
   styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
   profile="bicycle"
+  useIntegratedSearchBox="true"
 ></ferrostar-core>
 ```
 
@@ -89,6 +90,9 @@ Here are the most important ones:
 - `httpClient`: You can set your own fetch-compatible HTTP client to make requests to the routing API (ex: Valhalla).
 - `costingOptions`: You can set the costing options for the route provider (ex: Valhalla JSON options).
 - `useIntegratedSearchBox`: Ferrostar web includes a search box powered by Stadia Maps, but you can disable this and replace with your own.
+- `useVoiceGuidance`: Enable or disable voice guidance.
+
+NOTE: `useIntegratedSearchBox` and `useVoiceGuidance` are disabled by default. Set them to any value to enable them.
 
 NOTE: The JavaScript API is currently limited to Valhalla,
 but support for arbitrary providers (like we already have on iOS and Android)
