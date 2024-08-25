@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --config vite.config.site.ts",
     "preview": "vite preview",
     "test": "vitest",
     "prepare:core": "cd ../common && wasm-pack build --target web ferrostar --no-default-features --features wasm_js",

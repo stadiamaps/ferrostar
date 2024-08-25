@@ -54,7 +54,6 @@
       // Initialize the core and the control buttons
       document.addEventListener("DOMContentLoaded", async () => {
         const core = document.getElementById("core");
-        const destinationInput = document.getElementById("destination");
         const simulateNavigationButton = document.getElementById("simulate");
 
         // Button to start simulated navigation
@@ -84,12 +83,11 @@
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
         });
-      });
 
-      const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
-      voiceGuidanceCheckbox.addEventListener("change", (event) => {
-        const core = document.getElementById("core");
-        core.useVoiceGuidance = event.target.checked;
+        const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
+        voiceGuidanceCheckbox.addEventListener("change", (event) => {
+          core.useVoiceGuidance = event.target.checked;
+        });
       });
     </script>
   </body>

@@ -8,7 +8,7 @@ import searchBoxStyles
 import init, {NavigationController, RouteAdapter} from "ferrostar";
 import "./instructions-view";
 import "./arrival-view";
-import {BrowserLocationProvider} from "./location";
+import {BrowserLocationProvider, SimulatedLocationProvider} from "./location";
 import CloseSvg from "./assets/directions/close.svg";
 
 @customElement("ferrostar-core")
@@ -223,17 +223,20 @@ export class FerrostarCore extends LitElement {
   async startNavigationFromSearch(coordinates: any) {
     const waypoints = [{ coordinate: { lat: coordinates[1], lng: coordinates[0] }, kind: "Break" }];
 
-    const locationProvider = new BrowserLocationProvider();
-    locationProvider.requestPermission();
-    await locationProvider.start();
+    // FIXME: This is a hack basically to support the demo page that should go away.
+    if (!this.locationProvider || this.locationProvider instanceof SimulatedLocationProvider) {
+      this.locationProvider = new BrowserLocationProvider();
+    }
 
-    // TODO: This approach is not ideal, any better way to wait for the locationProvider to acquire the first location?
-    while (!locationProvider.lastLocation) {
+    await this.locationProvider.start();
+
+    // TODO: Replace this with a promise or callback
+    while (!this.locationProvider.lastLocation) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     // Use the acquired user location to request the route
-    const routes = await this.getRoutes(locationProvider.lastLocation, waypoints);
+    const routes = await this.getRoutes(this.locationProvider.lastLocation, waypoints);
     const route = routes[0];
 
     // TODO: type + use TypeScript enum
@@ -253,7 +256,6 @@ export class FerrostarCore extends LitElement {
     };
 
     // Start the navigation
-    this.locationProvider = locationProvider;
     await this.startNavigation(route, config);
   }
 
@@ -270,6 +272,9 @@ export class FerrostarCore extends LitElement {
   }
 
   private onLocationUpdated() {
+    if (!this.navigationController) {
+      return;
+    }
     // Update the trip state with the new location
     this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
 
