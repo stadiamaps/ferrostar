@@ -15,7 +15,7 @@ export class SimulatedLocationProvider {
   }
 
   async start() {
-    while (true) {
+    while (this.simulationState !== null) {
       await new Promise((resolve) => setTimeout(resolve, (1 / this.warpFactor) * 1000));
       const initialState = this.simulationState;
       const updatedState = advanceLocationSimulation(initialState);
@@ -47,7 +47,7 @@ export class BrowserLocationProvider {
 
   updateCallback: () => void = () => {};
 
-  async start() {
+  start() {
     if (navigator.geolocation && !this.geolocationWatchId) {
       const options = {
         enableHighAccuracy: true,

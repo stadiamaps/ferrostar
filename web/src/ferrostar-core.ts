@@ -165,13 +165,13 @@ export class FerrostarCore extends LitElement {
   }
 
   // TODO: type
-  async startNavigation(route: any, config: any) {
+  startNavigation(route: any, config: any) {
     // Remove the search box when navigation starts
     if (this.useIntegratedSearchBox) this.map?.removeControl(this.searchBox!);
 
     // Initialize the navigation controller
-    this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     this.navigationController = new NavigationController(route, config);
+    this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
     // Initialize the trip state
     const startingLocation = this.locationProvider.lastLocation
@@ -228,7 +228,7 @@ export class FerrostarCore extends LitElement {
       this.locationProvider = new BrowserLocationProvider();
     }
 
-    await this.locationProvider.start();
+    this.locationProvider.start();
 
     // TODO: Replace this with a promise or callback
     while (!this.locationProvider.lastLocation) {
@@ -256,7 +256,7 @@ export class FerrostarCore extends LitElement {
     };
 
     // Start the navigation
-    await this.startNavigation(route, config);
+    this.startNavigation(route, config);
   }
 
   async stopNavigation() {
