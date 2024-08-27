@@ -1,0 +1,62 @@
+plugins {
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.jetbrainsKotlinAndroid
+    alias libs.plugins.ktfmt
+    alias libs.plugins.compose.compiler
+    alias libs.plugins.mavenPublish
+}
+
+android {
+    namespace 'com.ferrostar.carui'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 29
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.graphics
+    implementation libs.androidx.compose.ui.tooling.preview
+
+    // Ferrostar libraries
+    implementation project(':core')
+    implementation project(':maplibreui')
+
+    // MARK - Androidx CarApp library
+    implementation libs.androidx.car.app
+    // For Android Auto specific functionality
+    implementation libs.androidx.car.app.projected
+    // For Automotive OS specific functionality
+    // TODO: This is quite a bit more complex, we'll leave it as a future task.
+    // implementation libs.androidx.car.app.automotive
+
+    testImplementation libs.junit
+    testImplementation libs.androidx.car.app.testing
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}

@@ -5,7 +5,9 @@ import android.util.Log
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.CorrectiveAction
+import com.stadiamaps.ferrostar.core.DefaultNavigationViewModel
 import com.stadiamaps.ferrostar.core.FerrostarCore
+import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import java.net.URL
@@ -20,13 +22,11 @@ import uniffi.ferrostar.StepAdvanceMode
  * demonstrate and test the basics of FerrostarCore with a dependency injection like stack. In a
  * real a app, use your preferred injection system.
  */
-object AppModule {
-  private const val TAG = "AppModule"
-
-  private lateinit var appContext: Context
-
-  fun init(context: Context) {
-    appContext = context
+class AppModule(
+  context: Context
+) {
+  companion object {
+    const val TAG = "AppModule"
   }
 
   val locationProvider: SimulatedLocationProvider by lazy { SimulatedLocationProvider() }
@@ -78,5 +78,11 @@ object AppModule {
   }
 
   // The AndroidTtsObserver handles spoken instructions as they are triggered by FerrostarCore.
-  val ttsObserver: AndroidTtsObserver by lazy { AndroidTtsObserver(appContext) }
+  val ttsObserver: AndroidTtsObserver by lazy { AndroidTtsObserver(context) }
+
+  // Create an instance of the navigation view model. You can also dynamically
+  // load this off the start of a navigation session. See [FerrostarCore.startNavigation].
+  val navigationViewModel: NavigationViewModel by lazy {
+    DefaultNavigationViewModel(ferrostarCore, locationProvider)
+  }
 }

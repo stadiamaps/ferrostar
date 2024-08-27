@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.stadiamaps.ferrostar.demo"
-        minSdk 26
+        minSdk 29 // 29 is the minimum supported by car.app. The rest of ferrostar supports 25+.
         targetSdk 34
         versionCode 1
         versionName "1.0"
@@ -62,6 +62,7 @@ dependencies {
 
     implementation project(':core')
     implementation project(':maplibreui')
+    implementation project(':carui')
 
     implementation libs.maplibre.compose
 

@@ -256,11 +256,14 @@ class FerrostarCore(
    * This allows you to reuse the existing view model. Do not call this method unless you are
    * already navigating.
    */
-  fun replaceRoute(route: Route, config: NavigationControllerConfig) {
+  fun replaceRoute(route: Route, config: NavigationControllerConfig? = null) {
+    // Apply the new config if provided, otherwise use the original.
+    _config = config ?: _config
+
     val controller =
         NavigationController(
             route,
-            config,
+            _config,
         )
     val startingLocation =
         locationProvider.lastLocation

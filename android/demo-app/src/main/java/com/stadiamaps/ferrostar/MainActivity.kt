@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar
 
+import android.content.Intent
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
@@ -10,6 +11,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.ferrostar.carui.FerrostarCarAppManager
+import com.ferrostar.carui.FerrostarCarAppService
 import com.stadiamaps.ferrostar.core.AndroidTtsStatusListener
 import com.stadiamaps.ferrostar.support.initialSimulatedLocation
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
@@ -20,18 +23,18 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
     private const val TAG = "MainActivity"
   }
 
+  private val appModule: AppModule
+    get() = (application as DemoApplication).appModule
+
   override fun onDestroy() {
     super.onDestroy()
 
     // Don't forget to clean up!
-    AppModule.ttsObserver.shutdown()
+    appModule.ttsObserver.shutdown()
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
-    // Set up the App Module
-    AppModule.init(this)
 
     // Set up text-to-speech for spoken instructions. This is a pretty "default" setup.
     // Most Android apps will want to set this up. TTS setup is *not* automatic.
@@ -41,21 +44,25 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
     // NOTE: We can't set this property in the same way as we do the core, because the context will
     // not be initialized yet, but the language won't save us from doing it anyways. This will
     // result in a confusing NPE.
-    AppModule.ttsObserver.statusObserver = this
-    AppModule.ferrostarCore.spokenInstructionObserver = AppModule.ttsObserver
+    appModule.ttsObserver.statusObserver = this
+    appModule.ferrostarCore.spokenInstructionObserver = appModule.ttsObserver
 
     // Set up the location provider
-    AppModule.locationProvider.lastLocation = initialSimulatedLocation
-    AppModule.locationProvider.warpFactor = 2u
+    appModule.locationProvider.lastLocation = initialSimulatedLocation
+    appModule.locationProvider.warpFactor = 2u
 
     setContent {
       FerrostarTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          DemoNavigationScene(savedInstanceState)
+          DemoNavigationScene(savedInstanceState, appModule.navigationViewModel, appModule.locationProvider)
         }
       }
     }
+
+    // TODO: This is pretty flimsy. Just testing it out.
+    val ferrostarCarAppService = FerrostarCarAppManager(this)
+    ferrostarCarAppService.start(this)
   }
 
   // TTS listener methods

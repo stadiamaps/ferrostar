@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
+
+    <application>
+        <service
+            android:name=".FerrostarCarAppService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.NAVIGATION"/>
+            </intent-filter>
+        </service>
+    </application>
+</manifest>

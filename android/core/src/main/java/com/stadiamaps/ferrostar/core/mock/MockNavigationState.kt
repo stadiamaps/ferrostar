@@ -10,6 +10,8 @@ import uniffi.ferrostar.CourseOverGround
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
+import uniffi.ferrostar.NavigationControllerConfig
+import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.Speed
 import uniffi.ferrostar.TripProgress
@@ -63,5 +65,9 @@ fun NavigationUiState.Companion.pedestrianExample(): NavigationUiState =
 
 class MockNavigationViewModel(override val uiState: StateFlow<NavigationUiState>) :
     ViewModel(), NavigationViewModel {
-  override fun stopNavigation() {}
+    override fun startNavigation(route: Route, config: NavigationControllerConfig?) {}
+
+    override fun replaceRoute(route: Route, config: NavigationControllerConfig?) {}
+
+    override fun stopNavigation() {}
 }

@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.2"
+
 kotlin = "2.0.0"
 cargo-ndk = "0.3.4"
 ktfmt = "0.19.0"
@@ -21,6 +22,8 @@ junitCompose = "1.6.8"
 espressoCore = "3.6.1"
 okhttp-mock = "2.0.0"
 mavenPublish = "0.29.0"
+material = "1.12.0"
+car-app = "1.4.0"
 
 [libraries]
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
@@ -36,6 +39,12 @@ androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecyc
 androidx-lifecycle-runtime-compose-android = { module = "androidx.lifecycle:lifecycle-runtime-compose-android", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+# Androidx - Car/AndroidAuto
+androidx-car-app = { group = "androidx.car.app", name = "app", version.ref = "car-app" }
+androidx-car-app-projected = { group = "androidx.car.app", name = "app-projected", version.ref = "car-app" }
+androidx-car-app-automotive = { group = "androidx.car.app", name = "app-automotive", version.ref = "car-app" }
+androidx-car-app-testing = { group = "androidx.car.app", name = "app-testing", version.ref = "car-app" }
+
 # Jetpack Compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity-compose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose" }
@@ -59,6 +68,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "junitCompose" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
