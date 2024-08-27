@@ -19,8 +19,8 @@ sealed class NavigationActivity(val zoom: Double, val pitch: Double) {
 
 /**
  * The camera configuration for navigation. This configuration sets the camera to track the user,
- * with a high zoom level and moderate pitch for a 2.5D isometric view. It automatically adjusts
- * the padding based on the screen size and orientation.
+ * with a high zoom level and moderate pitch for a 2.5D isometric view. It automatically adjusts the
+ * padding based on the screen size and orientation.
  *
  * @param activity The type of activity the camera is being used for.
  * @return The recommended navigation MapViewCamera
