@@ -26,11 +26,12 @@ fun windowInsetsController(window: Window): WindowInsetsControllerCompat {
 }
 
 /**
- * A Composable effect that hides the system UI (status bar and navigation bar) when the Composable
- * is first composed and restores the system UI when the Composable is disposed.
+ * A Composable effect that automatically hides the system UI (status bar and navigation bar)
+ * when the Composable is first composed and restores the system UI when the Composable is
+ * disposed.
  */
 @Composable
-fun SystemUIDisposableEffect() {
+fun AutoHideSystemUIDisposableEffect() {
   val window = window() ?: return
   val insetsController = windowInsetsController(window)
   val colorScheme = MaterialTheme.colorScheme
