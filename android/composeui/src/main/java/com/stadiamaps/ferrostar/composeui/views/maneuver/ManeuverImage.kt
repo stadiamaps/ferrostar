@@ -15,7 +15,7 @@ import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.VisualInstructionContent
 
-private val VisualInstructionContent.maneuverIcon: String
+val VisualInstructionContent.maneuverIcon: String
   get() {
     val descriptor =
         listOfNotNull(

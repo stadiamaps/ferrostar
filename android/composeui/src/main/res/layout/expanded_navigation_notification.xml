@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/navigation_notification"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/background_color">
+
+    <include layout="@layout/navigation_notification" />
+
+    <Button
+        android:id="@+id/stop_navigation_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/stop_navigation"
+        android:textAllCaps="false"
+        android:textFontWeight="700"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="40dp"
+        android:textColor="@color/foreground_color"
+        android:backgroundTint="@color/background_color_darkened"
+        android:shadowColor="@android:color/transparent"
+        android:background="@drawable/rounded_button"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        />
+
+</LinearLayout>

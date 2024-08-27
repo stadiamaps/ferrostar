@@ -250,6 +250,7 @@ class ValhallaCoreTest {
             profile = "auto",
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
 
@@ -296,6 +297,7 @@ class ValhallaCoreTest {
             profile = "auto",
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None),
             costingOptions = mapOf("auto" to mapOf("useTolls" to 0)))
