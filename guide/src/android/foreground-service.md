@@ -1,14 +1,22 @@
 # Android Foreground Service
 
-An android foreground service is provided that runs automatically during a navigation trip. This complies with Google's guidance on continued location access [Foreground Location Requirements](https://support.google.com/googleplay/android-developer/answer/9799150#Accessing%20location%20in%20the%20foreground).
+Ferrostar provides an Android foreground service that runs automatically during a trip.
+Such a service is required to comply with Google's [Foreground Location Requirements](https://support.google.com/googleplay/android-developer/answer/9799150#Accessing%20location%20in%20the%20foreground).
 
 ## Overview
 
-The Kotlin `ForegroundServiceManager` links `FerrostarCore` to the foreground service `FerrostarForegroundService` using a binder. This technique allows us to bind the foreground service to a navigation trip operated by the core. When navigation starts, the foreground service is started and bound. When navigation is stopped, we stop the foreground and unbind it. Note, you must call stop on ferrostar core to stop the notification. It does not automatically close out when the user arrives because location updates are not stopped.
+The Kotlin `ForegroundServiceManager` links `FerrostarCore` to the foreground service `FerrostarForegroundService` using a binder.
+This technique allows us to bind the foreground service to a trip operated by the core.
+When navigation starts, the foreground service is started and bound automatically.
+Similarly, when we stop navigating, the core will stop the foreground and unbind it.
+
+Note: you must call stop on Ferrostar core to stop the notification.
+It does not automatically close out when the user arrives because location updates are not stopped.
 
 ### Setting Up Permissions
 
-This feature uses the existing `AndroidManifest.xml` items in the ferrostar core module. These do not need to be added to your app.
+This feature uses the existing `AndroidManifest.xml` items in the Ferrostar core module.
+These do not need to be added to your app.
 
 ```xml
     <!-- Foreground service permission -->
@@ -24,7 +32,8 @@ This feature uses the existing `AndroidManifest.xml` items in the ferrostar core
     </application>
 ```
 
-Your app must still request `POST_NOTIFICATIONS` and `FOREGROUND_SERVICE_LOCATION` permissions on API 34+ (Upside Down Cake). See the demo app's call to request these permissions in your composable app.
+Your app must still request `POST_NOTIFICATIONS` and `FOREGROUND_SERVICE_LOCATION` permissions on API 34+ (Upside Down Cake).
+See the demo app's call to request these permissions in your composable app.
 
 ```kotlin
   val allPermissions =
@@ -45,9 +54,10 @@ Your app must still request `POST_NOTIFICATIONS` and `FOREGROUND_SERVICE_LOCATIO
       }
 ```
 
-### Adding the Manager to the Core.
+### Using the Service Manager with `FerrostarCore`
 
-In your app module, you'll need to pass in the `ForegroundServiceManager` as a parameter to construct `FerrostarCore`. Here's how to do that with the included notification builder.
+In your app module, you'll need to pass in the `ForegroundServiceManager` as a parameter to construct `FerrostarCore`.
+Here's how to do that with the included notification builder.
 
 ```kotlin
 val foregroundServiceManager: ForegroundServiceManager = FerrostarForegroundServiceManager(appContext, DefaultForegroundNotificationBuilder(appContext))
@@ -61,7 +71,7 @@ val core =
 
 The demo app shows this using a lazy initializer.
 
-// TODO: link the dependency injection example here once we have a doc for that.
+TODO: link the dependency injection example here once we have a doc for that.
 
 ### Customization
 

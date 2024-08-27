@@ -253,7 +253,10 @@ such as using a Valhalla [Route Provider](./route-providers.md#bundled-support).
 
 ## Set up the foreground service and notification
 
-See [Foreground Service](./android/foreground-service.md)
+A foreground service and notification are required on Android
+if you want to enable background operation of your app.
+This is such a detailed topic that it gets its own page!
+Learn about [Foreground Service](./android/foreground-service.md) configuration here.
 
 ## Set up voice guidance
 
