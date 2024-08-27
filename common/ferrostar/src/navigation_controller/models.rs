@@ -8,16 +8,11 @@ use geo::LineString;
 #[cfg(feature = "wasm-bindgen")]
 use serde::{Deserialize, Serialize};
 
-#[cfg(test)]
-use ts_rs::TS;
-
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-#[cfg_attr(test, derive(TS))]
-#[cfg_attr(test, ts(export, export_to = "types.d.ts"))]
 pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
     pub distance_to_next_maneuver: f64,
@@ -33,8 +28,6 @@ pub struct TripProgress {
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
-#[cfg_attr(test, derive(TS))]
-#[cfg_attr(test, ts(export, export_to = "types.d.ts"))]
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.
     Idle,
@@ -87,8 +80,6 @@ pub enum StepAdvanceStatus {
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
-#[cfg_attr(test, derive(TS))]
-#[cfg_attr(test, ts(export, export_to = "types.d.ts"))]
 pub enum StepAdvanceMode {
     /// Never advances to the next step automatically;
     /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
@@ -121,8 +112,6 @@ pub enum StepAdvanceMode {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-#[cfg_attr(test, derive(TS))]
-#[cfg_attr(test, ts(export, export_to = "types.d.ts"))]
 pub struct NavigationControllerConfig {
     pub step_advance: StepAdvanceMode,
     pub route_deviation_tracking: RouteDeviationTracking,
