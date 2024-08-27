@@ -75,8 +75,10 @@ TODO: link the dependency injection example here once we have a doc for that.
 
 ### Customization
 
-You can provide your own implementation of the `ForegroundNotificationBuilder` to customize the notification the foreground service publishes to users. To accomplish this, simply
-create a new builder like the `DefaultForegroundNotificationBuilder` that implements the abstract `ForegroundNotificationBuilder`. Your class should 
+You can provide your own implementation of the `ForegroundNotificationBuilder` to customize the notification the foreground service publishes to users. 
+To accomplish this, simply create a new `Notification` like the `DefaultForegroundNotificationBuilder` that implements the abstract `ForegroundNotificationBuilder`. 
+Your class needs to create and build the foreground notification. This can include setting any required pending intents (e.g. `openPendingIntent`), 
+portraying relevant information about the service to the user and so on.
 
 ```kotlin
 class MyForegroundNotificationBuilder(
