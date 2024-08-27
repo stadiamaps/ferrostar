@@ -15,8 +15,7 @@ It does not automatically close out when the user arrives because location updat
 
 ### Setting Up Permissions
 
-This feature uses the existing `AndroidManifest.xml` items in the Ferrostar core module.
-These do not need to be added to your app.
+This feature requires adding the following to your app or module `AndroidManifest.xml`.
 
 ```xml
     <!-- Foreground service permission -->

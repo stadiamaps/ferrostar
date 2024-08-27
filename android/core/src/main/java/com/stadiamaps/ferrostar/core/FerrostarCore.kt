@@ -60,7 +60,7 @@ class FerrostarCore(
     val routeProvider: RouteProvider,
     val httpClient: OkHttpClient,
     val locationProvider: LocationProvider,
-    val foregroundServiceManager: ForegroundServiceManager,
+    val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
 ) : LocationUpdateListener {
   companion object {
@@ -136,8 +136,8 @@ class FerrostarCore(
       profile: String,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
-      foregroundServiceManager: ForegroundServiceManager,
       navigationControllerConfig: NavigationControllerConfig,
+      foregroundServiceManager: ForegroundServiceManager? = null,
       costingOptions: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
@@ -152,8 +152,8 @@ class FerrostarCore(
       routeAdapter: RouteAdapter,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
-      foregroundServiceManager: ForegroundServiceManager,
       navigationControllerConfig: NavigationControllerConfig,
+      foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
       RouteProvider.RouteAdapter(routeAdapter),
       httpClient,
@@ -165,8 +165,8 @@ class FerrostarCore(
       customRouteProvider: CustomRouteProvider,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
-      foregroundServiceManager: ForegroundServiceManager,
       navigationControllerConfig: NavigationControllerConfig,
+      foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
       RouteProvider.CustomProvider(customRouteProvider),
       httpClient,
@@ -235,7 +235,7 @@ class FerrostarCore(
     stopNavigation()
 
     // Start the foreground notification service
-    foregroundServiceManager.startService(this::stopNavigation)
+    foregroundServiceManager?.startService(this::stopNavigation)
 
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
@@ -310,7 +310,7 @@ class FerrostarCore(
   }
 
   fun stopNavigation() {
-    foregroundServiceManager.stopService()
+    foregroundServiceManager?.stopService()
     locationProvider.removeListener(this)
     _navigationController?.destroy()
     _navigationController = null
@@ -381,7 +381,7 @@ class FerrostarCore(
     }
 
     // Update the notification manager (this propagates the state to the notification)
-    foregroundServiceManager.onNavigationStateUpdated(_state.value)
+    foregroundServiceManager?.onNavigationStateUpdated(_state.value)
   }
 
   override fun onLocationUpdated(location: UserLocation) {
