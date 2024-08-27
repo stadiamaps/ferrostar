@@ -10,4 +10,11 @@
     <string name="duration">Duration</string>
     <string name="end_navigation">End Navigation</string>
     <string name="maneuver_image">Maneuver direction image</string>
+    <string name="stop_navigation">Stop Navigating</string>
+    <string name="maneuver_instruction_image">Maneuver instruction image</string>
+    <string name="dot">•</string>
+    <string name="instruction_image">Instruction image</string>
+    <string name="preparing">Preparing...</string>
+    <string name="arrived_title">Arrived</string>
+    <string name="arrived_description">You have arrived at your destination.</string>
 </resources>

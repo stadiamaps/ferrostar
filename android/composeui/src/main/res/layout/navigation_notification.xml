@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_notification"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/background_color">
+
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:id="@+id/instruction_image"
+        android:contentDescription="@string/instruction_image"
+        android:src="@drawable/direction_depart_straight"
+        android:tintMode="src_atop"
+        android:tint="@color/foreground_color"
+        android:layout_marginRight="8dp"
+        tools:ignore="UseAppTint" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:id="@+id/estimated_arrival_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:01 PM"
+                android:paddingEnd="8dp"
+                android:textColor="@color/foreground_color"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dot"
+                android:paddingEnd="8dp"
+                android:textColor="@color/foreground_color" />
+
+            <TextView
+                android:id="@+id/duration_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="32 min"
+                android:paddingEnd="8dp"
+                android:textColor="@color/foreground_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dot"
+                android:paddingEnd="8dp"
+                android:textColor="@color/foreground_color" />
+
+            <TextView
+                android:id="@+id/distance_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="25.2 mi"
+                android:textColor="@color/foreground_color" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="Turn left onto SE 50th Ave."
+            android:textColor="@color/foreground_color" />
+
+    </LinearLayout>
+
+</LinearLayout>
