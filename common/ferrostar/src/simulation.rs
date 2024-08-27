@@ -49,6 +49,9 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::*, JsValue};
 
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
+
 #[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
 
@@ -64,7 +67,8 @@ use alloc::{
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub enum SimulationError {
     #[cfg_attr(feature = "std", error("Failed to parse polyline: {error}."))]
     /// Errors decoding the polyline string.
@@ -77,7 +81,8 @@ pub enum SimulationError {
 /// The current state of the simulation.
 #[derive(Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct LocationSimulationState {
     pub current_location: UserLocation,
     remaining_locations: Vec<GeographicCoordinate>,

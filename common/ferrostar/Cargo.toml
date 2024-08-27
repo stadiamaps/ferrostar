@@ -39,6 +39,7 @@ uuid = { version = "1.8.0", features = ["v4", "serde"] }
 getrandom = { version = "0.2.15", optional = true }
 wasm-bindgen = { version = "0.2.92", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
+tsify = { version = "0.4.5", features = ["js"] }
 
 [build-dependencies]
 uniffi = { workspace = true, features = ["build"] }
