@@ -20,8 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.composeui.R
 
 @Composable
 fun NavigationUIZoomButton(
@@ -41,7 +43,9 @@ fun NavigationUIZoomButton(
         containerColor = containerColor,
         contentColor = contentColor,
         elevation = elevation) {
-          Icon(imageVector = Icons.Filled.Add, contentDescription = "Zoom In")
+          Icon(
+              imageVector = Icons.Filled.Add,
+              contentDescription = stringResource(id = R.string.zoom_in))
         }
 
     Box(modifier = Modifier.height(1.dp).width(56.dp)) {
@@ -55,7 +59,9 @@ fun NavigationUIZoomButton(
         containerColor = containerColor,
         contentColor = contentColor,
         elevation = elevation) {
-          Icon(imageVector = Icons.Filled.Remove, contentDescription = "Zoom Out")
+          Icon(
+              imageVector = Icons.Filled.Remove,
+              contentDescription = stringResource(id = R.string.zoom_out))
         }
   }
 }

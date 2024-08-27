@@ -19,8 +19,8 @@ import com.maplibre.compose.settings.MapControls
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.toAndroidLocation
-import com.stadiamaps.ferrostar.maplibreui.extensions.AutomotiveNavigationCentered
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 
 /**
  * The base MapLibre MapView configured for navigation with a polyline representing the route.
@@ -39,12 +39,11 @@ fun NavigationMapView(
     styleUrl: String,
     mapControls: MapControls,
     camera: MutableState<MapViewCamera>,
+    navigationCamera: MapViewCamera = navigationMapViewCamera(),
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    onMapReadyCallback: (Style) -> Unit = {
-      camera.value = MapViewCamera.AutomotiveNavigationCentered()
-    },
+    onMapReadyCallback: (Style) -> Unit = { camera.value = navigationCamera },
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
   val uiState = viewModel.uiState.collectAsState()

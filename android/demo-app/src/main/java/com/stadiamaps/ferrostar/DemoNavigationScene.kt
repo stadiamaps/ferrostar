@@ -75,6 +75,7 @@ fun DemoNavigationScene(
         }
       }
 
+  // FIXME: This is restarting navigation every time the screen is rotated.
   LaunchedEffect(savedInstanceState) {
     // Request all permissions
     permissionsLauncher.launch(allPermissions)
@@ -109,7 +110,8 @@ fun DemoNavigationScene(
         // tiles.
         // Most vendors offer free API keys for development use.
         styleUrl = "https://demotiles.maplibre.org/style.json",
-        viewModel = viewModel!!) { uiState ->
+        viewModel = viewModel!!,
+        onTapExit = { viewModel!!.stopNavigation() }) { uiState ->
           // Trivial, if silly example of how to add your own overlay layers.
           // (Also incidentally highlights the lag inherent in MapLibre location tracking
           // as-is.)
