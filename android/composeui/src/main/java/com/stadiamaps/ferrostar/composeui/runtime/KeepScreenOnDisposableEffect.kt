@@ -17,8 +17,8 @@ private fun window(): Window? {
 }
 
 /**
- * A Composable that keeps the screen on while the hosting Composable is in the view hierarchy.
- * OnDispose, the flag is cleared and the screen will return to its normal behavior.
+ * A Composable that keeps the screen on while the hosting Composable is in the view hierarchy. On
+ * dispose, the flag is cleared and the screen will return to its normal behavior.
  *
  * See [WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON]
  */
