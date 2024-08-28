@@ -1,20 +1,15 @@
 package com.ferrostar.carui
 
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
-import androidx.car.app.CarContext
 import androidx.car.app.connection.CarConnection
 import androidx.lifecycle.LifecycleOwner
 import java.lang.ref.WeakReference
 
-class FerrostarCarAppManager(
-  context: Context
-): ServiceConnection {
+class FerrostarCarAppManager(context: Context) : ServiceConnection {
 
   companion object {
     private const val TAG = "FerrostarCarAppManager"
@@ -29,8 +24,8 @@ class FerrostarCarAppManager(
       Log.d(TAG, "CarConnection type: $connection")
     }
 
-//    val intent = Intent(carContext, FerrostarCarAppService::class.java)
-//    context.start
+    //    val intent = Intent(carContext, FerrostarCarAppService::class.java)
+    //    context.start
   }
 
   override fun onServiceConnected(name: ComponentName?, service: IBinder?) {

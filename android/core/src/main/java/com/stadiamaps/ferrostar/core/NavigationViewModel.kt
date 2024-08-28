@@ -24,7 +24,6 @@ import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 import uniffi.ferrostar.Waypoint
-import kotlin.coroutines.CoroutineContext
 
 data class NavigationUiState(
     val snappedLocation: UserLocation?,
@@ -61,7 +60,9 @@ interface NavigationViewModel {
   val uiState: StateFlow<NavigationUiState>
 
   fun startNavigation(route: Route, config: NavigationControllerConfig? = null)
+
   fun replaceRoute(route: Route, config: NavigationControllerConfig? = null)
+
   fun toggleMute()
 
   fun stopNavigation()
@@ -99,10 +100,7 @@ class DefaultNavigationViewModel(
   private val _routes = MutableStateFlow<List<Route>?>(null)
   val routes: StateFlow<List<Route>?> = _routes.asStateFlow()
 
-  fun getRoutes(
-    origin: UserLocation,
-    waypoints: List<Waypoint>
-  ) {
+  fun getRoutes(origin: UserLocation, waypoints: List<Waypoint>) {
     viewModelScope.launch(Dispatchers.IO) {
       _routes.value = ferrostarCore.getRoutes(origin, waypoints)
     }

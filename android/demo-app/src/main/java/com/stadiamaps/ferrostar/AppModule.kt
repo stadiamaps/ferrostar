@@ -25,9 +25,7 @@ import uniffi.ferrostar.StepAdvanceMode
  * demonstrate and test the basics of FerrostarCore with a dependency injection like stack. In a
  * real a app, use your preferred injection system.
  */
-class AppModule(
-  context: Context
-) {
+class AppModule(context: Context) {
   companion object {
     const val TAG = "AppModule"
   }
@@ -38,7 +36,7 @@ class AppModule(
   }
 
   private val foregroundServiceManager: ForegroundServiceManager by lazy {
-    FerrostarForegroundServiceManager(appContext, DefaultForegroundNotificationBuilder(appContext))
+    FerrostarForegroundServiceManager(context, DefaultForegroundNotificationBuilder(context))
   }
 
   // NOTE: This is a public instance which is suitable for development, but not for heavy use.
@@ -91,6 +89,6 @@ class AppModule(
   // Create an instance of the navigation view model. You can also dynamically
   // load this off the start of a navigation session. See [FerrostarCore.startNavigation].
   val navigationViewModel: NavigationViewModel by lazy {
-    DefaultNavigationViewModel(ferrostarCore, locationProvider)
+    DefaultNavigationViewModel(ferrostarCore, ttsObserver, locationProvider)
   }
 }

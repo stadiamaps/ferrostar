@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar
 
-import android.content.Intent
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
@@ -12,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.ferrostar.carui.FerrostarCarAppManager
-import com.ferrostar.carui.FerrostarCarAppService
 import com.stadiamaps.ferrostar.core.AndroidTtsStatusListener
 import com.stadiamaps.ferrostar.support.initialSimulatedLocation
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
@@ -55,7 +53,8 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
       FerrostarTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          DemoNavigationScene(savedInstanceState, appModule.navigationViewModel, appModule.locationProvider)
+          DemoNavigationScene(
+              savedInstanceState, appModule.navigationViewModel, appModule.locationProvider)
         }
       }
     }

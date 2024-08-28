@@ -12,9 +12,7 @@ object FerrostarCarAppSessionFactory {
   }
 }
 
-class FerrostarCarAppSession(
-  private val viewModel: NavigationViewModel
-): Session() {
+class FerrostarCarAppSession(private val viewModel: NavigationViewModel) : Session() {
 
   override fun onCreateScreen(intent: Intent): Screen {
     return NavigationScreen(carContext, viewModel)
