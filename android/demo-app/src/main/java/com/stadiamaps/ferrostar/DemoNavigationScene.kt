@@ -40,7 +40,7 @@ fun DemoNavigationScene(
     locationProvider: SimulatedLocationProvider = AppModule.locationProvider,
     core: FerrostarCore = AppModule.ferrostarCore
 ) {
-  // Keeps the screen at consistent brightness on while this Composable is in the view hierarchy.
+  // Keeps the screen on at a consistent brightness while this Composable is in the view hierarchy.
   // This is typically a good idea for scenes hosting navigation trips or a NavigationView.
   KeepScreenOnDisposableEffect()
 
