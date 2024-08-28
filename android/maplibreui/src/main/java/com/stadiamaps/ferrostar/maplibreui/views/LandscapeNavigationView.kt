@@ -21,7 +21,6 @@ import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.config.mapControlsFor
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import com.stadiamaps.ferrostar.maplibreui.runtime.AutoHideSystemUIDisposableEffect
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.LandscapeNavigationOverlayView
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,8 +48,6 @@ fun LandscapeNavigationView(
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
-  AutoHideSystemUIDisposableEffect()
-
   Box(modifier) {
     NavigationMapView(
         styleUrl,

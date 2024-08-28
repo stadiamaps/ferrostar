@@ -22,7 +22,6 @@ import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.config.mapControlsFor
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import com.stadiamaps.ferrostar.maplibreui.runtime.AutoHideSystemUIDisposableEffect
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.LandscapeNavigationOverlayView
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOverlayView
@@ -55,8 +54,6 @@ fun DynamicallyOrientingNavigationView(
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
 ) {
-  AutoHideSystemUIDisposableEffect()
-
   val orientation = LocalConfiguration.current.orientation
   val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
 

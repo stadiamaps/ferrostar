@@ -11,15 +11,9 @@ import androidx.core.view.WindowInsetsControllerCompat
 
 /** Get the Window for the current scene (Activity). */
 @Composable
-fun window(): Window? {
+private fun window(): Window? {
   val context = LocalContext.current
   return (context as? Activity)?.window ?: return null
-}
-
-/** Get the WindowInsetsController for the provided window. */
-@Composable
-fun windowInsetsController(window: Window): WindowInsetsControllerCompat {
-  return WindowCompat.getInsetsController(window, window.decorView)
 }
 
 /**
