@@ -312,7 +312,7 @@ Here’s an example:
  }
 ```
 
-### Tools for Improving NavigationView
+### Tools for Improving a NavigationView
 
 - `KeepScreenOnDisposableEffect` is a simple disposable effect that automatically keeps the screen on and at consistent brightness while a user is on the scene using the effect. On dispose, the screen will return to default and auto lock and dim. See the demo app for an example of this being used alongside the `DynamicallyOrientingNavigationView`.
 
