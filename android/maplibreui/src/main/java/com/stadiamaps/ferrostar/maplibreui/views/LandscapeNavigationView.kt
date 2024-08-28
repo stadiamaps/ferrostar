@@ -30,10 +30,18 @@ import kotlinx.coroutines.flow.asStateFlow
  * A portrait orientation of the navigation view with instructions, default controls and the
  * navigation map view.
  *
- * @param modifier
- * @param styleUrl
- * @param viewModel
- * @param locationRequestProperties
+ * @param modifier The modifier to apply to the view.
+ * @param styleUrl The MapLibre style URL to use for the map.
+ * @param camera The bi-directional camera state to use for the map.
+ * @param navigationCamera The default camera state to use for navigation. This is applied on launch
+ *   and when centering.
+ * @param viewModel The navigation view model provided by Ferrostar Core.
+ * @param locationRequestProperties The location request properties to use for the map's location
+ *   engine.
+ * @param config The configuration for the navigation view.
+ * @param overlayModifier The modifier to apply to the overlay view.
+ * @param onTapExit The callback to invoke when the exit button is tapped.
+ * @param content Any additional composable map symbol content to render.
  */
 @Composable
 fun LandscapeNavigationView(
@@ -45,6 +53,7 @@ fun LandscapeNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    overlayModifier: Modifier = Modifier.fillMaxSize().padding(16.dp),
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
@@ -60,7 +69,7 @@ fun LandscapeNavigationView(
         content)
 
     LandscapeNavigationOverlayView(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = overlayModifier,
         config = config,
         camera = camera,
         viewModel = viewModel,
@@ -78,5 +87,7 @@ private fun LandscapeNavigationViewPreview() {
           MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
 
   LandscapeNavigationView(
-      Modifier.fillMaxSize(), "https://demotiles.maplibre.org/style.json", viewModel = viewModel)
+      Modifier.fillMaxSize(),
+      styleUrl = "https://demotiles.maplibre.org/style.json",
+      viewModel = viewModel)
 }
