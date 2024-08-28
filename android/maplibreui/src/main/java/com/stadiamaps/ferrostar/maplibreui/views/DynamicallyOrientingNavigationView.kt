@@ -71,9 +71,7 @@ fun DynamicallyOrientingNavigationView(
     when (orientation) {
       Configuration.ORIENTATION_LANDSCAPE -> {
         LandscapeNavigationOverlayView(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+            modifier = Modifier.fillMaxSize().padding(16.dp),
             camera = camera,
             viewModel = viewModel,
             config = config,
@@ -82,11 +80,7 @@ fun DynamicallyOrientingNavigationView(
       else -> {
         PortraitNavigationOverlayView(
             modifier =
-                Modifier.fillMaxSize()
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp),
+                Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(16.dp),
             camera = camera,
             viewModel = viewModel,
             config = config,

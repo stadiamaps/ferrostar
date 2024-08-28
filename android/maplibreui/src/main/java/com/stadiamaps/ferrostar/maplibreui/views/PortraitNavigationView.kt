@@ -61,8 +61,7 @@ fun PortraitNavigationView(
         content)
 
     PortraitNavigationOverlayView(
-        modifier =
-            Modifier.fillMaxSize().padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         config = config,
         camera = camera,
         viewModel = viewModel,
