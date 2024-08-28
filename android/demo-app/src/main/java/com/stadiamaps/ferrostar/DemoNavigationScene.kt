@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.maplibre.compose.symbols.Circle
+import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
@@ -39,6 +40,10 @@ fun DemoNavigationScene(
     locationProvider: SimulatedLocationProvider = AppModule.locationProvider,
     core: FerrostarCore = AppModule.ferrostarCore
 ) {
+  // Keeps the screen at consistent brightness on while this Composable is in the view hierarchy.
+  // This is typically a good idea for scenes hosting navigation trips or a NavigationView.
+  KeepScreenOnDisposableEffect()
+
   var viewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
 
   // Get location permissions.

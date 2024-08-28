@@ -1,29 +1,14 @@
 package com.stadiamaps.ferrostar.maplibreui.runtime
 
-import android.app.Activity
 import android.graphics.Color
-import android.view.Window
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
-
-/** Get the Window for the current scene (Activity). */
-@Composable
-fun window(): Window? {
-  val context = LocalContext.current
-  return (context as? Activity)?.window ?: return null
-}
-
-/** Get the WindowInsetsController for the provided window. */
-@Composable
-fun windowInsetsController(window: Window): WindowInsetsControllerCompat {
-  return WindowCompat.getInsetsController(window, window.decorView)
-}
+import com.stadiamaps.ferrostar.composeui.runtime.window
+import com.stadiamaps.ferrostar.composeui.runtime.windowInsetsController
 
 /**
  * A Composable effect that automatically hides the system UI (status bar and navigation bar) when
