@@ -3,9 +3,7 @@ package com.stadiamaps.ferrostar.maplibreui.views
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -22,7 +20,6 @@ import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.config.mapControlsFor
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import com.stadiamaps.ferrostar.maplibreui.runtime.AutoHideSystemUIDisposableEffect
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.LandscapeNavigationOverlayView
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOverlayView
@@ -40,6 +37,9 @@ import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOver
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
  * @param config The configuration for the navigation view.
+ * @param landscapeOverlayModifier The modifier to apply to the overlay view.
+ * @param portraitOverlayModifier The modifier to apply to the overlay view.
+ * @param onTapExit The callback to invoke when the exit button is tapped.
  * @param content Any additional composable map symbol content to render.
  */
 @Composable
@@ -52,11 +52,11 @@ fun DynamicallyOrientingNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    landscapeOverlayModifier: Modifier = Modifier.fillMaxSize().padding(16.dp),
+    portraitOverlayModifier: Modifier = Modifier.fillMaxSize().padding(16.dp),
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
 ) {
-  AutoHideSystemUIDisposableEffect()
-
   val orientation = LocalConfiguration.current.orientation
   val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
 
@@ -74,9 +74,7 @@ fun DynamicallyOrientingNavigationView(
     when (orientation) {
       Configuration.ORIENTATION_LANDSCAPE -> {
         LandscapeNavigationOverlayView(
-            modifier =
-                Modifier.fillMaxSize()
-                    .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+            modifier = landscapeOverlayModifier,
             camera = camera,
             viewModel = viewModel,
             config = config,
@@ -84,12 +82,7 @@ fun DynamicallyOrientingNavigationView(
       }
       else -> {
         PortraitNavigationOverlayView(
-            modifier =
-                Modifier.fillMaxSize()
-                    .statusBarsPadding()
-                    .navigationBarsPadding()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 24.dp),
+            modifier = portraitOverlayModifier,
             camera = camera,
             viewModel = viewModel,
             config = config,
