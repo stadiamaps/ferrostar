@@ -61,6 +61,7 @@ dependencies {
     implementation libs.androidx.compose.material3
 
     implementation project(':core')
+    implementation project(':composeui')
     implementation project(':maplibreui')
     implementation project(':carui')
 

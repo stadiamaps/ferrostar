@@ -6,22 +6,34 @@ import androidx.compose.ui.platform.LocalConfiguration
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.camera.cameraPaddingFractionOfScreen
 
+sealed class NavigationActivity(val zoom: Double, val pitch: Double) {
+  /** The recommended camera configuration for automotive navigation. */
+  data object Automotive : NavigationActivity(zoom = 16.0, pitch = 45.0)
+
+  /** The recommended camera configuration for bicycle navigation. */
+  data object Bicycle : NavigationActivity(zoom = 18.0, pitch = 45.0)
+
+  /** The recommended camera configuration for pedestrian navigation. */
+  data object Pedestrian : NavigationActivity(zoom = 20.0, pitch = 10.0)
+}
+
 /**
  * The camera configuration for navigation. This configuration sets the camera to track the user,
- * with a bearing of 18 degrees and a pitch of 45 degrees. It automatically adjusts the padding
- * based on the screen size and orientation.
+ * with a high zoom level and moderate pitch for a 2.5D isometric view. It automatically adjusts the
+ * padding based on the screen size and orientation.
  *
- * @param zoom The zoom level of the camera.
- * @param pitch The pitch of the camera.
+ * @param activity The type of activity the camera is being used for.
  * @return The recommended navigation MapViewCamera
  */
 @Composable
-fun navigationMapViewCamera(zoom: Double = 18.0, pitch: Double = 45.0): MapViewCamera {
+fun navigationMapViewCamera(
+    activity: NavigationActivity = NavigationActivity.Automotive,
+): MapViewCamera {
   val screenOrientation = LocalConfiguration.current.orientation
   val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 0.5f else 0.0f
 
   val cameraPadding = cameraPaddingFractionOfScreen(start = start, top = 0.7f)
 
   return MapViewCamera.TrackingUserLocationWithBearing(
-      zoom = zoom, pitch = pitch, padding = cameraPadding)
+      zoom = activity.zoom, pitch = activity.pitch, padding = cameraPadding)
 }

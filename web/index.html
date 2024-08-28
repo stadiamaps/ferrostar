@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ferrostar Web Demo</title>
     <link rel="stylesheet" href="./src/index.css" />
-    <script type="module" src="./src/ferrostar-core.ts"></script>
-    <script type="module" src="./src/location.ts"></script>
   </head>
   <body>
     <p>
-      <span>
-        Search and select a destination, or
-        <button id="simulate">Simulate Navigation</button>
-      </span>
+      Search and select a destination, or
+      <button id="simulate">Simulate Navigation</button>
+    </p>
+
+    <p style="margin-top: 0;">
+      <input type="checkbox" id="voiceGuidance" />
+      <label for="voiceGuidance">Enable voice guidance (sound on)</label>
     </p>
 
     <!--
@@ -23,7 +24,7 @@
       -->
     <ferrostar-core
       id="core"
-      valhallaEndpointUrl="https://valhalla1.openstreetmap.de/route"
+      valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
       styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
       profile="bicycle"
       httpClient="${fetch}"
@@ -32,7 +33,7 @@
     ></ferrostar-core>
 
     <script type="module">
-      import { SimulatedLocationProvider, BrowserLocationProvider } from "./src/location.ts";
+      import { FerrostarCore, SimulatedLocationProvider, BrowserLocationProvider } from "ferrostar-components";
 
       // TODO: type + use TypeScript enum
       const config = {
@@ -53,7 +54,6 @@
       // Initialize the core and the control buttons
       document.addEventListener("DOMContentLoaded", async () => {
         const core = document.getElementById("core");
-        const destinationInput = document.getElementById("destination");
         const simulateNavigationButton = document.getElementById("simulate");
 
         // Button to start simulated navigation
@@ -82,6 +82,11 @@
           // Start the navigation
           core.locationProvider = locationProvider;
           core.startNavigation(route, config);
+        });
+
+        const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
+        voiceGuidanceCheckbox.addEventListener("change", (event) => {
+          core.useVoiceGuidance = event.target.checked;
         });
       });
     </script>

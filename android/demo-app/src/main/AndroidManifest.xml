@@ -7,6 +7,11 @@
 
     <!-- Required for the Car App Library -->
     <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES"/>
+    
+    <!-- Foreground service permission -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
     <application
         android:name=".DemoApplication"
@@ -19,6 +24,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ferrostar"
         tools:targetApi="31">
+
         <activity
             android:name="com.stadiamaps.ferrostar.MainActivity"
             android:exported="true"
@@ -34,6 +40,10 @@
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
+
+        <service
+            android:name="com.stadiamaps.ferrostar.core.service.FerrostarForegroundService"
+            android:foregroundServiceType="location" />
 
     </application>
     <queries>

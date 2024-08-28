@@ -2,6 +2,7 @@ package com.stadiamaps.ferrostar
 
 import android.content.Context
 import android.util.Log
+import com.stadiamaps.ferrostar.composeui.notification.DefaultForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.CorrectiveAction
@@ -10,6 +11,8 @@ import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
+import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
+import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
@@ -34,6 +37,10 @@ class AppModule(
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
   }
 
+  private val foregroundServiceManager: ForegroundServiceManager by lazy {
+    FerrostarForegroundServiceManager(appContext, DefaultForegroundNotificationBuilder(appContext))
+  }
+
   // NOTE: This is a public instance which is suitable for development, but not for heavy use.
   // This server is suitable for testing and building your app, but once you are ready to go live,
   // YOU MUST USE ANOTHER SERVER.
@@ -46,6 +53,7 @@ class AppModule(
             profile = "bicycle",
             httpClient = httpClient,
             locationProvider = locationProvider,
+            foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
                 NavigationControllerConfig(
                     StepAdvanceMode.RelativeLineStringDistance(

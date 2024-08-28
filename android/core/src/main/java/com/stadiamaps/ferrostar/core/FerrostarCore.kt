@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.core
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
+import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Instant
 import java.util.concurrent.Executors
@@ -59,6 +60,7 @@ class FerrostarCore(
     val routeProvider: RouteProvider,
     val httpClient: OkHttpClient,
     val locationProvider: LocationProvider,
+    val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
 ) : LocationUpdateListener {
   companion object {
@@ -135,6 +137,7 @@ class FerrostarCore(
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
+      foregroundServiceManager: ForegroundServiceManager? = null,
       costingOptions: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
@@ -142,6 +145,7 @@ class FerrostarCore(
               valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(costingOptions))),
       httpClient,
       locationProvider,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   constructor(
@@ -149,10 +153,12 @@ class FerrostarCore(
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
+      foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
       RouteProvider.RouteAdapter(routeAdapter),
       httpClient,
       locationProvider,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   constructor(
@@ -160,10 +166,12 @@ class FerrostarCore(
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
+      foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
       RouteProvider.CustomProvider(customRouteProvider),
       httpClient,
       locationProvider,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   suspend fun getRoutes(initialLocation: UserLocation, waypoints: List<Waypoint>): List<Route> =
@@ -226,6 +234,9 @@ class FerrostarCore(
   ): DefaultNavigationViewModel {
     stopNavigation()
 
+    // Start the foreground notification service
+    foregroundServiceManager?.startService(this::stopNavigation)
+
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
@@ -247,7 +258,7 @@ class FerrostarCore(
 
     locationProvider.addListener(this, _executor)
 
-    return DefaultNavigationViewModel(this, locationProvider)
+    return DefaultNavigationViewModel(this, spokenInstructionObserver, locationProvider)
   }
 
   /**
@@ -255,6 +266,10 @@ class FerrostarCore(
    *
    * This allows you to reuse the existing view model. Do not call this method unless you are
    * already navigating.
+   *
+   * @param route the route to navigate.
+   * @param config change the configuration in the core before staring navigation. This was
+   *   originally provided on init, but you can set a new value for future sessions.
    */
   fun replaceRoute(route: Route, config: NavigationControllerConfig? = null) {
     // Apply the new config if provided, otherwise use the original.
@@ -295,6 +310,7 @@ class FerrostarCore(
   }
 
   fun stopNavigation() {
+    foregroundServiceManager?.stopService()
     locationProvider.removeListener(this)
     _navigationController?.destroy()
     _navigationController = null
@@ -363,6 +379,9 @@ class FerrostarCore(
         }
       }
     }
+
+    // Update the notification manager (this propagates the state to the notification)
+    foregroundServiceManager?.onNavigationStateUpdated(_state.value)
   }
 
   override fun onLocationUpdated(location: UserLocation) {

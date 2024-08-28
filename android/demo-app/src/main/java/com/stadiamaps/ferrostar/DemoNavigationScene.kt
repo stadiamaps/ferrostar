@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -53,9 +54,19 @@ fun DemoNavigationScene(
 
   // Get location permissions.
   // NOTE: This is NOT a robust suggestion for how to get permissions in a production app.
-  // THis is simply minimal sample code in as few lines as possible.
-  val locationPermissions =
-      arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+  // This is simply minimal sample code in as few lines as possible.
+  val allPermissions =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS,
+            Manifest.permission.FOREGROUND_SERVICE_LOCATION)
+      } else {
+        arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+      }
+
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
           permissions ->
@@ -75,6 +86,7 @@ fun DemoNavigationScene(
         }
       }
 
+  // FIXME: This is restarting navigation every time the screen is rotated.
   LaunchedEffect(savedInstanceState) {
     permissionsLauncher.launch(locationPermissions)
 

@@ -11,11 +11,11 @@ export class SimulatedLocationProvider {
 
   setSimulatedRoute(route: any) {
     this.simulationState = locationSimulationFromRoute(route, 10.0);
-    this.startSimulation();
+    this.start();
   }
 
-  async startSimulation() {
-    while (true) {
+  async start() {
+    while (this.simulationState !== null) {
       await new Promise((resolve) => setTimeout(resolve, (1 / this.warpFactor) * 1000));
       const initialState = this.simulationState;
       const updatedState = advanceLocationSimulation(initialState);
@@ -35,7 +35,7 @@ export class SimulatedLocationProvider {
     }
   }
 
-  stopSimulation() {
+  stop() {
     this.simulationState = null;
   }
 }
@@ -44,37 +44,42 @@ export class BrowserLocationProvider {
   private geolocationWatchId: number | null = null;
   lastLocation: any = null;
   lastHeading = null;
-  warpFactor = 1;
 
   updateCallback: () => void = () => {};
 
-  requestPermission() {
-    navigator.permissions.query({ name: "geolocation" });
-  }
+  start() {
+    if (navigator.geolocation && !this.geolocationWatchId) {
+      const options = {
+        enableHighAccuracy: true,
+      };
 
-  async start() {
-    if (navigator.geolocation) {
       this.geolocationWatchId = navigator.geolocation.watchPosition((position) => {
-        this.lastLocation = {
-          coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },
-          horizontalAccuracy: position.coords.accuracy,
-          courseOverGround: {
-            degrees: Math.floor(position.coords.heading || 0),
-          },
-          timestamp: position.timestamp,
-          speed: position.coords.speed,
-        };
+          this.lastLocation = {
+            coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },
+            horizontalAccuracy: position.coords.accuracy,
+            courseOverGround: {
+              degrees: Math.floor(position.coords.heading || 0),
+            },
+            timestamp: position.timestamp,
+            speed: position.coords.speed,
+          };
 
-        if (this.updateCallback) {
-          this.updateCallback();
-        }
-      });
+          if (this.updateCallback) {
+            this.updateCallback();
+          }
+        },
+        // TODO: Better alert mechanism
+        (error) => alert(error.message),
+        options
+      );
     }
   }
 
   stop() {
+    this.lastLocation = null;
     if (navigator.geolocation && this.geolocationWatchId) {
       navigator.geolocation.clearWatch(this.geolocationWatchId);
+      this.geolocationWatchId = null;
     }
   }
 }

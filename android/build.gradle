@@ -12,5 +12,5 @@ plugins {
 
 allprojects {
     group = "com.stadiamaps.ferrostar"
-    version = "0.8.0"
+    version = "0.9.0"
 }

@@ -1,23 +1,27 @@
 # Ferrostar
 
-[Ferrostar](https://github.com/stadiamaps/ferrostar) is a modern SDK for building turn-by-turn navigation applications.
+[Ferrostar](https://github.com/stadiamaps/ferrostar) is a modern SDK
+for building turn-by-turn navigation applications.
+It’s designed for customizability from the ground up,
+helping you build the navigation experience your users deserve.
 
 ## Ferrostar is...
 
 * **Modern** - The core is written in Rust, making it easy to contribute to, maintain, and port to new architectures.
   Platform specific libraries for iOS and Android leverage the best features of Swift and Kotlin.
-* **Batteries included** - Navigation UI should be usable out of the box
-  for the most common use cases in native iOS and Android apps
-  with minimal reconfiguration needed.
+* **Batteries included** - The bundled navigation UI is usable out of the box
+  for the most common use cases, with minimal reconfiguration needed.
   Don't like our UI?
-  Most components are reusable and composable thanks to SwiftUI and Jetpack Compose.
+  Most components are reusable and composable
+  thanks to SwiftUI and Jetpack Compose
+  (on mobile; we’re still working out the best strategy for the web).
 * **Extensible** - At every layer, you have flexibility to extend or replace functionality without needing to wait for a patch.
   Want to bring your own offline routing?
   Can do.
   Want to use your own detection logic to see if the user is off the route?
   Not a problem.
   Taken together with the batteries included approach,
-  Ferrostar's aim is to make simple things simple, and complex things possible.
+  Ferrostar's goal is to **make simple things simple, and complex things possible**.
 * **Vendor-neutral** - As a corollary to its extensibility, Ferrostar is vendor-neutral,
   and welcomes PRs to add support for additional [vendors](./vendors.md).
 	The core Ferrostar components do not upload telemetry to any vendor
@@ -27,32 +31,47 @@
 ## Ferrostar is not...
 
 - Aiming for compatibility with ancient SDKs / API levels, except where it’s easy; this is a rare chance for a fresh start.
-- A routing engine; there are many good [vendors](./vendors.md) that provide hosted APIs and offline route generation, as well as a rich ecosystem of FOSS software if you're looking to host your own for a smaller deployment.
-- Building UI components for addresses search (look at [vendor](./vendors.md) SDKs that can help with this) or complex trip planning.
+- A routing engine, basemap, or search solution;
+  there are many good [vendors](./vendors.md) that provide hosted APIs
+  and offline route generation,
+  as well as a rich ecosystem of FOSS software if you're looking to host your own for a smaller deployment.
 
-## Terminology and conventions
+## Can I use Ferrostar today?
 
-In this guide, we will use the following terms as specified.
-Cases where a more narrow interpretation is needed should be obvious.
+### On iOS and Android
 
-* **Interface** - When used in a context that’s talking about code,
-  we use this term to mean a method or type signature.
-  For example, we will use the term interface to refer to Kotlin interfaces,
-  Swift protocols, and Rust traits.
-  We also use the term to refer to a type’s *public interface*
-  as in the available properties to an end user such as yourself.
-* **Kotlin** - We’ll be quite loose when talking about “Kotlin.”
-  It would be too cumbersome to write out something like Kotlin/Java or
-  “your favorite JVM language.”
-  When we speak of Kotlin, we usually mean any JVM language,
-  except when referring to specific Kotlin features.
-  While all example code is in Kotlin,
-  things should work equally well in Java.
-* **Platform** - When we refer to “platform libraries”, the “platform layer”,
-  similar, we are referring to code written for/targeting
-  the end deployment platform.
-  Not the Rust core but platform-specific code like Swift or Kotlin.
-  
+Ferrostar is is currently in **beta** for iOS and Android,
+which means that it’s good to go for most use cases!
+There will be a few rough edges and missing features,
+but we’re here to help (check out the community links below).
+
+The core is fully functional (pun intended for you FP lovers)
+and ready to handle most use cases that we’re aware of!
+If you’re already rolling a custom UI, you’re good to go!
+
+iOS and Android have "batteries included" UIs
+which are highly composable in nature thanks to SwiftUI and Jetpack Compose.
+So you can customize most aspects of the UI today.
+There are still a few glitches around camera control,
+but we have been rapidly knocking these out as we find them.
+
+We know of at least half a dozen native app integrations underway,
+and the core devs are dogfooding in their own apps.
+
+### Using multiplatform frameworks
+
+Ferrostar can be integrated into multiplatform frameworks
+via the native/platform view functionality.
+We have know of some users doing this with Flutter already.
+We would like to build more idiomatic integrations though,
+and contributions are very much welcome.
+
+### On the web
+
+The web platform is the newest addition to the family of supported platforms.
+It is currently **alpha** quality.
+We expect it to have the first beta release this autumn.
+
 ## How to use this guide
   
 This guide is broken up into several sections.
@@ -68,9 +87,9 @@ If you want to add support for a new routing API, post-process location updates,
 or contribute to the development of Ferrostar, this is where the authoritative docs live.
 (If you want to contribute, be sure to check out [CONTRIBUTING.md](https://github.com/stadiamaps/ferrostar/blob/main/CONTRIBUTING.md)!)
 
-## Getting help
+## Connect with the Community
 
-If you can’t find what you want,
-feel free to [open an issue or discussion on GitHub](https://github.com/stadiamaps/ferrostar/).
+Feel free to [open an issue or discussion on GitHub](https://github.com/stadiamaps/ferrostar/)
+for bug reports, feature requests, and questions.
 You can also join the `#ferrostar` channel on the [OSM US Slack](https://slack.openstreetmap.us/) for updates + discussion.
-The core devs are active there and we're happy to answer questions / help you get started!
+The core devs are active there and happy to answer questions / help you get started!
