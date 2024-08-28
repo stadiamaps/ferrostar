@@ -17,6 +17,7 @@
 - [Navigation Behavior](./configuring-the-navigation-controller.md)
 - [SwiftUI](./swiftui-customization.md)
 - [Jetpack Compose](./jetpack-compose-customization.md)
+- [Android Foreground Services](./android-foreground-service.md)
 - [Web](./web-customization.md)
 
 # Architecture
