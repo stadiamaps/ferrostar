@@ -3,6 +3,9 @@ name: Publish NPM Package
 on:
   release:
     types: [published]
+  push:
+    branches:
+      - main
   workflow_dispatch: []
 
 env:
