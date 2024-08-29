@@ -1,6 +1,12 @@
 {
   "name": "@stadiamaps/ferrostar-webcomponents",
-  "version": "0.1.0",
+  "collaborators": [
+    "Ian Wagner <ian@stadiamaps.com>",
+    "Jacob Fielding <jacob@rallista.app>",
+    "Luke Seelenbinder <luke@stadiamaps.com>"
+  ],
+  "version": "0.1.1",
+  "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/ferrostar-webcomponents.js",
   "module": "./dist/ferrostar-webcomponents.js",
@@ -10,6 +16,7 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/main.d.ts",
   "scripts": {
     "dev": "vite --config vite.config.site.ts",
     "preview": "vite preview",
@@ -32,5 +39,11 @@
     "typescript": "^5.2.2",
     "vite": "^5.4.1",
     "vitest": "^2.0.5"
-  }
+  },
+  "keywords": [
+    "navigation",
+    "routing",
+    "valhalla",
+    "osrm"
+  ]
 }
