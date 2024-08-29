@@ -20,7 +20,7 @@ jobs:
       - name: Install wasm-pack
         run: cargo install wasm-pack
 
-      - name: Use Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -39,11 +39,11 @@ jobs:
         working-directory: web
 
       - name: Pack
-        run: npm run pack:all
+        run: "npm run pack:all"
         working-directory: web
 
       - name: Publish Core
-        run: npm run publish:core
+        run: "npm run publish:core"
         working-directory: web
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
