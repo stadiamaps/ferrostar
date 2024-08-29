@@ -1,0 +1,5 @@
+# Exclude demo apps from language stats
+
+android/demo-app/** -linguist-detectable
+
+apple/DemoApp/** -linguist-detectable
