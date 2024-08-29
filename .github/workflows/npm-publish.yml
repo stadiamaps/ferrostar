@@ -35,7 +35,7 @@ jobs:
         working-directory: web
 
       - name: Update package.json with the public package refs
-        run: ./prep-package-json.sh
+        run: ./update-package-json.sh
         working-directory: web
 
       - name: Pack
