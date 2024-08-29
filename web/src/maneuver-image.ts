@@ -1,5 +1,7 @@
-import { LitElement, PropertyValues, css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+const images = import.meta.glob('./assets/directions/*.svg', {eager: true});
 
 @customElement("maneuver-image")
 export class ManeuverImage extends LitElement {
@@ -24,8 +26,8 @@ export class ManeuverImage extends LitElement {
   }
 
   getImageUrl() {
-    const filename = `${this.getManeuverType().replaceAll(" ", "_")}_${this.getManeuverModifier().replaceAll(" ", "_")}.svg`;
-    return new URL(`./assets/directions/${filename}`, import.meta.url).href;
+    // @ts-ignore
+    return images[`./assets/directions/${this.getManeuverType().replaceAll(" ", "_")}_${this.getManeuverModifier().replaceAll(" ", "_")}.svg`].default;
   }
 
   render() {

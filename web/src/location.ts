@@ -1,4 +1,4 @@
-import { advanceLocationSimulation, locationSimulationFromRoute } from "ferrostar";
+import { advanceLocationSimulation, locationSimulationFromRoute } from "@stadiamaps/ferrostar";
 
 export class SimulatedLocationProvider {
   private simulationState = null;

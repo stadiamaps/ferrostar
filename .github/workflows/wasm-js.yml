@@ -21,10 +21,6 @@ jobs:
 
       - name: Install wasm-pack
         run: cargo install wasm-pack
-        
-      - name: WASM Build
-        run: wasm-pack build --target web ferrostar --no-default-features --features wasm_js
-        working-directory: common
 
       - uses: actions/setup-node@v4
         with:

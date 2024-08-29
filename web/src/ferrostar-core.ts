@@ -5,7 +5,7 @@ import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
 import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
 import searchBoxStyles
   from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
-import init, {NavigationController, RouteAdapter} from "ferrostar";
+import init, {NavigationController, RouteAdapter} from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./arrival-view";
 import {BrowserLocationProvider, SimulatedLocationProvider} from "./location";

@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
   base: "",
@@ -11,10 +12,14 @@ export default defineConfig({
   build: {
     lib: {
       entry: "src/main.ts",
-      formats: ["es"],
+      name: "@stadiamaps/ferrostar-webcomponents",
     },
     rollupOptions: {
-      external: ["ferrostar", "maplibre-gl", "lit", "@stadiamaps/maplibre-search-box"],
+      external: ["@stadiamaps/ferrostar", "maplibre-gl", "lit", "@stadiamaps/maplibre-search-box"],
     },
+    sourcemap: true,
   },
+  plugins: [
+      dts()
+  ]
 });
