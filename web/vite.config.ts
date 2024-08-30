@@ -16,6 +16,14 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ["@stadiamaps/ferrostar", "maplibre-gl", "lit", "@stadiamaps/maplibre-search-box"],
+      output: {
+        globals: {
+          "lit": "lit",
+          "maplibre-gl": "maplibregl",
+          "@stadiamaps/maplibre-search-box": "maplibreSearchBox",
+          "@stadiamaps/ferrostar": "ferrostar"
+        },
+      },
     },
     sourcemap: true,
   },
