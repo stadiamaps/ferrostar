@@ -1,14 +1,9 @@
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
+import wasmPack from "vite-plugin-wasm-pack";
 
 export default defineConfig({
   base: "",
-  server: {
-    fs: {
-      // Allow serving the wasm module
-      allow: [".", "../common/ferrostar/pkg"],
-    },
-  },
   build: {
     lib: {
       entry: "src/main.ts",
@@ -28,6 +23,7 @@ export default defineConfig({
     sourcemap: true,
   },
   plugins: [
-      dts()
+      dts(),
+      wasmPack(["../common/ferrostar"])
   ]
 });

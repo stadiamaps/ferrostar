@@ -8,3 +8,6 @@ version=$(cd ../common && cargo metadata --format-version 1 | jq -r '.packages[]
 
 # Replace the local file reference with a public version
 sed -i "" -E "s/file\:\.\.\/common\/ferrostar\/pkg/\^$version/g" package.json
+
+# Replace the local path with an npm reference
+sed -i "" -E "s/wasmPack\(\[\"\.\.\/common\/ferrostar\"]/wasmPack\(\[\],\[\"\@stadiamaps\/ferrostar\"\]/g" vite.config.ts
