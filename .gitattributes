@@ -1,0 +1,7 @@
+# Exclude demo apps and generated code from language stats
+
+android/demo-app/** -linguist-detectable
+
+apple/DemoApp/** -linguist-detectable
+
+apple/Sources/UniFFI/** -linguist-detectable
