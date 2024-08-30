@@ -42,11 +42,11 @@ jobs:
         run: "npm run pack:all"
         working-directory: web
 
-#      - name: Publish Core
-#        run: "npm run publish:core"
-#        working-directory: web
-#        env:
-#          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish Core
+        run: "npm run publish:core"
+        working-directory: web
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Web Component
         run: npm publish --access public

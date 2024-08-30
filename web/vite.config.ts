@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-import wasmPack from "vite-plugin-wasm-pack";
+import wasm from "vite-plugin-wasm";
+import topLevelAwait from "vite-plugin-top-level-await";
 
 export default defineConfig({
   base: "",
@@ -24,6 +25,7 @@ export default defineConfig({
   },
   plugins: [
       dts(),
-      wasmPack(["../common/ferrostar"])
+      topLevelAwait(),
+      wasm()
   ]
 });

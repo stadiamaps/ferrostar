@@ -5,7 +5,7 @@ import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
 import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
 import searchBoxStyles
   from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
-import init, {NavigationController, RouteAdapter} from "@stadiamaps/ferrostar";
+import {NavigationController, RouteAdapter} from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./arrival-view";
 import {BrowserLocationProvider, SimulatedLocationProvider} from "./location";
@@ -170,9 +170,6 @@ export class FerrostarMap extends LitElement {
 
   // TODO: type
   async getRoutes(initialLocation: any, waypoints: any) {
-    // Initialize the Ferrostar core WebAssembly module
-    await init();
-
     // Initialize the route adapter
     this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile, JSON.stringify(this.costingOptions));
 

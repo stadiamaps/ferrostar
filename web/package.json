@@ -21,12 +21,12 @@
     "dev": "vite --config vite.config.site.ts",
     "preview": "vite preview",
     "test": "vitest",
-    "prepare:core": "cd ../common && wasm-pack build --target web --scope stadiamaps ferrostar --no-default-features --features wasm_js",
+    "prepare:core": "cd ../common && wasm-pack build --scope stadiamaps ferrostar --no-default-features --features wasm_js",
     "build": "npm run prepare:core && tsc && vite build",
     "build:site": "npm run build && vite build --config vite.config.site.ts",
     "pack:core": "wasm-pack pack ../common/ferrostar/pkg",
     "pack:all": "npm run pack:core && npm pack",
-    "publish:core": "wasm-pack publish --access public --target web ../common/ferrostar/pkg"
+    "publish:core": "wasm-pack publish --access public ../common/ferrostar/pkg"
   },
   "dependencies": {
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
@@ -39,7 +39,8 @@
     "typescript": "^5.2.2",
     "vite": "^5.4.1",
     "vitest": "^2.0.5",
-    "vite-plugin-wasm-pack": "^0.1.12"
+    "vite-plugin-wasm": "^3.3.0",
+    "vite-plugin-top-level-await": "^1.4.4"
   },
   "keywords": [
     "navigation",

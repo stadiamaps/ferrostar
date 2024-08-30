@@ -49,8 +49,7 @@
         },
       };
 
-      // Initialize Ferrostar and the control buttons
-      document.addEventListener("DOMContentLoaded", async () => {
+      async function onload() {
         const ferrostar = document.getElementById("ferrostar");
 
         ferrostar.center = {lng: -122.42, lat: 37.81};
@@ -91,7 +90,14 @@
         voiceGuidanceCheckbox.addEventListener("change", (event) => {
           ferrostar.useVoiceGuidance = event.target.checked;
         });
-      });
+      }
+
+      // Initialize Ferrostar and the control buttons
+      if ( document.readyState === "complete" ) {
+        onload();
+      } else {
+        document.addEventListener("DOMContentLoaded", onload);
+      }
     </script>
   </body>
 </html>
