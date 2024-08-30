@@ -22,18 +22,16 @@
 	Learn how to get a free prod API key here: https://docs.stadiamaps.com/authentication/.
 	See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap vendors.
       -->
-    <ferrostar-core
-      id="core"
+    <ferrostar-map
+      id="ferrostar"
       valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
       styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
       profile="bicycle"
-      httpClient="${fetch}"
-      costingOptions="${{ bicycle: { use_roads: 0.2 } }}"
       useIntegratedSearchBox="true"
-    ></ferrostar-core>
+    ></ferrostar-map>
 
     <script type="module">
-      import { FerrostarCore, SimulatedLocationProvider, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
+      import { FerrostarMap, SimulatedLocationProvider, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
 
       // TODO: type + use TypeScript enum
       const config = {
@@ -51,9 +49,14 @@
         },
       };
 
-      // Initialize the core and the control buttons
+      // Initialize Ferrostar and the control buttons
       document.addEventListener("DOMContentLoaded", async () => {
-        const core = document.getElementById("core");
+        const ferrostar = document.getElementById("ferrostar");
+
+        ferrostar.center = {lng: -122.42, lat: 37.81};
+        ferrostar.zoom = 18;
+        ferrostar.costingOptions = { bicycle: { use_roads: 0.2 } };
+
         const simulateNavigationButton = document.getElementById("simulate");
 
         // Button to start simulated navigation
@@ -70,7 +73,7 @@
           const simulatedWaypoints = [{ coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" }];
 
           // Request the route
-          const routes = await core.getRoutes(initialSimulatedLocation, simulatedWaypoints);
+          const routes = await ferrostar.getRoutes(initialSimulatedLocation, simulatedWaypoints);
           const route = routes[0];
 
           // Set the simulated location provider
@@ -80,13 +83,13 @@
           locationProvider.setSimulatedRoute(route);
 
           // Start the navigation
-          core.locationProvider = locationProvider;
-          core.startNavigation(route, config);
+          ferrostar.locationProvider = locationProvider;
+          ferrostar.startNavigation(route, config);
         });
 
         const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
         voiceGuidanceCheckbox.addEventListener("change", (event) => {
-          core.useVoiceGuidance = event.target.checked;
+          ferrostar.useVoiceGuidance = event.target.checked;
         });
       });
     </script>
