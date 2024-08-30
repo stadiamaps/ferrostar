@@ -1,4 +1,4 @@
-# Exclude demo apps from language stats
+# Exclude demo apps and generated code from language stats
 
 android/demo-app/** -linguist-detectable
 
