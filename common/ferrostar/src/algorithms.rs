@@ -1,15 +1,16 @@
 //! Common spatial algorithms which are useful for navigation.
 
+use crate::navigation_controller::models::{
+    StepAdvanceMode, StepAdvanceStatus,
+    StepAdvanceStatus::{Advanced, EndOfRoute},
+};
 use crate::{
     models::{GeographicCoordinate, RouteStep, UserLocation},
     navigation_controller::models::TripProgress,
 };
 use geo::{
-    Closest, ClosestPoint, Coord, EuclideanDistance, HaversineDistance, HaversineLength, LineLocatePoint, LineString, Point
-};
-use crate::navigation_controller::models::{
-    StepAdvanceMode, StepAdvanceStatus,
-    StepAdvanceStatus::{Advanced, EndOfRoute},
+    Closest, ClosestPoint, Coord, EuclideanDistance, HaversineDistance, HaversineLength,
+    LineLocatePoint, LineString, Point,
 };
 
 #[cfg(test)]
@@ -25,12 +26,16 @@ use std::time::SystemTime;
 #[cfg(all(test, feature = "web-time"))]
 use web_time::SystemTime;
 
-/// Get the index of the closest point in the line. 
-pub fn index_of_closest_origin_point(location: UserLocation, line: &LineString, skip_to_index: i64) -> i64 {
+/// Get the index of the closest point in the line.
+pub fn index_of_closest_origin_point(
+    location: UserLocation,
+    line: &LineString,
+    skip_to_index: i64,
+) -> i64 {
     if skip_to_index < 0 {
         return 0;
     }
-    
+
     let max_index = line.coords().count() as i64 - 1;
     if skip_to_index >= max_index {
         return max_index;
@@ -612,7 +617,7 @@ mod geom_index_tests {
             coord!(x: 1.0, y: 1.0),
             coord!(x: 2.0, y: 2.0),
             coord!(x: 3.0, y: 3.0),
-            coord!(x: 4.0, y: 4.0)
+            coord!(x: 4.0, y: 4.0),
         ])
     }
 

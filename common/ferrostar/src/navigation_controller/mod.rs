@@ -7,7 +7,8 @@ pub(crate) mod test_helpers;
 
 use crate::{
     algorithms::{
-        advance_step, calculate_trip_progress, index_of_closest_origin_point, should_advance_to_next_step, snap_user_location_to_line
+        advance_step, calculate_trip_progress, index_of_closest_origin_point,
+        should_advance_to_next_step, snap_user_location_to_line,
     },
     models::{Route, UserLocation},
 };
@@ -46,7 +47,7 @@ impl NavigationController {
             return TripState::Complete;
         };
 
-        // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once. 
+        // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
         let route_line = self.route.get_linestring();
         let current_geometry_index = index_of_closest_origin_point(location, &route_line, 0);
         let current_step_linestring = current_route_step.get_linestring();
