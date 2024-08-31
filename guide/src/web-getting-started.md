@@ -12,28 +12,22 @@ We'll cover the "batteries included" approach, but flag areas for customization 
 
 ### Installing with `npm`
 
-NOTE: Currently you need to build the package locally.
-We intend to publish to npmjs.com very soon.
-
-In your web app, you can add the Ferrostar NPM package as a dependency.
-You will need to install [Rust](https://www.rust-lang.org/) and `wasm-pack` to build the NPM package.
+No surprises; just install with `npm` or any similar package manager.
 
 ```shell
-cargo install wasm-pack
+npm install @stadiamaps/ferrostar-webcomponents
 ```
 
-Head to the local path where you have checked out Ferrostar,
-go to the `web` directory, and build the module:
+### Vite Setup
 
-```shell
-npm install && npm run build
-```
+Vite currently has a few bundling issues with npm packages leveraging WASM.
+We are hopeful that the [ES module integration proposal for WebAssembly](https://github.com/WebAssembly/esm-integration)
+is eventually finalized and widely accepted,
+but in the meantime there are some integration pains.
 
-Then, in your project, install the Ferrostar package using the local path:
-
-```shell
-npm install /path/to/ferrostar/web
-```
+We currently recommend using [`vite-plugin-wasm`](https://github.com/Menci/vite-plugin-wasm?tab=readme-ov-file).
+Add `vite-plugin-wasm` and `vite-plugin-top-level-await` to your `devDependencies`.
+Then add `wasm()` and `topLevelAwait()` to the `plugins` section of your Vite config.
 
 ### Using unpkg
 
