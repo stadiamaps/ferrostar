@@ -74,7 +74,6 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
 
     // Bind the foreground service to this manager.
     context.bindService(intent, this, Context.BIND_AUTO_CREATE)
-    isStarted = true
 
     Log.d(TAG, "Started foreground service")
   }
@@ -129,6 +128,8 @@ class FerrostarForegroundServiceManager<T : ForegroundNotificationBuilder>(
     // using the UI library's default notification or a custom notification.
     this.service!!.notificationBuilder = this.notificationBuilder
     this.service!!.start()
+
+    isStarted = true
   }
 
   override fun onServiceDisconnected(name: ComponentName?) {

@@ -1,18 +1,21 @@
 package com.stadiamaps.ferrostar.maplibreui.views
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
+import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
@@ -53,14 +56,16 @@ fun LandscapeNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-    overlayModifier: Modifier = Modifier.fillMaxSize().padding(16.dp),
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
+  // Get the correct padding based on edge-to-edge status.
+  val gridPadding = paddingForGridView()
+
   Box(modifier) {
     NavigationMapView(
         styleUrl,
-        mapControlsFor(isLandscape = true, isArrivalExpanded = onTapExit != null),
+        mapControlsFor(),
         camera,
         navigationCamera,
         viewModel,
@@ -69,7 +74,7 @@ fun LandscapeNavigationView(
         content)
 
     LandscapeNavigationOverlayView(
-        modifier = overlayModifier,
+        modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
         config = config,
         camera = camera,
         viewModel = viewModel,
