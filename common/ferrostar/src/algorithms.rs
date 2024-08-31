@@ -5,10 +5,8 @@ use crate::{
     navigation_controller::models::TripProgress,
 };
 use geo::{
-    Closest, ClosestPoint, EuclideanDistance, HaversineDistance, HaversineLength, LineLocatePoint,
-    LineString, Point,
+    Closest, ClosestPoint, Coord, EuclideanDistance, HaversineDistance, HaversineLength, LineLocatePoint, LineString, Point
 };
-
 use crate::navigation_controller::models::{
     StepAdvanceMode, StepAdvanceStatus,
     StepAdvanceStatus::{Advanced, EndOfRoute},
@@ -26,6 +24,32 @@ use std::time::SystemTime;
 
 #[cfg(all(test, feature = "web-time"))]
 use web_time::SystemTime;
+
+/// Get the index of the closest point in the line. 
+pub fn index_of_closest_origin_point(location: UserLocation, line: &LineString, skip_to_index: i64) -> i64 {
+    if skip_to_index < 0 {
+        return 0;
+    }
+    
+    let max_index = line.coords().count() as i64 - 1;
+    if skip_to_index >= max_index {
+        return max_index;
+    }
+
+    let point = Point::from(location.coordinates);
+    let skip_index = skip_to_index as usize;
+
+    line.lines()
+        .enumerate()
+        .skip(skip_index)
+        .min_by(|(_, line1), (_, line2)| {
+            let dist1 = line1.euclidean_distance(&point);
+            let dist2 = line2.euclidean_distance(&point);
+            dist1.partial_cmp(&dist2).unwrap()
+        })
+        .map(|(index, _)| index as i64)
+        .unwrap()
+}
 
 /// Snaps a user location to the closest point on a route line.
 ///
@@ -385,6 +409,17 @@ pub fn calculate_trip_progress(
     }
 }
 
+/// Convert a vector of geographic coordinates to a GeoRust LineString.
+pub(crate) fn get_linestring(geometry: &Vec<GeographicCoordinate>) -> LineString {
+    geometry
+        .iter()
+        .map(|coord| Coord {
+            x: coord.lng,
+            y: coord.lat,
+        })
+        .collect()
+}
+
 #[cfg(test)]
 proptest! {
     #[test]
@@ -563,6 +598,59 @@ proptest! {
         prop_assert_eq!(progress.distance_to_next_maneuver, 0f64);
         prop_assert_eq!(progress.distance_remaining, 0f64);
         prop_assert_eq!(progress.duration_remaining, 0f64);
+    }
+}
+
+#[cfg(test)]
+mod geom_index_tests {
+
+    use super::*;
+
+    fn gen_line_string() -> LineString<f64> {
+        LineString::new(vec![
+            coord!(x: 0.0, y: 0.0),
+            coord!(x: 1.0, y: 1.0),
+            coord!(x: 2.0, y: 2.0),
+            coord!(x: 3.0, y: 3.0),
+            coord!(x: 4.0, y: 4.0)
+        ])
+    }
+
+    fn make_user_location(lng: f64, lat: f64) -> UserLocation {
+        UserLocation {
+            coordinates: GeographicCoordinate { lng, lat },
+            horizontal_accuracy: 0.0,
+            course_over_ground: None,
+            timestamp: SystemTime::now(),
+            speed: None,
+        }
+    }
+
+    #[test]
+    fn test_geometry_index_initial() {
+        let location = make_user_location(1.1, 1.1);
+        let line = gen_line_string();
+
+        let index = index_of_closest_origin_point(location, &line, 0);
+        assert_eq!(index, 1);
+    }
+
+    #[test]
+    fn test_geometry_index_secondary() {
+        let location = make_user_location(1.1, 1.1);
+        let line = gen_line_string();
+
+        let index = index_of_closest_origin_point(location, &line, 1);
+        assert_eq!(index, 1);
+    }
+
+    #[test]
+    fn test_geometry_index_behind_skip() {
+        let location = make_user_location(1.1, 1.1);
+        let line = gen_line_string();
+
+        let index = index_of_closest_origin_point(location, &line, 2);
+        assert_eq!(index, 2);
     }
 }
 

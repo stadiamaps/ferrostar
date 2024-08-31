@@ -25,6 +25,8 @@ use serde::Serialize;
 
 use uuid::Uuid;
 
+use crate::algorithms::get_linestring;
+
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
@@ -250,6 +252,12 @@ pub struct Route {
     pub steps: Vec<RouteStep>,
 }
 
+impl Route {
+    pub(crate) fn get_linestring(&self) -> LineString {
+        return get_linestring(&self.geometry)
+    }
+}
+
 /// Helper function for getting the route as an encoded polyline.
 ///
 /// Mostly used for debugging.
@@ -290,15 +298,8 @@ pub struct RouteStep {
 }
 
 impl RouteStep {
-    // TODO: Memoize or something later
     pub(crate) fn get_linestring(&self) -> LineString {
-        self.geometry
-            .iter()
-            .map(|coord| Coord {
-                x: coord.lng,
-                y: coord.lat,
-            })
-            .collect()
+        return get_linestring(&self.geometry)
     }
 
     /// Gets the active visual instruction at a specific point along the step.

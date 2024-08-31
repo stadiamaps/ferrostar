@@ -404,6 +404,19 @@ private struct FfiConverterUInt32: FfiConverterPrimitive {
     }
 }
 
+private struct FfiConverterInt64: FfiConverterPrimitive {
+    typealias FfiType = Int64
+    typealias SwiftType = Int64
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Int64 {
+        try lift(readInt(&buf))
+    }
+
+    public static func write(_ value: Int64, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
 private struct FfiConverterDouble: FfiConverterPrimitive {
     typealias FfiType = Double
     typealias SwiftType = Double
@@ -3305,38 +3318,45 @@ public enum TripState {
     /**
      * The navigation controller is actively navigating a trip.
      */
-    case navigating(snappedUserLocation: UserLocation,
-                    /**
-                        * The ordered list of steps that remain in the trip.
-                        *
-                        * The step at the front of the list is always the current step.
-                        * We currently assume that you cannot move backward to a previous step.
-                        */ remainingSteps: [RouteStep],
-                    /**
-                        * Remaining waypoints to visit on the route.
-                        *
-                        * The waypoint at the front of the list is always the *next* waypoint "goal."
-                        * Unlike the current step, there is no value in tracking the "current" waypoint,
-                        * as the main use of waypoints is recalculation when the user deviates from the route.
-                        * (In most use cases, a route will have only two waypoints, but more complex use cases
-                        * may have multiple intervening points that are visited along the route.)
-                        * This list is updated as the user advances through the route.
-                        */ remainingWaypoints: [Waypoint],
-                    /**
-                        * The trip progress includes information that is useful for showing the
-                        * user's progress along the full navigation trip, the route and its components.
-                        */ progress: TripProgress,
-                    /**
-                        * The route deviation status: is the user following the route or not?
-                        */ deviation: RouteDeviation,
-                    /**
-                        * The visual instruction that should be displayed in the user interface.
-                        */ visualInstruction: VisualInstruction?,
-                    /**
-                        * The most recent spoken instruction that should be synthesized using TTS.
-                        *
-                        * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
-                        */ spokenInstruction: SpokenInstruction?)
+    case navigating(
+        /**
+         * The closest coordinate index on the line string to the snapped location.
+         */ currentGeometryIndex: Int64,
+        /**
+            * A location on the line string that
+            */ snappedUserLocation: UserLocation,
+        /**
+            * The ordered list of steps that remain in the trip.
+            *
+            * The step at the front of the list is always the current step.
+            * We currently assume that you cannot move backward to a previous step.
+            */ remainingSteps: [RouteStep],
+        /**
+            * Remaining waypoints to visit on the route.
+            *
+            * The waypoint at the front of the list is always the *next* waypoint "goal."
+            * Unlike the current step, there is no value in tracking the "current" waypoint,
+            * as the main use of waypoints is recalculation when the user deviates from the route.
+            * (In most use cases, a route will have only two waypoints, but more complex use cases
+            * may have multiple intervening points that are visited along the route.)
+            * This list is updated as the user advances through the route.
+            */ remainingWaypoints: [Waypoint],
+        /**
+            * The trip progress includes information that is useful for showing the
+            * user's progress along the full navigation trip, the route and its components.
+            */ progress: TripProgress,
+        /**
+            * The route deviation status: is the user following the route or not?
+            */ deviation: RouteDeviation,
+        /**
+            * The visual instruction that should be displayed in the user interface.
+            */ visualInstruction: VisualInstruction?,
+        /**
+            * The most recent spoken instruction that should be synthesized using TTS.
+            *
+            * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
+            */ spokenInstruction: SpokenInstruction?
+    )
     /**
      * The navigation controller has reached the end of the trip.
      */
@@ -3352,6 +3372,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return .idle
 
         case 2: return try .navigating(
+                currentGeometryIndex: FfiConverterInt64.read(from: &buf),
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
@@ -3373,6 +3394,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
 
         case let .navigating(
+            currentGeometryIndex,
             snappedUserLocation,
             remainingSteps,
             remainingWaypoints,
@@ -3382,6 +3404,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             spokenInstruction
         ):
             writeInt(&buf, Int32(2))
+            FfiConverterInt64.write(currentGeometryIndex, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)

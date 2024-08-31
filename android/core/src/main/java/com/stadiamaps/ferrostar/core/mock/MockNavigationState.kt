@@ -33,6 +33,7 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
   return NavigationState(
       tripState =
           TripState.Navigating(
+              currentGeometryIndex = 0L,
               snappedUserLocation = UserLocation.pedestrianExample(),
               remainingSteps = listOf(),
               remainingWaypoints = listOf(),
