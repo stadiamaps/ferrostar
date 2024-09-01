@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.maplibre.compose.camera.MapViewCamera
@@ -22,7 +25,7 @@ import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
-import com.stadiamaps.ferrostar.maplibreui.config.mapControlsFor
+import com.stadiamaps.ferrostar.maplibreui.config.rememberMapControlsFor
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.LandscapeNavigationOverlayView
@@ -62,10 +65,12 @@ fun LandscapeNavigationView(
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()
 
+  val mapControls by rememberMapControlsFor()
+
   Box(modifier) {
     NavigationMapView(
         styleUrl,
-        mapControlsFor(),
+        mapControls,
         camera,
         navigationCamera,
         viewModel,
@@ -74,7 +79,9 @@ fun LandscapeNavigationView(
         content)
 
     LandscapeNavigationOverlayView(
-        modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.systemBars)
+            .padding(gridPadding),
         config = config,
         camera = camera,
         viewModel = viewModel,
