@@ -27,20 +27,15 @@ use std::time::SystemTime;
 use web_time::SystemTime;
 
 /// Get the index of the closest point in the line.
+/// 
+/// * `location` - The user's location.
+/// * `line` - The route line.
+/// * `skip_to_index` - The index to skip forward to. This allows us to evaluate the route from the last index forward.
 pub fn index_of_closest_origin_point(
     location: UserLocation,
     line: &LineString,
-    skip_to_index: i64,
-) -> i64 {
-    if skip_to_index < 0 {
-        return 0;
-    }
-
-    let max_index = line.coords().count() as i64 - 1;
-    if skip_to_index >= max_index {
-        return max_index;
-    }
-
+    skip_to_index: u64,
+) -> Option<u64> {
     let point = Point::from(location.coordinates);
     let skip_index = skip_to_index as usize;
 
@@ -50,10 +45,9 @@ pub fn index_of_closest_origin_point(
         .min_by(|(_, line1), (_, line2)| {
             let dist1 = line1.euclidean_distance(&point);
             let dist2 = line2.euclidean_distance(&point);
-            dist1.partial_cmp(&dist2).unwrap()
+            dist1.total_cmp(&dist2)
         })
-        .map(|(index, _)| index as i64)
-        .unwrap()
+        .map(|(index, _)| index as u64)
 }
 
 /// Snaps a user location to the closest point on a route line.
@@ -637,7 +631,7 @@ mod geom_index_tests {
         let line = gen_line_string();
 
         let index = index_of_closest_origin_point(location, &line, 0);
-        assert_eq!(index, 1);
+        assert_eq!(index, Some(1));
     }
 
     #[test]
@@ -646,7 +640,7 @@ mod geom_index_tests {
         let line = gen_line_string();
 
         let index = index_of_closest_origin_point(location, &line, 1);
-        assert_eq!(index, 1);
+        assert_eq!(index, Some(1));
     }
 
     #[test]
@@ -655,7 +649,7 @@ mod geom_index_tests {
         let line = gen_line_string();
 
         let index = index_of_closest_origin_point(location, &line, 2);
-        assert_eq!(index, 2);
+        assert_eq!(index, Some(2));
     }
 }
 

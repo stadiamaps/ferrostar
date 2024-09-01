@@ -108,7 +108,7 @@ impl NavigationController {
                         let current_geometry_index = index_of_closest_origin_point(
                             *snapped_user_location,
                             &self.route.get_linestring(),
-                            *current_geometry_index,
+                            current_geometry_index.unwrap_or(0),
                         );
 
                         // Apply the updates
@@ -205,7 +205,7 @@ impl NavigationController {
                 let current_geometry_index = index_of_closest_origin_point(
                     snapped_user_location,
                     &self.route.get_linestring(),
-                    *current_geometry_index,
+                    current_geometry_index.unwrap_or(0),
                 );
 
                 let progress = calculate_trip_progress(
