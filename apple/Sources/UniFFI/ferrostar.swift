@@ -404,15 +404,15 @@ private struct FfiConverterUInt32: FfiConverterPrimitive {
     }
 }
 
-private struct FfiConverterInt64: FfiConverterPrimitive {
-    typealias FfiType = Int64
-    typealias SwiftType = Int64
+private struct FfiConverterUInt64: FfiConverterPrimitive {
+    typealias FfiType = UInt64
+    typealias SwiftType = UInt64
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Int64 {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UInt64 {
         try lift(readInt(&buf))
     }
 
-    public static func write(_ value: Int64, into buf: inout [UInt8]) {
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
         writeInt(&buf, lower(value))
     }
 }
@@ -3321,7 +3321,7 @@ public enum TripState {
     case navigating(
         /**
          * The closest coordinate index on the line string to the snapped location.
-         */ currentGeometryIndex: Int64,
+         */ currentGeometryIndex: UInt64,
         /**
             * A location on the line string that
             */ snappedUserLocation: UserLocation,
@@ -3372,7 +3372,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return .idle
 
         case 2: return try .navigating(
-                currentGeometryIndex: FfiConverterInt64.read(from: &buf),
+                currentGeometryIndex: FfiConverterUInt64.read(from: &buf),
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
@@ -3404,7 +3404,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             spokenInstruction
         ):
             writeInt(&buf, Int32(2))
-            FfiConverterInt64.write(currentGeometryIndex, into: &buf)
+            FfiConverterUInt64.write(currentGeometryIndex, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)

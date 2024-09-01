@@ -30,15 +30,11 @@ use web_time::SystemTime;
 pub fn index_of_closest_origin_point(
     location: UserLocation,
     line: &LineString,
-    skip_to_index: i64,
-) -> i64 {
-    if skip_to_index < 0 {
-        return 0;
-    }
-
-    let max_index = line.coords().count() as i64 - 1;
-    if skip_to_index >= max_index {
-        return max_index;
+    skip_to_index: u64,
+) -> u64 {
+    let max_index = line.coords().count() - 1;
+    if skip_to_index >= max_index as u64 {
+        return max_index as u64;
     }
 
     let point = Point::from(location.coordinates);
@@ -52,7 +48,7 @@ pub fn index_of_closest_origin_point(
             let dist2 = line2.euclidean_distance(&point);
             dist1.partial_cmp(&dist2).unwrap()
         })
-        .map(|(index, _)| index as i64)
+        .map(|(index, _)| index as u64)
         .unwrap()
 }
 
