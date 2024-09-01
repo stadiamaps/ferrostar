@@ -3321,7 +3321,7 @@ public enum TripState {
     case navigating(
         /**
          * The closest coordinate index on the line string to the snapped location.
-         */ currentGeometryIndex: UInt64,
+         */ currentGeometryIndex: UInt64?,
         /**
             * A location on the line string that
             */ snappedUserLocation: UserLocation,
@@ -3372,7 +3372,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return .idle
 
         case 2: return try .navigating(
-                currentGeometryIndex: FfiConverterUInt64.read(from: &buf),
+                currentGeometryIndex: FfiConverterOptionUInt64.read(from: &buf),
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
@@ -3404,7 +3404,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             spokenInstruction
         ):
             writeInt(&buf, Int32(2))
-            FfiConverterUInt64.write(currentGeometryIndex, into: &buf)
+            FfiConverterOptionUInt64.write(currentGeometryIndex, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
@@ -3499,6 +3499,27 @@ private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterUInt16.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterOptionUInt64: FfiConverterRustBuffer {
+    typealias SwiftType = UInt64?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterUInt64.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterUInt64.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
