@@ -1,25 +1,20 @@
 package com.stadiamaps.ferrostar.maplibreui.views
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
@@ -90,9 +85,7 @@ fun DynamicallyOrientingNavigationView(
     when (orientation) {
       Configuration.ORIENTATION_LANDSCAPE -> {
         LandscapeNavigationOverlayView(
-            modifier = Modifier
-              .windowInsetsPadding(WindowInsets.systemBars)
-              .padding(gridPadding),
+            modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
             camera = camera,
             viewModel = viewModel,
             config = config,
@@ -100,9 +93,7 @@ fun DynamicallyOrientingNavigationView(
       }
       else -> {
         PortraitNavigationOverlayView(
-            modifier = Modifier
-              .windowInsetsPadding(WindowInsets.systemBars)
-              .padding(gridPadding),
+            modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
             camera = camera,
             viewModel = viewModel,
             config = config,
