@@ -27,7 +27,7 @@ use std::time::SystemTime;
 use web_time::SystemTime;
 
 /// Get the index of the closest point in the line.
-/// 
+///
 /// * `location` - The user's location.
 /// * `line` - The route line.
 /// * `skip_to_index` - The index to skip forward to. This allows us to evaluate the route from the last index forward.
