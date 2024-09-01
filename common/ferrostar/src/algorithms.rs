@@ -408,8 +408,8 @@ pub fn calculate_trip_progress(
     }
 }
 
-/// Convert a vector of geographic coordinates to a GeoRust LineString.
-pub(crate) fn get_linestring(geometry: &Vec<GeographicCoordinate>) -> LineString {
+/// Convert a vector of geographic coordinates to a [`LineString`].
+pub(crate) fn get_linestring(geometry: &[GeographicCoordinate]) -> LineString {
     geometry
         .iter()
         .map(|coord| Coord {

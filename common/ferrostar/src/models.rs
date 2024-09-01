@@ -254,7 +254,7 @@ pub struct Route {
 
 impl Route {
     pub(crate) fn get_linestring(&self) -> LineString {
-        return get_linestring(&self.geometry);
+        get_linestring(&self.geometry)
     }
 }
 
@@ -299,7 +299,7 @@ pub struct RouteStep {
 
 impl RouteStep {
     pub(crate) fn get_linestring(&self) -> LineString {
-        return get_linestring(&self.geometry);
+        get_linestring(&self.geometry)
     }
 
     /// Gets the active visual instruction at a specific point along the step.
