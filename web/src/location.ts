@@ -53,15 +53,21 @@ export class BrowserLocationProvider {
         enableHighAccuracy: true,
       };
 
-      this.geolocationWatchId = navigator.geolocation.watchPosition((position) => {
-          this.lastLocation = {
+      this.geolocationWatchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
+        let speed = null;
+        if (position.coords.speed) {
+          speed = {
+            value: position.coords.speed
+          }
+        }
+        this.lastLocation = {
             coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },
             horizontalAccuracy: position.coords.accuracy,
             courseOverGround: {
               degrees: Math.floor(position.coords.heading || 0),
             },
             timestamp: position.timestamp,
-            speed: position.coords.speed,
+            speed: speed,
           };
 
           if (this.updateCallback) {
