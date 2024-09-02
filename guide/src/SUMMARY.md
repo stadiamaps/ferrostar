@@ -4,7 +4,7 @@
 [Terminology and Conventions](./terminology-and-conventions.md)
 [Platform Support Targets](./platform-support-targets.md)
 
-# Tutorial
+# Getting Started
 
 - [iOS](./ios-getting-started.md)
 - [Android](./android-getting-started.md)
