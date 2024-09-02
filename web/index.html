@@ -93,10 +93,10 @@
       }
 
       // Initialize Ferrostar and the control buttons
-      if ( document.readyState === "complete" ) {
-        onload();
-      } else {
+      if ( document.readyState === "loading" ) {
         document.addEventListener("DOMContentLoaded", onload);
+      } else {
+        onload();
       }
     </script>
   </body>
