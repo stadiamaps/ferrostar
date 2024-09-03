@@ -17,12 +17,11 @@ use geo::{
 use {
     crate::navigation_controller::test_helpers::gen_dummy_route_step,
     geo::{coord, point},
-    proptest::prelude::*,
+    proptest::{collection::vec, prelude::*},
 };
 
 #[cfg(all(test, feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
-
 #[cfg(all(test, feature = "web-time"))]
 use web_time::SystemTime;
 
@@ -46,6 +45,7 @@ pub fn index_of_closest_segment_origin(location: UserLocation, line: &LineString
         .enumerate()
         // Find the line segment closest to the user's location
         .min_by(|(_, line1), (_, line2)| {
+            // Note: lines don't implement haversine distances
             let dist1 = line1.euclidean_distance(&point);
             let dist2 = line2.euclidean_distance(&point);
             dist1.total_cmp(&dist2)
@@ -423,6 +423,26 @@ pub(crate) fn get_linestring(geometry: &[GeographicCoordinate]) -> LineString {
 }
 
 #[cfg(test)]
+/// Creates a user location at the given coordinates,
+/// with all other values set to defaults or (in the case of the timestamp), the current time.
+fn make_user_location(lng: f64, lat: f64) -> UserLocation {
+    UserLocation {
+        coordinates: GeographicCoordinate { lng, lat },
+        horizontal_accuracy: 0.0,
+        course_over_ground: None,
+        timestamp: SystemTime::now(),
+        speed: None,
+    }
+}
+
+#[cfg(test)]
+prop_compose! {
+    fn arb_coord()(x in -180f64..180f64, y in -90f64..90f64) -> Coord {
+        coord! {x: x, y: y}
+    }
+}
+
+#[cfg(test)]
 proptest! {
     #[test]
     fn snap_point_to_line_intersection(
@@ -601,6 +621,49 @@ proptest! {
         prop_assert_eq!(progress.distance_remaining, 0f64);
         prop_assert_eq!(progress.duration_remaining, 0f64);
     }
+
+    #[test]
+    fn test_geometry_index_empty_linestring(
+        x: f64, y: f64,
+    ) {
+        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(vec![]));
+        prop_assert_eq!(index, None);
+    }
+
+    #[test]
+    fn test_geometry_index_single_coord_invalid_linestring(
+        x: f64, y: f64,
+    ) {
+        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(vec![coord! { x: x, y: y }]));
+        prop_assert_eq!(index, None);
+    }
+
+    #[test]
+    fn test_geometry_index_is_some_for_reasonable_linestrings(
+        x in -180f64..180f64, y in -90f64..90f64,
+        coords in vec(arb_coord(), 2..500)
+    ) {
+        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(coords));
+
+        // There are at least two points, so we have a valid segment
+        prop_assert_ne!(index, None);
+    }
+
+    #[test]
+    fn test_geometry_index_at_terminal_coord(
+        coords in vec(arb_coord(), 2..500)
+    ) {
+        let last_coord = coords.last().unwrap();
+        let coord_len = coords.len();
+        let user_location = make_user_location(last_coord.x, last_coord.y);
+        let index = index_of_closest_segment_origin(user_location, &LineString::new(coords));
+
+        // There are at least two points, so we have a valid segment
+        prop_assert_ne!(index, None);
+        let index = index.unwrap();
+        // We should never be able to go past the origin of the final pair
+        prop_assert!(index < (coord_len - 1) as u64);
+    }
 }
 
 #[cfg(test)]
@@ -615,16 +678,6 @@ mod geom_index_tests {
         coord!(x: 3.0, y: 3.0),
         coord!(x: 4.0, y: 4.0),
     ];
-
-    fn make_user_location(lng: f64, lat: f64) -> UserLocation {
-        UserLocation {
-            coordinates: GeographicCoordinate { lng, lat },
-            horizontal_accuracy: 0.0,
-            course_over_ground: None,
-            timestamp: SystemTime::now(),
-            speed: None,
-        }
-    }
 
     #[test]
     fn test_geometry_index_at_point() {
