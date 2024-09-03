@@ -179,6 +179,7 @@ impl NavigationController {
         match state {
             TripState::Idle => TripState::Idle,
             TripState::Navigating {
+                current_step_geometry_index,
                 ref remaining_steps,
                 ref remaining_waypoints,
                 deviation,
@@ -199,18 +200,13 @@ impl NavigationController {
                 let snapped_user_location =
                     snap_user_location_to_line(location, &current_step_linestring);
 
-                let current_step_geometry_index = index_of_closest_segment_origin(
-                    snapped_user_location,
-                    &current_step_linestring,
-                );
-
                 let progress = calculate_trip_progress(
                     &snapped_user_location.into(),
                     &current_step_linestring,
                     remaining_steps,
                 );
                 let intermediate_state = TripState::Navigating {
-                    current_step_geometry_index,
+                    current_step_geometry_index: *current_step_geometry_index,
                     snapped_user_location,
                     remaining_steps: remaining_steps.clone(),
                     remaining_waypoints: remaining_waypoints.clone(),
@@ -234,11 +230,12 @@ impl NavigationController {
                 } {
                     TripState::Idle => TripState::Idle,
                     TripState::Navigating {
-                        current_step_geometry_index: current_geometry_index,
                         snapped_user_location,
                         remaining_steps,
                         remaining_waypoints,
                         progress,
+                        // Explicitly recalculated
+                        current_step_geometry_index: _,
                         deviation: _,
                         visual_instruction: _,
                         spoken_instruction: _,
@@ -261,8 +258,13 @@ impl NavigationController {
                             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
 
+                        let current_step_geometry_index = index_of_closest_segment_origin(
+                            snapped_user_location,
+                            &current_step_linestring,
+                        );
+
                         TripState::Navigating {
-                            current_step_geometry_index: current_geometry_index,
+                            current_step_geometry_index,
                             snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
