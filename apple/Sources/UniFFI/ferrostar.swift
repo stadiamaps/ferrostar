@@ -404,6 +404,19 @@ private struct FfiConverterUInt32: FfiConverterPrimitive {
     }
 }
 
+private struct FfiConverterUInt64: FfiConverterPrimitive {
+    typealias FfiType = UInt64
+    typealias SwiftType = UInt64
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UInt64 {
+        try lift(readInt(&buf))
+    }
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
 private struct FfiConverterDouble: FfiConverterPrimitive {
     typealias FfiType = Double
     typealias SwiftType = Double
@@ -2887,6 +2900,7 @@ extension ModelError: Foundation.LocalizedError {
 
 public enum ParsingError {
     case ParseError(error: String)
+    case InvalidStatusCode(code: String)
     case UnknownError
 }
 
@@ -2899,9 +2913,10 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
         case 1: return try .ParseError(
                 error: FfiConverterString.read(from: &buf)
             )
-
-        case 2: return .UnknownError
-
+        case 2: return try .InvalidStatusCode(
+                code: FfiConverterString.read(from: &buf)
+            )
+        case 3: return .UnknownError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -2912,8 +2927,12 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
             FfiConverterString.write(error, into: &buf)
 
-        case .UnknownError:
+        case let .InvalidStatusCode(code):
             writeInt(&buf, Int32(2))
+            FfiConverterString.write(code, into: &buf)
+
+        case .UnknownError:
+            writeInt(&buf, Int32(3))
         }
     }
 }
@@ -3305,38 +3324,47 @@ public enum TripState {
     /**
      * The navigation controller is actively navigating a trip.
      */
-    case navigating(snappedUserLocation: UserLocation,
-                    /**
-                        * The ordered list of steps that remain in the trip.
-                        *
-                        * The step at the front of the list is always the current step.
-                        * We currently assume that you cannot move backward to a previous step.
-                        */ remainingSteps: [RouteStep],
-                    /**
-                        * Remaining waypoints to visit on the route.
-                        *
-                        * The waypoint at the front of the list is always the *next* waypoint "goal."
-                        * Unlike the current step, there is no value in tracking the "current" waypoint,
-                        * as the main use of waypoints is recalculation when the user deviates from the route.
-                        * (In most use cases, a route will have only two waypoints, but more complex use cases
-                        * may have multiple intervening points that are visited along the route.)
-                        * This list is updated as the user advances through the route.
-                        */ remainingWaypoints: [Waypoint],
-                    /**
-                        * The trip progress includes information that is useful for showing the
-                        * user's progress along the full navigation trip, the route and its components.
-                        */ progress: TripProgress,
-                    /**
-                        * The route deviation status: is the user following the route or not?
-                        */ deviation: RouteDeviation,
-                    /**
-                        * The visual instruction that should be displayed in the user interface.
-                        */ visualInstruction: VisualInstruction?,
-                    /**
-                        * The most recent spoken instruction that should be synthesized using TTS.
-                        *
-                        * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
-                        */ spokenInstruction: SpokenInstruction?)
+    case navigating(
+        /**
+         * The index of the closest coordinate to the user's snapped location.
+         *
+         * This index is relative to the *current* [`RouteStep`]'s geometry.
+         */ currentStepGeometryIndex: UInt64?,
+        /**
+            * A location on the line string that
+            */ snappedUserLocation: UserLocation,
+        /**
+            * The ordered list of steps that remain in the trip.
+            *
+            * The step at the front of the list is always the current step.
+            * We currently assume that you cannot move backward to a previous step.
+            */ remainingSteps: [RouteStep],
+        /**
+            * Remaining waypoints to visit on the route.
+            *
+            * The waypoint at the front of the list is always the *next* waypoint "goal."
+            * Unlike the current step, there is no value in tracking the "current" waypoint,
+            * as the main use of waypoints is recalculation when the user deviates from the route.
+            * (In most use cases, a route will have only two waypoints, but more complex use cases
+            * may have multiple intervening points that are visited along the route.)
+            * This list is updated as the user advances through the route.
+            */ remainingWaypoints: [Waypoint],
+        /**
+            * The trip progress includes information that is useful for showing the
+            * user's progress along the full navigation trip, the route and its components.
+            */ progress: TripProgress,
+        /**
+            * The route deviation status: is the user following the route or not?
+            */ deviation: RouteDeviation,
+        /**
+            * The visual instruction that should be displayed in the user interface.
+            */ visualInstruction: VisualInstruction?,
+        /**
+            * The most recent spoken instruction that should be synthesized using TTS.
+            *
+            * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
+            */ spokenInstruction: SpokenInstruction?
+    )
     /**
      * The navigation controller has reached the end of the trip.
      */
@@ -3352,6 +3380,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return .idle
 
         case 2: return try .navigating(
+                currentStepGeometryIndex: FfiConverterOptionUInt64.read(from: &buf),
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
@@ -3373,6 +3402,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
 
         case let .navigating(
+            currentStepGeometryIndex,
             snappedUserLocation,
             remainingSteps,
             remainingWaypoints,
@@ -3382,6 +3412,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             spokenInstruction
         ):
             writeInt(&buf, Int32(2))
+            FfiConverterOptionUInt64.write(currentStepGeometryIndex, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
@@ -3476,6 +3507,27 @@ private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterUInt16.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterOptionUInt64: FfiConverterRustBuffer {
+    typealias SwiftType = UInt64?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterUInt64.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterUInt64.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
