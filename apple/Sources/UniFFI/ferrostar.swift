@@ -2900,6 +2900,7 @@ extension ModelError: Foundation.LocalizedError {
 
 public enum ParsingError {
     case ParseError(error: String)
+    case InvalidStatusCode(code: String)
     case UnknownError
 }
 
@@ -2912,9 +2913,10 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
         case 1: return try .ParseError(
                 error: FfiConverterString.read(from: &buf)
             )
-
-        case 2: return .UnknownError
-
+        case 2: return try .InvalidStatusCode(
+                code: FfiConverterString.read(from: &buf)
+            )
+        case 3: return .UnknownError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -2925,8 +2927,12 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
             FfiConverterString.write(error, into: &buf)
 
-        case .UnknownError:
+        case let .InvalidStatusCode(code):
             writeInt(&buf, Int32(2))
+            FfiConverterString.write(code, into: &buf)
+
+        case .UnknownError:
+            writeInt(&buf, Int32(3))
         }
     }
 }
@@ -3320,8 +3326,10 @@ public enum TripState {
      */
     case navigating(
         /**
-         * The closest coordinate index on the line string to the snapped location.
-         */ currentGeometryIndex: UInt64?,
+         * The index of the closest coordinate to the user's snapped location.
+         *
+         * This index is relative to the *current* [`RouteStep`]'s geometry.
+         */ currentStepGeometryIndex: UInt64?,
         /**
             * A location on the line string that
             */ snappedUserLocation: UserLocation,
@@ -3372,7 +3380,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return .idle
 
         case 2: return try .navigating(
-                currentGeometryIndex: FfiConverterOptionUInt64.read(from: &buf),
+                currentStepGeometryIndex: FfiConverterOptionUInt64.read(from: &buf),
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
@@ -3394,7 +3402,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
 
         case let .navigating(
-            currentGeometryIndex,
+            currentStepGeometryIndex,
             snappedUserLocation,
             remainingSteps,
             remainingWaypoints,
@@ -3404,7 +3412,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             spokenInstruction
         ):
             writeInt(&buf, Int32(2))
-            FfiConverterOptionUInt64.write(currentGeometryIndex, into: &buf)
+            FfiConverterOptionUInt64.write(currentStepGeometryIndex, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
