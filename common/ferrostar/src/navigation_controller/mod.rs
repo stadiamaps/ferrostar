@@ -7,7 +7,7 @@ pub(crate) mod test_helpers;
 
 use crate::{
     algorithms::{
-        advance_step, calculate_trip_progress, index_of_closest_origin_point,
+        advance_step, calculate_trip_progress, index_of_closest_segment_origin,
         should_advance_to_next_step, snap_user_location_to_line,
     },
     models::{Route, UserLocation},
@@ -48,10 +48,10 @@ impl NavigationController {
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
-        let route_line = self.route.get_linestring();
-        let current_geometry_index = index_of_closest_origin_point(location, &route_line, 0);
         let current_step_linestring = current_route_step.get_linestring();
         let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
+        let current_step_geometry_index =
+            index_of_closest_segment_origin(snapped_user_location, &current_step_linestring);
         let progress = calculate_trip_progress(
             &snapped_user_location.into(),
             &current_step_linestring,
@@ -70,7 +70,7 @@ impl NavigationController {
             .cloned();
 
         TripState::Navigating {
-            current_geometry_index,
+            current_step_geometry_index,
             snapped_user_location,
             remaining_steps: remaining_steps.clone(),
             // Skip the first waypoint, as it is the current one
@@ -91,7 +91,6 @@ impl NavigationController {
         match state {
             TripState::Idle => TripState::Idle,
             TripState::Navigating {
-                current_geometry_index,
                 snapped_user_location,
                 ref remaining_steps,
                 ref remaining_waypoints,
@@ -105,12 +104,6 @@ impl NavigationController {
                         step: current_step,
                         linestring,
                     } => {
-                        let current_geometry_index = index_of_closest_origin_point(
-                            *snapped_user_location,
-                            &self.route.get_linestring(),
-                            current_geometry_index.unwrap_or(0),
-                        );
-
                         // Apply the updates
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
@@ -142,6 +135,11 @@ impl NavigationController {
                             &remaining_steps,
                         );
 
+                        let current_step_geometry_index = index_of_closest_segment_origin(
+                            *snapped_user_location,
+                            &self.route.get_linestring(),
+                        );
+
                         let visual_instruction = current_step
                             .get_active_visual_instruction(progress.distance_to_next_maneuver)
                             .cloned();
@@ -150,7 +148,7 @@ impl NavigationController {
                             .cloned();
 
                         TripState::Navigating {
-                            current_geometry_index,
+                            current_step_geometry_index,
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
@@ -181,7 +179,6 @@ impl NavigationController {
         match state {
             TripState::Idle => TripState::Idle,
             TripState::Navigating {
-                current_geometry_index,
                 ref remaining_steps,
                 ref remaining_waypoints,
                 deviation,
@@ -202,10 +199,9 @@ impl NavigationController {
                 let snapped_user_location =
                     snap_user_location_to_line(location, &current_step_linestring);
 
-                let current_geometry_index = index_of_closest_origin_point(
+                let current_step_geometry_index = index_of_closest_segment_origin(
                     snapped_user_location,
-                    &self.route.get_linestring(),
-                    current_geometry_index.unwrap_or(0),
+                    &current_step_linestring,
                 );
 
                 let progress = calculate_trip_progress(
@@ -214,7 +210,7 @@ impl NavigationController {
                     remaining_steps,
                 );
                 let intermediate_state = TripState::Navigating {
-                    current_geometry_index,
+                    current_step_geometry_index,
                     snapped_user_location,
                     remaining_steps: remaining_steps.clone(),
                     remaining_waypoints: remaining_waypoints.clone(),
@@ -238,7 +234,7 @@ impl NavigationController {
                 } {
                     TripState::Idle => TripState::Idle,
                     TripState::Navigating {
-                        current_geometry_index,
+                        current_step_geometry_index: current_geometry_index,
                         snapped_user_location,
                         remaining_steps,
                         remaining_waypoints,
@@ -266,7 +262,7 @@ impl NavigationController {
                             .cloned();
 
                         TripState::Navigating {
-                            current_geometry_index,
+                            current_step_geometry_index: current_geometry_index,
                             snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,

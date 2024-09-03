@@ -34,8 +34,10 @@ pub enum TripState {
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     /// The navigation controller is actively navigating a trip.
     Navigating {
-        /// The closest coordinate index on the line string to the snapped location.
-        current_geometry_index: Option<u64>,
+        /// The index of the closest coordinate to the user's snapped location.
+        ///
+        /// This index is relative to the *current* [`RouteStep`]'s geometry.
+        current_step_geometry_index: Option<u64>,
         /// A location on the line string that
         snapped_user_location: UserLocation,
         /// The ordered list of steps that remain in the trip.
