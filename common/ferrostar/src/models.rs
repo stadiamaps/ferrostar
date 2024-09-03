@@ -175,7 +175,7 @@ pub struct Speed {
     pub accuracy: Option<f64>,
 }
 
-#[cfg(any(test, feature = "wasm-bindgen"))]
+#[cfg(feature = "wasm-bindgen")]
 mod system_time_format {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
