@@ -24,9 +24,9 @@ import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
-import com.stadiamaps.ferrostar.maplibreui.config.rememberMapControlsFor
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForArrivalViewHeight
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.LandscapeNavigationOverlayView
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOverlayView
 
@@ -69,7 +69,7 @@ fun DynamicallyOrientingNavigationView(
   val gridPadding = paddingForGridView()
 
   // Get the map control positioning based on the arrival view.
-  val mapControls by rememberMapControlsFor(arrivalViewSize.height)
+  val mapControls by rememberMapControlsForArrivalViewHeight(arrivalViewSize.height)
 
   Box(modifier) {
     NavigationMapView(

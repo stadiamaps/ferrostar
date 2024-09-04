@@ -27,9 +27,9 @@ import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
-import com.stadiamaps.ferrostar.maplibreui.config.rememberMapControlsFor
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForArrivalViewHeight
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOverlayView
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -71,7 +71,7 @@ fun PortraitNavigationView(
   val arrivalViewSize by rememberArrivalViewSize
 
   // Get the map control positioning based on the arrival view.
-  val mapControls by rememberMapControlsFor(arrivalViewSize.height)
+  val mapControls by rememberMapControlsForArrivalViewHeight(arrivalViewSize.height)
 
   Box(modifier) {
     NavigationMapView(
