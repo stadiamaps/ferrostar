@@ -24,6 +24,12 @@ public class CoreLocationProvider: NSObject, ObservableObject {
 
     private let locationManager: CLLocationManager
 
+    /// The activity type of the inner CLLocationManager
+    public var activityType: CLActivityType {
+        get { locationManager.activityType }
+        set { locationManager.activityType = newValue }
+    }
+
     /// Creates a location provider backed by an internal `CLLocationManager`
     /// using the stated activity type.
     ///
