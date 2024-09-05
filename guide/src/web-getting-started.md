@@ -107,7 +107,7 @@ Other frameworks, like Vue, have more native support for web components.
 In Vue, you can write “markup” in your components like this!
 
 ```javascript
-<ferrostar-core
+<ferrostar-web
   id="ferrostar"
   valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
   styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
@@ -115,7 +115,7 @@ In Vue, you can write “markup” in your components like this!
   :center="{lng: -122.42, lat: 37.81}"
   :zoom=18
   :useIntegratedSearchBox=true
-></ferrostar-core>
+></ferrostar-web>
 ```
 
 NOTE: The JavaScript API is currently limited to Valhalla,
