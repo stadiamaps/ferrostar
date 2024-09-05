@@ -1,16 +1,14 @@
 //! Common spatial algorithms which are useful for navigation.
 
-use crate::navigation_controller::models::{
-    StepAdvanceMode, StepAdvanceStatus,
-    StepAdvanceStatus::{Advanced, EndOfRoute},
-};
+use crate::{models::CourseOverGround, navigation_controller::models::{
+    StepAdvanceMode, StepAdvanceStatus::{self, Advanced, EndOfRoute},
+}};
 use crate::{
     models::{GeographicCoordinate, RouteStep, UserLocation},
     navigation_controller::models::TripProgress,
 };
 use geo::{
-    Closest, ClosestPoint, Coord, EuclideanDistance, HaversineDistance, HaversineLength,
-    LineLocatePoint, LineString, Point,
+    Closest, ClosestPoint, Coord, EuclideanDistance, GeodesicBearing, HaversineDistance, HaversineLength, LineLocatePoint, LineString, Point
 };
 
 #[cfg(test)]
@@ -51,6 +49,49 @@ pub fn index_of_closest_segment_origin(location: UserLocation, line: &LineString
             dist1.total_cmp(&dist2)
         })
         .map(|(index, _)| index as u64)
+}
+
+/// Get the bearing to the next point on the LineString.
+/// 
+/// Returns [`None`] if the index is the last point on the LineString.
+pub fn get_bearing_to_next_point(index_along_line: u64, line: &LineString) -> Option<CourseOverGround> {
+    let points = line.clone()
+        .into_inner()
+        .into_iter()
+        .map(|coord| Point::from(coord)).collect::<Vec<Point>>();
+    
+    if (index_along_line as usize) == points.len() - 1 {
+        return None;
+    }
+
+    let current = points[index_along_line as usize];
+    let next = points[index_along_line as usize + 1];
+
+    let mut degrees = current.geodesic_bearing(next);
+    if degrees < 0.0 {
+        degrees += 360.0;
+    }
+
+    Some(CourseOverGround {
+        degrees: degrees as u16,
+        accuracy: None,
+    })
+}
+
+/// Apply a snapped course to a user location.
+/// 
+/// This function sets the location's course over ground to the snapped course (calculated from the route), 
+/// and falls back on the raw location engine course or `None` if no course is available.
+pub fn apply_snapped_course(location: UserLocation, index_along_line: Option<u64>, line: &LineString) -> UserLocation {
+    let snapped_course = index_along_line
+        .and_then(|index| get_bearing_to_next_point(index, line));
+
+    let course_over_ground = snapped_course.or(location.course_over_ground);
+
+    UserLocation {
+        course_over_ground,
+        ..location
+    }
 }
 
 /// Snaps a user location to the closest point on a route line.
@@ -667,7 +708,7 @@ proptest! {
 }
 
 #[cfg(test)]
-mod geom_index_tests {
+mod linestring_based_tests {
 
     use super::*;
 
@@ -715,6 +756,59 @@ mod geom_index_tests {
         let index = index_of_closest_segment_origin(make_user_location(10.0, 10.0), &line);
         assert_eq!(index, Some(3));
     }
+
+}
+
+#[cfg(test)]
+mod bearing_snapping_tests {
+
+    use super::*;
+
+    static COORDS: [Coord; 6] = [
+        coord!(x: 0.0, y: 0.0),
+        coord!(x: 1.0, y: 1.0),
+        coord!(x: 2.0, y: 1.0),
+        coord!(x: 2.0, y: 2.0),
+        coord!(x: 2.0, y: 1.0),
+        coord!(x: 1.0, y: 1.0),
+    ];
+
+    #[test]
+    fn test_bearing_to_next_point() {
+        let line = LineString::new(COORDS.to_vec());
+
+        let bearing = get_bearing_to_next_point(0, &line);
+        assert_eq!(bearing, Some(CourseOverGround { degrees: 45, accuracy: None }));
+
+        let bearing = get_bearing_to_next_point(1, &line);
+        assert_eq!(bearing, Some(CourseOverGround { degrees: 89, accuracy: None }));
+
+        let bearing = get_bearing_to_next_point(2, &line);
+        assert_eq!(bearing, Some(CourseOverGround { degrees: 0, accuracy: None }));
+
+        let bearing = get_bearing_to_next_point(3, &line);
+        assert_eq!(bearing, Some(CourseOverGround { degrees: 180, accuracy: None }));
+
+        let bearing = get_bearing_to_next_point(4, &line);
+        assert_eq!(bearing, Some(CourseOverGround { degrees: 270, accuracy: None }));
+
+        // At the end
+        let bearing = get_bearing_to_next_point(5, &line);
+        assert_eq!(bearing, None);
+    }
+
+    #[test]
+    fn test_apply_snapped_course() {
+        let line = LineString::new(COORDS.to_vec());
+
+        let user_location = make_user_location(1.0, 1.0);
+
+        // Apply a course to a user location
+        let updated_location = apply_snapped_course(user_location, Some(1), &line);
+
+        assert_eq!(updated_location.course_over_ground, Some(CourseOverGround { degrees: 89, accuracy: None }));
+    }
+
 }
 
 // TODO: Other unit tests

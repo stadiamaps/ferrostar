@@ -70,11 +70,14 @@ class DefaultNavigationViewModel(
           .map { coreState ->
             lastLocation =
                 when (coreState.tripState) {
-                  is TripState.Navigating -> coreState.tripState.snappedUserLocation
+                  is TripState.Navigating -> {
+                    Log.d("NavigationViewModel", "Course is ${lastLocation?.courseOverGround?.degrees} at idx ${coreState.tripState.currentStepGeometryIndex}")
+                    coreState.tripState.snappedUserLocation
+                  }
                   is TripState.Complete,
                   TripState.Idle -> locationProvider.lastLocation
                 }
-
+            
             uiState(coreState, spokenInstructionObserver?.isMuted, lastLocation)
             // This awkward dance is required because Kotlin doesn't have a way to map over
             // StateFlows
