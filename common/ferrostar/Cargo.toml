@@ -37,7 +37,7 @@ thiserror = "1.0.40"
 uniffi = { workspace = true, optional = true }
 uuid = { version = "1.8.0", features = ["v4", "serde"] }
 getrandom = { version = "0.2.15", optional = true }
-wasm-bindgen = { version = "0.2.92", optional = true }
+wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
 
 [build-dependencies]
