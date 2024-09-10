@@ -1,0 +1,14 @@
+version: 2
+update:
+  - package-ecosystem: cargo
+    directory: /common
+    schedule:
+      interval: monthly
+  - package-ecosystem: swift
+    directory: /apple
+    schedule:
+      interval: monthly
+  - package-ecosystem: gradle
+    directory: /android
+    schedule:
+      interval: monthly
