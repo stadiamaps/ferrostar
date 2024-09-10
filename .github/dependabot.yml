@@ -12,3 +12,7 @@ updates:
     directory: /android
     schedule:
       interval: monthly
+  - package-ecosystem: npm
+    directory: /web
+    schedule:
+      interval: monthly
