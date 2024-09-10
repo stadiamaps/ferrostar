@@ -30,7 +30,7 @@ wasm_js = [
 [dependencies]
 geo = "0.28.0"
 polyline = "0.11.0"
-serde = { version = "1.0.162", features = ["derive"] }
+serde = { version = "1.0.210", features = ["derive"] }
 serde_json = { version = "1.0.128", default-features = false }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
 thiserror = "1.0.40"
