@@ -1,6 +1,6 @@
 [versions]
 agp = "8.5.2"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 cargo-ndk = "0.3.4"
 ktfmt = "0.19.0"
 androidx-lifecycle = "2.8.5"
