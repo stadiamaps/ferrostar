@@ -33,7 +33,7 @@ polyline = "0.11.0"
 serde = { version = "1.0.210", features = ["derive"] }
 serde_json = { version = "1.0.128", default-features = false }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
-thiserror = "1.0.40"
+thiserror = "1.0.63"
 uniffi = { workspace = true, optional = true }
 uuid = { version = "1.8.0", features = ["v4", "serde"] }
 getrandom = { version = "0.2.15", optional = true }
