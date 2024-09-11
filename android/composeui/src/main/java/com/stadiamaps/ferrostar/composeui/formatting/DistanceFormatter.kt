@@ -150,7 +150,7 @@ class LocalizedDistanceFormatter(
                 DecimalPrecision.NEAREST_TENTH
               }
         } else {
-          // Longer distances: use m
+          // Shorter distances: use m
           unit = MeasureUnit.METER
           distance =
               if (distanceInMeters > 100) {

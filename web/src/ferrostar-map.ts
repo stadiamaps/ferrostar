@@ -77,7 +77,7 @@ export class FerrostarMap extends LitElement {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        max-width: 80%;
+        width: 80%;
         z-index: 1000;
       }
 
@@ -156,6 +156,7 @@ export class FerrostarMap extends LitElement {
       pitch: this.pitch,
       bearing: 0,
       zoom: this.zoom,
+      attributionControl: {compact: true}
     });
 
     if (this.useIntegratedSearchBox) {

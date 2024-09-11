@@ -3,9 +3,10 @@
   "collaborators": [
     "Ian Wagner <ian@stadiamaps.com>",
     "Jacob Fielding <jacob@rallista.app>",
+    "CatMe0w <CatMe0w@live.cn> (https://github.com/CatMe0w)",
     "Luke Seelenbinder <luke@stadiamaps.com>"
   ],
-  "version": "0.9.2",
+  "version": "0.10.1",
   "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/ferrostar-webcomponents.js",
