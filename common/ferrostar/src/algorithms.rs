@@ -11,7 +11,10 @@ use crate::{
     models::{GeographicCoordinate, RouteStep, UserLocation},
     navigation_controller::models::TripProgress,
 };
-use geo::{Closest, ClosestPoint, Coord, EuclideanDistance, GeodesicBearing, HaversineDistance, HaversineLength, LineLocatePoint, LineString, Point};
+use geo::{
+    Closest, ClosestPoint, Coord, EuclideanDistance, GeodesicBearing, HaversineDistance,
+    HaversineLength, LineLocatePoint, LineString, Point,
+};
 
 #[cfg(test)]
 use {
