@@ -12,7 +12,7 @@ public enum NavigationMapViewContentInsetMode {
     /// where the user location should appear toward the bottom of the map.
     ///
     /// This is used to accommodate a top InstructionView
-    case portrait(within: GeometryProxy, verticalPct: CGFloat = 0.75)
+    case portrait(within: GeometryProxy, verticalPct: CGFloat = 0.75, minVertical: CGFloat = 210)
 
     /// Custom edge insets to manually control where the center of the map is.
     case edgeInset(UIEdgeInsets)
@@ -33,8 +33,10 @@ public enum NavigationMapViewContentInsetMode {
             let leading = geometry.size.width * horizontalPct
 
             return UIEdgeInsets(top: top, left: leading, bottom: 0, right: 0)
-        case let .portrait(geometry, verticalPct):
-            let top = geometry.size.height * verticalPct
+        case let .portrait(geometry, verticalPct, minVertical):
+            let ideal = geometry.size.height * verticalPct
+            let max = geometry.size.height - minVertical
+            let top = min(max, ideal)
 
             return UIEdgeInsets(top: top, left: 0, bottom: 0, right: 0)
         case let .edgeInset(uIEdgeInsets):
