@@ -1,10 +1,7 @@
 import {css, html, LitElement, PropertyValues, unsafeCSS} from "lit";
 import {customElement, property, state} from "lit/decorators.js";
-import maplibregl, {LngLatLike} from "maplibre-gl";
+import maplibregl, {GeolocateControl, LngLatLike, Map} from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
-import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
-import searchBoxStyles
-  from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
 import {NavigationController, RouteAdapter} from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./arrival-view";
@@ -46,22 +43,46 @@ export class FerrostarMap extends LitElement {
   @state()
   protected _tripState: any = null;
 
-  @property({ type: Boolean })
-  useIntegratedSearchBox: boolean = false;
+  // Configures the control on first load.
+  @property({ type: Function })
+  configureMap?: (map: Map) => void;
 
+  @property({ type: Function })
+  onNavigationStart?: (map: Map) => void;
+
+  @property({ type: Function })
+  onNavigationStop?: (map: Map) => void;
+
+  /**
+   *  Styles to load which will apply inside the component
+   *  (ex: for MapLibre plugins)
+   */
+  @property({ type: Object })
+  customStyles?: object | null;
+
+  /**
+   * Enables voice guidance via the web speech synthesis API.
+   * Defaults to false.
+   */
   @property({ type: Boolean })
   useVoiceGuidance: boolean = false;
 
+  /**
+   * Automatically geolocates the user on map load.
+   * Defaults to true.
+   */
+  @property({ type: Boolean })
+  geolocateOnLoad: boolean = true;
+
   routeAdapter: RouteAdapter | null = null;
   map: maplibregl.Map | null = null;
-  searchBox: MapLibreSearchControl | null = null;
+  geolocateControl: GeolocateControl | null = null;
   navigationController: NavigationController | null = null;
   currentLocationMapMarker: maplibregl.Marker | null = null;
   lastSpokenInstructionText: string | null = null;
 
   static styles = [
     unsafeCSS(maplibreglStyles),
-    unsafeCSS(searchBoxStyles),
     css`
       [hidden] {
         display: none !important;
@@ -159,13 +180,23 @@ export class FerrostarMap extends LitElement {
       attributionControl: {compact: true}
     });
 
-    if (this.useIntegratedSearchBox) {
-      this.searchBox = new MapLibreSearchControl({
-        onResultSelected: async (feature) => {
-          await this.startNavigationFromSearch(feature.geometry.coordinates);
-        },
+    this.geolocateControl = new GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      trackUserLocation: true
+    });
+
+    this.map.addControl(this.geolocateControl);
+
+    if (this.geolocateOnLoad) {
+      this.map.on('load', () => {
+        this.geolocateControl?.trigger();
       });
-      this.map.addControl(this.searchBox, "top-left");
+    }
+
+    if (this.configureMap !== undefined) {
+      this.configureMap(this.map);
     }
   }
 
@@ -191,8 +222,7 @@ export class FerrostarMap extends LitElement {
 
   // TODO: type
   startNavigation(route: any, config: any) {
-    // Remove the search box when navigation starts
-    if (this.useIntegratedSearchBox) this.map?.removeControl(this.searchBox!);
+    if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
     // Initialize the navigation controller
     this.navigationController = new NavigationController(route, config);
@@ -293,7 +323,7 @@ export class FerrostarMap extends LitElement {
     this.navigationController = null;
     this._tripState = null;
     if (this.locationProvider) this.locationProvider.updateCallback = null;
-    if (this.useIntegratedSearchBox) this.map?.addControl(this.searchBox!, "top-left");
+    if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
   }
 
   private onLocationUpdated() {
@@ -330,6 +360,9 @@ export class FerrostarMap extends LitElement {
 
   render() {
     return html`
+      <style>
+        ${this.customStyles}
+      </style>
       <div id="map">
         <instructions-view .tripState=${this._tripState}></instructions-view>
         <div id="bottom-component">

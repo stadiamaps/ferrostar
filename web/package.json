@@ -6,7 +6,7 @@
     "CatMe0w <CatMe0w@live.cn> (https://github.com/CatMe0w)",
     "Luke Seelenbinder <luke@stadiamaps.com>"
   ],
-  "version": "0.10.1",
+  "version": "0.11.0",
   "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/ferrostar-webcomponents.js",
@@ -19,7 +19,7 @@
   ],
   "types": "./dist/main.d.ts",
   "scripts": {
-    "dev": "vite --config vite.config.site.ts",
+    "dev": "npm run build:site && vite --config vite.config.site.ts",
     "preview": "vite preview",
     "test": "vitest",
     "prepare:core": "cd ../common && wasm-pack build --scope stadiamaps ferrostar --no-default-features --features wasm_js",
@@ -31,12 +31,12 @@
   },
   "dependencies": {
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
-    "@stadiamaps/maplibre-search-box": "^1.0.1",
     "lit": "^3.1.4",
     "maplibre-gl": "^4.5.0",
     "vite-plugin-dts": "^4.0.3"
   },
   "devDependencies": {
+    "@stadiamaps/maplibre-search-box": "^1.1.0",
     "typescript": "^5.2.2",
     "vite": "^5.4.1",
     "vitest": "^2.0.5",
