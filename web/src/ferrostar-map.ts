@@ -78,7 +78,7 @@ export class FerrostarMap extends LitElement {
   map: maplibregl.Map | null = null;
   geolocateControl: GeolocateControl | null = null;
   navigationController: NavigationController | null = null;
-  currentLocationMapMarker: maplibregl.Marker | null = null;
+  simulatedLocationMarker: maplibregl.Marker | null = null;
   lastSpokenInstructionText: string | null = null;
 
   static styles = [
@@ -272,7 +272,13 @@ export class FerrostarMap extends LitElement {
 
     this.map?.setCenter(route.geometry[0]);
 
-    this.currentLocationMapMarker = new maplibregl.Marker().setLngLat(route.geometry[0]).addTo(this.map!);
+    if (this.locationProvider instanceof SimulatedLocationProvider) {
+      this.simulatedLocationMarker = new maplibregl.Marker({
+        color: 'green'
+      })
+          .setLngLat(route.geometry[0])
+          .addTo(this.map!);
+    }
   }
 
   async startNavigationFromSearch(coordinates: any) {
@@ -316,12 +322,12 @@ export class FerrostarMap extends LitElement {
 
   async stopNavigation() {
     // TODO: Factor out the UI layer from the core
-    this.clearMap();
     this.routeAdapter?.free();
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
     this._tripState = null;
+    this.clearMap();
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
   }
@@ -333,8 +339,8 @@ export class FerrostarMap extends LitElement {
     // Update the trip state with the new location
     this._tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this._tripState);
 
-    // Update the user's location on the map
-    this.currentLocationMapMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
+    // Update the simulated location marker if needed
+    this.simulatedLocationMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
 
     // Center the map on the user's location
     this.map?.easeTo({
@@ -355,7 +361,7 @@ export class FerrostarMap extends LitElement {
   private clearMap() {
     this.map?.getLayer("route") && this.map?.removeLayer("route");
     this.map?.getSource("route") && this.map?.removeSource("route");
-    this.currentLocationMapMarker?.remove();
+    this.simulatedLocationMarker?.remove();
   }
 
   render() {
