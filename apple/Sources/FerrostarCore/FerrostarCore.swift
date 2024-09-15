@@ -89,7 +89,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var lastAutomaticRecalculation: Date? = nil
     private var lastLocation: UserLocation? = nil
     private var recalculationTask: Task<Void, Never>?
-    private var queuedUtteranceIDs: Set<String> = Set()
+    private var queuedUtteranceIDs: Set<UUID> = Set()
 
     private var config: SwiftNavigationControllerConfig
 
