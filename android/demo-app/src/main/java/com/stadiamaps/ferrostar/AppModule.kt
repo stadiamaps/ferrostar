@@ -16,6 +16,7 @@ import java.time.Duration
 import okhttp3.OkHttpClient
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
+import uniffi.ferrostar.SnapCourseTo
 import uniffi.ferrostar.StepAdvanceMode
 
 /**
@@ -58,7 +59,8 @@ object AppModule {
                 NavigationControllerConfig(
                     StepAdvanceMode.RelativeLineStringDistance(
                         minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                    RouteDeviationTracking.StaticThreshold(25U, 10.0)),
+                    RouteDeviationTracking.StaticThreshold(25U, 10.0),
+                    SnapCourseTo.ROUTE_COURSE),
             costingOptions = mapOf("bicycle" to mapOf("use_roads" to 0.2)))
 
     // Not all navigation apps will require this sort of extra configuration.
@@ -78,7 +80,8 @@ object AppModule {
             NavigationControllerConfig(
                 StepAdvanceMode.RelativeLineStringDistance(
                     minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                RouteDeviationTracking.StaticThreshold(25U, 10.0)))
+                RouteDeviationTracking.StaticThreshold(25U, 10.0),
+                SnapCourseTo.ROUTE_COURSE))
       }
     }
 

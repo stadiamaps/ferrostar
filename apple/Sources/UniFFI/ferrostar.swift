@@ -535,6 +535,9 @@ public protocol NavigationControllerProtocol: AnyObject {
      * Depending on the advancement strategy, this may be automatic.
      * For other cases, it is desirable to advance to the next step manually (ex: walking in an
      * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+     *
+     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
+     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
      */
     func advanceToNextStep(state: TripState) -> TripState
 
@@ -622,6 +625,9 @@ open class NavigationController:
      * Depending on the advancement strategy, this may be automatic.
      * For other cases, it is desirable to advance to the next step manually (ex: walking in an
      * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+     *
+     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
+     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
      */
     open func advanceToNextStep(state: TripState) -> TripState {
         try! FfiConverterTypeTripState.lift(try! rustCall {
@@ -1744,12 +1750,16 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 public struct NavigationControllerConfig {
     public var stepAdvance: StepAdvanceMode
     public var routeDeviationTracking: RouteDeviationTracking
+    public var snapCourse: SnapCourseTo
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) {
+    public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking,
+                snapCourse: SnapCourseTo)
+    {
         self.stepAdvance = stepAdvance
         self.routeDeviationTracking = routeDeviationTracking
+        self.snapCourse = snapCourse
     }
 }
 
@@ -1757,13 +1767,15 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
         try NavigationControllerConfig(
             stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf),
-            routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf)
+            routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf),
+            snapCourse: FfiConverterTypeSnapCourseTo.read(from: &buf)
         )
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
         FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
+        FfiConverterTypeSnapCourseTo.write(value.snapCourse, into: &buf)
     }
 }
 
@@ -3221,6 +3233,57 @@ extension SimulationError: Foundation.LocalizedError {
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum SnapCourseTo {
+    /**
+     * Snap the user's course to the current step's linestring using the next index in the step's geometry.
+     *
+     * TODO: We could make this more flexible by allowing the user to specify number of indices to average, etc.
+     */
+    case routeCourse
+    /**
+     * Use the raw course from the user's location, no snapping.
+     */
+    case noSnapping
+}
+
+public struct FfiConverterTypeSnapCourseTo: FfiConverterRustBuffer {
+    typealias SwiftType = SnapCourseTo
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SnapCourseTo {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .routeCourse
+
+        case 2: return .noSnapping
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: SnapCourseTo, into buf: inout [UInt8]) {
+        switch value {
+        case .routeCourse:
+            writeInt(&buf, Int32(1))
+
+        case .noSnapping:
+            writeInt(&buf, Int32(2))
+        }
+    }
+}
+
+public func FfiConverterTypeSnapCourseTo_lift(_ buf: RustBuffer) throws -> SnapCourseTo {
+    try FfiConverterTypeSnapCourseTo.lift(buf)
+}
+
+public func FfiConverterTypeSnapCourseTo_lower(_ value: SnapCourseTo) -> RustBuffer {
+    FfiConverterTypeSnapCourseTo.lower(value)
+}
+
+extension SnapCourseTo: Equatable, Hashable {}
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The step advance mode describes when the current maneuver has been successfully completed,
  * and we should advance to the next step.
@@ -4079,7 +4142,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 47899 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 60524 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 3820 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 63862 {

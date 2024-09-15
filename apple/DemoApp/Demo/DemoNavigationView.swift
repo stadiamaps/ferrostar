@@ -44,7 +44,8 @@ struct DemoNavigationView: View {
         // You have a lot of flexibility here based on your use case.
         let config = SwiftNavigationControllerConfig(
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
-            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20)
+            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
+            snapCourse: .routeCourse
         )
 
         ferrostarCore = try! FerrostarCore(

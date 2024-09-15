@@ -12,7 +12,7 @@ use crate::{
     },
     models::{Route, UserLocation},
 };
-use geo::{HaversineDistance, Point};
+use geo::{HaversineDistance, LineString, Point};
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
 
 #[cfg(feature = "wasm-bindgen")]
@@ -49,17 +49,11 @@ impl NavigationController {
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
         let current_step_linestring = current_route_step.get_linestring();
-        let snapped_user_location = snap_user_location_to_line(location, &current_step_linestring);
-        let current_step_geometry_index =
-            index_of_closest_segment_origin(snapped_user_location, &current_step_linestring);
-        let snapped_user_location_with_course = apply_snapped_course(
-            snapped_user_location,
-            current_step_geometry_index,
-            &current_step_linestring,
-        );
+        let (current_step_geometry_index, snapped_user_location) =
+            self.snap_user_to_line(location, &current_step_linestring);
 
         let progress = calculate_trip_progress(
-            &snapped_user_location_with_course.into(),
+            &snapped_user_location.into(),
             &current_step_linestring,
             &remaining_steps,
         );
@@ -77,7 +71,7 @@ impl NavigationController {
 
         TripState::Navigating {
             current_step_geometry_index,
-            snapped_user_location: snapped_user_location_with_course,
+            snapped_user_location,
             remaining_steps: remaining_steps.clone(),
             // Skip the first waypoint, as it is the current one
             remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
@@ -93,10 +87,14 @@ impl NavigationController {
     /// Depending on the advancement strategy, this may be automatic.
     /// For other cases, it is desirable to advance to the next step manually (ex: walking in an
     /// urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+    ///
+    /// This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
+    /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
     pub fn advance_to_next_step(&self, state: &TripState) -> TripState {
         match state {
             TripState::Idle => TripState::Idle,
             TripState::Navigating {
+                current_step_geometry_index,
                 snapped_user_location,
                 ref remaining_steps,
                 ref remaining_waypoints,
@@ -141,16 +139,6 @@ impl NavigationController {
                             &remaining_steps,
                         );
 
-                        let current_step_geometry_index = index_of_closest_segment_origin(
-                            *snapped_user_location,
-                            &self.route.get_linestring(),
-                        );
-                        let snapped_user_location_with_course = apply_snapped_course(
-                            *snapped_user_location,
-                            current_step_geometry_index,
-                            &linestring,
-                        );
-
                         let visual_instruction = current_step
                             .get_active_visual_instruction(progress.distance_to_next_maneuver)
                             .cloned();
@@ -159,7 +147,7 @@ impl NavigationController {
                             .cloned();
 
                         TripState::Navigating {
-                            current_step_geometry_index,
+                            current_step_geometry_index: *current_step_geometry_index,
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
@@ -190,7 +178,6 @@ impl NavigationController {
         match state {
             TripState::Idle => TripState::Idle,
             TripState::Navigating {
-                current_step_geometry_index,
                 ref remaining_steps,
                 ref remaining_waypoints,
                 deviation,
@@ -208,22 +195,17 @@ impl NavigationController {
 
                 // Find the nearest point on the route line
                 let current_step_linestring = current_step.get_linestring();
-                let snapped_user_location =
-                    snap_user_location_to_line(location, &current_step_linestring);
-                let snapped_user_location_with_course = apply_snapped_course(
-                    snapped_user_location,
-                    *current_step_geometry_index,
-                    &current_step_linestring,
-                );
+                let (current_step_geometry_index, snapped_user_location) =
+                    self.snap_user_to_line(location, &current_step_linestring);
 
                 let progress = calculate_trip_progress(
-                    &snapped_user_location_with_course.into(),
+                    &snapped_user_location.into(),
                     &current_step_linestring,
                     remaining_steps,
                 );
                 let intermediate_state = TripState::Navigating {
-                    current_step_geometry_index: *current_step_geometry_index,
-                    snapped_user_location: snapped_user_location_with_course,
+                    current_step_geometry_index,
+                    snapped_user_location,
                     remaining_steps: remaining_steps.clone(),
                     remaining_waypoints: remaining_waypoints.clone(),
                     progress,
@@ -274,19 +256,9 @@ impl NavigationController {
                             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
 
-                        let current_step_geometry_index = index_of_closest_segment_origin(
-                            snapped_user_location,
-                            &current_step_linestring,
-                        );
-                        let snapped_user_location_with_course = apply_snapped_course(
-                            snapped_user_location,
-                            current_step_geometry_index,
-                            &current_step_linestring,
-                        );
-
                         TripState::Navigating {
                             current_step_geometry_index,
-                            snapped_user_location: snapped_user_location_with_course,
+                            snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
                             progress,
@@ -301,6 +273,37 @@ impl NavigationController {
             // Terminal state
             TripState::Complete => TripState::Complete,
         }
+    }
+}
+
+/// Shared functionality for the navigation controller that is not exported by uniFFI.
+impl NavigationController {
+    /// Snaps the user's location to the route line and updates the user's course if necessary.
+    ///
+    /// This bundles all work related to snapping the user's location to the route line and is not intended to be exported.
+    ///
+    /// Returns the index of the closest segment origin to the snapped user location as well as the snapped user location.
+    fn snap_user_to_line(
+        &self,
+        location: UserLocation,
+        line: &LineString,
+    ) -> (Option<u64>, UserLocation) {
+        // Snap the user's latitude and longitude to the line.
+        let snapped_user_location = snap_user_location_to_line(location, line);
+
+        // Get the index of the closest segment origin to the snapped user location.
+        let current_step_geometry_index =
+            index_of_closest_segment_origin(snapped_user_location, &line);
+
+        // Snap the user's course to the line if the configuration specifies it.
+        let snapped_with_course: UserLocation = match &self.config.snap_course {
+            models::SnapCourseTo::RouteCourse => {
+                apply_snapped_course(snapped_user_location, current_step_geometry_index, line)
+            }
+            models::SnapCourseTo::NoSnapping => snapped_user_location,
+        };
+
+        (current_step_geometry_index, snapped_with_course)
     }
 }
 

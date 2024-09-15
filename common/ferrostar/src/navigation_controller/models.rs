@@ -80,6 +80,19 @@ pub enum StepAdvanceStatus {
     EndOfRoute,
 }
 
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
+pub enum SnapCourseTo {
+    /// Snap the user's course to the current step's linestring using the next index in the step's geometry.
+    ///
+    /// TODO: We could make this more flexible by allowing the user to specify number of indices to average, etc.
+    RouteCourse,
+
+    /// Use the raw course from the user's location, no snapping.
+    NoSnapping,
+}
+
 /// The step advance mode describes when the current maneuver has been successfully completed,
 /// and we should advance to the next step.
 #[derive(Debug, Copy, Clone)]
@@ -120,4 +133,5 @@ pub enum StepAdvanceMode {
 pub struct NavigationControllerConfig {
     pub step_advance: StepAdvanceMode,
     pub route_deviation_tracking: RouteDeviationTracking,
+    pub snap_course: SnapCourseTo,
 }
