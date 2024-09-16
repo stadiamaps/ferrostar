@@ -66,6 +66,10 @@ pub enum RouteRequest {
         headers: HashMap<String, String>,
         body: Vec<u8>,
     },
+    HttpGet {
+        url: String,
+        headers: HashMap<String, String>,
+    },
 }
 
 /// A trait describing any object capable of generating [`RouteRequest`]s.
@@ -214,9 +218,18 @@ impl JsRouteAdapter {
         match self.0.generate_request(user_location, waypoints) {
             Ok(RouteRequest::HttpPost { url, headers, body }) => {
                 serde_wasm_bindgen::to_value(&json!({
+                    "method": "post",
                     "url": url,
                     "headers": headers,
                     "body": body,
+                }))
+                .map_err(|e| JsValue::from_str(&e.to_string()))
+            }
+            Ok(RouteRequest::HttpGet { url, headers }) => {
+                serde_wasm_bindgen::to_value(&json!({
+                    "method": "get",
+                    "url": url,
+                    "headers": headers,
                 }))
                 .map_err(|e| JsValue::from_str(&e.to_string()))
             }

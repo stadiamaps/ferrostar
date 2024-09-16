@@ -9,7 +9,8 @@ final class ValhallaCoreTests: XCTestCase {
     func testValhallaRouteParsing() async throws {
         let mockSession = MockURLSession()
         mockSession.registerMock(
-            forURL: valhallaEndpointUrl,
+            forMethod: "POST",
+            andURL: valhallaEndpointUrl,
             withData: sampleRouteData,
             andResponse: successfulJSONResponse
         )

@@ -201,7 +201,8 @@ mod tests {
                 assert_eq!(ENDPOINT_URL, request_url);
                 assert_eq!(headers["Content-Type"], "application/json".to_string());
                 from_slice(&body).expect("Failed to parse request body as JSON")
-            }
+            },
+            Ok(RouteRequest::HttpGet { .. }) => unreachable!("The Valhalla HTTP request generator currently only generates POST requests"),
             Err(e) => {
                 println!("Failed to generate request: {:?}", e);
                 json!(null)
@@ -314,7 +315,9 @@ mod tests {
             body,
         } = generator
             .generate_request(location, WAYPOINTS.to_vec())
-            .unwrap();
+            .unwrap() else {
+            unreachable!("The Valhalla HTTP request generator currently only generates POST requests");
+        };
 
         assert_eq!(ENDPOINT_URL, request_url);
         assert_eq!(headers["Content-Type"], "application/json".to_string());

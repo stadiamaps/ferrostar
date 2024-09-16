@@ -172,15 +172,19 @@ export class FerrostarMap extends LitElement {
   // TODO: type
   async getRoutes(initialLocation: any, waypoints: any) {
     // Initialize the route adapter
+    // (NOTE: currently only supports Valhalla, but working toward expansion)
     this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile, JSON.stringify(this.costingOptions));
 
     // Generate the request body
-    const body = this.routeAdapter.generateRequest(initialLocation, waypoints).get("body");
+    const routeRequest = this.routeAdapter.generateRequest(initialLocation, waypoints);
+    const method = routeRequest.get("method");
+    let url = new URL(routeRequest.get("url"));
+    const body = routeRequest.get("body");
 
     // Send the request to the Valhalla endpoint
     // FIXME: assert httpClient is not null
-    const response = await this.httpClient!(this.valhallaEndpointUrl, {
-      method: "POST",
+    const response = await this.httpClient!(url, {
+      method: method,
       // FIXME: assert body is not null
       body: new Uint8Array(body).buffer,
     });

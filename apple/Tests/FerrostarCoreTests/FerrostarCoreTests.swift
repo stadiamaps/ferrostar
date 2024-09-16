@@ -44,15 +44,26 @@ let mockRoute = Route(
     )]
 )
 
-// Mocked route adapter
-let mockRouteAdapter = RouteAdapter(
-    requestGenerator: MockRouteRequestGenerator(),
+// Mocked route adapters
+let mockPOSTRouteAdapter = RouteAdapter(
+    requestGenerator: MockPOSTRouteRequestGenerator(),
     responseParser: MockRouteResponseParser(routes: [mockRoute])
 )
 
-private class MockRouteRequestGenerator: RouteRequestGenerator {
+let mockGETRouteAdapter = RouteAdapter(
+    requestGenerator: MockGETRouteRequestGenerator(),
+    responseParser: MockRouteResponseParser(routes: [mockRoute])
+)
+
+private class MockPOSTRouteRequestGenerator: RouteRequestGenerator {
     func generateRequest(userLocation _: UserLocation, waypoints _: [Waypoint]) throws -> RouteRequest {
         RouteRequest.httpPost(url: valhallaEndpointUrl.absoluteString, headers: [:], body: Data())
+    }
+}
+
+private class MockGETRouteRequestGenerator: RouteRequestGenerator {
+    func generateRequest(userLocation _: UserLocation, waypoints _: [Waypoint]) throws -> RouteRequest {
+        RouteRequest.httpGet(url: valhallaEndpointUrl.absoluteString, headers: [:])
     }
 }
 
@@ -90,10 +101,15 @@ private class MockCustomRouteProvider: CustomRouteProvider {
 final class FerrostarCoreTests: XCTestCase {
     func test401UnauthorizedRouteResponse() async throws {
         let mockSession = MockURLSession()
-        mockSession.registerMock(forURL: valhallaEndpointUrl, withData: errorBody, andResponse: errorResponse)
+        mockSession.registerMock(
+            forMethod: "POST",
+            andURL: valhallaEndpointUrl,
+            withData: errorBody,
+            andResponse: errorResponse
+        )
 
         let routeAdapter = RouteAdapter(
-            requestGenerator: MockRouteRequestGenerator(),
+            requestGenerator: MockPOSTRouteRequestGenerator(),
             responseParser: MockRouteResponseParser(routes: [])
         )
 
@@ -127,12 +143,48 @@ final class FerrostarCoreTests: XCTestCase {
     }
 
     @MainActor
-    func test200MockRouteResponse() async throws {
+    func test200MockPOSTRouteResponse() async throws {
         let mockSession = MockURLSession()
-        mockSession.registerMock(forURL: valhallaEndpointUrl, withData: Data(), andResponse: successfulJSONResponse)
+        mockSession.registerMock(
+            forMethod: "POST",
+            andURL: valhallaEndpointUrl,
+            withData: Data(),
+            andResponse: successfulJSONResponse
+        )
 
         let core = FerrostarCore(
-            routeAdapter: mockRouteAdapter,
+            routeAdapter: mockPOSTRouteAdapter,
+            locationProvider: SimulatedLocationProvider(),
+            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            networkSession: mockSession
+        )
+
+        // Tests that the core generates a request and then the mocked parser returns the expected routes
+        let routes = try await core.getRoutes(
+            initialLocation: UserLocation(
+                coordinates: GeographicCoordinate(lat: 60.5347155, lng: -149.543469),
+                horizontalAccuracy: 0,
+                courseOverGround: nil,
+                timestamp: Date(),
+                speed: nil
+            ),
+            waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
+        )
+        assertSnapshot(of: routes, as: .dump)
+    }
+
+    @MainActor
+    func test200MockGETRouteResponse() async throws {
+        let mockSession = MockURLSession()
+        mockSession.registerMock(
+            forMethod: "GET",
+            andURL: valhallaEndpointUrl,
+            withData: Data(),
+            andResponse: successfulJSONResponse
+        )
+
+        let core = FerrostarCore(
+            routeAdapter: mockGETRouteAdapter,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
             networkSession: mockSession
@@ -156,7 +208,8 @@ final class FerrostarCoreTests: XCTestCase {
     func testValhalalCostingOptionsJSON() async throws {
         let mockSession = MockURLSession()
         mockSession.registerMock(
-            forURL: valhallaEndpointUrl,
+            forMethod: "POST",
+            andURL: valhallaEndpointUrl,
             withData: sampleRouteData,
             andResponse: successfulJSONResponse
         )
@@ -227,10 +280,15 @@ final class FerrostarCoreTests: XCTestCase {
         let locationProvider = SimulatedLocationProvider()
 
         let mockSession = MockURLSession()
-        mockSession.registerMock(forURL: valhallaEndpointUrl, withData: Data(), andResponse: successfulJSONResponse)
+        mockSession.registerMock(
+            forMethod: "POST",
+            andURL: valhallaEndpointUrl,
+            withData: Data(),
+            andResponse: successfulJSONResponse
+        )
 
         let core = FerrostarCore(
-            routeAdapter: mockRouteAdapter,
+            routeAdapter: mockPOSTRouteAdapter,
             locationProvider: locationProvider,
             navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
             networkSession: mockSession
