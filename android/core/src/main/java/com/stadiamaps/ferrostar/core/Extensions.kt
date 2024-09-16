@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar.core
 
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import uniffi.ferrostar.Route
