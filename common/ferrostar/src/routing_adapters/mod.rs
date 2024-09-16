@@ -225,14 +225,12 @@ impl JsRouteAdapter {
                 }))
                 .map_err(|e| JsValue::from_str(&e.to_string()))
             }
-            Ok(RouteRequest::HttpGet { url, headers }) => {
-                serde_wasm_bindgen::to_value(&json!({
-                    "method": "get",
-                    "url": url,
-                    "headers": headers,
-                }))
-                .map_err(|e| JsValue::from_str(&e.to_string()))
-            }
+            Ok(RouteRequest::HttpGet { url, headers }) => serde_wasm_bindgen::to_value(&json!({
+                "method": "get",
+                "url": url,
+                "headers": headers,
+            }))
+            .map_err(|e| JsValue::from_str(&e.to_string())),
             Err(e) => Err(JsValue::from_str(&e.to_string())),
         }
     }
