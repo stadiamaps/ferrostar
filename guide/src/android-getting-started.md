@@ -90,8 +90,8 @@ Note that Ferrostar does *not* require “background” location access!
 This may be confusing if you’re new to mobile development.
 On Android, we can use something called a *foreground service*
 which lets us keep getting location updates even when the app isn’t front and center.
-
-**TODO: Tutorial on foreground services**
+This is such a detailed topic that it gets its own page!
+Learn about [Foreground Service](./android-foreground-service.md) configuration here.
 
 ### Location providers
 
@@ -201,13 +201,6 @@ such as using a Valhalla [Route Provider](./route-providers.md#bundled-support).
 
 `FerrostarCore` automatically subscribes to location updates from the `LocationProvider`.
 
-## Set up the foreground service and notification
-
-A foreground service and notification are required on Android
-if you want to enable background operation of your app.
-This is such a detailed topic that it gets its own page!
-Learn about [Foreground Service](./android/foreground-service.md) configuration here.
-
 ## Set up voice guidance
 
 Ferrostar is able to process spoken instructions generated from some routing engines.
@@ -311,6 +304,10 @@ Here’s an example:
      }
  }
 ```
+
+### Tools for Improving a NavigationView
+
+- `KeepScreenOnDisposableEffect` is a simple disposable effect that automatically keeps the screen on and at consistent brightness while a user is on the scene using the effect. On dispose, the screen will return to default and auto lock and dim. See the demo app for an example of this being used alongside the `DynamicallyOrientingNavigationView`.
 
 ## Demo app
 

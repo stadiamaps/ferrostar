@@ -22,7 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.maplibre.compose.symbols.Circle
-import com.stadiamaps.ferrostar.core.DefaultNavigationViewModel
+import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
+import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
@@ -40,11 +41,10 @@ fun DemoNavigationScene(
     // a NavigationViewModel.
     locationProvider: SimulatedLocationProvider
 ) {
+  // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
+  KeepScreenOnDisposableEffect()
 
-  var isStarted by remember { mutableStateOf(false) }
-
-  val defaultNavigationViewModel = viewModel as DefaultNavigationViewModel
-  val routes by defaultNavigationViewModel.routes.collectAsState()
+  var viewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
 
   // Get location permissions.
   // NOTE: This is NOT a robust suggestion for how to get permissions in a production app.

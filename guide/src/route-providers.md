@@ -4,6 +4,12 @@ Route providers expose common interfaces for making requests to a routing engine
 and getting the data back in a standardized format for navigation.
 This layer of indirection makes Ferrostar extremely extensible.
 
+NOTE: Extensible route providers are currently available on iOS and Android.
+The JavaScript platform presents some unique challenges,
+so only Valhalla backends are supported directly from the JavaScript API
+and published web components.
+Contributions and discussion around the best ways to enable this are very much welcome.
+
 ## `RouteProvider`
 
 There are two types of route providers:

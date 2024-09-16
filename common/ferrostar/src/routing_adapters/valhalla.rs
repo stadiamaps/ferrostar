@@ -12,7 +12,6 @@ use std::collections::HashMap;
 #[cfg(feature = "alloc")]
 use alloc::{
     string::{String, ToString},
-    vec,
     vec::Vec,
 };
 

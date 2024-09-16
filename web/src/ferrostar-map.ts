@@ -1,18 +1,18 @@
-import {css, html, LitElement, unsafeCSS} from "lit";
-import {customElement, property} from "lit/decorators.js";
-import maplibregl from "maplibre-gl";
+import {css, html, LitElement, PropertyValues, unsafeCSS} from "lit";
+import {customElement, property, state} from "lit/decorators.js";
+import maplibregl, {LngLatLike} from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
 import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
 import searchBoxStyles
   from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
-import init, {NavigationController, RouteAdapter} from "ferrostar";
+import {NavigationController, RouteAdapter} from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./arrival-view";
 import {BrowserLocationProvider, SimulatedLocationProvider} from "./location";
 import CloseSvg from "./assets/directions/close.svg";
 
-@customElement("ferrostar-core")
-export class FerrostarCore extends LitElement {
+@customElement("ferrostar-map")
+export class FerrostarMap extends LitElement {
   @property()
   valhallaEndpointUrl: string = "";
 
@@ -21,6 +21,15 @@ export class FerrostarCore extends LitElement {
 
   @property()
   profile: string = "";
+
+  @property()
+  center: LngLatLike | null = null;
+
+  @property()
+  pitch: number = 60;
+
+  @property()
+  zoom: number = 6;
 
   @property({ attribute: false })
   httpClient?: Function = fetch;
@@ -31,11 +40,11 @@ export class FerrostarCore extends LitElement {
 
   // TODO: type
   @property({ type: Object })
-  costingOptions!: any;
+  costingOptions: object = {};
 
   // TODO: type
-  @property({ type: Object })
-  tripState: any = null;
+  @state()
+  protected _tripState: any = null;
 
   @property({ type: Boolean })
   useIntegratedSearchBox: boolean = false;
@@ -68,7 +77,7 @@ export class FerrostarCore extends LitElement {
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        max-width: 80%;
+        width: 80%;
         z-index: 1000;
       }
 
@@ -115,9 +124,27 @@ export class FerrostarCore extends LitElement {
     }
   }
 
-  updated(changedProperties: any) {
+  updated(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("locationProvider") && this.locationProvider) {
       this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
+    }
+    if (this.map) {
+      if (changedProperties.has("styleUrl")) {
+        this.map.setStyle(this.styleUrl)
+      }
+      if (changedProperties.has("center")) {
+        if (changedProperties.get("center") === null && this.center !== null) {
+          this.map.jumpTo({center: this.center})
+        } else if (this.center !== null) {
+          this.map.flyTo({center: this.center})
+        }
+      }
+      if (changedProperties.has("pitch")) {
+        this.map.setPitch(this.pitch)
+      }
+      if (changedProperties.has("zoom")) {
+        this.map.setZoom(this.zoom)
+      }
     }
   }
 
@@ -125,10 +152,11 @@ export class FerrostarCore extends LitElement {
     this.map = new maplibregl.Map({
       container: this.shadowRoot!.getElementById("map")!,
       style: this.styleUrl ? this.styleUrl : "https://demotiles.maplibre.org/style.json",
-      center: [-122.42, 37.81],
-      pitch: 60,
+      center: this.center ?? [0, 0],
+      pitch: this.pitch,
       bearing: 0,
-      zoom: 18,
+      zoom: this.zoom,
+      attributionControl: {compact: true}
     });
 
     if (this.useIntegratedSearchBox) {
@@ -143,11 +171,8 @@ export class FerrostarCore extends LitElement {
 
   // TODO: type
   async getRoutes(initialLocation: any, waypoints: any) {
-    // Initialize the Ferrostar core WebAssembly module
-    await init();
-
     // Initialize the route adapter
-    this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile);
+    this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile, JSON.stringify(this.costingOptions));
 
     // Generate the request body
     const body = this.routeAdapter.generateRequest(initialLocation, waypoints).get("body");
@@ -184,7 +209,7 @@ export class FerrostarCore extends LitElement {
           speed: null,
         };
 
-    this.tripState = this.navigationController.getInitialState(startingLocation);
+    this._tripState = this.navigationController.getInitialState(startingLocation);
 
     // Update the UI with the initial trip state
     this.clearMap();
@@ -266,7 +291,7 @@ export class FerrostarCore extends LitElement {
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
-    this.tripState = null;
+    this._tripState = null;
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.useIntegratedSearchBox) this.map?.addControl(this.searchBox!, "top-left");
   }
@@ -276,7 +301,7 @@ export class FerrostarCore extends LitElement {
       return;
     }
     // Update the trip state with the new location
-    this.tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this.tripState);
+    this._tripState = this.navigationController!.updateUserLocation(this.locationProvider.lastLocation, this._tripState);
 
     // Update the user's location on the map
     this.currentLocationMapMarker?.setLngLat(this.locationProvider.lastLocation.coordinates);
@@ -289,10 +314,10 @@ export class FerrostarCore extends LitElement {
 
     // Speak the next instruction if voice guidance is enabled
     if (this.useVoiceGuidance) {
-      if (this.tripState.Navigating?.spokenInstruction && this.tripState.Navigating?.spokenInstruction.text !== this.lastSpokenInstructionText) {
-        this.lastSpokenInstructionText = this.tripState.Navigating?.spokenInstruction.text;
+      if (this._tripState.Navigating?.spokenInstruction && this._tripState.Navigating?.spokenInstruction.text !== this.lastSpokenInstructionText) {
+        this.lastSpokenInstructionText = this._tripState.Navigating?.spokenInstruction.text;
         window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(this.tripState.Navigating?.spokenInstruction.text));
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(this._tripState.Navigating?.spokenInstruction.text));
       }
     }
   }
@@ -306,10 +331,10 @@ export class FerrostarCore extends LitElement {
   render() {
     return html`
       <div id="map">
-        <instructions-view .tripState=${this.tripState}></instructions-view>
+        <instructions-view .tripState=${this._tripState}></instructions-view>
         <div id="bottom-component">
-          <arrival-view .tripState=${this.tripState}></arrival-view>
-          <button id="stop-button" @click=${this.stopNavigation} ?hidden=${!this.tripState}>
+          <arrival-view .tripState=${this._tripState}></arrival-view>
+          <button id="stop-button" @click=${this.stopNavigation} ?hidden=${!this._tripState}>
             <img src=${CloseSvg} alt="Stop navigation" class="icon" />
           </button>
         </div>

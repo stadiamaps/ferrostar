@@ -2,6 +2,9 @@
 
 Ferrostar is a modern SDK for building turn-by-turn navigation applications.
 
-For more details about the architecture of the project, refer to the [user guide](https://stadiamaps.github.io/ferrostar/).
-This crate is the common core which can be used to power turn-by-turn navigation experiences on a
-variety of platforms.
+The Ferrostar core includes the navigation state machine, common business logic, spatial algorithms, and models. 
+
+If you're porting Ferrostar to a new platform or want to build your own UI from scratch, you're in the right spot.
+
+Refer to the [Ferrostar User Guide](https://stadiamaps.github.io/ferrostar/)
+for info and tutorials on the high-level UI + wrappers available for common platforms.

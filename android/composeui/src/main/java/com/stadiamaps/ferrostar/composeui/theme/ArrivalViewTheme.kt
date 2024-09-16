@@ -36,7 +36,7 @@ object DefaultArrivalViewTheme : ArrivalViewTheme {
   override val measurementTextStyle: TextStyle
     @Composable
     get() =
-        MaterialTheme.typography.titleLarge.copy(
+        MaterialTheme.typography.titleMedium.copy(
             color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
 
   override val secondaryTextStyle: TextStyle

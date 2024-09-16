@@ -274,6 +274,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
             switch newState {
             case let .navigating(
+                currentStepGeometryIndex: _,
                 snappedUserLocation: _,
                 remainingSteps: _,
                 remainingWaypoints: remainingWaypoints,

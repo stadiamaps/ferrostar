@@ -13,8 +13,7 @@ helping you build the navigation experience your users deserve.
   for the most common use cases, with minimal reconfiguration needed.
   Don't like our UI?
   Most components are reusable and composable
-  thanks to SwiftUI and Jetpack Compose
-  (on mobile; we’re still working out the best strategy for the web).
+  thanks to SwiftUI, Jetpack Compose, and Web Components.
 * **Extensible** - At every layer, you have flexibility to extend or replace functionality without needing to wait for a patch.
   Want to bring your own offline routing?
   Can do.
@@ -34,7 +33,7 @@ helping you build the navigation experience your users deserve.
 - A routing engine, basemap, or search solution;
   there are many good [vendors](./vendors.md) that provide hosted APIs
   and offline route generation,
-  as well as a rich ecosystem of FOSS software if you're looking to host your own for a smaller deployment.
+  and there is a rich ecosystem of FOSS software if you're looking to host your own for a smaller deployment.
 
 ## Can I use Ferrostar today?
 
@@ -52,8 +51,6 @@ If you’re already rolling a custom UI, you’re good to go!
 iOS and Android have "batteries included" UIs
 which are highly composable in nature thanks to SwiftUI and Jetpack Compose.
 So you can customize most aspects of the UI today.
-There are still a few glitches around camera control,
-but we have been rapidly knocking these out as we find them.
 
 We know of at least half a dozen native app integrations underway,
 and the core devs are dogfooding in their own apps.
@@ -61,10 +58,30 @@ and the core devs are dogfooding in their own apps.
 ### Using multiplatform frameworks
 
 Ferrostar can be integrated into multiplatform frameworks
-via the native/platform view functionality.
-We have know of some users doing this with Flutter already.
-We would like to build more idiomatic integrations though,
+in a few ways.
+
+Both Flutter and React Native have mechanisms for calling platform/native code,
+which you can use to create and interact with
+the `FerrostarCore` Swift and Kotlin classes.
+Note that React Native is significantly more challenging as it is
+deeply dependent on CocoaPods and has not yet adopted SPM (Ferrostar does).
+If you are building a custom UI (ex: with [flutter_maplibre_gl](https://github.com/maplibre/flutter-maplibre-gl)
+or [MapLibre React Native](https://github.com/maplibre/maplibre-react-native)),
+then this is all you need.
+
+For the UI, both Flutter and React Native include functionality for hosting native views,
+and some community members are doing this successfully with Flutter already!
+
+- [Flutter iOS Platform Views](https://docs.flutter.dev/platform-integration/ios/platform-views)
+- [Flutter Android Platform Views](https://docs.flutter.dev/platform-integration/android/platform-views)
+
+More idiomatic integrations are planned,
 and contributions are very much welcome.
+We are tracking status via the following issues:
+
+- [Dart binding generation](https://github.com/stadiamaps/ferrostar/issues/16)
+- [Flutter frontend components](https://github.com/stadiamaps/ferrostar/issues/106)
+- [React Native core wrapper](https://github.com/stadiamaps/ferrostar/issues/116)
 
 ### On the web
 
