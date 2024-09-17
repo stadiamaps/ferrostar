@@ -25,7 +25,6 @@ extension RouteRequest {
 
                 urlRequest = URLRequest(url: url)
                 urlRequest.httpMethod = "GET"
-
             }
 
             for (header, value) in requestHeaders {
