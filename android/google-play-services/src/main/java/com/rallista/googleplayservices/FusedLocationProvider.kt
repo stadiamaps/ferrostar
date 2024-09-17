@@ -12,52 +12,53 @@ import com.google.android.gms.location.Priority
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.LocationUpdateListener
 import com.stadiamaps.ferrostar.core.toUserLocation
+import java.util.concurrent.Executor
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.UserLocation
-import java.util.concurrent.Executor
 
 class FusedLocationProvider(
     context: Context,
-    private val fusedLocationProviderClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    private val fusedLocationProviderClient: FusedLocationProviderClient =
+        LocationServices.getFusedLocationProviderClient(context)
 ) : LocationProvider {
 
-    companion object {
-        private const val TAG = "GooglePlayServicesLocationProvider"
+  companion object {
+    private const val TAG = "GooglePlayServicesLocationProvider"
+  }
+
+  override var lastLocation: UserLocation? = null
+    private set
+
+  override var lastHeading: Heading? = null
+    private set
+
+  private val listeners: MutableMap<LocationUpdateListener, LocationListener> = mutableMapOf()
+
+  @SuppressLint("MissingPermission")
+  override fun addListener(listener: LocationUpdateListener, executor: Executor) {
+    Log.d(TAG, "Adding listener")
+    if (listeners.contains(listener)) {
+      Log.d(TAG, "Listener already added")
+      return
     }
 
-    override var lastLocation: UserLocation? = null
-        private set
-
-    override var lastHeading: Heading? = null
-        private set
-
-    private val listeners: MutableMap<LocationUpdateListener, LocationListener> = mutableMapOf()
-
-    @SuppressLint("MissingPermission")
-    override fun addListener(listener: LocationUpdateListener, executor: Executor) {
-        Log.d(TAG, "Adding listener")
-        if (listeners.contains(listener)) {
-            Log.d(TAG, "Listener already added")
-            return
-        }
-
-        val locationListener = LocationListener { newLocation ->
-            listener.onLocationUpdated(newLocation.toUserLocation())
-        }
-        listeners[listener] = locationListener
-
-        val locationRequest =
-            LocationRequest.Builder(1000L).setPriority(Priority.PRIORITY_HIGH_ACCURACY).build()
-
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest, locationListener, Looper.getMainLooper())
+    val locationListener = LocationListener { newLocation ->
+      listener.onLocationUpdated(newLocation.toUserLocation())
     }
+    listeners[listener] = locationListener
 
-    override fun removeListener(listener: LocationUpdateListener) {
-        val activeListener = listeners.remove(listener)
+    val locationRequest =
+        LocationRequest.Builder(1000L).setPriority(Priority.PRIORITY_HIGH_ACCURACY).build()
 
-        if (activeListener != null) {
-            fusedLocationProviderClient.removeLocationUpdates(activeListener)
-        }
+    fusedLocationProviderClient.requestLocationUpdates(
+        locationRequest, locationListener, Looper.getMainLooper())
+  }
+
+  override fun removeListener(listener: LocationUpdateListener) {
+    val activeListener = listeners.remove(listener)
+
+    if (activeListener != null) {
+      fusedLocationProviderClient.removeLocationUpdates(activeListener)
     }
+  }
 }
