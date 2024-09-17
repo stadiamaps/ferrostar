@@ -3968,25 +3968,30 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
 }
 
 /**
- * Typealias from the type name used in the UDL file to the builtin type.  This
+ * Typealias from the type name used in the UDL file to the custom type.  This
  * is needed because the UDL type name is used in function/method signatures.
  */
-public typealias Uuid = String
+public typealias Uuid = UUID
+
 public struct FfiConverterTypeUuid: FfiConverter {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Uuid {
-        try FfiConverterString.read(from: &buf)
+        let builtinValue = try FfiConverterString.read(from: &buf)
+        return UUID(uuidString: builtinValue)!
     }
 
     public static func write(_ value: Uuid, into buf: inout [UInt8]) {
-        FfiConverterString.write(value, into: &buf)
+        let builtinValue = value.uuidString
+        return FfiConverterString.write(builtinValue, into: &buf)
     }
 
     public static func lift(_ value: RustBuffer) throws -> Uuid {
-        try FfiConverterString.lift(value)
+        let builtinValue = try FfiConverterString.lift(value)
+        return UUID(uuidString: builtinValue)!
     }
 
     public static func lower(_ value: Uuid) -> RustBuffer {
-        FfiConverterString.lower(value)
+        let builtinValue = value.uuidString
+        return FfiConverterString.lower(builtinValue)
     }
 }
 
