@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.maplibreui.runtime
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -31,7 +32,9 @@ import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
  *
  * TODO: This function is attempting to optimize the map controls for many screen sizes, system
  *   bars, and orientations. We should remain open to feedback for specific cases.
+ * TODO: Remove this suppress lint.
  */
+@SuppressLint("ProduceStateDoesNotAssignValue")
 @Composable
 internal fun rememberMapControlsForArrivalViewHeight(
     arrivalViewHeight: Dp = 0.dp,
