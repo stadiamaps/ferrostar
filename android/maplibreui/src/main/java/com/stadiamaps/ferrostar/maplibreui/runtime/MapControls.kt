@@ -46,43 +46,45 @@ internal fun rememberMapControlsForArrivalViewHeight(
   val windowInsetPadding = WindowInsets.systemBars.asPaddingValues()
 
   return produceState(
-    initialValue = MapControls(),
-    key1 = arrivalViewHeight,
-    key2 = gridPadding,
-    key3 = windowInsetPadding
-  ) {
-    // This calculation clamps the controls to the trailing edge of the screen in landscape mode
-    // with less padding in that case. The reason for this is that with edge-to-edge, there's
-    // a larger map canvas available.
-    val endPaddingDp =
-      windowInsetPadding.calculateEndPadding(layoutDirection) +
-        gridPadding.calculateEndPadding(layoutDirection)
-    val endOffsetDp = if (isLandscape) endPaddingDp else horizontalPadding
+      initialValue = MapControls(),
+      key1 = arrivalViewHeight,
+      key2 = gridPadding,
+      key3 = windowInsetPadding) {
+        // This calculation clamps the controls to the trailing edge of the screen in landscape mode
+        // with less padding in that case. The reason for this is that with edge-to-edge, there's
+        // a larger map canvas available.
+        val endPaddingDp =
+            windowInsetPadding.calculateEndPadding(layoutDirection) +
+                gridPadding.calculateEndPadding(layoutDirection)
+        val endOffsetDp = if (isLandscape) endPaddingDp else horizontalPadding
 
-    val bottomPaddingDp =
-      windowInsetPadding.calculateBottomPadding() + gridPadding.calculateBottomPadding()
-    val bottomOffsetDp = if (isLandscape) bottomPaddingDp else bottomPaddingDp + arrivalViewHeight
+        val bottomPaddingDp =
+            windowInsetPadding.calculateBottomPadding() + gridPadding.calculateBottomPadding()
+        val bottomOffsetDp =
+            if (isLandscape) bottomPaddingDp else bottomPaddingDp + arrivalViewHeight
 
-    // TODO: This could be improved if we want to add pixel width to dp conversion in
-    //  maplibre-compose.
-    val attributionOffset = 24.dp
+        // TODO: This could be improved if we want to add pixel width to dp conversion in
+        //  maplibre-compose.
+        val attributionOffset = 24.dp
 
-    value = MapControls(
-      attribution =
-      AttributionSettings.initWithLayoutAndPosition(
-        layoutDirection,
-        density,
-        position =
-        MapControlPosition.BottomEnd(
-          horizontal = endOffsetDp, vertical = bottomOffsetDp + verticalPadding)),
-      compass = CompassSettings(enabled = false),
-      logo =
-      LogoSettings.initWithLayoutAndPosition(
-        layoutDirection,
-        density,
-        position =
-        MapControlPosition.BottomEnd(
-          horizontal = endOffsetDp + attributionOffset,
-          vertical = bottomOffsetDp + verticalPadding)))
-  }
+        value =
+            MapControls(
+                attribution =
+                    AttributionSettings.initWithLayoutAndPosition(
+                        layoutDirection,
+                        density,
+                        position =
+                            MapControlPosition.BottomEnd(
+                                horizontal = endOffsetDp,
+                                vertical = bottomOffsetDp + verticalPadding)),
+                compass = CompassSettings(enabled = false),
+                logo =
+                    LogoSettings.initWithLayoutAndPosition(
+                        layoutDirection,
+                        density,
+                        position =
+                            MapControlPosition.BottomEnd(
+                                horizontal = endOffsetDp + attributionOffset,
+                                vertical = bottomOffsetDp + verticalPadding)))
+      }
 }

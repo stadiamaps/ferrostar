@@ -63,15 +63,15 @@ fun LandscapeNavigationView(
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()
 
-  val mapControls by rememberMapControlsForArrivalViewHeight()
+  val mapControls = rememberMapControlsForArrivalViewHeight()
 
   Box(modifier) {
     NavigationMapView(
         styleUrl,
-        mapControls,
         camera,
         navigationCamera,
         viewModel,
+        mapControls,
         locationRequestProperties,
         onMapReadyCallback = { camera.value = navigationCamera },
         content)

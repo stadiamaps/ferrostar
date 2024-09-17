@@ -37,10 +37,10 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 @Composable
 fun NavigationMapView(
     styleUrl: String,
-    mapControls: MapControls,
     camera: MutableState<MapViewCamera>,
     navigationCamera: MapViewCamera = navigationMapViewCamera(),
     viewModel: NavigationViewModel,
+    mapControls: State<MapControls>,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     onMapReadyCallback: (Style) -> Unit = { camera.value = navigationCamera },
@@ -53,9 +53,9 @@ fun NavigationMapView(
 
   MapView(
       modifier = Modifier.fillMaxSize(),
-      styleUrl = styleUrl,
-      mapControls = mapControls,
-      camera = camera,
+      styleUrl,
+      camera,
+      mapControls,
       locationRequestProperties = locationRequestProperties,
       locationEngine = locationEngine,
       onMapReadyCallback = onMapReadyCallback,

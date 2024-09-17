@@ -69,15 +69,15 @@ fun DynamicallyOrientingNavigationView(
   val gridPadding = paddingForGridView()
 
   // Get the map control positioning based on the arrival view.
-  val mapControls by rememberMapControlsForArrivalViewHeight(arrivalViewSize.height)
+  val mapControls = rememberMapControlsForArrivalViewHeight(arrivalViewSize.height)
 
   Box(modifier) {
     NavigationMapView(
         styleUrl,
-        mapControls,
         camera,
         navigationCamera,
         viewModel,
+        mapControls,
         locationRequestProperties,
         onMapReadyCallback = { camera.value = navigationCamera },
         content)
