@@ -1,32 +1,52 @@
 {
-  "name": "ferrostar-components",
-  "private": true,
-  "version": "0.1.0",
+  "name": "@stadiamaps/ferrostar-webcomponents",
+  "collaborators": [
+    "Ian Wagner <ian@stadiamaps.com>",
+    "Jacob Fielding <jacob@rallista.app>",
+    "CatMe0w <CatMe0w@live.cn> (https://github.com/CatMe0w)",
+    "Luke Seelenbinder <luke@stadiamaps.com>"
+  ],
+  "version": "0.10.1",
+  "license": "BSD-3-Clause",
   "type": "module",
-  "module": "./dist/ferrostar-components.js",
+  "main": "./dist/ferrostar-webcomponents.js",
+  "module": "./dist/ferrostar-webcomponents.js",
   "exports": {
-    ".": "./dist/ferrostar-components.js"
+    ".": "./dist/ferrostar-webcomponents.js"
   },
   "files": [
     "dist"
   ],
+  "types": "./dist/main.d.ts",
   "scripts": {
     "dev": "vite --config vite.config.site.ts",
     "preview": "vite preview",
     "test": "vitest",
-    "prepare:core": "cd ../common && wasm-pack build --target web ferrostar --no-default-features --features wasm_js",
+    "prepare:core": "cd ../common && wasm-pack build --scope stadiamaps ferrostar --no-default-features --features wasm_js",
     "build": "npm run prepare:core && tsc && vite build",
-    "build:site": "npm run build && vite build --config vite.config.site.ts"
+    "build:site": "npm run build && vite build --config vite.config.site.ts",
+    "pack:core": "wasm-pack pack ../common/ferrostar/pkg",
+    "pack:all": "npm run pack:core && npm pack",
+    "publish:core": "wasm-pack publish --access public ../common/ferrostar/pkg"
   },
   "dependencies": {
+    "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
     "@stadiamaps/maplibre-search-box": "^1.0.1",
-    "ferrostar": "file:../common/ferrostar/pkg",
     "lit": "^3.1.4",
-    "maplibre-gl": "^4.5.0"
+    "maplibre-gl": "^4.5.0",
+    "vite-plugin-dts": "^4.0.3"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
     "vite": "^5.4.1",
-    "vitest": "^2.0.5"
-  }
+    "vitest": "^2.0.5",
+    "vite-plugin-wasm": "^3.3.0",
+    "vite-plugin-top-level-await": "^1.4.4"
+  },
+  "keywords": [
+    "navigation",
+    "routing",
+    "valhalla",
+    "osrm"
+  ]
 }

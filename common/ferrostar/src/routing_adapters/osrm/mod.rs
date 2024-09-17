@@ -38,10 +38,14 @@ impl RouteResponseParser for OsrmResponseParser {
     fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, ParsingError> {
         let res: RouteResponse = serde_json::from_slice(&response)?;
 
-        res.routes
-            .iter()
-            .map(|route| Route::from_osrm(route, &res.waypoints, self.polyline_precision))
-            .collect::<Result<Vec<_>, _>>()
+        if res.code == "Ok" {
+            res.routes
+                .iter()
+                .map(|route| Route::from_osrm(route, &res.waypoints, self.polyline_precision))
+                .collect::<Result<Vec<_>, _>>()
+        } else {
+            Err(ParsingError::InvalidStatusCode { code: res.code })
+        }
     }
 }
 

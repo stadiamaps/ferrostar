@@ -1,6 +1,10 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+function roundToNearest(value: number, unit: number): number {
+  return Math.round(value / unit) * unit
+}
+
 @customElement("arrival-view")
 export class ArrivalView extends LitElement {
   @property()
@@ -19,7 +23,7 @@ export class ArrivalView extends LitElement {
       }
 
       .arrival-text {
-        font-size: x-large;
+        font-size: medium;
         margin: 0 15px;
         white-space: nowrap;
       }
@@ -36,13 +40,34 @@ export class ArrivalView extends LitElement {
   }
 
   getDistanceRemaining(meters: number) {
-    return `${Math.round(meters).toLocaleString()}m`;
+    // TODO: Consider extracting this to Rust; Kotlin has the same logic
+    if (meters > 1_000) {
+      let value = meters / 1_000;
+
+      if (value > 10_000) {
+        value = roundToNearest(value, 1);
+      } else {
+        value = roundToNearest(value, 0.1);
+      }
+
+      return `${value.toLocaleString()}km`
+    } else {
+      let value;
+      if (meters > 100) {
+        value = roundToNearest(meters, 100);
+      } else if (meters > 10) {
+        value = roundToNearest(meters, 10);
+      } else {
+        value = roundToNearest(meters, 5);
+      }
+
+      return `${value.toLocaleString()}m`
+    }
   }
 
   getDurationRemaining(seconds: number) {
     const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}m ${remainingSeconds}s`;
+    return `${minutes}m`;
   }
 
   render() {
@@ -50,8 +75,8 @@ export class ArrivalView extends LitElement {
       return html`
         <div class="arrival-view-card">
           <p class="arrival-text">${this.getArrivalTime(this.tripState.Navigating.progress.durationRemaining)}</p>
-          <p class="arrival-text">${this.getDistanceRemaining(this.tripState.Navigating.progress.distanceRemaining)}</p>
           <p class="arrival-text">${this.getDurationRemaining(this.tripState.Navigating.progress.durationRemaining)}</p>
+          <p class="arrival-text">${this.getDistanceRemaining(this.tripState.Navigating.progress.distanceRemaining)}</p>
         </div>
       `;
     }

@@ -157,7 +157,7 @@ pub struct BannerInstruction {
 pub struct VoiceInstruction {
     pub announcement: String,
     pub ssml_announcement: Option<String>,
-    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    /// How far (in meters) from the upcoming maneuver the instruction should be announced
     pub distance_along_geometry: f64,
 }
 

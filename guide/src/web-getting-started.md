@@ -12,32 +12,26 @@ We'll cover the "batteries included" approach, but flag areas for customization 
 
 ### Installing with `npm`
 
-NOTE: Currently you need to build the package locally.
-We intend to publish to npmjs.com very soon.
-
-In your web app, you can add the Ferrostar NPM package as a dependency.
-You will need to install [Rust](https://www.rust-lang.org/) and `wasm-pack` to build the NPM package.
+No surprises; just install with `npm` or any similar package manager.
 
 ```shell
-cargo install wasm-pack
+npm install @stadiamaps/ferrostar-webcomponents
 ```
 
-Head to the local path where you have checked out Ferrostar,
-go to the `web` directory, and build the module:
+### Vite Setup
 
-```shell
-npm install && npm run build
-```
+Vite currently has a few bundling issues with npm packages leveraging WASM.
+We are hopeful that the [ES module integration proposal for WebAssembly](https://github.com/WebAssembly/esm-integration)
+is eventually finalized and widely accepted,
+but in the meantime there are some integration pains.
 
-Then, in your project, install the Ferrostar package using the local path:
-
-```shell
-npm install /path/to/ferrostar/web
-```
+We currently recommend using [`vite-plugin-wasm`](https://github.com/Menci/vite-plugin-wasm?tab=readme-ov-file).
+Add `vite-plugin-wasm` and `vite-plugin-top-level-await` to your `devDependencies`.
+Then add `wasm()` and `topLevelAwait()` to the `plugins` section of your Vite config.
 
 ### Using unpkg
 
-TODO after publishing to npm.
+TODO
 
 ## Add Ferrostar web components to your web app
 
@@ -46,21 +40,20 @@ to ensure maximum compatibility across frontend frameworks.
 You can import the components just like other things you’re used to in JavaScript.
 
 ```javascript
-import { FerrostarCore, BrowserLocationProvider } from "ferrostar-components";
+import { FerrostarMap, BrowserLocationProvider } from "@stadiamaps/ferrostar-components";
 ```
 
-## Configure the `<ferrostar-core>` component
+## Configure the `<ferrostar-map>` component
 
 Now you can use Ferrostar in your HTML like this:
 
 ```html
-<ferrostar-core
-  id="core"
+<ferrostar-map
+  id="ferrostar"
   valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
   styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
   profile="bicycle"
-  useIntegratedSearchBox="true"
-></ferrostar-core>
+></ferrostar-map>
 ```
 
 Here we have used Stadia Maps URLs, which should work without authentication for local development.
@@ -69,10 +62,10 @@ for network deployment details; you can start with a free account.)
 
 See the [vendors appendix](./vendors.md) for a list of other compatible vendors.
 
-`<ferrostar-core>`  additionally requires setting some CSS manually, or it will be invisible!
+`<ferrostar-map>`  additionally requires setting some CSS manually, or it will be invisible!
 
 ```css
-ferrostar-core {
+ferrostar-map {
   display: block;
   width: 100%;
   height: 100%;
@@ -83,7 +76,7 @@ That’s all you need to get started!
 
 ### Configuration explained
 
-`<ferrostar-core>` provides a few properties to configure.
+`<ferrostar-map>` provides a few properties to configure.
 Here are the most important ones:
 
 - `valhallaEndpointUrl`: The Valhalla routing endpoint to use. You can use any reasonably up-to-date Valhalla server, including your own. See [vendors](./vendor.md#routing) for a list of known compatible vendors.
@@ -93,6 +86,37 @@ Here are the most important ones:
 - `useVoiceGuidance`: Enable or disable voice guidance.
 
 NOTE: `useIntegratedSearchBox` and `useVoiceGuidance` are disabled by default. Set them to any value to enable them.
+
+If you haven’t worked with web components before,
+one quick thing to understand is that the only thing you can configure
+using *pure HTML* are string attributes.
+Rich properties of any other type will not be properly passed through
+if you are specifying HTML attributes!
+If you’re using a vanilla framework, you will need to get the DOM object
+and then set properties with JavaScript like so:
+
+```javascript
+const ferrostar = document.getElementById("ferrostar");
+
+ferrostar.center = {lng: -122.42, lat: 37.81};
+ferrostar.zoom = 18;
+ferrostar.costingOptions = { bicycle: { use_roads: 0.2 } };
+```
+
+Other frameworks, like Vue, have more native support for web components.
+In Vue, you can write “markup” in your components like this!
+
+```javascript
+<ferrostar-web
+  id="ferrostar"
+  valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
+  styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
+  profile="bicycle"
+  :center="{lng: -122.42, lat: 37.81}"
+  :zoom=18
+  :useIntegratedSearchBox=true
+></ferrostar-web>
+```
 
 NOTE: The JavaScript API is currently limited to Valhalla,
 but support for arbitrary providers (like we already have on iOS and Android)

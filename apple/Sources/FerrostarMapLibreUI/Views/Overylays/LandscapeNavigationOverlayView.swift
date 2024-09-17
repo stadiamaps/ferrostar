@@ -47,7 +47,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var body: some View {
         HStack {
             VStack {
-                if case let .navigating(_, _, _, progress: progress, _, visualInstruction: visualInstruction,
+                if case let .navigating(_, _, _, _, progress: progress, _, visualInstruction: visualInstruction,
                                         _) = navigationState?.tripState,
                     let visualInstruction
                 {
@@ -61,7 +61,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
 
                 Spacer()
 
-                if case let .navigating(_, _, _, progress: progress, _, _, _) = navigationState?.tripState {
+                if case let .navigating(_, _, _, _, progress: progress, _, _, _) = navigationState?.tripState {
                     ArrivalView(
                         progress: progress,
                         onTapExit: onTapExit
