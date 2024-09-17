@@ -188,7 +188,8 @@ class FerrostarCoreTest {
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
     val routes =
         core.getRoutes(
             initialLocation =

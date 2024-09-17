@@ -159,7 +159,11 @@ final class FerrostarCoreTests: XCTestCase {
         let core = FerrostarCore(
             routeAdapter: mockPOSTRouteAdapter,
             locationProvider: SimulatedLocationProvider(),
-            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            navigationControllerConfig: .init(
+                stepAdvance: .manual,
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
             networkSession: mockSession
         )
 
@@ -335,8 +339,8 @@ final class FerrostarCoreTests: XCTestCase {
 
             func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route]) {
                 XCTAssert(core.state?
-                    .isCalculatingNewRoute == true) // We are still calculating until this method completes
-                XCTAssert(!routes.isEmpty)
+                    .isCalculatingNewRoute == true, "Expected to be calculating new route") // We are still calculating until this method completes
+                XCTAssert(!routes.isEmpty, "Expected to receive at least one route")
                 loadedAltRoutesExp.fulfill()
             }
         }
@@ -373,7 +377,7 @@ final class FerrostarCoreTests: XCTestCase {
         await fulfillment(of: [routeDeviationCallbackExp], timeout: 1.0)
         await fulfillment(of: [loadedAltRoutesExp], timeout: 1.0)
 
-        XCTAssert(core.state?.isCalculatingNewRoute == false)
+        XCTAssert(core.state?.isCalculatingNewRoute == false, "Expected to no longer be calculating a new route")
     }
 
     // TODO: Various location services failure modes (need special mocks to simulate these)
