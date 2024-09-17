@@ -5,7 +5,7 @@ import PackageDescription
 
 let binaryTarget: Target
 let maplibreSwiftUIDSLPackage: Package.Dependency
-let useLocalFramework = true
+let useLocalFramework = false
 let useLocalMapLibreSwiftUIDSL = false
 
 if useLocalFramework {
@@ -17,7 +17,7 @@ if useLocalFramework {
     )
 } else {
     let releaseTag = "0.11.0"
-    let releaseChecksum = "cc959191f3d066f628264c103e5ea0c3544664ffd0e61907e082d7f1a4d8c5d2"
+    let releaseChecksum = "f53424814fadec1f68104e4fcb8a364d3ab15bf4904ca571e56cbace436281eb"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar-rs.xcframework.zip",
