@@ -10,6 +10,12 @@ Apple has some helpful [documentation](https://developer.apple.com/documentation
 You can search for the repository via its URL:
 `https://github.com/stadiamaps/ferrostar`.
 
+Unless you are sure you know what you’re doing, you should use a tag (rather than a branch)
+and update along with releases.
+Since auto-generated bindings have to be checked in to source control
+(due to how SPM works),
+it’s possible to have intra-release breakage if you track `master`.
+
 ## Configure location services
 
 To access the user’s real location,

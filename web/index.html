@@ -32,6 +32,8 @@
 
     <script type="module">
       import { FerrostarMap, SimulatedLocationProvider, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
+      import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
+      import searchBoxStyle from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
 
       // TODO: type + use TypeScript enum
       const config = {
@@ -47,14 +49,33 @@
             maxAcceptableDeviation: 10.0,
           },
         },
+        snappedLocationCourseFiltering: "Raw"
       };
 
       async function onload() {
+        const searchBox = new MapLibreSearchControl({
+          onResultSelected: async (feature) => {
+            await ferrostar.startNavigationFromSearch(feature.geometry.coordinates);
+          },
+        });
+
         const ferrostar = document.getElementById("ferrostar");
 
         ferrostar.center = {lng: -122.42, lat: 37.81};
         ferrostar.zoom = 18;
         ferrostar.costingOptions = { bicycle: { use_roads: 0.2 } };
+        ferrostar.customStyles = searchBoxStyle;
+        ferrostar.geolocateOnLoad = false;
+
+        ferrostar.configureMap = (map) => {
+          map.addControl(searchBox, "top-left");
+        };
+        ferrostar.onNavigationStart = (map) => {
+          map.removeControl(searchBox);
+        };
+        ferrostar.onNavigationStop = (map) => {
+          map.addControl(searchBox, "top-left");
+        };
 
         const simulateNavigationButton = document.getElementById("simulate");
 

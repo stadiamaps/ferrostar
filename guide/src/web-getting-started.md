@@ -82,10 +82,13 @@ Here are the most important ones:
 - `valhallaEndpointUrl`: The Valhalla routing endpoint to use. You can use any reasonably up-to-date Valhalla server, including your own. See [vendors](./vendor.md#routing) for a list of known compatible vendors.
 - `httpClient`: You can set your own fetch-compatible HTTP client to make requests to the routing API (ex: Valhalla).
 - `costingOptions`: You can set the costing options for the route provider (ex: Valhalla JSON options).
-- `useIntegratedSearchBox`: Ferrostar web includes a search box powered by Stadia Maps, but you can disable this and replace with your own.
-- `useVoiceGuidance`: Enable or disable voice guidance.
-
-NOTE: `useIntegratedSearchBox` and `useVoiceGuidance` are disabled by default. Set them to any value to enable them.
+- `configureMap`: Configures the map on first load. This lets you customize the UI, add MapLibre map controls, etc. on load.
+- `onNavigationStart`: Callback when navigation starts.
+- `onNavigationStop`: Callback when navigation ends.
+- `customStyles`: Custom CSS to load (the component uses a scoped shadow DOM; use this to load external styles).
+- `useVoiceGuidance`: Enable voice guidance (default: `false`).
+- `geolocateOnLoad`: Geolocate the user on load and zoom the map to their location (default: `true`; you probably want this unless you are simulating locations for testing).
+- `customStyles`: Styles which will apply inside the component (ex: for MapLibre plugins).
 
 If you haven’t worked with web components before,
 one quick thing to understand is that the only thing you can configure
@@ -114,7 +117,8 @@ In Vue, you can write “markup” in your components like this!
   profile="bicycle"
   :center="{lng: -122.42, lat: 37.81}"
   :zoom=18
-  :useIntegratedSearchBox=true
+  :useVoiceGuidance=true
+  :geolocateOnLoad=true
 ></ferrostar-web>
 ```
 
