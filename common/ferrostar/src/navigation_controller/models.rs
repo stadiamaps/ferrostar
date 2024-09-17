@@ -80,17 +80,18 @@ pub enum StepAdvanceStatus {
     EndOfRoute,
 }
 
+/// Controls filtering/post-processing of user course by the [`NavigationController`].
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
-pub enum SnapCourseTo {
+pub enum CourseFiltering {
     /// Snap the user's course to the current step's linestring using the next index in the step's geometry.
     ///
-    /// TODO: We could make this more flexible by allowing the user to specify number of indices to average, etc.
-    RouteCourse,
+    // TODO: We could make this more flexible by allowing the user to specify number of indices to average, etc.
+    SnapToRoute,
 
-    /// Use the raw course from the user's location, no snapping.
-    NoSnapping,
+    /// Use the raw course as reported by the location provider with no processing.
+    Raw,
 }
 
 /// The step advance mode describes when the current maneuver has been successfully completed,
@@ -131,7 +132,13 @@ pub enum StepAdvanceMode {
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 pub struct NavigationControllerConfig {
+    /// Configures when navigation advances to the next step in the route.
     pub step_advance: StepAdvanceMode,
+    /// Configures when the user is deemed to be off course.
+    ///
+    /// NOTE: This is distinct from the action that is taken.
+    /// It is only the determination that the user has deviated from the expected route.
     pub route_deviation_tracking: RouteDeviationTracking,
-    pub snap_course: SnapCourseTo,
+    /// Configures how the heading component of the snapped location is reported in [`TripState`].
+    pub snapped_location_course filtering: CourseFiltering,
 }
