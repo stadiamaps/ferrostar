@@ -1,4 +1,4 @@
-package com.rallista.googleplayservices
+package com.stadiamaps.ferrostar.googleplayservices
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,9 +12,9 @@ import com.google.android.gms.location.Priority
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.LocationUpdateListener
 import com.stadiamaps.ferrostar.core.toUserLocation
-import java.util.concurrent.Executor
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.UserLocation
+import java.util.concurrent.Executor
 
 class FusedLocationProvider(
     context: Context,
@@ -36,9 +36,9 @@ class FusedLocationProvider(
 
   @SuppressLint("MissingPermission")
   override fun addListener(listener: LocationUpdateListener, executor: Executor) {
-    Log.d(TAG, "Adding listener")
+      Log.d(TAG, "Adding listener")
     if (listeners.contains(listener)) {
-      Log.d(TAG, "Listener already added")
+        Log.d(TAG, "Listener already added")
       return
     }
 
@@ -51,7 +51,8 @@ class FusedLocationProvider(
         LocationRequest.Builder(1000L).setPriority(Priority.PRIORITY_HIGH_ACCURACY).build()
 
     fusedLocationProviderClient.requestLocationUpdates(
-        locationRequest, locationListener, Looper.getMainLooper())
+        locationRequest, locationListener, Looper.getMainLooper()
+    )
   }
 
   override fun removeListener(listener: LocationUpdateListener) {

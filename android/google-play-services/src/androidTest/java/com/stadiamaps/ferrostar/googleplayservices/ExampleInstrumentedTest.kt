@@ -1,4 +1,4 @@
-package com.rallista.googleplayservices
+package com.stadiamaps.ferrostar.googleplayservices
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -17,6 +17,6 @@ class ExampleInstrumentedTest {
   fun useAppContext() {
     // Context of the app under test.
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    assertEquals("com.rallista.googleplayservices.test", appContext.packageName)
+    assertEquals("com.stadiamaps.ferrostar.googleplayservices.test", appContext.packageName)
   }
 }

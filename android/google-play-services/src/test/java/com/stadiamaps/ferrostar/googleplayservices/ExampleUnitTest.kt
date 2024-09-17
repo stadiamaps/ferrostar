@@ -1,4 +1,4 @@
-package com.rallista.googleplayservices
+package com.stadiamaps.ferrostar.googleplayservices
 
 import org.junit.Assert.*
 import org.junit.Test
