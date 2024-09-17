@@ -32,7 +32,7 @@ import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
  *
  * TODO: This function is attempting to optimize the map controls for many screen sizes, system
  *   bars, and orientations. We should remain open to feedback for specific cases.
- * TODO: Remove this suppress lint.
+ * TODO: Remove this suppress lint w/ https://issuetracker.google.com/issues/349411310
  */
 @SuppressLint("ProduceStateDoesNotAssignValue")
 @Composable
