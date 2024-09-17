@@ -24,6 +24,7 @@ import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.Uuid
 import uniffi.ferrostar.Waypoint
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
@@ -106,7 +107,7 @@ class FerrostarCore(
 
   // Maintains a set of utterance IDs which have been seen previously.
   // This helps us maintain the guarantee that the observer won't see the same one twice.
-  private val _queuedUtteranceIds: MutableSet<String> = mutableSetOf()
+  private val _queuedUtteranceIds: MutableSet<Uuid> = mutableSetOf()
 
   var isCalculatingNewRoute: Boolean = false
     private set

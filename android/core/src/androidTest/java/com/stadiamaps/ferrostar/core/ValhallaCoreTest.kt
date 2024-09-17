@@ -23,6 +23,7 @@ import okhttp3.mock.rule
 import okhttp3.mock.url
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
@@ -252,7 +253,8 @@ class ValhallaCoreTest {
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
 
     return runTest {
       val routes =
@@ -299,7 +301,8 @@ class ValhallaCoreTest {
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None),
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW),
             costingOptions = mapOf("auto" to mapOf("useTolls" to 0)))
 
     return runTest {

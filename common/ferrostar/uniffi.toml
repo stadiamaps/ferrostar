@@ -1,0 +1,12 @@
+[bindings.swift.custom_types.Uuid]
+type_name = "UUID"
+into_custom = "UUID(uuidString: {})!"
+from_custom = "{}.uuidString"
+
+[bindings.kotlin.custom_types.Uuid]
+# Eventually we can transition to the Kotlin stdlib type,
+# but this was only just added in Kotlin 2.0.20 (Aug 2024) and is marked experimental.
+# See https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.uuid/-uuid/.
+type_name = "java.util.UUID"
+into_custom = "java.util.UUID.fromString({})"
+from_custom = "{}.toString()"

@@ -7,8 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.maplibre.compose.camera.CameraState
 import com.maplibre.compose.camera.MapViewCamera
@@ -33,8 +38,10 @@ fun PortraitNavigationOverlayView(
     navigationCamera: MapViewCamera = navigationMapViewCamera(),
     viewModel: NavigationViewModel,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    arrivalViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
     onTapExit: (() -> Unit)? = null
 ) {
+  val density = LocalDensity.current
   val uiState by viewModel.uiState.collectAsState()
 
   Column(modifier) {
@@ -55,7 +62,15 @@ fun PortraitNavigationOverlayView(
         onClickCenter = { camera.value = navigationCamera },
     )
 
-    uiState.progress?.let { progress -> ArrivalView(progress = progress, onTapExit = onTapExit) }
+    uiState.progress?.let { progress ->
+      ArrivalView(
+          modifier =
+              Modifier.onSizeChanged {
+                arrivalViewSize.value = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
+              },
+          progress = progress,
+          onTapExit = onTapExit)
+    }
   }
 }
 
