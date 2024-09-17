@@ -23,7 +23,7 @@ class FusedLocationProvider(
 ) : LocationProvider {
 
   companion object {
-    private const val TAG = "GooglePlayServicesLocationProvider"
+    private const val TAG = "FusedLocationProvider"
   }
 
   override var lastLocation: UserLocation? = null
