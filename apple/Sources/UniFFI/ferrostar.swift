@@ -2991,7 +2991,7 @@ extension ModelError: Foundation.LocalizedError {
 public enum ParsingError {
     case ParseError(error: String)
     case InvalidStatusCode(code: String)
-    case UnknownError
+    case UnknownParsingError
 }
 
 public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
@@ -3006,7 +3006,7 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
         case 2: return try .InvalidStatusCode(
                 code: FfiConverterString.read(from: &buf)
             )
-        case 3: return .UnknownError
+        case 3: return .UnknownParsingError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3021,7 +3021,7 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(2))
             FfiConverterString.write(code, into: &buf)
 
-        case .UnknownError:
+        case .UnknownParsingError:
             writeInt(&buf, Int32(3))
         }
     }
@@ -3180,6 +3180,7 @@ public func FfiConverterTypeRouteDeviationTracking_lower(_ value: RouteDeviation
 
 public enum RouteRequest {
     case httpPost(url: String, headers: [String: String], body: Data)
+    case httpGet(url: String, headers: [String: String])
 }
 
 public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
@@ -3194,6 +3195,11 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
                 body: FfiConverterData.read(from: &buf)
             )
 
+        case 2: return try .httpGet(
+                url: FfiConverterString.read(from: &buf),
+                headers: FfiConverterDictionaryStringString.read(from: &buf)
+            )
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3205,6 +3211,11 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
             FfiConverterString.write(url, into: &buf)
             FfiConverterDictionaryStringString.write(headers, into: &buf)
             FfiConverterData.write(body, into: &buf)
+
+        case let .httpGet(url, headers):
+            writeInt(&buf, Int32(2))
+            FfiConverterString.write(url, into: &buf)
+            FfiConverterDictionaryStringString.write(headers, into: &buf)
         }
     }
 }
@@ -3222,7 +3233,7 @@ extension RouteRequest: Equatable, Hashable {}
 public enum RoutingRequestGenerationError {
     case NotEnoughWaypoints
     case JsonError
-    case UnknownError
+    case UnknownRequestGenerationError
 }
 
 public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuffer {
@@ -3233,7 +3244,7 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
         switch variant {
         case 1: return .NotEnoughWaypoints
         case 2: return .JsonError
-        case 3: return .UnknownError
+        case 3: return .UnknownRequestGenerationError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3246,7 +3257,7 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
         case .JsonError:
             writeInt(&buf, Int32(2))
 
-        case .UnknownError:
+        case .UnknownRequestGenerationError:
             writeInt(&buf, Int32(3))
         }
     }

@@ -28,13 +28,13 @@ pub enum RoutingRequestGenerationError {
         feature = "std",
         error("An unknown error generating a request was raised in foreign code.")
     )]
-    UnknownError,
+    UnknownRequestGenerationError,
 }
 
 #[cfg(feature = "uniffi")]
 impl From<uniffi::UnexpectedUniFFICallbackError> for RoutingRequestGenerationError {
     fn from(_: uniffi::UnexpectedUniFFICallbackError) -> RoutingRequestGenerationError {
-        RoutingRequestGenerationError::UnknownError
+        RoutingRequestGenerationError::UnknownRequestGenerationError
     }
 }
 
@@ -66,13 +66,13 @@ pub enum ParsingError {
         feature = "std",
         error("An unknown error parsing a response was raised in foreign code.")
     )]
-    UnknownError,
+    UnknownParsingError,
 }
 
 #[cfg(feature = "uniffi")]
 impl From<uniffi::UnexpectedUniFFICallbackError> for ParsingError {
     fn from(_: uniffi::UnexpectedUniFFICallbackError) -> ParsingError {
-        ParsingError::UnknownError
+        ParsingError::UnknownParsingError
     }
 }
 
