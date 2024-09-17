@@ -131,6 +131,7 @@ fun DemoNavigationScene(
   } else {
     // Loading indicator
     Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
           Text(text = "Calculating route...")

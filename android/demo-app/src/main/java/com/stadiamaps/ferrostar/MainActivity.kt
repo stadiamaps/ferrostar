@@ -1,15 +1,14 @@
 package com.stadiamaps.ferrostar
 
+import android.os.Build
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import com.stadiamaps.ferrostar.core.AndroidTtsStatusListener
 import com.stadiamaps.ferrostar.support.initialSimulatedLocation
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
@@ -48,12 +47,19 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
     AppModule.locationProvider.lastLocation = initialSimulatedLocation
     AppModule.locationProvider.warpFactor = 2u
 
+    // Edge to edge (this will be default in Android 15)
+    // See https://developer.android.com/codelabs/edge-to-edge#0
+    // How to: https://developer.android.com/develop/ui/compose/layouts/insets#insets-setup
+    // IMPORTANT: If you use installSplashScreen(), you must call it before enableEdgeToEdge().
+    enableEdgeToEdge()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      window.isNavigationBarContrastEnforced = false
+    }
+
     setContent {
       FerrostarTheme {
         // A surface container using the 'background' color from the theme
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          DemoNavigationScene(savedInstanceState)
-        }
+        Surface { DemoNavigationScene(savedInstanceState) }
       }
     }
   }
