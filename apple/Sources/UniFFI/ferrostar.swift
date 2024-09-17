@@ -1748,18 +1748,41 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 }
 
 public struct NavigationControllerConfig {
+    /**
+     * Configures when navigation advances to the next step in the route.
+     */
     public var stepAdvance: StepAdvanceMode
+    /**
+     * Configures when the user is deemed to be off course.
+     *
+     * NOTE: This is distinct from the action that is taken.
+     * It is only the determination that the user has deviated from the expected route.
+     */
     public var routeDeviationTracking: RouteDeviationTracking
-    public var snapCourse: SnapCourseTo
+    /**
+     * Configures how the heading component of the snapped location is reported in [`TripState`].
+     */
+    public var snappedLocationCourseFiltering: CourseFiltering
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking,
-                snapCourse: SnapCourseTo)
-    {
+    public init(
+        /**
+         * Configures when navigation advances to the next step in the route.
+         */ stepAdvance: StepAdvanceMode,
+        /**
+            * Configures when the user is deemed to be off course.
+            *
+            * NOTE: This is distinct from the action that is taken.
+            * It is only the determination that the user has deviated from the expected route.
+            */ routeDeviationTracking: RouteDeviationTracking,
+        /**
+            * Configures how the heading component of the snapped location is reported in [`TripState`].
+            */ snappedLocationCourseFiltering: CourseFiltering
+    ) {
         self.stepAdvance = stepAdvance
         self.routeDeviationTracking = routeDeviationTracking
-        self.snapCourse = snapCourse
+        self.snappedLocationCourseFiltering = snappedLocationCourseFiltering
     }
 }
 
@@ -1768,14 +1791,14 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
         try NavigationControllerConfig(
             stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf),
             routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf),
-            snapCourse: FfiConverterTypeSnapCourseTo.read(from: &buf)
+            snappedLocationCourseFiltering: FfiConverterTypeCourseFiltering.read(from: &buf)
         )
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
         FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
-        FfiConverterTypeSnapCourseTo.write(value.snapCourse, into: &buf)
+        FfiConverterTypeCourseFiltering.write(value.snappedLocationCourseFiltering, into: &buf)
     }
 }
 
@@ -2631,6 +2654,59 @@ public func FfiConverterTypeWaypoint_lower(_ value: Waypoint) -> RustBuffer {
     FfiConverterTypeWaypoint.lower(value)
 }
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Controls filtering/post-processing of user course by the [`NavigationController`].
+ */
+
+public enum CourseFiltering {
+    /**
+     * Snap the user's course to the current step's linestring using the next index in the step's geometry.
+
+     */
+    case snapToRoute
+    /**
+     * Use the raw course as reported by the location provider with no processing.
+     */
+    case raw
+}
+
+public struct FfiConverterTypeCourseFiltering: FfiConverterRustBuffer {
+    typealias SwiftType = CourseFiltering
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CourseFiltering {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .snapToRoute
+
+        case 2: return .raw
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: CourseFiltering, into buf: inout [UInt8]) {
+        switch value {
+        case .snapToRoute:
+            writeInt(&buf, Int32(1))
+
+        case .raw:
+            writeInt(&buf, Int32(2))
+        }
+    }
+}
+
+public func FfiConverterTypeCourseFiltering_lift(_ buf: RustBuffer) throws -> CourseFiltering {
+    try FfiConverterTypeCourseFiltering.lift(buf)
+}
+
+public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> RustBuffer {
+    FfiConverterTypeCourseFiltering.lower(value)
+}
+
+extension CourseFiltering: Equatable, Hashable {}
+
 public enum InstantiationError {
     case JsonError
 }
@@ -3230,57 +3306,6 @@ extension SimulationError: Foundation.LocalizedError {
         String(reflecting: self)
     }
 }
-
-// Note that we don't yet support `indirect` for enums.
-// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
-
-public enum SnapCourseTo {
-    /**
-     * Snap the user's course to the current step's linestring using the next index in the step's geometry.
-     *
-     * TODO: We could make this more flexible by allowing the user to specify number of indices to average, etc.
-     */
-    case routeCourse
-    /**
-     * Use the raw course from the user's location, no snapping.
-     */
-    case noSnapping
-}
-
-public struct FfiConverterTypeSnapCourseTo: FfiConverterRustBuffer {
-    typealias SwiftType = SnapCourseTo
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SnapCourseTo {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        case 1: return .routeCourse
-
-        case 2: return .noSnapping
-
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: SnapCourseTo, into buf: inout [UInt8]) {
-        switch value {
-        case .routeCourse:
-            writeInt(&buf, Int32(1))
-
-        case .noSnapping:
-            writeInt(&buf, Int32(2))
-        }
-    }
-}
-
-public func FfiConverterTypeSnapCourseTo_lift(_ buf: RustBuffer) throws -> SnapCourseTo {
-    try FfiConverterTypeSnapCourseTo.lift(buf)
-}
-
-public func FfiConverterTypeSnapCourseTo_lower(_ value: SnapCourseTo) -> RustBuffer {
-    FfiConverterTypeSnapCourseTo.lower(value)
-}
-
-extension SnapCourseTo: Equatable, Hashable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.

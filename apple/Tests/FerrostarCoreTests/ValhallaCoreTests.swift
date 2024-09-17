@@ -21,7 +21,7 @@ final class ValhallaCoreTests: XCTestCase {
             navigationControllerConfig: .init(
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
-                snapCourse: .noSnapping
+                snappedLocationCourseFiltering: .raw
             ),
             networkSession: mockSession
         )

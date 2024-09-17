@@ -296,11 +296,12 @@ impl NavigationController {
             index_of_closest_segment_origin(snapped_user_location, &line);
 
         // Snap the user's course to the line if the configuration specifies it.
-        let snapped_with_course: UserLocation = match &self.config.snap_course {
-            models::SnapCourseTo::RouteCourse => {
+        let snapped_with_course: UserLocation = match &self.config.snapped_location_course_filtering
+        {
+            models::CourseFiltering::SnapToRoute => {
                 apply_snapped_course(snapped_user_location, current_step_geometry_index, line)
             }
-            models::SnapCourseTo::NoSnapping => snapped_user_location,
+            models::CourseFiltering::Raw => snapped_user_location,
         };
 
         (current_step_geometry_index, snapped_with_course)

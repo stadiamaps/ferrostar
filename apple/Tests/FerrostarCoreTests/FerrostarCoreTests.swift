@@ -103,7 +103,7 @@ final class FerrostarCoreTests: XCTestCase {
             navigationControllerConfig: .init(
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
-                snapCourse: .noSnapping
+                snappedLocationCourseFiltering: .raw
             ),
             networkSession: mockSession
         )
@@ -141,7 +141,7 @@ final class FerrostarCoreTests: XCTestCase {
             navigationControllerConfig: .init(
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
-                snapCourse: .noSnapping
+                snappedLocationCourseFiltering: .raw
             ),
             networkSession: mockSession
         )
@@ -178,7 +178,7 @@ final class FerrostarCoreTests: XCTestCase {
             navigationControllerConfig: .init(
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
-                snapCourse: .noSnapping
+                snappedLocationCourseFiltering: .raw
             ),
             costingOptions: ["low_speed_vehicle": ["vehicle_type": "golf_cart"]],
             networkSession: mockSession
@@ -210,7 +210,7 @@ final class FerrostarCoreTests: XCTestCase {
             navigationControllerConfig: .init(
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
-                snapCourse: .noSnapping
+                snappedLocationCourseFiltering: .raw
             ),
             networkSession: mockSession
         )
@@ -251,7 +251,7 @@ final class FerrostarCoreTests: XCTestCase {
             navigationControllerConfig: .init(
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
-                snapCourse: .noSnapping
+                snappedLocationCourseFiltering: .raw
             ),
             networkSession: mockSession
         )
@@ -307,7 +307,7 @@ final class FerrostarCoreTests: XCTestCase {
                 // Pretend that the user is always off route
                 .offRoute(deviationFromRouteLine: 42)
             }),
-            snapCourse: .noSnapping
+            snappedLocationCourseFiltering: .raw
         )
 
         try core.startNavigation(route: routes.first!, config: config)

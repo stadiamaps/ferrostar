@@ -140,5 +140,5 @@ pub struct NavigationControllerConfig {
     /// It is only the determination that the user has deviated from the expected route.
     pub route_deviation_tracking: RouteDeviationTracking,
     /// Configures how the heading component of the snapped location is reported in [`TripState`].
-    pub snapped_location_course filtering: CourseFiltering,
+    pub snapped_location_course_filtering: CourseFiltering,
 }
