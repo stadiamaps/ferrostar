@@ -339,7 +339,8 @@ final class FerrostarCoreTests: XCTestCase {
 
             func core(_ core: FerrostarCore, loadedAlternateRoutes routes: [Route]) {
                 XCTAssert(core.state?
-                    .isCalculatingNewRoute == true, "Expected to be calculating new route") // We are still calculating until this method completes
+                    .isCalculatingNewRoute == true,
+                    "Expected to be calculating new route") // We are still calculating until this method completes
                 XCTAssert(!routes.isEmpty, "Expected to receive at least one route")
                 loadedAltRoutesExp.fulfill()
             }
