@@ -314,6 +314,7 @@ export class FerrostarMap extends LitElement {
           maxAcceptableDeviation: 10.0,
         },
       },
+      snappedLocationCourseFiltering: "Raw",
     };
 
     // Start the navigation
