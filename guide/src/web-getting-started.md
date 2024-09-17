@@ -88,6 +88,7 @@ Here are the most important ones:
 - `customStyles`: Custom CSS to load (the component uses a scoped shadow DOM; use this to load external styles).
 - `useVoiceGuidance`: Enable voice guidance (default: `false`).
 - `geolocateOnLoad`: Geolocate the user on load and zoom the map to their location (default: `true`; you probably want this unless you are simulating locations for testing).
+- `customStyles`: Styles which will apply inside the component (ex: for MapLibre plugins).
 
 If you haven’t worked with web components before,
 one quick thing to understand is that the only thing you can configure
