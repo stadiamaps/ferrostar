@@ -23,6 +23,9 @@ dependencies {
     implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
     implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
 
+    // Optional - if using Google Play Service's FusedLocation
+    implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"
+
     // okhttp3
     implementation platform("com.squareup.okhttp3:okhttp-bom:4.11.0")
     implementation 'com.squareup.okhttp3:okhttp'
@@ -143,6 +146,9 @@ This will typically be saved as an instance variable.
 ```kotlin
 private val locationProvider = SimulatedLocationProvider()
 ```
+
+Alternatively, you can use the `FusedLocationProvider` if your app uses Google Play Services. To make use of it, 
+you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`.
 
 Later, most likely somewhere in your activity creation code or similar,
 set a location to your desired simulation start point.
