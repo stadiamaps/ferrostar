@@ -132,7 +132,14 @@ In other cases, get a context using an appropriate method.
 locationProvider = AndroidSystemLocationProvider(context = this)
 ```
 
-#### TODO: Google Play Fused Location Client
+#### Google Play Fused Location Client
+
+Alternatively, you can use the `FusedLocationProvider` if your app uses Google Play Services. To make use of it, 
+you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`.
+
+```kotlin
+locationProvider = FusedLocationProvider(context = this)
+```
 
 #### `SimulatedLocationProvider`
 
@@ -146,9 +153,6 @@ This will typically be saved as an instance variable.
 ```kotlin
 private val locationProvider = SimulatedLocationProvider()
 ```
-
-Alternatively, you can use the `FusedLocationProvider` if your app uses Google Play Services. To make use of it, 
-you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`.
 
 Later, most likely somewhere in your activity creation code or similar,
 set a location to your desired simulation start point.
