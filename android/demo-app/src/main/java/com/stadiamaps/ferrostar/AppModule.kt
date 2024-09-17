@@ -14,9 +14,9 @@ import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
+import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
-import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.StepAdvanceMode
 
 /**

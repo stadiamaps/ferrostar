@@ -23,10 +23,10 @@ import okhttp3.mock.rule
 import okhttp3.mock.url
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
-import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
