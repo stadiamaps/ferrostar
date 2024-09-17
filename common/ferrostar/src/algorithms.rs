@@ -1,22 +1,25 @@
 //! Common spatial algorithms which are useful for navigation.
 
-use crate::navigation_controller::models::{
-    StepAdvanceMode, StepAdvanceStatus,
-    StepAdvanceStatus::{Advanced, EndOfRoute},
+use crate::{
+    models::CourseOverGround,
+    navigation_controller::models::{
+        StepAdvanceMode,
+        StepAdvanceStatus::{self, Advanced, EndOfRoute},
+    },
 };
 use crate::{
     models::{GeographicCoordinate, RouteStep, UserLocation},
     navigation_controller::models::TripProgress,
 };
 use geo::{
-    Closest, ClosestPoint, Coord, EuclideanDistance, HaversineDistance, HaversineLength,
-    LineLocatePoint, LineString, Point,
+    Closest, ClosestPoint, Coord, EuclideanDistance, GeodesicBearing, HaversineDistance,
+    HaversineLength, LineLocatePoint, LineString, Point,
 };
 
 #[cfg(test)]
 use {
     crate::navigation_controller::test_helpers::gen_dummy_route_step,
-    geo::{coord, point},
+    geo::{coord, point, CoordsIter},
     proptest::{collection::vec, prelude::*},
 };
 
@@ -24,6 +27,23 @@ use {
 use std::time::SystemTime;
 #[cfg(all(test, feature = "web-time"))]
 use web_time::SystemTime;
+
+/// Normalizes a bearing returned from several `geo` crate functions,
+/// which may be negative, into a positive unsigned integer.
+///
+/// NOTE: This function assumes that the input values are in the range -360 to +360,
+/// and does not check the inputs for validity.
+pub(crate) fn normalize_bearing(degrees: f64) -> u16 {
+    let rounded = degrees.round();
+    let normalized = if rounded < 0.0 {
+        rounded + 360.0
+    } else if rounded >= 360.0 {
+        rounded - 360.0
+    } else {
+        rounded
+    };
+    normalized.round() as u16
+}
 
 /// Get the index of the closest *segment* to the user's location within a [`LineString`].
 ///
@@ -51,6 +71,51 @@ pub fn index_of_closest_segment_origin(location: UserLocation, line: &LineString
             dist1.total_cmp(&dist2)
         })
         .map(|(index, _)| index as u64)
+}
+
+/// Get the bearing to the next point on the LineString.
+///
+/// Returns [`None`] if the index points at or past the last point in the LineString.
+fn get_bearing_to_next_point(
+    index_along_line: usize,
+    line: &LineString,
+) -> Option<CourseOverGround> {
+    let mut points = line.points().skip(index_along_line);
+
+    let current = points.next()?;
+    let next = points.next()?;
+
+    // This function may return negative bearing values, but we want to always normalize to [0, 360)
+    let degrees = normalize_bearing(current.geodesic_bearing(next));
+
+    Some(CourseOverGround {
+        degrees: degrees as u16,
+        accuracy: None,
+    })
+}
+
+/// Apply a snapped course to a user location.
+///
+/// This function snaps the course to travel along the provided line,
+/// starting from the given coordinate index along the line.
+///
+/// If the given index is None or out of bounds, the original location will be returned unmodified.
+/// `index_along_line` is optional to improve ergonomics elsewhere in the codebase,
+/// despite the API looking a little funny.
+pub fn apply_snapped_course(
+    location: UserLocation,
+    index_along_line: Option<u64>,
+    line: &LineString,
+) -> UserLocation {
+    let snapped_course =
+        index_along_line.and_then(|index| get_bearing_to_next_point(index as usize, line));
+
+    let course_over_ground = snapped_course.or(location.course_over_ground);
+
+    UserLocation {
+        course_over_ground,
+        ..location
+    }
 }
 
 /// Snaps a user location to the closest point on a route line.
@@ -664,10 +729,35 @@ proptest! {
         // We should never be able to go past the origin of the final pair
         prop_assert!(index < (coord_len - 1) as u64);
     }
+
+    #[test]
+    fn test_bearing_correction_valid_range(bearing in -360f64..360f64) {
+        let result = normalize_bearing(bearing);
+        prop_assert!(result < 360);
+    }
+
+    #[test]
+    fn test_bearing_fuzz(coords in vec(arb_coord(), 2..500), index in 0usize..1_000usize) {
+        let line = LineString::new(coords);
+        let result = get_bearing_to_next_point(index, &line);
+        if index < line.coords_count() - 1 {
+            prop_assert!(result.is_some());
+        } else {
+            prop_assert!(result.is_none());
+        }
+    }
+
+    #[test]
+    fn test_bearing_end_of_line(coords in vec(arb_coord(), 2..500)) {
+        let line = LineString::new(coords);
+        prop_assert!(get_bearing_to_next_point(line.coords_count(), &line).is_none());
+        prop_assert!(get_bearing_to_next_point(line.coords_count() - 1, &line).is_none());
+        prop_assert!(get_bearing_to_next_point(line.coords_count() - 2, &line).is_some());
+    }
 }
 
 #[cfg(test)]
-mod geom_index_tests {
+mod linestring_based_tests {
 
     use super::*;
 
@@ -714,6 +804,95 @@ mod geom_index_tests {
         // but we can never advance past n-1)
         let index = index_of_closest_segment_origin(make_user_location(10.0, 10.0), &line);
         assert_eq!(index, Some(3));
+    }
+}
+
+#[cfg(test)]
+mod bearing_snapping_tests {
+
+    use super::*;
+
+    static COORDS: [Coord; 6] = [
+        coord!(x: 0.0, y: 0.0),
+        coord!(x: 1.0, y: 1.0),
+        coord!(x: 2.0, y: 1.0),
+        coord!(x: 2.0, y: 2.0),
+        coord!(x: 2.0, y: 1.0),
+        coord!(x: 1.0, y: 1.0),
+    ];
+
+    #[test]
+    fn test_bearing_to_next_point() {
+        let line = LineString::new(COORDS.to_vec());
+
+        let bearing = get_bearing_to_next_point(0, &line);
+        assert_eq!(
+            bearing,
+            Some(CourseOverGround {
+                degrees: 45,
+                accuracy: None
+            })
+        );
+
+        let bearing = get_bearing_to_next_point(1, &line);
+        assert_eq!(
+            bearing,
+            Some(CourseOverGround {
+                degrees: 90,
+                accuracy: None
+            })
+        );
+
+        let bearing = get_bearing_to_next_point(2, &line);
+        assert_eq!(
+            bearing,
+            Some(CourseOverGround {
+                degrees: 0,
+                accuracy: None
+            })
+        );
+
+        let bearing = get_bearing_to_next_point(3, &line);
+        assert_eq!(
+            bearing,
+            Some(CourseOverGround {
+                degrees: 180,
+                accuracy: None
+            })
+        );
+
+        let bearing = get_bearing_to_next_point(4, &line);
+        assert_eq!(
+            bearing,
+            Some(CourseOverGround {
+                degrees: 270,
+                accuracy: None
+            })
+        );
+
+        // At the end
+        let bearing = get_bearing_to_next_point(5, &line);
+        assert_eq!(bearing, None);
+    }
+
+    #[test]
+    fn test_apply_snapped_course() {
+        let line = LineString::new(COORDS.to_vec());
+
+        // The value of the coordinates does not actually matter;
+        // we are testing the course snapping
+        let user_location = make_user_location(5.0, 1.0);
+
+        // Apply a course to a user location
+        let updated_location = apply_snapped_course(user_location, Some(1), &line);
+
+        assert_eq!(
+            updated_location.course_over_ground,
+            Some(CourseOverGround {
+                degrees: 90,
+                accuracy: None
+            })
+        );
     }
 }
 

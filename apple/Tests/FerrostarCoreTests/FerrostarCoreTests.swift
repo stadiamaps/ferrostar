@@ -100,7 +100,11 @@ final class FerrostarCoreTests: XCTestCase {
         let core = FerrostarCore(
             routeAdapter: routeAdapter,
             locationProvider: SimulatedLocationProvider(),
-            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            navigationControllerConfig: .init(
+                stepAdvance: .manual,
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
             networkSession: mockSession
         )
 
@@ -134,7 +138,11 @@ final class FerrostarCoreTests: XCTestCase {
         let core = FerrostarCore(
             routeAdapter: mockRouteAdapter,
             locationProvider: SimulatedLocationProvider(),
-            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            navigationControllerConfig: .init(
+                stepAdvance: .manual,
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
             networkSession: mockSession
         )
 
@@ -167,7 +175,11 @@ final class FerrostarCoreTests: XCTestCase {
             valhallaEndpointUrl: valhallaEndpointUrl,
             profile: "low_speed_vehicle",
             locationProvider: SimulatedLocationProvider(),
-            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            navigationControllerConfig: .init(
+                stepAdvance: .manual,
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
             costingOptions: ["low_speed_vehicle": ["vehicle_type": "golf_cart"]],
             networkSession: mockSession
         )
@@ -195,7 +207,11 @@ final class FerrostarCoreTests: XCTestCase {
         let core = FerrostarCore(
             customRouteProvider: mockCustomRouteProvider,
             locationProvider: SimulatedLocationProvider(),
-            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            navigationControllerConfig: .init(
+                stepAdvance: .manual,
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
             networkSession: mockSession
         )
 
@@ -232,7 +248,11 @@ final class FerrostarCoreTests: XCTestCase {
         let core = FerrostarCore(
             routeAdapter: mockRouteAdapter,
             locationProvider: locationProvider,
-            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            navigationControllerConfig: .init(
+                stepAdvance: .manual,
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
             networkSession: mockSession
         )
 
@@ -286,7 +306,8 @@ final class FerrostarCoreTests: XCTestCase {
             routeDeviationTracking: .custom(detector: { _, _, _ in
                 // Pretend that the user is always off route
                 .offRoute(deviationFromRouteLine: 42)
-            })
+            }),
+            snappedLocationCourseFiltering: .raw
         )
 
         try core.startNavigation(route: routes.first!, config: config)

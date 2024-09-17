@@ -17,6 +17,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import uniffi.ferrostar.BoundingBox
+import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
@@ -132,7 +133,8 @@ class FerrostarCoreTest {
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
 
     try {
       // Tests that the core generates a request and attempts to process it, but throws due to the
@@ -179,7 +181,8 @@ class FerrostarCoreTest {
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -229,7 +232,8 @@ class FerrostarCoreTest {
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -299,7 +303,8 @@ class FerrostarCoreTest {
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
 
     val deviationHandler = DeviationHandler()
     core.deviationHandler = deviationHandler
@@ -348,7 +353,8 @@ class FerrostarCoreTest {
                           ): RouteDeviation {
                             return RouteDeviation.OffRoute(42.0)
                           }
-                        })))
+                        }),
+            CourseFiltering.RAW))
 
     assert(foregroundServiceManager.startCalled)
     assert(deviationHandler.called)
