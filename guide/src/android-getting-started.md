@@ -23,6 +23,9 @@ dependencies {
     implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
     implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
 
+    // Optional - if using Google Play Service's FusedLocation
+    implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"
+
     // okhttp3
     implementation platform("com.squareup.okhttp3:okhttp-bom:4.11.0")
     implementation 'com.squareup.okhttp3:okhttp'
@@ -129,7 +132,27 @@ In other cases, get a context using an appropriate method.
 locationProvider = AndroidSystemLocationProvider(context = this)
 ```
 
-#### TODO: Google Play Fused Location Client
+#### Google Play Fused Location Client
+
+Alternatively, you can use the `FusedLocationProvider`
+if your app uses Google Play Services.
+This normally offers better device positioning than the default Android location provider
+on supported devices.
+To make use of it, 
+you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`
+in your Gradle dependencies block.
+
+Just as with the `AndroidSystemLocationProvider`,
+you probably need to declare it as a `lateinit var` instance variable first,
+and then initialize later once the `Context` is available.
+
+```kotlin
+// Instance variable definition
+private lateinit var locationProvider: FusedLocationProvider
+
+// Later when the activity loads and a context is avaialable
+locationProvider = FusedLocationProvider(context = this)
+```
 
 #### `SimulatedLocationProvider`
 
