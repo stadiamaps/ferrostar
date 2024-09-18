@@ -9,7 +9,8 @@ final class ValhallaCoreTests: XCTestCase {
     func testValhallaRouteParsing() async throws {
         let mockSession = MockURLSession()
         mockSession.registerMock(
-            forURL: valhallaEndpointUrl,
+            forMethod: "POST",
+            andURL: valhallaEndpointUrl,
             withData: sampleRouteData,
             andResponse: successfulJSONResponse
         )
@@ -18,7 +19,11 @@ final class ValhallaCoreTests: XCTestCase {
             valhallaEndpointUrl: valhallaEndpointUrl,
             profile: "auto",
             locationProvider: SimulatedLocationProvider(),
-            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            navigationControllerConfig: .init(
+                stepAdvance: .manual,
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
             networkSession: mockSession
         )
         let routes = try await core.getRoutes(

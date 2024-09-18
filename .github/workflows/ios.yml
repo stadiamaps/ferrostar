@@ -33,9 +33,20 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
+    - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
+      run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
+
+    - name: Commit changed files (it is easy to forget useLocalFramework in Package.swift)
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        file_pattern: 'Package.swift'
+
     - name: Build iOS XCFramework
       run: ./build-ios.sh --release
       working-directory: common
+
+    - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
+      run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
 
     - name: Commit changed files (it is easy to forget about ferrostar.swift)
       uses: stefanzweifel/git-auto-commit-action@v5

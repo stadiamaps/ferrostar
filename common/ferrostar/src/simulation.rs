@@ -38,7 +38,7 @@
 //! # }
 //! ```
 
-use crate::algorithms::trunc_float;
+use crate::algorithms::{normalize_bearing, trunc_float};
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
 use polyline::decode_polyline;
@@ -193,16 +193,13 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
     if let Some((next_coordinate, rest)) = state.remaining_locations.split_first() {
         let current_point = Point::from(state.current_location.coordinates);
         let next_point = Point::from(*next_coordinate);
-        let mut bearing = current_point.geodesic_bearing(next_point);
-        if bearing < 0.0 {
-            bearing += 360.0;
-        }
+        let bearing = normalize_bearing(current_point.geodesic_bearing(next_point));
 
         let next_location = UserLocation {
             coordinates: *next_coordinate,
             horizontal_accuracy: 0.0,
             course_over_ground: Some(CourseOverGround {
-                degrees: bearing.round() as u16,
+                degrees: bearing,
                 accuracy: None,
             }),
             timestamp: SystemTime::now(),

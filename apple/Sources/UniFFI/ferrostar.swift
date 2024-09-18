@@ -535,6 +535,9 @@ public protocol NavigationControllerProtocol: AnyObject {
      * Depending on the advancement strategy, this may be automatic.
      * For other cases, it is desirable to advance to the next step manually (ex: walking in an
      * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+     *
+     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
+     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
      */
     func advanceToNextStep(state: TripState) -> TripState
 
@@ -622,6 +625,9 @@ open class NavigationController:
      * Depending on the advancement strategy, this may be automatic.
      * For other cases, it is desirable to advance to the next step manually (ex: walking in an
      * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+     *
+     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
+     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
      */
     open func advanceToNextStep(state: TripState) -> TripState {
         try! FfiConverterTypeTripState.lift(try! rustCall {
@@ -1742,14 +1748,41 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 }
 
 public struct NavigationControllerConfig {
+    /**
+     * Configures when navigation advances to the next step in the route.
+     */
     public var stepAdvance: StepAdvanceMode
+    /**
+     * Configures when the user is deemed to be off course.
+     *
+     * NOTE: This is distinct from the action that is taken.
+     * It is only the determination that the user has deviated from the expected route.
+     */
     public var routeDeviationTracking: RouteDeviationTracking
+    /**
+     * Configures how the heading component of the snapped location is reported in [`TripState`].
+     */
+    public var snappedLocationCourseFiltering: CourseFiltering
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) {
+    public init(
+        /**
+         * Configures when navigation advances to the next step in the route.
+         */ stepAdvance: StepAdvanceMode,
+        /**
+            * Configures when the user is deemed to be off course.
+            *
+            * NOTE: This is distinct from the action that is taken.
+            * It is only the determination that the user has deviated from the expected route.
+            */ routeDeviationTracking: RouteDeviationTracking,
+        /**
+            * Configures how the heading component of the snapped location is reported in [`TripState`].
+            */ snappedLocationCourseFiltering: CourseFiltering
+    ) {
         self.stepAdvance = stepAdvance
         self.routeDeviationTracking = routeDeviationTracking
+        self.snappedLocationCourseFiltering = snappedLocationCourseFiltering
     }
 }
 
@@ -1757,13 +1790,15 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
         try NavigationControllerConfig(
             stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf),
-            routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf)
+            routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf),
+            snappedLocationCourseFiltering: FfiConverterTypeCourseFiltering.read(from: &buf)
         )
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
         FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
+        FfiConverterTypeCourseFiltering.write(value.snappedLocationCourseFiltering, into: &buf)
     }
 }
 
@@ -2619,6 +2654,59 @@ public func FfiConverterTypeWaypoint_lower(_ value: Waypoint) -> RustBuffer {
     FfiConverterTypeWaypoint.lower(value)
 }
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Controls filtering/post-processing of user course by the [`NavigationController`].
+ */
+
+public enum CourseFiltering {
+    /**
+     * Snap the user's course to the current step's linestring using the next index in the step's geometry.
+
+     */
+    case snapToRoute
+    /**
+     * Use the raw course as reported by the location provider with no processing.
+     */
+    case raw
+}
+
+public struct FfiConverterTypeCourseFiltering: FfiConverterRustBuffer {
+    typealias SwiftType = CourseFiltering
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CourseFiltering {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .snapToRoute
+
+        case 2: return .raw
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: CourseFiltering, into buf: inout [UInt8]) {
+        switch value {
+        case .snapToRoute:
+            writeInt(&buf, Int32(1))
+
+        case .raw:
+            writeInt(&buf, Int32(2))
+        }
+    }
+}
+
+public func FfiConverterTypeCourseFiltering_lift(_ buf: RustBuffer) throws -> CourseFiltering {
+    try FfiConverterTypeCourseFiltering.lift(buf)
+}
+
+public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> RustBuffer {
+    FfiConverterTypeCourseFiltering.lower(value)
+}
+
+extension CourseFiltering: Equatable, Hashable {}
+
 public enum InstantiationError {
     case JsonError
 }
@@ -2903,7 +2991,7 @@ extension ModelError: Foundation.LocalizedError {
 public enum ParsingError {
     case ParseError(error: String)
     case InvalidStatusCode(code: String)
-    case UnknownError
+    case UnknownParsingError
 }
 
 public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
@@ -2918,7 +3006,7 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
         case 2: return try .InvalidStatusCode(
                 code: FfiConverterString.read(from: &buf)
             )
-        case 3: return .UnknownError
+        case 3: return .UnknownParsingError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -2933,7 +3021,7 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(2))
             FfiConverterString.write(code, into: &buf)
 
-        case .UnknownError:
+        case .UnknownParsingError:
             writeInt(&buf, Int32(3))
         }
     }
@@ -3092,6 +3180,7 @@ public func FfiConverterTypeRouteDeviationTracking_lower(_ value: RouteDeviation
 
 public enum RouteRequest {
     case httpPost(url: String, headers: [String: String], body: Data)
+    case httpGet(url: String, headers: [String: String])
 }
 
 public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
@@ -3106,6 +3195,11 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
                 body: FfiConverterData.read(from: &buf)
             )
 
+        case 2: return try .httpGet(
+                url: FfiConverterString.read(from: &buf),
+                headers: FfiConverterDictionaryStringString.read(from: &buf)
+            )
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3117,6 +3211,11 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
             FfiConverterString.write(url, into: &buf)
             FfiConverterDictionaryStringString.write(headers, into: &buf)
             FfiConverterData.write(body, into: &buf)
+
+        case let .httpGet(url, headers):
+            writeInt(&buf, Int32(2))
+            FfiConverterString.write(url, into: &buf)
+            FfiConverterDictionaryStringString.write(headers, into: &buf)
         }
     }
 }
@@ -3134,7 +3233,7 @@ extension RouteRequest: Equatable, Hashable {}
 public enum RoutingRequestGenerationError {
     case NotEnoughWaypoints
     case JsonError
-    case UnknownError
+    case UnknownRequestGenerationError
 }
 
 public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuffer {
@@ -3145,7 +3244,7 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
         switch variant {
         case 1: return .NotEnoughWaypoints
         case 2: return .JsonError
-        case 3: return .UnknownError
+        case 3: return .UnknownRequestGenerationError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3158,7 +3257,7 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
         case .JsonError:
             writeInt(&buf, Int32(2))
 
-        case .UnknownError:
+        case .UnknownRequestGenerationError:
             writeInt(&buf, Int32(3))
         }
     }
@@ -3880,25 +3979,30 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
 }
 
 /**
- * Typealias from the type name used in the UDL file to the builtin type.  This
+ * Typealias from the type name used in the UDL file to the custom type.  This
  * is needed because the UDL type name is used in function/method signatures.
  */
-public typealias Uuid = String
+public typealias Uuid = UUID
+
 public struct FfiConverterTypeUuid: FfiConverter {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Uuid {
-        try FfiConverterString.read(from: &buf)
+        let builtinValue = try FfiConverterString.read(from: &buf)
+        return UUID(uuidString: builtinValue)!
     }
 
     public static func write(_ value: Uuid, into buf: inout [UInt8]) {
-        FfiConverterString.write(value, into: &buf)
+        let builtinValue = value.uuidString
+        return FfiConverterString.write(builtinValue, into: &buf)
     }
 
     public static func lift(_ value: RustBuffer) throws -> Uuid {
-        try FfiConverterString.lift(value)
+        let builtinValue = try FfiConverterString.lift(value)
+        return UUID(uuidString: builtinValue)!
     }
 
     public static func lower(_ value: Uuid) -> RustBuffer {
-        FfiConverterString.lower(value)
+        let builtinValue = value.uuidString
+        return FfiConverterString.lower(builtinValue)
     }
 }
 
@@ -4079,7 +4183,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 47899 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 60524 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 3820 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 63862 {

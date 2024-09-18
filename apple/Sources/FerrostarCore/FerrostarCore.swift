@@ -89,7 +89,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var lastAutomaticRecalculation: Date? = nil
     private var lastLocation: UserLocation? = nil
     private var recalculationTask: Task<Void, Never>?
-    private var queuedUtteranceIDs: Set<String> = Set()
+    private var queuedUtteranceIDs: Set<UUID> = Set()
 
     private var config: SwiftNavigationControllerConfig
 
@@ -185,29 +185,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 waypoints: waypoints
             )
 
-            switch routeRequest {
-            case let .httpPost(url: url, headers: headers, body: body):
-                guard let url = URL(string: url) else {
-                    throw FerrostarCoreError.invalidRequestUrl
-                }
+            let urlRequest = try routeRequest.urlRequest
+            let (data, response) = try await networkSession.loadData(with: urlRequest)
 
-                var urlRequest = URLRequest(url: url)
-                urlRequest.httpMethod = "POST"
-                for (header, value) in headers {
-                    urlRequest.setValue(value, forHTTPHeaderField: header)
-                }
-                urlRequest.httpBody = Data(body)
-                urlRequest.timeoutInterval = 15
+            if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
+                throw FerrostarCoreError.httpStatusCode(res.statusCode)
+            } else {
+                let routes = try routeAdapter.parseResponse(response: data)
 
-                let (data, response) = try await networkSession.loadData(with: urlRequest)
-
-                if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
-                    throw FerrostarCoreError.httpStatusCode(res.statusCode)
-                } else {
-                    let routes = try routeAdapter.parseResponse(response: data)
-
-                    return routes
-                }
+                return routes
             }
         }
     }
