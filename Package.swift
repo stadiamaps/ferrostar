@@ -17,7 +17,7 @@ if useLocalFramework {
     )
 } else {
     let releaseTag = "0.12.0"
-    let releaseChecksum = "32a28d66933b6dc7f9b206c79e265767fc51339a9a81f81304c3f15cd7722d19"
+    let releaseChecksum = "41040ba2beb0f9ef615d2d5b2479f7feec70e72422d20752fab40a6495f0ef93"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url: "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar-rs.xcframework.zip",
