@@ -61,7 +61,7 @@ mavenPublishing {
 
     pom {
         name = "Ferrostar Google Play Services"
-        description = "Ferrostar implementations for apps using Google Play Services"
+        description = "Ferrostar components that rely on Google Play Services"
         commonPomConfig(it, true)
     }
 }
