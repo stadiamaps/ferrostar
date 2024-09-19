@@ -88,7 +88,7 @@ public struct LandscapeNavigationView: View {
                     midLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
-                }
+                }.complementSafeAreaInsets(parentGeometry: geometry)
             }
         }
     }

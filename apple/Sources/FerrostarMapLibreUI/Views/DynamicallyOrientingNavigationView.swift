@@ -94,7 +94,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         midLeading?()
                     } bottomTrailing: {
                         bottomTrailing?()
-                    }
+                    }.complementSafeAreaInsets(parentGeometry: geometry)
                 default:
                     PortraitNavigationOverlayView(
                         navigationState: navigationState,
@@ -114,7 +114,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         midLeading?()
                     } bottomTrailing: {
                         bottomTrailing?()
-                    }
+                    }.complementSafeAreaInsets(parentGeometry: geometry)
                 }
             }
         }
