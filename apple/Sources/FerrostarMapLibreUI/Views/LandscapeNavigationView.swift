@@ -8,7 +8,7 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ArrivalView on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View {
+public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
