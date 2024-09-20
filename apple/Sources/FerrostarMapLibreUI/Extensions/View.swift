@@ -7,19 +7,19 @@ extension View {
     /// ```
     ///    Given a minimumInset of 16:
     ///    +-------------------------------------------------------------+
-    ///    |                      ParentView (`geometry`)                |
+    ///    |                       `parentGeometry`                      |
     ///    |   +-----------------------------------------------------+   |
-    ///    |   |        `geometry.safeAreaInsets` (Top: 16)          |   |
+    ///    |   |     `parentGeometry.safeAreaInsets` (Top: 16)       |   |
     ///    |   |   +---------------------------------------------+   |   |
-    ///    |   |   |         `childInsets` (Top: 0)              |   |   |
+    ///    |   |   |     insets added by this method (Top: 0)    |   |   |
     ///    |   |   |   +------------------------------------+    |   |   |
     ///    |   |   |   |                                    |    |   |   |
-    ///    |   | 8 | 8 |        ChildView Content           | 16 | 0 |   |
+    ///    |   | 8 | 8 |        child view (self)           | 16 | 0 |   |
     ///    |   |   |   |                                    |    |   |   |
     ///    |   |   |   +------------------------------------+    |   |   |
-    ///    |   |   |        `childInsets` (Bottom: 0)            |   |   |
+    ///    |   |   |    insets added by this method (Bottom: 0)  |   |   |
     ///    |   |   +---------------------------------------------+   |   |
-    ///    |   |        `geometry.safeAreaInsets` (Bottom: 20)       |   |
+    ///    |   |    `parentGeometry.safeAreaInsets` (Bottom: 20)     |   |
     ///    |   +-----------------------------------------------------+   |
     ///    |                                                             |
     ///    +-------------------------------------------------------------+
