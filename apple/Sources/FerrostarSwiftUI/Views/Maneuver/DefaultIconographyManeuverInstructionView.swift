@@ -54,6 +54,8 @@ public struct DefaultIconographyManeuverInstructionView: View {
                     maneuverModifier: maneuverModifier
                 )
                 .frame(maxWidth: 48)
+                // REVIEW: without this, the first image in the vstack was rendering very small. Curiously subsequent items in the vstack looked reasonable.
+                .aspectRatio(contentMode: .fill)
             }
         }
     }

@@ -1,4 +1,5 @@
 import CoreLocation
+import FerrostarCore
 import FerrostarCoreFFI
 import MapKit
 import SwiftUI
@@ -8,6 +9,7 @@ public struct InstructionsView: View {
     private let visualInstruction: VisualInstruction
     private let distanceToNextManeuver: CLLocationDistance?
     private let distanceFormatter: Formatter
+    private let remainingSteps: [RouteStep]?
 
     private let primaryRowTheme: InstructionRowTheme
     private let secondaryRowTheme: InstructionRowTheme
@@ -15,7 +17,13 @@ public struct InstructionsView: View {
         visualInstruction.secondaryContent != nil
     }
 
-    private let showPillControl: Bool
+    private let verticalPadding: CGFloat = 16
+
+    @State
+    private var isExpanded: Bool
+
+    @Binding
+    private var sizeWhenNotExpanded: CGSize
 
     /// Create a visual instruction banner view. This view automatically displays the secondary
     /// instruction if there is one.
@@ -24,72 +32,110 @@ public struct InstructionsView: View {
     ///   - visualInstruction: The visual instruction to display.
     ///   - distanceFormatter: The formatter which controls distance localization.
     ///   - distanceToNextManeuver: The distance remaining for the step.
+    ///   - remainingSteps: All steps remaining in the route, including the current step
     ///   - primaryRowTheme: The theme for the primary instruction.
     ///   - secondaryRowTheme: The theme for the secondary instruction.
-    ///   - showPillControl: If true, shows a pill control (to indicate an action/expansion).
+    ///   - isExpanded: Whether the instruction view starts expanded
+    ///   - sizeWhenNotExpanded: Size of the InstructionsView when minimized - useful for allocating space for this view
+    /// in your layout.
     public init(
         visualInstruction: VisualInstruction,
         distanceFormatter: Formatter = DefaultFormatters.distanceFormatter,
         distanceToNextManeuver: CLLocationDistance? = nil,
+        remainingSteps: [RouteStep]? = nil,
         primaryRowTheme: InstructionRowTheme = DefaultInstructionRowTheme(),
         secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme(),
-        showPillControl: Bool = false
+        isExpanded: Bool = false,
+        sizeWhenNotExpanded: Binding<CGSize> = .constant(.zero)
     ) {
         self.visualInstruction = visualInstruction
         self.distanceFormatter = distanceFormatter
         self.distanceToNextManeuver = distanceToNextManeuver
+        self.remainingSteps = remainingSteps
         self.primaryRowTheme = primaryRowTheme
         self.secondaryRowTheme = secondaryRowTheme
-        self.showPillControl = showPillControl
+        self.isExpanded = isExpanded
+        _sizeWhenNotExpanded = sizeWhenNotExpanded
     }
 
-    public var body: some View {
-        VStack {
+    var nextVisualInstructions: [(VisualInstruction, RouteStep)] {
+        guard let remainingSteps, !remainingSteps.isEmpty else {
+            return []
+        }
+        return remainingSteps[1...].compactMap { step in
+            guard let visualInstruction = step.visualInstructions.first else {
+                return nil
+            }
+            return (visualInstruction, step)
+        }
+    }
+
+    public var expandedContent: AnyView? {
+        guard !nextVisualInstructions.isEmpty else {
+            return nil
+        }
+        return AnyView(ForEach(Array(nextVisualInstructions.enumerated()), id: \.0) { enumerated in
+            let (visualInstruction, step): (VisualInstruction, RouteStep) = enumerated.1
+            Divider().padding(.leading, 16)
             DefaultIconographyManeuverInstructionView(
                 text: visualInstruction.primaryContent.text,
                 maneuverType: visualInstruction.primaryContent.maneuverType,
                 maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
                 distanceFormatter: distanceFormatter,
-                distanceToNextManeuver: distanceToNextManeuver,
+                distanceToNextManeuver: step.distance == 0 ? nil : step.distance,
                 theme: primaryRowTheme
             )
             .font(.title2.bold())
             .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 0)
-
-            if let secondaryContent = visualInstruction.secondaryContent {
-                VStack {
-                    DefaultIconographyManeuverInstructionView(
-                        text: secondaryContent.text,
-                        maneuverType: secondaryContent.maneuverType,
-                        maneuverModifier: secondaryContent.maneuverModifier,
-                        distanceFormatter: distanceFormatter,
-                        theme: secondaryRowTheme
-                    )
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-
-                    // TODO: Show the pill when interactivity is enabled
-                    pillControl(isActive: showPillControl)
-                }
-                .background(secondaryRowTheme.backgroundColor)
-            } else {
-                // TODO: Show the pill when interactivity is enabled
-                pillControl(isActive: showPillControl)
-            }
-        }
-        .background(primaryRowTheme.backgroundColor)
-        .clipShape(.rect(cornerRadius: 12))
-        .shadow(radius: 12)
+        })
     }
 
-    /// The pill control that is shown at the bottom of the Instructions View.
-    @ViewBuilder fileprivate func pillControl(isActive: Bool) -> some View {
-        RoundedRectangle(cornerRadius: 3)
-            .frame(width: 24, height: isActive ? 6 : 0)
-            .opacity(isActive ? 0.1 : 0.0)
-            .padding(.bottom, 8)
+    public var body: some View {
+        TopDrawerView(
+            backgroundColor: primaryRowTheme.backgroundColor,
+            isExpanded: $isExpanded,
+            persistentContent: {
+                VStack(spacing: 0) {
+                    DefaultIconographyManeuverInstructionView(
+                        text: visualInstruction.primaryContent.text,
+                        maneuverType: visualInstruction.primaryContent.maneuverType,
+                        maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
+                        distanceFormatter: distanceFormatter,
+                        distanceToNextManeuver: distanceToNextManeuver == 0 ? nil : distanceToNextManeuver,
+                        theme: primaryRowTheme
+                    )
+                    .font(.title2.bold())
+                    .padding(.horizontal, 16)
+                    .padding(.top, verticalPadding)
+                    .padding(.bottom, hasSecondary ? 8 : verticalPadding)
+
+                    if let secondaryContent = visualInstruction.secondaryContent {
+                        DefaultIconographyManeuverInstructionView(
+                            text: secondaryContent.text,
+                            maneuverType: secondaryContent.maneuverType,
+                            maneuverModifier: secondaryContent.maneuverModifier,
+                            distanceFormatter: distanceFormatter,
+                            theme: secondaryRowTheme
+                        )
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .padding(.bottom, verticalPadding)
+                        .background(secondaryRowTheme.backgroundColor)
+                    }
+                }.overlay(
+                    GeometryReader { geometry in
+                        Color.clear.onAppear {
+                            sizeWhenNotExpanded = geometry.size
+                        }.onChange(of: geometry.size) { newValue in
+                            sizeWhenNotExpanded = newValue
+                        }.onDisappear {
+                            sizeWhenNotExpanded = .zero
+                        }
+                    }
+                )
+            },
+            expandedContent: { expandedContent }
+        )
     }
 }
 
@@ -142,8 +188,7 @@ public struct InstructionsView: View {
                 triggerDistanceBeforeManeuver: 123
             ),
             distanceFormatter: germanFormatter,
-            distanceToNextManeuver: 1500.0,
-            showPillControl: true
+            distanceToNextManeuver: 1500.0
         )
 
         InstructionsView(
@@ -161,8 +206,54 @@ public struct InstructionsView: View {
                     roundaboutExitDegrees: nil
                 ),
                 triggerDistanceBeforeManeuver: 123
-            ),
-            showPillControl: true
+            )
+        )
+
+        Spacer()
+    }
+    .padding()
+    .background(Color.green)
+}
+
+#Preview("Many steps") {
+    VStack(spacing: 16) {
+        InstructionsView(
+            visualInstruction: VisualInstructionFactory().build(),
+            distanceToNextManeuver: 1500,
+            remainingSteps: RouteStepFactory().buildMany(10)
+        )
+
+        Spacer()
+    }
+    .padding()
+    .background(Color.green)
+}
+
+#Preview("Many steps, expanded") {
+    VStack(spacing: 16) {
+        InstructionsView(
+            visualInstruction: VisualInstructionFactory().build(),
+            distanceToNextManeuver: 1500,
+            remainingSteps: RouteStepFactory().buildMany(10),
+            isExpanded: true
+        )
+
+        Spacer()
+    }
+    .padding()
+    .background(Color.green)
+}
+
+#Preview("Many steps with secondary") {
+    VStack(spacing: 16) {
+        InstructionsView(
+            visualInstruction: VisualInstructionFactory().secondaryContent { n in
+                VisualInstructionContentFactory().text { n in
+                    RoadNameFactory().baseName { _ in "Street" }.build(n)
+                }.build(n)
+            }.build(),
+            distanceToNextManeuver: 1500,
+            remainingSteps: RouteStepFactory().buildMany(10)
         )
 
         Spacer()

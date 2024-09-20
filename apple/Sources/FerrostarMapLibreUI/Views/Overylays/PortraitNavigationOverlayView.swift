@@ -18,6 +18,8 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
     var speedLimit: Measurement<UnitSpeed>?
     var showZoom: Bool
+    @State
+    private var instructionsViewSizeWhenNotExpanded: CGSize = .zero
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
     var showCentering: Bool
@@ -45,46 +47,53 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     }
 
     var body: some View {
-        VStack {
+        ZStack(alignment: .top) {
+            VStack {
+                Spacer()
+
+                // The inner content is displayed vertically full screen
+                // when both the visualInstructions and progress are nil.
+                // It will automatically reduce height if and when either
+                // view appears
+                NavigatingInnerGridView(
+                    speedLimit: speedLimit,
+                    showZoom: showZoom,
+                    onZoomIn: onZoomIn,
+                    onZoomOut: onZoomOut,
+                    showCentering: showCentering,
+                    onCenter: onCenter
+                )
+                .innerGrid {
+                    topCenter?()
+                } topTrailing: {
+                    topTrailing?()
+                } midLeading: {
+                    midLeading?()
+                } bottomTrailing: {
+                    bottomTrailing?()
+                }
+
+                if case .navigating = navigationState?.tripState,
+                   let progress = navigationState?.currentProgress
+                {
+                    ArrivalView(
+                        progress: progress,
+                        onTapExit: onTapExit
+                    )
+                }
+            }.padding(.top, instructionsViewSizeWhenNotExpanded.height)
+
             if case .navigating = navigationState?.tripState,
                let visualInstruction = navigationState?.currentVisualInstruction,
-               let progress = navigationState?.currentProgress
+               let progress = navigationState?.currentProgress,
+               let remainingSteps = navigationState?.remainingSteps
             {
                 InstructionsView(
                     visualInstruction: visualInstruction,
                     distanceFormatter: formatterCollection.distanceFormatter,
-                    distanceToNextManeuver: progress.distanceToNextManeuver
-                )
-            }
-
-            // The inner content is displayed vertically full screen
-            // when both the visualInstructions and progress are nil.
-            // It will automatically reduce height if and when either
-            // view appears
-            NavigatingInnerGridView(
-                speedLimit: speedLimit,
-                showZoom: showZoom,
-                onZoomIn: onZoomIn,
-                onZoomOut: onZoomOut,
-                showCentering: showCentering,
-                onCenter: onCenter
-            )
-            .innerGrid {
-                topCenter?()
-            } topTrailing: {
-                topTrailing?()
-            } midLeading: {
-                midLeading?()
-            } bottomTrailing: {
-                bottomTrailing?()
-            }
-
-            if case .navigating = navigationState?.tripState,
-               let progress = navigationState?.currentProgress
-            {
-                ArrivalView(
-                    progress: progress,
-                    onTapExit: onTapExit
+                    distanceToNextManeuver: progress.distanceToNextManeuver,
+                    remainingSteps: remainingSteps,
+                    sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
                 )
             }
         }
