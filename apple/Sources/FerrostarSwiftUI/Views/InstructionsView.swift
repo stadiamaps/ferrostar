@@ -71,7 +71,7 @@ public struct InstructionsView: View {
                     // TODO: Show the pill when interactivity is enabled
                     pillControl(isActive: showPillControl)
                 }
-                .background(.gray.opacity(0.2))
+                .background(secondaryRowTheme.backgroundColor)
             } else {
                 // TODO: Show the pill when interactivity is enabled
                 pillControl(isActive: showPillControl)
