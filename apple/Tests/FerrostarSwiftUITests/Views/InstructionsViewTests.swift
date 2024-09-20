@@ -21,9 +21,7 @@ final class InstructionsViewTests: XCTestCase {
                     ),
                     triggerDistanceBeforeManeuver: 123
                 ),
-                distanceFormatter: americanDistanceFormatter,
-                primaryRowTheme: TestingInstructionRowTheme(),
-                secondaryRowTheme: TestingInstructionRowTheme()
+                distanceFormatter: americanDistanceFormatter
             )
             .padding()
         }
@@ -42,9 +40,7 @@ final class InstructionsViewTests: XCTestCase {
                     secondaryContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
-                distanceFormatter: americanDistanceFormatter,
-                primaryRowTheme: TestingInstructionRowTheme(),
-                secondaryRowTheme: TestingInstructionRowTheme()
+                distanceFormatter: americanDistanceFormatter
             )
             .padding()
         }
@@ -64,8 +60,6 @@ final class InstructionsViewTests: XCTestCase {
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter,
-                primaryRowTheme: TestingInstructionRowTheme(),
-                secondaryRowTheme: TestingInstructionRowTheme(),
                 showPillControl: true
             )
             .padding()
@@ -86,9 +80,7 @@ final class InstructionsViewTests: XCTestCase {
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: germanDistanceFormatter,
-                distanceToNextManeuver: 152.4,
-                primaryRowTheme: TestingInstructionRowTheme(),
-                secondaryRowTheme: TestingInstructionRowTheme()
+                distanceToNextManeuver: 152.4
             )
             .padding()
         }
