@@ -27,6 +27,30 @@ final class InstructionsViewTests: XCTestCase {
         }
     }
 
+    func testInstructionsView_darkMode() {
+        assertView(colorScheme: .dark) {
+            InstructionsView(
+                visualInstruction: VisualInstruction(
+                    primaryContent: VisualInstructionContent(
+                        text: "Turn right on Something Dr.",
+                        maneuverType: .turn,
+                        maneuverModifier: .right,
+                        roundaboutExitDegrees: nil
+                    ),
+                    secondaryContent: VisualInstructionContent(
+                        text: "Merge onto Hwy 123",
+                        maneuverType: .merge,
+                        maneuverModifier: .right,
+                        roundaboutExitDegrees: nil
+                    ),
+                    triggerDistanceBeforeManeuver: 123
+                ),
+                distanceFormatter: americanDistanceFormatter
+            )
+            .padding()
+        }
+    }
+
     func testSingularInstructionsView() {
         assertView {
             InstructionsView(
