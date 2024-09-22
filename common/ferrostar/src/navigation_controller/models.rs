@@ -24,7 +24,11 @@ pub struct TripProgress {
     pub duration_remaining: f64,
 }
 
-/// Internal state of the navigation controller.
+/// The state of a navigation session.
+///
+/// This is produced by [`NavigationController`](super::NavigationController) methods
+/// including [`get_initial_state`](super::NavigationController::get_initial_state)
+/// and [`update_user_location`](super::NavigationController::update_user_location).
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
