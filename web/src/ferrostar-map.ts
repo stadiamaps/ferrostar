@@ -1,11 +1,16 @@
 import {css, html, LitElement, PropertyValues, unsafeCSS} from "lit";
 import {customElement, property, state} from "lit/decorators.js";
-import maplibregl, {GeolocateControl, LngLatLike, Map} from "maplibre-gl";
+import maplibregl, {
+  GeolocateControl,
+  LngLat,
+  LngLatLike,
+  Map
+} from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
 import {NavigationController, RouteAdapter} from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./arrival-view";
-import {BrowserLocationProvider, SimulatedLocationProvider} from "./location";
+import {SimulatedLocationProvider} from "./location";
 import CloseSvg from "./assets/directions/close.svg";
 
 @customElement("ferrostar-map")
@@ -157,7 +162,11 @@ export class FerrostarMap extends LitElement {
         if (changedProperties.get("center") === null && this.center !== null) {
           this.map.jumpTo({center: this.center})
         } else if (this.center !== null) {
-          this.map.flyTo({center: this.center})
+          if (this.map.getCenter().distanceTo(LngLat.convert(this.center)) > 500_000) {
+            this.map.jumpTo({center: this.center});
+          } else {
+            this.map.flyTo({center: this.center});
+          }
         }
       }
       if (changedProperties.has("pitch")) {
@@ -226,6 +235,7 @@ export class FerrostarMap extends LitElement {
 
   // TODO: type
   startNavigation(route: any, config: any) {
+    this.locationProvider.start();
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
     // Initialize the navigation controller
@@ -283,46 +293,6 @@ export class FerrostarMap extends LitElement {
           .setLngLat(route.geometry[0])
           .addTo(this.map!);
     }
-  }
-
-  async startNavigationFromSearch(coordinates: any) {
-    const waypoints = [{ coordinate: { lat: coordinates[1], lng: coordinates[0] }, kind: "Break" }];
-
-    // FIXME: This is a hack basically to support the demo page that should go away.
-    if (!this.locationProvider || this.locationProvider instanceof SimulatedLocationProvider) {
-      this.locationProvider = new BrowserLocationProvider();
-    }
-
-    this.locationProvider.start();
-
-    // TODO: Replace this with a promise or callback
-    while (!this.locationProvider.lastLocation) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-
-    // Use the acquired user location to request the route
-    const routes = await this.getRoutes(this.locationProvider.lastLocation, waypoints);
-    const route = routes[0];
-
-    // TODO: type + use TypeScript enum
-    const config = {
-      stepAdvance: {
-        RelativeLineStringDistance: {
-          minimumHorizontalAccuracy: 25,
-          automaticAdvanceDistance: 10,
-        },
-      },
-      routeDeviationTracking: {
-        StaticThreshold: {
-          minimumHorizontalAccuracy: 25,
-          maxAcceptableDeviation: 10.0,
-        },
-      },
-      snappedLocationCourseFiltering: "Raw",
-    };
-
-    // Start the navigation
-    this.startNavigation(route, config);
   }
 
   async stopNavigation() {
