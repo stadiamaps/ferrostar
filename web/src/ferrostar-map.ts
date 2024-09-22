@@ -13,6 +13,9 @@ import "./arrival-view";
 import {SimulatedLocationProvider} from "./location";
 import CloseSvg from "./assets/directions/close.svg";
 
+/**
+ * A MapLibre-based map component specialized for navigation.
+ */
 @customElement("ferrostar-map")
 export class FerrostarMap extends LitElement {
   @property()

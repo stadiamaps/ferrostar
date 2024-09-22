@@ -1,5 +1,11 @@
 import { advanceLocationSimulation, locationSimulationFromRoute } from "@stadiamaps/ferrostar";
 
+/**
+ * Transforms a `GeolocationPosition` (from standard web location APIs)
+ * into the standard format expected by the Ferrostar APIs.
+ *
+ * @param position a position from the Geolocation API
+ */
 export function ferrostarUserLocation(position: GeolocationPosition): object {
   let speed = null;
   if (position.coords.speed) {
