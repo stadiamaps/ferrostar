@@ -8,7 +8,7 @@ public enum NavigationMapViewContentInsetMode {
     /// This is used to accommodate a left InstructionView
     case landscape(within: GeometryProxy, verticalPct: CGFloat = 0.75, horizontalPct: CGFloat = 0.5)
 
-    /// A predefined mode for landscape navigation map views
+    /// A predefined mode for portrait navigation map views
     /// where the user location should appear toward the bottom of the map.
     ///
     /// This is used to accommodate a top InstructionView
