@@ -109,7 +109,7 @@ class DefaultNavigationViewModel(
                       ferrostarCore.state.value,
                       spokenInstructionObserver?.isMuted,
                       locationProvider.lastLocation,
-                      locationProvider.lastLocation))
+                      userLocation))
 
   override fun stopNavigation() {
     ferrostarCore.stopNavigation()
