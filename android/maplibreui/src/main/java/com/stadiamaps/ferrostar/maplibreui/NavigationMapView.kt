@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -30,6 +29,8 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  * @param viewModel The navigation view model provided by Ferrostar Core.
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
+ * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
+ *   route line.
  * @param onMapReadyCallback A callback that is invoked when the map is ready to be interacted with.
  *   You must set your desired MapViewCamera tracking mode here!
  * @param content Any additional composable map symbol content to render.
@@ -43,13 +44,19 @@ fun NavigationMapView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
+    snapUserLocationToRoute: Boolean = true,
     onMapReadyCallback: (Style) -> Unit = { camera.value = navigationCamera },
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
   val uiState = viewModel.uiState.collectAsState()
 
   val locationEngine = remember { StaticLocationEngine() }
-  locationEngine.lastLocation = uiState.value.snappedLocation?.toAndroidLocation()
+  locationEngine.lastLocation =
+      if (snapUserLocationToRoute) {
+        uiState.value.snappedLocation?.toAndroidLocation()
+      } else {
+        uiState.value.location?.toAndroidLocation()
+      }
 
   MapView(
       modifier = Modifier.fillMaxSize(),

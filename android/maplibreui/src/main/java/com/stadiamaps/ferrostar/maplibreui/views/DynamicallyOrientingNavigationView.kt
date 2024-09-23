@@ -36,6 +36,8 @@ import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOver
  * @param viewModel The navigation view model provided by Ferrostar Core.
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
+ * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
+ *   route line.
  * @param config The configuration for the navigation view.
  * @param landscapeOverlayModifier The modifier to apply to the overlay view.
  * @param portraitOverlayModifier The modifier to apply to the overlay view.
@@ -51,6 +53,7 @@ fun DynamicallyOrientingNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
+    snapUserLocationToRoute: Boolean = true,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     landscapeOverlayModifier: Modifier = Modifier.fillMaxSize().padding(16.dp),
     portraitOverlayModifier: Modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -68,6 +71,7 @@ fun DynamicallyOrientingNavigationView(
         navigationCamera,
         viewModel,
         locationRequestProperties,
+        snapUserLocationToRoute,
         onMapReadyCallback = { camera.value = navigationCamera },
         content)
 

@@ -115,6 +115,9 @@ fun DemoNavigationScene(
         // Most vendors offer free API keys for development use.
         styleUrl = "https://demotiles.maplibre.org/style.json",
         viewModel = viewModel!!,
+        // This is the default value, which works well for motor vehicle navigation.
+        // Other travel modes though, such as walking, may not want snapping.
+        snapUserLocationToRoute = true,
         onTapExit = { viewModel!!.stopNavigation() }) { uiState ->
           // Trivial, if silly example of how to add your own overlay layers.
           // (Also incidentally highlights the lag inherent in MapLibre location tracking
