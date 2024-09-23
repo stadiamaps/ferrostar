@@ -5,7 +5,7 @@ import PackageDescription
 
 let binaryTarget: Target
 let maplibreSwiftUIDSLPackage: Package.Dependency
-let useLocalFramework = false
+let useLocalFramework = true
 let useLocalMapLibreSwiftUIDSL = false
 
 if useLocalFramework {
@@ -16,7 +16,7 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.12.0"
+    let releaseTag = "0.13.0"
     let releaseChecksum = "41040ba2beb0f9ef615d2d5b2479f7feec70e72422d20752fab40a6495f0ef93"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",

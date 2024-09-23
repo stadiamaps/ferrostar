@@ -52,6 +52,7 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp-mock = { group = "com.github.gmazzo", name = "okhttp-mock", version.ref = "okhttp-mock" }
 # MapLibre
 maplibre-compose = { group = "io.github.rallista", name = "maplibre-compose", version.ref = "maplibre-compose" }
@@ -73,3 +74,4 @@ cargo-ndk = { id = "com.github.willir.rust.cargo-ndk-android", version.ref = "ca
 ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -487,6 +487,17 @@ pub(crate) fn get_linestring(geometry: &[GeographicCoordinate]) -> LineString {
         .collect()
 }
 
+/// Get a slice of an array that matches the contents of another slice.
+pub fn slice_indexes<T>(array: Vec<T>, slice: Vec<T>) -> Option<(usize, usize)>
+where
+    T: PartialEq,
+{
+    // Find the starting position of the slice in the array
+    array.windows(slice.len())
+        .position(|window| window == slice)
+        .map(|start| (start, start + slice.len()))
+}
+
 #[cfg(test)]
 /// Creates a user location at the given coordinates,
 /// with all other values set to defaults or (in the case of the timestamp), the current time.

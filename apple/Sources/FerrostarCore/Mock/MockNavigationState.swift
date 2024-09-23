@@ -25,7 +25,8 @@ public extension NavigationState {
             ),
             deviation: .noDeviation,
             visualInstruction: nil,
-            spokenInstruction: nil
+            spokenInstruction: nil,
+            annotationBytes: nil
         ),
         routeGeometry: samplePedestrianWaypoints,
         isCalculatingNewRoute: false
@@ -63,7 +64,8 @@ public extension NavigationState {
                                 secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0
                             ),
                         ],
-                        spokenInstructions: []
+                        spokenInstructions: [],
+                        annotations: nil
                     ),
                 ],
                 remainingWaypoints: [],
@@ -74,7 +76,8 @@ public extension NavigationState {
                 ),
                 deviation: .noDeviation,
                 visualInstruction: nil,
-                spokenInstruction: nil
+                spokenInstruction: nil,
+                annotationBytes: nil
             ),
             routeGeometry: samplePedestrianWaypoints,
             isCalculatingNewRoute: false

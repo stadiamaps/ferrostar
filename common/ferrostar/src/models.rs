@@ -252,12 +252,6 @@ pub struct Route {
     pub steps: Vec<RouteStep>,
 }
 
-impl Route {
-    pub(crate) fn get_linestring(&self) -> LineString {
-        get_linestring(&self.geometry)
-    }
-}
-
 /// Helper function for getting the route as an encoded polyline.
 ///
 /// Mostly used for debugging.
@@ -278,6 +272,7 @@ fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelErro
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 pub struct RouteStep {
+    /// The full route geometry for this step.
     pub geometry: Vec<GeographicCoordinate>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
@@ -295,6 +290,8 @@ pub struct RouteStep {
     pub visual_instructions: Vec<VisualInstruction>,
     /// A list of prompts to announce (via speech synthesis) at specific points along the step.
     pub spoken_instructions: Vec<SpokenInstruction>,
+    /// A list of json attribute objects as a byte array.
+    pub annotations: Option<Vec<Vec<u8>>>,
 }
 
 impl RouteStep {
@@ -336,6 +333,23 @@ impl RouteStep {
         self.spoken_instructions.iter().rev().find(|instruction| {
             distance_to_end_of_step - instruction.trigger_distance_before_maneuver <= 5.0
         })
+    }
+
+    /// Get the annotation data at a specific point along the step.
+    ///
+    /// `at_coordinate_index` is the index of the coordinate in the step geometry.
+    pub fn get_current_annotation_json(&self, at_coordinate_index: u64) -> Option<Vec<u8>> {
+        match &self.annotations {
+            None => return None,
+            Some(annotations) => {
+                if at_coordinate_index as usize >= annotations.len() {
+                    panic!("Index {at_coordinate_index} out of bounds for annotations");
+                }
+
+                let annotation = annotations[at_coordinate_index as usize].clone();
+                return Some(annotation);
+            }
+        }
     }
 }
 

@@ -6,7 +6,7 @@ use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstructio
 use alloc::vec::Vec;
 use geo::LineString;
 #[cfg(feature = "wasm-bindgen")]
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
@@ -65,6 +65,9 @@ pub enum TripState {
         ///
         /// Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
         spoken_instruction: Option<SpokenInstruction>,
+        /// Annotation data at the current location.
+        /// This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
+        annotation_bytes: Option<Vec<u8>>,
     },
     /// The navigation controller has reached the end of the trip.
     Complete,

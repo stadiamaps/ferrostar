@@ -54,7 +54,8 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
                       secondaryContent = null,
                       triggerDistanceBeforeManeuver = 0.0,
                   ),
-              spokenInstruction = null),
+              spokenInstruction = null,
+              annotationBytes = null),
       routeGeometry = listOf(),
       isCalculatingNewRoute = false)
 }

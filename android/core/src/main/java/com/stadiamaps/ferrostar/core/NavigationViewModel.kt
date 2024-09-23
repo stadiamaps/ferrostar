@@ -3,9 +3,11 @@ package com.stadiamaps.ferrostar.core
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stadiamaps.ferrostar.core.extensions.annotation
 import com.stadiamaps.ferrostar.core.extensions.deviation
 import com.stadiamaps.ferrostar.core.extensions.progress
 import com.stadiamaps.ferrostar.core.extensions.visualInstruction
+import com.stadiamaps.ferrostar.core.models.AnnotationValue
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -70,7 +72,12 @@ class DefaultNavigationViewModel(
           .map { coreState ->
             lastLocation =
                 when (coreState.tripState) {
-                  is TripState.Navigating -> coreState.tripState.snappedUserLocation
+                  is TripState.Navigating -> {
+                    Log.d("NavigationViewModel", "current annotations: ${coreState.tripState.annotation(
+                      AnnotationValue::class.java)}")
+
+                    coreState.tripState.snappedUserLocation
+                  }
                   is TripState.Complete,
                   TripState.Idle -> locationProvider.lastLocation
                 }

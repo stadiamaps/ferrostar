@@ -53,6 +53,7 @@ use alloc::{string::String, sync::Arc, vec::Vec};
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
 
+pub mod algorithms;
 pub mod error;
 pub mod osrm;
 pub mod valhalla;

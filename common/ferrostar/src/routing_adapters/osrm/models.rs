@@ -7,7 +7,7 @@
 use crate::models::{ManeuverModifier, ManeuverType};
 #[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
 #[serde(transparent)]
@@ -68,7 +68,7 @@ pub struct RouteLeg {
 }
 
 /// An annotation of a route leg with fine-grained information about segments or nodes.
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Clone)]
 pub struct Annotation {
     /// The duration between each pair of coordinates, in seconds.
     pub duration: Vec<f64>,
@@ -87,14 +87,40 @@ pub struct Annotation {
     /// NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
     /// and Valhalla.
     #[serde(default, rename = "maxspeed")]
-    #[allow(dead_code)]
-    max_speed: Vec<MaxSpeed>,
+    pub max_speed: Vec<MaxSpeed>,
+}
+
+/// A flattened OSRM flavored annotation object.
+/// This represents the value for each annotation type and is typically surfaced for each
+/// geometry segment.
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct AnnotationValue {
+    pub distance: f64,
+    pub duration: f64,
+    /// The speed limit for this geometry segment in meters per second.
+    /// If the speed limit is unknown, this will be `None`.
+    pub max_speed_mps: Option<f64>,
+    /// The expected travel speed.
+    pub speed_mps: f64,
+}
+
+/// The MaxSpeed units that can be associated with annotations.
+/// [MaxSpeed/Units](https://wiki.openstreetmap.org/wiki/Map_Features/Units#Speed)
+/// TODO: We could generalize this as or map from this to a `UnitSpeed` enum.
+#[derive(Deserialize, PartialEq, Debug, Clone)]
+pub enum MaxSpeedUnits {
+    #[serde(rename = "km/h")]
+    KilometersPerHour,
+    #[serde(rename = "mph")]
+    MilesPerHour,
 }
 
 /// The local posted speed limit between a pair of coordinates.
-#[derive(Deserialize, Debug)]
-pub struct MaxSpeed {
-    // TODO
+#[derive(Deserialize, Debug, Clone)]
+#[serde(untagged)]
+pub enum MaxSpeed {
+    Unknown { unknown: bool },
+    Known { speed: f64, unit: MaxSpeedUnits },
 }
 
 #[derive(Deserialize, Debug)]

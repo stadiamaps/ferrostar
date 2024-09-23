@@ -1,5 +1,6 @@
 //! Response parsing for OSRM-compatible JSON (including Stadia Maps, Valhalla, Mapbox, etc.).
 
+pub(crate) mod algorithms;
 pub(crate) mod models;
 
 use super::RouteResponseParser;
@@ -7,12 +8,15 @@ use crate::models::{
     GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
     VisualInstructionContent, Waypoint, WaypointKind,
 };
+use crate::routing_adapters::algorithms::get_coordinates_from_geometry;
 use crate::routing_adapters::{
     osrm::models::{
-        Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep, Waypoint as OsrmWaypoint,
+        AnnotationValue, Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep,
+        Waypoint as OsrmWaypoint,
     },
     ParsingError, Route,
 };
+use algorithms::get_annotation_slice;
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::{string::ToString, vec, vec::Vec};
 use geo::BoundingRect;
@@ -83,20 +87,52 @@ impl Route {
             }
         })?;
         if let Some(bbox) = linestring.bounding_rect() {
-            let geometry = linestring
+            let geometry: Vec<GeographicCoordinate> = linestring
                 .coords()
                 .map(|coord| GeographicCoordinate::from(*coord))
                 .collect();
+
+            println!("Route geometry length: {}", geometry.len());
 
             let steps = route
                 .legs
                 .iter()
                 .flat_map(|leg| {
-                    leg.steps
-                        .iter()
-                        .map(|step| RouteStep::from_osrm(step, polyline_precision))
+                    // Converts all single value annotation vectors into a single vector witih a value object.
+                    let annotations = if let Some(leg_annotation) = &leg.annotation {
+                        Some(algorithms::zip_annotations(leg_annotation.clone()))
+                    } else {
+                        None
+                    };
+
+                    // Index for the annotations slice
+                    let mut start_index: usize = 0;
+
+                    return leg.steps.iter().map(move |step| {
+                        let step_geometry =
+                            get_coordinates_from_geometry(&step.geometry, polyline_precision)?;
+
+                        // Slice the annotations for the current step. The annotations array represents segments between coordinates 
+                        // and is thus one element shorter than the geometry array. To account for this, we need to subtract 2 from 
+                        // the length of the geometry array on each step (one to account for the 0-based index, and one to account 
+                        // for the length difference).
+                        let step_index_len = step_geometry.len() - 2 as usize;
+                        let end_index = start_index + step_index_len;
+
+                        let annotation_slice =
+                            get_annotation_slice(start_index, end_index, annotations.clone());
+
+                        start_index = end_index;
+
+                        return RouteStep::from_osrm_and_geom(
+                            &step,
+                            step_geometry,
+                            annotation_slice,
+                        );
+                    });
                 })
                 .collect::<Result<Vec<_>, _>>()?;
+
             Ok(Route {
                 geometry,
                 bbox: bbox.into(),
@@ -113,18 +149,11 @@ impl Route {
 }
 
 impl RouteStep {
-    fn from_osrm(value: &OsrmRouteStep, polyline_precision: u32) -> Result<Self, ParsingError> {
-        let linestring = decode_polyline(&value.geometry, polyline_precision).map_err(|error| {
-            ParsingError::ParseError {
-                error: error.to_string(),
-            }
-        })?;
-        // TODO: Trait for this common pattern?
-        let geometry = linestring
-            .coords()
-            .map(|coord| GeographicCoordinate::from(*coord))
-            .collect();
-
+    fn from_osrm_and_geom(
+        value: &OsrmRouteStep,
+        geometry: Vec<GeographicCoordinate>,
+        annotations: Option<Vec<AnnotationValue>>,
+    ) -> Result<Self, ParsingError> {
         let visual_instructions = value
             .banner_instructions
             .iter()
@@ -158,6 +187,22 @@ impl RouteStep {
             })
             .collect();
 
+        // Convert the annotations to a vectory of json byte objects.
+        // The host platform can then parse an arbitrary annotation object.
+        let annotations_as_bytes = if let Some(annotations) = annotations {
+            let mapped: Result<Vec<Vec<u8>>, ParsingError> = annotations
+                .iter()
+                .map(|annotation| {
+                    serde_json::to_vec(annotation).map_err(|e| ParsingError::ParseError {
+                        error: e.to_string(),
+                    })
+                })
+                .collect();
+            Some(mapped?)
+        } else {
+            None
+        };
+
         Ok(RouteStep {
             geometry,
             // TODO: Investigate using the haversine distance or geodesics to normalize.
@@ -168,6 +213,7 @@ impl RouteStep {
             instruction: value.maneuver.get_instruction(),
             visual_instructions,
             spoken_instructions,
+            annotations: annotations_as_bytes,
         })
     }
 }
