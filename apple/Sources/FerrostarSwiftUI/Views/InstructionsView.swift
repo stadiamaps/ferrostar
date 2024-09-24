@@ -22,9 +22,11 @@ public struct InstructionsView: View {
     ///
     /// - Parameters:
     ///   - visualInstruction: The visual instruction to display.
+    ///   - distanceFormatter: The formatter which controls distance localization.
     ///   - distanceToNextManeuver: The distance remaining for the step.
     ///   - primaryRowTheme: The theme for the primary instruction.
     ///   - secondaryRowTheme: The theme for the secondary instruction.
+    ///   - showPillControl: If true, shows a pill control (to indicate an action/expansion).
     public init(
         visualInstruction: VisualInstruction,
         distanceFormatter: Formatter = DefaultFormatters.distanceFormatter,
@@ -71,7 +73,7 @@ public struct InstructionsView: View {
                     // TODO: Show the pill when interactivity is enabled
                     pillControl(isActive: showPillControl)
                 }
-                .background(.gray.opacity(0.2))
+                .background(secondaryRowTheme.backgroundColor)
             } else {
                 // TODO: Show the pill when interactivity is enabled
                 pillControl(isActive: showPillControl)
@@ -141,6 +143,25 @@ public struct InstructionsView: View {
             ),
             distanceFormatter: germanFormatter,
             distanceToNextManeuver: 1500.0,
+            showPillControl: true
+        )
+
+        InstructionsView(
+            visualInstruction: VisualInstruction(
+                primaryContent: VisualInstructionContent(
+                    text: "Turn right on Something Dr.",
+                    maneuverType: .turn,
+                    maneuverModifier: .right,
+                    roundaboutExitDegrees: nil
+                ),
+                secondaryContent: VisualInstructionContent(
+                    text: "Merge onto Hwy 123",
+                    maneuverType: .merge,
+                    maneuverModifier: .right,
+                    roundaboutExitDegrees: nil
+                ),
+                triggerDistanceBeforeManeuver: 123
+            ),
             showPillControl: true
         )
 

@@ -128,6 +128,8 @@ struct DemoNavigationView: View {
                                     }
                                 } label: {
                                     Text("Start Nav")
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
                                         .font(.body.bold())
                                 }
                                 .disabled(routes?.isEmpty == true)

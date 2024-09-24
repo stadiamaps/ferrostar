@@ -55,7 +55,6 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                     distanceFormatter: formatterCollection.distanceFormatter,
                     distanceToNextManeuver: progress.distanceToNextManeuver
                 )
-                .padding(.horizontal, 16)
             }
 
             // The inner content is displayed vertically full screen
@@ -79,14 +78,12 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
             } bottomTrailing: {
                 bottomTrailing?()
             }
-            .padding(.horizontal, 16)
 
             if case let .navigating(_, _, _, _, progress: progress, _, _, _) = navigationState?.tripState {
                 ArrivalView(
                     progress: progress,
                     onTapExit: onTapExit
                 )
-                .padding(.horizontal, 16)
             }
         }
     }
