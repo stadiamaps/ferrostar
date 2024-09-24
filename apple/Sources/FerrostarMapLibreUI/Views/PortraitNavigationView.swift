@@ -95,7 +95,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
                     midLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
-                }.complementSafeAreaInsets(parentGeometry: geometry, minimumInset: minimumSafeAreaInsets)
+                }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
         }
     }
