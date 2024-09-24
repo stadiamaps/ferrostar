@@ -25,6 +25,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
 
     var onTapExit: (() -> Void)?
 
+    public var minimumSafeAreaInsets: EdgeInsets
+
     /// Create a landscape navigation view. This view is optimized for display on a landscape screen where the
     /// instructions are on the leading half of the screen
     /// and the user puck and route are on the trailing half of the screen.
@@ -34,7 +36,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     ///   - camera: The camera binding that represents the current camera on the map.
     ///   - navigationCamera: The default navigation camera. This sets the initial camera & is also used when the center
     /// on user button it tapped.
-    ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
+    ///   - navigationState: The current ferrostar navigation state provided by the Ferrostar core.
+    ///   - minimumSafeAreaInsets: The minimum padding to apply from safe edges. See `complementSafeAreaInsets`.
     ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the
     /// exit button is hidden.
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
@@ -43,11 +46,13 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         camera: Binding<MapViewCamera>,
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
+        minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
+        self.minimumSafeAreaInsets = minimumSafeAreaInsets
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
@@ -88,7 +93,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     midLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
-                }.complementSafeAreaInsets(parentGeometry: geometry)
+                }.complementSafeAreaInsets(parentGeometry: geometry, minimumInset: minimumSafeAreaInsets)
             }
         }
     }
