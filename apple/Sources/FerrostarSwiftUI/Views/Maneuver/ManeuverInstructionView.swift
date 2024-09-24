@@ -24,6 +24,7 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
     ///   - text: The maneuver instruction.
     ///   - distanceToNextManeuver: The distance to the next step.
     ///   - maneuverView: The custom view representing the maneuver.
+    ///   - distanceFormatter: The formatter which controls distance localization.
     ///   - theme: The instruction row theme specifies attributes like colors and fonts for the row.
     public init(
         text: String,
