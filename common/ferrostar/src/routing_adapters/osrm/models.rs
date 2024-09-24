@@ -90,18 +90,17 @@ pub struct Annotation {
     pub max_speed: Vec<MaxSpeed>,
 }
 
-/// A flattened OSRM flavored annotation object.
-/// This represents the value for each annotation type and is typically surfaced for each
-/// geometry segment.
+/// An extended OSRM set of annotations.
+/// This captures attributes between two points of travel in the route geometry.
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct AnnotationValue {
-    pub distance: f64,
-    pub duration: f64,
+    pub distance: f32,
+    pub duration: f32,
     /// The speed limit for this geometry segment in meters per second.
     /// If the speed limit is unknown, this will be `None`.
-    pub max_speed_mps: Option<f64>,
-    /// The expected travel speed.
-    pub speed_mps: f64,
+    pub speed_limit: Option<f32>,
+    /// The estimated travel speed, in meters/second.
+    pub estimated_speed: f32,
 }
 
 /// The MaxSpeed units that can be associated with annotations.

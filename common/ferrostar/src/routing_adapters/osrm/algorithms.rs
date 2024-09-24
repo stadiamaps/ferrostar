@@ -2,7 +2,7 @@ use super::models::{Annotation, AnnotationValue, MaxSpeed, MaxSpeedUnits};
 use itertools::izip;
 
 /// Get's he slice of annotations
-pub fn get_annotation_slice(
+pub(crate) fn get_annotation_slice(
     start_index: usize,
     end_index: usize,
     annotations: Option<Vec<AnnotationValue>>,
@@ -19,8 +19,9 @@ pub fn get_annotation_slice(
     };
 }
 
-/// Converts all single value annotation vectors into a single vector of values.
-pub fn zip_annotations(annotations: Annotation) -> Vec<AnnotationValue> {
+/// Converts the the OSRM-style annotation object consisting of separate arrays
+/// to a single vector of parsed objects (one for each coordinate pair).
+pub(crate) fn zip_annotations(annotations: Annotation) -> Vec<AnnotationValue> {
     izip!(
         annotations.distance,
         annotations.duration,
