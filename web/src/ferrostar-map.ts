@@ -40,11 +40,11 @@ export class FerrostarMap extends LitElement {
   httpClient?: Function = fetch;
 
   // TODO: type
-  @property({ type: Object })
+  @property({ type: Object, attribute: false })
   locationProvider!: any;
 
   // TODO: type
-  @property({ type: Object })
+  @property({ type: Object, attribute: false })
   costingOptions: object = {};
 
   // TODO: type
@@ -52,20 +52,20 @@ export class FerrostarMap extends LitElement {
   protected _tripState: any = null;
 
   // Configures the control on first load.
-  @property({ type: Function })
+  @property({ type: Function, attribute: false })
   configureMap?: (map: Map) => void;
 
-  @property({ type: Function })
+  @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
 
-  @property({ type: Function })
+  @property({ type: Function, attribute: false })
   onNavigationStop?: (map: Map) => void;
 
   /**
    *  Styles to load which will apply inside the component
    *  (ex: for MapLibre plugins)
    */
-  @property({ type: Object })
+  @property({ type: Object, attribute: false })
   customStyles?: object | null;
 
   /**
