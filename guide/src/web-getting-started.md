@@ -137,7 +137,10 @@ to get the user’s location asynchronously (using a cached one if available).
 Use this to get the user’s location in the correct format.
 
 ```typescript
-const location = await ferrostar.locationProvider.getCurrentLocation();
+// Fetch the user's current location.
+// If we have a cached one that's no older than 30 seconds,
+// skip waiting for an update and use the slightly stale location.
+const location = await ferrostar.locationProvider.getCurrentLocation(30_000);
 ```
 
 ## Getting routes

@@ -66,7 +66,10 @@
               ferrostar.locationProvider = new BrowserLocationProvider();
             }
 
-            const location = await ferrostar.locationProvider.getCurrentLocation();
+            // Fetch the user's current location.
+            // If we have a cached one that's no older than 30 seconds,
+            // skip waiting for an update and use the slightly stale location.
+            const location = await ferrostar.locationProvider.getCurrentLocation(30_000);
 
             // Use the acquired user location to request the route
             const routes = await ferrostar.getRoutes(location, waypoints);

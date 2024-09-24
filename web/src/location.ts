@@ -112,27 +112,24 @@ export class BrowserLocationProvider {
 
   /**
    * Gets the current location of the user asynchronously.
-   * If a cached location is available from within the last 30 seconds,
-   * it will be returned instantly.
-   * If no cached location is available,
-   * the Geolocation API will be used to fetch one.
+   *
+   * @param staleThresholdMilliseconds If a previously retrieved location is available,
+   * it will be returned immediately as long as it is no older than the specified
+   * number of milliseconds.
    */
-  getCurrentLocation(): Promise<object> {
+  getCurrentLocation(staleThresholdMilliseconds: number): Promise<object> {
     if (!navigator.geolocation) {
       return new Promise<object>((_, reject) => {
         reject("This navigator does not support geolocation.")
       });
     }
 
-    const thirtySecondsAgo = new Date().getTime() - 30_000;
-    if (this.lastLocation && this.lastLocation.timestamp > thirtySecondsAgo) {
-      console.log("Using cached location");
+    const staleCutoff = new Date().getTime() - staleThresholdMilliseconds;
+    if (this.lastLocation && this.lastLocation.timestamp > staleCutoff) {
       return this.lastLocation;
     } else {
       return new Promise<object>((resolve, reject) => {
-        console.log("Waiting for location.");
         navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-          console.log("Received location.");
           const userLocation = ferrostarUserLocation(position);
           this.lastLocation = userLocation;
           resolve(userLocation);
