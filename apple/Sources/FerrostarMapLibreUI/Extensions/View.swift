@@ -24,7 +24,10 @@ extension View {
     ///    |                                                             |
     ///    +-------------------------------------------------------------+
     /// ```
-    func complementSafeAreaInsets(parentGeometry: GeometryProxy, minimumInset: CGFloat = 16) -> some View {
+    func complementSafeAreaInsets(
+        parentGeometry: GeometryProxy,
+        minimumInset: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
+    ) -> some View {
         ComplementingSafeAreaView(content: self, parentGeometry: parentGeometry, minimumInset: minimumInset)
     }
 
@@ -43,17 +46,17 @@ struct ComplementingSafeAreaView<V: View>: View {
     var content: V
 
     var parentGeometry: GeometryProxy
-    var minimumInset: CGFloat
+    var minimumInset: EdgeInsets
 
     @State
     var childInsets: EdgeInsets = .init()
 
-    static func complement(parentInset: EdgeInsets, minimumInset: CGFloat) -> EdgeInsets {
+    static func complement(parentInset: EdgeInsets, minimumInset: EdgeInsets) -> EdgeInsets {
         var innerInsets = parentInset
-        innerInsets.top = max(0, minimumInset - parentInset.top)
-        innerInsets.bottom = max(0, minimumInset - parentInset.bottom)
-        innerInsets.leading = max(0, minimumInset - parentInset.leading)
-        innerInsets.trailing = max(0, minimumInset - parentInset.trailing)
+        innerInsets.top = max(0, minimumInset.top - parentInset.top)
+        innerInsets.bottom = max(0, minimumInset.bottom - parentInset.bottom)
+        innerInsets.leading = max(0, minimumInset.leading - parentInset.leading)
+        innerInsets.trailing = max(0, minimumInset.trailing - parentInset.trailing)
         return innerInsets
     }
 
