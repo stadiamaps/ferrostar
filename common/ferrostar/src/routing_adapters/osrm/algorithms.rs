@@ -19,7 +19,8 @@ pub(crate) fn get_annotation_slice(
     };
 }
 
-/// Converts all single value annotation vectors into a single vector of values.
+/// Converts the the OSRM-style annotation object consisting of separate arrays
+/// to a single vector of parsed objects (one for each coordinate pair).
 pub(crate) fn zip_annotations(annotations: Annotation) -> Vec<AnnotationValue> {
     izip!(
         annotations.distance,
