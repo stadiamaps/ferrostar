@@ -111,6 +111,8 @@ ferrostar.costingOptions = { bicycle: { use_roads: 0.2 } };
 
 Other frameworks, like Vue, have more native support for web components.
 In Vue, you can write “markup” in your components like this!
+Though note that the properties need to be written as camelCase!
+Some IDEs do not correctly suggest code completion for non-Vue components.
 
 ```javascript
 <ferrostar-web
@@ -118,7 +120,7 @@ In Vue, you can write “markup” in your components like this!
   valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
   styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
   profile="bicycle"
-  :location-provider="new BrowserLocationProvider()"
+  :locationProvider="new BrowserLocationProvider()"
   :center="{lng: -122.42, lat: 37.81}"
   :zoom=18
   :useVoiceGuidance=true
