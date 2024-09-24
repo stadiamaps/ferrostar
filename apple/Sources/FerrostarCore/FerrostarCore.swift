@@ -83,7 +83,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     private let networkSession: URLRequestLoading
     private let routeProvider: RouteProvider
-    private let locationProvider: LocationProviding
+    public let locationProvider: LocationProviding
     private var navigationController: NavigationControllerProtocol?
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil

@@ -80,6 +80,7 @@ struct DemoNavigationView: View {
                 navigationState: ferrostarCore.state,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
+                    /*
                     let source = ShapeSource(identifier: "userLocation") {
                         // Demonstrate how to add a dynamic overlay;
                         // also incidentally shows the extent of puck lag
@@ -88,8 +89,10 @@ struct DemoNavigationView: View {
                         }
                     }
                     CircleStyleLayer(identifier: "foo", source: source)
+                     */
                 }
             )
+            /*
             .innerGrid(
                 topCenter: {
                     if let errorMessage {
@@ -145,8 +148,15 @@ struct DemoNavigationView: View {
                     }
                 }
             )
+             */
             .task {
                 await getRoutes()
+                do {
+                    try await startNavigation()
+                } catch {
+                    print("DemoApp: error starting navigation: \(error)")
+                }
+                
             }
         }
     }
@@ -216,6 +226,7 @@ struct DemoNavigationView: View {
             return "No location - authed as \(locationProvider.authorizationStatus)"
         }
 
+        
         return "±\(Int(userLocation.horizontalAccuracy))m accuracy"
     }
 

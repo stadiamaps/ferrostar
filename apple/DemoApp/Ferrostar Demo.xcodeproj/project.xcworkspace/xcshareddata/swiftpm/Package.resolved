@@ -1,13 +1,12 @@
 {
-  "originHash" : "744a0ae659b64807871ea942d6e59965bff2d0e86920ea6d1ba0dc9587578660",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "abe762f1e19e03a4c6943d2aad92c219da384b29",
-        "version" : "6.5.4"
+        "revision" : "def156895a9ce38ea9bf9632c1e2272280ce0ae3",
+        "version" : "6.6.0"
       }
     },
     {
@@ -38,6 +37,15 @@
       }
     },
     {
+      "identity" : "swift-snapshot-testing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
+      "state" : {
+        "revision" : "7b0bbbae90c41f848f90ac7b4df6c4f50068256d",
+        "version" : "1.17.5"
+      }
+    },
+    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
@@ -47,5 +55,5 @@
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }

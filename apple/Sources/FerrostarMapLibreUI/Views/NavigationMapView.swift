@@ -17,10 +17,16 @@ public struct NavigationMapView: View {
     var mapViewContentInset: UIEdgeInsets = .zero
     var onStyleLoaded: (MLNStyle) -> Void
     let userLayers: [StyleLayerDefinition]
+    
+    let mapViewModifier: (MapView<MLNMapViewController>) -> AnyView
 
     // TODO: Configurable camera and user "puck" rotation modes
 
-    private var navigationState: NavigationState?
+    private var navigationState: NavigationState? {
+        didSet {
+            print("Navigation state: \(navigationState)")
+        }
+    }
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
 
@@ -41,15 +47,20 @@ public struct NavigationMapView: View {
         camera: Binding<MapViewCamera>,
         navigationState: NavigationState?,
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
-        @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
+        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
+        mapViewModifier: @escaping (MapView<MLNMapViewController>) -> AnyView = { transferView in
+            AnyView(transferView)
+        }
     ) {
         self.styleURL = styleURL
         _camera = camera
         self.navigationState = navigationState
         self.onStyleLoaded = onStyleLoaded
-        userLayers = makeMapContent()
+        self.userLayers = makeMapContent()
+        self.mapViewModifier = mapViewModifier
     }
 
+    @ViewBuilder
     public var body: some View {
         MapView(
             styleURL: styleURL,
@@ -79,6 +90,7 @@ public struct NavigationMapView: View {
             // No controls
         }
         .onStyleLoaded(onStyleLoaded)
+        .applyTransform(transform: mapViewModifier)
         .ignoresSafeArea(.all)
     }
 
@@ -93,6 +105,16 @@ public struct NavigationMapView: View {
         }
     }
 }
+
+extension MapView<MLNMapViewController> {
+    @ViewBuilder
+    func applyTransform<Content: View>(
+        transform: (MapView<MLNMapViewController>) -> Content
+    ) -> Content {
+        transform(self)
+    }
+}
+
 
 #Preview("Navigation Map View") {
     // TODO: Make map URL configurable but gitignored
