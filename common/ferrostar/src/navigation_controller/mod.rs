@@ -68,11 +68,10 @@ impl NavigationController {
         let spoken_instruction = current_route_step
             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
             .cloned();
-        let annotation_bytes = if let Some(current_index) = current_step_geometry_index {
-            current_route_step.get_current_annotation_json(current_index)
-        } else {
-            None
-        };
+
+        let annotation_bytes = current_step_geometry_index
+            .map(|index| current_route_step.get_current_annotation_json(index))
+            .flatten();
 
         TripState::Navigating {
             current_step_geometry_index,
@@ -151,12 +150,9 @@ impl NavigationController {
                         let spoken_instruction = current_step
                             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
-                        let annotation_bytes =
-                            if let Some(at_coordinate_index) = current_step_geometry_index {
-                                current_step.get_current_annotation_json(*at_coordinate_index)
-                            } else {
-                                None
-                            };
+                        let annotation_bytes = current_step_geometry_index
+                            .map(|index| current_route_step.get_current_annotation_json(index))
+                            .flatten();
 
                         TripState::Navigating {
                             current_step_geometry_index: *current_step_geometry_index,
@@ -272,12 +268,9 @@ impl NavigationController {
                             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
 
-                        let annotation_bytes =
-                            if let Some(at_coordinate_index) = current_step_geometry_index {
-                                current_step.get_current_annotation_json(at_coordinate_index)
-                            } else {
-                                None
-                            };
+                        let annotation_bytes = current_step_geometry_index
+                            .map(|index| current_step.get_current_annotation_json(index))
+                            .flatten();
 
                         TripState::Navigating {
                             current_step_geometry_index,

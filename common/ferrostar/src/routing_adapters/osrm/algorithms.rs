@@ -2,7 +2,7 @@ use super::models::{Annotation, AnnotationValue, MaxSpeed, MaxSpeedUnits};
 use itertools::izip;
 
 /// Get's he slice of annotations
-pub fn get_annotation_slice(
+pub(crate) fn get_annotation_slice(
     start_index: usize,
     end_index: usize,
     annotations: Option<Vec<AnnotationValue>>,
@@ -20,7 +20,7 @@ pub fn get_annotation_slice(
 }
 
 /// Converts all single value annotation vectors into a single vector of values.
-pub fn zip_annotations(annotations: Annotation) -> Vec<AnnotationValue> {
+pub(crate) fn zip_annotations(annotations: Annotation) -> Vec<AnnotationValue> {
     izip!(
         annotations.distance,
         annotations.duration,
@@ -37,7 +37,7 @@ pub fn zip_annotations(annotations: Annotation) -> Vec<AnnotationValue> {
 }
 
 /// Converts a max speed value to meters per second.
-pub fn convert_max_speed_to_mps(max_speed: MaxSpeed) -> Option<f64> {
+pub(crate) fn convert_max_speed_to_mps(max_speed: MaxSpeed) -> Option<f64> {
     match max_speed {
         MaxSpeed::Known { speed, unit } => match unit {
             MaxSpeedUnits::KilometersPerHour => return Some(speed * 0.27778),
