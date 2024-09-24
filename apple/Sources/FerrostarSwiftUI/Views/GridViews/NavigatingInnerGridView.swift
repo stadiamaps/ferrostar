@@ -29,17 +29,14 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     /// On landscape mode it is the trailing half of the screen.
     ///
     /// - Parameters:
-    ///   - theme: The ferrostar theme is used to control the default styling and formatters
     ///   - speedLimit: The speed limit provided by the navigation state (or nil)
-    ///   - showZoom: Whether to show the zoom control or not. This is typically yes.
+    ///   - showZoom: Whether to show the provided zoom control or not.
     ///   - onZoomIn: The on zoom in tapped action. This should be used to zoom the user in one increment.
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
     ///   - showCentering: Whether to show the centering control. This is typically determined by the Map's centering
     /// state.
-    ///   - onTapCenter: The action that occurs when the user taps the centering control. Typically re-centering the
-    /// user.
-    ///   - topCenter: The customizable top center view. This is recommended for navigation alerts (e.g. toast style
-    ///         notices).
+    ///   - onCenter: The action that occurs when the user taps the centering control (to re-center the
+    /// map on the user).
     public init(
         speedLimit: Measurement<UnitSpeed>? = nil,
         showZoom: Bool = false,

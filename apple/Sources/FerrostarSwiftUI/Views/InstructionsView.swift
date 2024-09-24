@@ -22,9 +22,11 @@ public struct InstructionsView: View {
     ///
     /// - Parameters:
     ///   - visualInstruction: The visual instruction to display.
+    ///   - distanceFormatter: The formatter which controls distance localization.
     ///   - distanceToNextManeuver: The distance remaining for the step.
     ///   - primaryRowTheme: The theme for the primary instruction.
     ///   - secondaryRowTheme: The theme for the secondary instruction.
+    ///   - showPillControl: If true, shows a pill control (to indicate an action/expansion).
     public init(
         visualInstruction: VisualInstruction,
         distanceFormatter: Formatter = DefaultFormatters.distanceFormatter,
