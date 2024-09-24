@@ -29,7 +29,7 @@ if useLocalMapLibreSwiftUIDSL {
     maplibreSwiftUIDSLPackage = .package(path: "../maplibre-swiftui-dsl-playground")
 } else {
     maplibreSwiftUIDSLPackage = .package(
-        url: "https://github.com/stadiamaps/maplibre-swiftui-dsl-playground",
+        url: "https://github.com/maplibre/swiftui-dsl",
         from: "0.0.23"
     )
 }
@@ -74,8 +74,8 @@ let package = Package(
             name: "FerrostarMapLibreUI",
             dependencies: [
                 .target(name: "FerrostarCore"),
-                .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
-                .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
+                .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
+                .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
             ],
             path: "apple/Sources/FerrostarMapLibreUI"
         ),
