@@ -201,15 +201,15 @@ export class FerrostarMap extends LitElement {
 
     this.map.addControl(this.geolocateControl);
 
-    if (this.geolocateOnLoad) {
-      this.map.on('load', () => {
+    this.map.on('load', (e) => {
+      if (this.geolocateOnLoad) {
         this.geolocateControl?.trigger();
-      });
-    }
+      }
 
-    if (this.configureMap !== undefined) {
-      this.configureMap(this.map);
-    }
+      if (this.configureMap !== undefined) {
+        this.configureMap(e.target);
+      }
+    });
   }
 
   // TODO: type
