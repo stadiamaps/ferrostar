@@ -26,7 +26,7 @@ export function ferrostarUserLocation(position: GeolocationPosition): object {
 }
 
 export class SimulatedLocationProvider {
-  private simulationState = null;
+  private simulationState: any | null = null;
   private isRunning = false;
 
   lastLocation = null;
@@ -37,6 +37,7 @@ export class SimulatedLocationProvider {
 
   setSimulatedRoute(route: any) {
     this.simulationState = locationSimulationFromRoute(route, 10.0);
+    this.lastLocation = this.simulationState?.current_location;
     this.start();
   }
 
