@@ -93,7 +93,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     midLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
-                }.complementSafeAreaInsets(parentGeometry: geometry, minimumInset: minimumSafeAreaInsets)
+                }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
         }
     }

@@ -1,11 +1,11 @@
 import SwiftUI
 
 extension View {
-    /// Given the view's `geometry`, synchronizes `childInsets`, such that
-    /// accumulating the child's insets with the parents insets, will be at least `minimumInset`.
+    /// Given the parent view's `geometry`, synchronizes this views `safeAreaInsets`, such that
+    /// accumulating this view's insets with the parents insets, will be at least `minimumInset`.
     ///
     /// ```
-    ///    Given a minimumInset of 16:
+    ///    Given minimumInsets of 16:
     ///    +-------------------------------------------------------------+
     ///    |                       `parentGeometry`                      |
     ///    |   +-----------------------------------------------------+   |
@@ -26,9 +26,9 @@ extension View {
     /// ```
     func complementSafeAreaInsets(
         parentGeometry: GeometryProxy,
-        minimumInset: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
+        minimumInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16)
     ) -> some View {
-        ComplementingSafeAreaView(content: self, parentGeometry: parentGeometry, minimumInset: minimumInset)
+        ComplementingSafeAreaView(content: self, parentGeometry: parentGeometry, minimumInsets: minimumInsets)
     }
 
     /// Do something reasonable-ish for clients that don't yet support
@@ -46,28 +46,28 @@ struct ComplementingSafeAreaView<V: View>: View {
     var content: V
 
     var parentGeometry: GeometryProxy
-    var minimumInset: EdgeInsets
+    var minimumInsets: EdgeInsets
 
     @State
     var childInsets: EdgeInsets = .init()
 
-    static func complement(parentInset: EdgeInsets, minimumInset: EdgeInsets) -> EdgeInsets {
-        var innerInsets = parentInset
-        innerInsets.top = max(0, minimumInset.top - parentInset.top)
-        innerInsets.bottom = max(0, minimumInset.bottom - parentInset.bottom)
-        innerInsets.leading = max(0, minimumInset.leading - parentInset.leading)
-        innerInsets.trailing = max(0, minimumInset.trailing - parentInset.trailing)
+    static func complement(parentInsets: EdgeInsets, minimumInsets: EdgeInsets) -> EdgeInsets {
+        var innerInsets = parentInsets
+        innerInsets.top = max(0, minimumInsets.top - parentInsets.top)
+        innerInsets.bottom = max(0, minimumInsets.bottom - parentInsets.bottom)
+        innerInsets.leading = max(0, minimumInsets.leading - parentInsets.leading)
+        innerInsets.trailing = max(0, minimumInsets.trailing - parentInsets.trailing)
         return innerInsets
     }
 
     var body: some View {
         content.onAppear {
             childInsets = ComplementingSafeAreaView.complement(
-                parentInset: parentGeometry.safeAreaInsets,
-                minimumInset: minimumInset
+                parentInsets: parentGeometry.safeAreaInsets,
+                minimumInsets: minimumInsets
             )
         }.onChange(of: parentGeometry.safeAreaInsets) { newValue in
-            childInsets = ComplementingSafeAreaView.complement(parentInset: newValue, minimumInset: minimumInset)
+            childInsets = ComplementingSafeAreaView.complement(parentInsets: newValue, minimumInsets: minimumInsets)
         }.safeAreaPaddingPolyfill(childInsets)
     }
 }
