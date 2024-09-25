@@ -42,12 +42,12 @@ class FusedLocationProvider(
       return
     }
 
-    val locationListener = LocationListener {
+    val androidListener = LocationListener {
       val userLocation = it.toUserLocation()
       lastLocation = userLocation
       listener.onLocationUpdated(userLocation)
     }
-    listeners[listener] = locationListener
+    listeners[listener] = androidListener
 
     val locationRequest =
         LocationRequest.Builder(priority, 1000L)
@@ -55,7 +55,14 @@ class FusedLocationProvider(
             .setWaitForAccurateLocation(false)
             .build()
 
-    fusedLocationProviderClient.requestLocationUpdates(locationRequest, executor, locationListener)
+    if (lastLocation == null) {
+      fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+        if (location != null) {
+          androidListener.onLocationChanged(location)
+        }
+      }
+    }
+    fusedLocationProviderClient.requestLocationUpdates(locationRequest, executor, androidListener)
   }
 
   override fun removeListener(listener: LocationUpdateListener) {
