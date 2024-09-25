@@ -64,11 +64,16 @@ dependencies {
     implementation project(':core')
     implementation project(':composeui')
     implementation project(':maplibreui')
+    implementation project(':google-play-services')
 
     implementation libs.maplibre.compose
 
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp.core)
+    implementation platform(libs.okhttp.bom)
+    implementation libs.okhttp.core
+
+    implementation libs.play.services.location
+
+    implementation libs.stadiamaps.autocomplete.search
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit

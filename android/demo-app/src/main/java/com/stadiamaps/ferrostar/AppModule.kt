@@ -8,10 +8,11 @@ import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
+import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
-import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
+import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
@@ -56,7 +57,10 @@ object AppModule {
     appContext = context
   }
 
-  val locationProvider: SimulatedLocationProvider by lazy { SimulatedLocationProvider() }
+  val locationProvider: LocationProvider by lazy {
+    // TODO: Make this configurable?
+    FusedLocationProvider(appContext)
+  }
   private val httpClient: OkHttpClient by lazy {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
   }
@@ -65,11 +69,12 @@ object AppModule {
     FerrostarForegroundServiceManager(appContext, DefaultForegroundNotificationBuilder(appContext))
   }
 
+  // TODO: This is hard-coded for golf cart routing; change to something else before merging
   val ferrostarCore: FerrostarCore by lazy {
     val core =
         FerrostarCore(
             valhallaEndpointURL = valhallaEndpointUrl,
-            profile = "bicycle",
+            profile = "low_speed_vehicle",
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
@@ -79,7 +84,16 @@ object AppModule {
                         minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
                     RouteDeviationTracking.StaticThreshold(15U, 25.0),
                     CourseFiltering.SNAP_TO_ROUTE),
-            options = mapOf("costingOptions" to mapOf("bicycle" to mapOf("use_roads" to 0.2))))
+            options =
+                mapOf(
+                    "costingOptions" to
+                        mapOf(
+                            "low_speed_vehicle" to
+                                mapOf(
+                                    "vehicle_type" to "golf_cart",
+                                    "top_speed" to 32 // 24kph ~= 15mph
+                                    )),
+                    "units" to "miles"))
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!
@@ -93,13 +107,7 @@ object AppModule {
       Log.i(TAG, "Received alternate route(s): $routes")
       if (routes.isNotEmpty()) {
         // NB: Use `replaceRoute` for cases like this!
-        it.replaceRoute(
-            routes.first(),
-            NavigationControllerConfig(
-                StepAdvanceMode.RelativeLineStringDistance(
-                    minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                RouteDeviationTracking.StaticThreshold(25U, 10.0),
-                CourseFiltering.SNAP_TO_ROUTE))
+        it.replaceRoute(routes.first())
       }
     }
 

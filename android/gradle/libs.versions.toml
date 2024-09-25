@@ -24,6 +24,7 @@ okhttp-mock = "2.0.0"
 mavenPublish = "0.29.0"
 secretsGradlePlugin = "2.0.1"
 material = "1.12.0"
+stadiaAutocompleteSearch = "0.0.5"
 
 [libraries]
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
@@ -64,6 +65,7 @@ androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "junitCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+stadiamaps-autocomplete-search = { group = "com.stadiamaps", name = "jetpack-compose-autocomplete", version.ref = "stadiaAutocompleteSearch" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
