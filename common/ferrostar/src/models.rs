@@ -404,6 +404,7 @@ pub enum ManeuverType {
 #[cfg_attr(any(test, feature = "wasm-bindgen"), derive(Serialize))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverModifier {
+    #[serde(rename = "uturn")]
     UTurn,
     #[serde(rename = "sharp right")]
     SharpRight,
