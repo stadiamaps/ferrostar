@@ -40,11 +40,11 @@ export class FerrostarMap extends LitElement {
   httpClient?: Function = fetch;
 
   // TODO: type
-  @property({ type: Object })
+  @property({ type: Object, attribute: false })
   locationProvider!: any;
 
   // TODO: type
-  @property({ type: Object })
+  @property({ type: Object, attribute: false })
   costingOptions: object = {};
 
   // TODO: type
@@ -52,20 +52,20 @@ export class FerrostarMap extends LitElement {
   protected _tripState: any = null;
 
   // Configures the control on first load.
-  @property({ type: Function })
+  @property({ type: Function, attribute: false })
   configureMap?: (map: Map) => void;
 
-  @property({ type: Function })
+  @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
 
-  @property({ type: Function })
+  @property({ type: Function, attribute: false })
   onNavigationStop?: (map: Map) => void;
 
   /**
    *  Styles to load which will apply inside the component
    *  (ex: for MapLibre plugins)
    */
-  @property({ type: Object })
+  @property({ type: Object, attribute: false })
   customStyles?: object | null;
 
   /**
@@ -201,15 +201,15 @@ export class FerrostarMap extends LitElement {
 
     this.map.addControl(this.geolocateControl);
 
-    if (this.geolocateOnLoad) {
-      this.map.on('load', () => {
+    this.map.on('load', (e) => {
+      if (this.geolocateOnLoad) {
         this.geolocateControl?.trigger();
-      });
-    }
+      }
 
-    if (this.configureMap !== undefined) {
-      this.configureMap(this.map);
-    }
+      if (this.configureMap !== undefined) {
+        this.configureMap(e.target);
+      }
+    });
   }
 
   // TODO: type

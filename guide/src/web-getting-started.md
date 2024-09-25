@@ -109,8 +109,13 @@ ferrostar.zoom = 18;
 ferrostar.costingOptions = { bicycle: { use_roads: 0.2 } };
 ```
 
-Other frameworks, like Vue, have more native support for web components.
+Other frameworks, like Vue, have better support for web components.
 In Vue, you can write “markup” in your components like this!
+However, there are a few gotchas.
+The properties need to be written as camelCase, for one,
+and some IDEs do not correctly suggest code completion.
+You’ll also want to continue using JS (ex: via the `onMounted` hook in Vue)
+for most complex properties like functions.
 
 ```javascript
 <ferrostar-web
@@ -118,11 +123,10 @@ In Vue, you can write “markup” in your components like this!
   valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
   styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
   profile="bicycle"
-  :location-provider="new BrowserLocationProvider()"
   :center="{lng: -122.42, lat: 37.81}"
-  :zoom=18
-  :useVoiceGuidance=true
-  :geolocateOnLoad=true
+  :zoom="18"
+  :useVoiceGuidance="true"
+  :geolocateOnLoad="true"
 ></ferrostar-web>
 ```
 
