@@ -93,6 +93,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     private var config: SwiftNavigationControllerConfig
 
+    /// Initializes a core instance with the given parameters.
+    ///
+    /// This designated initializer is the most flexible, but the convenience ones may be easier to use.
+    /// for common configuraitons.
     public init(
         routeProvider: RouteProvider,
         locationProvider: LocationProviding,
@@ -110,6 +114,14 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.delegate = self
     }
 
+    /// Initializes a core instance for a Valhalla API accessed over HTTP.
+    ///
+    /// - Parameters
+    ///   - valhallaEndpointUrl: The URL of the Valhalla endpoint you're trying to hit for route requests. If necessary, include your API key here.
+    ///   - profile: The Valhalla costing model to use for route requests.
+    ///   - navigationControllerConfig: Configuration of the navigation session.
+    ///   - options: A dictionary of options to include in the request. The Valhalla request generator sets several automatically (like `format`), but this lets you add arbitrary options so you can access the full API.
+    ///   - networkSession: The network session to use. Don't set this unless you need to replace the networking stack (ex: for testing).
     public convenience init(
         valhallaEndpointUrl: URL,
         profile: String,
