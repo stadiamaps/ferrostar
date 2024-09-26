@@ -51,9 +51,10 @@ pub struct ValhallaHttpRequestGenerator {
 
 impl ValhallaHttpRequestGenerator {
     /// Creates a new Valhalla request generator given an endpoint URL, a profile name,
-    /// and options (which will update the minimal defaults set internally).
+    /// and options to include in the request JSON.
     ///
-    /// NOTE: If options is `None` or a non-object, it will be interpreted as an empty object.
+    /// NOTE: If options is `None` or a non-object,
+    /// it will be ignored and have no effect on routing requests.
     pub fn new(endpoint_url: String, profile: String, options: Option<JsonValue>) -> Self {
         Self {
             endpoint_url,
@@ -63,8 +64,10 @@ impl ValhallaHttpRequestGenerator {
     }
 
     /// Creates a new Valhalla request generator given an endpoint URL, a profile name,
-    /// and options (which will update the minimal defaults set internally).
-    /// NOTE: If options is `None` or a non-object, it will be interpreted as an empty object.
+    /// and options to include in the request JSON.
+    ///
+    /// NOTE: If options is `None` or a non-object,
+    /// it will be ignored and have no effect on routing requests.
     pub fn with_options_json(
         endpoint_url: String,
         profile: String,
