@@ -84,6 +84,8 @@ impl ValhallaHttpRequestGenerator {
     /// Options in this constructor are a JSON fragment representing any
     /// options you want to add along with the request.
     ///
+    /// # Examples
+    ///
     /// ```
     /// # use ferrostar::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
     /// let options = r#"{
@@ -92,7 +94,7 @@ impl ValhallaHttpRequestGenerator {
     ///             "vehicle_type": "golf_cart"
     ///         }
     ///     }
-    /// }"#.to_string();
+    /// }"#;
     ///
     /// // Without options
     /// let request_generator_no_opts = ValhallaHttpRequestGenerator::with_options_json(
@@ -111,9 +113,9 @@ impl ValhallaHttpRequestGenerator {
     pub fn with_options_json(
         endpoint_url: String,
         profile: String,
-        costing_options_json: Option<String>,
+        options_json: Option<&str>,
     ) -> Result<Self, InstantiationError> {
-        let parsed_options = match costing_options_json.as_deref() {
+        let parsed_options = match options_json.as_deref() {
             // TODO: Another error variant
             Some(options) => serde_json::from_str::<JsonValue>(options)?
                 .as_object()
@@ -259,7 +261,7 @@ mod tests {
     fn generate_body(
         user_location: UserLocation,
         waypoints: Vec<Waypoint>,
-        options_json: Option<String>,
+        options_json: Option<&str>,
     ) -> JsonValue {
         let generator = ValhallaHttpRequestGenerator::with_options_json(
             ENDPOINT_URL.to_string(),
@@ -357,7 +359,7 @@ mod tests {
         let body_json = generate_body(
             USER_LOCATION,
             WAYPOINTS.to_vec(),
-            Some(r#"["costing_options"]"#.to_string()),
+            Some(r#"["costing_options"]"#),
         );
 
         assert!(body_json["costing_options"].is_null());
@@ -368,7 +370,7 @@ mod tests {
         let body_json = generate_body(
             USER_LOCATION,
             WAYPOINTS.to_vec(),
-            Some(r#"{"costing_options": {"bicycle": {"bicycle_type": "Road"}}}"#.to_string()),
+            Some(r#"{"costing_options": {"bicycle": {"bicycle_type": "Road"}}}"#),
         );
 
         assert_json_include!(
@@ -388,10 +390,7 @@ mod tests {
         let body_json = generate_body(
             USER_LOCATION,
             WAYPOINTS.to_vec(),
-            Some(
-                r#"{"units": "mi", "costing_options": {"bicycle": {"bicycle_type": "Road"}}}"#
-                    .to_string(),
-            ),
+            Some(r#"{"units": "mi", "costing_options": {"bicycle": {"bicycle_type": "Road"}}}"#),
         );
 
         assert_json_include!(

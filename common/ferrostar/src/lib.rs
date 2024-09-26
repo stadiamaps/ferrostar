@@ -87,7 +87,7 @@ fn create_valhalla_request_generator(
     Ok(Arc::new(ValhallaHttpRequestGenerator::with_options_json(
         endpoint_url,
         profile,
-        options_json,
+        options_json.as_deref(),
     )?))
 }
 
