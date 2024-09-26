@@ -6,7 +6,7 @@ use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstructio
 use alloc::vec::Vec;
 use geo::LineString;
 #[cfg(feature = "wasm-bindgen")]
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]

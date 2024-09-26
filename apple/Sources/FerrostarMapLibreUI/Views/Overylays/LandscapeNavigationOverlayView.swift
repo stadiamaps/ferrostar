@@ -48,19 +48,21 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         HStack {
             VStack {
                 if case .navigating = navigationState?.tripState,
-                    let visualInstruction = navigationState?.currentVisualInstruction,
-                    let progress = navigationState?.currentProgress {
+                   let visualInstruction = navigationState?.currentVisualInstruction,
+                   let progress = navigationState?.currentProgress
+                {
                     InstructionsView(
                         visualInstruction: visualInstruction,
                         distanceFormatter: formatterCollection.distanceFormatter,
                         distanceToNextManeuver: progress.distanceToNextManeuver
                     )
                 }
-                
+
                 Spacer()
 
                 if case .navigating = navigationState?.tripState,
-                    let progress = navigationState?.currentProgress {
+                   let progress = navigationState?.currentProgress
+                {
                     ArrivalView(
                         progress: progress,
                         onTapExit: onTapExit
