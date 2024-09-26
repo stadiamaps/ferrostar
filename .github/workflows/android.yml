@@ -36,8 +36,8 @@ jobs:
     - name: Install cargo-ndk
       run: cargo install cargo-ndk
 
-    - name: Touch local.properties (required for cargo-ndk)
-      run: touch local.properties
+    - name: Touch local.properties (required for build)
+      run: echo 'stadiaApiKey=' > local.properties
       working-directory: android
 
     - name: Build with Gradle
@@ -77,7 +77,7 @@ jobs:
       run: cargo install cargo-ndk
 
     - name: Touch local.properties (required for cargo-ndk)
-      run: touch local.properties
+      run: echo 'stadiaApiKey=' > local.properties
       working-directory: android
 
     - name: Verify Kotlin formatting
@@ -117,7 +117,7 @@ jobs:
       run: cargo install cargo-ndk
 
     - name: Touch local.properties (required for cargo-ndk)
-      run: touch local.properties
+      run: echo 'stadiaApiKey=' > local.properties
       working-directory: android
 
     - name: Unit test
@@ -166,7 +166,7 @@ jobs:
       run: cargo install cargo-ndk
 
     - name: Touch local.properties (required for cargo-ndk)
-      run: touch local.properties
+      run: echo 'stadiaApiKey=' > local.properties
       working-directory: android
 
     - name: Verify snapshots
@@ -215,8 +215,8 @@ jobs:
     - name: Install cargo-ndk
       run: cargo install cargo-ndk
 
-    - name: Touch local.properties (required for cargo-ndk)
-      run: touch local.properties
+    - name: Touch local.properties (required for build)
+      run: echo 'stadiaApiKey=' > local.properties
       working-directory: android
 
     - name: Run Connected Checks
