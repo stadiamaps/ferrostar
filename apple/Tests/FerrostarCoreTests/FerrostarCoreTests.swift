@@ -34,13 +34,14 @@ let mockRoute = Route(
         distance: 1,
         duration: 0,
         roadName: "foo road",
-        instruction: "Sail straight",
+        instruction: "Sail straight", // 🏴‍☠️⛵️
         visualInstructions: [VisualInstruction(
             primaryContent: instructionContent,
             secondaryContent: nil,
             triggerDistanceBeforeManeuver: 42
         )],
-        spokenInstructions: []
+        spokenInstructions: [],
+        annotations: nil
     )]
 )
 

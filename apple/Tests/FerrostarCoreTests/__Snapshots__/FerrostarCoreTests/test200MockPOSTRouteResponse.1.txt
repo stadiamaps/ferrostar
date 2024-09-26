@@ -17,6 +17,7 @@
         - lng: 1.0
     ▿ steps: 1 element
       ▿ RouteStep
+        - annotations: Optional<Array<String>>.none
         - distance: 1.0
         - duration: 0.0
         ▿ geometry: 2 elements
