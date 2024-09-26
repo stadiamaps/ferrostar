@@ -5,14 +5,13 @@ pub(crate) mod models;
 
 use super::RouteResponseParser;
 use crate::models::{
-    GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
+    AnyAnnotationValue, GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
     VisualInstructionContent, Waypoint, WaypointKind,
 };
 use crate::routing_adapters::algorithms::get_coordinates_from_geometry;
 use crate::routing_adapters::{
     osrm::models::{
-        AnnotationValue, Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep,
-        Waypoint as OsrmWaypoint,
+        Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep, Waypoint as OsrmWaypoint,
     },
     ParsingError, Route,
 };
@@ -92,18 +91,15 @@ impl Route {
                 .map(|coord| GeographicCoordinate::from(*coord))
                 .collect();
 
-            println!("Route geometry length: {}", geometry.len());
-
             let steps = route
                 .legs
                 .iter()
                 .flat_map(|leg| {
                     // Converts all single value annotation vectors into a single vector witih a value object.
-                    let annotations = if let Some(leg_annotation) = &leg.annotation {
-                        Some(algorithms::zip_annotations(leg_annotation.clone()))
-                    } else {
-                        None
-                    };
+                    let annotations = leg
+                        .annotation
+                        .as_ref()
+                        .map(|leg_annotation| algorithms::zip_annotations(leg_annotation.clone()));
 
                     // Index for the annotations slice
                     let mut start_index: usize = 0;
@@ -112,20 +108,18 @@ impl Route {
                         let step_geometry =
                             get_coordinates_from_geometry(&step.geometry, polyline_precision)?;
 
-                        // Slice the annotations for the current step. The annotations array represents segments between coordinates 
-                        // and is thus one element shorter than the geometry array. To account for this, we need to subtract 2 from 
-                        // the length of the geometry array on each step (one to account for the 0-based index, and one to account 
-                        // for the length difference).
-                        let step_index_len = step_geometry.len() - 2 as usize;
+                        // Slice the annotations for the current step.
+                        // The annotations array represents segments between coordinates.
+                        let step_index_len = step_geometry.len() - 1_usize;
                         let end_index = start_index + step_index_len;
 
                         let annotation_slice =
-                            get_annotation_slice(start_index, end_index, annotations.clone());
+                            get_annotation_slice(annotations.clone(), start_index, end_index).ok();
 
                         start_index = end_index;
 
                         return RouteStep::from_osrm_and_geom(
-                            &step,
+                            step,
                             step_geometry,
                             annotation_slice,
                         );
@@ -152,7 +146,7 @@ impl RouteStep {
     fn from_osrm_and_geom(
         value: &OsrmRouteStep,
         geometry: Vec<GeographicCoordinate>,
-        annotations: Option<Vec<AnnotationValue>>,
+        annotations: Option<Vec<AnyAnnotationValue>>,
     ) -> Result<Self, ParsingError> {
         let visual_instructions = value
             .banner_instructions
@@ -187,21 +181,15 @@ impl RouteStep {
             })
             .collect();
 
-        // Convert the annotations to a vectory of json byte objects.
+        // Convert the annotations to a vector of json strings.
+        // This allows us to safely pass the RouteStep through the FFI boundary.
         // The host platform can then parse an arbitrary annotation object.
-        let annotations_as_bytes = if let Some(annotations) = annotations {
-            let mapped: Result<Vec<Vec<u8>>, ParsingError> = annotations
+        let annotations_as_strings: Option<Vec<String>> = annotations.map(|annotations_vec| {
+            annotations_vec
                 .iter()
-                .map(|annotation| {
-                    serde_json::to_vec(annotation).map_err(|e| ParsingError::ParseError {
-                        error: e.to_string(),
-                    })
-                })
-                .collect();
-            Some(mapped?)
-        } else {
-            None
-        };
+                .map(|annotation| serde_json::to_string(annotation).unwrap())
+                .collect()
+        });
 
         Ok(RouteStep {
             geometry,
@@ -213,7 +201,7 @@ impl RouteStep {
             instruction: value.maneuver.get_instruction(),
             visual_instructions,
             spoken_instructions,
-            annotations: annotations_as_bytes,
+            annotations: annotations_as_strings,
         })
     }
 }
@@ -251,5 +239,37 @@ mod tests {
             .parse_response(VALHALLA_OSRM_RESPONSE_VIA_WAYS.into())
             .expect("Unable to parse Valhalla OSRM response");
         insta::assert_yaml_snapshot!(routes);
+    }
+
+    #[test]
+    fn parse_valhalla_asserting_annotation_lengths() {
+        let parser = OsrmResponseParser::new(6);
+        let routes = parser
+            .parse_response(VALHALLA_OSRM_RESPONSE.into())
+            .expect("Unable to parse Valhalla OSRM response");
+
+        // Loop through every step and validate that the length of the annotations
+        // matches the length of the geometry minus one. This is because each annotation
+        // represents a segment between two coordinates.
+        for (route_index, route) in routes.iter().enumerate() {
+            for (step_index, step) in route.steps.iter().enumerate() {
+                if step_index == route.steps.len() - 1 {
+                    // The arrival step is 2 of the same coordinates.
+                    // So annotations will be None.
+                    assert_eq!(step.annotations, None);
+                    continue;
+                }
+
+                let step = step.clone();
+                let annotations = step.annotations.expect("No annotations");
+                assert_eq!(
+                    annotations.len(),
+                    step.geometry.len() - 1,
+                    "Route {}, Step {}",
+                    route_index,
+                    step_index
+                );
+            }
+        }
     }
 }

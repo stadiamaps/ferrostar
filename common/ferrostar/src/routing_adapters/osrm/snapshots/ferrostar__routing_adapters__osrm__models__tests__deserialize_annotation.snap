@@ -1,0 +1,82 @@
+---
+source: ferrostar/src/routing_adapters/osrm/models.rs
+expression: annotation
+---
+AnyAnnotation {
+    values: {
+        "congestion": [
+            String("low"),
+            String("moderate"),
+            String("moderate"),
+            String("moderate"),
+            String("heavy"),
+            String("heavy"),
+            String("heavy"),
+            String("heavy"),
+        ],
+        "distance": [
+            Number(4.294596842089401),
+            Number(5.051172053200946),
+            Number(5.533254065167979),
+            Number(6.576513793849532),
+            Number(7.4449640160938015),
+            Number(8.468757534990829),
+            Number(15.202780313562714),
+            Number(7.056346577326572),
+        ],
+        "duration": [
+            Number(1),
+            Number(1.2),
+            Number(2),
+            Number(1.6),
+            Number(1.8),
+            Number(2),
+            Number(3.6),
+            Number(1.7),
+        ],
+        "maxspeed": [
+            Object {
+                "speed": Number(56),
+                "unit": String("km/h"),
+            },
+            Object {
+                "speed": Number(56),
+                "unit": String("km/h"),
+            },
+            Object {
+                "speed": Number(56),
+                "unit": String("km/h"),
+            },
+            Object {
+                "speed": Number(56),
+                "unit": String("km/h"),
+            },
+            Object {
+                "speed": Number(56),
+                "unit": String("km/h"),
+            },
+            Object {
+                "speed": Number(56),
+                "unit": String("km/h"),
+            },
+            Object {
+                "speed": Number(56),
+                "unit": String("km/h"),
+            },
+            Object {
+                "speed": Number(56),
+                "unit": String("km/h"),
+            },
+        ],
+        "speed": [
+            Number(4.3),
+            Number(4.2),
+            Number(2.8),
+            Number(4.1),
+            Number(4.1),
+            Number(4.2),
+            Number(4.2),
+            Number(4.2),
+        ],
+    },
+}

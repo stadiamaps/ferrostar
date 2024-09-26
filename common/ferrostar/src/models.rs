@@ -12,7 +12,8 @@ use alloc::{string::String, vec::Vec};
 use geo::{Coord, LineString, Point, Rect};
 #[cfg(feature = "uniffi")]
 use polyline::encode_coordinates;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
@@ -20,9 +21,7 @@ use std::time::SystemTime;
 #[cfg(feature = "web-time")]
 use web_time::SystemTime;
 
-#[cfg(any(test, feature = "wasm-bindgen"))]
-use serde::Serialize;
-
+use std::collections::BTreeMap;
 use uuid::Uuid;
 
 use crate::algorithms::get_linestring;
@@ -290,8 +289,8 @@ pub struct RouteStep {
     pub visual_instructions: Vec<VisualInstruction>,
     /// A list of prompts to announce (via speech synthesis) at specific points along the step.
     pub spoken_instructions: Vec<SpokenInstruction>,
-    /// A list of json attribute objects as a byte array.
-    pub annotations: Option<Vec<Vec<u8>>>,
+    /// A list of json encoded strings representing annotations between each coordinate along the step.
+    pub annotations: Option<Vec<String>>,
 }
 
 impl RouteStep {
@@ -338,18 +337,10 @@ impl RouteStep {
     /// Get the annotation data at a specific point along the step.
     ///
     /// `at_coordinate_index` is the index of the coordinate in the step geometry.
-    pub fn get_current_annotation_json(&self, at_coordinate_index: u64) -> Option<Vec<u8>> {
-        match &self.annotations {
-            None => return None,
-            Some(annotations) => {
-                if at_coordinate_index as usize >= annotations.len() {
-                    panic!("Index {at_coordinate_index} out of bounds for annotations");
-                }
-
-                let annotation = annotations[at_coordinate_index as usize].clone();
-                return Some(annotation);
-            }
-        }
+    pub fn get_current_annotation_json(&self, at_coordinate_index: u64) -> Option<String> {
+        self.annotations
+            .as_ref()
+            .and_then(|annotations| annotations.get(at_coordinate_index as usize).cloned())
     }
 }
 
@@ -466,6 +457,14 @@ pub struct VisualInstruction {
     pub secondary_content: Option<VisualInstructionContent>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
     pub trigger_distance_before_maneuver: f64,
+}
+
+/// A flat annotations string value map that can be used to store arbitrary
+/// annotation values.
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
+pub struct AnyAnnotationValue {
+    #[serde(flatten)]
+    pub value: BTreeMap<String, Value>,
 }
 
 #[cfg(test)]

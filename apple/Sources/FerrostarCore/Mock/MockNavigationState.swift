@@ -26,7 +26,7 @@ public extension NavigationState {
             deviation: .noDeviation,
             visualInstruction: nil,
             spokenInstruction: nil,
-            annotationBytes: nil
+            annotationJson: nil
         ),
         routeGeometry: samplePedestrianWaypoints,
         isCalculatingNewRoute: false
@@ -77,7 +77,7 @@ public extension NavigationState {
                 deviation: .noDeviation,
                 visualInstruction: nil,
                 spokenInstruction: nil,
-                annotationBytes: nil
+                annotationJson: nil
             ),
             routeGeometry: samplePedestrianWaypoints,
             isCalculatingNewRoute: false

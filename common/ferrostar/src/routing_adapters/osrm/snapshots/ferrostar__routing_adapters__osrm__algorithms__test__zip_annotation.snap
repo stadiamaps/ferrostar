@@ -1,0 +1,27 @@
+---
+source: ferrostar/src/routing_adapters/osrm/algorithms.rs
+expression: result
+---
+- construction: ~
+  distance: 1.2
+  duration: 4
+  max_speed:
+    speed: 56
+    unit: km/h
+  speed: 10
+  traffic: bad
+- construction: true
+  distance: 2.24
+  duration: 5
+  max_speed:
+    speed: 12
+    unit: mi/h
+  speed: 11
+  traffic: ok
+- construction: ~
+  distance: 3.24
+  duration: 6
+  max_speed:
+    unknown: true
+  speed: 12
+  traffic: good

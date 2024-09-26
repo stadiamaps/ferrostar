@@ -1946,9 +1946,9 @@ public struct RouteStep {
      */
     public var spokenInstructions: [SpokenInstruction]
     /**
-     * A list of json attribute objects as a byte array.
+     * A list of json encoded strings representing annotations between each coordinate along the step.
      */
-    public var annotations: [Data]?
+    public var annotations: [String]?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -1979,8 +1979,8 @@ public struct RouteStep {
             * A list of prompts to announce (via speech synthesis) at specific points along the step.
             */ spokenInstructions: [SpokenInstruction],
         /**
-            * A list of json attribute objects as a byte array.
-            */ annotations: [Data]?
+            * A list of json encoded strings representing annotations between each coordinate along the step.
+            */ annotations: [String]?
     ) {
         self.geometry = geometry
         self.distance = distance
@@ -2044,7 +2044,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
             instruction: FfiConverterString.read(from: &buf),
             visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf),
             spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf),
-            annotations: FfiConverterOptionSequenceData.read(from: &buf)
+            annotations: FfiConverterOptionSequenceString.read(from: &buf)
         )
     }
 
@@ -2056,7 +2056,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
         FfiConverterString.write(value.instruction, into: &buf)
         FfiConverterSequenceTypeVisualInstruction.write(value.visualInstructions, into: &buf)
         FfiConverterSequenceTypeSpokenInstruction.write(value.spokenInstructions, into: &buf)
-        FfiConverterOptionSequenceData.write(value.annotations, into: &buf)
+        FfiConverterOptionSequenceString.write(value.annotations, into: &buf)
     }
 }
 
@@ -3010,6 +3010,7 @@ extension ModelError: Foundation.LocalizedError {
 
 public enum ParsingError {
     case ParseError(error: String)
+    case Annotations(error: String)
     case InvalidStatusCode(code: String)
     case UnknownParsingError
 }
@@ -3023,10 +3024,13 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
         case 1: return try .ParseError(
                 error: FfiConverterString.read(from: &buf)
             )
-        case 2: return try .InvalidStatusCode(
+        case 2: return try .Annotations(
+                error: FfiConverterString.read(from: &buf)
+            )
+        case 3: return try .InvalidStatusCode(
                 code: FfiConverterString.read(from: &buf)
             )
-        case 3: return .UnknownParsingError
+        case 4: return .UnknownParsingError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3037,12 +3041,16 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
             FfiConverterString.write(error, into: &buf)
 
-        case let .InvalidStatusCode(code):
+        case let .Annotations(error):
             writeInt(&buf, Int32(2))
+            FfiConverterString.write(error, into: &buf)
+
+        case let .InvalidStatusCode(code):
+            writeInt(&buf, Int32(3))
             FfiConverterString.write(code, into: &buf)
 
         case .UnknownParsingError:
-            writeInt(&buf, Int32(3))
+            writeInt(&buf, Int32(4))
         }
     }
 }
@@ -3488,7 +3496,7 @@ public enum TripState {
         /**
             * Annotation data at the current location.
             * This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
-            */ annotationBytes: Data?
+            */ annotationJson: String?
     )
     /**
      * The navigation controller has reached the end of the trip.
@@ -3513,7 +3521,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
                 deviation: FfiConverterTypeRouteDeviation.read(from: &buf),
                 visualInstruction: FfiConverterOptionTypeVisualInstruction.read(from: &buf),
                 spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf),
-                annotationBytes: FfiConverterOptionData.read(from: &buf)
+                annotationJson: FfiConverterOptionString.read(from: &buf)
             )
 
         case 3: return .complete
@@ -3536,7 +3544,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             deviation,
             visualInstruction,
             spokenInstruction,
-            annotationBytes
+            annotationJson
         ):
             writeInt(&buf, Int32(2))
             FfiConverterOptionUInt64.write(currentStepGeometryIndex, into: &buf)
@@ -3547,7 +3555,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
             FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
-            FfiConverterOptionData.write(annotationBytes, into: &buf)
+            FfiConverterOptionString.write(annotationJson, into: &buf)
 
         case .complete:
             writeInt(&buf, Int32(3))
@@ -3703,27 +3711,6 @@ private struct FfiConverterOptionString: FfiConverterRustBuffer {
     }
 }
 
-private struct FfiConverterOptionData: FfiConverterRustBuffer {
-    typealias SwiftType = Data?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterData.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterData.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
 private struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
     typealias SwiftType = CourseOverGround?
 
@@ -3871,8 +3858,8 @@ private struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
     }
 }
 
-private struct FfiConverterOptionSequenceData: FfiConverterRustBuffer {
-    typealias SwiftType = [Data]?
+private struct FfiConverterOptionSequenceString: FfiConverterRustBuffer {
+    typealias SwiftType = [String]?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
         guard let value else {
@@ -3880,35 +3867,35 @@ private struct FfiConverterOptionSequenceData: FfiConverterRustBuffer {
             return
         }
         writeInt(&buf, Int8(1))
-        FfiConverterSequenceData.write(value, into: &buf)
+        FfiConverterSequenceString.write(value, into: &buf)
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
-        case 1: return try FfiConverterSequenceData.read(from: &buf)
+        case 1: return try FfiConverterSequenceString.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
 }
 
-private struct FfiConverterSequenceData: FfiConverterRustBuffer {
-    typealias SwiftType = [Data]
+private struct FfiConverterSequenceString: FfiConverterRustBuffer {
+    typealias SwiftType = [String]
 
-    public static func write(_ value: [Data], into buf: inout [UInt8]) {
+    public static func write(_ value: [String], into buf: inout [UInt8]) {
         let len = Int32(value.count)
         writeInt(&buf, len)
         for item in value {
-            FfiConverterData.write(item, into: &buf)
+            FfiConverterString.write(item, into: &buf)
         }
     }
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [Data] {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [String] {
         let len: Int32 = try readInt(&buf)
-        var seq = [Data]()
+        var seq = [String]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            try seq.append(FfiConverterData.read(from: &buf))
+            try seq.append(FfiConverterString.read(from: &buf))
         }
         return seq
     }

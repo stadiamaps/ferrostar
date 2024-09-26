@@ -57,6 +57,8 @@ pub enum ParsingError {
     // TODO: Unable to find route and other common errors
     #[cfg_attr(feature = "std", error("Failed to parse route response: {error}."))]
     ParseError { error: String },
+    #[cfg_attr(feature = "std", error("Failed to parse annotations: {error}."))]
+    Annotations { error: String },
     #[cfg_attr(
         feature = "std",
         error("Routing adapter returned an unexpected status code: {code}.")

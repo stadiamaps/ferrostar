@@ -268,7 +268,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 deviation: deviation,
                 visualInstruction: _,
                 spokenInstruction: spokenInstruction,
-                annotationBytes: _
+                annotationJson: _
             ):
                 switch deviation {
                 case .noDeviation:

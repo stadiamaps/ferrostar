@@ -38,11 +38,11 @@ public struct NavigationState: Hashable {
         return visualInstruction
     }
     
-//    public func currentAnnotation<T>() throws -> T? {
-//        guard case let .navigating(_, _, _, _, _, _, _, _, annotationBytes: annotationBytes) = tripState else {
-//            return nil
-//        }
-//        
-//        return
-//    }
+    public var currentAnnotationJSON: String? {
+        guard case let .navigating(_, _, _, _, _, _, _, _, annotationJson: annotationJson) = tripState else {
+            return nil
+        }
+        
+        return annotationJson
+    }
 }

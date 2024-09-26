@@ -5,9 +5,11 @@
 //! needed for navigation.
 
 use crate::models::{ManeuverModifier, ManeuverType};
-#[cfg(feature = "alloc")]
 use alloc::{string::String, vec::Vec};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde_json::Value;
+#[cfg(feature = "alloc")]
+use std::collections::BTreeMap;
 
 #[derive(Deserialize, Debug)]
 #[serde(transparent)]
@@ -55,7 +57,7 @@ pub struct Route {
 /// A route between exactly two waypoints.
 #[derive(Deserialize, Debug)]
 pub struct RouteLeg {
-    pub annotation: Option<Annotation>,
+    pub annotation: Option<AnyAnnotation>,
     /// The estimated travel time, in seconds.
     pub duration: f64,
     /// The distance traveled this leg, in meters.
@@ -67,43 +69,13 @@ pub struct RouteLeg {
     pub via_waypoints: Vec<ViaWaypoint>,
 }
 
-/// An annotation of a route leg with fine-grained information about segments or nodes.
-#[derive(Deserialize, Debug, Clone)]
-pub struct Annotation {
-    /// The duration between each pair of coordinates, in seconds.
-    pub duration: Vec<f64>,
-    /// The distance between each pair of coordinates, in meters.
-    pub distance: Vec<f64>,
-
-    /// The average speed used in the calculation between the two points in each pair of
-    /// coordinates, in meters per second.
-    ///
-    /// NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
-    /// and Valhalla.
-    #[serde(default)]
-    pub speed: Vec<f64>,
-    /// The local posted speed limit between each pair of coordinates.
-    ///
-    /// NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
-    /// and Valhalla.
-    #[serde(default, rename = "maxspeed")]
-    pub max_speed: Vec<MaxSpeed>,
+#[derive(Deserialize, Debug, Clone, PartialEq)]
+pub struct AnyAnnotation {
+    #[serde(flatten)]
+    pub values: BTreeMap<String, Vec<Value>>,
 }
 
-/// An extended OSRM set of annotations.
-/// This captures attributes between two points of travel in the route geometry.
-#[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct AnnotationValue {
-    pub distance: Option<f32>,
-    pub duration: Option<f32>,
-    /// The speed limit for this geometry segment in meters per second.
-    /// If the speed limit is unknown, this will be `None`.
-    pub speed_limit: Option<f32>,
-    /// The estimated travel speed, in meters/second.
-    pub estimated_speed: Option<f32>,
-}
-
-/// The MaxSpeed units that can be associated with annotations.
+/// The max speed json units that can be associated with annotations.
 /// [MaxSpeed/Units](https://wiki.openstreetmap.org/wiki/Map_Features/Units#Speed)
 /// TODO: We could generalize this as or map from this to a `UnitSpeed` enum.
 #[derive(Deserialize, PartialEq, Debug, Clone)]
@@ -115,11 +87,26 @@ pub enum MaxSpeedUnits {
 }
 
 /// The local posted speed limit between a pair of coordinates.
-#[derive(Deserialize, Debug, Clone)]
-#[serde(untagged)]
+#[derive(Debug, Clone)]
+#[allow(dead_code)] // TODO: https://github.com/stadiamaps/ferrostar/issues/271
 pub enum MaxSpeed {
     Unknown { unknown: bool },
     Known { speed: f64, unit: MaxSpeedUnits },
+}
+
+#[allow(dead_code)] // TODO: https://github.com/stadiamaps/ferrostar/issues/271
+impl MaxSpeed {
+    /// Get the max speed as meters per second.
+    pub fn get_as_meters_per_second(&self) -> Option<f64> {
+        match self {
+            MaxSpeed::Known { speed, unit } => match unit {
+                MaxSpeedUnits::KilometersPerHour => Some(speed * 0.27778),
+                MaxSpeedUnits::MilesPerHour => Some(speed * 0.44704),
+            },
+            #[allow(unused)]
+            MaxSpeed::Unknown { unknown } => None,
+        }
+    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -403,30 +390,10 @@ mod tests {
             ]
         }"#;
 
-        let annotation: Annotation =
+        let annotation: AnyAnnotation =
             serde_json::from_str(data).expect("Failed to parse Annotation");
 
-        assert_eq!(
-            annotation.duration,
-            vec![1.0, 1.2, 2.0, 1.6, 1.8, 2.0, 3.6, 1.7]
-        );
-        assert_eq!(
-            annotation.distance,
-            vec![
-                4.294596842089401,
-                5.051172053200946,
-                5.533254065167979,
-                6.576513793849532,
-                7.4449640160938015,
-                8.468757534990829,
-                15.202780313562714,
-                7.056346577326572
-            ]
-        );
-        assert_eq!(
-            annotation.speed,
-            vec![4.3, 4.2, 2.8, 4.1, 4.1, 4.2, 4.2, 4.2]
-        );
+        insta::assert_debug_snapshot!(annotation);
     }
 
     #[test]
@@ -529,5 +496,32 @@ mod tests {
         assert_eq!(secondary.text, "Baltimore / Northern Virginia");
         assert_eq!(secondary.maneuver_type, Some(ManeuverType::Turn));
         assert_eq!(secondary.maneuver_modifier, Some(ManeuverModifier::Left));
+    }
+
+    #[test]
+    fn test_max_speed_unknown() {
+        let max_speed = MaxSpeed::Unknown { unknown: true };
+        assert_eq!(max_speed.get_as_meters_per_second(), None);
+    }
+
+    #[test]
+    fn test_max_speed_kph() {
+        let max_speed = MaxSpeed::Known {
+            speed: 100.0,
+            unit: MaxSpeedUnits::KilometersPerHour,
+        };
+        assert_eq!(
+            max_speed.get_as_meters_per_second(),
+            Some(27.778000000000002)
+        );
+    }
+
+    #[test]
+    fn test_max_speed_mph() {
+        let max_speed = MaxSpeed::Known {
+            speed: 60.0,
+            unit: MaxSpeedUnits::MilesPerHour,
+        };
+        assert_eq!(max_speed.get_as_meters_per_second(), Some(26.8224));
     }
 }
