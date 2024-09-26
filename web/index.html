@@ -27,7 +27,6 @@
       valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
       styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
       profile="bicycle"
-      useIntegratedSearchBox="true"
     ></ferrostar-map>
 
     <script type="module">
@@ -53,13 +52,47 @@
       };
 
       async function onload() {
+        // Get a reference to the Ferrostar map component
+        const ferrostar = document.getElementById("ferrostar");
+
+        // Create a search control.
         const searchBox = new MapLibreSearchControl({
           onResultSelected: async (feature) => {
-            await ferrostar.startNavigationFromSearch(feature.geometry.coordinates);
+            const coordinates = feature.geometry.coordinates;
+            const waypoints = [{ coordinate: { lat: coordinates[1], lng: coordinates[0] }, kind: "Break" }];
+
+            // FIXME: This is a hack basically to support the demo page that should go away.
+            if (!ferrostar.locationProvider || ferrostar.locationProvider instanceof SimulatedLocationProvider) {
+              ferrostar.locationProvider = new BrowserLocationProvider();
+            }
+
+            // Fetch the user's current location.
+            // If we have a cached one that's no older than 30 seconds,
+            // skip waiting for an update and use the slightly stale location.
+            const location = await ferrostar.locationProvider.getCurrentLocation(30_000);
+
+            // Use the acquired user location to request the route
+            const routes = await ferrostar.getRoutes(location, waypoints);
+            const route = routes[0];
+
+            // Start the navigation
+            ferrostar.startNavigation(route, {
+              stepAdvance: {
+                RelativeLineStringDistance: {
+                  minimumHorizontalAccuracy: 25,
+                  automaticAdvanceDistance: 10,
+                },
+              },
+              routeDeviationTracking: {
+                StaticThreshold: {
+                  minimumHorizontalAccuracy: 25,
+                  maxAcceptableDeviation: 10.0,
+                },
+              },
+              snappedLocationCourseFiltering: "Raw",
+            });
           },
         });
-
-        const ferrostar = document.getElementById("ferrostar");
 
         ferrostar.center = {lng: -122.42, lat: 37.81};
         ferrostar.zoom = 18;

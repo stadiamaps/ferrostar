@@ -108,7 +108,7 @@ public struct ArrivalView: View {
         }
         .padding(.leading, 32)
         .padding(.trailing, 12)
-        .padding(.vertical, 16)
+        .padding(.vertical, 8)
         .background(theme.backgroundColor)
         .clipShape(.rect(cornerRadius: 48))
         .shadow(radius: 12)

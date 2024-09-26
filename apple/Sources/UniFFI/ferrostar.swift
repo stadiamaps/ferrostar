@@ -3442,7 +3442,11 @@ extension StepAdvanceMode: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * Internal state of the navigation controller.
+ * The state of a navigation session.
+ *
+ * This is produced by [`NavigationController`](super::NavigationController) methods
+ * including [`get_initial_state`](super::NavigationController::get_initial_state)
+ * and [`update_user_location`](super::NavigationController::update_user_location).
  */
 
 public enum TripState {

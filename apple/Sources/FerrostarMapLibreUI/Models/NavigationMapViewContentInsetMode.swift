@@ -2,19 +2,32 @@ import SwiftUI
 import UIKit
 
 public enum NavigationMapViewContentInsetMode {
-    /// A predefined mode for landscape navigation map views
-    /// where the user location should appear toward the bottom of the map.
+    /// Dynamically determined insets suitable for landscape orientation,
+    /// where the user location indicator should appear toward the bottom right of the screen.
     ///
-    /// This is used to accommodate a left InstructionView
+    /// This mode is used to accommodate an InstructionView in a separate column, left of the content area.
+    ///
+    /// - Parameter within : The `MapView`'s geometry
+    /// - Parameter verticalPct : How far "down" to inset the MapView overlay content. A higher number positions content
+    /// lower.
+    /// - Parameter horizontalPct : How far "right" to inset the MapView overlay content. A higher number positions
+    /// content farther right.
     case landscape(within: GeometryProxy, verticalPct: CGFloat = 0.75, horizontalPct: CGFloat = 0.5)
 
-    /// A predefined mode for landscape navigation map views
-    /// where the user location should appear toward the bottom of the map.
+    /// Dynamically determined insets suitable for portrait orientation,
+    /// where the user location indicator should appear toward the bottom of the screen.
     ///
-    /// This is used to accommodate a top InstructionView
-    case portrait(within: GeometryProxy, verticalPct: CGFloat = 0.75)
+    /// This mode is used to accommodate an InstructionView at the top of the MapView, in a single column with the
+    /// content area.
+    ///
+    /// - Parameter within : The `MapView`'s geometry
+    /// - Parameter verticalPct : How far "down" to inset the MapView overlay content. A higher number positions content
+    /// lower.
+    /// - Parameter minHeight : The minimum height (in points) of the content area. The content area could be larger
+    /// than this on sufficiently tall screens depending on `verticalPct`.
+    case portrait(within: GeometryProxy, verticalPct: CGFloat = 0.75, minHeight: CGFloat = 210)
 
-    /// Custom edge insets to manually control where the center of the map is.
+    /// Static edge insets to manually control where the center of the map is.
     case edgeInset(UIEdgeInsets)
 
     public init(orientation: UIDeviceOrientation, geometry: GeometryProxy) {
@@ -33,8 +46,10 @@ public enum NavigationMapViewContentInsetMode {
             let leading = geometry.size.width * horizontalPct
 
             return UIEdgeInsets(top: top, left: leading, bottom: 0, right: 0)
-        case let .portrait(geometry, verticalPct):
-            let top = geometry.size.height * verticalPct
+        case let .portrait(geometry, verticalPct, minVertical):
+            let ideal = geometry.size.height * verticalPct
+            let max = geometry.size.height - minVertical
+            let top = min(max, ideal)
 
             return UIEdgeInsets(top: top, left: 0, bottom: 0, right: 0)
         case let .edgeInset(uIEdgeInsets):

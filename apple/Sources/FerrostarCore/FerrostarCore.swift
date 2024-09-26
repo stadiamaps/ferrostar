@@ -57,7 +57,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 ///
 /// The usual flow is for callers to configure an instance of the core, set a ``delegate``,
 /// and reuse the instance for as long as it makes sense (necessarily somewhat app-specific).
-/// You can first call ``getRoutes(waypoints:userLocation:)``
+/// You can first call ``getRoutes(initialLocation:waypoints:)``
 /// to fetch a list of possible routes asynchronously. After selecting a suitable route (either interactively by the
 /// user, or programmatically), call ``startNavigation(route:config:)`` to start a session.
 ///

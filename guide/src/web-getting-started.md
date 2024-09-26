@@ -82,6 +82,9 @@ Here are the most important ones:
 - `valhallaEndpointUrl`: The Valhalla routing endpoint to use. You can use any reasonably up-to-date Valhalla server, including your own. See [vendors](./vendor.md#routing) for a list of known compatible vendors.
 - `httpClient`: You can set your own fetch-compatible HTTP client to make requests to the routing API (ex: Valhalla).
 - `costingOptions`: You can set the costing options for the route provider (ex: Valhalla JSON options).
+- `locationProvider`: Provides locations to the navigation controller.
+  `SimulatedLocationProvider` and `BrowserLocationProvider` are included.
+  See the demo app for an example of how to simulate a route.
 - `configureMap`: Configures the map on first load. This lets you customize the UI, add MapLibre map controls, etc. on load.
 - `onNavigationStart`: Callback when navigation starts.
 - `onNavigationStop`: Callback when navigation ends.
@@ -106,8 +109,13 @@ ferrostar.zoom = 18;
 ferrostar.costingOptions = { bicycle: { use_roads: 0.2 } };
 ```
 
-Other frameworks, like Vue, have more native support for web components.
+Other frameworks, like Vue, have better support for web components.
 In Vue, you can write “markup” in your components like this!
+However, there are a few gotchas.
+The properties need to be written as camelCase, for one,
+and some IDEs do not correctly suggest code completion.
+You’ll also want to continue using JS (ex: via the `onMounted` hook in Vue)
+for most complex properties like functions.
 
 ```javascript
 <ferrostar-web
@@ -116,15 +124,66 @@ In Vue, you can write “markup” in your components like this!
   styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
   profile="bicycle"
   :center="{lng: -122.42, lat: 37.81}"
-  :zoom=18
-  :useVoiceGuidance=true
-  :geolocateOnLoad=true
+  :zoom="18"
+  :useVoiceGuidance="true"
+  :geolocateOnLoad="true"
 ></ferrostar-web>
 ```
 
 NOTE: The JavaScript API is currently limited to Valhalla,
 but support for arbitrary providers (like we already have on iOS and Android)
 is [tracked in this issue](https://github.com/stadiamaps/ferrostar/issues/191).
+
+## Acquiring the user’s location
+
+The `BrowserLocationProvider` includes a convenience function
+to get the user’s location asynchronously (using a cached one if available).
+Use this to get the user’s location in the correct format.
+
+```typescript
+// Fetch the user's current location.
+// If we have a cached one that's no older than 30 seconds,
+// skip waiting for an update and use the slightly stale location.
+const location = await ferrostar.locationProvider.getCurrentLocation(30_000);
+```
+
+## Getting routes
+
+Once you have acquired the user’s location and have one or more waypoints to navigate to,
+it’s time to get some routes!
+
+```typescript
+// Use the acquired user location to request the route
+const routes = await ferrostar.getRoutes(location, waypoints);
+
+// Select one of the routes; here we just pick the first one.
+const route = routes[0];
+```
+
+## Starting navigation
+
+Finally, we can start navigating!
+We’re still working on getting full documentation generated in the typescript wrapper,
+but in the meantime, the [Rust docs](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/struct.NavigationControllerConfig.html)
+describe the available options.
+
+```typescript
+ferrostar.startNavigation(route, {
+  stepAdvance: {
+    RelativeLineStringDistance: {
+      minimumHorizontalAccuracy: 25,
+      automaticAdvanceDistance: 10,
+    },
+  },
+  routeDeviationTracking: {
+    StaticThreshold: {
+      minimumHorizontalAccuracy: 25,
+      maxAcceptableDeviation: 10.0,
+    },
+  },
+  snappedLocationCourseFiltering: "Raw",
+});
+```
 
 ## Demo app
 

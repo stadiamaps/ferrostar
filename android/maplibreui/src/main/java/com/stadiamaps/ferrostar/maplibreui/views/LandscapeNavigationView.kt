@@ -42,6 +42,8 @@ import kotlinx.coroutines.flow.asStateFlow
  * @param viewModel The navigation view model provided by Ferrostar Core.
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
+ * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
+ *   route line.
  * @param config The configuration for the navigation view.
  * @param overlayModifier The modifier to apply to the overlay view.
  * @param onTapExit The callback to invoke when the exit button is tapped.
@@ -56,6 +58,7 @@ fun LandscapeNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
+    snapUserLocationToRoute: Boolean = true,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
@@ -73,6 +76,7 @@ fun LandscapeNavigationView(
         viewModel,
         mapControls,
         locationRequestProperties,
+        snapUserLocationToRoute,
         onMapReadyCallback = { camera.value = navigationCamera },
         content)
 

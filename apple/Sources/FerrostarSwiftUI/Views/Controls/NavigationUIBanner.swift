@@ -12,7 +12,7 @@ public struct NavigationUIBanner<Label: View>: View {
     /// The basic Ferrostar SwiftUI button style.
     ///
     /// - Parameters:
-    ///   - action: The action the button performs on tap.
+    ///   - severity: The severity of the banner.
     ///   - backgroundColor: The capsule's background color.
     ///   - label: The label subview.
     public init(

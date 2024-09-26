@@ -55,7 +55,6 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                         distanceFormatter: formatterCollection.distanceFormatter,
                         distanceToNextManeuver: progress.distanceToNextManeuver
                     )
-                    .padding(.top, 16)
                 }
                 
                 Spacer()
