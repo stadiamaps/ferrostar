@@ -22,17 +22,17 @@ public struct NavigationMapView: View {
 
     // TODO: Configurable camera and user "puck" rotation modes
 
-    private var navigationState: NavigationState? {
-        didSet {
-            print("Navigation state: \(navigationState)")
-        }
-    }
+    private var navigationState: NavigationState? 
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
 
     // MARK: Camera Settings
 
     @Binding var camera: MapViewCamera
+    
+    private var effectiveMapViewContentInset: UIEdgeInsets {
+        return navigationState?.isNavigating == true ? mapViewContentInset : .zero
+    }
 
     /// Initialize a map view tuned for turn by turn navigation.
     ///
@@ -85,12 +85,12 @@ public struct NavigationMapView: View {
             // Overlay any additional user layers.
             userLayers
         }
-        .mapViewContentInset(mapViewContentInset)
+        .mapViewContentInset(effectiveMapViewContentInset)
         .mapControls {
             // No controls
         }
         .onStyleLoaded(onStyleLoaded)
-        .applyTransform(transform: mapViewModifier)
+        .applyTransform(if: navigationState?.isNavigating != true, transform: mapViewModifier)
         .ignoresSafeArea(.all)
     }
 
@@ -109,9 +109,14 @@ public struct NavigationMapView: View {
 extension MapView<MLNMapViewController> {
     @ViewBuilder
     func applyTransform<Content: View>(
+        if condition: Bool,
         transform: (MapView<MLNMapViewController>) -> Content
-    ) -> Content {
-        transform(self)
+    ) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
     }
 }
 
