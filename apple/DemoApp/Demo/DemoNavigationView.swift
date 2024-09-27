@@ -147,13 +147,7 @@ struct DemoNavigationView: View {
                 }
             )
             .task {
-                await getRoutes()
-                do {
-                    try await startNavigation()
-                } catch {
-                    print("DemoApp: error starting navigation: \(error)")
-                }
-                
+                await getRoutes()                
             }
         }
     }
