@@ -237,7 +237,7 @@ final class FerrostarCoreTests: XCTestCase {
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
             ),
-            costingOptions: ["low_speed_vehicle": ["vehicle_type": "golf_cart"]],
+            options: ["costing_options": ["low_speed_vehicle": ["vehicle_type": "golf_cart"]]],
             networkSession: mockSession
         )
 

@@ -82,15 +82,13 @@ impl UniffiCustomTypeConverter for Uuid {
 fn create_valhalla_request_generator(
     endpoint_url: String,
     profile: String,
-    costing_options_json: Option<String>,
+    options_json: Option<String>,
 ) -> Result<Arc<dyn RouteRequestGenerator>, InstantiationError> {
-    Ok(Arc::new(
-        ValhallaHttpRequestGenerator::with_costing_options_json(
-            endpoint_url,
-            profile,
-            costing_options_json,
-        )?,
-    ))
+    Ok(Arc::new(ValhallaHttpRequestGenerator::with_options_json(
+        endpoint_url,
+        profile,
+        options_json.as_deref(),
+    )?))
 }
 
 /// Creates a [`RouteResponseParser`] capable of parsing OSRM responses.
