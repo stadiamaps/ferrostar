@@ -1,5 +1,5 @@
 //
-//  UniFFIExtentions.swift
+//  UniFFIExtensions.swift
 //  FerrostarCore
 //
 //  Created by Patrick Wolowicz on 27.09.24.

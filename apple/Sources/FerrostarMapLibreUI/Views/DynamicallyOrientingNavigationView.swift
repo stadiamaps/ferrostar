@@ -46,8 +46,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,
-        navigationCamera: MapViewCamera = .center(CLLocation(latitude: 37.332726,
-                                                             longitude: -122.031790).coordinate, zoom: 14)
+        navigationCamera: MapViewCamera = .automotiveNavigation()
         ,
         navigationState: NavigationState?,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),

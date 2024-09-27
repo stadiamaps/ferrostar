@@ -81,7 +81,6 @@ extension CoreLocationProvider: LocationProviding {
 
 extension CoreLocationProvider: CLLocationManagerDelegate {
     public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("New locations received: \(locations)")
         lastLocation = locations.last?.userLocation
         delegate?.locationManager(self, didUpdateLocations: locations.map(\.userLocation))
     }

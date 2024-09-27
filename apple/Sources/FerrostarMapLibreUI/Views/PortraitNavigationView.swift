@@ -75,7 +75,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
                 ) {
                     userLayers
                 }
-               // .navigationMapViewContentInset(.portrait(within: geometry))
+                .navigationMapViewContentInset(.portrait(within: geometry))
 
                 PortraitNavigationOverlayView(
                     navigationState: navigationState,
