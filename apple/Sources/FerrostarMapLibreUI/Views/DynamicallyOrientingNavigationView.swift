@@ -19,14 +19,12 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     private var navigationState: NavigationState?
     private let userLayers: () -> [StyleLayerDefinition]
     
-    let mapViewModifier: (MapView<MLNMapViewController>) -> AnyView
+    private let mapViewModifiersWhenNotNavigating: (MapView<MLNMapViewController>) -> AnyView
 
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
-
-    public var showZoom: Bool
     
     var onTapExit: (() -> Void)?
 
@@ -53,24 +51,22 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         ,
         navigationState: NavigationState?,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
-        showZoom: Bool = true,
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: @escaping () -> [StyleLayerDefinition] = { [] },
-        mapViewModifier: @escaping (MapView<MLNMapViewController>) -> AnyView = { transferView in
+        mapViewModifiersWhenNotNavigating: @escaping (MapView<MLNMapViewController>) -> AnyView = { transferView in
             AnyView(transferView)
         }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
-        self.showZoom = showZoom
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent
 
         _camera = camera
         self.navigationCamera = navigationCamera
-        self.mapViewModifier = mapViewModifier
+        self.mapViewModifiersWhenNotNavigating = mapViewModifiersWhenNotNavigating
     }
 
     public var body: some View {
@@ -81,10 +77,13 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                     camera: $camera,
                     navigationState: navigationState,
                     onStyleLoaded: { _ in
-                        // camera = navigationCamera
+                        if navigationState?.isNavigating == true {
+                            camera = navigationCamera
+                        }
+                        
                     },
                     makeMapContent: userLayers,
-                    mapViewModifier: mapViewModifier)
+                    mapViewModifiersWhenNotNavigating: mapViewModifiersWhenNotNavigating)
                 
                 .navigationMapViewContentInset(NavigationMapViewContentInsetMode(
                     orientation: orientation,
@@ -96,7 +95,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                     LandscapeNavigationOverlayView(
                         navigationState: navigationState,
                         speedLimit: nil,
-                        showZoom: showZoom,
+                        showZoom: navigationState?.isNavigating == true,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
@@ -116,7 +115,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                     PortraitNavigationOverlayView(
                         navigationState: navigationState,
                         speedLimit: nil,
-                        showZoom: showZoom,
+                        showZoom: navigationState?.isNavigating == true,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,

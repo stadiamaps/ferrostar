@@ -18,7 +18,7 @@ public struct NavigationMapView: View {
     var onStyleLoaded: (MLNStyle) -> Void
     let userLayers: [StyleLayerDefinition]
     
-    let mapViewModifier: (MapView<MLNMapViewController>) -> AnyView
+    let mapViewModifiersWhenNotNavigating: (MapView<MLNMapViewController>) -> AnyView
 
     // TODO: Configurable camera and user "puck" rotation modes
 
@@ -48,7 +48,7 @@ public struct NavigationMapView: View {
         navigationState: NavigationState?,
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
-        mapViewModifier: @escaping (MapView<MLNMapViewController>) -> AnyView = { transferView in
+        mapViewModifiersWhenNotNavigating: @escaping (MapView<MLNMapViewController>) -> AnyView = { transferView in
             AnyView(transferView)
         }
     ) {
@@ -57,7 +57,7 @@ public struct NavigationMapView: View {
         self.navigationState = navigationState
         self.onStyleLoaded = onStyleLoaded
         self.userLayers = makeMapContent()
-        self.mapViewModifier = mapViewModifier
+        self.mapViewModifiersWhenNotNavigating = mapViewModifiersWhenNotNavigating
     }
 
     @ViewBuilder
@@ -90,7 +90,7 @@ public struct NavigationMapView: View {
             // No controls
         }
         .onStyleLoaded(onStyleLoaded)
-        .applyTransform(if: navigationState?.isNavigating != true, transform: mapViewModifier)
+        .applyTransform(if: navigationState?.isNavigating != true, transform: mapViewModifiersWhenNotNavigating)
         .ignoresSafeArea(.all)
     }
 
