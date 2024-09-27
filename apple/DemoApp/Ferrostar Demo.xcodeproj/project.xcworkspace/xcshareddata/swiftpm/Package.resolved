@@ -1,5 +1,15 @@
 {
+  "originHash" : "141c2d9c1dd8cc8e672317d57ad745a0a2e9033cfcb90338be55e776435705b5",
   "pins" : [
+    {
+      "identity" : "ferrostar",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/ferrostar",
+      "state" : {
+        "revision" : "133e0ffc6b26293fd26a23746a6556b6f28a9b51",
+        "version" : "0.15.0"
+      }
+    },
     {
       "identity" : "maplibre-gl-native-distribution",
       "kind" : "remoteSourceControl",
@@ -28,15 +38,6 @@
       }
     },
     {
-      "identity" : "swift-snapshot-testing",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
-      "state" : {
-        "revision" : "7b0bbbae90c41f848f90ac7b4df6c4f50068256d",
-        "version" : "1.17.5"
-      }
-    },
-    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
@@ -55,5 +56,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

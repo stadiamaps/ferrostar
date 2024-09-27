@@ -38,7 +38,6 @@
 		1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationData.swift; sourceTree = "<group>"; };
 		168ECA792B2E8C42007B11DE /* API-Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "API-Keys.plist"; sourceTree = "<group>"; };
 		168ECA7B2B2F6A1E007B11DE /* Ferrostar Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ferrostar Demo-Info.plist"; sourceTree = "<group>"; };
-		CD343C722CA00A6500E59E95 /* ferrostar */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ferrostar; path = /Users/patrick/Downloads/ferrostar; sourceTree = "<absolute>"; };
 		E90D97902B8AF507005E43F8 /* Navigation Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Navigation Delegate.swift"; sourceTree = "<group>"; };
 		E9505FB72AD449700016BF0A /* Ferrostar Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ferrostar Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9DD18E42B18EE7A00CAF29A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -101,7 +100,6 @@
 		E9505FAE2AD449700016BF0A = {
 			isa = PBXGroup;
 			children = (
-				CD343C722CA00A6500E59E95 /* ferrostar */,
 				168ECA792B2E8C42007B11DE /* API-Keys.plist */,
 				168ECA7B2B2F6A1E007B11DE /* Ferrostar Demo-Info.plist */,
 				1611A5522B2E6E98006B131D /* Demo */,
