@@ -2708,7 +2708,7 @@ public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> R
 extension CourseFiltering: Equatable, Hashable {}
 
 public enum InstantiationError {
-    case JsonError
+    case OptionsJsonParseError
 }
 
 public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
@@ -2717,7 +2717,7 @@ public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> InstantiationError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        case 1: return .JsonError
+        case 1: return .OptionsJsonParseError
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -2725,7 +2725,7 @@ public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
 
     public static func write(_ value: InstantiationError, into buf: inout [UInt8]) {
         switch value {
-        case .JsonError:
+        case .OptionsJsonParseError:
             writeInt(&buf, Int32(1))
         }
     }

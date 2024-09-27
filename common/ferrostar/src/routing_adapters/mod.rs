@@ -157,7 +157,7 @@ impl RouteAdapter {
         let request_generator = Arc::new(ValhallaHttpRequestGenerator::with_options_json(
             endpoint_url,
             profile,
-            options_json,
+            options_json.as_deref(),
         )?);
         let response_parser = Arc::new(OsrmResponseParser::new(6));
         Ok(Self::new(request_generator, response_parser))

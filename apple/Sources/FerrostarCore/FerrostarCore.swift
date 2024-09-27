@@ -137,7 +137,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             data: JSONSerialization.data(withJSONObject: options),
             encoding: .utf8
         ) else {
-            throw InstantiationError.JsonError
+            throw InstantiationError.OptionsJsonParseError
         }
 
         let adapter = try RouteAdapter.newValhallaHttp(
