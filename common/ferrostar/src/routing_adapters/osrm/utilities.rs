@@ -4,9 +4,9 @@ use crate::routing_adapters::error::ParsingError;
 use serde_json::Value;
 use std::collections::HashMap;
 
-/// Get's the slice of annotations
+/// Gets a slice of the route's annotations array.
 ///
-/// Throws an [`ParsingError`] if the annotations are not present or the slice is out of bounds.
+/// Returns a [`ParsingError`] if the annotations are not present or the slice is out of bounds.
 pub(crate) fn get_annotation_slice(
     annotations: Option<Vec<AnyAnnotationValue>>,
     start_index: usize,

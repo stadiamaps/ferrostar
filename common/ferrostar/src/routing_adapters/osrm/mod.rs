@@ -1,7 +1,7 @@
 //! Response parsing for OSRM-compatible JSON (including Stadia Maps, Valhalla, Mapbox, etc.).
 
 pub(crate) mod models;
-pub(crate) mod utilities;
+pub mod utilities;
 
 use super::RouteResponseParser;
 use crate::models::{
@@ -110,6 +110,10 @@ impl Route {
 
                         // Slice the annotations for the current step.
                         // The annotations array represents segments between coordinates.
+                        //
+                        // 1. Annotations should never repeat.
+                        // 2. Each step has one less annotation than coordinate.
+                        // 3. The last step never has annotations as it's two of the route's last coordinate (duplicate).
                         let step_index_len = step_geometry.len() - 1_usize;
                         let end_index = start_index + step_index_len;
 
