@@ -253,7 +253,7 @@ final class FerrostarCoreTests: XCTestCase {
             ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
-        
+
         // Redact the annotations in each RouteStep for snapshot assertion.
         // TODO: Revamp this test once an annotations parsing strategy is chosen
         let final = routes.map { route in
@@ -266,7 +266,7 @@ final class FerrostarCoreTests: XCTestCase {
             route.steps = newSteps
             return route
         }
-        
+
         assertSnapshot(of: final, as: .dump)
     }
 
