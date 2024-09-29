@@ -809,13 +809,13 @@ open class RouteAdapter:
     }
 
     public static func newValhallaHttp(endpointUrl: String, profile: String,
-                                       costingOptionsJson: String?) throws -> RouteAdapter
+                                       optionsJson: String?) throws -> RouteAdapter
     {
         try FfiConverterTypeRouteAdapter.lift(rustCallWithError(FfiConverterTypeInstantiationError.lift) {
             uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
                 FfiConverterString.lower(endpointUrl),
                 FfiConverterString.lower(profile),
-                FfiConverterOptionString.lower(costingOptionsJson), $0
+                FfiConverterOptionString.lower(optionsJson), $0
             )
         })
     }
@@ -2728,7 +2728,7 @@ public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> R
 extension CourseFiltering: Equatable, Hashable {}
 
 public enum InstantiationError {
-    case JsonError
+    case OptionsJsonParseError
 }
 
 public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
@@ -2737,7 +2737,7 @@ public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> InstantiationError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        case 1: return .JsonError
+        case 1: return .OptionsJsonParseError
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -2745,7 +2745,7 @@ public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
 
     public static func write(_ value: InstantiationError, into buf: inout [UInt8]) {
         switch value {
-        case .JsonError:
+        case .OptionsJsonParseError:
             writeInt(&buf, Int32(1))
         }
     }
@@ -4153,13 +4153,13 @@ public func createRouteFromOsrm(routeData: Data, waypointData: Data, polylinePre
  * This is provided as a convenience for use from foreign code when creating your own [`routing_adapters::RouteAdapter`].
  */
 public func createValhallaRequestGenerator(endpointUrl: String, profile: String,
-                                           costingOptionsJson: String?) throws -> RouteRequestGenerator
+                                           optionsJson: String?) throws -> RouteRequestGenerator
 {
     try FfiConverterTypeRouteRequestGenerator.lift(rustCallWithError(FfiConverterTypeInstantiationError.lift) {
         uniffi_ferrostar_fn_func_create_valhalla_request_generator(
             FfiConverterString.lower(endpointUrl),
             FfiConverterString.lower(profile),
-            FfiConverterOptionString.lower(costingOptionsJson), $0
+            FfiConverterOptionString.lower(optionsJson), $0
         )
     })
 }
@@ -4250,7 +4250,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_func_create_route_from_osrm() != 42270 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 62919 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 16275 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 31480 {
@@ -4295,7 +4295,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 32290 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 63624 {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 3524 {
         return InitializationResult.apiChecksumMismatch
     }
 

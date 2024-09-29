@@ -8,8 +8,11 @@ use alloc::string::{String, ToString};
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum InstantiationError {
-    #[cfg_attr(feature = "std", error("Error generating JSON for the request."))]
-    JsonError,
+    #[cfg_attr(
+        feature = "std",
+        error("Error parsing the JSON options for the request.")
+    )]
+    OptionsJsonParseError,
 }
 
 // TODO: See comment above
@@ -40,7 +43,7 @@ impl From<uniffi::UnexpectedUniFFICallbackError> for RoutingRequestGenerationErr
 
 impl From<serde_json::Error> for InstantiationError {
     fn from(_: serde_json::Error) -> Self {
-        InstantiationError::JsonError
+        InstantiationError::OptionsJsonParseError
     }
 }
 

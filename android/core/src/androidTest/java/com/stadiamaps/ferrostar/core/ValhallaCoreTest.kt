@@ -303,7 +303,7 @@ class ValhallaCoreTest {
             navigationControllerConfig =
                 NavigationControllerConfig(
                     StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW),
-            costingOptions = mapOf("auto" to mapOf("useTolls" to 0)))
+            options = mapOf("costing_options" to mapOf("auto" to mapOf("useTolls" to 0))))
 
     return runTest {
       val routes =
