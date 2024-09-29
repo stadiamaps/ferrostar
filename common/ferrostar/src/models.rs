@@ -21,7 +21,7 @@ use std::time::SystemTime;
 #[cfg(feature = "web-time")]
 use web_time::SystemTime;
 
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 use uuid::Uuid;
 
 use crate::algorithms::get_linestring;
@@ -464,7 +464,7 @@ pub struct VisualInstruction {
 #[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
 pub struct AnyAnnotationValue {
     #[serde(flatten)]
-    pub value: BTreeMap<String, Value>,
+    pub value: HashMap<String, Value>,
 }
 
 #[cfg(test)]

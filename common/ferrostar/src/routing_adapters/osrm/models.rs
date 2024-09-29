@@ -9,7 +9,7 @@ use alloc::{string::String, vec::Vec};
 use serde::Deserialize;
 use serde_json::Value;
 #[cfg(feature = "alloc")]
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]
 #[serde(transparent)]
@@ -72,7 +72,7 @@ pub struct RouteLeg {
 #[derive(Deserialize, Debug, Clone, PartialEq)]
 pub struct AnyAnnotation {
     #[serde(flatten)]
-    pub values: BTreeMap<String, Vec<Value>>,
+    pub values: HashMap<String, Vec<Value>>,
 }
 
 /// The max speed json units that can be associated with annotations.
@@ -393,7 +393,9 @@ mod tests {
         let annotation: AnyAnnotation =
             serde_json::from_str(data).expect("Failed to parse Annotation");
 
-        insta::assert_debug_snapshot!(annotation);
+        insta::with_settings!({sort_maps => true}, {
+            insta::assert_yaml_snapshot!(annotation.values);
+        });
     }
 
     #[test]

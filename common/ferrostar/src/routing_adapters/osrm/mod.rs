@@ -1,25 +1,25 @@
 //! Response parsing for OSRM-compatible JSON (including Stadia Maps, Valhalla, Mapbox, etc.).
 
-pub(crate) mod algorithms;
 pub(crate) mod models;
+pub(crate) mod utilities;
 
 use super::RouteResponseParser;
 use crate::models::{
     AnyAnnotationValue, GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
     VisualInstructionContent, Waypoint, WaypointKind,
 };
-use crate::routing_adapters::algorithms::get_coordinates_from_geometry;
+use crate::routing_adapters::utilities::get_coordinates_from_geometry;
 use crate::routing_adapters::{
     osrm::models::{
         Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep, Waypoint as OsrmWaypoint,
     },
     ParsingError, Route,
 };
-use algorithms::get_annotation_slice;
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::{string::ToString, vec, vec::Vec};
 use geo::BoundingRect;
 use polyline::decode_polyline;
+use utilities::get_annotation_slice;
 use uuid::Uuid;
 
 /// A response parser for OSRM-compatible routing backends.
@@ -99,7 +99,7 @@ impl Route {
                     let annotations = leg
                         .annotation
                         .as_ref()
-                        .map(|leg_annotation| algorithms::zip_annotations(leg_annotation.clone()));
+                        .map(|leg_annotation| utilities::zip_annotations(leg_annotation.clone()));
 
                     // Index for the annotations slice
                     let mut start_index: usize = 0;
@@ -229,7 +229,10 @@ mod tests {
         let routes = parser
             .parse_response(VALHALLA_OSRM_RESPONSE.into())
             .expect("Unable to parse Valhalla OSRM response");
-        insta::assert_yaml_snapshot!(routes);
+
+        insta::assert_yaml_snapshot!(routes, {
+            ".**.annotations" => "redacted annotations json strings vec"
+        });
     }
 
     #[test]
@@ -238,7 +241,10 @@ mod tests {
         let routes = parser
             .parse_response(VALHALLA_OSRM_RESPONSE_VIA_WAYS.into())
             .expect("Unable to parse Valhalla OSRM response");
-        insta::assert_yaml_snapshot!(routes);
+
+        insta::assert_yaml_snapshot!(routes, {
+            ".**.annotations" => "redacted annotations json strings vec"
+        });
     }
 
     #[test]

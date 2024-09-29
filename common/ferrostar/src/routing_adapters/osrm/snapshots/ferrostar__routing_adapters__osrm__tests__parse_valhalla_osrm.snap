@@ -335,13 +335,7 @@ expression: routes
         - text: "In 200 feet, Turn left onto the walkway."
           ssml: "<speak>In 200 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
-      annotations:
-        - "{\"distance\":0.2,\"duration\":0.184,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":19.4,\"duration\":15.315,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":7.1,\"duration\":5.639,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":11.6,\"duration\":9.818,\"maxspeed\":{\"unknown\":true},\"speed\":1.2}"
-        - "{\"distance\":66.4,\"duration\":51.539,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":6.9,\"duration\":4.898,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.442754
           lng: 24.763449
@@ -363,8 +357,7 @@ expression: routes
         - text: "In 14 feet, Turn right onto Laeva."
           ssml: "<speak>In 14 feet, Turn right onto Laeva.</speak>"
           trigger_distance_before_maneuver: 4.5
-      annotations:
-        - "{\"distance\":9.4,\"duration\":6.604,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.442671
           lng: 24.763423
@@ -386,8 +379,7 @@ expression: routes
         - text: "In 26 feet, Bear right."
           ssml: "<speak>In 26 feet, Bear right.</speak>"
           trigger_distance_before_maneuver: 8
-      annotations:
-        - "{\"distance\":15.7,\"duration\":12.227,\"maxspeed\":{\"speed\":30,\"unit\":\"km/h\"},\"speed\":1.3}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.442709
           lng: 24.763155
@@ -411,9 +403,7 @@ expression: routes
         - text: "In 24 feet, Bear left onto the walkway."
           ssml: "<speak>In 24 feet, Bear left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 7.5
-      annotations:
-        - "{\"distance\":6.9,\"duration\":5.127,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":8.6,\"duration\":6.412,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.442819
           lng: 24.763
@@ -439,10 +429,7 @@ expression: routes
         - text: "In 62 feet, Continue."
           ssml: "<speak>In 62 feet, Continue.</speak>"
           trigger_distance_before_maneuver: 19
-      annotations:
-        - "{\"distance\":5.7,\"duration\":4.012,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":2.7,\"duration\":1.919,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":29.7,\"duration\":20.947,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.442918
           lng: 24.762356
@@ -464,8 +451,7 @@ expression: routes
         - text: "In 11 feet, Turn right onto Admiralisild/Admiral Bridge."
           ssml: "<speak>In 11 feet, Turn right onto Admiralisild/Admiral Bridge.</speak>"
           trigger_distance_before_maneuver: 3.5
-      annotations:
-        - "{\"distance\":7.0,\"duration\":4.96,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.442936
           lng: 24.762237
@@ -493,11 +479,7 @@ expression: routes
         - text: "In 200 feet, Continue on the walkway."
           ssml: "<speak>In 200 feet, Continue on the walkway.</speak>"
           trigger_distance_before_maneuver: 60
-      annotations:
-        - "{\"distance\":2.6,\"duration\":1.815,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":20.9,\"duration\":14.72,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":3.2,\"duration\":2.267,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":44.3,\"duration\":33.128,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.443526
           lng: 24.761765
@@ -521,9 +503,7 @@ expression: routes
         - text: "In 75 feet, Turn left onto the walkway."
           ssml: "<speak>In 75 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 23
-      annotations:
-        - "{\"distance\":4.6,\"duration\":3.248,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":41.1,\"duration\":29.012,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.4439
           lng: 24.761432
@@ -545,8 +525,7 @@ expression: routes
         - text: "In 200 feet, Turn right onto the walkway."
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
-      annotations:
-        - "{\"distance\":130.5,\"duration\":101.367,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.443487
           lng: 24.759273
@@ -574,11 +553,7 @@ expression: routes
         - text: "In 41 feet, Turn left onto the walkway."
           ssml: "<speak>In 41 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 12.5
-      annotations:
-        - "{\"distance\":5.4,\"duration\":3.808,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":10.4,\"duration\":8.841,\"maxspeed\":{\"unknown\":true},\"speed\":1.2}"
-        - "{\"distance\":3.3,\"duration\":2.592,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":7.3,\"duration\":5.742,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.443712
           lng: 24.759127
@@ -604,10 +579,7 @@ expression: routes
         - text: "In 26 feet, Turn right onto Logi."
           ssml: "<speak>In 26 feet, Turn right onto Logi.</speak>"
           trigger_distance_before_maneuver: 8
-      annotations:
-        - "{\"distance\":3.9,\"duration\":2.774,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":3.2,\"duration\":2.247,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":9.0,\"duration\":6.331,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.443674
           lng: 24.758853
@@ -647,17 +619,7 @@ expression: routes
         - text: "In 200 feet, Turn left onto the walkway."
           ssml: "<speak>In 200 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
-      annotations:
-        - "{\"distance\":5.2,\"duration\":3.643,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":2.3,\"duration\":1.589,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":9.8,\"duration\":6.887,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":20.5,\"duration\":14.472,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":6.4,\"duration\":4.482,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":3.9,\"duration\":2.747,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":10.3,\"duration\":7.288,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":19.5,\"duration\":13.793,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":9.3,\"duration\":6.594,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":3.5,\"duration\":2.469,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.444448
           lng: 24.758392
@@ -679,8 +641,7 @@ expression: routes
         - text: "In 13 feet, Turn right onto the walkway."
           ssml: "<speak>In 13 feet, Turn right onto the walkway.</speak>"
           trigger_distance_before_maneuver: 4
-      annotations:
-        - "{\"distance\":8.5,\"duration\":5.983,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.444431
           lng: 24.758246
@@ -708,11 +669,7 @@ expression: routes
         - text: "In 200 feet, Bear left onto Kultuurikilomeeter."
           ssml: "<speak>In 200 feet, Bear left onto Kultuurikilomeeter.</speak>"
           trigger_distance_before_maneuver: 60
-      annotations:
-        - "{\"distance\":16.8,\"duration\":13.027,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":35.8,\"duration\":27.83,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":10.3,\"duration\":8.028,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":21.9,\"duration\":15.49,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.445069
           lng: 24.757636
@@ -840,61 +797,7 @@ expression: routes
         - text: "In 200 feet, Turn right onto the walkway."
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
-      annotations:
-        - "{\"distance\":179.8,\"duration\":126.908,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":12.9,\"duration\":12.15,\"maxspeed\":{\"unknown\":true},\"speed\":1.1}"
-        - "{\"distance\":48.4,\"duration\":34.152,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":7.3,\"duration\":5.129,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":6.1,\"duration\":4.281,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":56.9,\"duration\":42.571,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":24.2,\"duration\":18.073,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":2.4,\"duration\":1.781,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":1.0,\"duration\":0.681,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":3.3,\"duration\":2.318,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":17.5,\"duration\":17.664,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
-        - "{\"distance\":2.0,\"duration\":2.012,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
-        - "{\"distance\":4.7,\"duration\":4.717,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
-        - "{\"distance\":7.0,\"duration\":7.059,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
-        - "{\"distance\":5.0,\"duration\":5.058,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
-        - "{\"distance\":9.9,\"duration\":7.669,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":10.1,\"duration\":7.844,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":14.9,\"duration\":10.516,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":1.7,\"duration\":1.177,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":37.5,\"duration\":26.445,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":16.2,\"duration\":11.458,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":22.3,\"duration\":15.741,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":11.8,\"duration\":8.304,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":8.5,\"duration\":5.987,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":13.1,\"duration\":13.246,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
-        - "{\"distance\":6.0,\"duration\":4.213,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":2.6,\"duration\":1.864,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":6.4,\"duration\":4.77,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":43.9,\"duration\":32.852,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":8.9,\"duration\":6.677,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":11.9,\"duration\":8.938,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":14.3,\"duration\":10.737,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":4.5,\"duration\":3.339,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":10.4,\"duration\":7.818,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":11.7,\"duration\":11.006,\"maxspeed\":{\"unknown\":true},\"speed\":1.1}"
-        - "{\"distance\":23.9,\"duration\":22.394,\"maxspeed\":{\"unknown\":true},\"speed\":1.1}"
-        - "{\"distance\":1.6,\"duration\":1.32,\"maxspeed\":{\"unknown\":true},\"speed\":1.2}"
-        - "{\"distance\":17.6,\"duration\":14.893,\"maxspeed\":{\"unknown\":true},\"speed\":1.2}"
-        - "{\"distance\":15.9,\"duration\":13.483,\"maxspeed\":{\"unknown\":true},\"speed\":1.2}"
-        - "{\"distance\":82.6,\"duration\":69.994,\"maxspeed\":{\"unknown\":true},\"speed\":1.2}"
-        - "{\"distance\":73.4,\"duration\":51.784,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":21.4,\"duration\":15.108,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":25.3,\"duration\":19.969,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":30.9,\"duration\":24.415,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":29.8,\"duration\":23.531,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":13.8,\"duration\":10.899,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":29.0,\"duration\":32.187,\"maxspeed\":{\"unknown\":true},\"speed\":0.9}"
-        - "{\"distance\":23.1,\"duration\":16.31,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":35.6,\"duration\":25.104,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":36.0,\"duration\":25.445,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":49.9,\"duration\":35.213,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":7.8,\"duration\":5.477,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":36.5,\"duration\":25.799,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":54.8,\"duration\":38.709,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.44946
           lng: 24.739543
@@ -918,9 +821,7 @@ expression: routes
         - text: "In 37 feet, Turn left onto the walkway."
           ssml: "<speak>In 37 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 11.5
-      annotations:
-        - "{\"distance\":14.0,\"duration\":9.902,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":8.6,\"duration\":6.086,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.449652
           lng: 24.739675
@@ -944,9 +845,7 @@ expression: routes
         - text: "In 26 feet, Turn left onto the crosswalk."
           ssml: "<speak>In 26 feet, Turn left onto the crosswalk.</speak>"
           trigger_distance_before_maneuver: 8
-      annotations:
-        - "{\"distance\":11.7,\"duration\":8.228,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":4.5,\"duration\":3.156,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.449733
           lng: 24.739454
@@ -1006,27 +905,7 @@ expression: routes
         - text: "In 200 feet, Turn right onto the walkway."
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
-      annotations:
-        - "{\"distance\":4.9,\"duration\":3.427,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":7.7,\"duration\":5.46,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":4.2,\"duration\":2.993,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":2.5,\"duration\":1.871,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":7.9,\"duration\":5.888,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":59.6,\"duration\":44.617,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":40.4,\"duration\":30.206,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":20.0,\"duration\":15.496,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":7.8,\"duration\":5.487,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":17.7,\"duration\":12.51,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":14.8,\"duration\":10.434,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":27.7,\"duration\":19.585,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":40.4,\"duration\":31.347,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":17.0,\"duration\":13.188,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":48.4,\"duration\":37.62,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":8.5,\"duration\":6.681,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":4.2,\"duration\":3.349,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":3.6,\"duration\":2.809,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":5.6,\"duration\":3.942,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":4.4,\"duration\":3.1,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.450765
           lng: 24.733721
@@ -1048,8 +927,7 @@ expression: routes
         - text: "In 3 feet, Turn left onto the walkway."
           ssml: "<speak>In 3 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 1
-      annotations:
-        - "{\"distance\":2.5,\"duration\":1.737,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.450787
           lng: 24.733717
@@ -1097,21 +975,7 @@ expression: routes
         - text: "In 200 feet, Bear left onto Allveelaeva."
           ssml: "<speak>In 200 feet, Bear left onto Allveelaeva.</speak>"
           trigger_distance_before_maneuver: 60
-      annotations:
-        - "{\"distance\":60.6,\"duration\":45.312,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":52.0,\"duration\":40.41,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":1.6,\"duration\":1.278,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":4.5,\"duration\":3.174,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":6.3,\"duration\":4.898,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":4.2,\"duration\":3.284,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":3.9,\"duration\":3.057,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":4.7,\"duration\":3.644,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":5.2,\"duration\":4.072,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
-        - "{\"distance\":5.0,\"duration\":3.527,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":13.6,\"duration\":13.723,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
-        - "{\"distance\":71.2,\"duration\":50.263,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":4.9,\"duration\":3.432,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
-        - "{\"distance\":2.7,\"duration\":1.908,\"maxspeed\":{\"unknown\":true},\"speed\":1.4}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.451907
           lng: 24.730259
@@ -1133,8 +997,7 @@ expression: routes
         - text: "In 45 feet, Turn right onto Peetri."
           ssml: "<speak>In 45 feet, Turn right onto Peetri.</speak>"
           trigger_distance_before_maneuver: 14
-      annotations:
-        - "{\"distance\":27.7,\"duration\":20.727,\"maxspeed\":{\"unknown\":true},\"speed\":1.3}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.452026
           lng: 24.729829
@@ -1158,9 +1021,7 @@ expression: routes
         - text: "In 41 feet, You have arrived at your destination."
           ssml: "<speak>In 41 feet, You have arrived at your destination.</speak>"
           trigger_distance_before_maneuver: 12.5495
-      annotations:
-        - "{\"distance\":17.6,\"duration\":17.401,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
-        - "{\"distance\":7.5,\"duration\":7.403,\"maxspeed\":{\"unknown\":true},\"speed\":1.0}"
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 59.452226
           lng: 24.730034
@@ -1179,4 +1040,4 @@ expression: routes
           secondary_content: ~
           trigger_distance_before_maneuver: 0
       spoken_instructions: []
-      annotations: ~
+      annotations: redacted annotations json strings vec

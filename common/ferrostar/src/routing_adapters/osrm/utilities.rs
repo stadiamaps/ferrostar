@@ -2,7 +2,7 @@ use super::models::AnyAnnotation;
 use crate::models::AnyAnnotationValue;
 use crate::routing_adapters::error::ParsingError;
 use serde_json::Value;
-use std::collections::BTreeMap;
+use std::collections::HashMap;
 
 /// Get's the slice of annotations
 ///
@@ -26,7 +26,7 @@ pub(crate) fn get_annotation_slice(
 /// Converts the the OSRM-style annotation object consisting of separate arrays
 /// to a single vector of parsed objects (one for each coordinate pair).
 pub(crate) fn zip_annotations(annotation: AnyAnnotation) -> Vec<AnyAnnotationValue> {
-    let source: BTreeMap<String, Vec<Value>> = annotation.values;
+    let source: HashMap<String, Vec<Value>> = annotation.values;
 
     // Get the length of the array (assumed to be the same for all annotations)
     let length = source.values().next().map_or(0, Vec::len);
@@ -41,7 +41,7 @@ pub(crate) fn zip_annotations(annotation: AnyAnnotation) -> Vec<AnyAnnotationVal
                         .get(i) // For each key, get the value at the index i.
                         .map(|v| (key.clone(), v.clone())) // Convert the key and value to a tuple.
                 })
-                .collect::<BTreeMap<String, Value>>() // Collect the key-value pairs into a hashmap.
+                .collect::<HashMap<String, Value>>() // Collect the key-value pairs into a hashmap.
         })
         .map(|value| AnyAnnotationValue { value })
         .collect::<Vec<AnyAnnotationValue>>();
@@ -49,7 +49,6 @@ pub(crate) fn zip_annotations(annotation: AnyAnnotation) -> Vec<AnyAnnotationVal
 
 #[cfg(test)]
 mod test {
-    use std::collections::BTreeMap;
 
     use serde_json::Map;
 
@@ -75,7 +74,7 @@ mod test {
         }"#;
 
         let json_value: Map<String, Value> = serde_json::from_str(json_str).unwrap();
-        let values: BTreeMap<String, Vec<Value>> = json_value
+        let values: HashMap<String, Vec<Value>> = json_value
             .iter()
             .map(|(k, v)| (k.to_string(), v.as_array().unwrap().clone()))
             .collect();
@@ -84,6 +83,8 @@ mod test {
         let annotation = AnyAnnotation { values };
         let result = zip_annotations(annotation);
 
-        insta::assert_yaml_snapshot!(result);
+        insta::with_settings!({sort_maps => true}, {
+            insta::assert_yaml_snapshot!(result);
+        });
     }
 }
