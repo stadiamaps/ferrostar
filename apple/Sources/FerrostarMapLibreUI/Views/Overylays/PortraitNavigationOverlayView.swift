@@ -11,6 +11,9 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
     private var navigationState: NavigationState?
 
+    @State private var isInstructionViewExpanded: Bool = false
+    @State private var instructionsViewSizeWhenNotExpanded: CGSize = .zero
+
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
@@ -18,8 +21,6 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
     var speedLimit: Measurement<UnitSpeed>?
     var showZoom: Bool
-    @State
-    private var instructionsViewSizeWhenNotExpanded: CGSize = .zero
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
     var showCentering: Bool
@@ -93,6 +94,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                     distanceFormatter: formatterCollection.distanceFormatter,
                     distanceToNextManeuver: progress.distanceToNextManeuver,
                     remainingSteps: remainingSteps,
+                    isExpanded: $isInstructionViewExpanded,
                     sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
                 )
             }

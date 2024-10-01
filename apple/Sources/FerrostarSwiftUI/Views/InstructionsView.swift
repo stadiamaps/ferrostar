@@ -19,11 +19,9 @@ public struct InstructionsView: View {
 
     private let verticalPadding: CGFloat = 16
 
-    @State
-    private var isExpanded: Bool
+    @Binding private var isExpanded: Bool
 
-    @Binding
-    private var sizeWhenNotExpanded: CGSize
+    @Binding private var sizeWhenNotExpanded: CGSize
 
     /// Create a visual instruction banner view. This view automatically displays the secondary
     /// instruction if there is one.
@@ -32,12 +30,13 @@ public struct InstructionsView: View {
     ///   - visualInstruction: The visual instruction to display.
     ///   - distanceFormatter: The formatter which controls distance localization.
     ///   - distanceToNextManeuver: The distance remaining for the step.
-    ///   - remainingSteps: All steps remaining in the route, including the current step
+    ///   - remainingSteps: All steps remaining in the route, including the current step.
     ///   - primaryRowTheme: The theme for the primary instruction.
     ///   - secondaryRowTheme: The theme for the secondary instruction.
-    ///   - isExpanded: Whether the instruction view starts expanded
-    ///   - sizeWhenNotExpanded: Size of the InstructionsView when minimized - useful for allocating space for this view
-    /// in your layout.
+    ///   - isExpanded: Whether the instruction view is currently expanded.
+    ///   - sizeWhenNotExpanded: The size of the InstructionsView when minimized. You may use this for allocating space
+    /// for the instruction view in your layout. This property is automatically updated by the instruction view as its
+    /// size changes.
     public init(
         visualInstruction: VisualInstruction,
         distanceFormatter: Formatter = DefaultFormatters.distanceFormatter,
@@ -45,7 +44,7 @@ public struct InstructionsView: View {
         remainingSteps: [RouteStep]? = nil,
         primaryRowTheme: InstructionRowTheme = DefaultInstructionRowTheme(),
         secondaryRowTheme: InstructionRowTheme = DefaultSecondaryInstructionRowTheme(),
-        isExpanded: Bool = false,
+        isExpanded: Binding<Bool> = .constant(false),
         sizeWhenNotExpanded: Binding<CGSize> = .constant(.zero)
     ) {
         self.visualInstruction = visualInstruction
@@ -54,11 +53,11 @@ public struct InstructionsView: View {
         self.remainingSteps = remainingSteps
         self.primaryRowTheme = primaryRowTheme
         self.secondaryRowTheme = secondaryRowTheme
-        self.isExpanded = isExpanded
+        _isExpanded = isExpanded
         _sizeWhenNotExpanded = sizeWhenNotExpanded
     }
 
-    var nextVisualInstructions: [(VisualInstruction, RouteStep)] {
+    private var nextVisualInstructions: [(VisualInstruction, RouteStep)] {
         guard let remainingSteps, !remainingSteps.isEmpty else {
             return []
         }
@@ -235,7 +234,7 @@ public struct InstructionsView: View {
             visualInstruction: VisualInstructionFactory().build(),
             distanceToNextManeuver: 1500,
             remainingSteps: RouteStepFactory().buildMany(10),
-            isExpanded: true
+            isExpanded: .constant(true)
         )
 
         Spacer()

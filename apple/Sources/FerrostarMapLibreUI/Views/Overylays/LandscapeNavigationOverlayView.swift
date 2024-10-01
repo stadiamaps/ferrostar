@@ -11,6 +11,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
 
     private var navigationState: NavigationState?
 
+    @State private var isInstructionViewExpanded: Bool = false
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
@@ -67,7 +68,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                         visualInstruction: visualInstruction,
                         distanceFormatter: formatterCollection.distanceFormatter,
                         distanceToNextManeuver: progress.distanceToNextManeuver,
-                        remainingSteps: remainingSteps
+                        remainingSteps: remainingSteps,
+                        isExpanded: $isInstructionViewExpanded
                     )
                 }
             }
