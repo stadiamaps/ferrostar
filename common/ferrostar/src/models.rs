@@ -337,7 +337,7 @@ impl RouteStep {
     /// Get the annotation data at a specific point along the step.
     ///
     /// `at_coordinate_index` is the index of the coordinate in the step geometry.
-    pub fn get_current_annotation_json(&self, at_coordinate_index: u64) -> Option<String> {
+    pub fn get_annotation_at_current_index(&self, at_coordinate_index: u64) -> Option<String> {
         self.annotations
             .as_ref()
             .and_then(|annotations| annotations.get(at_coordinate_index as usize).cloned())

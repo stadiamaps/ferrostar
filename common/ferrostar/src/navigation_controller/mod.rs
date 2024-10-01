@@ -70,7 +70,7 @@ impl NavigationController {
             .cloned();
 
         let annotation_json = current_step_geometry_index
-            .and_then(|index| current_route_step.get_current_annotation_json(index));
+            .and_then(|index| current_route_step.get_annotation_at_current_index(index));
 
         TripState::Navigating {
             current_step_geometry_index,
@@ -150,7 +150,7 @@ impl NavigationController {
                             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
                         let annotation_json = current_step_geometry_index
-                            .and_then(|index| current_step.get_current_annotation_json(index));
+                            .and_then(|index| current_step.get_annotation_at_current_index(index));
 
                         TripState::Navigating {
                             current_step_geometry_index: *current_step_geometry_index,
@@ -267,7 +267,7 @@ impl NavigationController {
                             .cloned();
 
                         let annotation_json = current_step_geometry_index
-                            .and_then(|index| current_step.get_current_annotation_json(index));
+                            .and_then(|index| current_step.get_annotation_at_current_index(index));
 
                         TripState::Navigating {
                             current_step_geometry_index,
