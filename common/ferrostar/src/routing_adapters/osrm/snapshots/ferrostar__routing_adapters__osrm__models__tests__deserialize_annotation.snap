@@ -1,0 +1,57 @@
+---
+source: ferrostar/src/routing_adapters/osrm/models.rs
+expression: annotation.values
+---
+congestion:
+  - low
+  - moderate
+  - moderate
+  - moderate
+  - heavy
+  - heavy
+  - heavy
+  - heavy
+distance:
+  - 4.294596842089401
+  - 5.051172053200946
+  - 5.533254065167979
+  - 6.576513793849532
+  - 7.4449640160938015
+  - 8.468757534990829
+  - 15.202780313562714
+  - 7.056346577326572
+duration:
+  - 1
+  - 1.2
+  - 2
+  - 1.6
+  - 1.8
+  - 2
+  - 3.6
+  - 1.7
+maxspeed:
+  - speed: 56
+    unit: km/h
+  - speed: 56
+    unit: km/h
+  - speed: 56
+    unit: km/h
+  - speed: 56
+    unit: km/h
+  - speed: 56
+    unit: km/h
+  - speed: 56
+    unit: km/h
+  - speed: 56
+    unit: km/h
+  - speed: 56
+    unit: km/h
+speed:
+  - 4.3
+  - 4.2
+  - 2.8
+  - 4.1
+  - 4.1
+  - 4.2
+  - 4.2
+  - 4.2

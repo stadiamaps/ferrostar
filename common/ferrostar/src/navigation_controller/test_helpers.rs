@@ -30,6 +30,7 @@ pub fn gen_dummy_route_step(
         instruction: "".to_string(),
         visual_instructions: vec![],
         spoken_instructions: vec![],
+        annotations: None,
     }
 }
 

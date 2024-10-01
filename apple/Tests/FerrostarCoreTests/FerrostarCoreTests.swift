@@ -34,13 +34,14 @@ let mockRoute = Route(
         distance: 1,
         duration: 0,
         roadName: "foo road",
-        instruction: "Sail straight",
+        instruction: "Sail straight", // 🏴‍☠️⛵️
         visualInstructions: [VisualInstruction(
             primaryContent: instructionContent,
             secondaryContent: nil,
             triggerDistanceBeforeManeuver: 42
         )],
-        spokenInstructions: []
+        spokenInstructions: [],
+        annotations: nil
     )]
 )
 
@@ -217,7 +218,7 @@ final class FerrostarCoreTests: XCTestCase {
     }
 
     @MainActor
-    func testValhalalCostingOptionsJSON() async throws {
+    func testValhallaCostingOptionsJSON() async throws {
         let mockSession = MockURLSession()
         mockSession.registerMock(
             forMethod: "POST",
@@ -252,7 +253,21 @@ final class FerrostarCoreTests: XCTestCase {
             ),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
-        assertSnapshot(of: routes, as: .dump)
+
+        // Redact the annotations in each RouteStep for snapshot assertion.
+        // TODO: Revamp this test once an annotations parsing strategy is chosen
+        let final = routes.map { route in
+            var route = route
+            let newSteps = route.steps.map { step in
+                var step = step
+                step.annotations = nil
+                return step
+            }
+            route.steps = newSteps
+            return route
+        }
+
+        assertSnapshot(of: final, as: .dump)
     }
 
     @MainActor

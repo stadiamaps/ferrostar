@@ -41,6 +41,7 @@
         - lng: -149.548581
     ▿ steps: 2 elements
       ▿ RouteStep
+        - annotations: Optional<Array<String>>.none
         - distance: 284.0
         - duration: 11.488
         ▿ geometry: 10 elements
@@ -80,6 +81,7 @@
         - spokenInstructions: 0 elements
         - visualInstructions: 0 elements
       ▿ RouteStep
+        - annotations: Optional<Array<String>>.none
         - distance: 0.0
         - duration: 0.0
         ▿ geometry: 2 elements

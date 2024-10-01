@@ -20,4 +20,30 @@ public struct NavigationState: Hashable {
         self.routeGeometry = routeGeometry
         self.isCalculatingNewRoute = isCalculatingNewRoute
     }
+
+    public var currentProgress: TripProgress? {
+        guard case let .navigating(_, _, _, _, progress: progress, _, _,
+                                   _, _) = tripState
+        else {
+            return nil
+        }
+
+        return progress
+    }
+
+    public var currentVisualInstruction: VisualInstruction? {
+        guard case let .navigating(_, _, _, _, _, _, visualInstruction: visualInstruction, _, _) = tripState else {
+            return nil
+        }
+
+        return visualInstruction
+    }
+
+    public var currentAnnotationJSON: String? {
+        guard case let .navigating(_, _, _, _, _, _, _, _, annotationJson: annotationJson) = tripState else {
+            return nil
+        }
+
+        return annotationJson
+    }
 }
