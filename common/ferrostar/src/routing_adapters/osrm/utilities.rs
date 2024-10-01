@@ -13,11 +13,11 @@ pub(crate) fn get_annotation_slice(
     end_index: usize,
 ) -> Result<Vec<AnyAnnotationValue>, ParsingError> {
     annotations
-        .ok_or(ParsingError::Annotations {
+        .ok_or(ParsingError::MalformedAnnotations {
             error: "No annotations".to_string(),
         })?
         .get(start_index..end_index)
-        .ok_or(ParsingError::Annotations {
+        .ok_or(ParsingError::MalformedAnnotations {
             error: "Annotations slice index out of bounds ({start_index}..{end_index})".to_string(),
         })
         .map(<[AnyAnnotationValue]>::to_vec)

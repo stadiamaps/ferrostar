@@ -81,7 +81,7 @@ impl Route {
             .collect();
 
         let linestring = decode_polyline(&route.geometry, polyline_precision).map_err(|error| {
-            ParsingError::ParseError {
+            ParsingError::InvalidGeometry {
                 error: error.to_string(),
             }
         })?;
@@ -139,7 +139,7 @@ impl Route {
                 steps,
             })
         } else {
-            Err(ParsingError::ParseError {
+            Err(ParsingError::InvalidGeometry {
                 error: "Bounding box could not be calculated".to_string(),
             })
         }

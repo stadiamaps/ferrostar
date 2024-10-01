@@ -58,10 +58,12 @@ impl From<serde_json::Error> for RoutingRequestGenerationError {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum ParsingError {
     // TODO: Unable to find route and other common errors
-    #[cfg_attr(feature = "std", error("Failed to parse route response: {error}."))]
-    ParseError { error: String },
+    #[cfg_attr(feature = "std", error("Failed to parse route json object: {error}."))]
+    InvalidRouteObject { error: String },
+    #[cfg_attr(feature = "std", error("Failed to parse route geometry: {error}."))]
+    InvalidGeometry { error: String },
     #[cfg_attr(feature = "std", error("Failed to parse annotations: {error}."))]
-    Annotations { error: String },
+    MalformedAnnotations { error: String },
     #[cfg_attr(
         feature = "std",
         error("Routing adapter returned an unexpected status code: {code}.")
@@ -83,7 +85,7 @@ impl From<uniffi::UnexpectedUniFFICallbackError> for ParsingError {
 
 impl From<serde_json::Error> for ParsingError {
     fn from(e: serde_json::Error) -> Self {
-        ParsingError::ParseError {
+        ParsingError::InvalidRouteObject {
             error: e.to_string(),
         }
     }

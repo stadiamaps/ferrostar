@@ -11,7 +11,7 @@ pub fn get_coordinates_from_geometry(
     polyline_precision: u32,
 ) -> Result<Vec<GeographicCoordinate>, ParsingError> {
     let linestring = decode_polyline(geometry, polyline_precision).map_err(|error| {
-        ParsingError::ParseError {
+        ParsingError::InvalidGeometry {
             error: error.to_string(),
         }
     })?;

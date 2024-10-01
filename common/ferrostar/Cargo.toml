@@ -47,7 +47,7 @@ uniffi = { workspace = true, features = ["build"] }
 [dev-dependencies]
 assert-json-diff = "2.0.2"
 proptest = { version = "1.5.0", default-features = false }
-insta = { version = "1.40.0", features = ["yaml", "json", "redactions"] }
+insta = { version = "1.40.0", features = ["yaml", "redactions"] }
 rstest = "0.22.0"
 wasm-bindgen-test = "0.3"
 

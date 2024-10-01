@@ -3009,8 +3009,9 @@ extension ModelError: Foundation.LocalizedError {
 }
 
 public enum ParsingError {
-    case ParseError(error: String)
-    case Annotations(error: String)
+    case InvalidRouteObject(error: String)
+    case InvalidGeometry(error: String)
+    case MalformedAnnotations(error: String)
     case InvalidStatusCode(code: String)
     case UnknownParsingError
 }
@@ -3021,36 +3022,43 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ParsingError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        case 1: return try .ParseError(
+        case 1: return try .InvalidRouteObject(
                 error: FfiConverterString.read(from: &buf)
             )
-        case 2: return try .Annotations(
+        case 2: return try .InvalidGeometry(
                 error: FfiConverterString.read(from: &buf)
             )
-        case 3: return try .InvalidStatusCode(
+        case 3: return try .MalformedAnnotations(
+                error: FfiConverterString.read(from: &buf)
+            )
+        case 4: return try .InvalidStatusCode(
                 code: FfiConverterString.read(from: &buf)
             )
-        case 4: return .UnknownParsingError
+        case 5: return .UnknownParsingError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: ParsingError, into buf: inout [UInt8]) {
         switch value {
-        case let .ParseError(error):
+        case let .InvalidRouteObject(error):
             writeInt(&buf, Int32(1))
             FfiConverterString.write(error, into: &buf)
 
-        case let .Annotations(error):
+        case let .InvalidGeometry(error):
             writeInt(&buf, Int32(2))
             FfiConverterString.write(error, into: &buf)
 
-        case let .InvalidStatusCode(code):
+        case let .MalformedAnnotations(error):
             writeInt(&buf, Int32(3))
+            FfiConverterString.write(error, into: &buf)
+
+        case let .InvalidStatusCode(code):
+            writeInt(&buf, Int32(4))
             FfiConverterString.write(code, into: &buf)
 
         case .UnknownParsingError:
-            writeInt(&buf, Int32(4))
+            writeInt(&buf, Int32(5))
         }
     }
 }
