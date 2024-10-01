@@ -12,6 +12,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     private var navigationState: NavigationState?
 
     @State private var isInstructionViewExpanded: Bool = false
+    // TODO: Same as portrait?
+
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
