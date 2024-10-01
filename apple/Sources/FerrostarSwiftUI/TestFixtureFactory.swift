@@ -1,18 +1,20 @@
+/// Various helpers that generate views for previews.
+
 import FerrostarCoreFFI
 import Foundation
 
-public protocol TestFixtureFactory {
+protocol TestFixtureFactory {
     associatedtype Output
     func build(_ n: Int) -> Output
 }
 
-public extension TestFixtureFactory {
+extension TestFixtureFactory {
     func buildMany(_ n: Int) -> [Output] {
         (0 ... n).map { build($0) }
     }
 }
 
-public struct VisualInstructionContentFactory: TestFixtureFactory {
+struct VisualInstructionContentFactory: TestFixtureFactory {
     public init() {}
 
     public var textBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
@@ -32,7 +34,7 @@ public struct VisualInstructionContentFactory: TestFixtureFactory {
     }
 }
 
-public struct VisualInstructionFactory: TestFixtureFactory {
+struct VisualInstructionFactory: TestFixtureFactory {
     public init() {}
 
     public var primaryContentBuilder: (Int) -> VisualInstructionContent = { n in
@@ -56,7 +58,7 @@ public struct VisualInstructionFactory: TestFixtureFactory {
     }
 }
 
-public struct RouteStepFactory: TestFixtureFactory {
+struct RouteStepFactory: TestFixtureFactory {
     public init() {}
     public var visualInstructionBuilder: (Int) -> VisualInstruction = { n in VisualInstructionFactory().build(n) }
     public var roadNameBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
@@ -75,7 +77,7 @@ public struct RouteStepFactory: TestFixtureFactory {
     }
 }
 
-public struct RoadNameFactory: TestFixtureFactory {
+struct RoadNameFactory: TestFixtureFactory {
     public init() {}
     public var baseNameBuilder: (Int) -> String = { _ in "Ave" }
 
