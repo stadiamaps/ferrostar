@@ -39,6 +39,14 @@ public struct NavigationState: Hashable {
         return visualInstruction
     }
 
+    public var remainingSteps: [RouteStep]? {
+        guard case let .navigating(_, _, remainingSteps: remainingSteps, _, _, _, _, _, _) = tripState else {
+            return nil
+        }
+
+        return remainingSteps
+    }
+
     public var currentAnnotationJSON: String? {
         guard case let .navigating(_, _, _, _, _, _, _, _, annotationJson: annotationJson) = tripState else {
             return nil

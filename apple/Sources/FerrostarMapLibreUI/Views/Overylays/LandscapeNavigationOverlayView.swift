@@ -11,6 +11,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
 
     private var navigationState: NavigationState?
 
+    @State private var isInstructionViewExpanded: Bool = false
+
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
@@ -46,26 +48,29 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
 
     var body: some View {
         HStack {
-            VStack {
+            ZStack(alignment: .top) {
+                VStack {
+                    Spacer()
+                    if case .navigating = navigationState?.tripState,
+                       let progress = navigationState?.currentProgress
+                    {
+                        ArrivalView(
+                            progress: progress,
+                            onTapExit: onTapExit
+                        )
+                    }
+                }
                 if case .navigating = navigationState?.tripState,
                    let visualInstruction = navigationState?.currentVisualInstruction,
-                   let progress = navigationState?.currentProgress
+                   let progress = navigationState?.currentProgress,
+                   let remainingSteps = navigationState?.remainingSteps
                 {
                     InstructionsView(
                         visualInstruction: visualInstruction,
                         distanceFormatter: formatterCollection.distanceFormatter,
-                        distanceToNextManeuver: progress.distanceToNextManeuver
-                    )
-                }
-
-                Spacer()
-
-                if case .navigating = navigationState?.tripState,
-                   let progress = navigationState?.currentProgress
-                {
-                    ArrivalView(
-                        progress: progress,
-                        onTapExit: onTapExit
+                        distanceToNextManeuver: progress.distanceToNextManeuver,
+                        remainingSteps: remainingSteps,
+                        isExpanded: $isInstructionViewExpanded
                     )
                 }
             }
