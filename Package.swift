@@ -27,11 +27,11 @@ if useLocalFramework {
 }
 
 if useLocalMapLibreSwiftUIDSL {
-    maplibreSwiftUIDSLPackage = .package(path: "../maplibre-swiftui-dsl-playground")
+    maplibreSwiftUIDSLPackage = .package(path: "../swiftui-dsl")
 } else {
     maplibreSwiftUIDSLPackage = .package(
         url: "https://github.com/maplibre/swiftui-dsl",
-        from: "0.0.23"
+        from: "0.1.0"
     )
 }
 
