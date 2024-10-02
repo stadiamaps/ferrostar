@@ -126,7 +126,7 @@ final class InstructionsViewTests: XCTestCase {
                 ),
                 distanceFormatter: americanDistanceFormatter,
                 remainingSteps: RouteStepFactory().buildMany(3),
-                isExpanded: true
+                isExpanded: .constant(true)
             )
             .padding()
         }
@@ -147,7 +147,7 @@ final class InstructionsViewTests: XCTestCase {
                 ),
                 distanceFormatter: americanDistanceFormatter,
                 remainingSteps: RouteStepFactory().buildMany(3),
-                isExpanded: true
+                isExpanded: .constant(true)
             )
             .padding()
         }
