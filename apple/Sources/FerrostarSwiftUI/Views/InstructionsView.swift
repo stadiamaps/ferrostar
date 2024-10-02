@@ -57,8 +57,14 @@ public struct InstructionsView: View {
         _sizeWhenNotExpanded = sizeWhenNotExpanded
     }
 
+    /// The visual instructions *after* the one for the current maneuver,
+    /// paired with the route step.
+    ///
+    /// Note that in the case of steps with multiple instructions,
+    /// only the first is returned in this list.
+    /// This is sufficient for display of the upcoming maneuver list.
     private var nextVisualInstructions: [(VisualInstruction, RouteStep)] {
-        guard let remainingSteps, !remainingSteps.isEmpty else {
+        guard let remainingSteps, remainingSteps.count > 1 else {
             return []
         }
         return remainingSteps[1...].compactMap { step in

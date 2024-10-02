@@ -42,7 +42,7 @@ struct TopDrawerView<PersistentContent: View, ExpandedContent: View>: View {
             expandedContent.padding(.bottom, 50)
         }
 
-        var framedScrollView = if isExpanded {
+        let framedScrollView = if isExpanded {
             AnyView(scrollView.frame(idealHeight: CGFloat.infinity))
         } else {
             AnyView(scrollView.frame(height: max(0, dragOffset)))
