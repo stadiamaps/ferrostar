@@ -449,6 +449,7 @@ expression: routes
         - text: "In 200 feet, You have arrived at your destination."
           ssml: "<speak>In 200 feet, You have arrived at your destination.</speak>"
           trigger_distance_before_maneuver: 60
+      annotations: redacted annotations json strings vec
     - geometry:
         - lat: 28.790106
           lng: -82.018021
@@ -467,3 +468,4 @@ expression: routes
           secondary_content: ~
           trigger_distance_before_maneuver: 0
       spoken_instructions: []
+      annotations: redacted annotations json strings vec

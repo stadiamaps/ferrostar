@@ -8,9 +8,10 @@ plugins {
     alias libs.plugins.paparazzi apply false
     alias libs.plugins.compose.compiler apply false
     alias libs.plugins.mavenPublish apply false
+    alias libs.plugins.kotlinSerialization apply false
 }
 
 allprojects {
     group = "com.stadiamaps.ferrostar"
-    version = "0.14.0"
+    version = "0.17.0"
 }

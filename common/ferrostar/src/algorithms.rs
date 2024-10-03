@@ -73,9 +73,9 @@ pub fn index_of_closest_segment_origin(location: UserLocation, line: &LineString
         .map(|(index, _)| index as u64)
 }
 
-/// Get the bearing to the next point on the LineString.
+/// Get the bearing to the next point on the `LineString`.
 ///
-/// Returns [`None`] if the index points at or past the last point in the LineString.
+/// Returns [`None`] if the index points at or past the last point in the `LineString`.
 fn get_bearing_to_next_point(
     index_along_line: usize,
     line: &LineString,
@@ -89,7 +89,7 @@ fn get_bearing_to_next_point(
     let degrees = normalize_bearing(current.geodesic_bearing(next));
 
     Some(CourseOverGround {
-        degrees: degrees as u16,
+        degrees,
         accuracy: None,
     })
 }

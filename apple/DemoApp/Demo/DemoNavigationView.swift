@@ -55,7 +55,7 @@ struct DemoNavigationView: View {
             profile: "bicycle",
             locationProvider: locationProvider,
             navigationControllerConfig: config,
-            costingOptions: ["bicycle": ["use_roads": 0.2]]
+            options: ["costing_options": ["bicycle": ["use_roads": 0.2]]]
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate

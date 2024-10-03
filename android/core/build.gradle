@@ -7,6 +7,7 @@ plugins {
     alias libs.plugins.cargo.ndk
     alias libs.plugins.ktfmt
     alias libs.plugins.mavenPublish
+    alias libs.plugins.kotlinSerialization
 }
 
 android {
@@ -53,10 +54,11 @@ dependencies {
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp.core)
     implementation libs.moshi
+    implementation libs.moshi.kotlin
 
     // TODO: Migrate version to TOML (doesn't work). Likely related issue: https://github.com/gradle/gradle/issues/21267
     //noinspection UseTomlInstead
-    implementation 'net.java.dev.jna:jna:5.14.0@aar'
+    implementation 'net.java.dev.jna:jna:5.15.0@aar'
 
     testImplementation libs.junit
 

@@ -136,11 +136,11 @@ class FerrostarCore(
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
-      costingOptions: Map<String, Any> = emptyMap(),
+      options: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
           RouteAdapter.newValhallaHttp(
-              valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(costingOptions))),
+              valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(options))),
       httpClient,
       locationProvider,
       foregroundServiceManager,

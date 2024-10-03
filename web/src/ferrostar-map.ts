@@ -45,7 +45,7 @@ export class FerrostarMap extends LitElement {
 
   // TODO: type
   @property({ type: Object, attribute: false })
-  costingOptions: object = {};
+  options: object = {};
 
   // TODO: type
   @state()
@@ -216,7 +216,7 @@ export class FerrostarMap extends LitElement {
   async getRoutes(initialLocation: any, waypoints: any) {
     // Initialize the route adapter
     // (NOTE: currently only supports Valhalla, but working toward expansion)
-    this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile, JSON.stringify(this.costingOptions));
+    this.routeAdapter = new RouteAdapter(this.valhallaEndpointUrl, this.profile, JSON.stringify(this.options));
 
     // Generate the request body
     const routeRequest = this.routeAdapter.generateRequest(initialLocation, waypoints);

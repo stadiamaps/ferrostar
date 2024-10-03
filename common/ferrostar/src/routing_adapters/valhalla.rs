@@ -5,10 +5,11 @@ use crate::models::{UserLocation, Waypoint, WaypointKind};
 use crate::routing_adapters::RouteRequestGenerator;
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
-use serde_json::{json, Value as JsonValue};
+use serde_json::{json, Map, Value as JsonValue};
 #[cfg(feature = "std")]
 use std::collections::HashMap;
 
+use crate::routing_adapters::error::InstantiationError;
 #[cfg(feature = "alloc")]
 use alloc::{
     string::{String, ToString},
@@ -30,32 +31,102 @@ pub struct ValhallaHttpRequestGenerator {
     /// The Valhalla costing model to use.
     profile: String,
     // TODO: Language, units, and other top-level parameters
-    /// JSON costing options to pass through.
-    costing_options: JsonValue,
+    /// Arbitrary key/value pairs which override the defaults.
+    ///
+    /// These can contain complex nested structures,
+    /// as in the case of `costing_options`.
+    options: Map<String, JsonValue>,
 }
 
 impl ValhallaHttpRequestGenerator {
-    pub fn new(endpoint_url: String, profile: String, costing_options: Option<JsonValue>) -> Self {
+    /// Creates a new Valhalla request generator given an endpoint URL, a profile name,
+    /// and options to include in the request JSON.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use serde_json::{json, Map, Value as JsonValue};
+    /// # use ferrostar::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
+    /// // Example for illustration; you should do proper error checking when parsing this way,
+    /// // or else use [`ValhallaHttpRequestGenerator::with_options_json`]
+    /// let options: Map<String, JsonValue> = json!({
+    ///     "costing_options": {
+    ///         "low_speed_vehicle": {
+    ///             "vehicle_type": "golf_cart"
+    ///         }
+    ///     }
+    /// }).as_object().unwrap().to_owned();
+    ///
+    /// // Without options
+    /// let request_generator_no_opts = ValhallaHttpRequestGenerator::new(
+    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(),
+    ///     "low_speed_vehicle".to_string(),
+    ///     Map::new()
+    /// );
+    ///
+    /// // With options
+    /// let request_generator_opts = ValhallaHttpRequestGenerator::new(
+    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(),
+    ///     "low_speed_vehicle".to_string(),
+    ///     options
+    /// );
+    /// ```
+    pub fn new(endpoint_url: String, profile: String, options: Map<String, JsonValue>) -> Self {
         Self {
             endpoint_url,
             profile,
-            costing_options: costing_options.unwrap_or(json!({})),
+            options,
         }
     }
 
-    pub fn with_costing_options_json(
+    /// Creates a new Valhalla request generator given an endpoint URL, a profile name,
+    /// and options to include in the request JSON.
+    /// Options in this constructor are a JSON fragment representing any
+    /// options you want to add along with the request.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use ferrostar::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
+    /// let options = r#"{
+    ///     "costing_options": {
+    ///         "low_speed_vehicle": {
+    ///             "vehicle_type": "golf_cart"
+    ///         }
+    ///     }
+    /// }"#;
+    ///
+    /// // Without options
+    /// let request_generator_no_opts = ValhallaHttpRequestGenerator::with_options_json(
+    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(),
+    ///     "low_speed_vehicle".to_string(),
+    ///     None,
+    /// );
+    ///
+    /// // With options
+    /// let request_generator_opts = ValhallaHttpRequestGenerator::with_options_json(
+    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(),
+    ///     "low_speed_vehicle".to_string(),
+    ///     Some(options),
+    /// );
+    /// ```
+    pub fn with_options_json(
         endpoint_url: String,
         profile: String,
-        costing_options_json: Option<String>,
-    ) -> Result<Self, serde_json::Error> {
-        let parsed_costing_options: JsonValue = match costing_options_json.as_deref() {
-            Some(options) => serde_json::from_str(options)?,
-            None => json!({}),
+        options_json: Option<&str>,
+    ) -> Result<Self, InstantiationError> {
+        let parsed_options = match options_json.as_deref() {
+            // TODO: Another error variant
+            Some(options) => serde_json::from_str::<JsonValue>(options)?
+                .as_object()
+                .ok_or(InstantiationError::OptionsJsonParseError)?
+                .to_owned(),
+            None => Map::new(),
         };
         Ok(Self {
             endpoint_url,
             profile,
-            costing_options: parsed_costing_options,
+            options: parsed_options,
         })
     }
 }
@@ -99,7 +170,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
             // Though it would be nice to use PBF if we can get the required data.
             // However, certain info (like banners) are only available in the OSRM format.
             // TODO: Trace attributes as we go rather than pulling a fat payload upfront that we might ditch later?
-            let args = json!({
+            let mut args = json!({
                 "format": "osrm",
                 "filters": {
                     "action": "include",
@@ -114,8 +185,12 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 "voice_instructions": true,
                 "costing": &self.profile,
                 "locations": locations,
-                "costing_options": &self.costing_options,
             });
+
+            for (k, v) in &self.options {
+                args[k] = v.clone();
+            }
+
             let body = serde_json::to_vec(&args)?;
             Ok(RouteRequest::HttpPost {
                 url: self.endpoint_url.clone(),
@@ -170,8 +245,11 @@ mod tests {
 
     #[test]
     fn not_enough_locations() {
-        let generator =
-            ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string(), None);
+        let generator = ValhallaHttpRequestGenerator::new(
+            ENDPOINT_URL.to_string(),
+            COSTING.to_string(),
+            Map::new(),
+        );
 
         // At least two locations are required
         assert!(matches!(
@@ -183,12 +261,12 @@ mod tests {
     fn generate_body(
         user_location: UserLocation,
         waypoints: Vec<Waypoint>,
-        costing_options_json: Option<String>,
+        options_json: Option<&str>,
     ) -> JsonValue {
-        let generator = ValhallaHttpRequestGenerator::with_costing_options_json(
+        let generator = ValhallaHttpRequestGenerator::with_options_json(
             ENDPOINT_URL.to_string(),
             COSTING.to_string(),
-            costing_options_json,
+            options_json,
         )
         .expect("Unable to create request generator");
 
@@ -271,12 +349,20 @@ mod tests {
     fn request_body_without_costing_options() {
         let body_json = generate_body(USER_LOCATION, WAYPOINTS.to_vec(), None);
 
-        assert_json_include!(
-            actual: body_json,
-            expected: json!({
-                "costing_options": {},
-            })
+        assert!(body_json["costing_options"].is_null());
+    }
+
+    #[test]
+    #[should_panic]
+    fn request_body_invalid_costing_options() {
+        // Valid JSON, but it's not an object.
+        let body_json = generate_body(
+            USER_LOCATION,
+            WAYPOINTS.to_vec(),
+            Some(r#"["costing_options"]"#),
         );
+
+        assert!(body_json["costing_options"].is_null());
     }
 
     #[test]
@@ -284,7 +370,7 @@ mod tests {
         let body_json = generate_body(
             USER_LOCATION,
             WAYPOINTS.to_vec(),
-            Some(r#"{"bicycle": {"bicycle_type": "Road"}}"#.to_string()),
+            Some(r#"{"costing_options": {"bicycle": {"bicycle_type": "Road"}}}"#),
         );
 
         assert_json_include!(
@@ -300,9 +386,33 @@ mod tests {
     }
 
     #[test]
+    fn request_body_with_multiple_options() {
+        let body_json = generate_body(
+            USER_LOCATION,
+            WAYPOINTS.to_vec(),
+            Some(r#"{"units": "mi", "costing_options": {"bicycle": {"bicycle_type": "Road"}}}"#),
+        );
+
+        assert_json_include!(
+            actual: body_json,
+            expected: json!({
+                "costing_options": {
+                    "bicycle": {
+                        "bicycle_type": "Road",
+                    },
+                },
+                "units": "mi"
+            })
+        );
+    }
+
+    #[test]
     fn request_body_with_invalid_horizontal_accuracy() {
-        let generator =
-            ValhallaHttpRequestGenerator::new(ENDPOINT_URL.to_string(), COSTING.to_string(), None);
+        let generator = ValhallaHttpRequestGenerator::new(
+            ENDPOINT_URL.to_string(),
+            COSTING.to_string(),
+            Map::new(),
+        );
         let location = UserLocation {
             coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
             horizontal_accuracy: -6.0,

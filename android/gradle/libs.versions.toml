@@ -7,7 +7,7 @@ androidx-lifecycle = "2.8.6"
 paparazzi = "1.3.4"
 desugar_jdk_libs = "2.1.2"
 ktx = "1.13.1"
-kotlinx-coroutines = "1.8.1"
+kotlinx-coroutines = "1.9.0"
 kotlinx-datetime = "0.6.1"
 androidx-appcompat = "1.7.0"
 androidx-activity-compose = "1.9.2"
@@ -22,6 +22,7 @@ junitCompose = "1.7.2"
 espressoCore = "3.6.1"
 okhttp-mock = "2.0.0"
 mavenPublish = "0.29.0"
+secretsGradlePlugin = "2.0.1"
 material = "1.12.0"
 
 [libraries]
@@ -52,6 +53,7 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp-mock = { group = "com.github.gmazzo", name = "okhttp-mock", version.ref = "okhttp-mock" }
 # MapLibre
 maplibre-compose = { group = "io.github.rallista", name = "maplibre-compose", version.ref = "maplibre-compose" }
@@ -73,3 +75,5 @@ cargo-ndk = { id = "com.github.willir.rust.cargo-ndk-android", version.ref = "ca
 ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+mapsplatform-secrets-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
