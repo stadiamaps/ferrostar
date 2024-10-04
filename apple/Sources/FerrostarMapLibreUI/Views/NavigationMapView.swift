@@ -18,7 +18,7 @@ public struct NavigationMapView: View {
     var onStyleLoaded: (MLNStyle) -> Void
     let userLayers: [StyleLayerDefinition]
     
-    let mapViewModifiersWhenNotNavigating: (MapView<MLNMapViewController>) -> AnyView
+    let mapViewModifiers: (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> AnyView
 
     // TODO: Configurable camera and user "puck" rotation modes
 
@@ -42,13 +42,17 @@ public struct NavigationMapView: View {
     ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
     ///   - onStyleLoaded: The map's style has loaded and the camera can be manipulated (e.g. to user tracking).
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
+    ///   - mapViewModifiers: An optional closure that allows you to apply custom view and map modifiers to the `MapView`. The closure
+    ///     takes the `MapView` instance and provides a Boolean indicating if navigation is active, and returns an `AnyView`. Use this to attach onMapTapGesture and other view modifiers to the underlying MapView and customize when the modifiers are applied using
+    ///       the isNavigating modifier.
+    ///     By default, it returns the unmodified `MapView`.
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,
         navigationState: NavigationState?,
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
-        mapViewModifiersWhenNotNavigating: @escaping (MapView<MLNMapViewController>) -> AnyView = { transferView in
+        mapViewModifiers: @escaping (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> AnyView = { transferView, _ in
             AnyView(transferView)
         }
     ) {
@@ -57,7 +61,7 @@ public struct NavigationMapView: View {
         self.navigationState = navigationState
         self.onStyleLoaded = onStyleLoaded
         self.userLayers = makeMapContent()
-        self.mapViewModifiersWhenNotNavigating = mapViewModifiersWhenNotNavigating
+        self.mapViewModifiers = mapViewModifiers
     }
 
     @ViewBuilder
@@ -90,7 +94,7 @@ public struct NavigationMapView: View {
             // No controls
         }
         .onStyleLoaded(onStyleLoaded)
-        .applyTransform(if: navigationState?.isNavigating != true, transform: mapViewModifiersWhenNotNavigating)
+        .applyTransform(transform: mapViewModifiers, isNavigating: navigationState?.isNavigating == true)
         .ignoresSafeArea(.all)
     }
 
@@ -109,14 +113,8 @@ public struct NavigationMapView: View {
 extension MapView<MLNMapViewController> {
     @ViewBuilder
     func applyTransform<Content: View>(
-        if condition: Bool,
-        transform: (MapView<MLNMapViewController>) -> Content
-    ) -> some View {
-        if condition {
-            transform(self)
-        } else {
-            self
-        }
+        transform: (MapView<MLNMapViewController>, Bool) -> Content, isNavigating: Bool) -> some View {
+        transform(self, isNavigating)
     }
 }
 

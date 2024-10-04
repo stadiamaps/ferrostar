@@ -19,7 +19,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     private var navigationState: NavigationState?
     private let userLayers: () -> [StyleLayerDefinition]
     
-    private let mapViewModifiersWhenNotNavigating: (MapView<MLNMapViewController>) -> AnyView
+    private let mapViewModifiers: (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> AnyView
 
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
@@ -42,7 +42,11 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     ///   - minimumSafeAreaInsets: The minimum padding to apply from safe edges. See `complementSafeAreaInsets`.
     ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the
     /// exit button is hidden.
-    ///   - makeMapContent: Custom maplibre symbols to display on the map view.
+    ///   - makeMapContent: Custom maplibre layers to display on the map view.
+    ///   - mapViewModifiers: An optional closure that allows you to apply custom view and map modifiers to the `MapView`. The closure
+    ///     takes the `MapView` instance and provides a Boolean indicating if navigation is active, and returns an `AnyView`. Use this to attach onMapTapGesture and other view modifiers to the underlying MapView and customize when the modifiers are applied using
+    ///       the isNavigating modifier.
+    ///     By default, it returns the unmodified `MapView`.
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,
@@ -52,7 +56,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: @escaping () -> [StyleLayerDefinition] = { [] },
-        mapViewModifiersWhenNotNavigating: @escaping (MapView<MLNMapViewController>) -> AnyView = { transferView in
+        mapViewModifiers: @escaping (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> AnyView = { transferView, _ in
             AnyView(transferView)
         }
     ) {
@@ -65,7 +69,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
         _camera = camera
         self.navigationCamera = navigationCamera
-        self.mapViewModifiersWhenNotNavigating = mapViewModifiersWhenNotNavigating
+        self.mapViewModifiers = mapViewModifiers
     }
 
     public var body: some View {
@@ -82,7 +86,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         
                     },
                     makeMapContent: userLayers,
-                    mapViewModifiersWhenNotNavigating: mapViewModifiersWhenNotNavigating)
+                    mapViewModifiers: mapViewModifiers)
                 
                 .navigationMapViewContentInset(NavigationMapViewContentInsetMode(
                     orientation: orientation,
