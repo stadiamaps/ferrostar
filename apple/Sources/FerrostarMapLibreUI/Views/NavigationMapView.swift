@@ -83,13 +83,14 @@ public struct NavigationMapView: View {
     }
 
     private func updateCameraIfNeeded() {
-        if case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = navigationState?.tripState,
+        if case let .navigating(tripNavigation) = navigationState?.tripState,
            // There is no reason to push an update if the coordinate and heading are the same.
            // That's all that gets displayed, so it's all that MapLibre should care about.
-           locationManager.lastLocation.coordinate != userLocation.coordinates
-           .clLocationCoordinate2D || locationManager.lastLocation.course != userLocation.clLocation.course
+           locationManager.lastLocation.coordinate != tripNavigation.snappedUserLocation.coordinates
+           .clLocationCoordinate2D || locationManager.lastLocation.course != tripNavigation.snappedUserLocation
+           .clLocation.course
         {
-            locationManager.lastLocation = userLocation.clLocation
+            locationManager.lastLocation = tripNavigation.snappedUserLocation.clLocation
         }
     }
 }
@@ -98,13 +99,13 @@ public struct NavigationMapView: View {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
 
-    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(tripNavigation) = state.tripState else {
         return EmptyView()
     }
 
     return NavigationMapView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
+        camera: .constant(.center(tripNavigation.snappedUserLocation.clLocation.coordinate, zoom: 12)),
         navigationState: state,
         onStyleLoaded: { _ in }
     )

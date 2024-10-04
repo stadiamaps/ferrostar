@@ -109,13 +109,13 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
 
-    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(tripNavigation) = state.tripState else {
         return EmptyView()
     }
 
     return PortraitNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
+        camera: .constant(.center(tripNavigation.snappedUserLocation.clLocation.coordinate, zoom: 12)),
         navigationState: state
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
@@ -129,13 +129,13 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .metric
 
-    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(tripNavigation) = state.tripState else {
         return EmptyView()
     }
 
     return PortraitNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
-        camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
+        camera: .constant(.center(tripNavigation.snappedUserLocation.clLocation.coordinate, zoom: 12)),
         navigationState: state
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))

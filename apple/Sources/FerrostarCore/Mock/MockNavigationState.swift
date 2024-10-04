@@ -4,7 +4,7 @@ import Foundation
 
 public extension NavigationState {
     static let pedestrianExample = NavigationState(
-        tripState: .navigating(
+        tripState: .navigating(TripNavigation(
             currentStepGeometryIndex: 0,
             snappedUserLocation: UserLocation(
                 latitude: samplePedestrianWaypoints.first!.lat,
@@ -27,7 +27,7 @@ public extension NavigationState {
             visualInstruction: nil,
             spokenInstruction: nil,
             annotationJson: nil
-        ),
+        )),
         routeGeometry: samplePedestrianWaypoints,
         isCalculatingNewRoute: false
     )
@@ -37,7 +37,7 @@ public extension NavigationState {
         let lastUserLocation = remainingLocations.first!
 
         return NavigationState(
-            tripState: .navigating(
+            tripState: .navigating(TripNavigation(
                 currentStepGeometryIndex: 0,
                 snappedUserLocation: UserLocation(
                     coordinates: samplePedestrianWaypoints.first!,
@@ -78,7 +78,7 @@ public extension NavigationState {
                 visualInstruction: nil,
                 spokenInstruction: nil,
                 annotationJson: nil
-            ),
+            )),
             routeGeometry: samplePedestrianWaypoints,
             isCalculatingNewRoute: false
         )

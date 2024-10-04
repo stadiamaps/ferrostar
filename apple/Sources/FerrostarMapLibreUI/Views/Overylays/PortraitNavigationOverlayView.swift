@@ -74,26 +74,22 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                     bottomTrailing?()
                 }
 
-                if case .navigating = navigationState?.tripState,
-                   let progress = navigationState?.currentProgress
-                {
+                if case let .navigating(tripNavigation) = navigationState?.tripState {
                     ArrivalView(
-                        progress: progress,
+                        progress: tripNavigation.progress,
                         onTapExit: onTapExit
                     )
                 }
             }.padding(.top, instructionsViewSizeWhenNotExpanded.height)
 
-            if case .navigating = navigationState?.tripState,
-               let visualInstruction = navigationState?.currentVisualInstruction,
-               let progress = navigationState?.currentProgress,
-               let remainingSteps = navigationState?.remainingSteps
+            if case let .navigating(tripNavigation) = navigationState?.tripState,
+               let visualInstruction = tripNavigation.visualInstruction
             {
                 InstructionsView(
                     visualInstruction: visualInstruction,
                     distanceFormatter: formatterCollection.distanceFormatter,
-                    distanceToNextManeuver: progress.distanceToNextManeuver,
-                    remainingSteps: remainingSteps,
+                    distanceToNextManeuver: tripNavigation.progress.distanceToNextManeuver,
+                    remainingSteps: tripNavigation.remainingSteps,
                     isExpanded: $isInstructionViewExpanded,
                     sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
                 )

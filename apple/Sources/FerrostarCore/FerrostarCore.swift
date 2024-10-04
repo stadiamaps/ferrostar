@@ -274,18 +274,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             self.state?.tripState = newState
 
             switch newState {
-            case let .navigating(
-                currentStepGeometryIndex: _,
-                snappedUserLocation: _,
-                remainingSteps: _,
-                remainingWaypoints: remainingWaypoints,
-                progress: _,
-                deviation: deviation,
-                visualInstruction: _,
-                spokenInstruction: spokenInstruction,
-                annotationJson: _
-            ):
-                switch deviation {
+            case let .navigating(tripNavigation):
+                switch tripNavigation.deviation {
                 case .noDeviation:
                     // No action
                     break
@@ -301,8 +291,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     switch self.delegate?.core(
                         self,
                         correctiveActionForDeviation: deviationFromRouteLine,
-                        remainingWaypoints: remainingWaypoints
-                    ) ?? .getNewRoutes(waypoints: remainingWaypoints) {
+                        remainingWaypoints: tripNavigation.remainingWaypoints
+                    ) ?? .getNewRoutes(waypoints: tripNavigation.remainingWaypoints) {
                     case .doNothing:
                         break
                     case let .getNewRoutes(waypoints):
@@ -332,7 +322,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     }
                 }
 
-                if let spokenInstruction, !self.queuedUtteranceIDs.contains(spokenInstruction.utteranceId) {
+                if let spokenInstruction = tripNavigation.spokenInstruction,
+                   !self.queuedUtteranceIDs.contains(spokenInstruction.utteranceId)
+                {
                     self.queuedUtteranceIDs.insert(spokenInstruction.utteranceId)
 
                     // This sholud not happen on the main queue as it can block;
