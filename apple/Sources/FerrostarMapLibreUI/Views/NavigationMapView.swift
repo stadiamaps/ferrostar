@@ -18,7 +18,7 @@ public struct NavigationMapView: View {
     var onStyleLoaded: (MLNStyle) -> Void
     let userLayers: [StyleLayerDefinition]
     
-    let mapViewModifiers: (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> AnyView
+    let mapViewModifiers: (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> MapView<MLNMapViewController>
 
     // TODO: Configurable camera and user "puck" rotation modes
 
@@ -52,8 +52,8 @@ public struct NavigationMapView: View {
         navigationState: NavigationState?,
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
-        mapViewModifiers: @escaping (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> AnyView = { transferView, _ in
-            AnyView(transferView)
+        mapViewModifiers: @escaping (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> MapView<MLNMapViewController> = { transferView, _ in
+            transferView
         }
     ) {
         self.styleURL = styleURL

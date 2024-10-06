@@ -19,7 +19,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     private var navigationState: NavigationState?
     private let userLayers: () -> [StyleLayerDefinition]
     
-    private let mapViewModifiers: (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> AnyView
+    private let mapViewModifiers: (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> MapView<MLNMapViewController>
 
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
@@ -56,8 +56,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: @escaping () -> [StyleLayerDefinition] = { [] },
-        mapViewModifiers: @escaping (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> AnyView = { transferView, _ in
-            AnyView(transferView)
+        mapViewModifiers: @escaping (_ view: MapView<MLNMapViewController>, _ isNavigating: Bool) -> MapView<MLNMapViewController> = { transferView, _ in
+            transferView
         }
     ) {
         self.styleURL = styleURL
