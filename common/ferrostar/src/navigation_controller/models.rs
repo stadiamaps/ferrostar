@@ -69,6 +69,9 @@ pub enum TripState {
         ///
         /// Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
         spoken_instruction: Option<SpokenInstruction>,
+        /// Annotation data at the current location.
+        /// This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
+        annotation_json: Option<String>,
     },
     /// The navigation controller has reached the end of the trip.
     Complete,

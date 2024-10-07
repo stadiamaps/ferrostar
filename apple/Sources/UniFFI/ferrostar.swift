@@ -1913,6 +1913,9 @@ public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
  * the next step.
  */
 public struct RouteStep {
+    /**
+     * The full route geometry for this step.
+     */
     public var geometry: [GeographicCoordinate]
     /**
      * The distance, in meters, to travel along the route after the maneuver to reach the next step.
@@ -1942,33 +1945,43 @@ public struct RouteStep {
      * A list of prompts to announce (via speech synthesis) at specific points along the step.
      */
     public var spokenInstructions: [SpokenInstruction]
+    /**
+     * A list of json encoded strings representing annotations between each coordinate along the step.
+     */
+    public var annotations: [String]?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinate],
-                /**
-                    * The distance, in meters, to travel along the route after the maneuver to reach the next step.
-                    */ distance: Double,
-                /**
-                    * The estimated duration, in seconds, that it will take to complete this step.
-                    */ duration: Double,
-                /**
-                    * The name of the road being traveled on (useful for certain UI styles).
-                    */ roadName: String?,
-                /**
-                    * A description of the maneuver (ex: "Turn wright onto main street").
-                    *
-                    * Note for UI implementers: the context this appears in (or doesn't)
-                    * depends somewhat on your use case and routing engine.
-                    * For example, this field is useful as a written instruction in Valhalla.
-                    */ instruction: String,
-                /**
-                    * A list of instructions for visual display (usually as banners) at specific points along the step.
-                    */ visualInstructions: [VisualInstruction],
-                /**
-                    * A list of prompts to announce (via speech synthesis) at specific points along the step.
-                    */ spokenInstructions: [SpokenInstruction])
-    {
+    public init(
+        /**
+         * The full route geometry for this step.
+         */ geometry: [GeographicCoordinate],
+        /**
+            * The distance, in meters, to travel along the route after the maneuver to reach the next step.
+            */ distance: Double,
+        /**
+            * The estimated duration, in seconds, that it will take to complete this step.
+            */ duration: Double,
+        /**
+            * The name of the road being traveled on (useful for certain UI styles).
+            */ roadName: String?,
+        /**
+            * A description of the maneuver (ex: "Turn wright onto main street").
+            *
+            * Note for UI implementers: the context this appears in (or doesn't)
+            * depends somewhat on your use case and routing engine.
+            * For example, this field is useful as a written instruction in Valhalla.
+            */ instruction: String,
+        /**
+            * A list of instructions for visual display (usually as banners) at specific points along the step.
+            */ visualInstructions: [VisualInstruction],
+        /**
+            * A list of prompts to announce (via speech synthesis) at specific points along the step.
+            */ spokenInstructions: [SpokenInstruction],
+        /**
+            * A list of json encoded strings representing annotations between each coordinate along the step.
+            */ annotations: [String]?
+    ) {
         self.geometry = geometry
         self.distance = distance
         self.duration = duration
@@ -1976,6 +1989,7 @@ public struct RouteStep {
         self.instruction = instruction
         self.visualInstructions = visualInstructions
         self.spokenInstructions = spokenInstructions
+        self.annotations = annotations
     }
 }
 
@@ -2002,6 +2016,9 @@ extension RouteStep: Equatable, Hashable {
         if lhs.spokenInstructions != rhs.spokenInstructions {
             return false
         }
+        if lhs.annotations != rhs.annotations {
+            return false
+        }
         return true
     }
 
@@ -2013,6 +2030,7 @@ extension RouteStep: Equatable, Hashable {
         hasher.combine(instruction)
         hasher.combine(visualInstructions)
         hasher.combine(spokenInstructions)
+        hasher.combine(annotations)
     }
 }
 
@@ -2025,7 +2043,8 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
             roadName: FfiConverterOptionString.read(from: &buf),
             instruction: FfiConverterString.read(from: &buf),
             visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf),
-            spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf)
+            spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf),
+            annotations: FfiConverterOptionSequenceString.read(from: &buf)
         )
     }
 
@@ -2037,6 +2056,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
         FfiConverterString.write(value.instruction, into: &buf)
         FfiConverterSequenceTypeVisualInstruction.write(value.visualInstructions, into: &buf)
         FfiConverterSequenceTypeSpokenInstruction.write(value.spokenInstructions, into: &buf)
+        FfiConverterOptionSequenceString.write(value.annotations, into: &buf)
     }
 }
 
@@ -2989,7 +3009,9 @@ extension ModelError: Foundation.LocalizedError {
 }
 
 public enum ParsingError {
-    case ParseError(error: String)
+    case InvalidRouteObject(error: String)
+    case InvalidGeometry(error: String)
+    case MalformedAnnotations(error: String)
     case InvalidStatusCode(code: String)
     case UnknownParsingError
 }
@@ -3000,29 +3022,43 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ParsingError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        case 1: return try .ParseError(
+        case 1: return try .InvalidRouteObject(
                 error: FfiConverterString.read(from: &buf)
             )
-        case 2: return try .InvalidStatusCode(
+        case 2: return try .InvalidGeometry(
+                error: FfiConverterString.read(from: &buf)
+            )
+        case 3: return try .MalformedAnnotations(
+                error: FfiConverterString.read(from: &buf)
+            )
+        case 4: return try .InvalidStatusCode(
                 code: FfiConverterString.read(from: &buf)
             )
-        case 3: return .UnknownParsingError
+        case 5: return .UnknownParsingError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: ParsingError, into buf: inout [UInt8]) {
         switch value {
-        case let .ParseError(error):
+        case let .InvalidRouteObject(error):
             writeInt(&buf, Int32(1))
             FfiConverterString.write(error, into: &buf)
 
-        case let .InvalidStatusCode(code):
+        case let .InvalidGeometry(error):
             writeInt(&buf, Int32(2))
+            FfiConverterString.write(error, into: &buf)
+
+        case let .MalformedAnnotations(error):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(error, into: &buf)
+
+        case let .InvalidStatusCode(code):
+            writeInt(&buf, Int32(4))
             FfiConverterString.write(code, into: &buf)
 
         case .UnknownParsingError:
-            writeInt(&buf, Int32(3))
+            writeInt(&buf, Int32(5))
         }
     }
 }
@@ -3468,7 +3504,11 @@ public enum TripState {
             * The most recent spoken instruction that should be synthesized using TTS.
             *
             * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
-            */ spokenInstruction: SpokenInstruction?
+            */ spokenInstruction: SpokenInstruction?,
+        /**
+            * Annotation data at the current location.
+            * This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
+            */ annotationJson: String?
     )
     /**
      * The navigation controller has reached the end of the trip.
@@ -3492,7 +3532,8 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
                 progress: FfiConverterTypeTripProgress.read(from: &buf),
                 deviation: FfiConverterTypeRouteDeviation.read(from: &buf),
                 visualInstruction: FfiConverterOptionTypeVisualInstruction.read(from: &buf),
-                spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
+                spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf),
+                annotationJson: FfiConverterOptionString.read(from: &buf)
             )
 
         case 3: return .complete
@@ -3514,7 +3555,8 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             progress,
             deviation,
             visualInstruction,
-            spokenInstruction
+            spokenInstruction,
+            annotationJson
         ):
             writeInt(&buf, Int32(2))
             FfiConverterOptionUInt64.write(currentStepGeometryIndex, into: &buf)
@@ -3525,6 +3567,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
             FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
+            FfiConverterOptionString.write(annotationJson, into: &buf)
 
         case .complete:
             writeInt(&buf, Int32(3))
@@ -3824,6 +3867,49 @@ private struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
         case 1: return try FfiConverterTypeManeuverType.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
+    }
+}
+
+private struct FfiConverterOptionSequenceString: FfiConverterRustBuffer {
+    typealias SwiftType = [String]?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterSequenceString.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterSequenceString.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterSequenceString: FfiConverterRustBuffer {
+    typealias SwiftType = [String]
+
+    public static func write(_ value: [String], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterString.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [String] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [String]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            try seq.append(FfiConverterString.read(from: &buf))
+        }
+        return seq
     }
 }
 

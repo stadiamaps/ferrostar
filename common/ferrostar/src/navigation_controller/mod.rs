@@ -69,6 +69,9 @@ impl NavigationController {
             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
             .cloned();
 
+        let annotation_json = current_step_geometry_index
+            .and_then(|index| current_route_step.get_annotation_at_current_index(index));
+
         TripState::Navigating {
             current_step_geometry_index,
             snapped_user_location,
@@ -79,6 +82,7 @@ impl NavigationController {
             deviation,
             visual_instruction,
             spoken_instruction,
+            annotation_json,
         }
     }
 
@@ -145,6 +149,8 @@ impl NavigationController {
                         let spoken_instruction = current_step
                             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
+                        let annotation_json = current_step_geometry_index
+                            .and_then(|index| current_step.get_annotation_at_current_index(index));
 
                         TripState::Navigating {
                             current_step_geometry_index: *current_step_geometry_index,
@@ -157,6 +163,7 @@ impl NavigationController {
                             deviation: *deviation,
                             visual_instruction,
                             spoken_instruction,
+                            annotation_json,
                         }
                     }
                     StepAdvanceStatus::EndOfRoute => TripState::Complete,
@@ -183,6 +190,7 @@ impl NavigationController {
                 deviation,
                 visual_instruction,
                 spoken_instruction,
+                annotation_json,
                 ..
             } => {
                 let Some(current_step) = remaining_steps.first() else {
@@ -212,6 +220,7 @@ impl NavigationController {
                     deviation: *deviation,
                     visual_instruction: visual_instruction.clone(),
                     spoken_instruction: spoken_instruction.clone(),
+                    annotation_json: annotation_json.clone(),
                 };
 
                 match if should_advance_to_next_step(
@@ -237,6 +246,7 @@ impl NavigationController {
                         deviation: _,
                         visual_instruction: _,
                         spoken_instruction: _,
+                        annotation_json: _,
                     } => {
                         // Recalculate deviation. This happens later, as the current step may have changed.
                         // The distance to the next maneuver will be updated by advance_to_next_step if needed.
@@ -256,6 +266,9 @@ impl NavigationController {
                             .get_current_spoken_instruction(progress.distance_to_next_maneuver)
                             .cloned();
 
+                        let annotation_json = current_step_geometry_index
+                            .and_then(|index| current_step.get_annotation_at_current_index(index));
+
                         TripState::Navigating {
                             current_step_geometry_index,
                             snapped_user_location,
@@ -265,6 +278,7 @@ impl NavigationController {
                             deviation,
                             visual_instruction,
                             spoken_instruction,
+                            annotation_json,
                         }
                     }
                     TripState::Complete => TripState::Complete,
@@ -293,7 +307,7 @@ impl NavigationController {
 
         // Get the index of the closest segment origin to the snapped user location.
         let current_step_geometry_index =
-            index_of_closest_segment_origin(snapped_user_location, &line);
+            index_of_closest_segment_origin(snapped_user_location, line);
 
         // Snap the user's course to the line if the configuration specifies it.
         let snapped_with_course: UserLocation = match &self.config.snapped_location_course_filtering
