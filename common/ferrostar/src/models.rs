@@ -390,7 +390,7 @@ pub struct SpokenInstruction {
     /// NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
     /// This should be theoretically possible though if someone cares to write up a proposal and a PR.
     #[cfg_attr(test, serde(skip_serializing))]
-    #[tsify(type = "string")]
+    #[cfg_attr(feature="wasm-bindgen", tsify(type = "string"))]
     pub utterance_id: Uuid,
 }
 
