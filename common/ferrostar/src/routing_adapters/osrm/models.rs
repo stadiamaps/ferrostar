@@ -84,29 +84,17 @@ pub enum MaxSpeedUnits {
     KilometersPerHour,
     #[serde(rename = "mph")]
     MilesPerHour,
+    #[serde(rename = "knots")]
+    Knots,
 }
 
 /// The local posted speed limit between a pair of coordinates.
 #[derive(Debug, Clone)]
 #[allow(dead_code)] // TODO: https://github.com/stadiamaps/ferrostar/issues/271
 pub enum MaxSpeed {
+    None { none: bool },
     Unknown { unknown: bool },
     Known { speed: f64, unit: MaxSpeedUnits },
-}
-
-#[allow(dead_code)] // TODO: https://github.com/stadiamaps/ferrostar/issues/271
-impl MaxSpeed {
-    /// Get the max speed as meters per second.
-    pub fn get_as_meters_per_second(&self) -> Option<f64> {
-        match self {
-            MaxSpeed::Known { speed, unit } => match unit {
-                MaxSpeedUnits::KilometersPerHour => Some(speed * 0.27778),
-                MaxSpeedUnits::MilesPerHour => Some(speed * 0.44704),
-            },
-            #[allow(unused)]
-            MaxSpeed::Unknown { unknown } => None,
-        }
-    }
 }
 
 #[derive(Deserialize, Debug)]
