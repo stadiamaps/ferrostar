@@ -17,12 +17,6 @@ struct DemoNavigationView: View {
     // NOTE: This is probably not ideal but works for demo purposes.
     // This causes a thread performance checker warning log.
     private let spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
-
-    var usFormatter: FormatterCollection = {
-        var collection = DefaultFormatters()
-        collection
-    }
-    
     
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
