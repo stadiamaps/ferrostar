@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.maplibre.compose.symbols.Circle
+import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
@@ -38,13 +40,26 @@ fun DemoNavigationScene(
     locationProvider: SimulatedLocationProvider = AppModule.locationProvider,
     core: FerrostarCore = AppModule.ferrostarCore
 ) {
+  // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
+  KeepScreenOnDisposableEffect()
+
   var viewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
 
   // Get location permissions.
   // NOTE: This is NOT a robust suggestion for how to get permissions in a production app.
-  // THis is simply minimal sample code in as few lines as possible.
-  val locationPermissions =
-      arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+  // This is simply minimal sample code in as few lines as possible.
+  val allPermissions =
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS,
+            Manifest.permission.FOREGROUND_SERVICE_LOCATION)
+      } else {
+        arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+      }
+
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
           permissions ->
@@ -64,8 +79,11 @@ fun DemoNavigationScene(
         }
       }
 
+  // FIXME: This is restarting navigation every time the screen is rotated.
   LaunchedEffect(savedInstanceState) {
-    permissionsLauncher.launch(locationPermissions)
+    // Request all permissions
+    permissionsLauncher.launch(allPermissions)
+
     // Fetch a route in the background
     launch(Dispatchers.IO) {
       val routes =
@@ -96,7 +114,11 @@ fun DemoNavigationScene(
         // tiles.
         // Most vendors offer free API keys for development use.
         styleUrl = "https://demotiles.maplibre.org/style.json",
-        viewModel = viewModel!!) { uiState ->
+        viewModel = viewModel!!,
+        // This is the default value, which works well for motor vehicle navigation.
+        // Other travel modes though, such as walking, may not want snapping.
+        snapUserLocationToRoute = true,
+        onTapExit = { viewModel!!.stopNavigation() }) { uiState ->
           // Trivial, if silly example of how to add your own overlay layers.
           // (Also incidentally highlights the lag inherent in MapLibre location tracking
           // as-is.)
@@ -112,6 +134,7 @@ fun DemoNavigationScene(
   } else {
     // Loading indicator
     Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally) {
           Text(text = "Calculating route...")

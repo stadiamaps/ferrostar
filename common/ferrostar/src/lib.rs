@@ -2,16 +2,21 @@
 //!
 //! Ferrostar is a modern SDK for building turn-by-turn navigation applications.
 //!
-//! Check out the [User Guide](https://stadiamaps.github.io/ferrostar/) for an introduction
-//! and tutorials for major platforms like iOS and Android.
+//! ![A screenshot of Ferrostar running on iOS](https://docs.stadiamaps.com/img/ferrostar-screenshot.png)
 //!
-//! This is the [core](https://stadiamaps.github.io/ferrostar/architecture.html) of Ferrostar,
+//! This crate is the [core](https://stadiamaps.github.io/ferrostar/architecture.html) of Ferrostar,
 //! which contains common data models, traits and integrations with common routing backends
 //! like Valhalla, spatial algorithms, and the navigation state machine.
 //!
-//! If you're looking to build a navigation experience for a new platform,
-//! or you just want to use the primitives in your existing architecture,
-//! this crate is for you.
+//! If you're looking to build a navigation experience for a platform
+//! where Ferrostar doesn't currently offer a high-level interface,
+//! you want to use the primitives in your existing architecture,
+//! or you're genuinely curious about the internals,
+//! you're in the right spot!
+//!
+//! And if you're a developer wanting to build a navigation experience in your application,
+//! check out the [User Guide](https://stadiamaps.github.io/ferrostar/) for a high-level overview
+//! and tutorials for major platforms including iOS and Android.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
@@ -77,15 +82,13 @@ impl UniffiCustomTypeConverter for Uuid {
 fn create_valhalla_request_generator(
     endpoint_url: String,
     profile: String,
-    costing_options_json: Option<String>,
+    options_json: Option<String>,
 ) -> Result<Arc<dyn RouteRequestGenerator>, InstantiationError> {
-    Ok(Arc::new(
-        ValhallaHttpRequestGenerator::with_costing_options_json(
-            endpoint_url,
-            profile,
-            costing_options_json,
-        )?,
-    ))
+    Ok(Arc::new(ValhallaHttpRequestGenerator::with_options_json(
+        endpoint_url,
+        profile,
+        options_json.as_deref(),
+    )?))
 }
 
 /// Creates a [`RouteResponseParser`] capable of parsing OSRM responses.

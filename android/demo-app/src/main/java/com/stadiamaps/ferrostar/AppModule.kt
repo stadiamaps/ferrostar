@@ -1,16 +1,21 @@
 package com.stadiamaps.ferrostar
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
+import com.stadiamaps.ferrostar.composeui.notification.DefaultForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
+import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
+import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
+import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.StepAdvanceMode
@@ -25,6 +30,28 @@ object AppModule {
 
   private lateinit var appContext: Context
 
+  // You can get an API key (free for development and evaluation; no credit card required)
+  // at client.stadiamaps.com.
+  // You can also modify this file to use your preferred sources for maps and/or routing.
+  // See https://stadiamaps.github.io/ferrostar/vendors.html for vendors known to work with
+  // Ferrostar.
+  val stadiaApiKey: String by lazy {
+    val appInfo =
+        appContext.packageManager.getApplicationInfo(
+            appContext.packageName, PackageManager.GET_META_DATA)
+    val metaData = appInfo.metaData
+
+    metaData.getString("stadiaApiKey")!!
+  }
+
+  val mapStyleUrl: String by lazy {
+    "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
+  }
+
+  val valhallaEndpointUrl: URL by lazy {
+    URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
+  }
+
   fun init(context: Context) {
     appContext = context
   }
@@ -34,24 +61,25 @@ object AppModule {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
   }
 
-  // NOTE: This is a public instance which is suitable for development, but not for heavy use.
-  // This server is suitable for testing and building your app, but once you are ready to go live,
-  // YOU MUST USE ANOTHER SERVER.
-  //
-  // See https://github.com/stadiamaps/ferrostar/blob/main/VENDORS.md for options
+  private val foregroundServiceManager: ForegroundServiceManager by lazy {
+    FerrostarForegroundServiceManager(appContext, DefaultForegroundNotificationBuilder(appContext))
+  }
+
   val ferrostarCore: FerrostarCore by lazy {
     val core =
         FerrostarCore(
-            valhallaEndpointURL = URL("https://valhalla1.openstreetmap.de/route"),
+            valhallaEndpointURL = valhallaEndpointUrl,
             profile = "bicycle",
             httpClient = httpClient,
             locationProvider = locationProvider,
+            foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
                 NavigationControllerConfig(
                     StepAdvanceMode.RelativeLineStringDistance(
                         minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                    RouteDeviationTracking.StaticThreshold(25U, 10.0)),
-            costingOptions = mapOf("bicycle" to mapOf("use_roads" to 0.2)))
+                    RouteDeviationTracking.StaticThreshold(15U, 25.0),
+                    CourseFiltering.SNAP_TO_ROUTE),
+            options = mapOf("costingOptions" to mapOf("bicycle" to mapOf("use_roads" to 0.2))))
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!
@@ -64,13 +92,14 @@ object AppModule {
     core.alternativeRouteProcessor = AlternativeRouteProcessor { it, routes ->
       Log.i(TAG, "Received alternate route(s): $routes")
       if (routes.isNotEmpty()) {
-        // NB: Use `replaceRoute` for cases like this!!
+        // NB: Use `replaceRoute` for cases like this!
         it.replaceRoute(
             routes.first(),
             NavigationControllerConfig(
                 StepAdvanceMode.RelativeLineStringDistance(
                     minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                RouteDeviationTracking.StaticThreshold(25U, 10.0)))
+                RouteDeviationTracking.StaticThreshold(25U, 10.0),
+                CourseFiltering.SNAP_TO_ROUTE))
       }
     }
 

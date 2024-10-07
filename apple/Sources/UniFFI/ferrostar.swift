@@ -47,9 +47,11 @@ private extension ForeignBytes {
 
 private extension Data {
     init(rustBuffer: RustBuffer) {
-        // TODO: This copies the buffer. Can we read directly from a
-        // Rust buffer?
-        self.init(bytes: rustBuffer.data!, count: Int(rustBuffer.len))
+        self.init(
+            bytesNoCopy: rustBuffer.data!,
+            count: Int(rustBuffer.len),
+            deallocator: .none
+        )
     }
 }
 
@@ -404,6 +406,19 @@ private struct FfiConverterUInt32: FfiConverterPrimitive {
     }
 }
 
+private struct FfiConverterUInt64: FfiConverterPrimitive {
+    typealias FfiType = UInt64
+    typealias SwiftType = UInt64
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UInt64 {
+        try lift(readInt(&buf))
+    }
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
 private struct FfiConverterDouble: FfiConverterPrimitive {
     typealias FfiType = Double
     typealias SwiftType = Double
@@ -520,6 +535,9 @@ public protocol NavigationControllerProtocol: AnyObject {
      * Depending on the advancement strategy, this may be automatic.
      * For other cases, it is desirable to advance to the next step manually (ex: walking in an
      * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+     *
+     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
+     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
      */
     func advanceToNextStep(state: TripState) -> TripState
 
@@ -607,6 +625,9 @@ open class NavigationController:
      * Depending on the advancement strategy, this may be automatic.
      * For other cases, it is desirable to advance to the next step manually (ex: walking in an
      * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
+     *
+     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
+     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
      */
     open func advanceToNextStep(state: TripState) -> TripState {
         try! FfiConverterTypeTripState.lift(try! rustCall {
@@ -788,13 +809,13 @@ open class RouteAdapter:
     }
 
     public static func newValhallaHttp(endpointUrl: String, profile: String,
-                                       costingOptionsJson: String?) throws -> RouteAdapter
+                                       optionsJson: String?) throws -> RouteAdapter
     {
         try FfiConverterTypeRouteAdapter.lift(rustCallWithError(FfiConverterTypeInstantiationError.lift) {
             uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
                 FfiConverterString.lower(endpointUrl),
                 FfiConverterString.lower(profile),
-                FfiConverterOptionString.lower(costingOptionsJson), $0
+                FfiConverterOptionString.lower(optionsJson), $0
             )
         })
     }
@@ -1727,14 +1748,41 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 }
 
 public struct NavigationControllerConfig {
+    /**
+     * Configures when navigation advances to the next step in the route.
+     */
     public var stepAdvance: StepAdvanceMode
+    /**
+     * Configures when the user is deemed to be off course.
+     *
+     * NOTE: This is distinct from the action that is taken.
+     * It is only the determination that the user has deviated from the expected route.
+     */
     public var routeDeviationTracking: RouteDeviationTracking
+    /**
+     * Configures how the heading component of the snapped location is reported in [`TripState`].
+     */
+    public var snappedLocationCourseFiltering: CourseFiltering
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(stepAdvance: StepAdvanceMode, routeDeviationTracking: RouteDeviationTracking) {
+    public init(
+        /**
+         * Configures when navigation advances to the next step in the route.
+         */ stepAdvance: StepAdvanceMode,
+        /**
+            * Configures when the user is deemed to be off course.
+            *
+            * NOTE: This is distinct from the action that is taken.
+            * It is only the determination that the user has deviated from the expected route.
+            */ routeDeviationTracking: RouteDeviationTracking,
+        /**
+            * Configures how the heading component of the snapped location is reported in [`TripState`].
+            */ snappedLocationCourseFiltering: CourseFiltering
+    ) {
         self.stepAdvance = stepAdvance
         self.routeDeviationTracking = routeDeviationTracking
+        self.snappedLocationCourseFiltering = snappedLocationCourseFiltering
     }
 }
 
@@ -1742,13 +1790,15 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
         try NavigationControllerConfig(
             stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf),
-            routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf)
+            routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf),
+            snappedLocationCourseFiltering: FfiConverterTypeCourseFiltering.read(from: &buf)
         )
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
         FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
+        FfiConverterTypeCourseFiltering.write(value.snappedLocationCourseFiltering, into: &buf)
     }
 }
 
@@ -1863,6 +1913,9 @@ public func FfiConverterTypeRoute_lower(_ value: Route) -> RustBuffer {
  * the next step.
  */
 public struct RouteStep {
+    /**
+     * The full route geometry for this step.
+     */
     public var geometry: [GeographicCoordinate]
     /**
      * The distance, in meters, to travel along the route after the maneuver to reach the next step.
@@ -1892,33 +1945,43 @@ public struct RouteStep {
      * A list of prompts to announce (via speech synthesis) at specific points along the step.
      */
     public var spokenInstructions: [SpokenInstruction]
+    /**
+     * A list of json encoded strings representing annotations between each coordinate along the step.
+     */
+    public var annotations: [String]?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(geometry: [GeographicCoordinate],
-                /**
-                    * The distance, in meters, to travel along the route after the maneuver to reach the next step.
-                    */ distance: Double,
-                /**
-                    * The estimated duration, in seconds, that it will take to complete this step.
-                    */ duration: Double,
-                /**
-                    * The name of the road being traveled on (useful for certain UI styles).
-                    */ roadName: String?,
-                /**
-                    * A description of the maneuver (ex: "Turn wright onto main street").
-                    *
-                    * Note for UI implementers: the context this appears in (or doesn't)
-                    * depends somewhat on your use case and routing engine.
-                    * For example, this field is useful as a written instruction in Valhalla.
-                    */ instruction: String,
-                /**
-                    * A list of instructions for visual display (usually as banners) at specific points along the step.
-                    */ visualInstructions: [VisualInstruction],
-                /**
-                    * A list of prompts to announce (via speech synthesis) at specific points along the step.
-                    */ spokenInstructions: [SpokenInstruction])
-    {
+    public init(
+        /**
+         * The full route geometry for this step.
+         */ geometry: [GeographicCoordinate],
+        /**
+            * The distance, in meters, to travel along the route after the maneuver to reach the next step.
+            */ distance: Double,
+        /**
+            * The estimated duration, in seconds, that it will take to complete this step.
+            */ duration: Double,
+        /**
+            * The name of the road being traveled on (useful for certain UI styles).
+            */ roadName: String?,
+        /**
+            * A description of the maneuver (ex: "Turn wright onto main street").
+            *
+            * Note for UI implementers: the context this appears in (or doesn't)
+            * depends somewhat on your use case and routing engine.
+            * For example, this field is useful as a written instruction in Valhalla.
+            */ instruction: String,
+        /**
+            * A list of instructions for visual display (usually as banners) at specific points along the step.
+            */ visualInstructions: [VisualInstruction],
+        /**
+            * A list of prompts to announce (via speech synthesis) at specific points along the step.
+            */ spokenInstructions: [SpokenInstruction],
+        /**
+            * A list of json encoded strings representing annotations between each coordinate along the step.
+            */ annotations: [String]?
+    ) {
         self.geometry = geometry
         self.distance = distance
         self.duration = duration
@@ -1926,6 +1989,7 @@ public struct RouteStep {
         self.instruction = instruction
         self.visualInstructions = visualInstructions
         self.spokenInstructions = spokenInstructions
+        self.annotations = annotations
     }
 }
 
@@ -1952,6 +2016,9 @@ extension RouteStep: Equatable, Hashable {
         if lhs.spokenInstructions != rhs.spokenInstructions {
             return false
         }
+        if lhs.annotations != rhs.annotations {
+            return false
+        }
         return true
     }
 
@@ -1963,6 +2030,7 @@ extension RouteStep: Equatable, Hashable {
         hasher.combine(instruction)
         hasher.combine(visualInstructions)
         hasher.combine(spokenInstructions)
+        hasher.combine(annotations)
     }
 }
 
@@ -1975,7 +2043,8 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
             roadName: FfiConverterOptionString.read(from: &buf),
             instruction: FfiConverterString.read(from: &buf),
             visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf),
-            spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf)
+            spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf),
+            annotations: FfiConverterOptionSequenceString.read(from: &buf)
         )
     }
 
@@ -1987,6 +2056,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
         FfiConverterString.write(value.instruction, into: &buf)
         FfiConverterSequenceTypeVisualInstruction.write(value.visualInstructions, into: &buf)
         FfiConverterSequenceTypeSpokenInstruction.write(value.spokenInstructions, into: &buf)
+        FfiConverterOptionSequenceString.write(value.annotations, into: &buf)
     }
 }
 
@@ -2604,8 +2674,61 @@ public func FfiConverterTypeWaypoint_lower(_ value: Waypoint) -> RustBuffer {
     FfiConverterTypeWaypoint.lower(value)
 }
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Controls filtering/post-processing of user course by the [`NavigationController`].
+ */
+
+public enum CourseFiltering {
+    /**
+     * Snap the user's course to the current step's linestring using the next index in the step's geometry.
+
+     */
+    case snapToRoute
+    /**
+     * Use the raw course as reported by the location provider with no processing.
+     */
+    case raw
+}
+
+public struct FfiConverterTypeCourseFiltering: FfiConverterRustBuffer {
+    typealias SwiftType = CourseFiltering
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CourseFiltering {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return .snapToRoute
+
+        case 2: return .raw
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: CourseFiltering, into buf: inout [UInt8]) {
+        switch value {
+        case .snapToRoute:
+            writeInt(&buf, Int32(1))
+
+        case .raw:
+            writeInt(&buf, Int32(2))
+        }
+    }
+}
+
+public func FfiConverterTypeCourseFiltering_lift(_ buf: RustBuffer) throws -> CourseFiltering {
+    try FfiConverterTypeCourseFiltering.lift(buf)
+}
+
+public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> RustBuffer {
+    FfiConverterTypeCourseFiltering.lower(value)
+}
+
+extension CourseFiltering: Equatable, Hashable {}
+
 public enum InstantiationError {
-    case JsonError
+    case OptionsJsonParseError
 }
 
 public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
@@ -2614,7 +2737,7 @@ public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> InstantiationError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        case 1: return .JsonError
+        case 1: return .OptionsJsonParseError
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -2622,7 +2745,7 @@ public struct FfiConverterTypeInstantiationError: FfiConverterRustBuffer {
 
     public static func write(_ value: InstantiationError, into buf: inout [UInt8]) {
         switch value {
-        case .JsonError:
+        case .OptionsJsonParseError:
             writeInt(&buf, Int32(1))
         }
     }
@@ -2886,8 +3009,11 @@ extension ModelError: Foundation.LocalizedError {
 }
 
 public enum ParsingError {
-    case ParseError(error: String)
-    case UnknownError
+    case InvalidRouteObject(error: String)
+    case InvalidGeometry(error: String)
+    case MalformedAnnotations(error: String)
+    case InvalidStatusCode(code: String)
+    case UnknownParsingError
 }
 
 public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
@@ -2896,24 +3022,43 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ParsingError {
         let variant: Int32 = try readInt(&buf)
         switch variant {
-        case 1: return try .ParseError(
+        case 1: return try .InvalidRouteObject(
                 error: FfiConverterString.read(from: &buf)
             )
-
-        case 2: return .UnknownError
-
+        case 2: return try .InvalidGeometry(
+                error: FfiConverterString.read(from: &buf)
+            )
+        case 3: return try .MalformedAnnotations(
+                error: FfiConverterString.read(from: &buf)
+            )
+        case 4: return try .InvalidStatusCode(
+                code: FfiConverterString.read(from: &buf)
+            )
+        case 5: return .UnknownParsingError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
 
     public static func write(_ value: ParsingError, into buf: inout [UInt8]) {
         switch value {
-        case let .ParseError(error):
+        case let .InvalidRouteObject(error):
             writeInt(&buf, Int32(1))
             FfiConverterString.write(error, into: &buf)
 
-        case .UnknownError:
+        case let .InvalidGeometry(error):
             writeInt(&buf, Int32(2))
+            FfiConverterString.write(error, into: &buf)
+
+        case let .MalformedAnnotations(error):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(error, into: &buf)
+
+        case let .InvalidStatusCode(code):
+            writeInt(&buf, Int32(4))
+            FfiConverterString.write(code, into: &buf)
+
+        case .UnknownParsingError:
+            writeInt(&buf, Int32(5))
         }
     }
 }
@@ -3071,6 +3216,7 @@ public func FfiConverterTypeRouteDeviationTracking_lower(_ value: RouteDeviation
 
 public enum RouteRequest {
     case httpPost(url: String, headers: [String: String], body: Data)
+    case httpGet(url: String, headers: [String: String])
 }
 
 public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
@@ -3085,6 +3231,11 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
                 body: FfiConverterData.read(from: &buf)
             )
 
+        case 2: return try .httpGet(
+                url: FfiConverterString.read(from: &buf),
+                headers: FfiConverterDictionaryStringString.read(from: &buf)
+            )
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3096,6 +3247,11 @@ public struct FfiConverterTypeRouteRequest: FfiConverterRustBuffer {
             FfiConverterString.write(url, into: &buf)
             FfiConverterDictionaryStringString.write(headers, into: &buf)
             FfiConverterData.write(body, into: &buf)
+
+        case let .httpGet(url, headers):
+            writeInt(&buf, Int32(2))
+            FfiConverterString.write(url, into: &buf)
+            FfiConverterDictionaryStringString.write(headers, into: &buf)
         }
     }
 }
@@ -3113,7 +3269,7 @@ extension RouteRequest: Equatable, Hashable {}
 public enum RoutingRequestGenerationError {
     case NotEnoughWaypoints
     case JsonError
-    case UnknownError
+    case UnknownRequestGenerationError
 }
 
 public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuffer {
@@ -3124,7 +3280,7 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
         switch variant {
         case 1: return .NotEnoughWaypoints
         case 2: return .JsonError
-        case 3: return .UnknownError
+        case 3: return .UnknownRequestGenerationError
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -3137,7 +3293,7 @@ public struct FfiConverterTypeRoutingRequestGenerationError: FfiConverterRustBuf
         case .JsonError:
             writeInt(&buf, Int32(2))
 
-        case .UnknownError:
+        case .UnknownRequestGenerationError:
             writeInt(&buf, Int32(3))
         }
     }
@@ -3294,7 +3450,11 @@ extension StepAdvanceMode: Equatable, Hashable {}
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * Internal state of the navigation controller.
+ * The state of a navigation session.
+ *
+ * This is produced by [`NavigationController`](super::NavigationController) methods
+ * including [`get_initial_state`](super::NavigationController::get_initial_state)
+ * and [`update_user_location`](super::NavigationController::update_user_location).
  */
 
 public enum TripState {
@@ -3305,38 +3465,51 @@ public enum TripState {
     /**
      * The navigation controller is actively navigating a trip.
      */
-    case navigating(snappedUserLocation: UserLocation,
-                    /**
-                        * The ordered list of steps that remain in the trip.
-                        *
-                        * The step at the front of the list is always the current step.
-                        * We currently assume that you cannot move backward to a previous step.
-                        */ remainingSteps: [RouteStep],
-                    /**
-                        * Remaining waypoints to visit on the route.
-                        *
-                        * The waypoint at the front of the list is always the *next* waypoint "goal."
-                        * Unlike the current step, there is no value in tracking the "current" waypoint,
-                        * as the main use of waypoints is recalculation when the user deviates from the route.
-                        * (In most use cases, a route will have only two waypoints, but more complex use cases
-                        * may have multiple intervening points that are visited along the route.)
-                        * This list is updated as the user advances through the route.
-                        */ remainingWaypoints: [Waypoint],
-                    /**
-                        * The trip progress includes information that is useful for showing the
-                        * user's progress along the full navigation trip, the route and its components.
-                        */ progress: TripProgress,
-                    /**
-                        * The route deviation status: is the user following the route or not?
-                        */ deviation: RouteDeviation,
-                    /**
-                        * The visual instruction that should be displayed in the user interface.
-                        */ visualInstruction: VisualInstruction?,
-                    /**
-                        * The most recent spoken instruction that should be synthesized using TTS.
-                        *
-                        * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
-                        */ spokenInstruction: SpokenInstruction?)
+    case navigating(
+        /**
+         * The index of the closest coordinate to the user's snapped location.
+         *
+         * This index is relative to the *current* [`RouteStep`]'s geometry.
+         */ currentStepGeometryIndex: UInt64?,
+        /**
+            * A location on the line string that
+            */ snappedUserLocation: UserLocation,
+        /**
+            * The ordered list of steps that remain in the trip.
+            *
+            * The step at the front of the list is always the current step.
+            * We currently assume that you cannot move backward to a previous step.
+            */ remainingSteps: [RouteStep],
+        /**
+            * Remaining waypoints to visit on the route.
+            *
+            * The waypoint at the front of the list is always the *next* waypoint "goal."
+            * Unlike the current step, there is no value in tracking the "current" waypoint,
+            * as the main use of waypoints is recalculation when the user deviates from the route.
+            * (In most use cases, a route will have only two waypoints, but more complex use cases
+            * may have multiple intervening points that are visited along the route.)
+            * This list is updated as the user advances through the route.
+            */ remainingWaypoints: [Waypoint],
+        /**
+            * The trip progress includes information that is useful for showing the
+            * user's progress along the full navigation trip, the route and its components.
+            */ progress: TripProgress,
+        /**
+            * The route deviation status: is the user following the route or not?
+            */ deviation: RouteDeviation,
+        /**
+            * The visual instruction that should be displayed in the user interface.
+            */ visualInstruction: VisualInstruction?,
+        /**
+            * The most recent spoken instruction that should be synthesized using TTS.
+            *
+            * Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
+            */ spokenInstruction: SpokenInstruction?,
+        /**
+            * Annotation data at the current location.
+            * This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
+            */ annotationJson: String?
+    )
     /**
      * The navigation controller has reached the end of the trip.
      */
@@ -3352,13 +3525,15 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         case 1: return .idle
 
         case 2: return try .navigating(
+                currentStepGeometryIndex: FfiConverterOptionUInt64.read(from: &buf),
                 snappedUserLocation: FfiConverterTypeUserLocation.read(from: &buf),
                 remainingSteps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
                 remainingWaypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
                 progress: FfiConverterTypeTripProgress.read(from: &buf),
                 deviation: FfiConverterTypeRouteDeviation.read(from: &buf),
                 visualInstruction: FfiConverterOptionTypeVisualInstruction.read(from: &buf),
-                spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf)
+                spokenInstruction: FfiConverterOptionTypeSpokenInstruction.read(from: &buf),
+                annotationJson: FfiConverterOptionString.read(from: &buf)
             )
 
         case 3: return .complete
@@ -3373,15 +3548,18 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
 
         case let .navigating(
+            currentStepGeometryIndex,
             snappedUserLocation,
             remainingSteps,
             remainingWaypoints,
             progress,
             deviation,
             visualInstruction,
-            spokenInstruction
+            spokenInstruction,
+            annotationJson
         ):
             writeInt(&buf, Int32(2))
+            FfiConverterOptionUInt64.write(currentStepGeometryIndex, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
@@ -3389,6 +3567,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
             FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
+            FfiConverterOptionString.write(annotationJson, into: &buf)
 
         case .complete:
             writeInt(&buf, Int32(3))
@@ -3476,6 +3655,27 @@ private struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterUInt16.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterOptionUInt64: FfiConverterRustBuffer {
+    typealias SwiftType = UInt64?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterUInt64.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterUInt64.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -3670,6 +3870,49 @@ private struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
     }
 }
 
+private struct FfiConverterOptionSequenceString: FfiConverterRustBuffer {
+    typealias SwiftType = [String]?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterSequenceString.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterSequenceString.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+private struct FfiConverterSequenceString: FfiConverterRustBuffer {
+    typealias SwiftType = [String]
+
+    public static func write(_ value: [String], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterString.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [String] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [String]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            try seq.append(FfiConverterString.read(from: &buf))
+        }
+        return seq
+    }
+}
+
 private struct FfiConverterSequenceTypeGeographicCoordinate: FfiConverterRustBuffer {
     typealias SwiftType = [GeographicCoordinate]
 
@@ -3826,25 +4069,30 @@ private struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
 }
 
 /**
- * Typealias from the type name used in the UDL file to the builtin type.  This
+ * Typealias from the type name used in the UDL file to the custom type.  This
  * is needed because the UDL type name is used in function/method signatures.
  */
-public typealias Uuid = String
+public typealias Uuid = UUID
+
 public struct FfiConverterTypeUuid: FfiConverter {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Uuid {
-        try FfiConverterString.read(from: &buf)
+        let builtinValue = try FfiConverterString.read(from: &buf)
+        return UUID(uuidString: builtinValue)!
     }
 
     public static func write(_ value: Uuid, into buf: inout [UInt8]) {
-        FfiConverterString.write(value, into: &buf)
+        let builtinValue = value.uuidString
+        return FfiConverterString.write(builtinValue, into: &buf)
     }
 
     public static func lift(_ value: RustBuffer) throws -> Uuid {
-        try FfiConverterString.lift(value)
+        let builtinValue = try FfiConverterString.lift(value)
+        return UUID(uuidString: builtinValue)!
     }
 
     public static func lower(_ value: Uuid) -> RustBuffer {
-        FfiConverterString.lower(value)
+        let builtinValue = value.uuidString
+        return FfiConverterString.lower(builtinValue)
     }
 }
 
@@ -3913,13 +4161,13 @@ public func createRouteFromOsrm(routeData: Data, waypointData: Data, polylinePre
  * This is provided as a convenience for use from foreign code when creating your own [`routing_adapters::RouteAdapter`].
  */
 public func createValhallaRequestGenerator(endpointUrl: String, profile: String,
-                                           costingOptionsJson: String?) throws -> RouteRequestGenerator
+                                           optionsJson: String?) throws -> RouteRequestGenerator
 {
     try FfiConverterTypeRouteRequestGenerator.lift(rustCallWithError(FfiConverterTypeInstantiationError.lift) {
         uniffi_ferrostar_fn_func_create_valhalla_request_generator(
             FfiConverterString.lower(endpointUrl),
             FfiConverterString.lower(profile),
-            FfiConverterOptionString.lower(costingOptionsJson), $0
+            FfiConverterOptionString.lower(optionsJson), $0
         )
     })
 }
@@ -4010,7 +4258,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_func_create_route_from_osrm() != 42270 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 62919 {
+    if uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 16275 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 31480 {
@@ -4025,7 +4273,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 47899 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 60524 {
+    if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 3820 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 63862 {
@@ -4055,7 +4303,7 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_constructor_routeadapter_new() != 32290 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 63624 {
+    if uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 3524 {
         return InitializationResult.apiChecksumMismatch
     }
 

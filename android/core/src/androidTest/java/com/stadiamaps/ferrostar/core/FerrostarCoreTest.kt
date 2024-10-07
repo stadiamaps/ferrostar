@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.core
 
+import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
@@ -16,6 +17,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Test
 import uniffi.ferrostar.BoundingBox
+import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
@@ -40,15 +42,42 @@ private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
 
 // Simple test to ensure that the extensibility with native code is working.
 
-class MockRouteRequestGenerator : RouteRequestGenerator {
+class MockPostRouteRequestGenerator : RouteRequestGenerator {
   override fun generateRequest(
       userLocation: UserLocation,
       waypoints: List<Waypoint>
   ): RouteRequest = RouteRequest.HttpPost(valhallaEndpointUrl, mapOf(), byteArrayOf())
 }
 
+class MockGetRouteRequestGenerator : RouteRequestGenerator {
+  override fun generateRequest(
+      userLocation: UserLocation,
+      waypoints: List<Waypoint>
+  ): RouteRequest = RouteRequest.HttpGet(valhallaEndpointUrl, mapOf())
+}
+
 class MockRouteResponseParser(private val routes: List<Route>) : RouteResponseParser {
   override fun parseResponse(response: ByteArray): List<Route> = routes
+}
+
+class MockForegroundNotificationManager : ForegroundServiceManager {
+  var startCalled = false
+
+  override fun startService(stopNavigation: () -> Unit) {
+    startCalled = true
+  }
+
+  var stopCalled = false
+
+  override fun stopService() {
+    stopCalled = true
+  }
+
+  var onCurrentStateUpdated: ((NavigationState) -> Unit)? = null
+
+  override fun onNavigationStateUpdated(state: NavigationState) {
+    onCurrentStateUpdated?.invoke(state)
+  }
 }
 
 class FerrostarCoreTest {
@@ -90,7 +119,8 @@ class FerrostarCoreTest {
                                   secondaryContent = null,
                                   triggerDistanceBeforeManeuver = 42.0)),
                       spokenInstructions = listOf(),
-                      duration = 0.0)))
+                      duration = 0.0,
+                      annotations = null)))
 
   @Test
   fun test401UnauthorizedRouteResponse() = runTest {
@@ -98,19 +128,21 @@ class FerrostarCoreTest {
         MockInterceptor().apply {
           rule(post, url eq valhallaEndpointUrl) { respond(401, errorBody) }
 
-          rule(get) { respond { throw IllegalStateException("an IO error") } }
+          rule(get) { respond { throw IllegalStateException("Unexpected GET request") } }
         }
 
     val core =
         FerrostarCore(
             routeAdapter =
                 RouteAdapter(
-                    requestGenerator = MockRouteRequestGenerator(),
+                    requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf())),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
 
     try {
       // Tests that the core generates a request and attempts to process it, but throws due to the
@@ -139,24 +171,69 @@ class FerrostarCoreTest {
   }
 
   @Test
-  fun test200MockRouteResponse() = runTest {
+  fun test200MockRouteResponsePost() = runTest {
     val interceptor =
         MockInterceptor().apply {
           rule(post, url eq valhallaEndpointUrl) { respond(200, "".toResponseBody()) }
 
-          rule(get) { respond { throw IllegalStateException("an IO error") } }
+          rule(get) { respond { throw IllegalStateException("unexpected GET request") } }
         }
 
     val core =
         FerrostarCore(
             routeAdapter =
                 RouteAdapter(
-                    requestGenerator = MockRouteRequestGenerator(),
+                    requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
+    val routes =
+        core.getRoutes(
+            initialLocation =
+                UserLocation(
+                    coordinates =
+                        GeographicCoordinate(
+                            lat = 60.5347155,
+                            lng = -149.543469,
+                        ),
+                    horizontalAccuracy = 6.0,
+                    courseOverGround = null,
+                    timestamp = Instant.now(),
+                    speed = null),
+            waypoints =
+                listOf(
+                    Waypoint(
+                        coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
+                        kind = WaypointKind.BREAK)))
+
+    assertEquals(listOf(mockRoute), routes)
+  }
+
+  @Test
+  fun test200MockRouteResponseGet() = runTest {
+    val interceptor =
+        MockInterceptor().apply {
+          rule(get, url eq valhallaEndpointUrl) { respond(200, "".toResponseBody()) }
+
+          rule(post) { respond { throw IllegalStateException("unexpected POST request") } }
+        }
+
+    val core =
+        FerrostarCore(
+            routeAdapter =
+                RouteAdapter(
+                    requestGenerator = MockGetRouteRequestGenerator(),
+                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
+            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
+            navigationControllerConfig =
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -183,7 +260,7 @@ class FerrostarCoreTest {
   fun testCustomRouteProvider() = runTest {
     val interceptor =
         MockInterceptor().apply {
-          rule(post) { respond { throw IllegalStateException("Unexpected call") } }
+          rule(post) { respond { throw IllegalStateException("Unexpected network call") } }
         }
 
     val routeProvider =
@@ -204,8 +281,10 @@ class FerrostarCoreTest {
             customRouteProvider = routeProvider,
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
+            foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -238,6 +317,8 @@ class FerrostarCoreTest {
           rule(post, url eq valhallaEndpointUrl) { respond(200, "".toResponseBody()) }
         }
 
+    val foregroundServiceManager = MockForegroundNotificationManager()
+
     class DeviationHandler : RouteDeviationHandler {
       var called = false
 
@@ -267,12 +348,14 @@ class FerrostarCoreTest {
         FerrostarCore(
             routeAdapter =
                 RouteAdapter(
-                    requestGenerator = MockRouteRequestGenerator(),
+                    requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = locationProvider,
+            foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
-                NavigationControllerConfig(StepAdvanceMode.Manual, RouteDeviationTracking.None))
+                NavigationControllerConfig(
+                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
 
     val deviationHandler = DeviationHandler()
     core.deviationHandler = deviationHandler
@@ -321,8 +404,10 @@ class FerrostarCoreTest {
                           ): RouteDeviation {
                             return RouteDeviation.OffRoute(42.0)
                           }
-                        })))
+                        }),
+            CourseFiltering.RAW))
 
+    assert(foregroundServiceManager.startCalled)
     assert(deviationHandler.called)
 
     // TODO: Figure out how to test this properly with Kotlin coroutines + JUnit in the way.

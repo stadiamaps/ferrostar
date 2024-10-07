@@ -1,4 +1,5 @@
 import XCTest
+@testable import FerrostarCore
 @testable import FerrostarCoreFFI
 @testable import FerrostarSwiftUI
 
@@ -21,9 +22,31 @@ final class InstructionsViewTests: XCTestCase {
                     ),
                     triggerDistanceBeforeManeuver: 123
                 ),
-                distanceFormatter: americanDistanceFormatter,
-                primaryRowTheme: TestingInstructionRowTheme(),
-                secondaryRowTheme: TestingInstructionRowTheme()
+                distanceFormatter: americanDistanceFormatter
+            )
+            .padding()
+        }
+    }
+
+    func testInstructionsView_darkMode() {
+        assertView(colorScheme: .dark) {
+            InstructionsView(
+                visualInstruction: VisualInstruction(
+                    primaryContent: VisualInstructionContent(
+                        text: "Turn right on Something Dr.",
+                        maneuverType: .turn,
+                        maneuverModifier: .right,
+                        roundaboutExitDegrees: nil
+                    ),
+                    secondaryContent: VisualInstructionContent(
+                        text: "Merge onto Hwy 123",
+                        maneuverType: .merge,
+                        maneuverModifier: .right,
+                        roundaboutExitDegrees: nil
+                    ),
+                    triggerDistanceBeforeManeuver: 123
+                ),
+                distanceFormatter: americanDistanceFormatter
             )
             .padding()
         }
@@ -42,9 +65,7 @@ final class InstructionsViewTests: XCTestCase {
                     secondaryContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
-                distanceFormatter: americanDistanceFormatter,
-                primaryRowTheme: TestingInstructionRowTheme(),
-                secondaryRowTheme: TestingInstructionRowTheme()
+                distanceFormatter: americanDistanceFormatter
             )
             .padding()
         }
@@ -64,9 +85,69 @@ final class InstructionsViewTests: XCTestCase {
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter,
-                primaryRowTheme: TestingInstructionRowTheme(),
-                secondaryRowTheme: TestingInstructionRowTheme(),
-                showPillControl: true
+                remainingSteps: RouteStepFactory().buildMany(3)
+            )
+            .padding()
+        }
+    }
+
+    func testSingularInstructionsViewWithPill_darkMode() {
+        assertView(colorScheme: .dark) {
+            InstructionsView(
+                visualInstruction: VisualInstruction(
+                    primaryContent: VisualInstructionContent(
+                        text: "Use the second exit to leave the roundabout.",
+                        maneuverType: .rotary,
+                        maneuverModifier: .slightRight,
+                        roundaboutExitDegrees: nil
+                    ),
+                    secondaryContent: nil,
+                    triggerDistanceBeforeManeuver: 123
+                ),
+                distanceFormatter: americanDistanceFormatter,
+                remainingSteps: RouteStepFactory().buildMany(3)
+            )
+            .padding()
+        }
+    }
+
+    func testExpandedInstructionsView() {
+        assertView {
+            InstructionsView(
+                visualInstruction: VisualInstruction(
+                    primaryContent: VisualInstructionContent(
+                        text: "Use the second exit to leave the roundabout.",
+                        maneuverType: .rotary,
+                        maneuverModifier: .slightRight,
+                        roundaboutExitDegrees: nil
+                    ),
+                    secondaryContent: nil,
+                    triggerDistanceBeforeManeuver: 123
+                ),
+                distanceFormatter: americanDistanceFormatter,
+                remainingSteps: RouteStepFactory().buildMany(3),
+                isExpanded: .constant(true)
+            )
+            .padding()
+        }
+    }
+
+    func testExpandedInstructionsView_darkMode() {
+        assertView(colorScheme: .dark) {
+            InstructionsView(
+                visualInstruction: VisualInstruction(
+                    primaryContent: VisualInstructionContent(
+                        text: "Use the second exit to leave the roundabout.",
+                        maneuverType: .rotary,
+                        maneuverModifier: .slightRight,
+                        roundaboutExitDegrees: nil
+                    ),
+                    secondaryContent: nil,
+                    triggerDistanceBeforeManeuver: 123
+                ),
+                distanceFormatter: americanDistanceFormatter,
+                remainingSteps: RouteStepFactory().buildMany(3),
+                isExpanded: .constant(true)
             )
             .padding()
         }
@@ -86,9 +167,7 @@ final class InstructionsViewTests: XCTestCase {
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: germanDistanceFormatter,
-                distanceToNextManeuver: 152.4,
-                primaryRowTheme: TestingInstructionRowTheme(),
-                secondaryRowTheme: TestingInstructionRowTheme()
+                distanceToNextManeuver: 152.4
             )
             .padding()
         }

@@ -57,7 +57,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 ///
 /// The usual flow is for callers to configure an instance of the core, set a ``delegate``,
 /// and reuse the instance for as long as it makes sense (necessarily somewhat app-specific).
-/// You can first call ``getRoutes(waypoints:userLocation:)``
+/// You can first call ``getRoutes(initialLocation:waypoints:)``
 /// to fetch a list of possible routes asynchronously. After selecting a suitable route (either interactively by the
 /// user, or programmatically), call ``startNavigation(route:config:)`` to start a session.
 ///
@@ -89,10 +89,14 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var lastAutomaticRecalculation: Date? = nil
     private var lastLocation: UserLocation? = nil
     private var recalculationTask: Task<Void, Never>?
-    private var queuedUtteranceIDs: Set<String> = Set()
+    private var queuedUtteranceIDs: Set<UUID> = Set()
 
     private var config: SwiftNavigationControllerConfig
 
+    /// Initializes a core instance with the given parameters.
+    ///
+    /// This designated initializer is the most flexible, but the convenience ones may be easier to use.
+    /// for common configuraitons.
     public init(
         routeProvider: RouteProvider,
         locationProvider: LocationProviding,
@@ -110,25 +114,36 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.delegate = self
     }
 
+    /// Initializes a core instance for a Valhalla API accessed over HTTP.
+    ///
+    /// - Parameters
+    ///   - valhallaEndpointUrl: The URL of the Valhalla endpoint you're trying to hit for route requests. If necessary,
+    /// include your API key here.
+    ///   - profile: The Valhalla costing model to use for route requests.
+    ///   - navigationControllerConfig: Configuration of the navigation session.
+    ///   - options: A dictionary of options to include in the request. The Valhalla request generator sets several
+    /// automatically (like `format`), but this lets you add arbitrary options so you can access the full API.
+    ///   - networkSession: The network session to use. Don't set this unless you need to replace the networking stack
+    /// (ex: for testing).
     public convenience init(
         valhallaEndpointUrl: URL,
         profile: String,
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
-        costingOptions: [String: Any] = [:],
+        options: [String: Any] = [:],
         networkSession: URLRequestLoading = URLSession.shared
     ) throws {
-        guard let jsonCostingOptions = try String(
-            data: JSONSerialization.data(withJSONObject: costingOptions),
+        guard let jsonOptions = try String(
+            data: JSONSerialization.data(withJSONObject: options),
             encoding: .utf8
         ) else {
-            throw InstantiationError.JsonError
+            throw InstantiationError.OptionsJsonParseError
         }
 
         let adapter = try RouteAdapter.newValhallaHttp(
             endpointUrl: valhallaEndpointUrl.absoluteString,
             profile: profile,
-            costingOptionsJson: jsonCostingOptions
+            optionsJson: jsonOptions
         )
         self.init(
             routeProvider: .routeAdapter(adapter),
@@ -185,29 +200,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 waypoints: waypoints
             )
 
-            switch routeRequest {
-            case let .httpPost(url: url, headers: headers, body: body):
-                guard let url = URL(string: url) else {
-                    throw FerrostarCoreError.invalidRequestUrl
-                }
+            let urlRequest = try routeRequest.urlRequest
+            let (data, response) = try await networkSession.loadData(with: urlRequest)
 
-                var urlRequest = URLRequest(url: url)
-                urlRequest.httpMethod = "POST"
-                for (header, value) in headers {
-                    urlRequest.setValue(value, forHTTPHeaderField: header)
-                }
-                urlRequest.httpBody = Data(body)
-                urlRequest.timeoutInterval = 15
+            if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
+                throw FerrostarCoreError.httpStatusCode(res.statusCode)
+            } else {
+                let routes = try routeAdapter.parseResponse(response: data)
 
-                let (data, response) = try await networkSession.loadData(with: urlRequest)
-
-                if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
-                    throw FerrostarCoreError.httpStatusCode(res.statusCode)
-                } else {
-                    let routes = try routeAdapter.parseResponse(response: data)
-
-                    return routes
-                }
+                return routes
             }
         }
     }
@@ -274,13 +275,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
             switch newState {
             case let .navigating(
+                currentStepGeometryIndex: _,
                 snappedUserLocation: _,
                 remainingSteps: _,
                 remainingWaypoints: remainingWaypoints,
                 progress: _,
                 deviation: deviation,
                 visualInstruction: _,
-                spokenInstruction: spokenInstruction
+                spokenInstruction: spokenInstruction,
+                annotationJson: _
             ):
                 switch deviation {
                 case .noDeviation:

@@ -44,7 +44,8 @@ struct DemoNavigationView: View {
         // You have a lot of flexibility here based on your use case.
         let config = SwiftNavigationControllerConfig(
             stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10),
-            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20)
+            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
+            snappedLocationCourseFiltering: .snapToRoute
         )
 
         ferrostarCore = try! FerrostarCore(
@@ -54,7 +55,7 @@ struct DemoNavigationView: View {
             profile: "bicycle",
             locationProvider: locationProvider,
             navigationControllerConfig: config,
-            costingOptions: ["bicycle": ["use_roads": 0.2]]
+            options: ["costing_options": ["bicycle": ["use_roads": 0.2]]]
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
@@ -127,6 +128,8 @@ struct DemoNavigationView: View {
                                     }
                                 } label: {
                                     Text("Start Nav")
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
                                         .font(.body.bold())
                                 }
                                 .disabled(routes?.isEmpty == true)

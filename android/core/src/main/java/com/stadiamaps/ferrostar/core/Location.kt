@@ -164,6 +164,7 @@ class SimulatedLocationProvider : LocationProvider {
 
   fun setSimulatedRoute(route: Route) {
     simulationState = locationSimulationFromRoute(route, resampleDistance = 10.0)
+    lastLocation = simulationState?.currentLocation
 
     if (listeners.isNotEmpty() && simulationJob == null) {
       simulationJob = scope.launch { startSimulation() }

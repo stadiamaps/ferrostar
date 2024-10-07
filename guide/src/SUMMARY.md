@@ -4,7 +4,7 @@
 [Terminology and Conventions](./terminology-and-conventions.md)
 [Platform Support Targets](./platform-support-targets.md)
 
-# Tutorial
+# Getting Started
 
 - [iOS](./ios-getting-started.md)
 - [Android](./android-getting-started.md)
@@ -17,6 +17,7 @@
 - [Navigation Behavior](./configuring-the-navigation-controller.md)
 - [SwiftUI](./swiftui-customization.md)
 - [Jetpack Compose](./jetpack-compose-customization.md)
+- [Android Foreground Services](./android-foreground-service.md)
 - [Web](./web-customization.md)
 
 # Architecture

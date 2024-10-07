@@ -1,3 +1,9 @@
-import { FerrostarCore } from "./ferrostar-core";
+import { FerrostarMap } from "./ferrostar-map";
 import { BrowserLocationProvider, SimulatedLocationProvider } from "./location";
-export { FerrostarCore, BrowserLocationProvider, SimulatedLocationProvider };
+export { FerrostarMap, BrowserLocationProvider, SimulatedLocationProvider };
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ferrostar-map": FerrostarMap;
+    }
+}

@@ -12,7 +12,8 @@ use alloc::{string::String, vec::Vec};
 use geo::{Coord, LineString, Point, Rect};
 #[cfg(feature = "uniffi")]
 use polyline::encode_coordinates;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 #[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
@@ -26,7 +27,10 @@ use serde::Serialize;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
+use std::collections::HashMap;
 use uuid::Uuid;
+
+use crate::algorithms::get_linestring;
 
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
@@ -186,7 +190,7 @@ pub struct Speed {
     pub accuracy: Option<f64>,
 }
 
-#[cfg(any(test, feature = "wasm-bindgen"))]
+#[cfg(feature = "wasm-bindgen")]
 mod system_time_format {
     use serde::{self, Deserialize, Deserializer, Serializer};
 
@@ -289,6 +293,7 @@ fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelErro
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct RouteStep {
+    /// The full route geometry for this step.
     pub geometry: Vec<GeographicCoordinate>,
     /// The distance, in meters, to travel along the route after the maneuver to reach the next step.
     pub distance: f64,
@@ -306,18 +311,13 @@ pub struct RouteStep {
     pub visual_instructions: Vec<VisualInstruction>,
     /// A list of prompts to announce (via speech synthesis) at specific points along the step.
     pub spoken_instructions: Vec<SpokenInstruction>,
+    /// A list of json encoded strings representing annotations between each coordinate along the step.
+    pub annotations: Option<Vec<String>>,
 }
 
 impl RouteStep {
-    // TODO: Memoize or something later
     pub(crate) fn get_linestring(&self) -> LineString {
-        self.geometry
-            .iter()
-            .map(|coord| Coord {
-                x: coord.lng,
-                y: coord.lat,
-            })
-            .collect()
+        get_linestring(&self.geometry)
     }
 
     /// Gets the active visual instruction at a specific point along the step.
@@ -354,6 +354,15 @@ impl RouteStep {
         self.spoken_instructions.iter().rev().find(|instruction| {
             distance_to_end_of_step - instruction.trigger_distance_before_maneuver <= 5.0
         })
+    }
+
+    /// Get the annotation data at a specific point along the step.
+    ///
+    /// `at_coordinate_index` is the index of the coordinate in the step geometry.
+    pub fn get_annotation_at_current_index(&self, at_coordinate_index: u64) -> Option<String> {
+        self.annotations
+            .as_ref()
+            .and_then(|annotations| annotations.get(at_coordinate_index as usize).cloned())
     }
 }
 
@@ -480,6 +489,14 @@ pub struct VisualInstruction {
     pub secondary_content: Option<VisualInstructionContent>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
     pub trigger_distance_before_maneuver: f64,
+}
+
+/// A flat annotations string value map that can be used to store arbitrary
+/// annotation values.
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
+pub struct AnyAnnotationValue {
+    #[serde(flatten)]
+    pub value: HashMap<String, Value>,
 }
 
 #[cfg(test)]

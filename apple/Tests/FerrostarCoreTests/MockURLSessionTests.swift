@@ -7,7 +7,7 @@ final class MockURLSessionTests: XCTestCase {
         do {
             _ = try await session.loadData(with: URLRequest(url: URL(string: "https://example.com/")!))
             XCTFail("Expected an error")
-        } catch MockURLSessionError.noResponseMockForURL {
+        } catch MockURLSessionError.noResponseMockForMethodAndURL {
             // Expected failure
         }
     }
@@ -19,7 +19,7 @@ final class MockURLSessionTests: XCTestCase {
 
         let session = MockURLSession()
 
-        session.registerMock(forURL: url, withData: mockData, andResponse: mockResponse)
+        session.registerMock(forMethod: "GET", andURL: url, withData: mockData, andResponse: mockResponse)
 
         let (data, response) = try await session.loadData(with: URLRequest(url: url))
         XCTAssertEqual(data, mockData)
@@ -28,7 +28,7 @@ final class MockURLSessionTests: XCTestCase {
         do {
             _ = try await session.loadData(with: URLRequest(url: URL(string: "https://example.com/unregistered")!))
             XCTFail("Expected an error")
-        } catch MockURLSessionError.noResponseMockForURL {
+        } catch MockURLSessionError.noResponseMockForMethodAndURL {
             // Expected failure
         }
     }

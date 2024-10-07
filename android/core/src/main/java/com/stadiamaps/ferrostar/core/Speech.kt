@@ -107,10 +107,13 @@ class AndroidTtsObserver(
       // Amazon Polly is generally the intended target for SSML on Android though.
       val status =
           tts.speak(
-              spokenInstruction.text, TextToSpeech.QUEUE_ADD, null, spokenInstruction.utteranceId)
+              spokenInstruction.text,
+              TextToSpeech.QUEUE_ADD,
+              null,
+              spokenInstruction.utteranceId.toString())
       if (status != TextToSpeech.SUCCESS) {
         android.util.Log.e(TAG, "Unable to speak instruction: code $status")
-        statusObserver?.onTtsSpeakError(spokenInstruction.utteranceId, status)
+        statusObserver?.onTtsSpeakError(spokenInstruction.utteranceId.toString(), status)
       }
     }
   }

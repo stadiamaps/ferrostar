@@ -21,6 +21,8 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
+    public var minimumSafeAreaInsets: EdgeInsets
+
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
 
@@ -35,7 +37,8 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     ///   - camera: The camera binding that represents the current camera on the map.
     ///   - navigationCamera: The default navigation camera. This sets the initial camera & is also used when the center
     /// on user button it tapped.
-    ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
+    ///   - navigationState: The current ferrostar navigation state provided by the Ferrostar core.
+    ///   - minimumSafeAreaInsets: The minimum padding to apply from safe edges. See `complementSafeAreaInsets`.
     ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the
     /// exit button is hidden.
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
@@ -44,11 +47,13 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
         camera: Binding<MapViewCamera>,
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
+        minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
+        self.minimumSafeAreaInsets = minimumSafeAreaInsets
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
@@ -90,7 +95,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
                     midLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
-                }
+                }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
         }
     }
@@ -104,7 +109,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
 
-    guard case let .navigating(snappedUserLocation: userLocation, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
 
@@ -124,7 +129,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .metric
 
-    guard case let .navigating(snappedUserLocation: userLocation, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
 

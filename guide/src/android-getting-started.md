@@ -5,56 +5,6 @@ We'll cover the "batteries included" approach, but flag areas for customization 
 
 ## Gradle setup
 
-### GitHub Packages
-
-Ferrostar releases (since 0.8.0) are hosted on Maven Central.
-However, we are still in the process of transitioning the MapLibre composable UI  wrapper.
-In the meantime, you will still need to set up GitHub Packages, which requires authentication.
-
-GitHub has a [guide on setting this up](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#authenticating-to-github-packages).
-Once you’ve configured GitHub credentials as project properties or environment variables,
-add the repository to your build script.
-
-If you are using `settings.gradle` for your dependency resolution management,
-you’ll end up with something like along these lines:
-
-```groovy
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        // For the MapLibre compose integration
-        maven {
-            url = 'https://maven.pkg.github.com/Rallista/maplibre-compose-playground'
-            credentials {
-                username = settings.ext.find('gpr.user') ?: System.getenv('GITHUB_ACTOR')
-                password = settings.ext.find('gpr.token') ?: System.getenv('GITHUB_TOKEN')
-            }
-        }
-
-        google()
-        mavenCentral()
-    }
-}
-```
-
-And if you’re doing this directly in `build.gradle`, things look slightly different:
-
-```groovy
-repositories {
-    google()
-    mavenCentral()
-    
-    // For the MapLibre compose integration
-    maven {
-        url = uri("https://maven.pkg.github.com/Rallista/maplibre-compose-playground")
-        credentials {
-            username = settings.ext.find("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-            password = settings.ext.find("gpr.token") ?: System.getenv("GITHUB_TOKEN")
-        }
-    }
-}
-```
-
 ### Add dependencies
 
 #### `build.gradle` with explicit version strings
@@ -72,6 +22,9 @@ dependencies {
     def ferrostarVersion = 'X.Y.Z'
     implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
     implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
+
+    // Optional - if using Google Play Service's FusedLocation
+    implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"
 
     // okhttp3
     implementation platform("com.squareup.okhttp3:okhttp-bom:4.11.0")
@@ -140,8 +93,8 @@ Note that Ferrostar does *not* require “background” location access!
 This may be confusing if you’re new to mobile development.
 On Android, we can use something called a *foreground service*
 which lets us keep getting location updates even when the app isn’t front and center.
-
-**TODO: Tutorial on foreground services**
+This is such a detailed topic that it gets its own page!
+Learn about [Foreground Service](./android-foreground-service.md) configuration here.
 
 ### Location providers
 
@@ -179,7 +132,27 @@ In other cases, get a context using an appropriate method.
 locationProvider = AndroidSystemLocationProvider(context = this)
 ```
 
-#### TODO: Google Play Fused Location Client
+#### Google Play Fused Location Client
+
+Alternatively, you can use the `FusedLocationProvider`
+if your app uses Google Play Services.
+This normally offers better device positioning than the default Android location provider
+on supported devices.
+To make use of it, 
+you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`
+in your Gradle dependencies block.
+
+Just as with the `AndroidSystemLocationProvider`,
+you probably need to declare it as a `lateinit var` instance variable first,
+and then initialize later once the `Context` is available.
+
+```kotlin
+// Instance variable definition
+private lateinit var locationProvider: FusedLocationProvider
+
+// Later when the activity loads and a context is avaialable
+locationProvider = FusedLocationProvider(context = this)
+```
 
 #### `SimulatedLocationProvider`
 
@@ -242,6 +215,7 @@ private val core =
           profile = "bicycle",
           httpClient = httpClient,
           locationProvider = locationProvider,
+          foregroundServiceManager = foregroundServiceManager
       )
 ```
 
@@ -353,6 +327,10 @@ Here’s an example:
      }
  }
 ```
+
+### Tools for Improving a NavigationView
+
+- `KeepScreenOnDisposableEffect` is a simple disposable effect that automatically keeps the screen on and at consistent brightness while a user is on the scene using the effect. On dispose, the screen will return to default and auto lock and dim. See the demo app for an example of this being used alongside the `DynamicallyOrientingNavigationView`.
 
 ## Demo app
 

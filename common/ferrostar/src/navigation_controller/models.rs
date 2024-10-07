@@ -27,7 +27,11 @@ pub struct TripProgress {
     pub duration_remaining: f64,
 }
 
-/// Internal state of the navigation controller.
+/// The state of a navigation session.
+///
+/// This is produced by [`NavigationController`](super::NavigationController) methods
+/// including [`get_initial_state`](super::NavigationController::get_initial_state)
+/// and [`update_user_location`](super::NavigationController::update_user_location).
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
@@ -38,6 +42,11 @@ pub enum TripState {
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     /// The navigation controller is actively navigating a trip.
     Navigating {
+        /// The index of the closest coordinate to the user's snapped location.
+        ///
+        /// This index is relative to the *current* [`RouteStep`]'s geometry.
+        current_step_geometry_index: Option<u64>,
+        /// A location on the line string that
         snapped_user_location: UserLocation,
         /// The ordered list of steps that remain in the trip.
         ///
@@ -64,6 +73,9 @@ pub enum TripState {
         ///
         /// Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
         spoken_instruction: Option<SpokenInstruction>,
+        /// Annotation data at the current location.
+        /// This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
+        annotation_json: Option<String>,
     },
     /// The navigation controller has reached the end of the trip.
     Complete,
@@ -77,6 +89,20 @@ pub enum StepAdvanceStatus {
     },
     /// Navigation has reached the end of the route.
     EndOfRoute,
+}
+
+/// Controls filtering/post-processing of user course by the [`NavigationController`].
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
+pub enum CourseFiltering {
+    /// Snap the user's course to the current step's linestring using the next index in the step's geometry.
+    ///
+    // TODO: We could make this more flexible by allowing the user to specify number of indices to average, etc.
+    SnapToRoute,
+
+    /// Use the raw course as reported by the location provider with no processing.
+    Raw,
 }
 
 /// The step advance mode describes when the current maneuver has been successfully completed,
@@ -119,6 +145,13 @@ pub enum StepAdvanceMode {
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
+    /// Configures when navigation advances to the next step in the route.
     pub step_advance: StepAdvanceMode,
+    /// Configures when the user is deemed to be off course.
+    ///
+    /// NOTE: This is distinct from the action that is taken.
+    /// It is only the determination that the user has deviated from the expected route.
     pub route_deviation_tracking: RouteDeviationTracking,
+    /// Configures how the heading component of the snapped location is reported in [`TripState`].
+    pub snapped_location_course_filtering: CourseFiltering,
 }

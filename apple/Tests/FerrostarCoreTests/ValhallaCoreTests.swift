@@ -9,7 +9,8 @@ final class ValhallaCoreTests: XCTestCase {
     func testValhallaRouteParsing() async throws {
         let mockSession = MockURLSession()
         mockSession.registerMock(
-            forURL: valhallaEndpointUrl,
+            forMethod: "POST",
+            andURL: valhallaEndpointUrl,
             withData: sampleRouteData,
             andResponse: successfulJSONResponse
         )
@@ -18,7 +19,11 @@ final class ValhallaCoreTests: XCTestCase {
             valhallaEndpointUrl: valhallaEndpointUrl,
             profile: "auto",
             locationProvider: SimulatedLocationProvider(),
-            navigationControllerConfig: .init(stepAdvance: .manual, routeDeviationTracking: .none),
+            navigationControllerConfig: .init(
+                stepAdvance: .manual,
+                routeDeviationTracking: .none,
+                snappedLocationCourseFiltering: .raw
+            ),
             networkSession: mockSession
         )
         let routes = try await core.getRoutes(
@@ -35,6 +40,19 @@ final class ValhallaCoreTests: XCTestCase {
             waypoints: [Waypoint(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806), kind: .break)]
         )
 
-        assertSnapshot(of: routes, as: .dump)
+        // Redact the annotations in each RouteStep for snapshot assertion.
+        // TODO: Revamp this test once an annotations parsing strategy is chosen
+        let final = routes.map { route in
+            var route = route
+            let newSteps = route.steps.map { step in
+                var step = step
+                step.annotations = nil
+                return step
+            }
+            route.steps = newSteps
+            return route
+        }
+
+        assertSnapshot(of: final, as: .dump)
     }
 }

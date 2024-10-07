@@ -8,8 +8,11 @@ use alloc::string::{String, ToString};
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum InstantiationError {
-    #[cfg_attr(feature = "std", error("Error generating JSON for the request."))]
-    JsonError,
+    #[cfg_attr(
+        feature = "std",
+        error("Error parsing the JSON options for the request.")
+    )]
+    OptionsJsonParseError,
 }
 
 // TODO: See comment above
@@ -28,19 +31,19 @@ pub enum RoutingRequestGenerationError {
         feature = "std",
         error("An unknown error generating a request was raised in foreign code.")
     )]
-    UnknownError,
+    UnknownRequestGenerationError,
 }
 
 #[cfg(feature = "uniffi")]
 impl From<uniffi::UnexpectedUniFFICallbackError> for RoutingRequestGenerationError {
     fn from(_: uniffi::UnexpectedUniFFICallbackError) -> RoutingRequestGenerationError {
-        RoutingRequestGenerationError::UnknownError
+        RoutingRequestGenerationError::UnknownRequestGenerationError
     }
 }
 
 impl From<serde_json::Error> for InstantiationError {
     fn from(_: serde_json::Error) -> Self {
-        InstantiationError::JsonError
+        InstantiationError::OptionsJsonParseError
     }
 }
 
@@ -55,25 +58,34 @@ impl From<serde_json::Error> for RoutingRequestGenerationError {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum ParsingError {
     // TODO: Unable to find route and other common errors
-    #[cfg_attr(feature = "std", error("Failed to parse route response: {error}."))]
-    ParseError { error: String },
+    #[cfg_attr(feature = "std", error("Failed to parse route json object: {error}."))]
+    InvalidRouteObject { error: String },
+    #[cfg_attr(feature = "std", error("Failed to parse route geometry: {error}."))]
+    InvalidGeometry { error: String },
+    #[cfg_attr(feature = "std", error("Failed to parse annotations: {error}."))]
+    MalformedAnnotations { error: String },
+    #[cfg_attr(
+        feature = "std",
+        error("Routing adapter returned an unexpected status code: {code}.")
+    )]
+    InvalidStatusCode { code: String },
     #[cfg_attr(
         feature = "std",
         error("An unknown error parsing a response was raised in foreign code.")
     )]
-    UnknownError,
+    UnknownParsingError,
 }
 
 #[cfg(feature = "uniffi")]
 impl From<uniffi::UnexpectedUniFFICallbackError> for ParsingError {
     fn from(_: uniffi::UnexpectedUniFFICallbackError) -> ParsingError {
-        ParsingError::UnknownError
+        ParsingError::UnknownParsingError
     }
 }
 
 impl From<serde_json::Error> for ParsingError {
     fn from(e: serde_json::Error) -> Self {
-        ParsingError::ParseError {
+        ParsingError::InvalidRouteObject {
             error: e.to_string(),
         }
     }

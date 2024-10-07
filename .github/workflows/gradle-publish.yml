@@ -32,8 +32,8 @@ jobs:
     - name: Install cargo-ndk
       run: cargo install cargo-ndk
 
-    - name: Touch local.properties (required for cargo-ndk)
-      run: touch local.properties
+    - name: Creat local.properties (required for cargo-ndk and the demo app)
+      run: echo 'stadiaApiKey=' > local.properties
       working-directory: android
 
     - name: Publish to Maven Central
@@ -44,6 +44,3 @@ jobs:
         ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.MAVEN_GPG_SECRET_KEY }}
         ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-        # TODO: Remove these once Rallista's compose wrapper moves to Maven Central
-        GITHUB_ACTOR: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

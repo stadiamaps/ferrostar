@@ -1,39 +1,36 @@
 package com.stadiamaps.ferrostar.maplibreui.views
 
-import android.view.Gravity
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.maplibre.compose.camera.CameraState
+import androidx.compose.ui.unit.DpSize
 import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.maplibre.compose.settings.AttributionSettings
-import com.maplibre.compose.settings.CompassSettings
-import com.maplibre.compose.settings.LogoSettings
-import com.maplibre.compose.settings.MapControls
-import com.maplibre.compose.settings.MarginInsets
-import com.stadiamaps.ferrostar.composeui.views.ArrivalView
-import com.stadiamaps.ferrostar.composeui.views.InstructionsView
-import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridView
+import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
+import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForArrivalViewHeight
+import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOverlayView
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -41,10 +38,19 @@ import kotlinx.coroutines.flow.asStateFlow
  * A portrait orientation of the navigation view with instructions, default controls and the
  * navigation map view.
  *
- * @param modifier
- * @param styleUrl
- * @param viewModel
- * @param locationRequestProperties
+ * @param modifier The modifier to apply to the view.
+ * @param styleUrl The MapLibre style URL to use for the map.
+ * @param camera The bi-directional camera state to use for the map.
+ * @param navigationCamera The default camera state to use for navigation. This is applied on launch
+ *   and when centering.
+ * @param viewModel The navigation view model provided by Ferrostar Core.
+ * @param locationRequestProperties The location request properties to use for the map's location
+ *   engine.
+ * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
+ *   route line.
+ * @param config The configuration for the navigation view.
+ * @param onTapExit The callback to invoke when the exit button is tapped.
+ * @param content Any additional composable map symbol content to render.
  */
 @Composable
 fun PortraitNavigationView(
@@ -55,47 +61,40 @@ fun PortraitNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
+    snapUserLocationToRoute: Boolean = true,
+    config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
 ) {
-  val uiState = viewModel.uiState.collectAsState()
+  // Get the correct padding based on edge-to-edge status.
+  val gridPadding = paddingForGridView()
+
+  // Maintain the actual size of the arrival view for MapControl layout purposes.
+  val rememberArrivalViewSize = remember { mutableStateOf(DpSize.Zero) }
+  val arrivalViewSize by rememberArrivalViewSize
+
+  // Get the map control positioning based on the arrival view.
+  val mapControls = rememberMapControlsForArrivalViewHeight(arrivalViewSize.height)
 
   Box(modifier) {
     NavigationMapView(
         styleUrl,
-        MapControls(
-            attribution =
-                AttributionSettings(
-                    gravity = Gravity.BOTTOM or Gravity.END,
-                    margins = MarginInsets(end = 270, bottom = 200)),
-            compass = CompassSettings(enabled = false),
-            logo =
-                LogoSettings(
-                    gravity = Gravity.BOTTOM or Gravity.END,
-                    margins = MarginInsets(end = 32, bottom = 200))),
         camera,
+        navigationCamera,
         viewModel,
+        mapControls,
         locationRequestProperties,
+        snapUserLocationToRoute,
         onMapReadyCallback = { camera.value = navigationCamera },
         content)
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-      uiState.value.visualInstruction?.let { instructions ->
-        InstructionsView(
-            instructions, distanceToNextManeuver = uiState.value.progress?.distanceToNextManeuver)
-      }
-
-      NavigatingInnerGridView(
-          modifier = Modifier.fillMaxSize().weight(1f).padding(bottom = 16.dp),
-          onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
-          onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
-          showCentering = camera.value.state !is CameraState.TrackingUserLocationWithBearing,
-          onClickCenter = { camera.value = navigationCamera })
-
-      uiState.value.progress?.let { progress ->
-        ArrivalView(progress = progress, onTapExit = onTapExit)
-      }
-    }
+    PortraitNavigationOverlayView(
+        modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+        config = config,
+        camera = camera,
+        viewModel = viewModel,
+        arrivalViewSize = rememberArrivalViewSize,
+        onTapExit = onTapExit)
   }
 }
 
@@ -107,5 +106,7 @@ private fun PortraitNavigationViewPreview() {
           MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
 
   PortraitNavigationView(
-      Modifier.fillMaxSize(), "https://demotiles.maplibre.org/style.json", viewModel = viewModel)
+      Modifier.fillMaxSize(),
+      styleUrl = "https://demotiles.maplibre.org/style.json",
+      viewModel = viewModel)
 }

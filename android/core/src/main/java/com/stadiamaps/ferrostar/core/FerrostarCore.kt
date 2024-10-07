@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.core
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
+import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Instant
 import java.util.concurrent.Executors
@@ -14,8 +15,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavigationController
@@ -23,9 +22,9 @@ import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteDeviation
-import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.Uuid
 import uniffi.ferrostar.Waypoint
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
@@ -59,6 +58,7 @@ class FerrostarCore(
     val routeProvider: RouteProvider,
     val httpClient: OkHttpClient,
     val locationProvider: LocationProvider,
+    val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
 ) : LocationUpdateListener {
   companion object {
@@ -107,7 +107,7 @@ class FerrostarCore(
 
   // Maintains a set of utterance IDs which have been seen previously.
   // This helps us maintain the guarantee that the observer won't see the same one twice.
-  private val _queuedUtteranceIds: MutableSet<String> = mutableSetOf()
+  private val _queuedUtteranceIds: MutableSet<Uuid> = mutableSetOf()
 
   var isCalculatingNewRoute: Boolean = false
     private set
@@ -135,13 +135,15 @@ class FerrostarCore(
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
-      costingOptions: Map<String, Any> = emptyMap(),
+      foregroundServiceManager: ForegroundServiceManager? = null,
+      options: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
           RouteAdapter.newValhallaHttp(
-              valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(costingOptions))),
+              valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(options))),
       httpClient,
       locationProvider,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   constructor(
@@ -149,10 +151,12 @@ class FerrostarCore(
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
+      foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
       RouteProvider.RouteAdapter(routeAdapter),
       httpClient,
       locationProvider,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   constructor(
@@ -160,10 +164,12 @@ class FerrostarCore(
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
+      foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
       RouteProvider.CustomProvider(customRouteProvider),
       httpClient,
       locationProvider,
+      foregroundServiceManager,
       navigationControllerConfig)
 
   suspend fun getRoutes(initialLocation: UserLocation, waypoints: List<Waypoint>): List<Route> =
@@ -174,26 +180,18 @@ class FerrostarCore(
           is RouteProvider.CustomProvider ->
               routeProvider.provider.getRoutes(initialLocation, waypoints)
           is RouteProvider.RouteAdapter -> {
-            when (val request = routeProvider.adapter.generateRequest(initialLocation, waypoints)) {
-              is RouteRequest.HttpPost -> {
-                val httpRequest =
-                    Request.Builder()
-                        .url(request.url)
-                        .post(request.body.toRequestBody())
-                        .apply { request.headers.map { (name, value) -> header(name, value) } }
-                        .build()
+            val routeRequest =
+                routeProvider.adapter.generateRequest(initialLocation, waypoints).toOkhttp3Request()
 
-                val res = httpClient.newCall(httpRequest).await()
-                val bodyBytes = res.body?.bytes()
-                if (!res.isSuccessful) {
-                  throw InvalidStatusCodeException(res.code)
-                } else if (bodyBytes == null) {
-                  throw NoResponseBodyException()
-                }
-
-                routeProvider.adapter.parseResponse(bodyBytes)
-              }
+            val res = httpClient.newCall(routeRequest).await()
+            val bodyBytes = res.body?.bytes()
+            if (!res.isSuccessful) {
+              throw InvalidStatusCodeException(res.code)
+            } else if (bodyBytes == null) {
+              throw NoResponseBodyException()
             }
+
+            routeProvider.adapter.parseResponse(bodyBytes)
           }
         }
       } finally {
@@ -226,6 +224,9 @@ class FerrostarCore(
   ): DefaultNavigationViewModel {
     stopNavigation()
 
+    // Start the foreground notification service
+    foregroundServiceManager?.startService(this::stopNavigation)
+
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
@@ -247,7 +248,7 @@ class FerrostarCore(
 
     locationProvider.addListener(this, _executor)
 
-    return DefaultNavigationViewModel(this, locationProvider)
+    return DefaultNavigationViewModel(this, spokenInstructionObserver, locationProvider)
   }
 
   /**
@@ -255,12 +256,19 @@ class FerrostarCore(
    *
    * This allows you to reuse the existing view model. Do not call this method unless you are
    * already navigating.
+   *
+   * @param route the route to navigate.
+   * @param config change the configuration in the core before staring navigation. This was
+   *   originally provided on init, but you can set a new value for future sessions.
    */
-  fun replaceRoute(route: Route, config: NavigationControllerConfig) {
+  fun replaceRoute(route: Route, config: NavigationControllerConfig? = null) {
+    // Apply the new config if provided, otherwise use the original.
+    _config = config ?: _config
+
     val controller =
         NavigationController(
             route,
-            config,
+            _config,
         )
     val startingLocation =
         locationProvider.lastLocation
@@ -292,6 +300,7 @@ class FerrostarCore(
   }
 
   fun stopNavigation() {
+    foregroundServiceManager?.stopService()
     locationProvider.removeListener(this)
     _navigationController?.destroy()
     _navigationController = null
@@ -360,6 +369,9 @@ class FerrostarCore(
         }
       }
     }
+
+    // Update the notification manager (this propagates the state to the notification)
+    foregroundServiceManager?.onNavigationStateUpdated(_state.value)
   }
 
   override fun onLocationUpdated(location: UserLocation) {

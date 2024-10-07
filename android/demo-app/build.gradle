@@ -3,6 +3,7 @@ plugins {
     alias libs.plugins.jetbrainsKotlinAndroid
     alias libs.plugins.ktfmt
     alias libs.plugins.compose.compiler
+    alias libs.plugins.mapsplatform.secrets.plugin
 }
 
 android {
@@ -61,6 +62,7 @@ dependencies {
     implementation libs.androidx.compose.material3
 
     implementation project(':core')
+    implementation project(':composeui')
     implementation project(':maplibreui')
 
     implementation libs.maplibre.compose

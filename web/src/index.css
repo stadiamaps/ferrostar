@@ -10,7 +10,7 @@ body {
   flex-direction: column;
 }
 
-ferrostar-core {
+ferrostar-map {
   height: calc(100% - 48px);
   width: 100%;
   display: block;

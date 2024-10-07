@@ -1,10 +1,11 @@
-import com.vanniktech.maven.publish.AndroidMultiVariantLibrary
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
     alias libs.plugins.androidLibrary
     alias libs.plugins.jetbrainsKotlinAndroid
     alias libs.plugins.ktfmt
+    alias libs.plugins.paparazzi
     alias libs.plugins.compose.compiler
     alias libs.plugins.mavenPublish
 }
@@ -72,7 +73,7 @@ mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
 
-    configure(new AndroidMultiVariantLibrary(true, true))
+    configure(new AndroidSingleVariantLibrary("release", true, true))
 
     apply from: "${rootProject.projectDir}/common-pom.gradle"
 

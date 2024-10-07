@@ -5,6 +5,7 @@ import Foundation
 public extension NavigationState {
     static let pedestrianExample = NavigationState(
         tripState: .navigating(
+            currentStepGeometryIndex: 0,
             snappedUserLocation: UserLocation(
                 latitude: samplePedestrianWaypoints.first!.lat,
                 longitude: samplePedestrianWaypoints.first!.lng,
@@ -24,7 +25,8 @@ public extension NavigationState {
             ),
             deviation: .noDeviation,
             visualInstruction: nil,
-            spokenInstruction: nil
+            spokenInstruction: nil,
+            annotationJson: nil
         ),
         routeGeometry: samplePedestrianWaypoints,
         isCalculatingNewRoute: false
@@ -36,6 +38,7 @@ public extension NavigationState {
 
         return NavigationState(
             tripState: .navigating(
+                currentStepGeometryIndex: 0,
                 snappedUserLocation: UserLocation(
                     coordinates: samplePedestrianWaypoints.first!,
                     horizontalAccuracy: 10,
@@ -61,7 +64,8 @@ public extension NavigationState {
                                 secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0
                             ),
                         ],
-                        spokenInstructions: []
+                        spokenInstructions: [],
+                        annotations: nil
                     ),
                 ],
                 remainingWaypoints: [],
@@ -72,7 +76,8 @@ public extension NavigationState {
                 ),
                 deviation: .noDeviation,
                 visualInstruction: nil,
-                spokenInstruction: nil
+                spokenInstruction: nil,
+                annotationJson: nil
             ),
             routeGeometry: samplePedestrianWaypoints,
             isCalculatingNewRoute: false

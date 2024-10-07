@@ -1,12 +1,14 @@
 //! Response parsing for OSRM-compatible JSON (including Stadia Maps, Valhalla, Mapbox, etc.).
 
 pub(crate) mod models;
+pub mod utilities;
 
 use super::RouteResponseParser;
 use crate::models::{
-    GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
+    AnyAnnotationValue, GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
     VisualInstructionContent, Waypoint, WaypointKind,
 };
+use crate::routing_adapters::utilities::get_coordinates_from_geometry;
 use crate::routing_adapters::{
     osrm::models::{
         Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep, Waypoint as OsrmWaypoint,
@@ -17,6 +19,7 @@ use crate::routing_adapters::{
 use alloc::{string::ToString, vec, vec::Vec};
 use geo::BoundingRect;
 use polyline::decode_polyline;
+use utilities::get_annotation_slice;
 use uuid::Uuid;
 
 /// A response parser for OSRM-compatible routing backends.
@@ -38,10 +41,14 @@ impl RouteResponseParser for OsrmResponseParser {
     fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, ParsingError> {
         let res: RouteResponse = serde_json::from_slice(&response)?;
 
-        res.routes
-            .iter()
-            .map(|route| Route::from_osrm(route, &res.waypoints, self.polyline_precision))
-            .collect::<Result<Vec<_>, _>>()
+        if res.code == "Ok" {
+            res.routes
+                .iter()
+                .map(|route| Route::from_osrm(route, &res.waypoints, self.polyline_precision))
+                .collect::<Result<Vec<_>, _>>()
+        } else {
+            Err(ParsingError::InvalidStatusCode { code: res.code })
+        }
     }
 }
 
@@ -74,12 +81,12 @@ impl Route {
             .collect();
 
         let linestring = decode_polyline(&route.geometry, polyline_precision).map_err(|error| {
-            ParsingError::ParseError {
+            ParsingError::InvalidGeometry {
                 error: error.to_string(),
             }
         })?;
         if let Some(bbox) = linestring.bounding_rect() {
-            let geometry = linestring
+            let geometry: Vec<GeographicCoordinate> = linestring
                 .coords()
                 .map(|coord| GeographicCoordinate::from(*coord))
                 .collect();
@@ -88,11 +95,42 @@ impl Route {
                 .legs
                 .iter()
                 .flat_map(|leg| {
-                    leg.steps
-                        .iter()
-                        .map(|step| RouteStep::from_osrm(step, polyline_precision))
+                    // Converts all single value annotation vectors into a single vector witih a value object.
+                    let annotations = leg
+                        .annotation
+                        .as_ref()
+                        .map(|leg_annotation| utilities::zip_annotations(leg_annotation.clone()));
+
+                    // Index for the annotations slice
+                    let mut start_index: usize = 0;
+
+                    return leg.steps.iter().map(move |step| {
+                        let step_geometry =
+                            get_coordinates_from_geometry(&step.geometry, polyline_precision)?;
+
+                        // Slice the annotations for the current step.
+                        // The annotations array represents segments between coordinates.
+                        //
+                        // 1. Annotations should never repeat.
+                        // 2. Each step has one less annotation than coordinate.
+                        // 3. The last step never has annotations as it's two of the route's last coordinate (duplicate).
+                        let step_index_len = step_geometry.len() - 1_usize;
+                        let end_index = start_index + step_index_len;
+
+                        let annotation_slice =
+                            get_annotation_slice(annotations.clone(), start_index, end_index).ok();
+
+                        start_index = end_index;
+
+                        return RouteStep::from_osrm_and_geom(
+                            step,
+                            step_geometry,
+                            annotation_slice,
+                        );
+                    });
                 })
                 .collect::<Result<Vec<_>, _>>()?;
+
             Ok(Route {
                 geometry,
                 bbox: bbox.into(),
@@ -101,7 +139,7 @@ impl Route {
                 steps,
             })
         } else {
-            Err(ParsingError::ParseError {
+            Err(ParsingError::InvalidGeometry {
                 error: "Bounding box could not be calculated".to_string(),
             })
         }
@@ -109,18 +147,11 @@ impl Route {
 }
 
 impl RouteStep {
-    fn from_osrm(value: &OsrmRouteStep, polyline_precision: u32) -> Result<Self, ParsingError> {
-        let linestring = decode_polyline(&value.geometry, polyline_precision).map_err(|error| {
-            ParsingError::ParseError {
-                error: error.to_string(),
-            }
-        })?;
-        // TODO: Trait for this common pattern?
-        let geometry = linestring
-            .coords()
-            .map(|coord| GeographicCoordinate::from(*coord))
-            .collect();
-
+    fn from_osrm_and_geom(
+        value: &OsrmRouteStep,
+        geometry: Vec<GeographicCoordinate>,
+        annotations: Option<Vec<AnyAnnotationValue>>,
+    ) -> Result<Self, ParsingError> {
         let visual_instructions = value
             .banner_instructions
             .iter()
@@ -154,6 +185,16 @@ impl RouteStep {
             })
             .collect();
 
+        // Convert the annotations to a vector of json strings.
+        // This allows us to safely pass the RouteStep through the FFI boundary.
+        // The host platform can then parse an arbitrary annotation object.
+        let annotations_as_strings: Option<Vec<String>> = annotations.map(|annotations_vec| {
+            annotations_vec
+                .iter()
+                .map(|annotation| serde_json::to_string(annotation).unwrap())
+                .collect()
+        });
+
         Ok(RouteStep {
             geometry,
             // TODO: Investigate using the haversine distance or geodesics to normalize.
@@ -164,6 +205,7 @@ impl RouteStep {
             instruction: value.maneuver.get_instruction(),
             visual_instructions,
             spoken_instructions,
+            annotations: annotations_as_strings,
         })
     }
 }
@@ -191,7 +233,10 @@ mod tests {
         let routes = parser
             .parse_response(VALHALLA_OSRM_RESPONSE.into())
             .expect("Unable to parse Valhalla OSRM response");
-        insta::assert_yaml_snapshot!(routes);
+
+        insta::assert_yaml_snapshot!(routes, {
+            ".**.annotations" => "redacted annotations json strings vec"
+        });
     }
 
     #[test]
@@ -200,6 +245,41 @@ mod tests {
         let routes = parser
             .parse_response(VALHALLA_OSRM_RESPONSE_VIA_WAYS.into())
             .expect("Unable to parse Valhalla OSRM response");
-        insta::assert_yaml_snapshot!(routes);
+
+        insta::assert_yaml_snapshot!(routes, {
+            ".**.annotations" => "redacted annotations json strings vec"
+        });
+    }
+
+    #[test]
+    fn parse_valhalla_asserting_annotation_lengths() {
+        let parser = OsrmResponseParser::new(6);
+        let routes = parser
+            .parse_response(VALHALLA_OSRM_RESPONSE.into())
+            .expect("Unable to parse Valhalla OSRM response");
+
+        // Loop through every step and validate that the length of the annotations
+        // matches the length of the geometry minus one. This is because each annotation
+        // represents a segment between two coordinates.
+        for (route_index, route) in routes.iter().enumerate() {
+            for (step_index, step) in route.steps.iter().enumerate() {
+                if step_index == route.steps.len() - 1 {
+                    // The arrival step is 2 of the same coordinates.
+                    // So annotations will be None.
+                    assert_eq!(step.annotations, None);
+                    continue;
+                }
+
+                let step = step.clone();
+                let annotations = step.annotations.expect("No annotations");
+                assert_eq!(
+                    annotations.len(),
+                    step.geometry.len() - 1,
+                    "Route {}, Step {}",
+                    route_index,
+                    step_index
+                );
+            }
+        }
     }
 }

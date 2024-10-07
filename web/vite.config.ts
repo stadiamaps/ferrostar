@@ -1,20 +1,31 @@
 import { defineConfig } from "vite";
+import dts from "vite-plugin-dts";
+import wasm from "vite-plugin-wasm";
+import topLevelAwait from "vite-plugin-top-level-await";
 
 export default defineConfig({
   base: "",
-  server: {
-    fs: {
-      // Allow serving the wasm module
-      allow: [".", "../common/ferrostar/pkg"],
-    },
-  },
   build: {
     lib: {
       entry: "src/main.ts",
-      formats: ["es"],
+      name: "@stadiamaps/ferrostar-webcomponents",
     },
     rollupOptions: {
-      external: ["ferrostar", "maplibre-gl", "lit", "@stadiamaps/maplibre-search-box"],
+      external: ["@stadiamaps/ferrostar", "maplibre-gl", "lit", "@stadiamaps/maplibre-search-box"],
+      output: {
+        globals: {
+          "lit": "lit",
+          "maplibre-gl": "maplibregl",
+          "@stadiamaps/maplibre-search-box": "maplibreSearchBox",
+          "@stadiamaps/ferrostar": "ferrostar"
+        },
+      },
     },
+    sourcemap: true,
   },
+  plugins: [
+      dts(),
+      topLevelAwait(),
+      wasm()
+  ]
 });

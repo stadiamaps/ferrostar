@@ -22,6 +22,7 @@ public struct DefaultIconographyManeuverInstructionView: View {
     ///   - text: The maneuver instruction.
     ///   - maneuverType: The maneuver type defines the behavior.
     ///   - maneuverModifier: The maneuver modifier defines the direction.
+    ///   - distanceFormatter: The formatter which controls distance localization.
     ///   - distanceToNextManeuver: A string that should represent the localized distance remaining.
     ///   - theme: The instruction row theme specifies attributes like colors and fonts for the row.
     public init(
@@ -53,6 +54,8 @@ public struct DefaultIconographyManeuverInstructionView: View {
                     maneuverModifier: maneuverModifier
                 )
                 .frame(maxWidth: 48)
+                // REVIEW: without this, the first image in the vstack was rendering very small. Curiously subsequent items in the vstack looked reasonable.
+                .aspectRatio(contentMode: .fill)
             }
         }
     }

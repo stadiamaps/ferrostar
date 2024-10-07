@@ -2,9 +2,9 @@ import Foundation
 import SwiftUI
 
 public extension NavigationMapView {
-    /// Set the MapView's content inset to a dynamically controlled navigation setting.
+    /// Set the MapView's content inset. See ``NavigationMapViewContentInsetMode`` for static and dynamic options.
     ///
-    /// This functionality is used to appropriate space the navigation puck/user location in the map view.
+    /// This functionality is used to position the navigation puck/user location in the map view
     ///
     /// - Parameter inset: The inset mode for the navigation map view
     /// - Returns: The modified NavigationMapView
