@@ -21,9 +21,6 @@ use std::time::SystemTime;
 #[cfg(feature = "web-time")]
 use web_time::SystemTime;
 
-#[cfg(any(test, feature = "wasm-bindgen"))]
-use serde::Serialize;
-
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
