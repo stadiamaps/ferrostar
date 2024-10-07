@@ -26,7 +26,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
     var calculateSpeedLimit: ((NavigationState?) -> Measurement<UnitSpeed>?)?
     @State var speedLimit: Measurement<UnitSpeed>?
-    
+
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets

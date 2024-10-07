@@ -17,7 +17,7 @@ struct DemoNavigationView: View {
     // NOTE: This is probably not ideal but works for demo purposes.
     // This causes a thread performance checker warning log.
     private let spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
-    
+
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
 
@@ -227,7 +227,7 @@ struct DemoNavigationView: View {
         }
         return annotation.speedLimit?.measurementValue
     }
-    
+
     private func preventAutoLock() {
         UIApplication.shared.isIdleTimerDisabled = true
     }

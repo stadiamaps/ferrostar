@@ -25,7 +25,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
 
     var calculateSpeedLimit: ((NavigationState?) -> Measurement<UnitSpeed>?)?
     @State var speedLimit: Measurement<UnitSpeed>?
-    
+
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets

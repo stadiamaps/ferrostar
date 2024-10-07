@@ -28,7 +28,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
 
     var calculateSpeedLimit: ((NavigationState?) -> Measurement<UnitSpeed>?)?
     @State var speedLimit: Measurement<UnitSpeed>?
-    
+
     var onTapExit: (() -> Void)?
 
     /// Create a portrait navigation view. This view is optimized for display on a portrait screen where the
