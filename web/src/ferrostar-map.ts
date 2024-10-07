@@ -7,7 +7,11 @@ import maplibregl, {
   Map
 } from "maplibre-gl";
 import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
-import {NavigationController, RouteAdapter} from "@stadiamaps/ferrostar";
+import {
+  NavigationController,
+  RouteAdapter,
+  TripState
+} from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./arrival-view";
 import {SimulatedLocationProvider} from "./location";
@@ -47,9 +51,8 @@ export class FerrostarMap extends LitElement {
   @property({ type: Object, attribute: false })
   options: object = {};
 
-  // TODO: type
   @state()
-  protected _tripState: any = null;
+  protected _tripState?: TripState;
 
   // Configures the control on first load.
   @property({ type: Function, attribute: false })
@@ -87,7 +90,7 @@ export class FerrostarMap extends LitElement {
   geolocateControl: GeolocateControl | null = null;
   navigationController: NavigationController | null = null;
   simulatedLocationMarker: maplibregl.Marker | null = null;
-  lastSpokenInstructionText: string | null = null;
+  lastSpokenUtteranceId: string | null = null;
 
   static styles = [
     unsafeCSS(maplibreglStyles),
@@ -236,7 +239,7 @@ export class FerrostarMap extends LitElement {
     return this.routeAdapter.parseResponse(responseData);
   }
 
-  // TODO: type
+  // TODO: types
   startNavigation(route: any, config: any) {
     this.locationProvider.start();
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
@@ -304,7 +307,7 @@ export class FerrostarMap extends LitElement {
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
-    this._tripState = null;
+    this._tripState = undefined;
     this.clearMap();
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
@@ -327,11 +330,12 @@ export class FerrostarMap extends LitElement {
     });
 
     // Speak the next instruction if voice guidance is enabled
-    if (this.useVoiceGuidance) {
-      if (this._tripState.Navigating?.spokenInstruction && this._tripState.Navigating?.spokenInstruction.text !== this.lastSpokenInstructionText) {
-        this.lastSpokenInstructionText = this._tripState.Navigating?.spokenInstruction.text;
+    const tripState = this._tripState;
+    if (this.useVoiceGuidance && tripState && typeof(tripState) === 'object') {
+      if ("Navigating" in tripState && tripState.Navigating?.spokenInstruction && tripState.Navigating?.spokenInstruction.utteranceId !== this.lastSpokenUtteranceId) {
+        this.lastSpokenUtteranceId = tripState.Navigating?.spokenInstruction.utteranceId;
         window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(this._tripState.Navigating?.spokenInstruction.text));
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(tripState.Navigating?.spokenInstruction.text));
       }
     }
   }

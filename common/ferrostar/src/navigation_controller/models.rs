@@ -94,7 +94,8 @@ pub enum StepAdvanceStatus {
 /// Controls filtering/post-processing of user course by the [`NavigationController`].
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum CourseFiltering {
     /// Snap the user's course to the current step's linestring using the next index in the step's geometry.
     ///

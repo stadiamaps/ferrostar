@@ -44,6 +44,8 @@ pub enum ModelError {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct GeographicCoordinate {
     /// The latitude (in degrees).
     pub lat: f64,
@@ -371,7 +373,7 @@ impl RouteStep {
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi))]
 pub struct SpokenInstruction {
     /// Plain-text instruction which can be synthesized with a TTS engine.
     pub text: String,
@@ -388,6 +390,7 @@ pub struct SpokenInstruction {
     /// NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
     /// This should be theoretically possible though if someone cares to write up a proposal and a PR.
     #[cfg_attr(test, serde(skip_serializing))]
+    #[tsify(type = "string")]
     pub utterance_id: Uuid,
 }
 
