@@ -30,7 +30,9 @@ if useLocalMapLibreSwiftUIDSL {
     maplibreSwiftUIDSLPackage = .package(path: "../swiftui-dsl")
 } else {
     maplibreSwiftUIDSLPackage = .package(
-        url: "https://github.com/HudHud-Maps/maplibre-swiftui-dsl-playground.git", branch: "camera-conversion-improvements-plus-tracking-fixes")
+        url: "https://github.com/maplibre/swiftui-dsl",
+        from: "0.2.0"
+    )
 }
 
 let package = Package(
@@ -75,8 +77,8 @@ let package = Package(
             name: "FerrostarMapLibreUI",
             dependencies: [
                 .target(name: "FerrostarCore"),
-                .product(name: "MapLibreSwiftDSL", package: "maplibre-swiftui-dsl-playground"),
-                .product(name: "MapLibreSwiftUI", package: "maplibre-swiftui-dsl-playground"),
+                .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
+                .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
             ],
             path: "apple/Sources/FerrostarMapLibreUI"
         ),
