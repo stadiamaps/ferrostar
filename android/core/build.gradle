@@ -116,7 +116,7 @@ mavenPublishing {
 
     pom {
         name = "Ferrostar Core"
-        description = "Core libray, models, and navigation business logic for Ferrostar"
+        description = "Core library, models, and navigation business logic for Ferrostar"
         commonPomConfig(it)
     }
 }
