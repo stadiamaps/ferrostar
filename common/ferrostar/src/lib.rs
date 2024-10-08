@@ -30,6 +30,7 @@ pub mod navigation_controller;
 pub mod routing_adapters;
 pub mod simulation;
 
+#[cfg(feature = "uniffi")]
 use models::Route;
 #[cfg(feature = "uniffi")]
 use routing_adapters::{
