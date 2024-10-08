@@ -20,6 +20,8 @@ use geo::Point;
 
 #[cfg(feature = "wasm-bindgen")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
 
 #[cfg(test)]
 use {
@@ -39,7 +41,8 @@ use web_time::SystemTime;
 /// Determines if the user has deviated from the expected route.
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
@@ -111,7 +114,8 @@ impl RouteDeviationTracking {
 /// For example, we could conceivably add a "wrong way" status in the future.
 #[derive(Debug, Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub enum RouteDeviation {
     /// The user is proceeding on course within the expected tolerances; everything is normal.
     NoDeviation,
