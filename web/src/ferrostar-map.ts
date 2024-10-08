@@ -52,7 +52,7 @@ export class FerrostarMap extends LitElement {
   options: object = {};
 
   @state()
-  protected _tripState?: TripState;
+  protected _tripState: TripState | null = null;
 
   // Configures the control on first load.
   @property({ type: Function, attribute: false })
@@ -307,7 +307,7 @@ export class FerrostarMap extends LitElement {
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
-    this._tripState = undefined;
+    this._tripState = null;
     this.clearMap();
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
@@ -331,7 +331,7 @@ export class FerrostarMap extends LitElement {
 
     // Speak the next instruction if voice guidance is enabled
     const tripState = this._tripState;
-    if (this.useVoiceGuidance && tripState && typeof(tripState) === 'object') {
+    if (this.useVoiceGuidance && tripState != null && typeof tripState === 'object') {
       if ("Navigating" in tripState && tripState.Navigating?.spokenInstruction && tripState.Navigating?.spokenInstruction.utteranceId !== this.lastSpokenUtteranceId) {
         this.lastSpokenUtteranceId = tripState.Navigating?.spokenInstruction.utteranceId;
         window.speechSynthesis.cancel();
