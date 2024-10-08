@@ -63,5 +63,6 @@ pub fn gen_route_from_steps(steps: Vec<RouteStep>) -> Route {
             },
         ],
         steps,
+        congestion_segments: None,
     }
 }

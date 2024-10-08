@@ -8,6 +8,7 @@ use crate::models::{
     AnyAnnotationValue, GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
     VisualInstructionContent, Waypoint, WaypointKind,
 };
+use crate::routing_adapters::osrm::utilities::extract_congestion_segments;
 use crate::routing_adapters::utilities::get_coordinates_from_geometry;
 use crate::routing_adapters::{
     osrm::models::{
@@ -131,12 +132,22 @@ impl Route {
                 })
                 .collect::<Result<Vec<_>, _>>()?;
 
+            let annotations: Vec<_> = route
+                .legs
+                .iter()
+                .filter_map(|leg| leg.annotation.as_ref())
+                .cloned()
+                .collect();
+
+            let congestion_segments = extract_congestion_segments(annotations, &geometry)?;
+
             Ok(Route {
                 geometry,
                 bbox: bbox.into(),
                 distance: route.distance,
                 waypoints: waypoints.clone(),
                 steps,
+                congestion_segments: Some(congestion_segments),
             })
         } else {
             Err(ParsingError::InvalidGeometry {

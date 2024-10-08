@@ -1477,6 +1477,83 @@ public func FfiConverterTypeBoundingBox_lower(_ value: BoundingBox) -> RustBuffe
 }
 
 /**
+ * Represents a segment of traffic congestion.
+ */
+public struct CongestionSegment {
+    /**
+     * The level of congestion for this segment.
+     *
+     * This is typically a descriptive string such as "low", "medium", or "high".
+     */
+    public var level: String
+    /**
+     * The geographical path of the congestion segment.
+     *
+     * This is represented as a series of geographic coordinates that define the
+     * shape and location of the congested area.
+     */
+    public var geometry: [GeographicCoordinate]
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The level of congestion for this segment.
+         *
+         * This is typically a descriptive string such as "low", "medium", or "high".
+         */ level: String,
+        /**
+            * The geographical path of the congestion segment.
+            *
+            * This is represented as a series of geographic coordinates that define the
+            * shape and location of the congested area.
+            */ geometry: [GeographicCoordinate]
+    ) {
+        self.level = level
+        self.geometry = geometry
+    }
+}
+
+extension CongestionSegment: Equatable, Hashable {
+    public static func == (lhs: CongestionSegment, rhs: CongestionSegment) -> Bool {
+        if lhs.level != rhs.level {
+            return false
+        }
+        if lhs.geometry != rhs.geometry {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(level)
+        hasher.combine(geometry)
+    }
+}
+
+public struct FfiConverterTypeCongestionSegment: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CongestionSegment {
+        try CongestionSegment(
+            level: FfiConverterString.read(from: &buf),
+            geometry: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: CongestionSegment, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.level, into: &buf)
+        FfiConverterSequenceTypeGeographicCoordinate.write(value.geometry, into: &buf)
+    }
+}
+
+public func FfiConverterTypeCongestionSegment_lift(_ buf: RustBuffer) throws -> CongestionSegment {
+    try FfiConverterTypeCongestionSegment.lift(buf)
+}
+
+public func FfiConverterTypeCongestionSegment_lower(_ value: CongestionSegment) -> RustBuffer {
+    FfiConverterTypeCongestionSegment.lower(value)
+}
+
+/**
  * The direction in which the user/device is observed to be traveling.
  */
 public struct CourseOverGround {
@@ -1830,6 +1907,10 @@ public struct Route {
      */
     public var waypoints: [Waypoint]
     public var steps: [RouteStep]
+    /**
+     * A list of congestion segments for the route.
+     */
+    public var congestionSegments: [CongestionSegment]?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -1841,13 +1922,17 @@ public struct Route {
                     * The ordered list of waypoints to visit, including the starting point.
                     * Note that this is distinct from the *geometry* which includes all points visited.
                     * A waypoint represents a start/end point for a route leg.
-                    */ waypoints: [Waypoint], steps: [RouteStep])
+                    */ waypoints: [Waypoint], steps: [RouteStep],
+                /**
+                    * A list of congestion segments for the route.
+                    */ congestionSegments: [CongestionSegment]?)
     {
         self.geometry = geometry
         self.bbox = bbox
         self.distance = distance
         self.waypoints = waypoints
         self.steps = steps
+        self.congestionSegments = congestionSegments
     }
 }
 
@@ -1868,6 +1953,9 @@ extension Route: Equatable, Hashable {
         if lhs.steps != rhs.steps {
             return false
         }
+        if lhs.congestionSegments != rhs.congestionSegments {
+            return false
+        }
         return true
     }
 
@@ -1877,6 +1965,7 @@ extension Route: Equatable, Hashable {
         hasher.combine(distance)
         hasher.combine(waypoints)
         hasher.combine(steps)
+        hasher.combine(congestionSegments)
     }
 }
 
@@ -1887,7 +1976,8 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
             bbox: FfiConverterTypeBoundingBox.read(from: &buf),
             distance: FfiConverterDouble.read(from: &buf),
             waypoints: FfiConverterSequenceTypeWaypoint.read(from: &buf),
-            steps: FfiConverterSequenceTypeRouteStep.read(from: &buf)
+            steps: FfiConverterSequenceTypeRouteStep.read(from: &buf),
+            congestionSegments: FfiConverterOptionSequenceTypeCongestionSegment.read(from: &buf)
         )
     }
 
@@ -1897,6 +1987,7 @@ public struct FfiConverterTypeRoute: FfiConverterRustBuffer {
         FfiConverterDouble.write(value.distance, into: &buf)
         FfiConverterSequenceTypeWaypoint.write(value.waypoints, into: &buf)
         FfiConverterSequenceTypeRouteStep.write(value.steps, into: &buf)
+        FfiConverterOptionSequenceTypeCongestionSegment.write(value.congestionSegments, into: &buf)
     }
 }
 
@@ -3891,6 +3982,27 @@ private struct FfiConverterOptionSequenceString: FfiConverterRustBuffer {
     }
 }
 
+private struct FfiConverterOptionSequenceTypeCongestionSegment: FfiConverterRustBuffer {
+    typealias SwiftType = [CongestionSegment]?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterSequenceTypeCongestionSegment.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterSequenceTypeCongestionSegment.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
 private struct FfiConverterSequenceString: FfiConverterRustBuffer {
     typealias SwiftType = [String]
 
@@ -3908,6 +4020,28 @@ private struct FfiConverterSequenceString: FfiConverterRustBuffer {
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             try seq.append(FfiConverterString.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+private struct FfiConverterSequenceTypeCongestionSegment: FfiConverterRustBuffer {
+    typealias SwiftType = [CongestionSegment]
+
+    public static func write(_ value: [CongestionSegment], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeCongestionSegment.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [CongestionSegment] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [CongestionSegment]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            try seq.append(FfiConverterTypeCongestionSegment.read(from: &buf))
         }
         return seq
     }

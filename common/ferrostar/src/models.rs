@@ -268,6 +268,8 @@ pub struct Route {
     /// A waypoint represents a start/end point for a route leg.
     pub waypoints: Vec<Waypoint>,
     pub steps: Vec<RouteStep>,
+    /// A list of congestion segments for the route.
+    pub congestion_segments: Option<Vec<CongestionSegment>>,
 }
 
 /// Helper function for getting the route as an encoded polyline.
@@ -499,6 +501,23 @@ pub struct AnyAnnotationValue {
     pub value: HashMap<String, Value>,
 }
 
+/// Represents a segment of traffic congestion.
+#[derive(Debug, Clone)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+pub struct CongestionSegment {
+    /// The level of congestion for this segment.
+    /// 
+    /// This is typically a descriptive string such as "low", "medium", or "high".
+    pub level: String,
+
+    /// The geographical path of the congestion segment.
+    ///
+    /// This is represented as a series of geographic coordinates that define the
+    /// shape and location of the congested area.
+    pub geometry: Vec<GeographicCoordinate>,
+}
+
 #[cfg(test)]
 #[cfg(feature = "uniffi")]
 mod tests {
@@ -514,6 +533,7 @@ mod tests {
             distance: 0.0,
             waypoints: vec![],
             steps: vec![],
+            congestion_segments: None,
         };
 
         let polyline5 = get_route_polyline(&route, 5).expect("Unable to encode polyline for route");
