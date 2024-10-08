@@ -12,9 +12,6 @@ jobs:
       cancel-in-progress: true
 
     steps:
-    - name: Upgrade swiftformat to latest
-      run: brew install swiftformat
-
     - name: Checkout repo
       uses: actions/checkout@v4
 
