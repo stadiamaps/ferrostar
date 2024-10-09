@@ -150,7 +150,7 @@ and then initialize later once the `Context` is available.
 // Instance variable definition
 private lateinit var locationProvider: FusedLocationProvider
 
-// Later when the activity loads and a context is avaialable
+// Later when the activity loads and a context is available
 locationProvider = FusedLocationProvider(context = this)
 ```
 

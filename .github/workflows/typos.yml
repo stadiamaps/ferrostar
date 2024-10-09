@@ -1,0 +1,19 @@
+name: Check for Typos
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  typos:
+    runs-on: macos-14
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-ios-swiftformat
+      cancel-in-progress: true
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Run typos
+      uses: crate-ci/typos@v1.26.0

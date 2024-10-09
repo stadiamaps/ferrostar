@@ -7,33 +7,37 @@ This page walks you through the ways to customize the SwiftUI frontend to your l
 
 ## Customizing the map
 
-Ferrostar includes a map view based on [MapLibre Native](https://maplibre.org/).
-This is configurable with a number of constructor parameters.
-If the existing customizations don’t work for you,
-first we’d love to hear why via an issue on GitHub!
+Ferrostar includes a map view built with the
+[MapLibre SwiftUI DSL](https://github.com/maplibre/swiftui-dsl).
+This is designed to be fairly configurable,
+so if the existing customizations don’t work for you,
+we’d love to hear why via an issue on GitHub!
+
 In the case that you want complete control though,
-the map view itself is actually not that complex.
+the provided wrappers around map view are not that complex.
+
+TODO: Docs on how to build your own navigation views + describe the current overlay layers.
 
 The demo app is designed to be instructive in showing many available options,
 so be sure to look at that to build intuition.
 
 ### Style
 
-We allow you to pass a style URL to any of the map view constructors.
+You can pass a style URL to any of the navigation map view constructors.
 You can vary this dynamically as your app theme changes (ex: in dark mode).
-
-TODO: Passing a view builder to add layers to the map (WIP)
 
 ### Camera
 
-TODO: Ability to override the built-in camera behavior (probably define a protocol for this).
+The camera supports two-way manipulation via SwiftUI bindings.
+TODO: more documentation
 
 ### Adding map layers
 
 You can add your own overlays too!
 The `makeMapContent` closure argument of the various map and navigation views
 enables you to add more layers.
-See the demo app for an example.
+See the demo app for an example, where we add a little dot showing the raw location
+in addition to the puck, which snaps to the route line.
 
 ## Customizing the instruction banners
 
