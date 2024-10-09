@@ -1,6 +1,15 @@
 {
-  "originHash" : "744a0ae659b64807871ea942d6e59965bff2d0e86920ea6d1ba0dc9587578660",
+  "originHash" : "141c2d9c1dd8cc8e672317d57ad745a0a2e9033cfcb90338be55e776435705b5",
   "pins" : [
+    {
+      "identity" : "ferrostar",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/ferrostar",
+      "state" : {
+        "revision" : "133e0ffc6b26293fd26a23746a6556b6f28a9b51",
+        "version" : "0.15.0"
+      }
+    },
     {
       "identity" : "maplibre-gl-native-distribution",
       "kind" : "remoteSourceControl",
