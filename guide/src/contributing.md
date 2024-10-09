@@ -36,7 +36,7 @@ To speed up reviews,
 it's helpful if you enable edits from maintainers when opening the PR.
 In the case of minor changes, formatting, or style nitpicks,
 we can make edits directly to avoid wasting your time.
-In order to enable edits from maintainers, **you'll need to make the PR from a fork owned an individual**,
+In order to enable edits from maintainers, **you'll need to make the PR from a fork owned by an individual**,
 not an organization.
 GitHub org-owned forks lack this flexibility.
 

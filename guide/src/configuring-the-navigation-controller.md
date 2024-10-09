@@ -117,7 +117,7 @@ Considering the recalculation case,
 if you don’t specify custom behavior,
 the platform layer (again, currently iOS and Android only)
 will automatically start a new navigation session
-with the first route it receives finds after recalculation.
+with the first route it receives after recalculation.
 As a sanity check,
 this behavior only triggers if the user is *still* off-course
 (if the user went back on track in the interim, nothing happens).
