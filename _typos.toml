@@ -1,0 +1,5 @@
+[default.extend-words]
+rememberable = "rememberable"
+
+[files]
+extend-exclude = ["**/build/*", "*.pbxproj", "**/dist/*", "guide/**/*.js"]
