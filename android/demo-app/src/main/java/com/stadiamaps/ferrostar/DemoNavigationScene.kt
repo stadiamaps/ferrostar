@@ -73,22 +73,23 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       }
 
-  val locationUpdateListener = remember {
-    object : LocationUpdateListener {
-      private var _lastLocation: MutableStateFlow<UserLocation?> = MutableStateFlow(null)
-      val userLocation = _lastLocation.asStateFlow()
+  //  val locationUpdateListener = remember {
+  //    object : LocationUpdateListener {
+  //      private var _lastLocation: MutableStateFlow<UserLocation?> = MutableStateFlow(null)
+  //      val userLocation = _lastLocation.asStateFlow()
+  //
+  //      override fun onLocationUpdated(location: UserLocation) {
+  //        _lastLocation.value = location
+  //      }
+  //
+  //      override fun onHeadingUpdated(heading: Heading) {
+  //        // TODO
+  //      }
+  //    }
+  //  }
 
-      override fun onLocationUpdated(location: UserLocation) {
-        _lastLocation.value = location
-      }
-
-      override fun onHeadingUpdated(heading: Heading) {
-        // Not relevant yet...
-      }
-    }
-  }
-
-  val lastLocation = locationUpdateListener.userLocation.collectAsState(scope.coroutineContext)
+  //  val lastLocation = locationUpdateListener.userLocation.collectAsState(scope.coroutineContext)
+  val vmState = viewModel.uiState.collectAsState(scope.coroutineContext)
 
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -97,7 +98,8 @@ fun DemoNavigationScene(
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
             if (locationProvider is AndroidSystemLocationProvider ||
                 locationProvider is FusedLocationProvider) {
-              locationProvider.addListener(locationUpdateListener, executor)
+              // FIXME
+              //              locationProvider.addListener(locationUpdateListener, executor)
             }
           }
           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
