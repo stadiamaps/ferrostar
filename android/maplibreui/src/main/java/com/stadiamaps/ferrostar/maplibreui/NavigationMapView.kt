@@ -25,7 +25,10 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  * The base MapLibre MapView configured for navigation with a polyline representing the route.
  *
  * @param styleUrl The MapLibre style URL to use for the map.
- * @param camera The bi-directional camera state to use for the map.
+ * @param camera The bi-directional camera state to use for the map. Note: this is a bit
+ *   non-standard as far as normal compose patterns go, but we independently came up with this
+ *   approach and later verified that Google Maps does the same thing in their compose SDK.
+ * @param navigationCamera The default camera settings to use when navigation starts.
  * @param viewModel The navigation view model provided by Ferrostar Core.
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
@@ -45,17 +48,21 @@ fun NavigationMapView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
-    onMapReadyCallback: (Style) -> Unit = { camera.value = navigationCamera },
-    content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null
+    onMapReadyCallback: (Style) -> Unit = {
+      if (viewModel.isNavigating()) camera.value = navigationCamera
+    },
+    content: @Composable @MapLibreComposable ((State<NavigationUiState>) -> Unit)? = null
 ) {
   val uiState = viewModel.uiState.collectAsState()
 
   val locationEngine = remember { StaticLocationEngine() }
   locationEngine.lastLocation =
-      if (snapUserLocationToRoute) {
-        uiState.value.snappedLocation?.toAndroidLocation()
-      } else {
-        uiState.value.location?.toAndroidLocation()
+      uiState.value.let { state ->
+        if (snapUserLocationToRoute) {
+          state.snappedLocation?.toAndroidLocation()
+        } else {
+          state.location?.toAndroidLocation()
+        }
       }
 
   MapView(
@@ -67,8 +74,9 @@ fun NavigationMapView(
       locationEngine = locationEngine,
       onMapReadyCallback = onMapReadyCallback,
   ) {
-    BorderedPolyline(
-        points = uiState.value.routeGeometry.map { LatLng(it.lat, it.lng) }, zIndex = 0)
+    val geometry = uiState.value.routeGeometry
+    if (geometry != null)
+        BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0)
 
     if (content != null) {
       content(uiState)

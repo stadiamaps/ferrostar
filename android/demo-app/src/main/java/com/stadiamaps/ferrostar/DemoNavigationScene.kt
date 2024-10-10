@@ -18,15 +18,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.mapbox.mapboxsdk.geometry.LatLng
+import com.maplibre.compose.camera.MapViewCamera
+import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.maplibre.compose.symbols.Circle
 import com.stadiamaps.autocomplete.AutocompleteSearch
 import com.stadiamaps.autocomplete.center
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
+import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridView
 import com.stadiamaps.ferrostar.core.AndroidSystemLocationProvider
-import com.stadiamaps.ferrostar.core.FerrostarCore
+import com.stadiamaps.ferrostar.core.IdleNavigationViewModel
 import com.stadiamaps.ferrostar.core.LocationProvider
-import com.stadiamaps.ferrostar.core.LocationUpdateListener
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.toAndroidLocation
@@ -35,12 +38,8 @@ import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationV
 import java.util.concurrent.Executors
 import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.Heading
-import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
 
@@ -54,7 +53,9 @@ fun DemoNavigationScene(
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
-  var viewModel by remember { mutableStateOf<NavigationViewModel?>(null) }
+  var viewModel by remember {
+    mutableStateOf<NavigationViewModel>(IdleNavigationViewModel(locationProvider))
+  }
   val scope = rememberCoroutineScope()
 
   // Get location permissions.
@@ -118,7 +119,7 @@ fun DemoNavigationScene(
   }
 
   // For smart casting
-  val loc = lastLocation.value
+  val loc = vmState.value.location
   if (loc == null) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
       Text("Waiting to acquire your GPS location...", modifier = Modifier.padding(innerPadding))
@@ -126,70 +127,75 @@ fun DemoNavigationScene(
     return
   }
 
-  // Capture for smart casts
-  val vm = viewModel
-  if (vm == null) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-      AutocompleteSearch(
-          modifier = Modifier.padding(innerPadding),
-          apiKey = AppModule.stadiaApiKey,
-          userLocation = lastLocation.value?.toAndroidLocation()) { feature ->
-            // Fetch a route in the background
-            scope.launch(Dispatchers.IO) {
-              // TODO: Fail gracefully
-              val center = feature.center()!!
-              val routes =
-                  AppModule.ferrostarCore.getRoutes(
-                      loc,
-                      listOf(
-                          Waypoint(
-                              coordinate = GeographicCoordinate(center.latitude, center.longitude),
-                              kind = WaypointKind.BREAK),
-                      ))
+  // Set up the map!
+  val camera = rememberSaveableMapViewCamera(MapViewCamera.TrackingUserLocation())
+  DynamicallyOrientingNavigationView(
+      modifier = Modifier.fillMaxSize(),
+      styleUrl = AppModule.mapStyleUrl,
+      camera = camera,
+      viewModel = viewModel,
+      // Snapping works well for most motor vehicle navigation.
+      // Other travel modes though, such as walking, may not want snapping.
+      snapUserLocationToRoute = false,
+      onTapExit = {
+        viewModel.stopNavigation()
+        viewModel = IdleNavigationViewModel(locationProvider)
+      },
+      userContent = { modifier ->
+        if (!viewModel.isNavigating()) {
+          InnerGridView(
+              modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
+              topCenter = {
+                AutocompleteSearch(
+                    apiKey = AppModule.stadiaApiKey,
+                    userLocation = loc.toAndroidLocation()) { feature ->
+                      feature.center()?.let { center ->
+                        // Fetch a route in the background
+                        scope.launch(Dispatchers.IO) {
+                          // TODO: Fail gracefully
+                          val routes =
+                              AppModule.ferrostarCore.getRoutes(
+                                  loc,
+                                  listOf(
+                                      Waypoint(
+                                          coordinate =
+                                              GeographicCoordinate(
+                                                  center.latitude, center.longitude),
+                                          kind = WaypointKind.BREAK),
+                                  ))
 
-              val route = routes.first()
-              viewModel = AppModule.ferrostarCore.startNavigation(route = route)
+                          val route = routes.first()
+                          viewModel = AppModule.ferrostarCore.startNavigation(route = route)
 
-              if (locationProvider is SimulatedLocationProvider) {
-                locationProvider.setSimulatedRoute(route)
-              }
-            }
-          }
-    }
-  } else {
-    DynamicallyOrientingNavigationView(
-        modifier = Modifier.fillMaxSize(),
-        styleUrl = AppModule.mapStyleUrl,
-        // TODO: Make this nullable!
-        viewModel = vm,
-        // This is the default value, which works well for most motor vehicle navigation.
-        // Other travel modes though, such as walking, may not want snapping.
-        snapUserLocationToRoute = false,
-        onTapExit = {
-          viewModel?.stopNavigation()
-          viewModel = null
-        }) { uiState ->
-          // Trivial, if silly example of how to add your own overlay layers.
-          // (Also incidentally highlights the lag inherent in MapLibre location tracking
-          // as-is.)
-          uiState.value.location?.let { location ->
+                          if (locationProvider is SimulatedLocationProvider) {
+                            locationProvider.setSimulatedRoute(route)
+                          }
+                        }
+                      }
+                    }
+              })
+        }
+      }) { uiState ->
+        // Trivial, if silly example of how to add your own overlay layers.
+        // (Also incidentally highlights the lag inherent in MapLibre location tracking
+        // as-is.)
+        uiState.value.location?.let { location ->
+          Circle(
+              center = LatLng(location.coordinates.lat, location.coordinates.lng),
+              radius = 10f,
+              color = "Blue",
+              zIndex = 3,
+          )
+
+          if (location.horizontalAccuracy > 15) {
             Circle(
                 center = LatLng(location.coordinates.lat, location.coordinates.lng),
-                radius = 10f,
+                radius = min(location.horizontalAccuracy.toFloat(), 150f),
                 color = "Blue",
-                zIndex = 3,
+                opacity = 0.2f,
+                zIndex = 2,
             )
-
-            if (location.horizontalAccuracy > 15) {
-              Circle(
-                  center = LatLng(location.coordinates.lat, location.coordinates.lng),
-                  radius = min(location.horizontalAccuracy.toFloat(), 150f),
-                  color = "Blue",
-                  opacity = 0.2f,
-                  zIndex = 2,
-              )
-            }
           }
         }
-  }
+      }
 }
