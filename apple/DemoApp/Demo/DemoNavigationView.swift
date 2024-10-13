@@ -13,7 +13,7 @@ private let initialLocation = CLLocation(latitude: 37.332726,
                                          longitude: -122.031790)
 
 struct DemoNavigationView: View {
-    private var navigationDelegate = NavigationDelegate()
+    private let navigationDelegate = NavigationDelegate()
     // NOTE: This is probably not ideal but works for demo purposes.
     // This causes a thread performance checker warning log.
     @State private var spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
@@ -34,7 +34,6 @@ struct DemoNavigationView: View {
 
     @State private var camera: MapViewCamera = .center(initialLocation.coordinate, zoom: 14)
     @State private var snappedCamera = true
-    @State private var isNavigationActive = false // New state variable for navigation status
 
     init() {
         let simulated = SimulatedLocationProvider(location: initialLocation)
@@ -122,7 +121,6 @@ struct DemoNavigationView: View {
                                             isFetchingRoutes = true
                                             try await startNavigation()
                                             isFetchingRoutes = false
-                                            isNavigationActive = true // Set to true when navigation starts
                                         } catch {
                                             isFetchingRoutes = false
                                             errorMessage = "\(error.localizedDescription)"
@@ -150,23 +148,16 @@ struct DemoNavigationView: View {
             .task {
                 await getRoutes()
             }
-            .overlay(
+            
+            .overlay(alignment: .topTrailing) {
+                //if ferrostarCore.state?.isNavigating == true {  // will be used after PR275 is finished
+                if case .navigating = ferrostarCore.state?.tripState {
+                    MuteButton(isMuted: $spokenInstructionObserver.isMuted)
+                }
+            }
 
-                HStack {
 
-                    Spacer()
 
-                    if isNavigationActive {
-
-                        MuteButton(isMuted: $spokenInstructionObserver.isMuted)
-
-                    }
-
-                },
-
-                alignment: .topTrailing
-
-            )
         }
     }
 
@@ -228,7 +219,6 @@ struct DemoNavigationView: View {
         ferrostarCore.stopNavigation()
         camera = .center(initialLocation.coordinate, zoom: 14)
         allowAutoLock()
-        isNavigationActive = false
     }
 
     var locationLabel: String {
