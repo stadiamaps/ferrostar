@@ -149,8 +149,8 @@ fun DemoNavigationScene(
               modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
               topCenter = {
                 AutocompleteSearch(
-                    apiKey = AppModule.stadiaApiKey,
-                    userLocation = loc.toAndroidLocation()) { feature ->
+                    apiKey = AppModule.stadiaApiKey, userLocation = loc.toAndroidLocation()) {
+                        feature ->
                       feature.center()?.let { center ->
                         // Fetch a route in the background
                         scope.launch(Dispatchers.IO) {

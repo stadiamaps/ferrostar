@@ -23,16 +23,16 @@ use alloc::{
 /// having the same name.
 ///
 /// ```
-/// use serde_json::json;
+/// use serde_json::{json, Map, Value};
 /// use ferrostar::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
-/// let options = json!({
+/// let options: Map<String, Value> = json!({
 ///     "costing_options": {
 ///         "low_speed_vehicle": {
 ///             "vehicle_type": "golf_cart"
 ///         }
 ///     }
-/// });
-/// let request_generator = ValhallaHttpRequestGenerator::new("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(), "low_speed_vehicle".to_string(), Some(options));
+/// }).as_object().unwrap().to_owned();;
+/// let request_generator = ValhallaHttpRequestGenerator::new("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(), "low_speed_vehicle".to_string(), options);
 /// ```
 #[derive(Debug)]
 pub struct ValhallaHttpRequestGenerator {
