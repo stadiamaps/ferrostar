@@ -152,7 +152,9 @@ struct DemoNavigationView: View {
             .overlay(alignment: .topTrailing) {
                 //if ferrostarCore.state?.isNavigating == true {  // will be used after PR275 is finished
                 if case .navigating = ferrostarCore.state?.tripState {
-                    MuteButton(isMuted: $spokenInstructionObserver.isMuted)
+                    MuteUIButton(isMuted: $spokenInstructionObserver.isMuted)
+                        .padding(.trailing, 18) // Right
+                        .padding(.top, 112)
                 }
             }
 
