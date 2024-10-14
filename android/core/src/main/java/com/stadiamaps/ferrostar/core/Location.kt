@@ -90,7 +90,7 @@ class AndroidSystemLocationProvider(context: Context) : LocationProvider {
     executor.execute {
       handler.post {
         val last = locationManager.getLastKnownLocation(getBestProvider())
-        if (last != null) {
+        last?.let {
           androidListener.onLocationChanged(last)
         }
         locationManager.requestLocationUpdates(getBestProvider(), 100L, 5.0f, androidListener)
