@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: macos-13
+    runs-on: macos-14
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-build
       cancel-in-progress: true
@@ -55,7 +55,7 @@ jobs:
 
   test:
 
-    runs-on: macos-13
+    runs-on: macos-14
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-test
       cancel-in-progress: true
@@ -101,7 +101,7 @@ jobs:
 
   verify-snapshots:
 
-    runs-on: macos-13
+    runs-on: macos-14
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-snapshots
       cancel-in-progress: true
@@ -148,7 +148,7 @@ jobs:
 
   connected-check:
 
-    runs-on: macos-13
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-connected-check
       cancel-in-progress: true
@@ -179,12 +179,18 @@ jobs:
       run: echo 'stadiaApiKey=' > local.properties
       working-directory: android
 
+    - name: Enable KVM group perms
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
     - name: Run Connected Checks
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 30
-        avd-name: macOS-13-x86-aosp-atd-30
-        arch: x86
+        avd-name: ubuntu-latest-x86_64-aosp-atd-30
+        arch: x86_64
         target: aosp_atd
         script: ./gradlew connectedCheck
         working-directory: android
