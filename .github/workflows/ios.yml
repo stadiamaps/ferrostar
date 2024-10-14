@@ -25,6 +25,9 @@ jobs:
       
   build-ferrostar:
     runs-on: macos-14
+    permissions:
+      contents: write  # To auto-commit Package.swift and binding changes
+    
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-build-lib
       cancel-in-progress: true
