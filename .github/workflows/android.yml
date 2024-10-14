@@ -87,9 +87,6 @@ jobs:
       working-directory: android
 
     - name: Unit test
-      env:
-        GITHUB_ACTOR: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: ./gradlew test
       working-directory: android
 
@@ -136,9 +133,6 @@ jobs:
       working-directory: android
 
     - name: Verify snapshots
-      env:
-        GITHUB_ACTOR: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: ./gradlew verifyPaparazziDebug
       working-directory: android
 
@@ -186,9 +180,6 @@ jobs:
       working-directory: android
 
     - name: Run Connected Checks
-      env:
-        GITHUB_ACTOR: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 30
