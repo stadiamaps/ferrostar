@@ -20,6 +20,7 @@ struct DemoNavigationView: View {
 
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
+    @State private var isMuted: Bool = false
 
     @State private var isFetchingRoutes = false
     @State private var routes: [Route]?
@@ -78,6 +79,7 @@ struct DemoNavigationView: View {
                 styleURL: style,
                 camera: $camera,
                 navigationState: ferrostarCore.state,
+                isMuted: $isMuted,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
                     let source = ShapeSource(identifier: "userLocation") {
@@ -149,14 +151,14 @@ struct DemoNavigationView: View {
                 await getRoutes()
             }
             
-            .overlay(alignment: .topTrailing) {
-                //if ferrostarCore.state?.isNavigating == true {  // will be used after PR275 is finished
-                if case .navigating = ferrostarCore.state?.tripState {
-                    MuteUIButton(isMuted: $spokenInstructionObserver.isMuted)
-                        .padding(.trailing, 18) // Right
-                        .padding(.top, 112)
-                }
-            }
+//            .overlay(alignment: .topTrailing) {
+//                //if ferrostarCore.state?.isNavigating == true {  // will be used after PR275 is finished
+//                if case .navigating = ferrostarCore.state?.tripState {
+//                    MuteUIButton(isMuted: $spokenInstructionObserver.isMuted)
+//                        .padding(.trailing, 18) // Right
+//                        .padding(.top, 112)
+//                }
+//            }
 
 
 

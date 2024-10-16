@@ -14,6 +14,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    @Binding var isMuted: Bool // Add mute binding to the view
+
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -47,12 +49,14 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
+        isMuted: Binding<Bool>,
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
+        self._isMuted = isMuted
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
@@ -83,6 +87,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     onZoomOut: { camera.incrementZoom(by: -1) },
                     showCentering: !camera.isTrackingUserLocationWithCourse,
                     onCenter: { camera = navigationCamera },
+                    isMuted: $isMuted,
                     onTapExit: onTapExit
                 )
                 .innerGrid {
@@ -115,7 +120,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state
+        navigationState: state,
+        isMuted: .constant(false)  // Fix: Provide isMuted binding
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
@@ -136,7 +142,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state
+        navigationState: state,
+        isMuted: .constant(false)
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
