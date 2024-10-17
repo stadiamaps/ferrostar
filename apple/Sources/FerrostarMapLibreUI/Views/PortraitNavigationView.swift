@@ -26,6 +26,9 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
 
+    var calculateSpeedLimit: ((NavigationState?) -> Measurement<UnitSpeed>?)?
+    @State var speedLimit: Measurement<UnitSpeed>?
+
     var onTapExit: (() -> Void)?
 
     /// Create a portrait navigation view. This view is optimized for display on a portrait screen where the
@@ -47,12 +50,14 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
         camera: Binding<MapViewCamera>,
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
+        calculateSpeedLimit: ((NavigationState?) -> Measurement<UnitSpeed>?)? = nil,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
+        self.calculateSpeedLimit = calculateSpeedLimit
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
         self.onTapExit = onTapExit
 
@@ -79,7 +84,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
 
                 PortraitNavigationOverlayView(
                     navigationState: navigationState,
-                    speedLimit: nil,
+                    speedLimit: speedLimit,
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
@@ -97,6 +102,9 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
                     bottomTrailing?()
                 }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
+        }
+        .onChange(of: navigationState) { value in
+            speedLimit = calculateSpeedLimit?(value)
         }
     }
 }
