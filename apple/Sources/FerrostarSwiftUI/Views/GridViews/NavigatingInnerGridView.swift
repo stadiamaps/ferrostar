@@ -22,6 +22,8 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
+    @Binding var isMuted: Bool
+
     /// The default navigation inner grid view.
     ///
     /// This view provides all default navigation UI views that are used in the open map area. This area is defined as
@@ -43,7 +45,9 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
-        onCenter: @escaping () -> Void = {}
+        onCenter: @escaping () -> Void = {},
+        isMuted: Binding<Bool>
+
     ) {
         self.speedLimit = speedLimit
         self.showZoom = showZoom
@@ -51,6 +55,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
+        self._isMuted = isMuted
     }
 
     public var body: some View {
@@ -65,7 +70,13 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
                 }
             },
             topCenter: { topCenter?() },
-            topTrailing: { topTrailing?() },
+            topTrailing: {
+
+                    MuteUIButton(isMuted: $isMuted)
+                        .shadow(radius: 8)
+                        .padding(.top,16)
+                
+            },
             midLeading: { midLeading?() },
             midCenter: {
                 // This view does not allow center content.
@@ -110,7 +121,9 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         NavigatingInnerGridView(
             speedLimit: .init(value: 55, unit: .milesPerHour),
             showZoom: true,
-            showCentering: true
+            showCentering: true,
+            isMuted: .constant(false)
+
         )
         .padding(.horizontal, 16)
 
