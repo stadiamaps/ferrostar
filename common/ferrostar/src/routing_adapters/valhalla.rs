@@ -21,6 +21,19 @@ use alloc::{
 /// Valhalla supports the [`WaypointKind`] field of [`Waypoint`]s. Variants have the same meaning as their
 /// [`type` strings in Valhalla API](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations)
 /// having the same name.
+///
+/// ```
+/// use serde_json::{json, Map, Value};
+/// use ferrostar::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
+/// let options: Map<String, Value> = json!({
+///     "costing_options": {
+///         "low_speed_vehicle": {
+///             "vehicle_type": "golf_cart"
+///         }
+///     }
+/// }).as_object().unwrap().to_owned();;
+/// let request_generator = ValhallaHttpRequestGenerator::new("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(), "low_speed_vehicle".to_string(), options);
+/// ```
 #[derive(Debug)]
 pub struct ValhallaHttpRequestGenerator {
     /// The full URL of the Valhalla endpoint to access. This will normally be the route endpoint,

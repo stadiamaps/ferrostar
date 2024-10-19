@@ -14,6 +14,16 @@ final class ManeuverImageTests: XCTestCase {
             ManeuverImage(maneuverType: .fork, maneuverModifier: .left)
                 .frame(width: 32)
         }
+
+        assertView {
+            ManeuverImage(maneuverType: .turn, maneuverModifier: .uTurn)
+                .frame(width: 32)
+        }
+
+        assertView {
+            ManeuverImage(maneuverType: .continue, maneuverModifier: .uTurn)
+                .frame(width: 32)
+        }
     }
 
     func testManeuverImageLarge() {
