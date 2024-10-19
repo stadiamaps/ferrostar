@@ -47,7 +47,9 @@ import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOver
  *   route line.
  * @param config The configuration for the navigation view.
  * @param onTapExit The callback to invoke when the exit button is tapped.
- * @param userContent TODO docs
+ * @param userContent Any composable with additional content to render. The most common use of this
+ *   parameter is to display custom UI when there is no navigation in progress. See the demo app for
+ *   an example that adds a search box.
  * @param mapContent Any additional composable map symbol content to render.
  */
 @Composable
