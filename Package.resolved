@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
       "state" : {
-        "revision" : "236215c13bff962009e0f0257d6d8349be33442f",
-        "version" : "0.0.4"
+        "revision" : "9e27e62dff7fd727aebd0a7c8aa74e7635a5583e",
+        "version" : "0.0.5"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
-        "version" : "509.1.1"
+        "revision" : "2bc86522d115234d1f588efe2bcb4ce4be8f8b82",
+        "version" : "510.0.3"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "5ba75ef1e4382fcc7ee71e274eb9c2a50906b14e",
-        "version" : "0.1.0"
+        "revision" : "c39688db3aac50b523ea062b286c584123022093",
+        "version" : "0.3.0"
       }
     }
   ],
