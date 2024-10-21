@@ -21,6 +21,7 @@
   "scripts": {
     "dev": "npm run build:site && vite --config vite.config.site.ts",
     "preview": "vite preview",
+    "format": "prettier . --write",
     "test": "vitest",
     "prepare:core": "cd ../common && wasm-pack build --scope stadiamaps ferrostar --no-default-features --features wasm_js",
     "build": "npm run prepare:core && tsc && vite build",
@@ -37,6 +38,7 @@
   },
   "devDependencies": {
     "@stadiamaps/maplibre-search-box": "^1.1.0",
+    "prettier": "^3.3.3",
     "typescript": "^5.2.2",
     "vite": "^5.4.1",
     "vitest": "^2.0.5",
