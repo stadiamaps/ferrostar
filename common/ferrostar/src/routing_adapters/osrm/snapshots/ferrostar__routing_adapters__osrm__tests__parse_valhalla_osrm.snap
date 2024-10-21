@@ -326,7 +326,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 111.251
       spoken_instructions:
         - text: Walk west on the walkway.
@@ -351,7 +353,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 9
       spoken_instructions:
         - text: "In 14 feet, Turn right onto Laeva."
@@ -373,7 +377,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: slight right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 16
       spoken_instructions:
         - text: "In 26 feet, Bear right."
@@ -397,7 +403,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: slight left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 15
       spoken_instructions:
         - text: "In 24 feet, Bear left onto the walkway."
@@ -423,7 +431,9 @@ expression: routes
             maneuver_type: new name
             maneuver_modifier: straight
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 38
       spoken_instructions:
         - text: "In 62 feet, Continue."
@@ -445,7 +455,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 7
       spoken_instructions:
         - text: "In 11 feet, Turn right onto Admiralisild/Admiral Bridge."
@@ -473,7 +485,9 @@ expression: routes
             maneuver_type: new name
             maneuver_modifier: straight
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 70
       spoken_instructions:
         - text: "In 200 feet, Continue on the walkway."
@@ -497,7 +511,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 46
       spoken_instructions:
         - text: "In 75 feet, Turn left onto the walkway."
@@ -519,7 +535,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 131
       spoken_instructions:
         - text: "In 200 feet, Turn right onto the walkway."
@@ -547,7 +565,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 25
       spoken_instructions:
         - text: "In 41 feet, Turn left onto the walkway."
@@ -573,7 +593,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 16
       spoken_instructions:
         - text: "In 26 feet, Turn right onto Logi."
@@ -613,7 +635,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 91
       spoken_instructions:
         - text: "In 200 feet, Turn left onto the walkway."
@@ -635,7 +659,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 8
       spoken_instructions:
         - text: "In 13 feet, Turn right onto the walkway."
@@ -663,7 +689,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: slight left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 85
       spoken_instructions:
         - text: "In 200 feet, Bear left onto Kultuurikilomeeter."
@@ -791,7 +819,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 1254
       spoken_instructions:
         - text: "In 200 feet, Turn right onto the walkway."
@@ -815,7 +845,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 23
       spoken_instructions:
         - text: "In 37 feet, Turn left onto the walkway."
@@ -839,7 +871,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 16
       spoken_instructions:
         - text: "In 26 feet, Turn left onto the crosswalk."
@@ -899,7 +933,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 347
       spoken_instructions:
         - text: "In 200 feet, Turn right onto the walkway."
@@ -921,7 +957,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 2
       spoken_instructions:
         - text: "In 3 feet, Turn left onto the walkway."
@@ -969,7 +1007,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: slight left
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 241
       spoken_instructions:
         - text: "In 200 feet, Bear left onto Allveelaeva."
@@ -991,7 +1031,9 @@ expression: routes
             maneuver_type: turn
             maneuver_modifier: right
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 28
       spoken_instructions:
         - text: "In 45 feet, Turn right onto Peetri."
@@ -1015,7 +1057,9 @@ expression: routes
             maneuver_type: arrive
             maneuver_modifier: ~
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 25.099
       spoken_instructions:
         - text: "In 41 feet, You have arrived at your destination."
@@ -1037,7 +1081,9 @@ expression: routes
             maneuver_type: arrive
             maneuver_modifier: ~
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 0
       spoken_instructions: []
       annotations: redacted annotations json strings vec
