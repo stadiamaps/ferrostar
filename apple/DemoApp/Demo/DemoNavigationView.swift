@@ -88,6 +88,7 @@ struct DemoNavigationView: View {
                         }
                     }
                     CircleStyleLayer(identifier: "foo", source: source)
+                    
                 }
             )
             .innerGrid(
@@ -146,7 +147,7 @@ struct DemoNavigationView: View {
                 }
             )
             .task {
-                await getRoutes()
+                await getRoutes()                
             }
         }
     }
@@ -216,6 +217,7 @@ struct DemoNavigationView: View {
             return "No location - authed as \(locationProvider.authorizationStatus)"
         }
 
+        
         return "±\(Int(userLocation.horizontalAccuracy))m accuracy"
     }
 
