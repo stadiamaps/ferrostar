@@ -59,9 +59,12 @@ public extension NavigationState {
                                     text: "Hyde Street",
                                     maneuverType: .turn,
                                     maneuverModifier: .left,
-                                    roundaboutExitDegrees: nil
+                                    roundaboutExitDegrees: nil,
+                                    laneInfo: nil
                                 ),
-                                secondaryContent: nil, triggerDistanceBeforeManeuver: 42.0
+                                secondaryContent: nil,
+                                subContent: nil,
+                                triggerDistanceBeforeManeuver: 42.0
                             ),
                         ],
                         spokenInstructions: [],

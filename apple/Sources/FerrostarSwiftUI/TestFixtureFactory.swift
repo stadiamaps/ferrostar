@@ -29,7 +29,8 @@ struct VisualInstructionContentFactory: TestFixtureFactory {
             text: textBuilder(n),
             maneuverType: .turn,
             maneuverModifier: .left,
-            roundaboutExitDegrees: nil
+            roundaboutExitDegrees: nil,
+            laneInfo: nil
         )
     }
 }
@@ -53,6 +54,7 @@ struct VisualInstructionFactory: TestFixtureFactory {
         VisualInstruction(
             primaryContent: primaryContentBuilder(n),
             secondaryContent: secondaryContentBuilder(n),
+            subContent: nil,
             triggerDistanceBeforeManeuver: 42.0
         )
     }

@@ -53,5 +53,6 @@ fun ManeuverImagePreview() {
           text = "",
           maneuverType = ManeuverType.TURN,
           maneuverModifier = ManeuverModifier.LEFT,
-          roundaboutExitDegrees = null))
+          roundaboutExitDegrees = null,
+          laneInfo = null))
 }

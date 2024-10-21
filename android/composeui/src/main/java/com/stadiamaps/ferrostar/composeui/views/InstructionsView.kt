@@ -68,8 +68,10 @@ fun PreviewInstructionsView() {
                   text = "Hyde Street",
                   maneuverType = ManeuverType.TURN,
                   maneuverModifier = ManeuverModifier.LEFT,
-                  roundaboutExitDegrees = null),
+                  roundaboutExitDegrees = null,
+                  laneInfo = null),
           secondaryContent = null,
+          subContent = null,
           triggerDistanceBeforeManeuver = 42.0)
 
   InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
@@ -85,8 +87,10 @@ fun PreviewRTLInstructionsView() {
                   text = "ادمج يسارًا",
                   maneuverType = ManeuverType.TURN,
                   maneuverModifier = ManeuverModifier.LEFT,
-                  roundaboutExitDegrees = null),
+                  roundaboutExitDegrees = null,
+                  laneInfo = null),
           secondaryContent = null,
+          subContent = null,
           triggerDistanceBeforeManeuver = 42.0)
 
   InstructionsView(

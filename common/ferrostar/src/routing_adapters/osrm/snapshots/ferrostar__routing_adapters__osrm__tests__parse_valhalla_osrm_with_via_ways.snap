@@ -440,7 +440,9 @@ expression: routes
             maneuver_type: arrive
             maneuver_modifier: ~
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 2089.442
       spoken_instructions:
         - text: Drive southeast.
@@ -465,7 +467,9 @@ expression: routes
             maneuver_type: arrive
             maneuver_modifier: ~
             roundabout_exit_degrees: ~
+            lane_info: ~
           secondary_content: ~
+          sub_content: ~
           trigger_distance_before_maneuver: 0
       spoken_instructions: []
       annotations: redacted annotations json strings vec

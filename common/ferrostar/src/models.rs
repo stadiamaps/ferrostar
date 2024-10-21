@@ -458,6 +458,18 @@ pub enum ManeuverModifier {
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct LaneInfo {
+    pub active: bool,
+    pub directions: Vec<String>,
+}
+
+/// The content of a visual instruction.
+#[derive(Debug, Clone, Eq, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct VisualInstructionContent {
     /// The text to display.
     pub text: String,
@@ -471,6 +483,7 @@ pub struct VisualInstructionContent {
     /// (as if you had gone straight, apart from the detour)
     /// would be an exit angle of 180 degrees.
     pub roundabout_exit_degrees: Option<u16>,
+    pub lane_info: Option<Vec<LaneInfo>>,
 }
 
 /// An instruction for visual display (usually as banners) at a specific point along a [`RouteStep`].
@@ -487,6 +500,8 @@ pub struct VisualInstruction {
     pub primary_content: VisualInstructionContent,
     /// Optional secondary instruction content.
     pub secondary_content: Option<VisualInstructionContent>,
+    /// Optional sub-maneuver instruction content.
+    pub sub_content: Option<VisualInstructionContent>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
     pub trigger_distance_before_maneuver: f64,
 }
