@@ -12,14 +12,17 @@ final class InstructionsViewTests: XCTestCase {
                         text: "Turn right on Something Dr.",
                         maneuverType: .turn,
                         maneuverModifier: .right,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
                     secondaryContent: VisualInstructionContent(
                         text: "Merge onto Hwy 123",
                         maneuverType: .merge,
                         maneuverModifier: .right,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
+                    subContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter
@@ -36,7 +39,8 @@ final class InstructionsViewTests: XCTestCase {
                         text: "Turn right on Something Dr.",
                         maneuverType: .turn,
                         maneuverModifier: .right,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
                     secondaryContent: VisualInstructionContent(
                         text: "Merge onto Hwy 123",
@@ -44,6 +48,7 @@ final class InstructionsViewTests: XCTestCase {
                         maneuverModifier: .right,
                         roundaboutExitDegrees: nil
                     ),
+                    subContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter
@@ -60,9 +65,11 @@ final class InstructionsViewTests: XCTestCase {
                         text: "Use the second exit to leave the roundabout.",
                         maneuverType: .rotary,
                         maneuverModifier: .slightRight,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
                     secondaryContent: nil,
+                    subContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter
@@ -79,9 +86,11 @@ final class InstructionsViewTests: XCTestCase {
                         text: "Use the second exit to leave the roundabout.",
                         maneuverType: .rotary,
                         maneuverModifier: .slightRight,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
                     secondaryContent: nil,
+                    subContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter,
@@ -99,9 +108,11 @@ final class InstructionsViewTests: XCTestCase {
                         text: "Use the second exit to leave the roundabout.",
                         maneuverType: .rotary,
                         maneuverModifier: .slightRight,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
                     secondaryContent: nil,
+                    subContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter,
@@ -119,9 +130,11 @@ final class InstructionsViewTests: XCTestCase {
                         text: "Use the second exit to leave the roundabout.",
                         maneuverType: .rotary,
                         maneuverModifier: .slightRight,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
                     secondaryContent: nil,
+                    subContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter,
@@ -140,9 +153,11 @@ final class InstructionsViewTests: XCTestCase {
                         text: "Use the second exit to leave the roundabout.",
                         maneuverType: .rotary,
                         maneuverModifier: .slightRight,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
                     secondaryContent: nil,
+                    subContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: americanDistanceFormatter,
@@ -161,9 +176,11 @@ final class InstructionsViewTests: XCTestCase {
                         text: "Links einfädeln",
                         maneuverType: .turn,
                         maneuverModifier: .left,
-                        roundaboutExitDegrees: nil
+                        roundaboutExitDegrees: nil,
+                        laneInfo: nil
                     ),
                     secondaryContent: nil,
+                    subContent: nil,
                     triggerDistanceBeforeManeuver: 123
                 ),
                 distanceFormatter: germanDistanceFormatter,

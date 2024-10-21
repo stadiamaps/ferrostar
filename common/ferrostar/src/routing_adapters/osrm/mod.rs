@@ -5,8 +5,8 @@ pub mod utilities;
 
 use super::RouteResponseParser;
 use crate::models::{
-    AnyAnnotationValue, GeographicCoordinate, RouteStep, SpokenInstruction, VisualInstruction,
-    VisualInstructionContent, Waypoint, WaypointKind,
+    AnyAnnotationValue, GeographicCoordinate, LaneInfo, RouteStep, SpokenInstruction,
+    VisualInstruction, VisualInstructionContent, Waypoint, WaypointKind,
 };
 use crate::routing_adapters::utilities::get_coordinates_from_geometry;
 use crate::routing_adapters::{
@@ -161,6 +161,7 @@ impl RouteStep {
                     maneuver_type: banner.primary.maneuver_type,
                     maneuver_modifier: banner.primary.maneuver_modifier,
                     roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
+                    lane_info: None,
                 },
                 secondary_content: banner.secondary.as_ref().map(|secondary| {
                     VisualInstructionContent {
@@ -168,7 +169,31 @@ impl RouteStep {
                         maneuver_type: secondary.maneuver_type,
                         maneuver_modifier: secondary.maneuver_modifier,
                         roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
+                        lane_info: None,
                     }
+                }),
+                sub_content: banner.sub.as_ref().map(|sub| VisualInstructionContent {
+                    text: sub.text.clone(),
+                    maneuver_type: None,
+                    maneuver_modifier: None,
+                    roundabout_exit_degrees: None,
+                    lane_info: {
+                        let lane_infos: Vec<LaneInfo> = sub
+                            .components
+                            .iter()
+                            .filter(|component| component.component_type.as_deref() == Some("lane"))
+                            .map(|component| LaneInfo {
+                                active: component.active.unwrap_or(false),
+                                directions: component.directions.clone().unwrap_or_default(),
+                            })
+                            .collect();
+
+                        if lane_infos.is_empty() {
+                            None
+                        } else {
+                            Some(lane_infos)
+                        }
+                    },
                 }),
                 trigger_distance_before_maneuver: banner.distance_along_geometry,
             })

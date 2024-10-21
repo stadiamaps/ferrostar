@@ -162,6 +162,8 @@ pub struct BannerInstruction {
     pub distance_along_geometry: f64,
     pub primary: BannerContent,
     pub secondary: Option<BannerContent>,
+    // sub-maneuver information
+    pub sub: Option<SubManeuverBannerContent>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -185,6 +187,23 @@ pub struct BannerContent {
     /// the original travel.
     #[serde(rename = "degrees")]
     pub roundabout_exit_degrees: Option<u16>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct SubManeuverBannerContent {
+    pub text: String,
+    pub components: Vec<SubManeuverBannerContentComponent>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct SubManeuverBannerContentComponent {
+    #[serde(rename = "type")]
+    pub component_type: Option<String>,
+    pub directions: Option<Vec<String>>,
+    pub active: Option<bool>,
+    pub image_base_url: Option<String>,
+    pub abbr: Option<String>,
+    pub abbr_priority: Option<u8>,
 }
 
 #[derive(Deserialize, Debug)]

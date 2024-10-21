@@ -98,7 +98,8 @@ class FerrostarCoreTest {
           text = "Sail straight",
           maneuverType = ManeuverType.DEPART,
           maneuverModifier = ManeuverModifier.STRAIGHT,
-          roundaboutExitDegrees = null)
+          roundaboutExitDegrees = null,
+          laneInfo = null)
   private val mockRoute =
       Route(
           geometry = mockGeom,
@@ -117,6 +118,7 @@ class FerrostarCoreTest {
                               VisualInstruction(
                                   primaryContent = instructionContent,
                                   secondaryContent = null,
+                                  subContent = null,
                                   triggerDistanceBeforeManeuver = 42.0)),
                       spokenInstructions = listOf(),
                       duration = 0.0,
