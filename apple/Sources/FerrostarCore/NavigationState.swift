@@ -47,11 +47,29 @@ public struct NavigationState: Hashable {
         return remainingSteps
     }
 
+    /// The current geometry segment's annotations in a JSON string.
+    ///
+    /// A segment is the line between two coordinates on the geometry.
     public var currentAnnotationJSON: String? {
         guard case let .navigating(_, _, _, _, _, _, _, _, annotationJson: annotationJson) = tripState else {
             return nil
         }
 
         return annotationJson
+    }
+
+    /// The current geometry segment's annotations.
+    ///
+    /// A segment is the line between two coordinates on the geometry.
+    ///
+    /// - Parameter type: The type to decode the annotation json string to.
+    /// - Returns: The decoded type.
+    public func currentAnnotation<T: Decodable>(as type: T.Type) throws -> T? {
+        // TODO: This ideally goes away if we can convert the annotationJson to bytes.
+        guard let data = currentAnnotationJSON?.data(using: .utf8) else {
+            return nil
+        }
+
+        return try JSONDecoder().decode(type, from: data)
     }
 }

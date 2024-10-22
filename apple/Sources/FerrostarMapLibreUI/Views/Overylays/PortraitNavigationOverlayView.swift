@@ -82,7 +82,8 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                         onTapExit: onTapExit
                     )
                 }
-            }.padding(.top, instructionsViewSizeWhenNotExpanded.height)
+            }
+            .padding(.top, instructionsViewSizeWhenNotExpanded.height + 16)
 
             if case .navigating = navigationState?.tripState,
                let visualInstruction = navigationState?.currentVisualInstruction,
