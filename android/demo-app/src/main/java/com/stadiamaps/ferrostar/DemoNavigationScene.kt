@@ -134,33 +134,33 @@ fun DemoNavigationScene(
           InnerGridView(
               modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
               topCenter = {
-                AutocompleteSearch(
-                    apiKey = AppModule.stadiaApiKey, userLocation = loc.toAndroidLocation()) {
-                        feature ->
-                      feature.center()?.let { center ->
-                        // Fetch a route in the background
-                        scope.launch(Dispatchers.IO) {
-                          // TODO: Fail gracefully
-                          val routes =
-                              AppModule.ferrostarCore.getRoutes(
-                                  loc,
-                                  listOf(
-                                      Waypoint(
-                                          coordinate =
-                                              GeographicCoordinate(
-                                                  center.latitude, center.longitude),
-                                          kind = WaypointKind.BREAK),
-                                  ))
+                AppModule.stadiaApiKey?.let { apiKey ->
+                  AutocompleteSearch(apiKey = apiKey, userLocation = loc.toAndroidLocation()) {
+                      feature ->
+                    feature.center()?.let { center ->
+                      // Fetch a route in the background
+                      scope.launch(Dispatchers.IO) {
+                        // TODO: Fail gracefully
+                        val routes =
+                            AppModule.ferrostarCore.getRoutes(
+                                loc,
+                                listOf(
+                                    Waypoint(
+                                        coordinate =
+                                            GeographicCoordinate(center.latitude, center.longitude),
+                                        kind = WaypointKind.BREAK),
+                                ))
 
-                          val route = routes.first()
-                          viewModel = AppModule.ferrostarCore.startNavigation(route = route)
+                        val route = routes.first()
+                        viewModel = AppModule.ferrostarCore.startNavigation(route = route)
 
-                          if (locationProvider is SimulatedLocationProvider) {
-                            locationProvider.setSimulatedRoute(route)
-                          }
+                        if (locationProvider is SimulatedLocationProvider) {
+                          locationProvider.setSimulatedRoute(route)
                         }
                       }
                     }
+                  }
+                }
               })
         }
       }) { uiState ->

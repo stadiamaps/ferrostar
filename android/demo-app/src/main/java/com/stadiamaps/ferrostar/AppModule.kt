@@ -1,7 +1,6 @@
 package com.stadiamaps.ferrostar
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import com.stadiamaps.ferrostar.composeui.notification.DefaultForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
@@ -36,21 +35,28 @@ object AppModule {
   // You can also modify this file to use your preferred sources for maps and/or routing.
   // See https://stadiamaps.github.io/ferrostar/vendors.html for vendors known to work with
   // Ferrostar.
-  val stadiaApiKey: String by lazy {
-    val appInfo =
-        appContext.packageManager.getApplicationInfo(
-            appContext.packageName, PackageManager.GET_META_DATA)
-    val metaData = appInfo.metaData
-
-    metaData.getString("stadiaApiKey")!!
-  }
+  //
+  // NOTE: Don't set this directly in source code. Add a line to your local.properties file:
+  // stadiaApiKey=YOUR-API-KEY
+  val stadiaApiKey =
+      if (BuildConfig.stadiaApiKey.isBlank() || BuildConfig.stadiaApiKey == "null") {
+        null
+      } else {
+        BuildConfig.stadiaApiKey
+      }
 
   val mapStyleUrl: String by lazy {
-    "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
+    if (stadiaApiKey != null)
+        "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
+    else "https://demotiles.maplibre.org/style.json"
   }
 
   val valhallaEndpointUrl: URL by lazy {
-    URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
+    if (stadiaApiKey != null) {
+      URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
+    } else {
+      URL("https://valhalla1.openstreeetmap.de/route")
+    }
   }
 
   fun init(context: Context) {

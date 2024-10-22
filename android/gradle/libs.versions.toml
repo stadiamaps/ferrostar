@@ -22,7 +22,6 @@ junitCompose = "1.7.3"
 espressoCore = "3.6.1"
 okhttp-mock = "2.0.0"
 mavenPublish = "0.29.0"
-secretsGradlePlugin = "2.0.1"
 material = "1.12.0"
 stadiaAutocompleteSearch = "1.0.0"
 
@@ -78,4 +77,3 @@ ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-mapsplatform-secrets-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }

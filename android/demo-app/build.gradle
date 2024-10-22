@@ -3,7 +3,6 @@ plugins {
     alias libs.plugins.jetbrainsKotlinAndroid
     alias libs.plugins.ktfmt
     alias libs.plugins.compose.compiler
-    alias libs.plugins.mapsplatform.secrets.plugin
 }
 
 android {
@@ -21,6 +20,12 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+        android.buildFeatures.buildConfig true
+        buildConfigField "String", "stadiaApiKey", "\"${properties.getProperty("stadiaApiKey")}\""
     }
 
     buildTypes {
