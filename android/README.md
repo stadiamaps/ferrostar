@@ -14,7 +14,8 @@ To run the demo app, you'll need a Stadia Maps API key
 (free for development and evaluation use; no credit card required; get one at https://client.stadiamaps.com/).
 You can also modify it to work with your preferred maps and routing vendor by editing `AppModule.kt`.
 
-Set your API key in `local.properties` to run the demo app:
+Set your API key in `local.properties` to run the demo app
+(it is functional with demo tiles and routing, but only for limited testing):
 
 ```properties
 stadiaApiKey=YOUR-API-KEY

@@ -38,14 +38,25 @@ object AppModule {
   //
   // NOTE: Don't set this directly in source code. Add a line to your local.properties file:
   // stadiaApiKey=YOUR-API-KEY
-  val stadiaApiKey = BuildConfig.stadiaApiKey
+  val stadiaApiKey =
+      if (BuildConfig.stadiaApiKey.isBlank() || BuildConfig.stadiaApiKey == "null") {
+        null
+      } else {
+        BuildConfig.stadiaApiKey
+      }
 
   val mapStyleUrl: String by lazy {
-    "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
+    if (stadiaApiKey != null)
+        "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
+    else "https://demotiles.maplibre.org/style.json"
   }
 
   val valhallaEndpointUrl: URL by lazy {
-    URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
+    if (stadiaApiKey != null) {
+      URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
+    } else {
+      URL("https://valhalla1.openstreeetmap.de/route")
+    }
   }
 
   fun init(context: Context) {
