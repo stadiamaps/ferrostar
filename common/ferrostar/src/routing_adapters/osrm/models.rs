@@ -162,7 +162,8 @@ pub struct BannerInstruction {
     pub distance_along_geometry: f64,
     pub primary: BannerContent,
     pub secondary: Option<BannerContent>,
-    // sub-maneuver information
+    // Sub-maneuver information. This is used to give additional info
+    // about the next maneuver or lane guidance.
     pub sub: Option<BannerContent>,
 }
 
