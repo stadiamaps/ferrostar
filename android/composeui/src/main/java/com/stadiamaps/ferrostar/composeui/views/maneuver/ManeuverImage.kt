@@ -65,5 +65,6 @@ fun ManeuverImageContinueUturnPreview() {
           text = "",
           maneuverType = ManeuverType.CONTINUE,
           maneuverModifier = ManeuverModifier.U_TURN,
-          roundaboutExitDegrees = null))
+          roundaboutExitDegrees = null,
+          laneInfo = null))
 }
