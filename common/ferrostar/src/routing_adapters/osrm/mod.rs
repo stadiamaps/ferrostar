@@ -336,7 +336,7 @@ mod tests {
         );
 
         if let Some(sub_content) = sub_contents.first() {
-            // Ensure that there are 4 lane informations in the sub banner instructions
+            // Ensure that there are 4 pieces of lane information in the sub banner instructions
             if let Some(lane_info) = &sub_content.lane_info {
                 assert_eq!(lane_info.len(), 4);
             } else {
