@@ -21,7 +21,8 @@
   "scripts": {
     "dev": "npm run build:site && vite --config vite.config.site.ts",
     "preview": "vite preview",
-    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "format:fix": "prettier . --write",
     "test": "vitest",
     "prepare:core": "cd ../common && wasm-pack build --scope stadiamaps ferrostar --no-default-features --features wasm_js",
     "build": "npm run prepare:core && tsc && vite build",

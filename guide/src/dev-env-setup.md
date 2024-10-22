@@ -62,7 +62,7 @@ npm run build
 
 #### PR checklist
 
-Run `npm run format` from the `web` directory before committing
+Run `npm run format:fix` from the `web` directory before committing
 to ensure consistent formatting.
 
 ### iOS
