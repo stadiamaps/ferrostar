@@ -58,4 +58,3 @@ class DemoNavigationViewModel : ViewModel(), NavigationViewModel {
     // Do nothing
   }
 }
-
