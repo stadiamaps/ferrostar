@@ -74,7 +74,7 @@ object AppModule {
     val core =
         FerrostarCore(
             valhallaEndpointURL = valhallaEndpointUrl,
-            profile = "low_speed_vehicle",
+            profile = "auto",
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
@@ -87,6 +87,10 @@ object AppModule {
             options =
                 mapOf(
                     "costingOptions" to
+                        // Just an example... You can set multiple costing options for any profile
+                        // in Valhalla.
+                        // If your app uses multiple routing modes, you can have a master settings
+                        // map, or construct a new one each time.
                         mapOf(
                             "low_speed_vehicle" to
                                 mapOf(

@@ -66,6 +66,7 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
   // TTS listener methods
 
   override fun onTtsInitialized(tts: TextToSpeech?, status: Int) {
+    // Set this up as appropriate for your app
     if (tts != null) {
       tts.setLanguage(Locale.US)
       android.util.Log.i(TAG, "setLanguage status: $status")

@@ -28,7 +28,6 @@ import com.stadiamaps.autocomplete.center
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
 import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridView
 import com.stadiamaps.ferrostar.core.AndroidSystemLocationProvider
-import com.stadiamaps.ferrostar.core.IdleNavigationViewModel
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
@@ -53,9 +52,10 @@ fun DemoNavigationScene(
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
-  var viewModel by remember {
-    mutableStateOf<NavigationViewModel>(IdleNavigationViewModel(locationProvider))
-  }
+  // NOTE: We are aware that this is not a particularly great pattern.
+  // We are working on improving this. See the discussion on
+  // https://github.com/stadiamaps/ferrostar/pull/295.
+  var viewModel by remember { mutableStateOf<NavigationViewModel>(DemoNavigationViewModel()) }
   val scope = rememberCoroutineScope()
 
   // Get location permissions.
@@ -73,22 +73,6 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       }
 
-  //  val locationUpdateListener = remember {
-  //    object : LocationUpdateListener {
-  //      private var _lastLocation: MutableStateFlow<UserLocation?> = MutableStateFlow(null)
-  //      val userLocation = _lastLocation.asStateFlow()
-  //
-  //      override fun onLocationUpdated(location: UserLocation) {
-  //        _lastLocation.value = location
-  //      }
-  //
-  //      override fun onHeadingUpdated(heading: Heading) {
-  //        // TODO
-  //      }
-  //    }
-  //  }
-
-  //  val lastLocation = locationUpdateListener.userLocation.collectAsState(scope.coroutineContext)
   val vmState = viewModel.uiState.collectAsState(scope.coroutineContext)
 
   val permissionsLauncher =
@@ -96,20 +80,19 @@ fun DemoNavigationScene(
           permissions ->
         when {
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-            if (locationProvider is AndroidSystemLocationProvider ||
-                locationProvider is FusedLocationProvider) {
-              // FIXME
-              //              locationProvider.addListener(locationUpdateListener, executor)
+            val vm = viewModel
+            if ((locationProvider is AndroidSystemLocationProvider ||
+                locationProvider is FusedLocationProvider) && vm is DemoNavigationViewModel) {
+              // Activate location updates in the view model
+              vm.startLocationUpdates(locationProvider)
             }
           }
           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
             // TODO: Probably alert the user that this is unusable for navigation
-            // onAccess()
           }
           // TODO: Foreground service permissions; we should block access until approved on API 34+
           else -> {
             // TODO
-            // onFailed()
           }
         }
       }
@@ -141,7 +124,10 @@ fun DemoNavigationScene(
       snapUserLocationToRoute = false,
       onTapExit = {
         viewModel.stopNavigation()
-        viewModel = IdleNavigationViewModel(locationProvider)
+        val vm = DemoNavigationViewModel()
+        viewModel = vm
+
+        vm.startLocationUpdates(locationProvider)
       },
       userContent = { modifier ->
         if (!viewModel.isNavigating()) {
