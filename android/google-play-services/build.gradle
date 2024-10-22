@@ -47,7 +47,9 @@ dependencies {
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-    signAllPublications()
+    if (!project.hasProperty(SKIP_SIGNING_PROPERTY)) {
+        signAllPublications()
+    }
 
     configure(new AndroidSingleVariantLibrary("release", true, true))
 

@@ -20,3 +20,9 @@ Set your API key in `local.properties` to run the demo app
 ```properties
 stadiaApiKey=YOUR-API-KEY
 ```
+
+## Testing locally in a separate project
+
+* Bump the version number to a `SNAPSHOT` in `build.gradle`.
+* run `./gradlew publishToMavenLocal -Pskip.signing`
+* reference the updated version number in the project, and ensure that `mavenLocal` is one of the `repositories`.
