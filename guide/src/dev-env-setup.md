@@ -60,6 +60,11 @@ npm run dev
 npm run build
 ```
 
+#### PR checklist
+
+Run `npm run format:fix` from the `web` directory before committing
+to ensure consistent formatting.
+
 ### iOS
 
 1. Install the latest version of Xcode.

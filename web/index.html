@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,7 +12,7 @@
       <button id="simulate">Simulate Navigation</button>
     </p>
 
-    <p style="margin-top: 0;">
+    <p style="margin-top: 0">
       <input type="checkbox" id="voiceGuidance" />
       <label for="voiceGuidance">Enable voice guidance (sound on)</label>
     </p>
@@ -30,8 +30,12 @@
     ></ferrostar-map>
 
     <script type="module">
-      import { FerrostarMap, SimulatedLocationProvider, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
-      import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
+      import {
+        FerrostarMap,
+        SimulatedLocationProvider,
+        BrowserLocationProvider,
+      } from "@stadiamaps/ferrostar-webcomponents";
+      import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
       import searchBoxStyle from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
 
       // TODO: type + use TypeScript enum
@@ -48,7 +52,7 @@
             maxAcceptableDeviation: 10.0,
           },
         },
-        snappedLocationCourseFiltering: "Raw"
+        snappedLocationCourseFiltering: "Raw",
       };
 
       async function onload() {
@@ -59,17 +63,26 @@
         const searchBox = new MapLibreSearchControl({
           onResultSelected: async (feature) => {
             const coordinates = feature.geometry.coordinates;
-            const waypoints = [{ coordinate: { lat: coordinates[1], lng: coordinates[0] }, kind: "Break" }];
+            const waypoints = [
+              {
+                coordinate: { lat: coordinates[1], lng: coordinates[0] },
+                kind: "Break",
+              },
+            ];
 
             // FIXME: This is a hack basically to support the demo page that should go away.
-            if (!ferrostar.locationProvider || ferrostar.locationProvider instanceof SimulatedLocationProvider) {
+            if (
+              !ferrostar.locationProvider ||
+              ferrostar.locationProvider instanceof SimulatedLocationProvider
+            ) {
               ferrostar.locationProvider = new BrowserLocationProvider();
             }
 
             // Fetch the user's current location.
             // If we have a cached one that's no older than 30 seconds,
             // skip waiting for an update and use the slightly stale location.
-            const location = await ferrostar.locationProvider.getCurrentLocation(30_000);
+            const location =
+              await ferrostar.locationProvider.getCurrentLocation(30_000);
 
             // Use the acquired user location to request the route
             const routes = await ferrostar.getRoutes(location, waypoints);
@@ -94,9 +107,11 @@
           },
         });
 
-        ferrostar.center = {lng: -122.42, lat: 37.81};
+        ferrostar.center = { lng: -122.42, lat: 37.81 };
         ferrostar.zoom = 18;
-        ferrostar.options = {costing_options: { bicycle: { use_roads: 0.2 } } };
+        ferrostar.options = {
+          costing_options: { bicycle: { use_roads: 0.2 } },
+        };
         ferrostar.customStyles = searchBoxStyle;
         ferrostar.geolocateOnLoad = false;
 
@@ -123,10 +138,15 @@
             speed: null,
           };
 
-          const simulatedWaypoints = [{ coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" }];
+          const simulatedWaypoints = [
+            { coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" },
+          ];
 
           // Request the route
-          const routes = await ferrostar.getRoutes(initialSimulatedLocation, simulatedWaypoints);
+          const routes = await ferrostar.getRoutes(
+            initialSimulatedLocation,
+            simulatedWaypoints,
+          );
           const route = routes[0];
 
           // Set the simulated location provider
@@ -147,7 +167,7 @@
       }
 
       // Initialize Ferrostar and the control buttons
-      if ( document.readyState === "loading" ) {
+      if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", onload);
       } else {
         onload();
