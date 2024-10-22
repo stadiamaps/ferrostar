@@ -1,4 +1,7 @@
-import { advanceLocationSimulation, locationSimulationFromRoute } from "@stadiamaps/ferrostar";
+import {
+  advanceLocationSimulation,
+  locationSimulationFromRoute,
+} from "@stadiamaps/ferrostar";
 
 /**
  * Transforms a `GeolocationPosition` (from standard web location APIs)
@@ -10,12 +13,15 @@ export function ferrostarUserLocation(position: GeolocationPosition): object {
   let speed = null;
   if (position.coords.speed) {
     speed = {
-      value: position.coords.speed
-    }
+      value: position.coords.speed,
+    };
   }
 
   return {
-    coordinates: { lat: position.coords.latitude, lng: position.coords.longitude },
+    coordinates: {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude,
+    },
     horizontalAccuracy: position.coords.accuracy,
     courseOverGround: {
       degrees: Math.floor(position.coords.heading || 0),
@@ -42,11 +48,15 @@ export class SimulatedLocationProvider {
   }
 
   async start() {
-    if (this.isRunning) { return; }
+    if (this.isRunning) {
+      return;
+    }
     this.isRunning = true;
 
     while (this.simulationState !== null) {
-      await new Promise((resolve) => setTimeout(resolve, (1 / this.warpFactor) * 1000));
+      await new Promise((resolve) =>
+        setTimeout(resolve, (1 / this.warpFactor) * 1000),
+      );
       const initialState = this.simulationState;
       const updatedState = advanceLocationSimulation(initialState);
 
@@ -95,7 +105,8 @@ export class BrowserLocationProvider {
         enableHighAccuracy: true,
       };
 
-      this.geolocationWatchId = navigator.geolocation.watchPosition((position: GeolocationPosition) => {
+      this.geolocationWatchId = navigator.geolocation.watchPosition(
+        (position: GeolocationPosition) => {
           this.lastLocation = ferrostarUserLocation(position);
           if (this.updateCallback) {
             this.updateCallback();
@@ -106,7 +117,7 @@ export class BrowserLocationProvider {
           this.geolocationWatchId = null;
           alert(error.message);
         },
-        options
+        options,
       );
     }
   }
@@ -121,7 +132,7 @@ export class BrowserLocationProvider {
   getCurrentLocation(staleThresholdMilliseconds: number): Promise<object> {
     if (!navigator.geolocation) {
       return new Promise<object>((_, reject) => {
-        reject("This navigator does not support geolocation.")
+        reject("This navigator does not support geolocation.");
       });
     }
 
@@ -130,11 +141,14 @@ export class BrowserLocationProvider {
       return this.lastLocation;
     } else {
       return new Promise<object>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-          const userLocation = ferrostarUserLocation(position);
-          this.lastLocation = userLocation;
-          resolve(userLocation);
-        }, reject);
+        navigator.geolocation.getCurrentPosition(
+          (position: GeolocationPosition) => {
+            const userLocation = ferrostarUserLocation(position);
+            this.lastLocation = userLocation;
+            resolve(userLocation);
+          },
+          reject,
+        );
       });
     }
   }

@@ -11,21 +11,22 @@ export default defineConfig({
       name: "@stadiamaps/ferrostar-webcomponents",
     },
     rollupOptions: {
-      external: ["@stadiamaps/ferrostar", "maplibre-gl", "lit", "@stadiamaps/maplibre-search-box"],
+      external: [
+        "@stadiamaps/ferrostar",
+        "maplibre-gl",
+        "lit",
+        "@stadiamaps/maplibre-search-box",
+      ],
       output: {
         globals: {
           "lit": "lit",
           "maplibre-gl": "maplibregl",
           "@stadiamaps/maplibre-search-box": "maplibreSearchBox",
-          "@stadiamaps/ferrostar": "ferrostar"
+          "@stadiamaps/ferrostar": "ferrostar",
         },
       },
     },
     sourcemap: true,
   },
-  plugins: [
-      dts(),
-      topLevelAwait(),
-      wasm()
-  ]
+  plugins: [dts(), topLevelAwait(), wasm()],
 });

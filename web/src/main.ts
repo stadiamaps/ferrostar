@@ -3,7 +3,7 @@ import { BrowserLocationProvider, SimulatedLocationProvider } from "./location";
 export { FerrostarMap, BrowserLocationProvider, SimulatedLocationProvider };
 
 declare global {
-    interface HTMLElementTagNameMap {
-        "ferrostar-map": FerrostarMap;
-    }
+  interface HTMLElementTagNameMap {
+    "ferrostar-map": FerrostarMap;
+  }
 }
