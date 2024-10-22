@@ -68,3 +68,14 @@ fun ManeuverImageContinueUturnPreview() {
           roundaboutExitDegrees = null,
           laneInfo = null))
 }
+
+@Preview
+@Composable
+fun ManeuverImageContinueUturnPreview() {
+  ManeuverImage(
+      VisualInstructionContent(
+          text = "",
+          maneuverType = ManeuverType.CONTINUE,
+          maneuverModifier = ManeuverModifier.U_TURN,
+          roundaboutExitDegrees = null))
+}
