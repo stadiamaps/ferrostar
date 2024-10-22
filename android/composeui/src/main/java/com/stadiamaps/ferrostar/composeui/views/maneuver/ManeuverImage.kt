@@ -47,7 +47,7 @@ fun ManeuverImage(content: VisualInstructionContent, tint: Color = LocalContentC
 
 @Preview
 @Composable
-fun ManeuverImagePreview() {
+fun ManeuverImageLeftTurnPreview() {
   ManeuverImage(
       VisualInstructionContent(
           text = "",
@@ -55,4 +55,15 @@ fun ManeuverImagePreview() {
           maneuverModifier = ManeuverModifier.LEFT,
           roundaboutExitDegrees = null,
           laneInfo = null))
+}
+
+@Preview
+@Composable
+fun ManeuverImageContinueUturnPreview() {
+  ManeuverImage(
+      VisualInstructionContent(
+          text = "",
+          maneuverType = ManeuverType.CONTINUE,
+          maneuverModifier = ManeuverModifier.U_TURN,
+          roundaboutExitDegrees = null))
 }

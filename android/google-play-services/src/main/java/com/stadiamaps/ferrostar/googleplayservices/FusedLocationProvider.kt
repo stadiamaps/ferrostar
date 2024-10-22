@@ -2,7 +2,6 @@ package com.stadiamaps.ferrostar.googleplayservices
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Looper
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationListener
@@ -19,7 +18,8 @@ import uniffi.ferrostar.UserLocation
 class FusedLocationProvider(
     context: Context,
     private val fusedLocationProviderClient: FusedLocationProviderClient =
-        LocationServices.getFusedLocationProviderClient(context)
+        LocationServices.getFusedLocationProviderClient(context),
+    private val priority: Int = Priority.PRIORITY_HIGH_ACCURACY
 ) : LocationProvider {
 
   companion object {
@@ -42,16 +42,27 @@ class FusedLocationProvider(
       return
     }
 
-    val locationListener = LocationListener { newLocation ->
-      listener.onLocationUpdated(newLocation.toUserLocation())
+    val androidListener = LocationListener {
+      val userLocation = it.toUserLocation()
+      lastLocation = userLocation
+      listener.onLocationUpdated(userLocation)
     }
-    listeners[listener] = locationListener
+    listeners[listener] = androidListener
 
     val locationRequest =
-        LocationRequest.Builder(1000L).setPriority(Priority.PRIORITY_HIGH_ACCURACY).build()
+        LocationRequest.Builder(priority, 1000L)
+            .setMinUpdateDistanceMeters(5.0f)
+            .setWaitForAccurateLocation(false)
+            .build()
 
-    fusedLocationProviderClient.requestLocationUpdates(
-        locationRequest, locationListener, Looper.getMainLooper())
+    if (lastLocation == null) {
+      fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+        if (location != null) {
+          androidListener.onLocationChanged(location)
+        }
+      }
+    }
+    fusedLocationProviderClient.requestLocationUpdates(locationRequest, executor, androidListener)
   }
 
   override fun removeListener(listener: LocationUpdateListener) {

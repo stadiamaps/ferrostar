@@ -13,7 +13,7 @@ android {
     defaultConfig {
         applicationId "com.stadiamaps.ferrostar.demo"
         minSdk 26
-        targetSdk 34
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
@@ -64,11 +64,16 @@ dependencies {
     implementation project(':core')
     implementation project(':composeui')
     implementation project(':maplibreui')
+    implementation project(':google-play-services')
 
     implementation libs.maplibre.compose
 
-    implementation(platform(libs.okhttp.bom))
-    implementation(libs.okhttp.core)
+    implementation platform(libs.okhttp.bom)
+    implementation libs.okhttp.core
+
+    implementation libs.play.services.location
+
+    implementation libs.stadiamaps.autocomplete.search
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
