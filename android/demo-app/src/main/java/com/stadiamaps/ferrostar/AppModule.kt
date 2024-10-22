@@ -69,7 +69,6 @@ object AppModule {
     FerrostarForegroundServiceManager(appContext, DefaultForegroundNotificationBuilder(appContext))
   }
 
-  // TODO: This is hard-coded for golf cart routing; change to something else before merging
   val ferrostarCore: FerrostarCore by lazy {
     val core =
         FerrostarCore(
