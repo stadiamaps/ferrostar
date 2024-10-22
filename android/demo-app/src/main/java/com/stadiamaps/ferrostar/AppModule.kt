@@ -1,7 +1,6 @@
 package com.stadiamaps.ferrostar
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import com.stadiamaps.ferrostar.composeui.notification.DefaultForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
@@ -36,14 +35,10 @@ object AppModule {
   // You can also modify this file to use your preferred sources for maps and/or routing.
   // See https://stadiamaps.github.io/ferrostar/vendors.html for vendors known to work with
   // Ferrostar.
-  val stadiaApiKey: String by lazy {
-    val appInfo =
-        appContext.packageManager.getApplicationInfo(
-            appContext.packageName, PackageManager.GET_META_DATA)
-    val metaData = appInfo.metaData
-
-    metaData.getString("stadiaApiKey")!!
-  }
+  //
+  // NOTE: Don't set this directly in source code. Add a line to your local.properties file:
+  // stadiaApiKey=YOUR-API-KEY
+  val stadiaApiKey = BuildConfig.stadiaApiKey
 
   val mapStyleUrl: String by lazy {
     "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
