@@ -22,7 +22,8 @@ let instructionContent = VisualInstructionContent(
     text: "Sail straight",
     maneuverType: .depart,
     maneuverModifier: .straight,
-    roundaboutExitDegrees: nil
+    roundaboutExitDegrees: nil,
+    laneInfo: nil
 )
 let mockRoute = Route(
     geometry: mockGeom,
@@ -38,6 +39,7 @@ let mockRoute = Route(
         visualInstructions: [VisualInstruction(
             primaryContent: instructionContent,
             secondaryContent: nil,
+            subContent: nil,
             triggerDistanceBeforeManeuver: 42
         )],
         spokenInstructions: [],

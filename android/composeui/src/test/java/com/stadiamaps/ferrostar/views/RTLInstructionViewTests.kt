@@ -29,8 +29,10 @@ class RTLInstructionViewTests {
                     text = "ادمج يسارًا",
                     maneuverType = ManeuverType.TURN,
                     maneuverModifier = ManeuverModifier.LEFT,
-                    roundaboutExitDegrees = null),
+                    roundaboutExitDegrees = null,
+                    laneInfo = null),
             secondaryContent = null,
+            subContent = null,
             triggerDistanceBeforeManeuver = 42.0)
 
     paparazzi.snapshot {
