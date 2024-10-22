@@ -31,7 +31,7 @@ data class NavigationUiState(
      */
     val heading: Float?,
     /** The geometry of the full route. */
-    val routeGeometry: List<GeographicCoordinate>,
+    val routeGeometry: List<GeographicCoordinate>?,
     /** Visual instructions which should be displayed based on the user's current progress. */
     val visualInstruction: VisualInstruction?,
     /**
@@ -76,6 +76,11 @@ interface NavigationViewModel {
   fun toggleMute()
 
   fun stopNavigation()
+
+  fun isNavigating(): Boolean = uiState.value.progress != null
+
+  // TODO: We think the camera may eventually need to be owned by the view model, but that's going
+  // to be a very big refactor (maybe even crossing into the MapLibre Compose project)
 }
 
 class DefaultNavigationViewModel(

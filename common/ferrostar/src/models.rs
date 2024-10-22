@@ -437,6 +437,7 @@ pub enum ManeuverType {
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverModifier {
+    #[serde(rename = "uturn")]
     UTurn,
     #[serde(rename = "sharp right")]
     SharpRight,

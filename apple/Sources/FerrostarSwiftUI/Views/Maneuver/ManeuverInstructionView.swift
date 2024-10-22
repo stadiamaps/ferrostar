@@ -94,6 +94,17 @@ public struct ManeuverInstructionView<ManeuverView: View>: View {
         .font(.body)
         .foregroundColor(.blue)
 
+        ManeuverInstructionView(
+            text: "Make a legal u-turn",
+            distanceFormatter: MKDistanceFormatter(),
+            distanceToNextManeuver: 152.4
+        ) {
+            ManeuverImage(maneuverType: .turn, maneuverModifier: .uTurn)
+                .frame(width: 24)
+        }
+        .font(.body)
+        .foregroundColor(.blue)
+
         // Demonstrate a Right to Left
         ManeuverInstructionView(
             text: "ادمج يسارًا",

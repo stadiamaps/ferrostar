@@ -2,6 +2,7 @@ package com.stadiamaps.ferrostar.maplibreui.views
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
@@ -46,7 +47,10 @@ import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOver
  *   route line.
  * @param config The configuration for the navigation view.
  * @param onTapExit The callback to invoke when the exit button is tapped.
- * @param content Any additional composable map symbol content to render.
+ * @param userContent Any composable with additional content to render. The most common use of this
+ *   parameter is to display custom UI when there is no navigation in progress. See the demo app for
+ *   an example that adds a search box.
+ * @param mapContent Any additional composable map symbol content to render.
  */
 @Composable
 fun DynamicallyOrientingNavigationView(
@@ -60,7 +64,8 @@ fun DynamicallyOrientingNavigationView(
     snapUserLocationToRoute: Boolean = true,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     onTapExit: (() -> Unit)? = null,
-    content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
+    userContent: @Composable (BoxScope.(Modifier) -> Unit)? = null,
+    mapContent: @Composable @MapLibreComposable ((State<NavigationUiState>) -> Unit)? = null,
 ) {
   val orientation = LocalConfiguration.current.orientation
 
@@ -83,27 +88,38 @@ fun DynamicallyOrientingNavigationView(
         mapControls,
         locationRequestProperties,
         snapUserLocationToRoute,
-        onMapReadyCallback = { camera.value = navigationCamera },
-        content)
+        onMapReadyCallback = {
+          if (viewModel.isNavigating()) {
+            camera.value = navigationCamera
+          }
+        },
+        mapContent)
 
-    when (orientation) {
-      Configuration.ORIENTATION_LANDSCAPE -> {
-        LandscapeNavigationOverlayView(
-            modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
-            camera = camera,
-            viewModel = viewModel,
-            config = config,
-            onTapExit = onTapExit)
+    if (viewModel.isNavigating()) {
+      when (orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> {
+          LandscapeNavigationOverlayView(
+              modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+              camera = camera,
+              viewModel = viewModel,
+              config = config,
+              onTapExit = onTapExit)
+        }
+
+        else -> {
+          PortraitNavigationOverlayView(
+              modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+              camera = camera,
+              viewModel = viewModel,
+              config = config,
+              arrivalViewSize = rememberArrivalViewSize,
+              onTapExit = onTapExit)
+        }
       }
-      else -> {
-        PortraitNavigationOverlayView(
-            modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
-            camera = camera,
-            viewModel = viewModel,
-            config = config,
-            arrivalViewSize = rememberArrivalViewSize,
-            onTapExit = onTapExit)
-      }
+    }
+
+    if (userContent != null) {
+      userContent(Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
     }
   }
 }
