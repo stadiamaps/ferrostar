@@ -1720,12 +1720,14 @@ public func FfiConverterTypeHeading_lower(_ value: Heading) -> RustBuffer {
 public struct LaneInfo {
     public var active: Bool
     public var directions: [String]
+    public var activeDirection: String?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(active: Bool, directions: [String]) {
+    public init(active: Bool, directions: [String], activeDirection: String?) {
         self.active = active
         self.directions = directions
+        self.activeDirection = activeDirection
     }
 }
 
@@ -1737,12 +1739,16 @@ extension LaneInfo: Equatable, Hashable {
         if lhs.directions != rhs.directions {
             return false
         }
+        if lhs.activeDirection != rhs.activeDirection {
+            return false
+        }
         return true
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(active)
         hasher.combine(directions)
+        hasher.combine(activeDirection)
     }
 }
 
@@ -1750,13 +1756,15 @@ public struct FfiConverterTypeLaneInfo: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LaneInfo {
         try LaneInfo(
             active: FfiConverterBool.read(from: &buf),
-            directions: FfiConverterSequenceString.read(from: &buf)
+            directions: FfiConverterSequenceString.read(from: &buf),
+            activeDirection: FfiConverterOptionString.read(from: &buf)
         )
     }
 
     public static func write(_ value: LaneInfo, into buf: inout [UInt8]) {
         FfiConverterBool.write(value.active, into: &buf)
         FfiConverterSequenceString.write(value.directions, into: &buf)
+        FfiConverterOptionString.write(value.activeDirection, into: &buf)
     }
 }
 
@@ -2620,6 +2628,9 @@ public struct VisualInstructionContent {
      * would be an exit angle of 180 degrees.
      */
     public var roundaboutExitDegrees: UInt16?
+    /**
+     * Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
+     */
     public var laneInfo: [LaneInfo]?
 
     // Default memberwise initializers are never public by default, so we
@@ -2640,7 +2651,10 @@ public struct VisualInstructionContent {
             * For example, entering and exiting the roundabout in the same direction of travel
             * (as if you had gone straight, apart from the detour)
             * would be an exit angle of 180 degrees.
-            */ roundaboutExitDegrees: UInt16?, laneInfo: [LaneInfo]?
+            */ roundaboutExitDegrees: UInt16?,
+        /**
+            * Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
+            */ laneInfo: [LaneInfo]?
     ) {
         self.text = text
         self.maneuverType = maneuverType

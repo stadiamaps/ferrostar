@@ -50,6 +50,8 @@ export class InstructionsView extends LitElement {
   }
 
   render() {
+    // Note - lane information is currently not displayed, even if it is
+    // available.
     if (this.tripState?.Navigating) {
       return html`
         <div class="instructions-view-card">

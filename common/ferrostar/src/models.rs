@@ -461,6 +461,7 @@ pub enum ManeuverModifier {
 pub struct LaneInfo {
     pub active: bool,
     pub directions: Vec<String>,
+    pub active_direction: Option<String>,
 }
 
 /// The content of a visual instruction.
@@ -483,6 +484,7 @@ pub struct VisualInstructionContent {
     /// (as if you had gone straight, apart from the detour)
     /// would be an exit angle of 180 degrees.
     pub roundabout_exit_degrees: Option<u16>,
+    /// Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
     pub lane_info: Option<Vec<LaneInfo>>,
 }
 

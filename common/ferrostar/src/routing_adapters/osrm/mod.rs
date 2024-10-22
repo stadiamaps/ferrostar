@@ -185,6 +185,7 @@ impl RouteStep {
                             .map(|component| LaneInfo {
                                 active: component.active.unwrap_or(false),
                                 directions: component.directions.clone().unwrap_or_default(),
+                                active_direction: component.active_direction.clone(),
                             })
                             .collect();
 
