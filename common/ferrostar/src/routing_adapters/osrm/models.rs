@@ -517,6 +517,21 @@ mod tests {
         assert_eq!(secondary.text, "Baltimore / Northern Virginia");
         assert_eq!(secondary.maneuver_type, Some(ManeuverType::Turn));
         assert_eq!(secondary.maneuver_modifier, Some(ManeuverModifier::Left));
+
+        let submaneuver = instruction.sub.expect("Expected submaneuver content");
+        assert_eq!(submaneuver.components.len(), 3);
+        assert_eq!(
+            submaneuver.components[0].directions,
+            Some(vec!["left".to_string()])
+        );
+        assert_eq!(
+            submaneuver.components[1].directions,
+            Some(vec!["left".to_string(), "straight".to_string()])
+        );
+        assert_eq!(
+            submaneuver.components[2].directions,
+            Some(vec!["right".to_string()])
+        );
     }
 
     #[test]
