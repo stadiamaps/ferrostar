@@ -469,3 +469,4 @@ expression: routes
           trigger_distance_before_maneuver: 0
       spoken_instructions: []
       annotations: redacted annotations json strings vec
+  congestion_segments: []
