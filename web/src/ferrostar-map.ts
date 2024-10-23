@@ -390,7 +390,9 @@ export class FerrostarMap extends LitElement {
       <div id="map">
         <instructions-view .tripState=${this._tripState}></instructions-view>
         <div id="bottom-component">
-          <trip-progress-view .tripState=${this._tripState}></trip-progress-view>
+          <trip-progress-view
+            .tripState=${this._tripState}
+          ></trip-progress-view>
           <button
             id="stop-button"
             @click=${this.stopNavigation}
