@@ -49,13 +49,14 @@ fun TripState.deviation() =
  */
 fun TripState.currentRoadName() =
     when (this) {
-      is TripState.Navigating -> this.remainingSteps.firstOrNull()?.roadName.let {
-        if (it.isNullOrBlank()) {
-          null
-        } else {
-          it
-        }
-      }
+      is TripState.Navigating ->
+          this.remainingSteps.firstOrNull()?.roadName.let {
+            if (it.isNullOrBlank()) {
+              null
+            } else {
+              it
+            }
+          }
       is TripState.Complete,
       TripState.Idle -> null
     }
