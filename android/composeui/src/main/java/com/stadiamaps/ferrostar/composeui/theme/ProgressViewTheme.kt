@@ -6,17 +6,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 
-enum class ArrivalViewStyle {
-  /** A simple arrival view with only values. */
+enum class ProgressViewStyle {
+  /** A simple progress view with only values. */
   SIMPLIFIED,
-  /** An arrival view with label captions in addition to values. */
+  /** An progress view with label captions in addition to values. */
   INFORMATIONAL
 }
 
-/** Themes for arrival view components */
-interface ArrivalViewTheme {
+/** Themes for progress view components */
+interface ProgressViewTheme {
   /** The text style for the step distance (or distance to step). */
-  @get:Composable val style: ArrivalViewStyle
+  @get:Composable val style: ProgressViewStyle
   /** The text style for the measurement/value. */
   @get:Composable val measurementTextStyle: TextStyle
   /** The text style for the secondary content (label caption). */
@@ -29,9 +29,9 @@ interface ArrivalViewTheme {
   @get:Composable val backgroundColor: Color
 }
 
-object DefaultArrivalViewTheme : ArrivalViewTheme {
-  override val style: ArrivalViewStyle
-    @Composable get() = ArrivalViewStyle.SIMPLIFIED
+object DefaultProgressViewTheme : ProgressViewTheme {
+  override val style: ProgressViewStyle
+    @Composable get() = ProgressViewStyle.SIMPLIFIED
 
   override val measurementTextStyle: TextStyle
     @Composable

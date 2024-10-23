@@ -29,7 +29,7 @@ import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
-import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForArrivalViewHeight
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.PortraitNavigationOverlayView
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -69,12 +69,12 @@ fun PortraitNavigationView(
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()
 
-  // Maintain the actual size of the arrival view for MapControl layout purposes.
-  val rememberArrivalViewSize = remember { mutableStateOf(DpSize.Zero) }
-  val arrivalViewSize by rememberArrivalViewSize
+  // Maintain the actual size of the progress view for MapControl layout purposes.
+  val rememberProgressViewSize = remember { mutableStateOf(DpSize.Zero) }
+  val progressViewSize by rememberProgressViewSize
 
-  // Get the map control positioning based on the arrival view.
-  val mapControls = rememberMapControlsForArrivalViewHeight(arrivalViewSize.height)
+  // Get the map control positioning based on the progress view.
+  val mapControls = rememberMapControlsForProgressViewHeight(progressViewSize.height)
 
   Box(modifier) {
     NavigationMapView(
@@ -93,7 +93,7 @@ fun PortraitNavigationView(
         config = config,
         camera = camera,
         viewModel = viewModel,
-        arrivalViewSize = rememberArrivalViewSize,
+        progressViewSize = rememberProgressViewSize,
         onTapExit = onTapExit)
   }
 }

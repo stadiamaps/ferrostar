@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.maplibre.compose.camera.MapViewCamera
@@ -25,7 +24,7 @@ import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
-import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForArrivalViewHeight
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.views.overlays.LandscapeNavigationOverlayView
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -66,7 +65,7 @@ fun LandscapeNavigationView(
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()
 
-  val mapControls = rememberMapControlsForArrivalViewHeight()
+  val mapControls = rememberMapControlsForProgressViewHeight()
 
   Box(modifier) {
     NavigationMapView(
