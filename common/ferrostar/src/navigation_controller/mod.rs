@@ -76,7 +76,7 @@ impl NavigationController {
         TripState::Navigating {
             current_step_geometry_index,
             snapped_user_location,
-            remaining_steps: remaining_steps.clone(),
+            remaining_steps,
             // Skip the first waypoint, as it is the current one
             remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
             progress,
@@ -156,7 +156,7 @@ impl NavigationController {
                         TripState::Navigating {
                             current_step_geometry_index: *current_step_geometry_index,
                             snapped_user_location: *snapped_user_location,
-                            remaining_steps: remaining_steps.clone(),
+                            remaining_steps,
                             remaining_waypoints,
                             progress,
                             // NOTE: We *can't* run deviation calculations in this method,
@@ -273,7 +273,7 @@ impl NavigationController {
                         TripState::Navigating {
                             current_step_geometry_index,
                             snapped_user_location,
-                            remaining_steps: remaining_steps.clone(),
+                            remaining_steps,
                             remaining_waypoints,
                             progress,
                             deviation,
