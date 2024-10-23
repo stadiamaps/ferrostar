@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.core
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stadiamaps.ferrostar.core.extensions.currentRoadName
 import com.stadiamaps.ferrostar.core.extensions.deviation
 import com.stadiamaps.ferrostar.core.extensions.progress
 import com.stadiamaps.ferrostar.core.extensions.visualInstruction
@@ -46,7 +47,9 @@ data class NavigationUiState(
     /** Describes whether the user is believed to be off the correct route. */
     val routeDeviation: RouteDeviation?,
     /** If true, spoken instructions will not be synthesized. */
-    val isMuted: Boolean?
+    val isMuted: Boolean?,
+    /** The name of the road which the current route step is traversing. */
+    val currentStepRoadName: String?
 ) {
   companion object {
     fun fromFerrostar(
@@ -66,7 +69,8 @@ data class NavigationUiState(
             progress = coreState.tripState.progress(),
             isCalculatingNewRoute = coreState.isCalculatingNewRoute,
             routeDeviation = coreState.tripState.deviation(),
-            isMuted = isMuted)
+            isMuted = isMuted,
+            currentStepRoadName = coreState.tripState.currentRoadName())
   }
 }
 
@@ -128,6 +132,8 @@ class DefaultNavigationViewModel(
     spokenInstructionObserver.isMuted = !spokenInstructionObserver.isMuted
   }
 
+  // TODO: We can add a hook here to override the current road name.
+  // Eventually someone will probably want local map matching, vector tile inspection.
   private fun uiState(
       coreState: NavigationState,
       isMuted: Boolean?,

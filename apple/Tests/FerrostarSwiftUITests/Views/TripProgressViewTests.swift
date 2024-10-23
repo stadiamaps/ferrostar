@@ -2,20 +2,20 @@ import XCTest
 @testable import FerrostarCoreFFI
 @testable import FerrostarSwiftUI
 
-final class ArrivalViewWithButtonTests: XCTestCase {
+final class TripProgressViewTests: XCTestCase {
     let formatterCollection = TestingFormatterCollection()
 
     let referenceDate = Date(timeIntervalSince1970: 1_718_065_239)
 
-    var informationalTheme: any ArrivalViewTheme {
-        var theme = DefaultArrivalViewTheme()
+    var informationalTheme: any TripProgressViewTheme {
+        var theme = DefaultTripProgressViewTheme()
         theme.style = .informational
         return theme
     }
 
-    func testArrivalViewDefaultTheme() {
+    func testTripProgressViewDefaultTheme() {
         assertView {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
                     distanceRemaining: 120,
@@ -23,13 +23,12 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
 
         assertView {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
@@ -37,15 +36,14 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
     }
 
-    func testArrivalViewCompactTheme() {
+    func testTripProgressViewCompactTheme() {
         assertView {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
@@ -54,15 +52,14 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 theme: informationalTheme,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
     }
 
-    func testArrivalViewFormatters() {
+    func testTripProgressViewFormatters() {
         assertView {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
@@ -71,15 +68,14 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 durationFormatter: longDurationFormatter,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
     }
 
-    func testArrivalViewFormatters_de_DE() {
+    func testTripProgressViewFormatters_de_DE() {
         assertView(navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))) {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
                     distanceRemaining: 14500,
@@ -87,13 +83,12 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
 
         assertView(navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))) {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
@@ -102,17 +97,16 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
                 theme: informationalTheme,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
     }
 
     // MARK: Dark Mode
 
-    func testArrivalViewDefaultTheme_darkMode() {
+    func testTripProgressViewDefaultTheme_darkMode() {
         assertView(colorScheme: .dark) {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
                     distanceRemaining: 120,
@@ -120,13 +114,12 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
 
         assertView(colorScheme: .dark) {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
@@ -134,15 +127,14 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
     }
 
-    func testArrivalViewCompactTheme_darkMode() {
+    func testTripProgressViewCompactTheme_darkMode() {
         assertView(colorScheme: .dark) {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
@@ -151,15 +143,14 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 distanceFormatter: formatterCollection.distanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 theme: informationalTheme,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
     }
 
-    func testArrivalViewFormatters_darkMode() {
+    func testTripProgressViewFormatters_darkMode() {
         assertView(colorScheme: .dark) {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
@@ -168,18 +159,17 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: formatterCollection.estimatedArrivalFormatter,
                 durationFormatter: longDurationFormatter,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
     }
 
-    func testArrivalViewFormatters_de_DE_darkMode() {
+    func testTripProgressViewFormatters_de_DE_darkMode() {
         assertView(
             colorScheme: .dark,
             navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))
         ) {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 123,
                     distanceRemaining: 14500,
@@ -187,8 +177,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 ),
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
 
@@ -196,7 +185,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
             colorScheme: .dark,
             navigationFormatterCollection: TestingFormatterCollection().locale(Locale(identifier: "de_DE"))
         ) {
-            ArrivalView(
+            TripProgressView(
                 progress: TripProgress(
                     distanceToNextManeuver: 5420,
                     distanceRemaining: 1_420_000,
@@ -205,8 +194,7 @@ final class ArrivalViewWithButtonTests: XCTestCase {
                 distanceFormatter: germanDistanceFormatter,
                 estimatedArrivalFormatter: germanArrivalFormatter,
                 theme: informationalTheme,
-                fromDate: referenceDate,
-                onTapExit: {}
+                fromDate: referenceDate
             )
         }
     }

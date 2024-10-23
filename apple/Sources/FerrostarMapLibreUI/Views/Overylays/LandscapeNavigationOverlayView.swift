@@ -54,7 +54,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     if case .navigating = navigationState?.tripState,
                        let progress = navigationState?.currentProgress
                     {
-                        ArrivalView(
+                        TripProgressView(
                             progress: progress,
                             onTapExit: onTapExit
                         )

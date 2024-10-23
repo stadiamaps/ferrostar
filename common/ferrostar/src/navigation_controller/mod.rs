@@ -14,6 +14,7 @@ use crate::{
 };
 use geo::{HaversineDistance, LineString, Point};
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
+use std::clone::Clone;
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
@@ -155,7 +156,7 @@ impl NavigationController {
                         TripState::Navigating {
                             current_step_geometry_index: *current_step_geometry_index,
                             snapped_user_location: *snapped_user_location,
-                            remaining_steps,
+                            remaining_steps: remaining_steps.clone(),
                             remaining_waypoints,
                             progress,
                             // NOTE: We *can't* run deviation calculations in this method,
@@ -272,7 +273,7 @@ impl NavigationController {
                         TripState::Navigating {
                             current_step_geometry_index,
                             snapped_user_location,
-                            remaining_steps,
+                            remaining_steps: remaining_steps.clone(),
                             remaining_waypoints,
                             progress,
                             deviation,

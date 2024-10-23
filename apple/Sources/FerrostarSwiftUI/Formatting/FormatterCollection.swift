@@ -6,13 +6,13 @@ import Foundation
 /// control over specific views, it's best to modify these directly using
 /// the formatter inputs and your own UI wrappers.
 public protocol FormatterCollection: AnyObject {
-    /// The core distance formatter. This is used in views like the instructions banner and arrival view.
+    /// The core distance formatter. This is used in views like the instructions banner and trip progress view.
     var distanceFormatter: Formatter { get }
 
-    /// The estimated arrival time formatter. This is used by the arrival view.
+    /// The estimated arrival time formatter. This is used by the trip progress view.
     var estimatedArrivalFormatter: Date.FormatStyle { get }
 
-    /// The duration formatter. This is used by the arrival view.
+    /// The duration formatter. This is used by the trip progress view.
     var durationFormatter: DateComponentsFormatter { get }
 
     /// The speed value formatter is a number formatter that simply formats decimals

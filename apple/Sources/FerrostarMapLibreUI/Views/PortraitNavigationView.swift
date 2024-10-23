@@ -29,7 +29,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     var onTapExit: (() -> Void)?
 
     /// Create a portrait navigation view. This view is optimized for display on a portrait screen where the
-    /// instructions and arrival view are on the top and bottom of the screen.
+    /// instructions and trip progress view are on the top and bottom of the screen.
     /// The user puck and route are optimized for the center of the screen.
     ///
     /// - Parameters:
@@ -39,7 +39,8 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     /// on user button it tapped.
     ///   - navigationState: The current ferrostar navigation state provided by the Ferrostar core.
     ///   - minimumSafeAreaInsets: The minimum padding to apply from safe edges. See `complementSafeAreaInsets`.
-    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the
+    ///   - onTapExit: An optional behavior to run when the ``TripProgressView`` exit button is tapped. When nil
+    /// (default) the
     /// exit button is hidden.
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(

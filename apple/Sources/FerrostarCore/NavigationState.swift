@@ -22,7 +22,7 @@ public struct NavigationState: Hashable {
     }
 
     public var currentProgress: TripProgress? {
-        guard case let .navigating(_, _, _, _, progress: progress, _, _,
+        guard case let .navigating(_, _, _, _, progress, _, _,
                                    _, _) = tripState
         else {
             return nil
@@ -32,7 +32,7 @@ public struct NavigationState: Hashable {
     }
 
     public var currentVisualInstruction: VisualInstruction? {
-        guard case let .navigating(_, _, _, _, _, _, visualInstruction: visualInstruction, _, _) = tripState else {
+        guard case let .navigating(_, _, _, _, _, _, visualInstruction, _, _) = tripState else {
             return nil
         }
 
@@ -40,7 +40,7 @@ public struct NavigationState: Hashable {
     }
 
     public var remainingSteps: [RouteStep]? {
-        guard case let .navigating(_, _, remainingSteps: remainingSteps, _, _, _, _, _, _) = tripState else {
+        guard case let .navigating(_, _, remainingSteps, _, _, _, _, _, _) = tripState else {
             return nil
         }
 
@@ -48,10 +48,24 @@ public struct NavigationState: Hashable {
     }
 
     public var currentAnnotationJSON: String? {
-        guard case let .navigating(_, _, _, _, _, _, _, _, annotationJson: annotationJson) = tripState else {
+        guard case let .navigating(_, _, _, _, _, _, _, _, annotationJson) = tripState else {
             return nil
         }
 
         return annotationJson
+    }
+
+    public var currentRoadName: String? {
+        guard case let .navigating(_, _, remainingSteps, _, _, _, _, _, _) = tripState else {
+            return nil
+        }
+
+        let roadName = remainingSteps.first?.roadName?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if roadName?.isEmpty == true {
+            return nil
+        } else {
+            return roadName
+        }
     }
 }

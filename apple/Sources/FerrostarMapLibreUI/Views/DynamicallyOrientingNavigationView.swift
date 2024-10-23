@@ -38,7 +38,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     /// on user button it tapped.
     ///   - navigationState: The current ferrostar navigation state provided by the Ferrostar core.
     ///   - minimumSafeAreaInsets: The minimum padding to apply from safe edges. See `complementSafeAreaInsets`.
-    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the
+    ///   - onTapExit: An optional behavior to run when the ``TripProgressView`` exit button is tapped. When nil
+    /// (default) the
     /// exit button is hidden.
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(

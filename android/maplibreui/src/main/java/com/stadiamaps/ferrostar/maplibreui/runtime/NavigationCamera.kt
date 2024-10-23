@@ -32,7 +32,7 @@ fun navigationMapViewCamera(
   val screenOrientation = LocalConfiguration.current.orientation
   val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 0.5f else 0.0f
 
-  val cameraPadding = cameraPaddingFractionOfScreen(start = start, top = 0.6f)
+  val cameraPadding = cameraPaddingFractionOfScreen(start = start, top = 0.5f)
 
   return MapViewCamera.TrackingUserLocationWithBearing(
       zoom = activity.zoom, pitch = activity.pitch, padding = cameraPadding)

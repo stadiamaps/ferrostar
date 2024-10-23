@@ -60,8 +60,12 @@ fun LandscapeNavigationOverlayView(
       uiState.progress?.let { progress ->
         TripProgressView(
             progress = progress,
-            // TODO: currentRoadName = if (cameraIsTrackingLocation) { uiState.currentRoadName }
-            // else { null }
+            currentRoadName =
+                if (cameraIsTrackingLocation) {
+                  uiState.currentStepRoadName
+                } else {
+                  null
+                },
             currentRoadNameView = currentRoadNameView,
             onTapExit = onTapExit)
       }
