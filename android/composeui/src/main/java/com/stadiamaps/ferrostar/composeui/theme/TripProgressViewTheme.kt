@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 
-enum class ProgressViewStyle {
+enum class TripProgressViewStyle {
   /** A simple progress view with only values. */
   SIMPLIFIED,
   /** An progress view with label captions in addition to values. */
@@ -14,9 +14,9 @@ enum class ProgressViewStyle {
 }
 
 /** Themes for progress view components */
-interface ProgressViewTheme {
+interface TripProgressViewTheme {
   /** The text style for the step distance (or distance to step). */
-  @get:Composable val style: ProgressViewStyle
+  @get:Composable val style: TripProgressViewStyle
   /** The text style for the measurement/value. */
   @get:Composable val measurementTextStyle: TextStyle
   /** The text style for the secondary content (label caption). */
@@ -29,9 +29,9 @@ interface ProgressViewTheme {
   @get:Composable val backgroundColor: Color
 }
 
-object DefaultProgressViewTheme : ProgressViewTheme {
-  override val style: ProgressViewStyle
-    @Composable get() = ProgressViewStyle.SIMPLIFIED
+object DefaultTripProgressViewTheme : TripProgressViewTheme {
+  override val style: TripProgressViewStyle
+    @Composable get() = TripProgressViewStyle.SIMPLIFIED
 
   override val measurementTextStyle: TextStyle
     @Composable

@@ -21,7 +21,7 @@ import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
-import com.stadiamaps.ferrostar.composeui.views.ProgressView
+import com.stadiamaps.ferrostar.composeui.views.TripProgressView
 import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -58,7 +58,7 @@ fun LandscapeNavigationOverlayView(
       Spacer(modifier = Modifier.weight(1f))
 
       uiState.progress?.let { progress ->
-        ProgressView(
+        TripProgressView(
             progress = progress,
             // TODO: currentRoadName = if (cameraIsTrackingLocation) { uiState.currentRoadName }
             // else { null }

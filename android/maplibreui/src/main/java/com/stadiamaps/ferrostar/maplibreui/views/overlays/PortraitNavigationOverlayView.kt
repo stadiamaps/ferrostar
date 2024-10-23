@@ -23,7 +23,7 @@ import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
-import com.stadiamaps.ferrostar.composeui.views.ProgressView
+import com.stadiamaps.ferrostar.composeui.views.TripProgressView
 import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -72,7 +72,7 @@ fun PortraitNavigationOverlayView(
     )
 
     uiState.progress?.let { progress ->
-      ProgressView(
+      TripProgressView(
           modifier =
               Modifier.onSizeChanged {
                 progressViewSize.value = density.run { DpSize(it.width.toDp(), it.height.toDp()) }

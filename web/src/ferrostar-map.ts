@@ -13,7 +13,7 @@ import {
   TripState,
 } from "@stadiamaps/ferrostar";
 import "./instructions-view";
-import "./progress-view";
+import "./trip-progress-view";
 import { SimulatedLocationProvider } from "./location";
 import CloseSvg from "./assets/directions/close.svg";
 
@@ -390,7 +390,7 @@ export class FerrostarMap extends LitElement {
       <div id="map">
         <instructions-view .tripState=${this._tripState}></instructions-view>
         <div id="bottom-component">
-          <progress-view .tripState=${this._tripState}></progress-view>
+          <trip-progress-view .tripState=${this._tripState}></trip-progress-view>
           <button
             id="stop-button"
             @click=${this.stopNavigation}

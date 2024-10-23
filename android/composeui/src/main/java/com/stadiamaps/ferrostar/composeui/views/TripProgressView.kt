@@ -37,9 +37,9 @@ import com.stadiamaps.ferrostar.composeui.formatting.DurationFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.EstimatedArrivalDateTimeFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDurationFormatter
-import com.stadiamaps.ferrostar.composeui.theme.DefaultProgressViewTheme
-import com.stadiamaps.ferrostar.composeui.theme.ProgressViewStyle
-import com.stadiamaps.ferrostar.composeui.theme.ProgressViewTheme
+import com.stadiamaps.ferrostar.composeui.theme.DefaultTripProgressViewTheme
+import com.stadiamaps.ferrostar.composeui.theme.TripProgressViewStyle
+import com.stadiamaps.ferrostar.composeui.theme.TripProgressViewTheme
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -65,9 +65,9 @@ import uniffi.ferrostar.TripProgress
  *   button is not displayed.
  */
 @Composable
-fun ProgressView(
+fun TripProgressView(
     modifier: Modifier = Modifier,
-    theme: ProgressViewTheme = DefaultProgressViewTheme,
+    theme: TripProgressViewTheme = DefaultTripProgressViewTheme,
     estimatedArrivalFormatter: DateTimeFormatter = EstimatedArrivalDateTimeFormatter(),
     distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
     durationFormatter: DurationFormatter = LocalizedDurationFormatter(),
@@ -96,7 +96,7 @@ fun ProgressView(
                           estimatedArrivalFormatter.format(
                               progress.estimatedArrivalTime(fromDate, timeZone)),
                       style = theme.measurementTextStyle)
-                  if (theme.style == ProgressViewStyle.INFORMATIONAL) {
+                  if (theme.style == TripProgressViewStyle.INFORMATIONAL) {
                     Text(
                         text = stringResource(id = R.string.arrival),
                         style = theme.secondaryTextStyle)
@@ -109,7 +109,7 @@ fun ProgressView(
                   Text(
                       text = durationFormatter.format(progress.durationRemaining),
                       style = theme.measurementTextStyle)
-                  if (theme.style == ProgressViewStyle.INFORMATIONAL) {
+                  if (theme.style == TripProgressViewStyle.INFORMATIONAL) {
                     Text(
                         text = stringResource(id = R.string.duration),
                         style = theme.secondaryTextStyle)
@@ -122,7 +122,7 @@ fun ProgressView(
                   Text(
                       text = distanceFormatter.format(progress.distanceRemaining),
                       style = theme.measurementTextStyle)
-                  if (theme.style == ProgressViewStyle.INFORMATIONAL) {
+                  if (theme.style == TripProgressViewStyle.INFORMATIONAL) {
                     Text(
                         text = stringResource(id = R.string.distance),
                         style = theme.secondaryTextStyle)
@@ -152,7 +152,7 @@ fun ProgressView(
 @Preview
 @Composable
 fun ProgressViewPreview() {
-  ProgressView(
+  TripProgressView(
       progress =
           TripProgress(
               distanceRemaining = 124252.0,
@@ -170,9 +170,9 @@ fun ProgressViewInformationalPreview() {
           distanceRemaining = 1000.0, durationRemaining = 1000.0, distanceToNextManeuver = 500.0)
 
   val theme =
-      object : ProgressViewTheme {
-        override val style: ProgressViewStyle
-          @Composable get() = ProgressViewStyle.INFORMATIONAL
+      object : TripProgressViewTheme {
+        override val style: TripProgressViewStyle
+          @Composable get() = TripProgressViewStyle.INFORMATIONAL
 
         override val measurementTextStyle: TextStyle
           @Composable
@@ -196,7 +196,7 @@ fun ProgressViewInformationalPreview() {
           @Composable get() = MaterialTheme.colorScheme.background
       }
 
-  ProgressView(
+  TripProgressView(
       progress = progress,
       theme = theme,
       fromDate = Instant.fromEpochSeconds(1720283624),
@@ -212,7 +212,7 @@ fun ProgressViewWithExitPreview() {
           durationRemaining = 52012.0,
           distanceToNextManeuver = 500.0)
 
-  ProgressView(
+  TripProgressView(
       progress = progress,
       fromDate = Instant.fromEpochSeconds(1720283624),
       timeZone = TimeZone.of("America/Los_Angeles"),
@@ -231,7 +231,7 @@ fun ProgressView24HourPreview() {
           durationRemaining = 52012.0,
           distanceToNextManeuver = 500.0)
 
-  ProgressView(
+  TripProgressView(
       progress = progress,
       estimatedArrivalFormatter = estimatedArrivalFormatter,
       fromDate = Instant.fromEpochSeconds(1720283624),
@@ -248,7 +248,7 @@ fun ProgressViewWithExitAndRoadNamePreview() {
           durationRemaining = 52012.0,
           distanceToNextManeuver = 500.0)
 
-  ProgressView(
+  TripProgressView(
       progress = progress,
       fromDate = Instant.fromEpochSeconds(1720283624),
       timeZone = TimeZone.of("America/Los_Angeles"),

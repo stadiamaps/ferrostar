@@ -1,10 +1,10 @@
 package com.stadiamaps.ferrostar.views
 
-import com.stadiamaps.ferrostar.composeui.views.ProgressView
 import com.stadiamaps.ferrostar.composeui.views.ProgressView24HourPreview
 import com.stadiamaps.ferrostar.composeui.views.ProgressViewInformationalPreview
 import com.stadiamaps.ferrostar.composeui.views.ProgressViewWithExitAndRoadNamePreview
 import com.stadiamaps.ferrostar.composeui.views.ProgressViewWithExitPreview
+import com.stadiamaps.ferrostar.composeui.views.TripProgressView
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import kotlinx.datetime.Instant
@@ -13,7 +13,7 @@ import org.junit.Rule
 import org.junit.Test
 import uniffi.ferrostar.TripProgress
 
-class ProgressViewTest {
+class TripProgressViewTest {
 
   @get:Rule val paparazzi = paparazziDefault()
 
@@ -21,7 +21,7 @@ class ProgressViewTest {
   fun testProgressView() {
     paparazzi.snapshot {
       withSnapshotBackground {
-        ProgressView(
+        TripProgressView(
             progress =
                 TripProgress(
                     distanceRemaining = 124252.0,

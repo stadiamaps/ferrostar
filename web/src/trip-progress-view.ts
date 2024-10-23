@@ -5,8 +5,8 @@ function roundToNearest(value: number, unit: number): number {
   return Math.round(value / unit) * unit;
 }
 
-@customElement("progress-view")
-export class ProgressView extends LitElement {
+@customElement("trip-progress-view")
+export class TripProgressView extends LitElement {
   @property()
   tripState: any = null;
 
