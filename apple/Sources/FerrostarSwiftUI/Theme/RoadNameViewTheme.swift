@@ -15,7 +15,7 @@ public protocol RoadNameViewTheme: Equatable {
 }
 
 public struct DefaultRoadNameViewTheme: RoadNameViewTheme {
-    public var textColor: Color = .init(.lightText)
+    public var textColor: Color = .init(.white)
     public var textFont: Font = .callout.bold()
     public var backgroundColor: Color = .init(.systemBlue)
     public var borderColor: Color = .white
