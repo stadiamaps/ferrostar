@@ -15,6 +15,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    let currentRoadNameViewBuilder: (String?) -> AnyView
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -49,7 +50,10 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         navigationState: NavigationState?,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapExit: (() -> Void)? = nil,
-        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
+        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
+        @ViewBuilder currentRoadNameViewBuilder: @escaping (String?) -> AnyView = { name in
+            AnyView(CurrentRoadNameView(currentRoadName: name, theme: DefaultRoadNameViewTheme()))
+        }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
@@ -60,6 +64,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
         _camera = camera
         self.navigationCamera = navigationCamera
+        self.currentRoadNameViewBuilder = currentRoadNameViewBuilder
     }
 
     public var body: some View {
@@ -90,7 +95,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
-                        onTapExit: onTapExit
+                        onTapExit: onTapExit,
+                        currentRoadNameViewBuilder: currentRoadNameViewBuilder
                     )
                     .innerGrid {
                         topCenter?()
@@ -110,7 +116,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
-                        onTapExit: onTapExit
+                        onTapExit: onTapExit,
+                        currentRoadNameViewBuilder: currentRoadNameViewBuilder
                     )
                     .innerGrid {
                         topCenter?()

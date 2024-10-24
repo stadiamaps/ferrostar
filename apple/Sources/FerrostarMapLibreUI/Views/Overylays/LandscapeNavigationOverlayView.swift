@@ -25,6 +25,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var showCentering: Bool
     var onCenter: () -> Void
     var onTapExit: (() -> Void)?
+    let currentRoadNameView: AnyView
 
     init(
         navigationState: NavigationState?,
@@ -34,7 +35,10 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        onTapExit: (() -> Void)? = nil
+        onTapExit: (() -> Void)? = nil,
+        @ViewBuilder currentRoadNameViewBuilder: (String?) -> AnyView = { name in
+            AnyView(CurrentRoadNameView(currentRoadName: name, theme: DefaultRoadNameViewTheme()))
+        }
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
@@ -44,6 +48,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.showCentering = showCentering
         self.onCenter = onCenter
         self.onTapExit = onTapExit
+        currentRoadNameView = currentRoadNameViewBuilder(navigationState?.currentRoadName)
     }
 
     var body: some View {
@@ -54,10 +59,17 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     if case .navigating = navigationState?.tripState,
                        let progress = navigationState?.currentProgress
                     {
-                        TripProgressView(
-                            progress: progress,
-                            onTapExit: onTapExit
-                        )
+                        HStack {
+                            TripProgressView(
+                                progress: progress,
+                                onTapExit: onTapExit
+                            )
+
+                            // TODO: Landscape view (this doesn't quite work since it's half width
+//                            if !showCentering {
+//                                currentRoadNameView
+//                            }
+                        }
                     }
                 }
                 if case .navigating = navigationState?.tripState,

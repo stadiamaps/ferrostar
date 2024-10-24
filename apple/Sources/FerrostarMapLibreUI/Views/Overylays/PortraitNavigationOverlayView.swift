@@ -26,6 +26,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     var showCentering: Bool
     var onCenter: () -> Void
     var onTapExit: (() -> Void)?
+    let currentRoadNameView: AnyView
 
     init(
         navigationState: NavigationState?,
@@ -35,7 +36,10 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        onTapExit: (() -> Void)? = nil
+        onTapExit: (() -> Void)? = nil,
+        @ViewBuilder currentRoadNameViewBuilder: (String?) -> AnyView = { name in
+            AnyView(CurrentRoadNameView(currentRoadName: name, theme: DefaultRoadNameViewTheme()))
+        }
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
@@ -45,6 +49,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         self.showCentering = showCentering
         self.onCenter = onCenter
         self.onTapExit = onTapExit
+        currentRoadNameView = currentRoadNameViewBuilder(navigationState?.currentRoadName)
     }
 
     var body: some View {
@@ -77,10 +82,16 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                 if case .navigating = navigationState?.tripState,
                    let progress = navigationState?.currentProgress
                 {
-                    TripProgressView(
-                        progress: progress,
-                        onTapExit: onTapExit
-                    )
+                    VStack {
+                        if !showCentering {
+                            currentRoadNameView
+                        }
+
+                        TripProgressView(
+                            progress: progress,
+                            onTapExit: onTapExit
+                        )
+                    }
                 }
             }.padding(.top, instructionsViewSizeWhenNotExpanded.height)
 

@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -43,9 +44,11 @@ fun PortraitNavigationOverlayView(
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     progressViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
     onTapExit: (() -> Unit)? = null,
-    currentRoadNameView: @Composable (String) -> Unit = { roadName ->
-      CurrentRoadNameView(roadName)
-      Spacer(modifier = Modifier.height(8.dp))
+    currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
+      if (roadName != null) {
+        CurrentRoadNameView(roadName)
+        Spacer(modifier = Modifier.height(8.dp))
+      }
     },
 ) {
   val density = LocalDensity.current
@@ -72,20 +75,22 @@ fun PortraitNavigationOverlayView(
     )
 
     uiState.progress?.let { progress ->
-      TripProgressView(
-          modifier =
-              Modifier.onSizeChanged {
-                progressViewSize.value = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
-              },
-          progress = progress,
-          currentRoadName =
-              if (cameraIsTrackingLocation) {
-                uiState.currentStepRoadName
-              } else {
-                null
-              },
-          currentRoadNameView = currentRoadNameView,
-          onTapExit = onTapExit)
+      Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        val currentRoadName =
+            if (cameraIsTrackingLocation) {
+              uiState.currentStepRoadName
+            } else {
+              null
+            }
+        currentRoadName?.let { roadName -> currentRoadNameView(roadName) }
+        TripProgressView(
+            modifier =
+                Modifier.onSizeChanged {
+                  progressViewSize.value = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
+                },
+            progress = progress,
+            onTapExit = onTapExit)
+      }
     }
   }
 }

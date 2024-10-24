@@ -1,13 +1,13 @@
 package com.stadiamaps.ferrostar.composeui.views
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,14 +29,13 @@ fun CurrentRoadNameView(
     modifier: Modifier = Modifier,
     theme: RoadNameViewTheme = DefaultRoadNameViewTheme,
 ) {
-  Row(
+  Box(
       modifier =
           modifier
               .shadow(12.dp, shape = RoundedCornerShape(50))
               .background(color = theme.backgroundColor, shape = RoundedCornerShape(50))
-              .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
-      horizontalArrangement = Arrangement.Center,
-      verticalAlignment = Alignment.CenterVertically) {
+              .border(BorderStroke(1.dp, theme.borderColor), shape = RoundedCornerShape(50))
+              .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp)) {
         Text(currentRoadName, style = theme.textStyle)
       }
 }

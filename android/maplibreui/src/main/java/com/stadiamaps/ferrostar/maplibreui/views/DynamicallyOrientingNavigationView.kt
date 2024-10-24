@@ -3,7 +3,9 @@ package com.stadiamaps.ferrostar.maplibreui.views
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -16,11 +18,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
+import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
@@ -63,6 +67,12 @@ fun DynamicallyOrientingNavigationView(
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
+      if (roadName != null) {
+        CurrentRoadNameView(roadName)
+        Spacer(modifier = Modifier.height(8.dp))
+      }
+    },
     onTapExit: (() -> Unit)? = null,
     userContent: @Composable (BoxScope.(Modifier) -> Unit)? = null,
     mapContent: @Composable @MapLibreComposable ((State<NavigationUiState>) -> Unit)? = null,
@@ -103,7 +113,8 @@ fun DynamicallyOrientingNavigationView(
               camera = camera,
               viewModel = viewModel,
               config = config,
-              onTapExit = onTapExit)
+              onTapExit = onTapExit,
+              currentRoadNameView = currentRoadNameView)
         }
 
         else -> {
@@ -113,7 +124,8 @@ fun DynamicallyOrientingNavigationView(
               viewModel = viewModel,
               config = config,
               progressViewSize = rememberProgressViewSize,
-              onTapExit = onTapExit)
+              onTapExit = onTapExit,
+              currentRoadNameView = currentRoadNameView)
         }
       }
     }

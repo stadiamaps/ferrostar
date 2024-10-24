@@ -122,7 +122,7 @@ public struct TripProgressView: View {
         return theme
     }
 
-    return VStack(spacing: 16) {
+    VStack(spacing: 16) {
         TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,
@@ -171,7 +171,7 @@ public struct TripProgressView: View {
         return theme
     }
 
-    return VStack(spacing: 16) {
+    VStack(spacing: 16) {
         TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,

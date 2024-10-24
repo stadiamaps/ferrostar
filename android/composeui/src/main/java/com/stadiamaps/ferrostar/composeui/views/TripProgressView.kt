@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -56,9 +54,6 @@ import uniffi.ferrostar.TripProgress
  * @param distanceFormatter The formatter to use for the distance.
  * @param durationFormatter The formatter to use for the duration.
  * @param progress The progress of the trip.
- * @param currentRoadName The current road name (if any).
- * @param currentRoadNameView A composable that displays the current road name (when present). A
- *   default is provided, but you may replace this with your own view.
  * @param fromDate The date to use as the reference for the estimated arrival time.
  * @param timeZone The time zone used for the estimated arrival time formatter.
  * @param onTapExit An optional callback to invoke when the exit button is tapped. If null, the exit
@@ -72,15 +67,12 @@ fun TripProgressView(
     distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
     durationFormatter: DurationFormatter = LocalizedDurationFormatter(),
     progress: TripProgress,
-    currentRoadName: String? = null,
-    currentRoadNameView: @Composable (String) -> Unit = {},
     fromDate: Instant = Clock.System.now(),
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
     onTapExit: (() -> Unit)? = null
 ) {
   Box(modifier) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-      currentRoadName?.let { roadName -> currentRoadNameView(roadName) }
       Row(
           modifier =
               Modifier.shadow(12.dp, shape = RoundedCornerShape(50))
@@ -236,26 +228,5 @@ fun ProgressView24HourPreview() {
       estimatedArrivalFormatter = estimatedArrivalFormatter,
       fromDate = Instant.fromEpochSeconds(1720283624),
       timeZone = TimeZone.of("Europe/Berlin"),
-      onTapExit = { /* no-op */ })
-}
-
-@Preview
-@Composable
-fun ProgressViewWithExitAndRoadNamePreview() {
-  val progress =
-      TripProgress(
-          distanceRemaining = 2442522.0,
-          durationRemaining = 52012.0,
-          distanceToNextManeuver = 500.0)
-
-  TripProgressView(
-      progress = progress,
-      fromDate = Instant.fromEpochSeconds(1720283624),
-      timeZone = TimeZone.of("America/Los_Angeles"),
-      currentRoadName = "Sesame Street",
-      currentRoadNameView = {
-        CurrentRoadNameView(it)
-        Spacer(modifier = Modifier.height(8.dp))
-      },
       onTapExit = { /* no-op */ })
 }

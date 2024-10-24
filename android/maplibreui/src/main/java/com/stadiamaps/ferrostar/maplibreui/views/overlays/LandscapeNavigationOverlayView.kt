@@ -39,11 +39,13 @@ fun LandscapeNavigationOverlayView(
     navigationCamera: MapViewCamera = navigationMapViewCamera(),
     viewModel: NavigationViewModel,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-    onTapExit: (() -> Unit)? = null,
-    currentRoadNameView: @Composable (String) -> Unit = { roadName ->
-      CurrentRoadNameView(roadName)
-      Spacer(modifier = Modifier.height(8.dp))
+    currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
+      if (roadName != null) {
+        CurrentRoadNameView(roadName)
+        Spacer(modifier = Modifier.height(8.dp))
+      }
     },
+    onTapExit: (() -> Unit)? = null,
 ) {
   val uiState by viewModel.uiState.collectAsState()
   val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
@@ -58,16 +60,7 @@ fun LandscapeNavigationOverlayView(
       Spacer(modifier = Modifier.weight(1f))
 
       uiState.progress?.let { progress ->
-        TripProgressView(
-            progress = progress,
-            currentRoadName =
-                if (cameraIsTrackingLocation) {
-                  uiState.currentStepRoadName
-                } else {
-                  null
-                },
-            currentRoadNameView = currentRoadNameView,
-            onTapExit = onTapExit)
+        TripProgressView(progress = progress, onTapExit = onTapExit)
       }
     }
 

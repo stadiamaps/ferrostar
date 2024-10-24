@@ -2,7 +2,6 @@ package com.stadiamaps.ferrostar.views
 
 import com.stadiamaps.ferrostar.composeui.views.ProgressView24HourPreview
 import com.stadiamaps.ferrostar.composeui.views.ProgressViewInformationalPreview
-import com.stadiamaps.ferrostar.composeui.views.ProgressViewWithExitAndRoadNamePreview
 import com.stadiamaps.ferrostar.composeui.views.ProgressViewWithExitPreview
 import com.stadiamaps.ferrostar.composeui.views.TripProgressView
 import com.stadiamaps.ferrostar.support.paparazziDefault
@@ -46,10 +45,5 @@ class TripProgressViewTest {
   @Test
   fun testProgressView24Hour() {
     paparazzi.snapshot { withSnapshotBackground { ProgressView24HourPreview() } }
-  }
-
-  @Test
-  fun testProgressViewWithExitAndRoadName() {
-    paparazzi.snapshot { withSnapshotBackground { ProgressViewWithExitAndRoadNamePreview() } }
   }
 }
