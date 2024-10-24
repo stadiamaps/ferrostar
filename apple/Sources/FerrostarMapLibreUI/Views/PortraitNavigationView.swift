@@ -25,6 +25,8 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
 
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    @Binding var isMuted: Bool // Add mute binding to the view
+
 
     var onTapExit: (() -> Void)?
 
@@ -48,12 +50,14 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
+        isMuted: Binding<Bool>,
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
+        self._isMuted = isMuted
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
@@ -85,6 +89,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
                     onZoomOut: { camera.incrementZoom(by: -1) },
                     showCentering: !camera.isTrackingUserLocationWithCourse,
                     onCenter: { camera = navigationCamera },
+                    isMuted: $isMuted,
                     onTapExit: onTapExit
                 )
                 .innerGrid {
@@ -116,7 +121,8 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     return PortraitNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state
+        navigationState: state,
+        isMuted: .constant(false)
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
@@ -136,7 +142,8 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     return PortraitNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state
+        navigationState: state,
+        isMuted: .constant(false)
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

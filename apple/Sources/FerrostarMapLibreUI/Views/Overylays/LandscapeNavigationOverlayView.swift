@@ -12,6 +12,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     private var navigationState: NavigationState?
 
     @State private var isInstructionViewExpanded: Bool = false
+    @Binding var isMuted: Bool // Add the isMuted binding
+
 
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
@@ -34,6 +36,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
+        isMuted: Binding<Bool>,
         onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
@@ -43,6 +46,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
+        self._isMuted = isMuted
         self.onTapExit = onTapExit
     }
 
@@ -87,7 +91,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                 onZoomIn: onZoomIn,
                 onZoomOut: onZoomOut,
                 showCentering: showCentering,
-                onCenter: onCenter
+                onCenter: onCenter,
+                isMuted: $isMuted
             )
             .innerGrid {
                 topCenter?()
