@@ -130,3 +130,7 @@ cargo install cargo-ndk
 #### PR checklist
 
 Run the `ktfmtFormat` gradle action before committing to ensure consistent formatting.
+
+We use Paparazzi for UI snapshot tests efficiently (without a full emulator).
+You can run these locally with `./gradlew verifyPaparazziDebug`.
+You can record updated snapshots with `./gradlew recordPaparazziDebug`.

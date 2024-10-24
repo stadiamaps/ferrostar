@@ -1,9 +1,9 @@
 package com.stadiamaps.ferrostar.views
 
-import com.stadiamaps.ferrostar.composeui.views.ArrivalView
-import com.stadiamaps.ferrostar.composeui.views.ArrivalView24HourPreview
-import com.stadiamaps.ferrostar.composeui.views.ArrivalViewInformationalPreview
-import com.stadiamaps.ferrostar.composeui.views.ArrivalViewWithExitPreview
+import com.stadiamaps.ferrostar.composeui.views.ProgressView24HourPreview
+import com.stadiamaps.ferrostar.composeui.views.ProgressViewInformationalPreview
+import com.stadiamaps.ferrostar.composeui.views.ProgressViewWithExitPreview
+import com.stadiamaps.ferrostar.composeui.views.TripProgressView
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import kotlinx.datetime.Instant
@@ -12,15 +12,15 @@ import org.junit.Rule
 import org.junit.Test
 import uniffi.ferrostar.TripProgress
 
-class ArrivalViewTest {
+class TripProgressViewTest {
 
   @get:Rule val paparazzi = paparazziDefault()
 
   @Test
-  fun testArrivalView() {
+  fun testProgressView() {
     paparazzi.snapshot {
       withSnapshotBackground {
-        ArrivalView(
+        TripProgressView(
             progress =
                 TripProgress(
                     distanceRemaining = 124252.0,
@@ -33,17 +33,17 @@ class ArrivalViewTest {
   }
 
   @Test
-  fun testArrivalViewInformationalStyle() {
-    paparazzi.snapshot { withSnapshotBackground { ArrivalViewInformationalPreview() } }
+  fun testProgressViewInformationalStyle() {
+    paparazzi.snapshot { withSnapshotBackground { ProgressViewInformationalPreview() } }
   }
 
   @Test
-  fun testArrivalViewWithExit() {
-    paparazzi.snapshot { withSnapshotBackground { ArrivalViewWithExitPreview() } }
+  fun testProgressViewWithExit() {
+    paparazzi.snapshot { withSnapshotBackground { ProgressViewWithExitPreview() } }
   }
 
   @Test
-  fun testArrivalView24Hour() {
-    paparazzi.snapshot { withSnapshotBackground { ArrivalView24HourPreview() } }
+  fun testProgressView24Hour() {
+    paparazzi.snapshot { withSnapshotBackground { ProgressView24HourPreview() } }
   }
 }

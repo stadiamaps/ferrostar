@@ -3,23 +3,23 @@ import FerrostarCoreFFI
 import MapKit
 import SwiftUI
 
-public struct ArrivalView: View {
+public struct TripProgressView: View {
     let progress: TripProgress
     let distanceFormatter: Formatter
     let estimatedArrivalFormatter: Date.FormatStyle
     let durationFormatter: DateComponentsFormatter
-    let theme: any ArrivalViewTheme
+    let theme: any TripProgressViewTheme
     let fromDate: Date
     let onTapExit: (() -> Void)?
 
-    /// Initialize the ArrivalView
+    /// Creates a view that shows progress throughout the trip.
     ///
     /// - Parameters:
     ///   - progress: The current Trip Progress providing durations and distances.
     ///   - distanceFormatter: The distance formatter to use when displaying the remaining trip distance.
     ///   - estimatedArrivalFormatter: The estimated time of arrival Date-Time formatter.
     ///   - durationFormatter: The duration remaining formatter.
-    ///   - theme: The arrival view theme.
+    ///   - theme: The trip progress view theme.
     ///   - fromDate: The date time to estimate arrival from, primarily for testing (default is now).
     ///   - onTapExit: The action to run when the exit button is tapped.
     public init(
@@ -27,7 +27,7 @@ public struct ArrivalView: View {
         distanceFormatter: Formatter = DefaultFormatters.distanceFormatter,
         estimatedArrivalFormatter: Date.FormatStyle = DefaultFormatters.estimatedArrivalFormat,
         durationFormatter: DateComponentsFormatter = DefaultFormatters.durationFormat,
-        theme: any ArrivalViewTheme = DefaultArrivalViewTheme(),
+        theme: any TripProgressViewTheme = DefaultTripProgressViewTheme(),
         fromDate: Date = Date(),
         onTapExit: (() -> Void)? = nil
     ) {
@@ -116,14 +116,14 @@ public struct ArrivalView: View {
 }
 
 #Preview {
-    var informationalTheme: any ArrivalViewTheme {
-        var theme = DefaultArrivalViewTheme()
+    var informationalTheme: any TripProgressViewTheme {
+        var theme = DefaultTripProgressViewTheme()
         theme.style = .informational
         return theme
     }
 
     return VStack(spacing: 16) {
-        ArrivalView(
+        TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,
                 distanceRemaining: 120,
@@ -131,7 +131,7 @@ public struct ArrivalView: View {
             )
         )
 
-        ArrivalView(
+        TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,
                 distanceRemaining: 14500,
@@ -139,7 +139,7 @@ public struct ArrivalView: View {
             )
         )
 
-        ArrivalView(
+        TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,
                 distanceRemaining: 14500,
@@ -149,7 +149,7 @@ public struct ArrivalView: View {
         )
         .environment(\.locale, .init(identifier: "de_DE"))
 
-        ArrivalView(
+        TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 5420,
                 distanceRemaining: 1_420_000,
@@ -164,15 +164,15 @@ public struct ArrivalView: View {
     .background(Color.green)
 }
 
-#Preview("ArrivalView With Action") {
-    var informationalTheme: any ArrivalViewTheme {
-        var theme = DefaultArrivalViewTheme()
+#Preview("TripProgressView With Action") {
+    var informationalTheme: any TripProgressViewTheme {
+        var theme = DefaultTripProgressViewTheme()
         theme.style = .informational
         return theme
     }
 
     return VStack(spacing: 16) {
-        ArrivalView(
+        TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,
                 distanceRemaining: 120,
@@ -181,7 +181,7 @@ public struct ArrivalView: View {
             onTapExit: {}
         )
 
-        ArrivalView(
+        TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,
                 distanceRemaining: 14500,
@@ -190,7 +190,7 @@ public struct ArrivalView: View {
             onTapExit: {}
         )
 
-        ArrivalView(
+        TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 123,
                 distanceRemaining: 14500,
@@ -201,7 +201,7 @@ public struct ArrivalView: View {
         )
         .environment(\.locale, .init(identifier: "de_DE"))
 
-        ArrivalView(
+        TripProgressView(
             progress: TripProgress(
                 distanceToNextManeuver: 5420,
                 distanceRemaining: 1_420_000,

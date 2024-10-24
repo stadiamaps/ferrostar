@@ -24,11 +24,11 @@ import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
 /**
  * Returns the map controls for the given configuration.
  *
- * @param arrivalViewHeight The height of the arrival view.
+ * @param progressViewHeight The height of the progress view.
  * @param horizontalPadding The horizontal padding to apply to the map controls. Defaults to 16.dp
- *   to match the default padding of the arrival view.
+ *   to match the default padding of the progress view.
  * @param verticalPadding The vertical padding to apply to the map controls from the top of the
- *   arrival view. Defaults to 8.dp.
+ *   progress view. Defaults to 8.dp.
  *
  * TODO: This function is attempting to optimize the map controls for many screen sizes, system
  *   bars, and orientations. We should remain open to feedback for specific cases.
@@ -36,8 +36,8 @@ import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
  */
 @SuppressLint("ProduceStateDoesNotAssignValue")
 @Composable
-internal fun rememberMapControlsForArrivalViewHeight(
-    arrivalViewHeight: Dp = 0.dp,
+internal fun rememberMapControlsForProgressViewHeight(
+    progressViewHeight: Dp = 0.dp,
     horizontalPadding: Dp = 16.dp,
     verticalPadding: Dp = 8.dp
 ): State<MapControls> {
@@ -50,7 +50,7 @@ internal fun rememberMapControlsForArrivalViewHeight(
 
   return produceState(
       initialValue = MapControls(),
-      key1 = arrivalViewHeight,
+      key1 = progressViewHeight,
       key2 = gridPadding,
       key3 = windowInsetPadding) {
         // This calculation clamps the controls to the trailing edge of the screen in landscape mode
@@ -64,7 +64,7 @@ internal fun rememberMapControlsForArrivalViewHeight(
         val bottomPaddingDp =
             windowInsetPadding.calculateBottomPadding() + gridPadding.calculateBottomPadding()
         val bottomOffsetDp =
-            if (isLandscape) bottomPaddingDp else bottomPaddingDp + arrivalViewHeight
+            if (isLandscape) bottomPaddingDp else bottomPaddingDp + progressViewHeight
 
         // TODO: This could be improved if we want to add pixel width to dp conversion in
         //  maplibre-compose.

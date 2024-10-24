@@ -1,9 +1,9 @@
 import Foundation
 import MapKit
 
-/// A collection of arrival view formatters that work reasonably well for most applications.
+/// A collection of formatters that work reasonably well for most applications.
 public class DefaultFormatters {
-    /// An MKDistance formatter with abbreviated units for the arrival view.
+    /// An MKDistance formatter with abbreviated units.
     ///
     /// E.g. 120 mi
     public static var distanceFormatter: MKDistanceFormatter {

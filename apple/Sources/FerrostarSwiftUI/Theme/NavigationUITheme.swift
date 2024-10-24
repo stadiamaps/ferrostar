@@ -3,21 +3,21 @@ import Foundation
 public protocol NavigationUITheme: AnyObject {
     var primaryInstructionsRow: InstructionRowTheme { get }
     var secondaryInstructionsRow: InstructionRowTheme { get }
-    var arrival: any ArrivalViewTheme { get }
+    var tripProgress: any TripProgressViewTheme { get }
 }
 
 public class DefaultNavigationUITheme: NavigationUITheme {
     public var primaryInstructionsRow: any InstructionRowTheme
     public var secondaryInstructionsRow: any InstructionRowTheme
-    public var arrival: any ArrivalViewTheme
+    public var tripProgress: any TripProgressViewTheme
 
     public init(
         primaryInstructionsRow: any InstructionRowTheme = DefaultInstructionRowTheme(),
         secondaryInstructionsRow: any InstructionRowTheme = DefaultSecondaryInstructionRowTheme(),
-        arrival: any ArrivalViewTheme = DefaultArrivalViewTheme()
+        tripProgress: any TripProgressViewTheme = DefaultTripProgressViewTheme()
     ) {
         self.primaryInstructionsRow = primaryInstructionsRow
         self.secondaryInstructionsRow = secondaryInstructionsRow
-        self.arrival = arrival
+        self.tripProgress = tripProgress
     }
 }

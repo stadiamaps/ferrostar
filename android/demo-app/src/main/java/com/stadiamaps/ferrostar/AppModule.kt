@@ -87,7 +87,7 @@ object AppModule {
                 NavigationControllerConfig(
                     StepAdvanceMode.RelativeLineStringDistance(
                         minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                    RouteDeviationTracking.StaticThreshold(15U, 25.0),
+                    RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),
             options =
                 mapOf(
