@@ -16,8 +16,8 @@ public protocol SpokenInstructionObserver {
     var isMuted: Bool { get set }
 }
 
-public class AVSpeechSpokenInstructionObserver: SpokenInstructionObserver {
-    public var isMuted: Bool {
+public class AVSpeechSpokenInstructionObserver: SpokenInstructionObserver, ObservableObject {
+    @Published public var isMuted: Bool {
         didSet {
             if isMuted, synthesizer.isSpeaking {
                 synthesizer.stopSpeaking(at: .immediate)

@@ -14,7 +14,6 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     @State private var isInstructionViewExpanded: Bool = false
     @Binding var isMuted: Bool // Add the isMuted binding
 
-
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
@@ -46,7 +45,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        self._isMuted = isMuted
+        _isMuted = isMuted
         self.onTapExit = onTapExit
     }
 

@@ -14,13 +14,9 @@ private let initialLocation = CLLocation(latitude: 37.332726,
 
 struct DemoNavigationView: View {
     private let navigationDelegate = NavigationDelegate()
-    // NOTE: This is probably not ideal but works for demo purposes.
-    // This causes a thread performance checker warning log.
-    @State private var spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
 
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
-    @State private var isMuted: Bool = false
 
     @State private var isFetchingRoutes = false
     @State private var routes: [Route]?
@@ -35,6 +31,11 @@ struct DemoNavigationView: View {
 
     @State private var camera: MapViewCamera = .center(initialLocation.coordinate, zoom: 14)
     @State private var snappedCamera = true
+    @State private var isMuted = false
+
+    // NOTE: This is probably not ideal but works for demo purposes.
+    // This causes a thread performance checker warning log.
+    @StateObject private var spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: true)
 
     init() {
         let simulated = SimulatedLocationProvider(location: initialLocation)
@@ -60,14 +61,6 @@ struct DemoNavigationView: View {
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
-
-        // Initialize text-to-speech; note that this is NOT automatic.
-        // You must set a spokenInstructionObserver.
-        // Fortunately, this is pretty easy with the provided class
-        // backed by AVSpeechSynthesizer.
-        // You can customize the instance it further as needed,
-        // or replace with your own.
-        ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
     }
 
     var body: some View {
@@ -147,21 +140,22 @@ struct DemoNavigationView: View {
                     }
                 }
             )
+            .onAppear {
+                // Initialize text-to-speech; note that this is NOT automatic.
+                // You must set a spokenInstructionObserver.
+                // Fortunately, this is pretty easy with the provided class
+                // backed by AVSpeechSynthesizer.
+                // You can customize the instance it further as needed,
+                // or replace with your own.
+                // NOTE: This is in onAppear because the StateObject is not initialized until *after* init is complete.
+                ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
+            }
             .task {
                 await getRoutes()
             }
-            
-//            .overlay(alignment: .topTrailing) {
-//                //if ferrostarCore.state?.isNavigating == true {  // will be used after PR275 is finished
-//                if case .navigating = ferrostarCore.state?.tripState {
-//                    MuteUIButton(isMuted: $spokenInstructionObserver.isMuted)
-//                        .padding(.trailing, 18) // Right
-//                        .padding(.top, 112)
-//                }
-//            }
-
-
-
+            .onChange(of: isMuted) { _, newValue in
+                spokenInstructionObserver.isMuted = newValue
+            }
         }
     }
 

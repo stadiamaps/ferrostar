@@ -55,7 +55,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        self._isMuted = isMuted
+        _isMuted = isMuted
     }
 
     public var body: some View {
@@ -71,11 +71,10 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             },
             topCenter: { topCenter?() },
             topTrailing: {
+                MuteUIButton(isMuted: $isMuted)
+                    .shadow(radius: 8)
+                    .padding(.top, 16)
 
-                    MuteUIButton(isMuted: $isMuted)
-                        .shadow(radius: 8)
-                        .padding(.top,16)
-                
             },
             midLeading: { midLeading?() },
             midCenter: {
@@ -123,7 +122,6 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             showZoom: true,
             showCentering: true,
             isMuted: .constant(false)
-
         )
         .padding(.horizontal, 16)
 

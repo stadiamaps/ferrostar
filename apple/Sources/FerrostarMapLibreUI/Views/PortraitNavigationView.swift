@@ -27,7 +27,6 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
     let navigationCamera: MapViewCamera
     @Binding var isMuted: Bool // Add mute binding to the view
 
-
     var onTapExit: (() -> Void)?
 
     /// Create a portrait navigation view. This view is optimized for display on a portrait screen where the
@@ -57,7 +56,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView 
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
-        self._isMuted = isMuted
+        _isMuted = isMuted
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()

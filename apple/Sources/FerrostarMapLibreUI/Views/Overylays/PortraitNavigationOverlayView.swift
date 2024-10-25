@@ -13,8 +13,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
     @State private var isInstructionViewExpanded: Bool = false
     @State private var instructionsViewSizeWhenNotExpanded: CGSize = .zero
-    @Binding var isMuted: Bool // Add the isMuted binding
-
+    @Binding var isMuted: Bool
 
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
@@ -47,7 +46,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        self._isMuted = isMuted
+        _isMuted = isMuted
         self.onTapExit = onTapExit
     }
 

@@ -16,7 +16,6 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     let navigationCamera: MapViewCamera
     @Binding var isMuted: Bool // Add mute binding to the view
 
-
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
@@ -56,7 +55,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
-        self._isMuted = isMuted
+        _isMuted = isMuted
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
@@ -121,7 +120,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
         navigationState: state,
-        isMuted: .constant(false)  // Fix: Provide isMuted binding
+        isMuted: .constant(false)
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

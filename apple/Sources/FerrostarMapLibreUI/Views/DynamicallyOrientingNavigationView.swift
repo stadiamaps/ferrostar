@@ -15,8 +15,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    @Binding var isMuted: Bool  // Add the isMuted binding
-
+    @Binding var isMuted: Bool // Add the isMuted binding
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -56,7 +55,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
-        self._isMuted = isMuted
+        _isMuted = isMuted
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()

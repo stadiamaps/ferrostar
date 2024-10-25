@@ -20,7 +20,20 @@ final class NavigatingInnerGridViewTests: XCTestCase {
             NavigatingInnerGridView(
                 speedLimit: .init(value: 100, unit: .kilometersPerHour),
                 showZoom: true,
-                showCentering: true
+                showCentering: true,
+                isMuted: .constant(false)
+            )
+            .environment(\.locale, .init(identifier: "fr_FR"))
+            .padding()
+        }
+    }
+
+    func testMuted() {
+        assertView {
+            NavigatingInnerGridView(
+                showZoom: true,
+                showCentering: true,
+                isMuted: .constant(true)
             )
             .environment(\.locale, .init(identifier: "fr_FR"))
             .padding()

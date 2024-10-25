@@ -4,7 +4,7 @@ public struct MuteUIButton: View {
     @Binding public var isMuted: Bool
 
     public init(isMuted: Binding<Bool>) {
-        self._isMuted = isMuted
+        _isMuted = isMuted
     }
 
     public var body: some View {
@@ -16,11 +16,11 @@ public struct MuteUIButton: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
                 .padding()
-                .foregroundColor(.black)
-                .background(Color.white)
-                .clipShape(Circle())
-                .shadow(radius: 10)
         }
+        .foregroundColor(.black)
+        .background(Color.white)
+        .clipShape(Circle())
+        .shadow(radius: 10)
     }
 }
 
