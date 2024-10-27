@@ -55,7 +55,8 @@ struct DemoNavigationView: View {
             profile: "bicycle",
             locationProvider: locationProvider,
             navigationControllerConfig: config,
-            options: ["costing_options": ["bicycle": ["use_roads": 0.2]]]
+            options: ["costing_options": ["bicycle": ["use_roads": 0.2]]],
+            annotation: AnnotationPublisher.valhallaOSRM()
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
@@ -78,7 +79,6 @@ struct DemoNavigationView: View {
                 styleURL: style,
                 camera: $camera,
                 navigationState: ferrostarCore.state,
-                calculateSpeedLimit: getSpeedLimit,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
                     let source = ShapeSource(identifier: "userLocation") {
@@ -90,6 +90,10 @@ struct DemoNavigationView: View {
                     }
                     CircleStyleLayer(identifier: "foo", source: source)
                 }
+            )
+            .navigationSpeedLimit(
+                speedLimit: ferrostarCore.annotation?.speedLimit,
+                speedLimitStyle: .usStyle
             )
             .innerGrid(
                 topCenter: {
@@ -149,7 +153,7 @@ struct DemoNavigationView: View {
             .task {
                 await getRoutes()
             }
-            .environment(\.navigationFormatterCollection, <#T##value: V##V#>)
+            .environment(\.navigationFormatterCollection, FoundationFormatterCollection())
         }
     }
 
@@ -219,13 +223,6 @@ struct DemoNavigationView: View {
         }
 
         return "±\(Int(userLocation.horizontalAccuracy))m accuracy"
-    }
-
-    func getSpeedLimit(_ navigationState: NavigationState?) -> Measurement<UnitSpeed>? {
-        guard let annotation = try? navigationState?.currentAnnotation(as: ValhallaOsrmAnnotation.self) else {
-            return nil
-        }
-        return annotation.speedLimit?.measurementValue
     }
 
     private func preventAutoLock() {

@@ -7,8 +7,8 @@ import Foundation
 /// - https://wiki.openstreetmap.org/wiki/Key:maxspeed
 /// - https://docs.mapbox.com/api/navigation/directions/#route-leg-object (search for `max_speed`)
 /// - https://valhalla.github.io/valhalla/speeds/#assignment-of-speeds-to-roadways
-public enum MaxSpeed: Decodable {
-    public enum Units: String, Decodable {
+public enum MaxSpeed: Codable {
+    public enum Units: String, Codable {
         case kilometersPerHour = "km/h"
         case milesPerHour = "mph"
         case knots // "knots" are an option in core OSRM docs, though unsure if they're ever used in this context.
@@ -52,10 +52,25 @@ public enum MaxSpeed: Decodable {
         }
     }
 
+    public func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        switch self {
+            
+        case .none:
+            try container.encode(true, forKey: .none)
+        case .unknown:
+            try container.encode(true, forKey: .unknown)
+        case .speed(let value, unit: let unit):
+            try container.encode(value, forKey: .speed)
+            try container.encode(unit, forKey: .unit)
+        }
+    }
+    
     /// The MaxSpeed as a measurement
     public var measurementValue: Measurement<UnitSpeed>? {
         switch self {
-        case .none: nil
+        case .none: .init(value: .infinity, unit: .kilometersPerHour)
         case .unknown: nil
         case let .speed(value, unit):
             switch unit {

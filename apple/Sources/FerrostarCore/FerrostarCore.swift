@@ -81,6 +81,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// The observable state of the model (for easy binding in SwiftUI views).
     @Published public private(set) var state: NavigationState?
 
+    public let annotation: (any AnnotationPublishing)?
+
     private let networkSession: URLRequestLoading
     private let routeProvider: RouteProvider
     private let locationProvider: LocationProviding
@@ -97,21 +99,33 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// This designated initializer is the most flexible, but the convenience ones may be easier to use.
     /// for common configuraitons.
+    ///
+    /// - Parameters:
+    ///   - routeProvider: <#routeProvider description#>
+    ///   - locationProvider: <#locationProvider description#>
+    ///   - navigationControllerConfig: <#navigationControllerConfig description#>
+    ///   - networkSession: <#networkSession description#>
+    ///   - annotation: <#annotation description#>
     public init(
         routeProvider: RouteProvider,
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
-        networkSession: URLRequestLoading
+        networkSession: URLRequestLoading,
+        annotation: (any AnnotationPublishing)? = nil
     ) {
         self.routeProvider = routeProvider
         self.locationProvider = locationProvider
         config = navigationControllerConfig
         self.networkSession = networkSession
+        self.annotation = annotation
 
         super.init()
 
         // Location provider setup
         locationProvider.delegate = self
+
+        // Annotation publisher setup
+        self.annotation?.configure($state)
     }
 
     /// Initializes a core instance for a Valhalla API accessed over HTTP.
@@ -131,7 +145,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
         options: [String: Any] = [:],
-        networkSession: URLRequestLoading = URLSession.shared
+        networkSession: URLRequestLoading = URLSession.shared,
+        annotation: (any AnnotationPublishing)? = nil
     ) throws {
         guard let jsonOptions = try String(
             data: JSONSerialization.data(withJSONObject: options),
@@ -149,7 +164,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             routeProvider: .routeAdapter(adapter),
             locationProvider: locationProvider,
             navigationControllerConfig: navigationControllerConfig,
-            networkSession: networkSession
+            networkSession: networkSession,
+            annotation: annotation
         )
     }
 
@@ -157,13 +173,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
         routeAdapter: RouteAdapterProtocol,
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
-        networkSession: URLRequestLoading = URLSession.shared
+        networkSession: URLRequestLoading = URLSession.shared,
+        annotation: (any AnnotationPublishing)? = nil
     ) {
         self.init(
             routeProvider: .routeAdapter(routeAdapter),
             locationProvider: locationProvider,
             navigationControllerConfig: navigationControllerConfig,
-            networkSession: networkSession
+            networkSession: networkSession,
+            annotation: annotation
         )
     }
 
@@ -171,13 +189,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
         customRouteProvider: CustomRouteProvider,
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
-        networkSession: URLRequestLoading = URLSession.shared
+        networkSession: URLRequestLoading = URLSession.shared,
+        annotation: (any AnnotationPublishing)? = nil
     ) {
         self.init(
             routeProvider: .customProvider(customRouteProvider),
             locationProvider: locationProvider,
             navigationControllerConfig: navigationControllerConfig,
-            networkSession: networkSession
+            networkSession: networkSession,
+            annotation: annotation
         )
     }
 

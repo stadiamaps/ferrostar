@@ -8,7 +8,7 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ArrivalView on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView {
+public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -18,13 +18,13 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
+    public var speedLimit: Measurement<UnitSpeed>?
+    public var speedLimitStyle: SpeedLimitView.SignageStyle = .viennaConvention
+
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
-
-    var calculateSpeedLimit: ((NavigationState?) -> Measurement<UnitSpeed>?)?
-    @State var speedLimit: Measurement<UnitSpeed>?
 
     var onTapExit: (() -> Void)?
 
@@ -49,14 +49,12 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         camera: Binding<MapViewCamera>,
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
-        calculateSpeedLimit: ((NavigationState?) -> Measurement<UnitSpeed>?)? = nil,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
-        self.calculateSpeedLimit = calculateSpeedLimit
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
         self.onTapExit = onTapExit
 
@@ -83,6 +81,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                 LandscapeNavigationOverlayView(
                     navigationState: navigationState,
                     speedLimit: speedLimit,
+                    speedLimitStyle: speedLimitStyle,
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
@@ -100,9 +99,6 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     bottomTrailing?()
                 }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
-        }
-        .onChange(of: navigationState) { value in
-            speedLimit = calculateSpeedLimit?(value)
         }
     }
 }

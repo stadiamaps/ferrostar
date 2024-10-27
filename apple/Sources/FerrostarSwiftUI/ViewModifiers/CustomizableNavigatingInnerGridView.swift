@@ -21,7 +21,7 @@ public extension CustomizableNavigatingInnerGridView {
         @ViewBuilder topTrailing: @escaping () -> some View = { Spacer() },
         @ViewBuilder midLeading: @escaping () -> some View = { Spacer() },
         @ViewBuilder bottomTrailing: @escaping () -> some View = { Spacer() }
-    ) -> some View {
+    ) -> Self {
         var newSelf = self
         newSelf.topCenter = { AnyView(topCenter()) }
         newSelf.topTrailing = { AnyView(topTrailing()) }
