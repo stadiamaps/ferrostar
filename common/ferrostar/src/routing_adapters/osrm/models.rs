@@ -75,19 +75,6 @@ pub struct AnyAnnotation {
     pub values: HashMap<String, Vec<Value>>,
 }
 
-/// The max speed json units that can be associated with annotations.
-/// [MaxSpeed/Units](https://wiki.openstreetmap.org/wiki/Map_Features/Units#Speed)
-/// TODO: We could generalize this as or map from this to a `UnitSpeed` enum.
-#[derive(Deserialize, PartialEq, Debug, Clone)]
-pub enum MaxSpeedUnits {
-    #[serde(rename = "km/h")]
-    KilometersPerHour,
-    #[serde(rename = "mph")]
-    MilesPerHour,
-    #[serde(rename = "knots")]
-    Knots,
-}
-
 #[derive(Deserialize, Debug)]
 pub struct RouteStep {
     /// The distance from the start of the current maneuver to the following step, in meters.
