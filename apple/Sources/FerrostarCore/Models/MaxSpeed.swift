@@ -34,11 +34,13 @@ public enum MaxSpeed: Codable, Equatable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         if let none = try container.decodeIfPresent(Bool.self, forKey: .none),
-            none == true {
+           none == true
+        {
             // The speed configuration is `{none: true}` for unlimited.
             self = .none
         } else if let unknown = try container.decodeIfPresent(Bool.self, forKey: .unknown),
-            unknown == true {
+                  unknown == true
+        {
             // The speed configuration is `{unknown: true}` for unknown.
             self = .unknown
         } else if let value = try container.decodeIfPresent(Double.self, forKey: .speed),
@@ -56,19 +58,18 @@ public enum MaxSpeed: Codable, Equatable, Hashable {
 
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         switch self {
-            
         case .none:
             try container.encode(true, forKey: .none)
         case .unknown:
             try container.encode(true, forKey: .unknown)
-        case .speed(let value, unit: let unit):
+        case let .speed(value, unit: unit):
             try container.encode(value, forKey: .speed)
             try container.encode(unit, forKey: .unit)
         }
     }
-    
+
     /// The MaxSpeed as a measurement
     public var measurementValue: Measurement<UnitSpeed>? {
         switch self {

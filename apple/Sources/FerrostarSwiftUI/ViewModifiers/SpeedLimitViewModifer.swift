@@ -8,7 +8,6 @@ public protocol SpeedLimitViewHost where Self: View {
 }
 
 public extension SpeedLimitViewHost {
-    
     /// Configure the NavigationView to display a speed limit
     /// with a specific speed limit signage style.
     ///

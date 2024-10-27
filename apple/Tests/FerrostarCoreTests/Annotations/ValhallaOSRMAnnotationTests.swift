@@ -2,7 +2,6 @@ import XCTest
 @testable import FerrostarCore
 
 final class ValhallaOSRMAnnotationTests: XCTestCase {
-
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
 
@@ -16,7 +15,7 @@ final class ValhallaOSRMAnnotationTests: XCTestCase {
             )
         }
     }
-    
+
     func testMilesPerHour() throws {
         try assertAnnotations {
             ValhallaOSRMAnnotation(
@@ -27,7 +26,7 @@ final class ValhallaOSRMAnnotationTests: XCTestCase {
             )
         }
     }
-    
+
     func testKilometersPerHour() throws {
         try assertAnnotations {
             ValhallaOSRMAnnotation(
@@ -38,7 +37,7 @@ final class ValhallaOSRMAnnotationTests: XCTestCase {
             )
         }
     }
-    
+
     func testKnots() throws {
         try assertAnnotations {
             ValhallaOSRMAnnotation(
@@ -49,7 +48,7 @@ final class ValhallaOSRMAnnotationTests: XCTestCase {
             )
         }
     }
-    
+
     func testNone() throws {
         try assertAnnotations {
             ValhallaOSRMAnnotation(
@@ -60,7 +59,7 @@ final class ValhallaOSRMAnnotationTests: XCTestCase {
             )
         }
     }
-    
+
     func testUnknown() throws {
         try assertAnnotations {
             ValhallaOSRMAnnotation(
@@ -71,13 +70,13 @@ final class ValhallaOSRMAnnotationTests: XCTestCase {
             )
         }
     }
-    
+
     func assertAnnotations(_ makeAnnotations: () -> ValhallaOSRMAnnotation) throws {
         let annotations = makeAnnotations()
-        
+
         let encoded = try encoder.encode(annotations)
         let result = try decoder.decode(ValhallaOSRMAnnotation.self, from: encoded)
-        
+
         XCTAssertEqual(annotations, result)
     }
 }

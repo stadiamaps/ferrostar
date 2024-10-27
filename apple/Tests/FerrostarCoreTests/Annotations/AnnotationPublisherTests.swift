@@ -1,14 +1,14 @@
-import SwiftUI
 import Combine
-import XCTest
 import CoreLocation
 import FerrostarCoreFFI
+import SwiftUI
+import XCTest
 @testable import FerrostarCore
 
 final class AnnotationPublisherTests: XCTestCase {
     @Published var fakeNavigationState: NavigationState?
     var cancellables = Set<AnyCancellable>()
-    
+
     func testSpeedLimitConversion() throws {
         let annotation = AnnotationPublisher<ValhallaOSRMAnnotation>.valhallaOSRM()
         annotation.configure($fakeNavigationState)
@@ -19,7 +19,7 @@ final class AnnotationPublisherTests: XCTestCase {
             .sink { speedLimit in
                 XCTAssertEqual(speedLimit.value, 15.0)
                 XCTAssertEqual(speedLimit.unit, .milesPerHour)
-                
+
                 exp.fulfill()
             }
             .store(in: &cancellables)
@@ -32,14 +32,14 @@ final class AnnotationPublisherTests: XCTestCase {
                 duration: nil
             )
         )
-        
+
         fakeNavigationState = makeNavigationState(annotationJson)
         wait(for: [exp], timeout: 10)
     }
-    
+
     func testInvalidJSON() throws {
         let exp = expectation(description: "json decoder error")
-        
+
         let annotation = AnnotationPublisher<ValhallaOSRMAnnotation>.valhallaOSRM { error in
             XCTAssert(error is DecodingError)
             exp.fulfill()
@@ -48,7 +48,7 @@ final class AnnotationPublisherTests: XCTestCase {
 
         annotation.$speedLimit
             .compactMap { $0 }
-            .sink { speedLimit in
+            .sink { _ in
                 XCTFail("Should never be a non-nil speed limit.")
             }
             .store(in: &cancellables)
@@ -56,7 +56,7 @@ final class AnnotationPublisherTests: XCTestCase {
         fakeNavigationState = makeNavigationState("broken-json")
         wait(for: [exp], timeout: 10)
     }
-    
+
     func testUnhandledException() throws {
         let annotation = AnnotationPublisher<ValhallaOSRMAnnotation>.valhallaOSRM()
         annotation.configure($fakeNavigationState)
@@ -67,13 +67,13 @@ final class AnnotationPublisherTests: XCTestCase {
             .sink { speedLimit in
                 XCTAssertEqual(speedLimit.value, 15.0)
                 XCTAssertEqual(speedLimit.unit, .kilometersPerHour)
-                
+
                 exp.fulfill()
             }
             .store(in: &cancellables)
 
         fakeNavigationState = makeNavigationState("broken-json")
-        
+
         let annotationJson = try encode(
             ValhallaOSRMAnnotation(
                 speedLimit: .unknown,
@@ -82,9 +82,9 @@ final class AnnotationPublisherTests: XCTestCase {
                 duration: nil
             )
         )
-        
+
         fakeNavigationState = makeNavigationState(annotationJson)
-        
+
         let annotationJsonTwo = try encode(
             ValhallaOSRMAnnotation(
                 speedLimit: .speed(15, unit: .kilometersPerHour),
@@ -93,12 +93,12 @@ final class AnnotationPublisherTests: XCTestCase {
                 duration: nil
             )
         )
-        
+
         fakeNavigationState = makeNavigationState(annotationJsonTwo)
-        
+
         wait(for: [exp], timeout: 10)
     }
-    
+
     // MARK: Helpers
 
     func makeNavigationState(_ annotation: String) -> NavigationState {
@@ -124,7 +124,7 @@ final class AnnotationPublisherTests: XCTestCase {
             isCalculatingNewRoute: false
         )
     }
-    
+
     func encode(_ annotation: ValhallaOSRMAnnotation) throws -> String {
         let data = try JSONEncoder().encode(annotation)
         return String(data: data, encoding: .utf8)!
