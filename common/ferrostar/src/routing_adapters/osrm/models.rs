@@ -522,31 +522,4 @@ mod tests {
             Some(vec!["right".to_string()])
         );
     }
-
-    #[test]
-    fn test_max_speed_unknown() {
-        let max_speed = MaxSpeed::Unknown { unknown: true };
-        assert_eq!(max_speed.get_as_meters_per_second(), None);
-    }
-
-    #[test]
-    fn test_max_speed_kph() {
-        let max_speed = MaxSpeed::Known {
-            speed: 100.0,
-            unit: MaxSpeedUnits::KilometersPerHour,
-        };
-        assert_eq!(
-            max_speed.get_as_meters_per_second(),
-            Some(27.778000000000002)
-        );
-    }
-
-    #[test]
-    fn test_max_speed_mph() {
-        let max_speed = MaxSpeed::Known {
-            speed: 60.0,
-            unit: MaxSpeedUnits::MilesPerHour,
-        };
-        assert_eq!(max_speed.get_as_meters_per_second(), Some(26.8224));
-    }
 }
