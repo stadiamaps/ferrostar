@@ -21,7 +21,7 @@ if useLocalFramework {
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url:
-        "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar-rs.xcframework.zip",
+            "https://github.com/stadiamaps/ferrostar/releases/download/\(releaseTag)/libferrostar-rs.xcframework.zip",
         checksum: releaseChecksum
     )
 }
@@ -39,7 +39,7 @@ let package = Package(
     name: "FerrostarCore",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v15),
+        .iOS(.v15)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -52,7 +52,7 @@ let package = Package(
             targets: [
                 "FerrostarMapLibreUI",
                 "FerrostarSwiftUI",
-            ] // TODO: Remove FerrostarSwiftUI from FerrostarMapLibreUI once we can fix the demo app swift package config (broken in Xcode 15.3)
+            ]  // TODO: Remove FerrostarSwiftUI from FerrostarMapLibreUI once we can fix the demo app swift package config (broken in Xcode 15.3)
         ),
         .library(
             name: "FerrostarSwiftUI",
@@ -85,11 +85,11 @@ let package = Package(
         .target(
             name: "FerrostarSwiftUI",
             dependencies: [
-                .target(name: "FerrostarCore"),
+                .target(name: "FerrostarCore")
             ],
             path: "apple/Sources/FerrostarSwiftUI",
             resources: [
-                .process("Resources"),
+                .process("Resources")
             ]
         ),
         .target(
