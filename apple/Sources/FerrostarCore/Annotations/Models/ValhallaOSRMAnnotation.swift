@@ -1,7 +1,7 @@
 import Foundation
 
 /// A Valhalla OSRM flavored annotations object.
-public struct ValhallaOSRMAnnotation: Codable {
+public struct ValhallaOSRMAnnotation: Codable, Equatable, Hashable {
     enum CodingKeys: String, CodingKey {
         case speedLimit = "maxspeed"
         case speed

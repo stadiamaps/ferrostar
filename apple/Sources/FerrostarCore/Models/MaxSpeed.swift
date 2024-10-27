@@ -7,7 +7,7 @@ import Foundation
 /// - https://wiki.openstreetmap.org/wiki/Key:maxspeed
 /// - https://docs.mapbox.com/api/navigation/directions/#route-leg-object (search for `max_speed`)
 /// - https://valhalla.github.io/valhalla/speeds/#assignment-of-speeds-to-roadways
-public enum MaxSpeed: Codable {
+public enum MaxSpeed: Codable, Equatable, Hashable {
     public enum Units: String, Codable {
         case kilometersPerHour = "km/h"
         case milesPerHour = "mph"
@@ -33,10 +33,12 @@ public enum MaxSpeed: Codable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        if let none = try container.decodeIfPresent(Bool.self, forKey: .none) {
+        if let none = try container.decodeIfPresent(Bool.self, forKey: .none),
+            none == true {
             // The speed configuration is `{none: true}` for unlimited.
             self = .none
-        } else if let unknown = try container.decodeIfPresent(Bool.self, forKey: .unknown) {
+        } else if let unknown = try container.decodeIfPresent(Bool.self, forKey: .unknown),
+            unknown == true {
             // The speed configuration is `{unknown: true}` for unknown.
             self = .unknown
         } else if let value = try container.decodeIfPresent(Double.self, forKey: .speed),
