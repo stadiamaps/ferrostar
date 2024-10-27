@@ -102,10 +102,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// - Parameters:
     ///   - routeProvider: The route provider is responsible for fetching routes from a server or locally.
-    ///   - locationProvider: The location provider is responsible for tracking the user's location for navigation trip updates.
+    ///   - locationProvider: The location provider is responsible for tracking the user's location for navigation trip
+    /// updates.
     ///   - navigationControllerConfig: Configure the behavior of the navigation controller.
     ///   - networkSession: The network session to run route fetches on. A custom ``RouteProvider`` may not use this.
-    ///   - annotation: An implementation of the annotation publisher that transforms custom annotation JSON into published values of defined swift types.
+    ///   - annotation: An implementation of the annotation publisher that transforms custom annotation JSON into
+    /// published values of defined swift types.
     public init(
         routeProvider: RouteProvider,
         locationProvider: LocationProviding,
@@ -139,7 +141,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// automatically (like `format`), but this lets you add arbitrary options so you can access the full API.
     ///   - networkSession: The network session to use. Don't set this unless you need to replace the networking stack
     /// (ex: for testing).
-    ///   - annotation: An implementation of the annotation publisher that transforms custom annotation JSON into published values of defined swift types.
+    ///   - annotation: An implementation of the annotation publisher that transforms custom annotation JSON into
+    /// published values of defined swift types.
     public convenience init(
         valhallaEndpointUrl: URL,
         profile: String,
