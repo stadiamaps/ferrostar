@@ -28,6 +28,9 @@ jobs:
           
       - run: npm ci
         working-directory: web
+          
+      - run: npm run format:check
+        working-directory: web
 
       - run: npm run build
         working-directory: web

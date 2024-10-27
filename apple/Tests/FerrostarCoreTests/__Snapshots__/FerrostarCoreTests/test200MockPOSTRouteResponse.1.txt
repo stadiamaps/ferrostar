@@ -34,6 +34,7 @@
         ▿ visualInstructions: 1 element
           ▿ VisualInstruction
             ▿ primaryContent: VisualInstructionContent
+              - laneInfo: Optional<Array<LaneInfo>>.none
               ▿ maneuverModifier: Optional<ManeuverModifier>
                 - some: ManeuverModifier.straight
               ▿ maneuverType: Optional<ManeuverType>
@@ -41,6 +42,7 @@
               - roundaboutExitDegrees: Optional<UInt16>.none
               - text: "Sail straight"
             - secondaryContent: Optional<VisualInstructionContent>.none
+            - subContent: Optional<VisualInstructionContent>.none
             - triggerDistanceBeforeManeuver: 42.0
     ▿ waypoints: 2 elements
       ▿ Waypoint

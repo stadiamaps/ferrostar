@@ -1,0 +1,10 @@
+[default]
+extend-ignore-re = [
+  "VALHALLA_EXTENDED_OSRM_RESPONSE.*",
+]
+
+[default.extend-words]
+rememberable = "rememberable"
+
+[files]
+extend-exclude = ["**/build/*", "*.pbxproj", "**/dist/*", "guide/**/*.js"]

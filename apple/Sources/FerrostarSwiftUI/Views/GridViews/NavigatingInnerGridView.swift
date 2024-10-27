@@ -26,7 +26,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     /// The default navigation inner grid view.
     ///
     /// This view provides all default navigation UI views that are used in the open map area. This area is defined as
-    /// between the header/banner view and footer/arrival view in portait mode.
+    /// between the header/banner view and footer/arrival view in portrait mode.
     /// On landscape mode it is the trailing half of the screen.
     ///
     /// - Parameters:

@@ -3,7 +3,7 @@ authors = ["Ian Wagner"]
 language = "en"
 multilingual = false
 src = "src"
-title = "The Ferrostar User Guide"
+title = "The Ferrostar Book"
 
 [preprocessor]
 

@@ -50,13 +50,23 @@ export class InstructionsView extends LitElement {
   }
 
   render() {
+    // Note - lane information is currently not displayed, even if it is
+    // available.
     if (this.tripState?.Navigating) {
       return html`
         <div class="instructions-view-card">
-          <maneuver-image .visualInstruction=${this.tripState.Navigating.visualInstruction}></maneuver-image>
+          <maneuver-image
+            .visualInstruction=${this.tripState.Navigating.visualInstruction}
+          ></maneuver-image>
           <div class="text-container">
-            <p class="distance-text">${this.tripState.Navigating.visualInstruction.primaryContent.text}</p>
-            <p class="instruction-text">${this.roundToNearestTen(this.tripState.Navigating.progress.distanceToNextManeuver)}m</p>
+            <p class="distance-text">
+              ${this.tripState.Navigating.visualInstruction.primaryContent.text}
+            </p>
+            <p class="instruction-text">
+              ${this.roundToNearestTen(
+                this.tripState.Navigating.progress.distanceToNextManeuver,
+              )}m
+            </p>
           </div>
         </div>
       `;

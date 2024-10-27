@@ -2,7 +2,7 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 function roundToNearest(value: number, unit: number): number {
-  return Math.round(value / unit) * unit
+  return Math.round(value / unit) * unit;
 }
 
 @customElement("arrival-view")
@@ -50,7 +50,7 @@ export class ArrivalView extends LitElement {
         value = roundToNearest(value, 0.1);
       }
 
-      return `${value.toLocaleString()}km`
+      return `${value.toLocaleString()}km`;
     } else {
       let value;
       if (meters > 100) {
@@ -61,7 +61,7 @@ export class ArrivalView extends LitElement {
         value = roundToNearest(meters, 5);
       }
 
-      return `${value.toLocaleString()}m`
+      return `${value.toLocaleString()}m`;
     }
   }
 
@@ -74,9 +74,21 @@ export class ArrivalView extends LitElement {
     if (this.tripState?.Navigating) {
       return html`
         <div class="arrival-view-card">
-          <p class="arrival-text">${this.getArrivalTime(this.tripState.Navigating.progress.durationRemaining)}</p>
-          <p class="arrival-text">${this.getDurationRemaining(this.tripState.Navigating.progress.durationRemaining)}</p>
-          <p class="arrival-text">${this.getDistanceRemaining(this.tripState.Navigating.progress.distanceRemaining)}</p>
+          <p class="arrival-text">
+            ${this.getArrivalTime(
+              this.tripState.Navigating.progress.durationRemaining,
+            )}
+          </p>
+          <p class="arrival-text">
+            ${this.getDurationRemaining(
+              this.tripState.Navigating.progress.durationRemaining,
+            )}
+          </p>
+          <p class="arrival-text">
+            ${this.getDistanceRemaining(
+              this.tripState.Navigating.progress.distanceRemaining,
+            )}
+          </p>
         </div>
       `;
     }

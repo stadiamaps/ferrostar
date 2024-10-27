@@ -150,6 +150,9 @@ pub struct BannerInstruction {
     pub distance_along_geometry: f64,
     pub primary: BannerContent,
     pub secondary: Option<BannerContent>,
+    // Sub-maneuver information. This is used to give additional info
+    // about the next maneuver or lane guidance.
+    pub sub: Option<BannerContent>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -173,6 +176,23 @@ pub struct BannerContent {
     /// the original travel.
     #[serde(rename = "degrees")]
     pub roundabout_exit_degrees: Option<u16>,
+    /// Extra information for displaying the instructions (ex lanes, images, etc)
+    pub components: Vec<BannerContentComponent>,
+}
+
+/// Details used to display extra information for the banner instructions.
+/// Note that while all of these are parsed, not all of them are currently
+/// in use.
+#[derive(Deserialize, Debug)]
+pub struct BannerContentComponent {
+    #[serde(rename = "type")]
+    pub component_type: Option<String>,
+    pub directions: Option<Vec<String>>,
+    pub active: Option<bool>,
+    pub image_base_url: Option<String>,
+    pub abbr: Option<String>,
+    pub abbr_priority: Option<u8>,
+    pub active_direction: Option<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -486,6 +506,21 @@ mod tests {
         assert_eq!(secondary.text, "Baltimore / Northern Virginia");
         assert_eq!(secondary.maneuver_type, Some(ManeuverType::Turn));
         assert_eq!(secondary.maneuver_modifier, Some(ManeuverModifier::Left));
+
+        let submaneuver = instruction.sub.expect("Expected submaneuver content");
+        assert_eq!(submaneuver.components.len(), 3);
+        assert_eq!(
+            submaneuver.components[0].directions,
+            Some(vec!["left".to_string()])
+        );
+        assert_eq!(
+            submaneuver.components[1].directions,
+            Some(vec!["left".to_string(), "straight".to_string()])
+        );
+        assert_eq!(
+            submaneuver.components[2].directions,
+            Some(vec!["right".to_string()])
+        );
     }
 
     #[test]

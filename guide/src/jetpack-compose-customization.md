@@ -23,7 +23,7 @@ See the [vendors page](./vendors.md) for some ideas.
 
 ### Camera
 
-TODO: Ability to override the built-in camera behavior (probably define a protocol for this).
+TODO: Docs on how this works.
 
 ### Adding map layers
 

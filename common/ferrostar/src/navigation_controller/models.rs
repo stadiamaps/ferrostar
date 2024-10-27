@@ -7,12 +7,15 @@ use alloc::vec::Vec;
 use geo::LineString;
 #[cfg(feature = "wasm-bindgen")]
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
 
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
     pub distance_to_next_maneuver: f64,
@@ -31,7 +34,8 @@ pub struct TripProgress {
 /// and [`update_user_location`](super::NavigationController::update_user_location).
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.
     Idle,
@@ -90,7 +94,8 @@ pub enum StepAdvanceStatus {
 /// Controls filtering/post-processing of user course by the [`NavigationController`].
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum CourseFiltering {
     /// Snap the user's course to the current step's linestring using the next index in the step's geometry.
     ///
@@ -105,7 +110,8 @@ pub enum CourseFiltering {
 /// and we should advance to the next step.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum StepAdvanceMode {
     /// Never advances to the next step automatically;
     /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
@@ -136,8 +142,9 @@ pub enum StepAdvanceMode {
 
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
     /// Configures when navigation advances to the next step in the route.
     pub step_advance: StepAdvanceMode,

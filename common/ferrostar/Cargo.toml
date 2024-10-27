@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.17.0"
+version = "0.19.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
@@ -40,6 +40,7 @@ getrandom = { version = "0.2.15", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
 itertools = "0.13.0"
+tsify = { version = "0.4.5", default-features = false, features = ["js"] }
 
 [build-dependencies]
 uniffi = { workspace = true, features = ["build"] }

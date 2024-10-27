@@ -31,7 +31,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
     public var minimumSafeAreaInsets: EdgeInsets
 
-    /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portait
+    /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portrait
     /// and landscape orientations.
     ///
     /// - Parameters:

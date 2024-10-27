@@ -432,6 +432,27 @@ private struct FfiConverterDouble: FfiConverterPrimitive {
     }
 }
 
+private struct FfiConverterBool: FfiConverter {
+    typealias FfiType = Int8
+    typealias SwiftType = Bool
+
+    public static func lift(_ value: Int8) throws -> Bool {
+        value != 0
+    }
+
+    public static func lower(_ value: Bool) -> Int8 {
+        value ? 1 : 0
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Bool {
+        try lift(readInt(&buf))
+    }
+
+    public static func write(_ value: Bool, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
 private struct FfiConverterString: FfiConverter {
     typealias SwiftType = String
     typealias FfiType = RustBuffer
@@ -1694,6 +1715,68 @@ public func FfiConverterTypeHeading_lower(_ value: Heading) -> RustBuffer {
 }
 
 /**
+ * The content of a visual instruction.
+ */
+public struct LaneInfo {
+    public var active: Bool
+    public var directions: [String]
+    public var activeDirection: String?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(active: Bool, directions: [String], activeDirection: String?) {
+        self.active = active
+        self.directions = directions
+        self.activeDirection = activeDirection
+    }
+}
+
+extension LaneInfo: Equatable, Hashable {
+    public static func == (lhs: LaneInfo, rhs: LaneInfo) -> Bool {
+        if lhs.active != rhs.active {
+            return false
+        }
+        if lhs.directions != rhs.directions {
+            return false
+        }
+        if lhs.activeDirection != rhs.activeDirection {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(active)
+        hasher.combine(directions)
+        hasher.combine(activeDirection)
+    }
+}
+
+public struct FfiConverterTypeLaneInfo: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LaneInfo {
+        try LaneInfo(
+            active: FfiConverterBool.read(from: &buf),
+            directions: FfiConverterSequenceString.read(from: &buf),
+            activeDirection: FfiConverterOptionString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: LaneInfo, into buf: inout [UInt8]) {
+        FfiConverterBool.write(value.active, into: &buf)
+        FfiConverterSequenceString.write(value.directions, into: &buf)
+        FfiConverterOptionString.write(value.activeDirection, into: &buf)
+    }
+}
+
+public func FfiConverterTypeLaneInfo_lift(_ buf: RustBuffer) throws -> LaneInfo {
+    try FfiConverterTypeLaneInfo.lift(buf)
+}
+
+public func FfiConverterTypeLaneInfo_lower(_ value: LaneInfo) -> RustBuffer {
+    FfiConverterTypeLaneInfo.lower(value)
+}
+
+/**
  * The current state of the simulation.
  */
 public struct LocationSimulationState {
@@ -2437,6 +2520,10 @@ public struct VisualInstruction {
      */
     public var secondaryContent: VisualInstructionContent?
     /**
+     * Optional sub-maneuver instruction content.
+     */
+    public var subContent: VisualInstructionContent?
+    /**
      * How far (in meters) from the upcoming maneuver the instruction should start being displayed
      */
     public var triggerDistanceBeforeManeuver: Double
@@ -2453,11 +2540,15 @@ public struct VisualInstruction {
             * Optional secondary instruction content.
             */ secondaryContent: VisualInstructionContent?,
         /**
+            * Optional sub-maneuver instruction content.
+            */ subContent: VisualInstructionContent?,
+        /**
             * How far (in meters) from the upcoming maneuver the instruction should start being displayed
             */ triggerDistanceBeforeManeuver: Double
     ) {
         self.primaryContent = primaryContent
         self.secondaryContent = secondaryContent
+        self.subContent = subContent
         self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
     }
 }
@@ -2470,6 +2561,9 @@ extension VisualInstruction: Equatable, Hashable {
         if lhs.secondaryContent != rhs.secondaryContent {
             return false
         }
+        if lhs.subContent != rhs.subContent {
+            return false
+        }
         if lhs.triggerDistanceBeforeManeuver != rhs.triggerDistanceBeforeManeuver {
             return false
         }
@@ -2479,6 +2573,7 @@ extension VisualInstruction: Equatable, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(primaryContent)
         hasher.combine(secondaryContent)
+        hasher.combine(subContent)
         hasher.combine(triggerDistanceBeforeManeuver)
     }
 }
@@ -2488,6 +2583,7 @@ public struct FfiConverterTypeVisualInstruction: FfiConverterRustBuffer {
         try VisualInstruction(
             primaryContent: FfiConverterTypeVisualInstructionContent.read(from: &buf),
             secondaryContent: FfiConverterOptionTypeVisualInstructionContent.read(from: &buf),
+            subContent: FfiConverterOptionTypeVisualInstructionContent.read(from: &buf),
             triggerDistanceBeforeManeuver: FfiConverterDouble.read(from: &buf)
         )
     }
@@ -2495,6 +2591,7 @@ public struct FfiConverterTypeVisualInstruction: FfiConverterRustBuffer {
     public static func write(_ value: VisualInstruction, into buf: inout [UInt8]) {
         FfiConverterTypeVisualInstructionContent.write(value.primaryContent, into: &buf)
         FfiConverterOptionTypeVisualInstructionContent.write(value.secondaryContent, into: &buf)
+        FfiConverterOptionTypeVisualInstructionContent.write(value.subContent, into: &buf)
         FfiConverterDouble.write(value.triggerDistanceBeforeManeuver, into: &buf)
     }
 }
@@ -2531,6 +2628,10 @@ public struct VisualInstructionContent {
      * would be an exit angle of 180 degrees.
      */
     public var roundaboutExitDegrees: UInt16?
+    /**
+     * Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
+     */
+    public var laneInfo: [LaneInfo]?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -2550,12 +2651,16 @@ public struct VisualInstructionContent {
             * For example, entering and exiting the roundabout in the same direction of travel
             * (as if you had gone straight, apart from the detour)
             * would be an exit angle of 180 degrees.
-            */ roundaboutExitDegrees: UInt16?
+            */ roundaboutExitDegrees: UInt16?,
+        /**
+            * Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
+            */ laneInfo: [LaneInfo]?
     ) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
         self.roundaboutExitDegrees = roundaboutExitDegrees
+        self.laneInfo = laneInfo
     }
 }
 
@@ -2573,6 +2678,9 @@ extension VisualInstructionContent: Equatable, Hashable {
         if lhs.roundaboutExitDegrees != rhs.roundaboutExitDegrees {
             return false
         }
+        if lhs.laneInfo != rhs.laneInfo {
+            return false
+        }
         return true
     }
 
@@ -2581,6 +2689,7 @@ extension VisualInstructionContent: Equatable, Hashable {
         hasher.combine(maneuverType)
         hasher.combine(maneuverModifier)
         hasher.combine(roundaboutExitDegrees)
+        hasher.combine(laneInfo)
     }
 }
 
@@ -2590,7 +2699,8 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
             text: FfiConverterString.read(from: &buf),
             maneuverType: FfiConverterOptionTypeManeuverType.read(from: &buf),
             maneuverModifier: FfiConverterOptionTypeManeuverModifier.read(from: &buf),
-            roundaboutExitDegrees: FfiConverterOptionUInt16.read(from: &buf)
+            roundaboutExitDegrees: FfiConverterOptionUInt16.read(from: &buf),
+            laneInfo: FfiConverterOptionSequenceTypeLaneInfo.read(from: &buf)
         )
     }
 
@@ -2599,6 +2709,7 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
         FfiConverterOptionTypeManeuverType.write(value.maneuverType, into: &buf)
         FfiConverterOptionTypeManeuverModifier.write(value.maneuverModifier, into: &buf)
         FfiConverterOptionUInt16.write(value.roundaboutExitDegrees, into: &buf)
+        FfiConverterOptionSequenceTypeLaneInfo.write(value.laneInfo, into: &buf)
     }
 }
 
@@ -3891,6 +4002,27 @@ private struct FfiConverterOptionSequenceString: FfiConverterRustBuffer {
     }
 }
 
+private struct FfiConverterOptionSequenceTypeLaneInfo: FfiConverterRustBuffer {
+    typealias SwiftType = [LaneInfo]?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterSequenceTypeLaneInfo.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterSequenceTypeLaneInfo.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
 private struct FfiConverterSequenceString: FfiConverterRustBuffer {
     typealias SwiftType = [String]
 
@@ -3930,6 +4062,28 @@ private struct FfiConverterSequenceTypeGeographicCoordinate: FfiConverterRustBuf
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             try seq.append(FfiConverterTypeGeographicCoordinate.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+private struct FfiConverterSequenceTypeLaneInfo: FfiConverterRustBuffer {
+    typealias SwiftType = [LaneInfo]
+
+    public static func write(_ value: [LaneInfo], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeLaneInfo.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [LaneInfo] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [LaneInfo]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            try seq.append(FfiConverterTypeLaneInfo.read(from: &buf))
         }
         return seq
     }

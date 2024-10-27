@@ -1,17 +1,17 @@
 package com.stadiamaps.ferrostar
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import com.stadiamaps.ferrostar.composeui.notification.DefaultForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
+import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
-import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
+import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
@@ -35,28 +35,38 @@ object AppModule {
   // You can also modify this file to use your preferred sources for maps and/or routing.
   // See https://stadiamaps.github.io/ferrostar/vendors.html for vendors known to work with
   // Ferrostar.
-  val stadiaApiKey: String by lazy {
-    val appInfo =
-        appContext.packageManager.getApplicationInfo(
-            appContext.packageName, PackageManager.GET_META_DATA)
-    val metaData = appInfo.metaData
-
-    metaData.getString("stadiaApiKey")!!
-  }
+  //
+  // NOTE: Don't set this directly in source code. Add a line to your local.properties file:
+  // stadiaApiKey=YOUR-API-KEY
+  val stadiaApiKey =
+      if (BuildConfig.stadiaApiKey.isBlank() || BuildConfig.stadiaApiKey == "null") {
+        null
+      } else {
+        BuildConfig.stadiaApiKey
+      }
 
   val mapStyleUrl: String by lazy {
-    "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
+    if (stadiaApiKey != null)
+        "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey"
+    else "https://demotiles.maplibre.org/style.json"
   }
 
   val valhallaEndpointUrl: URL by lazy {
-    URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
+    if (stadiaApiKey != null) {
+      URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
+    } else {
+      URL("https://valhalla1.openstreeetmap.de/route")
+    }
   }
 
   fun init(context: Context) {
     appContext = context
   }
 
-  val locationProvider: SimulatedLocationProvider by lazy { SimulatedLocationProvider() }
+  val locationProvider: LocationProvider by lazy {
+    // TODO: Make this configurable?
+    FusedLocationProvider(appContext)
+  }
   private val httpClient: OkHttpClient by lazy {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
   }
@@ -69,7 +79,7 @@ object AppModule {
     val core =
         FerrostarCore(
             valhallaEndpointURL = valhallaEndpointUrl,
-            profile = "bicycle",
+            profile = "auto",
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
@@ -79,7 +89,20 @@ object AppModule {
                         minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
                     RouteDeviationTracking.StaticThreshold(15U, 25.0),
                     CourseFiltering.SNAP_TO_ROUTE),
-            options = mapOf("costingOptions" to mapOf("bicycle" to mapOf("use_roads" to 0.2))))
+            options =
+                mapOf(
+                    "costingOptions" to
+                        // Just an example... You can set multiple costing options for any profile
+                        // in Valhalla.
+                        // If your app uses multiple routing modes, you can have a master settings
+                        // map, or construct a new one each time.
+                        mapOf(
+                            "low_speed_vehicle" to
+                                mapOf(
+                                    "vehicle_type" to "golf_cart",
+                                    "top_speed" to 32 // 24kph ~= 15mph
+                                    )),
+                    "units" to "miles"))
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!
@@ -93,13 +116,7 @@ object AppModule {
       Log.i(TAG, "Received alternate route(s): $routes")
       if (routes.isNotEmpty()) {
         // NB: Use `replaceRoute` for cases like this!
-        it.replaceRoute(
-            routes.first(),
-            NavigationControllerConfig(
-                StepAdvanceMode.RelativeLineStringDistance(
-                    minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-                RouteDeviationTracking.StaticThreshold(25U, 10.0),
-                CourseFiltering.SNAP_TO_ROUTE))
+        it.replaceRoute(routes.first())
       }
     }
 

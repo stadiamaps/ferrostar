@@ -21,6 +21,9 @@ use std::time::SystemTime;
 #[cfg(feature = "web-time")]
 use web_time::SystemTime;
 
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
+
 use std::collections::HashMap;
 use uuid::Uuid;
 
@@ -41,6 +44,8 @@ pub enum ModelError {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct GeographicCoordinate {
     /// The latitude (in degrees).
     pub lat: f64,
@@ -95,6 +100,8 @@ impl From<GeographicCoordinate> for Point {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct Waypoint {
     pub coordinate: GeographicCoordinate,
     pub kind: WaypointKind,
@@ -104,6 +111,8 @@ pub struct Waypoint {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub enum WaypointKind {
     /// Starts or ends a leg of the trip.
     ///
@@ -117,6 +126,8 @@ pub enum WaypointKind {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct BoundingBox {
     /// The southwest corner of the bounding box.
     pub sw: GeographicCoordinate,
@@ -149,6 +160,8 @@ pub struct Heading {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct CourseOverGround {
     /// The direction in which the user's device is traveling, measured in clockwise degrees from
     /// true north (N = 0, E = 90, S = 180, W = 270).
@@ -167,6 +180,8 @@ impl CourseOverGround {
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct Speed {
     /// The user's speed in meters per second.
     pub value: f64,
@@ -215,6 +230,8 @@ mod system_time_format {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct UserLocation {
     pub coordinates: GeographicCoordinate,
     /// The estimated accuracy of the coordinate (in meters)
@@ -239,6 +256,8 @@ impl From<UserLocation> for Point {
 #[derive(Clone, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct Route {
     pub geometry: Vec<GeographicCoordinate>,
     pub bbox: BoundingBox,
@@ -270,6 +289,8 @@ fn get_route_polyline(route: &Route, precision: u32) -> Result<String, ModelErro
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct RouteStep {
     /// The full route geometry for this step.
     pub geometry: Vec<GeographicCoordinate>,
@@ -351,6 +372,8 @@ impl RouteStep {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi))]
 pub struct SpokenInstruction {
     /// Plain-text instruction which can be synthesized with a TTS engine.
     pub text: String,
@@ -367,6 +390,7 @@ pub struct SpokenInstruction {
     /// NOTE: While it is possible to deterministically create UUIDs, we do not do so at this time.
     /// This should be theoretically possible though if someone cares to write up a proposal and a PR.
     #[cfg_attr(test, serde(skip_serializing))]
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "string"))]
     pub utterance_id: Uuid,
 }
 
@@ -376,6 +400,8 @@ pub struct SpokenInstruction {
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(any(test, feature = "wasm-bindgen"), derive(Serialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverType {
     Turn,
@@ -407,8 +433,11 @@ pub enum ManeuverType {
 #[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(any(test, feature = "wasm-bindgen"), derive(Serialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 #[serde(rename_all = "lowercase")]
 pub enum ManeuverModifier {
+    #[serde(rename = "uturn")]
     UTurn,
     #[serde(rename = "sharp right")]
     SharpRight,
@@ -428,6 +457,21 @@ pub enum ManeuverModifier {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct LaneInfo {
+    pub active: bool,
+    pub directions: Vec<String>,
+    pub active_direction: Option<String>,
+}
+
+/// The content of a visual instruction.
+#[derive(Debug, Clone, Eq, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct VisualInstructionContent {
     /// The text to display.
     pub text: String,
@@ -441,6 +485,8 @@ pub struct VisualInstructionContent {
     /// (as if you had gone straight, apart from the detour)
     /// would be an exit angle of 180 degrees.
     pub roundabout_exit_degrees: Option<u16>,
+    /// Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
+    pub lane_info: Option<Vec<LaneInfo>>,
 }
 
 /// An instruction for visual display (usually as banners) at a specific point along a [`RouteStep`].
@@ -448,6 +494,8 @@ pub struct VisualInstructionContent {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct VisualInstruction {
     /// The primary instruction content.
     ///
@@ -455,6 +503,8 @@ pub struct VisualInstruction {
     pub primary_content: VisualInstructionContent,
     /// Optional secondary instruction content.
     pub secondary_content: Option<VisualInstructionContent>,
+    /// Optional sub-maneuver instruction content.
+    pub sub_content: Option<VisualInstructionContent>,
     /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
     pub trigger_distance_before_maneuver: f64,
 }
