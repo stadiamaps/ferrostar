@@ -88,15 +88,6 @@ pub enum MaxSpeedUnits {
     Knots,
 }
 
-/// The local posted speed limit between a pair of coordinates.
-#[derive(Debug, Clone)]
-#[allow(dead_code)] // TODO: https://github.com/stadiamaps/ferrostar/issues/271
-pub enum MaxSpeed {
-    None { none: bool },
-    Unknown { unknown: bool },
-    Known { speed: f64, unit: MaxSpeedUnits },
-}
-
 #[derive(Deserialize, Debug)]
 pub struct RouteStep {
     /// The distance from the start of the current maneuver to the following step, in meters.
