@@ -3,7 +3,6 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class NavigatingInnerGridViewTests: XCTestCase {
-
     func test_USStyle_speedLimit_inGridView() {
         assertView {
             NavigatingInnerGridView(

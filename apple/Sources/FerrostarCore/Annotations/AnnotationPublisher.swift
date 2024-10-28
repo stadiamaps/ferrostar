@@ -43,12 +43,13 @@ public class AnnotationPublisher<Annotation: Decodable>: ObservableObject, Annot
     ///
     /// - Parameter navigationState: Ferrostar's current navigation state.
     public func configure(_ navigationState: Published<NavigationState?>.Publisher) {
-        // Important quote from Apple's Combine Docs @ https://developer.apple.com/documentation/combine/just/assign(to:)#discussion:
+        // Important quote from Apple's Combine Docs @
+        // https://developer.apple.com/documentation/combine/just/assign(to:)#discussion:
         //
         // "The assign(to:) operator manages the life cycle of the subscription, canceling the subscription
         // automatically when the Published instance deinitializes. Because of this, the assign(to:) operator
         // doesn’t return an AnyCancellable that you’re responsible for like assign(to:on:) does."
-        
+
         navigationState
             .map(decodeAnnotation)
             .receive(on: DispatchQueue.main)

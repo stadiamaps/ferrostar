@@ -2,7 +2,6 @@ import XCTest
 @testable import FerrostarCore
 
 final class ValhallaOSRMAnnotationTests: XCTestCase {
-    
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
 
@@ -71,62 +70,64 @@ final class ValhallaOSRMAnnotationTests: XCTestCase {
             )
         }
     }
-    
+
     func test_decodeFromString_withMaxSpeed() throws {
-        // Unsupported/incomplete congestion is in the json, but ignored by our `ValhallaExtendedOSRMAnnotation` Codable.
-        let jsonString = "{\"distance\":4.294596842089401,\"duration\":1,\"speed\":4.2,\"congestion\":\"low\",\"maxspeed\":{\"speed\":56,\"unit\":\"km/h\"}}"
+        // Unsupported/incomplete congestion is in the json, but ignored by our `ValhallaExtendedOSRMAnnotation`
+        // Codable.
+        let jsonString =
+            "{\"distance\":4.294596842089401,\"duration\":1,\"speed\":4.2,\"congestion\":\"low\",\"maxspeed\":{\"speed\":56,\"unit\":\"km/h\"}}"
         guard let jsonData = jsonString.data(using: .utf8) else {
             XCTFail("Could not convert string to data")
             return
         }
-        
+
         let result = try decoder.decode(ValhallaExtendedOSRMAnnotation.self, from: jsonData)
-        
+
         XCTAssertEqual(result.distance, 4.294596842089401)
         XCTAssertEqual(result.duration, 1.0)
         XCTAssertEqual(result.speed, 4.2)
         XCTAssertEqual(result.speedLimit, .speed(56.0, unit: .kilometersPerHour))
     }
-    
+
     func test_decodeFromString_incompleteModel_unlimitedMaxSpeed() throws {
         let jsonString = "{\"maxspeed\":{\"none\":true}}"
         guard let jsonData = jsonString.data(using: .utf8) else {
             XCTFail("Could not convert string to data")
             return
         }
-        
+
         let result = try decoder.decode(ValhallaExtendedOSRMAnnotation.self, from: jsonData)
-        
+
         XCTAssertNil(result.distance)
         XCTAssertNil(result.duration)
         XCTAssertNil(result.speed)
         XCTAssertEqual(result.speedLimit, .noLimit)
     }
-    
+
     func test_decodeFromString_unknownSpeed() throws {
         let jsonString = "{\"distance\":2,\"duration\":1,\"speed\":3,\"maxspeed\":{\"unknown\":true}}"
         guard let jsonData = jsonString.data(using: .utf8) else {
             XCTFail("Could not convert string to data")
             return
         }
-        
+
         let result = try decoder.decode(ValhallaExtendedOSRMAnnotation.self, from: jsonData)
-        
+
         XCTAssertEqual(result.distance, 2.0)
         XCTAssertEqual(result.duration, 1.0)
         XCTAssertEqual(result.speed, 3.0)
         XCTAssertEqual(result.speedLimit, .unknown)
     }
-    
+
     func test_decodeFromString_nilSpeed() throws {
         let jsonString = "{\"distance\":2,\"duration\":1,\"speed\":3}"
         guard let jsonData = jsonString.data(using: .utf8) else {
             XCTFail("Could not convert string to data")
             return
         }
-        
+
         let result = try decoder.decode(ValhallaExtendedOSRMAnnotation.self, from: jsonData)
-        
+
         XCTAssertEqual(result.distance, 2.0)
         XCTAssertEqual(result.duration, 1.0)
         XCTAssertEqual(result.speed, 3.0)
