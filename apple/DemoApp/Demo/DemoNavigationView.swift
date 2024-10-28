@@ -31,11 +31,10 @@ struct DemoNavigationView: View {
 
     @State private var camera: MapViewCamera = .center(initialLocation.coordinate, zoom: 14)
     @State private var snappedCamera = true
-    @State private var isMuted = false
 
     // NOTE: This is probably not ideal but works for demo purposes.
     // This causes a thread performance checker warning log.
-    @StateObject private var spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: true)
+    @StateObject private var spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
 
     init() {
         let simulated = SimulatedLocationProvider(location: initialLocation)
@@ -72,7 +71,8 @@ struct DemoNavigationView: View {
                 styleURL: style,
                 camera: $camera,
                 navigationState: ferrostarCore.state,
-                isMuted: $isMuted,
+                showMute: true,
+                spokenInstructionObserver: spokenInstructionObserver,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
                     let source = ShapeSource(identifier: "userLocation") {
@@ -152,9 +152,6 @@ struct DemoNavigationView: View {
             }
             .task {
                 await getRoutes()
-            }
-            .onChange(of: isMuted) { _, newValue in
-                spokenInstructionObserver.isMuted = newValue
             }
         }
     }

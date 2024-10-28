@@ -1,7 +1,13 @@
 import AVFoundation
+import Combine
 import FerrostarCoreFFI
 import Foundation
 
+/// An observer for spoken instruction events.
+///
+/// Both a ``DummyInstructionObserver`` and ``AVSpeechSpokenInstructionObserver``
+/// implementation are provided,
+/// but you can also swap your own for a proprietary service.
 public protocol SpokenInstructionObserver {
     /// Handles spoken instructions as they are triggered.
     ///
@@ -13,17 +19,37 @@ public protocol SpokenInstructionObserver {
     /// Stops speech and clears the queue of spoken utterances.
     func stopAndClearQueue()
 
-    var isMuted: Bool { get set }
+    var isMuted: Bool { get }
+
+    /// Mute or unmute the text-to-speech speech engine.
+    ///
+    /// - Parameter muted: Mute the text-to-speech engine if true, unmute if false.
+    func setMuted(_ muted: Bool)
 }
 
-public class AVSpeechSpokenInstructionObserver: SpokenInstructionObserver, ObservableObject {
-    @Published public var isMuted: Bool {
-        didSet {
-            if isMuted, synthesizer.isSpeaking {
-                synthesizer.stopSpeaking(at: .immediate)
-            }
-        }
+public class DummyInstructionObserver: SpokenInstructionObserver, ObservableObject {
+    @Published public private(set) var isMuted: Bool = false
+
+    public init(isMuted: Bool = false) {
+        self.isMuted = isMuted
     }
+
+    public func setMuted(_ muted: Bool) {
+        isMuted = muted
+    }
+
+    public func spokenInstructionTriggered(_: SpokenInstruction) {
+        // Do nothing
+    }
+
+    public func stopAndClearQueue() {
+        // Do nothing
+    }
+}
+
+/// Speech synthesis backed by `AVSpeechSynthesizer`.
+public class AVSpeechSpokenInstructionObserver: SpokenInstructionObserver, ObservableObject {
+    @Published public private(set) var isMuted: Bool
 
     public let synthesizer = AVSpeechSynthesizer()
 
@@ -46,6 +72,14 @@ public class AVSpeechSpokenInstructionObserver: SpokenInstructionObserver, Obser
         }
 
         synthesizer.speak(utterance)
+    }
+
+    public func setMuted(_ muted: Bool) {
+        isMuted = muted
+
+        if muted, synthesizer.isSpeaking {
+            stopAndClearQueue()
+        }
     }
 
     public func stopAndClearQueue() {

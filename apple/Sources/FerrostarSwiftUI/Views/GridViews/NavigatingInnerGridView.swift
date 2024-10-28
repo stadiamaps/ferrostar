@@ -1,19 +1,25 @@
+import FerrostarCore
 import SwiftUI
 
 /// When navigation is underway, we use this standardized grid view with pre-defined metadata and interactions.
 /// This is the default UI and can be customized to some extent. If you need more customization,
 /// use the ``InnerGridView``.
-public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView {
+public struct NavigatingInnerGridView<T: SpokenInstructionObserver & ObservableObject>: View,
+    CustomizableNavigatingInnerGridView
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     var speedLimit: Measurement<UnitSpeed>?
 
-    var showZoom: Bool
-    var onZoomIn: () -> Void
-    var onZoomOut: () -> Void
+    let showMute: Bool
+    private let spokenInstructionObserver: T
 
-    var showCentering: Bool
-    var onCenter: () -> Void
+    let showZoom: Bool
+    let onZoomIn: () -> Void
+    let onZoomOut: () -> Void
+
+    let showCentering: Bool
+    let onCenter: () -> Void
 
     // MARK: Customizable Containers
 
@@ -21,8 +27,6 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
-
-    @Binding var isMuted: Bool
 
     /// The default navigation inner grid view.
     ///
@@ -37,8 +41,10 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
     ///   - showCentering: Whether to show the centering control. This is typically determined by the Map's centering
     /// state.
-    ///   - onCenter: The action that occurs when the user taps the centering control (to re-center the
-    /// map on the user).
+    ///   - onCenter: The action that occurs when the user taps the centering control (to re-center the map on the
+    /// user).
+    ///   - showMute: Whether to show the provided mute toggle or not.
+    ///   - spokenInstructionObserver: The spoken instruction observer (for driving mute button state).
     public init(
         speedLimit: Measurement<UnitSpeed>? = nil,
         showZoom: Bool = false,
@@ -46,8 +52,8 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        isMuted: Binding<Bool>
-
+        showMute: Bool = false,
+        spokenInstructionObserver: T = DummyInstructionObserver()
     ) {
         self.speedLimit = speedLimit
         self.showZoom = showZoom
@@ -55,7 +61,8 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        _isMuted = isMuted
+        self.showMute = showMute
+        self.spokenInstructionObserver = spokenInstructionObserver
     }
 
     public var body: some View {
@@ -71,10 +78,11 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             },
             topCenter: { topCenter?() },
             topTrailing: {
-                MuteUIButton(isMuted: $isMuted)
-                    .shadow(radius: 8)
-                    .padding(.top, 16)
-
+                if showMute {
+                    MuteUIButton(spokenInstructionObserver: spokenInstructionObserver)
+                        .shadow(radius: 8)
+                        .padding(.top, 16)
+                }
             },
             midLeading: { midLeading?() },
             midCenter: {
@@ -121,7 +129,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             speedLimit: .init(value: 55, unit: .milesPerHour),
             showZoom: true,
             showCentering: true,
-            isMuted: .constant(false)
+            showMute: true
         )
         .padding(.horizontal, 16)
 

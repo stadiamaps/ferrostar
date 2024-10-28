@@ -1,5 +1,6 @@
 import SwiftUI
 import XCTest
+@testable import FerrostarCore
 @testable import FerrostarSwiftUI
 
 final class NavigatingInnerGridViewTests: XCTestCase {
@@ -21,7 +22,8 @@ final class NavigatingInnerGridViewTests: XCTestCase {
                 speedLimit: .init(value: 100, unit: .kilometersPerHour),
                 showZoom: true,
                 showCentering: true,
-                isMuted: .constant(false)
+                showMute: true,
+                spokenInstructionObserver: DummyInstructionObserver()
             )
             .environment(\.locale, .init(identifier: "fr_FR"))
             .padding()
@@ -33,7 +35,8 @@ final class NavigatingInnerGridViewTests: XCTestCase {
             NavigatingInnerGridView(
                 showZoom: true,
                 showCentering: true,
-                isMuted: .constant(true)
+                showMute: true,
+                spokenInstructionObserver: DummyInstructionObserver(isMuted: true)
             )
             .environment(\.locale, .init(identifier: "fr_FR"))
             .padding()

@@ -6,13 +6,15 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
+struct LandscapeNavigationOverlayView<T: SpokenInstructionObserver & ObservableObject>: View,
+    CustomizableNavigatingInnerGridView
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
-    private var navigationState: NavigationState?
+    private let navigationState: NavigationState?
+    private let spokenInstructionObserver: T
 
     @State private var isInstructionViewExpanded: Bool = false
-    @Binding var isMuted: Bool // Add the isMuted binding
 
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
@@ -26,6 +28,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var showCentering: Bool
     var onCenter: () -> Void
     var onTapExit: (() -> Void)?
+    let showMute: Bool
 
     init(
         navigationState: NavigationState?,
@@ -35,7 +38,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        isMuted: Binding<Bool>,
+        showMute: Bool = false,
+        spokenInstructionObserver: T = DummyInstructionObserver(),
         onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
@@ -45,7 +49,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        _isMuted = isMuted
+        self.showMute = showMute
+        self.spokenInstructionObserver = spokenInstructionObserver
         self.onTapExit = onTapExit
     }
 
@@ -91,7 +96,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                 onZoomOut: onZoomOut,
                 showCentering: showCentering,
                 onCenter: onCenter,
-                isMuted: $isMuted
+                showMute: showMute,
+                spokenInstructionObserver: spokenInstructionObserver
             )
             .innerGrid {
                 topCenter?()

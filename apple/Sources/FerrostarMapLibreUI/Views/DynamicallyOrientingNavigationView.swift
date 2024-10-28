@@ -7,15 +7,18 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView {
+public struct DynamicallyOrientingNavigationView<T: SpokenInstructionObserver & ObservableObject>: View,
+    CustomizableNavigatingInnerGridView
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     @State private var orientation = UIDevice.current.orientation
 
+    private let spokenInstructionObserver: T
+
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    @Binding var isMuted: Bool // Add the isMuted binding
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -26,6 +29,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     public var bottomTrailing: (() -> AnyView)?
 
     var onTapExit: (() -> Void)?
+    let showMute: Bool
 
     public var minimumSafeAreaInsets: EdgeInsets
 
@@ -48,14 +52,16 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
-        isMuted: Binding<Bool>,
+        showMute: Bool = false,
+        spokenInstructionObserver: T = DummyInstructionObserver(),
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
-        _isMuted = isMuted
+        self.showMute = showMute
+        self.spokenInstructionObserver = spokenInstructionObserver
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
@@ -92,7 +98,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
-                        isMuted: $isMuted,
+                        showMute: showMute,
+                        spokenInstructionObserver: spokenInstructionObserver,
                         onTapExit: onTapExit
                     )
                     .innerGrid {
@@ -113,7 +120,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
-                        isMuted: $isMuted,
+                        showMute: showMute,
+                        spokenInstructionObserver: spokenInstructionObserver,
                         onTapExit: onTapExit
                     )
                     .innerGrid {
@@ -151,8 +159,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     return DynamicallyOrientingNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state,
-        isMuted: .constant(false)
+        navigationState: state
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
@@ -171,8 +178,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     return DynamicallyOrientingNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state,
-        isMuted: .constant(false)
+        navigationState: state
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

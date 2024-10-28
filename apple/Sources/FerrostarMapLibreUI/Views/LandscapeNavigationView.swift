@@ -8,13 +8,15 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ArrivalView on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView {
+public struct LandscapeNavigationView<T: SpokenInstructionObserver & ObservableObject>: View,
+    CustomizableNavigatingInnerGridView
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    @Binding var isMuted: Bool // Add mute binding to the view
+    private let spokenInstructionObserver: T
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -23,6 +25,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
+    let showMute: Bool
 
     var onTapExit: (() -> Void)?
 
@@ -48,14 +51,16 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
-        isMuted: Binding<Bool>,
+        showMute: Bool = false,
+        spokenInstructionObserver: T = DummyInstructionObserver(),
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
-        _isMuted = isMuted
+        self.showMute = showMute
+        self.spokenInstructionObserver = spokenInstructionObserver
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
@@ -86,7 +91,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     onZoomOut: { camera.incrementZoom(by: -1) },
                     showCentering: !camera.isTrackingUserLocationWithCourse,
                     onCenter: { camera = navigationCamera },
-                    isMuted: $isMuted,
+                    showMute: showMute,
+                    spokenInstructionObserver: spokenInstructionObserver,
                     onTapExit: onTapExit
                 )
                 .innerGrid {
@@ -119,8 +125,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state,
-        isMuted: .constant(false)
+        navigationState: state
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
@@ -141,8 +146,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state,
-        isMuted: .constant(false)
+        navigationState: state
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

@@ -6,14 +6,17 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
+struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableObject>: View,
+    CustomizableNavigatingInnerGridView
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
-    private var navigationState: NavigationState?
+    private let navigationState: NavigationState?
+
+    private let spokenInstructionObserver: T
 
     @State private var isInstructionViewExpanded: Bool = false
     @State private var instructionsViewSizeWhenNotExpanded: CGSize = .zero
-    @Binding var isMuted: Bool
 
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
@@ -27,6 +30,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     var showCentering: Bool
     var onCenter: () -> Void
     var onTapExit: (() -> Void)?
+    let showMute: Bool
 
     init(
         navigationState: NavigationState?,
@@ -36,7 +40,8 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        isMuted: Binding<Bool>,
+        showMute: Bool = false,
+        spokenInstructionObserver: T = DummyInstructionObserver(),
         onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
@@ -46,7 +51,8 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        _isMuted = isMuted
+        self.showMute = showMute
+        self.spokenInstructionObserver = spokenInstructionObserver
         self.onTapExit = onTapExit
     }
 
@@ -66,7 +72,8 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                     onZoomOut: onZoomOut,
                     showCentering: showCentering,
                     onCenter: onCenter,
-                    isMuted: $isMuted
+                    showMute: showMute,
+                    spokenInstructionObserver: spokenInstructionObserver
                 )
                 .innerGrid {
                     topCenter?()

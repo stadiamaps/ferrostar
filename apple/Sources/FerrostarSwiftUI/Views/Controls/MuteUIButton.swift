@@ -1,17 +1,15 @@
+import FerrostarCore
+import FerrostarCoreFFI
 import SwiftUI
 
-public struct MuteUIButton: View {
-    @Binding public var isMuted: Bool
-
-    public init(isMuted: Binding<Bool>) {
-        _isMuted = isMuted
-    }
+public struct MuteUIButton<T: SpokenInstructionObserver & ObservableObject>: View {
+    @ObservedObject var spokenInstructionObserver: T
 
     public var body: some View {
         Button(action: {
-            isMuted.toggle()
+            spokenInstructionObserver.setMuted(!spokenInstructionObserver.isMuted)
         }) {
-            Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.2.fill")
+            Image(systemName: spokenInstructionObserver.isMuted ? "speaker.slash.fill" : "speaker.2.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
@@ -25,5 +23,5 @@ public struct MuteUIButton: View {
 }
 
 #Preview {
-    MuteUIButton(isMuted: .constant(false))
+    MuteUIButton(spokenInstructionObserver: DummyInstructionObserver())
 }
