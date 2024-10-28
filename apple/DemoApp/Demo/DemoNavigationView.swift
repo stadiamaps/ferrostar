@@ -56,7 +56,7 @@ struct DemoNavigationView: View {
             locationProvider: locationProvider,
             navigationControllerConfig: config,
             options: ["costing_options": ["bicycle": ["use_roads": 0.2]]],
-            annotation: AnnotationPublisher<ValhallaOSRMAnnotation>.valhallaOSRM()
+            annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate

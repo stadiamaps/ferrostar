@@ -19,7 +19,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     private let userLayers: [StyleLayerDefinition]
 
     public var speedLimit: Measurement<UnitSpeed>?
-    public var speedLimitStyle: SpeedLimitView.SignageStyle = .viennaConvention
+    public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?

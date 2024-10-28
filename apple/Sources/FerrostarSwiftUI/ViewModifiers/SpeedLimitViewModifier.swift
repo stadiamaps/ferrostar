@@ -4,7 +4,7 @@ import SwiftUI
 /// An extension for a NavigationView that can host a SpeedLimitView.
 public protocol SpeedLimitViewHost where Self: View {
     var speedLimit: Measurement<UnitSpeed>? { get set }
-    var speedLimitStyle: SpeedLimitView.SignageStyle { get set }
+    var speedLimitStyle: SpeedLimitView.SignageStyle? { get set }
 }
 
 public extension SpeedLimitViewHost {

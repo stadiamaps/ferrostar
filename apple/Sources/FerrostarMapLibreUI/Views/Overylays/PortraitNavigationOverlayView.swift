@@ -20,7 +20,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     var bottomTrailing: (() -> AnyView)?
 
     var speedLimit: Measurement<UnitSpeed>?
-    var speedLimitStyle: SpeedLimitView.SignageStyle
+    var speedLimitStyle: SpeedLimitView.SignageStyle?
     var showZoom: Bool
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
@@ -31,7 +31,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
-        speedLimitStyle: SpeedLimitView.SignageStyle = .viennaConvention,
+        speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},

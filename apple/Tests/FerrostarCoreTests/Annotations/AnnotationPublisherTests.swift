@@ -10,7 +10,7 @@ final class AnnotationPublisherTests: XCTestCase {
     var cancellables = Set<AnyCancellable>()
 
     func testSpeedLimitConversion() throws {
-        let annotation = AnnotationPublisher<ValhallaOSRMAnnotation>.valhallaOSRM()
+        let annotation = AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
         annotation.configure($fakeNavigationState)
 
         let exp = expectation(description: "speed limit converted")
@@ -25,7 +25,7 @@ final class AnnotationPublisherTests: XCTestCase {
             .store(in: &cancellables)
 
         let annotationJson = try encode(
-            ValhallaOSRMAnnotation(
+            ValhallaExtendedOSRMAnnotation(
                 speedLimit: .speed(15, unit: .milesPerHour),
                 speed: nil,
                 distance: nil,
@@ -40,7 +40,7 @@ final class AnnotationPublisherTests: XCTestCase {
     func testInvalidJSON() throws {
         let exp = expectation(description: "json decoder error")
 
-        let annotation = AnnotationPublisher<ValhallaOSRMAnnotation>.valhallaOSRM { error in
+        let annotation = AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM { error in
             XCTAssert(error is DecodingError)
             exp.fulfill()
         }
@@ -58,7 +58,7 @@ final class AnnotationPublisherTests: XCTestCase {
     }
 
     func testUnhandledException() throws {
-        let annotation = AnnotationPublisher<ValhallaOSRMAnnotation>.valhallaOSRM()
+        let annotation = AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
         annotation.configure($fakeNavigationState)
 
         let exp = expectation(description: "speed limit converted")
@@ -75,7 +75,7 @@ final class AnnotationPublisherTests: XCTestCase {
         fakeNavigationState = makeNavigationState("broken-json")
 
         let annotationJson = try encode(
-            ValhallaOSRMAnnotation(
+            ValhallaExtendedOSRMAnnotation(
                 speedLimit: .unknown,
                 speed: nil,
                 distance: nil,
@@ -86,7 +86,7 @@ final class AnnotationPublisherTests: XCTestCase {
         fakeNavigationState = makeNavigationState(annotationJson)
 
         let annotationJsonTwo = try encode(
-            ValhallaOSRMAnnotation(
+            ValhallaExtendedOSRMAnnotation(
                 speedLimit: .speed(15, unit: .kilometersPerHour),
                 speed: nil,
                 distance: nil,
@@ -125,7 +125,7 @@ final class AnnotationPublisherTests: XCTestCase {
         )
     }
 
-    func encode(_ annotation: ValhallaOSRMAnnotation) throws -> String {
+    func encode(_ annotation: ValhallaExtendedOSRMAnnotation) throws -> String {
         let data = try JSONEncoder().encode(annotation)
         return String(data: data, encoding: .utf8)!
     }
