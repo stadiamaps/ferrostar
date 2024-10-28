@@ -1,7 +1,10 @@
 import Foundation
 
-/// A Valhalla OSRM flavored annotations object.
-public struct ValhallaOSRMAnnotation: Codable, Equatable, Hashable {
+/// A Valhalla extended OSRM annotation object.
+///
+/// Describes attributes about a segment of an edge between two points
+/// in a route step.
+public struct ValhallaExtendedOSRMAnnotation: Codable, Equatable, Hashable {
     enum CodingKeys: String, CodingKey {
         case speedLimit = "maxspeed"
         case speed
@@ -9,28 +12,28 @@ public struct ValhallaOSRMAnnotation: Codable, Equatable, Hashable {
         case duration
     }
 
-    /// The speed limit for the current line segment.
+    /// The speed limit of the segment.
     public let speedLimit: MaxSpeed?
 
-    /// The recommended travel speed in meters per second.
+    /// The estimated speed of travel for the segment, in meters per second.
     public let speed: Double?
 
-    /// The distance in meters of the geometry line segment.
+    /// The distance in meters of the segment.
     public let distance: Double?
 
-    /// The duration in seconds of the geometry line segment.
+    /// The estimated time to traverse the segment, in seconds.
     public let duration: Double?
 }
 
 public extension AnnotationPublisher {
-    /// Create a Valhalla OSRM flavored annotation publisher
+    /// Create a Valhalla extended OSRM annotation publisher
     ///
     /// - Parameter onError: An optional error closure (runs when a `DecoderError` occurs)
     /// - Returns: The annotation publisher.
-    static func valhallaOSRM(
+    static func valhallaExtendedOSRM(
         onError: @escaping (Error) -> Void = { _ in }
-    ) -> AnnotationPublisher<ValhallaOSRMAnnotation> {
-        AnnotationPublisher<ValhallaOSRMAnnotation>(
+    ) -> AnnotationPublisher<ValhallaExtendedOSRMAnnotation> {
+        AnnotationPublisher<ValhallaExtendedOSRMAnnotation>(
             mapSpeedLimit: {
                 $0?.speedLimit?.measurementValue
             },

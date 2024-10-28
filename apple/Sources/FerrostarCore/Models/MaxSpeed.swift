@@ -15,7 +15,7 @@ public enum MaxSpeed: Codable, Equatable, Hashable {
     }
 
     /// There is no speed limit (it's unlimited, e.g. German Autobahn)
-    case none
+    case noLimit
 
     /// The speed limit is not known.
     case unknown
