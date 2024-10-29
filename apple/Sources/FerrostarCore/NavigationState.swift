@@ -61,9 +61,9 @@ public struct NavigationState: Hashable {
     public var isNavigating: Bool {
         switch tripState {
         case .navigating:
-            return true
+            true
         case .complete, .idle:
-            return false
+            false
         }
     }
 }
