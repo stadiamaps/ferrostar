@@ -2,16 +2,14 @@ import SwiftUI
 
 public struct CurrentRoadNameView: View {
     let currentRoadName: String?
-    let theme: any RoadNameViewTheme
+    var theme: any RoadNameViewTheme = DefaultRoadNameViewTheme()
     var padding: EdgeInsets = .init(top: 12, leading: 12, bottom: 12, trailing: 12)
     var shape: AnyShape = .init(RoundedRectangle(cornerRadius: 48))
     var borderWidth: CGFloat = 1
 
-    public init(currentRoadName: String?,
-                theme: any RoadNameViewTheme = DefaultRoadNameViewTheme())
+    public init(currentRoadName: String?)
     {
         self.currentRoadName = currentRoadName
-        self.theme = theme
     }
 
     public var body: some View {
@@ -43,9 +41,16 @@ public extension CurrentRoadNameView {
     }
 
     /// Sets the width of the border stroke.
-    func borderWidth(_: CGFloat) -> Self {
+    func borderWidth(_ borderWidth: CGFloat) -> Self {
         var newSelf = self
         newSelf.borderWidth = borderWidth
+        return newSelf
+    }
+
+    /// Sets the width of the border stroke.
+    func theme(_ theme: any RoadNameViewTheme) -> Self {
+        var newSelf = self
+        newSelf.theme = theme
         return newSelf
     }
 }

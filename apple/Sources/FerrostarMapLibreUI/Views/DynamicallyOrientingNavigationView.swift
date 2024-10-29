@@ -59,7 +59,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
         @ViewBuilder currentRoadNameViewBuilder: @escaping (String?) -> AnyView = { name in
-            AnyView(CurrentRoadNameView(currentRoadName: name, theme: DefaultRoadNameViewTheme()))
+            AnyView(CurrentRoadNameView(currentRoadName: name))
         }
     ) {
         self.styleURL = styleURL

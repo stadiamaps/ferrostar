@@ -49,7 +49,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         onCenter: @escaping () -> Void = {},
         onTapExit: (() -> Void)? = nil,
         @ViewBuilder currentRoadNameViewBuilder: (String?) -> AnyView = { name in
-            AnyView(CurrentRoadNameView(currentRoadName: name, theme: DefaultRoadNameViewTheme()))
+            AnyView(CurrentRoadNameView(currentRoadName: name))
         }
     ) {
         self.navigationState = navigationState

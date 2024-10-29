@@ -52,7 +52,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         onCenter: @escaping () -> Void = {},
         onTapExit: (() -> Void)? = nil,
         @ViewBuilder currentRoadNameViewBuilder: (String?) -> AnyView = { name in
-            AnyView(CurrentRoadNameView(currentRoadName: name, theme: DefaultRoadNameViewTheme()))
+            AnyView(CurrentRoadNameView(currentRoadName: name))
         }
     ) {
         self.navigationState = navigationState
