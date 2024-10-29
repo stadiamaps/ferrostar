@@ -16,7 +16,7 @@ struct DemoNavigationView: View {
     private let navigationDelegate = NavigationDelegate()
     // NOTE: This is probably not ideal but works for demo purposes.
     // This causes a thread performance checker warning log.
-    private let spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
+    private let spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer(isMuted: false)
 
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
@@ -79,6 +79,8 @@ struct DemoNavigationView: View {
                 styleURL: style,
                 camera: $camera,
                 navigationState: ferrostarCore.state,
+                isMuted: spokenInstructionObserver.isMuted,
+                onTapMute: spokenInstructionObserver.toggleMute,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
                     let source = ShapeSource(identifier: "userLocation") {

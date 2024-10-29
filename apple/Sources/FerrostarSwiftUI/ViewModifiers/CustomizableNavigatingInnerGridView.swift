@@ -1,5 +1,6 @@
 import SwiftUI
 
+// TODO: Extend this with the more mundane visibility properties too (ex: show/hide controls)
 public protocol CustomizableNavigatingInnerGridView where Self: View {
     var topCenter: (() -> AnyView)? { get set }
     var topTrailing: (() -> AnyView)? { get set }

@@ -57,4 +57,13 @@ public struct NavigationState: Hashable {
 
         return annotationJson
     }
+
+    public var isNavigating: Bool {
+        switch tripState {
+        case .navigating:
+            true
+        case .complete, .idle:
+            false
+        }
+    }
 }

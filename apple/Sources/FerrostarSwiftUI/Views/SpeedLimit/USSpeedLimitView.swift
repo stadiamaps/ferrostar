@@ -45,7 +45,7 @@ public struct USStyleSpeedLimitView: View {
                     .minimumScaleFactor(0.4)
                     .padding(.horizontal, 2)
 
-                Text(unitFormatter.string(from: speedLimit.unit))
+                Text(speedLimit.unit.symbol)
                     .font(.caption2.bold())
                     .foregroundStyle(Color.secondary)
                     .padding(.horizontal, 2)
