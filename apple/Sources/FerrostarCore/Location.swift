@@ -156,8 +156,16 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
         lastLocation = location
     }
 
-    public func setSimulatedRoute(_ route: Route, resampleDistance: Double = 10) throws {
-        simulationState = try locationSimulationFromRoute(route: route, resampleDistance: resampleDistance)
+    public func setSimulatedRoute(
+        _ route: Route,
+        resampleDistance: Double = 10,
+        bias: LocationBias = .none
+    ) throws {
+        simulationState = try locationSimulationFromRoute(
+            route: route,
+            resampleDistance: resampleDistance,
+            bias: bias
+        )
         lastLocation = simulationState?.currentLocation
     }
 
