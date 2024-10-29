@@ -153,7 +153,6 @@ struct DemoNavigationView: View {
             .task {
                 await getRoutes()
             }
-            .environment(\.navigationFormatterCollection, FoundationFormatterCollection())
         }
     }
 
