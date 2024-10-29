@@ -3,8 +3,8 @@ import SwiftUI
 public struct CurrentRoadNameView: View {
     let currentRoadName: String?
     let theme: any RoadNameViewTheme
-    var padding: EdgeInsets = EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
-    var shape: AnyShape = AnyShape(RoundedRectangle(cornerRadius: 48))
+    var padding: EdgeInsets = .init(top: 12, leading: 12, bottom: 12, trailing: 12)
+    var shape: AnyShape = .init(RoundedRectangle(cornerRadius: 48))
     var borderWidth: CGFloat = 1
 
     public init(currentRoadName: String?,
@@ -36,14 +36,14 @@ public extension CurrentRoadNameView {
     }
 
     /// Sets the shape for clipping and border stroke.
-    func shape<T: Shape>(_ shape: T) -> Self {
+    func shape(_ shape: some Shape) -> Self {
         var newSelf = self
         newSelf.shape = AnyShape(shape)
         return newSelf
     }
 
     /// Sets the width of the border stroke.
-    func borderWidth(_ width: CGFloat) -> Self {
+    func borderWidth(_: CGFloat) -> Self {
         var newSelf = self
         newSelf.borderWidth = borderWidth
         return newSelf
