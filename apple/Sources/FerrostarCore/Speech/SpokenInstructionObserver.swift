@@ -8,6 +8,7 @@ public class SpokenInstructionObserver: ObservableObject {
     @Published public private(set) var isMuted: Bool
 
     private let synthesizer: SpeechSynthesizer
+    private let queue = DispatchQueue(label: "ferrostar-spoken-instruction-observer", qos: .default)
 
     /// Create a spoken instruction observer with any ``SpeechSynthesizer``
     ///
@@ -36,20 +37,21 @@ public class SpokenInstructionObserver: ObservableObject {
             AVSpeechUtterance(string: instruction.text)
         }
 
-        synthesizer.speak(utterance)
+        queue.async {
+            self.synthesizer.speak(utterance)
+        }
     }
 
     /// Toggle the mute.
     public func toggleMute() {
-        // TODO: We flip the publisher before actually stopping the synthesizer for a responsive.
-        //      But this still seems a little jumpy/slow. We may want to use some Tasks/concurrency
-        //      to separate UI on main, and speech on another queue.
         let isCurrentlyMuted = isMuted
         isMuted = !isCurrentlyMuted
 
         // This used to have `synthesizer.isSpeaking`, but I think we want to run it regardless.
         if isMuted {
-            stopAndClearQueue()
+            queue.async {
+                self.stopAndClearQueue()
+            }
         }
     }
 
