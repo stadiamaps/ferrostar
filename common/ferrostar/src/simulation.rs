@@ -140,11 +140,7 @@ pub fn location_simulation_from_coordinates(
                 LocationBias::None => 0.0,
                 LocationBias::Left(m) | LocationBias::Right(m) | LocationBias::Random(m) => m,
             };
-
-            // let current_point = Point::from(*current);
-            // let next_point = Point::from(*next);
-            // let bearing = current_point.geodesic_bearing(next_point);
-
+            
             let current_location = UserLocation {
                 coordinates: jittered_current,
                 horizontal_accuracy: accuracy,
