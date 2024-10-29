@@ -16,7 +16,7 @@ struct DemoNavigationView: View {
     private let navigationDelegate = NavigationDelegate()
     // NOTE: This is probably not ideal but works for demo purposes.
     // This causes a thread performance checker warning log.
-    private let spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
+    private let spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer(isMuted: false)
 
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
@@ -55,7 +55,8 @@ struct DemoNavigationView: View {
             profile: "bicycle",
             locationProvider: locationProvider,
             navigationControllerConfig: config,
-            options: ["costing_options": ["bicycle": ["use_roads": 0.2]]]
+            options: ["costing_options": ["bicycle": ["use_roads": 0.2]]],
+            annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
@@ -78,6 +79,8 @@ struct DemoNavigationView: View {
                 styleURL: style,
                 camera: $camera,
                 navigationState: ferrostarCore.state,
+                isMuted: spokenInstructionObserver.isMuted,
+                onTapMute: spokenInstructionObserver.toggleMute,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
                     let source = ShapeSource(identifier: "userLocation") {
@@ -89,6 +92,10 @@ struct DemoNavigationView: View {
                     }
                     CircleStyleLayer(identifier: "foo", source: source)
                 }
+            )
+            .navigationSpeedLimit(
+                speedLimit: ferrostarCore.annotation?.speedLimit,
+                speedLimitStyle: .usStyle
             )
             .innerGrid(
                 topCenter: {

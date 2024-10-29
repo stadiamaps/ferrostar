@@ -9,7 +9,7 @@ import SwiftUI
 struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
-    private var navigationState: NavigationState?
+    private let navigationState: NavigationState?
 
     @State private var isInstructionViewExpanded: Bool = false
 
@@ -19,17 +19,29 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var bottomTrailing: (() -> AnyView)?
 
     var speedLimit: Measurement<UnitSpeed>?
+    var speedLimitStyle: SpeedLimitView.SignageStyle?
+
     var showZoom: Bool
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
+
     var showCentering: Bool
     var onCenter: () -> Void
+
     var onTapExit: (() -> Void)?
     let currentRoadNameView: AnyView
+
+    let showMute: Bool
+    let isMuted: Bool
+    let onMute: () -> Void
 
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
+        speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
+        isMuted: Bool,
+        showMute: Bool = true,
+        onMute: @escaping () -> Void,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
@@ -42,6 +54,10 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
+        self.speedLimitStyle = speedLimitStyle
+        self.isMuted = isMuted
+        self.onMute = onMute
+        self.showMute = showMute
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
@@ -95,6 +111,10 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
             // view appears
             NavigatingInnerGridView(
                 speedLimit: speedLimit,
+                speedLimitStyle: speedLimitStyle,
+                isMuted: isMuted,
+                showMute: showMute,
+                onMute: onMute,
                 showZoom: showZoom,
                 onZoomIn: onZoomIn,
                 onZoomOut: onZoomOut,

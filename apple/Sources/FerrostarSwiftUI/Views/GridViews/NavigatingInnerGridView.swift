@@ -1,3 +1,4 @@
+import FerrostarCore
 import SwiftUI
 
 /// When navigation is underway, we use this standardized grid view with pre-defined metadata and interactions.
@@ -7,13 +8,18 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     var speedLimit: Measurement<UnitSpeed>?
+    var speedLimitStyle: SpeedLimitView.SignageStyle?
 
-    var showZoom: Bool
-    var onZoomIn: () -> Void
-    var onZoomOut: () -> Void
+    let showZoom: Bool
+    let onZoomIn: () -> Void
+    let onZoomOut: () -> Void
 
-    var showCentering: Bool
-    var onCenter: () -> Void
+    let showCentering: Bool
+    let onCenter: () -> Void
+
+    let showMute: Bool
+    let isMuted: Bool
+    let onMute: () -> Void
 
     // MARK: Customizable Containers
 
@@ -30,15 +36,24 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     ///
     /// - Parameters:
     ///   - speedLimit: The speed limit provided by the navigation state (or nil)
+    ///   - speedLimitStyle: The speed limit style: Vienna Convention (most of the world) or MUTCD (US primarily).
+    ///   - isMuted: Is speech currently muted?
+    ///   - showMute: Whether to show the provided mute button or not.
     ///   - showZoom: Whether to show the provided zoom control or not.
     ///   - onZoomIn: The on zoom in tapped action. This should be used to zoom the user in one increment.
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
     ///   - showCentering: Whether to show the centering control. This is typically determined by the Map's centering
     /// state.
-    ///   - onCenter: The action that occurs when the user taps the centering control (to re-center the
-    /// map on the user).
+    ///   - onCenter: The action that occurs when the user taps the centering control (to re-center the map on the
+    /// user).
+    ///   - showMute: Whether to show the provided mute toggle or not.
+    ///   - spokenInstructionObserver: The spoken instruction observer (for driving mute button state).
     public init(
         speedLimit: Measurement<UnitSpeed>? = nil,
+        speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
+        isMuted: Bool,
+        showMute: Bool = true,
+        onMute: @escaping () -> Void,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
@@ -46,6 +61,10 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         onCenter: @escaping () -> Void = {}
     ) {
         self.speedLimit = speedLimit
+        self.speedLimitStyle = speedLimitStyle
+        self.isMuted = isMuted
+        self.showMute = showMute
+        self.onMute = onMute
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
@@ -56,16 +75,22 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     public var body: some View {
         InnerGridView(
             topLeading: {
-                if let speedLimit {
+                if let speedLimit, let speedLimitStyle {
                     SpeedLimitView(
                         speedLimit: speedLimit,
+                        signageStyle: speedLimitStyle,
                         valueFormatter: formatterCollection.speedValueFormatter,
                         unitFormatter: formatterCollection.speedWithUnitsFormatter
                     )
                 }
             },
             topCenter: { topCenter?() },
-            topTrailing: { topTrailing?() },
+            topTrailing: {
+                if showMute {
+                    MuteUIButton(isMuted: isMuted, action: onMute)
+                        .shadow(radius: 8)
+                }
+            },
             midLeading: { midLeading?() },
             midCenter: {
                 // This view does not allow center content.
@@ -109,8 +134,10 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
 
         NavigatingInnerGridView(
             speedLimit: .init(value: 55, unit: .milesPerHour),
-            showZoom: true,
-            showCentering: true
+            speedLimitStyle: .viennaConvention,
+            isMuted: true,
+            showMute: true,
+            onMute: {}
         )
         .padding(.horizontal, 16)
 

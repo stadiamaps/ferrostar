@@ -47,12 +47,24 @@ public struct NavigationState: Hashable {
         return remainingSteps
     }
 
+    /// The current geometry segment's annotations in a JSON string.
+    ///
+    /// A segment is the line between two coordinates on the geometry.
     public var currentAnnotationJSON: String? {
         guard case let .navigating(_, _, _, _, _, _, _, _, annotationJson) = tripState else {
             return nil
         }
 
         return annotationJson
+    }
+
+    public var isNavigating: Bool {
+        switch tripState {
+        case .navigating:
+            true
+        case .complete, .idle:
+            false
+        }
     }
 
     public var currentRoadName: String? {
