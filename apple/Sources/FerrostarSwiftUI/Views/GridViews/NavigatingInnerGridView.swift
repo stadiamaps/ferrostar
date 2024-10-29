@@ -36,7 +36,9 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     ///
     /// - Parameters:
     ///   - speedLimit: The speed limit provided by the navigation state (or nil)
-    ///   - speedLimitStyle: The speed limit style (Vienna Convention or MUTCD)
+    ///   - speedLimitStyle: The speed limit style: Vienna Convention (most of the world) or MUTCD (US primarily).
+    ///   - isMuted: Is speech currently muted?
+    ///   - showMute: Whether to show the provided mute button or not.
     ///   - showZoom: Whether to show the provided zoom control or not.
     ///   - onZoomIn: The on zoom in tapped action. This should be used to zoom the user in one increment.
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
