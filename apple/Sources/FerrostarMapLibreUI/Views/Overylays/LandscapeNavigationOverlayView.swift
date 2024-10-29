@@ -6,13 +6,10 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct LandscapeNavigationOverlayView<T: SpokenInstructionObserver & ObservableObject>: View,
-    CustomizableNavigatingInnerGridView
-{
+struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     private let navigationState: NavigationState?
-    private let spokenInstructionObserver: T
 
     @State private var isInstructionViewExpanded: Bool = false
 
@@ -22,35 +19,46 @@ struct LandscapeNavigationOverlayView<T: SpokenInstructionObserver & ObservableO
     var bottomTrailing: (() -> AnyView)?
 
     var speedLimit: Measurement<UnitSpeed>?
+    var speedLimitStyle: SpeedLimitView.SignageStyle?
+
     var showZoom: Bool
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
+
     var showCentering: Bool
     var onCenter: () -> Void
+
     var onTapExit: (() -> Void)?
+
     let showMute: Bool
+    let isMuted: Bool
+    let onMute: () -> Void
 
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
+        speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
+        isMuted: Bool,
+        showMute: Bool = true,
+        onMute: @escaping () -> Void,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        showMute: Bool = false,
-        spokenInstructionObserver: T = DummyInstructionObserver(),
         onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
+        self.speedLimitStyle = speedLimitStyle
+        self.isMuted = isMuted
+        self.onMute = onMute
+        self.showMute = showMute
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        self.showMute = showMute
-        self.spokenInstructionObserver = spokenInstructionObserver
         self.onTapExit = onTapExit
     }
 
@@ -91,13 +99,15 @@ struct LandscapeNavigationOverlayView<T: SpokenInstructionObserver & ObservableO
             // view appears
             NavigatingInnerGridView(
                 speedLimit: speedLimit,
+                speedLimitStyle: speedLimitStyle,
+                isMuted: isMuted,
+                showMute: showMute,
+                onMute: onMute,
                 showZoom: showZoom,
                 onZoomIn: onZoomIn,
                 onZoomOut: onZoomOut,
                 showCentering: showCentering,
-                onCenter: onCenter,
-                showMute: showMute,
-                spokenInstructionObserver: spokenInstructionObserver
+                onCenter: onCenter
             )
             .innerGrid {
                 topCenter?()

@@ -14,6 +14,9 @@ private let initialLocation = CLLocation(latitude: 37.332726,
 
 struct DemoNavigationView: View {
     private let navigationDelegate = NavigationDelegate()
+    // NOTE: This is probably not ideal but works for demo purposes.
+    // This causes a thread performance checker warning log.
+    private let spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer(isMuted: false)
 
     private var locationProvider: LocationProviding
     @ObservedObject private var ferrostarCore: FerrostarCore
@@ -31,10 +34,6 @@ struct DemoNavigationView: View {
 
     @State private var camera: MapViewCamera = .center(initialLocation.coordinate, zoom: 14)
     @State private var snappedCamera = true
-
-    // NOTE: This is probably not ideal but works for demo purposes.
-    // This causes a thread performance checker warning log.
-    @StateObject private var spokenInstructionObserver = AVSpeechSpokenInstructionObserver(isMuted: false)
 
     init() {
         let simulated = SimulatedLocationProvider(location: initialLocation)
@@ -56,10 +55,19 @@ struct DemoNavigationView: View {
             profile: "bicycle",
             locationProvider: locationProvider,
             navigationControllerConfig: config,
-            options: ["costing_options": ["bicycle": ["use_roads": 0.2]]]
+            options: ["costing_options": ["bicycle": ["use_roads": 0.2]]],
+            annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
+
+        // Initialize text-to-speech; note that this is NOT automatic.
+        // You must set a spokenInstructionObserver.
+        // Fortunately, this is pretty easy with the provided class
+        // backed by AVSpeechSynthesizer.
+        // You can customize the instance it further as needed,
+        // or replace with your own.
+        ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
     }
 
     var body: some View {
@@ -71,8 +79,8 @@ struct DemoNavigationView: View {
                 styleURL: style,
                 camera: $camera,
                 navigationState: ferrostarCore.state,
-                showMute: true,
-                spokenInstructionObserver: spokenInstructionObserver,
+                isMuted: spokenInstructionObserver.isMuted,
+                onTapMute: spokenInstructionObserver.toggleMute,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
                     let source = ShapeSource(identifier: "userLocation") {
@@ -84,6 +92,10 @@ struct DemoNavigationView: View {
                     }
                     CircleStyleLayer(identifier: "foo", source: source)
                 }
+            )
+            .navigationSpeedLimit(
+                speedLimit: ferrostarCore.annotation?.speedLimit,
+                speedLimitStyle: .usStyle
             )
             .innerGrid(
                 topCenter: {
@@ -140,16 +152,6 @@ struct DemoNavigationView: View {
                     }
                 }
             )
-            .onAppear {
-                // Initialize text-to-speech; note that this is NOT automatic.
-                // You must set a spokenInstructionObserver.
-                // Fortunately, this is pretty easy with the provided class
-                // backed by AVSpeechSynthesizer.
-                // You can customize the instance it further as needed,
-                // or replace with your own.
-                // NOTE: This is in onAppear because the StateObject is not initialized until *after* init is complete.
-                ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
-            }
             .task {
                 await getRoutes()
             }

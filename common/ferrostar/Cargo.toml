@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.17.0"
+version = "0.20.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]

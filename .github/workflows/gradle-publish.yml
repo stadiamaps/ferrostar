@@ -32,7 +32,7 @@ jobs:
     - name: Install cargo-ndk
       run: cargo install cargo-ndk
 
-    - name: Creat local.properties (required for cargo-ndk and the demo app)
+    - name: Create local.properties (required for cargo-ndk and the demo app)
       run: echo 'stadiaApiKey=' > local.properties
       working-directory: android
 

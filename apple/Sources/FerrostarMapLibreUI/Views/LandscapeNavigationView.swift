@@ -8,25 +8,26 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ArrivalView on the
 /// leading half of the screen.
-public struct LandscapeNavigationView<T: SpokenInstructionObserver & ObservableObject>: View,
-    CustomizableNavigatingInnerGridView
-{
+public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    private let spokenInstructionObserver: T
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+
+    public var speedLimit: Measurement<UnitSpeed>?
+    public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
-    let showMute: Bool
 
+    let isMuted: Bool
+    let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets
@@ -50,17 +51,17 @@ public struct LandscapeNavigationView<T: SpokenInstructionObserver & ObservableO
         camera: Binding<MapViewCamera>,
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
+        isMuted: Bool,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
-        showMute: Bool = false,
-        spokenInstructionObserver: T = DummyInstructionObserver(),
+        onTapMute: @escaping () -> Void,
         onTapExit: (() -> Void)? = nil,
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
+        self.isMuted = isMuted
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
-        self.showMute = showMute
-        self.spokenInstructionObserver = spokenInstructionObserver
+        self.onTapMute = onTapMute
         self.onTapExit = onTapExit
 
         userLayers = makeMapContent()
@@ -85,14 +86,16 @@ public struct LandscapeNavigationView<T: SpokenInstructionObserver & ObservableO
 
                 LandscapeNavigationOverlayView(
                     navigationState: navigationState,
-                    speedLimit: nil,
+                    speedLimit: speedLimit,
+                    speedLimitStyle: speedLimitStyle,
+                    isMuted: isMuted,
+                    showMute: true,
+                    onMute: onTapMute,
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
                     showCentering: !camera.isTrackingUserLocationWithCourse,
                     onCenter: { camera = navigationCamera },
-                    showMute: showMute,
-                    spokenInstructionObserver: spokenInstructionObserver,
                     onTapExit: onTapExit
                 )
                 .innerGrid {
@@ -125,7 +128,9 @@ public struct LandscapeNavigationView<T: SpokenInstructionObserver & ObservableO
     return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state
+        navigationState: state,
+        isMuted: true,
+        onTapMute: {}
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }
@@ -146,7 +151,9 @@ public struct LandscapeNavigationView<T: SpokenInstructionObserver & ObservableO
     return LandscapeNavigationView(
         styleURL: URL(string: "https://demotiles.maplibre.org/style.json")!,
         camera: .constant(.center(userLocation.clLocation.coordinate, zoom: 12)),
-        navigationState: state
+        navigationState: state,
+        isMuted: true,
+        onTapMute: {}
     )
     .navigationFormatterCollection(FoundationFormatterCollection(distanceFormatter: formatter))
 }

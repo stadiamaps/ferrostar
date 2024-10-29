@@ -11,7 +11,11 @@ plugins {
     alias libs.plugins.kotlinSerialization apply false
 }
 
+ext {
+    SKIP_SIGNING_PROPERTY = "skip.signing"
+}
+
 allprojects {
     group = "com.stadiamaps.ferrostar"
-    version = "0.17.0"
+    version = "0.20.0"
 }

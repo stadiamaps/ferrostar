@@ -19,12 +19,6 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -53,7 +47,9 @@ dependencies {
 
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
-    signAllPublications()
+    if (!project.hasProperty(SKIP_SIGNING_PROPERTY)) {
+        signAllPublications()
+    }
 
     configure(new AndroidSingleVariantLibrary("release", true, true))
 

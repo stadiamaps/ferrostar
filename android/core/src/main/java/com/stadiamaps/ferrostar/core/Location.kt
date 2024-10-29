@@ -78,13 +78,19 @@ class AndroidSystemLocationProvider(context: Context) : LocationProvider {
       android.util.Log.d(TAG, "Already registered; skipping")
       return
     }
-    val androidListener = LocationListener { listener.onLocationUpdated(it.toUserLocation()) }
+    val androidListener = LocationListener {
+      val userLocation = it.toUserLocation()
+      lastLocation = userLocation
+      listener.onLocationUpdated(userLocation)
+    }
     listeners[listener] = androidListener
 
     val handler = Handler(Looper.getMainLooper())
 
     executor.execute {
       handler.post {
+        val last = locationManager.getLastKnownLocation(getBestProvider())
+        last?.let { androidListener.onLocationChanged(last) }
         locationManager.requestLocationUpdates(getBestProvider(), 100L, 5.0f, androidListener)
       }
     }

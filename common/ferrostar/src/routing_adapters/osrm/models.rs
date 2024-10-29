@@ -75,40 +75,6 @@ pub struct AnyAnnotation {
     pub values: HashMap<String, Vec<Value>>,
 }
 
-/// The max speed json units that can be associated with annotations.
-/// [MaxSpeed/Units](https://wiki.openstreetmap.org/wiki/Map_Features/Units#Speed)
-/// TODO: We could generalize this as or map from this to a `UnitSpeed` enum.
-#[derive(Deserialize, PartialEq, Debug, Clone)]
-pub enum MaxSpeedUnits {
-    #[serde(rename = "km/h")]
-    KilometersPerHour,
-    #[serde(rename = "mph")]
-    MilesPerHour,
-}
-
-/// The local posted speed limit between a pair of coordinates.
-#[derive(Debug, Clone)]
-#[allow(dead_code)] // TODO: https://github.com/stadiamaps/ferrostar/issues/271
-pub enum MaxSpeed {
-    Unknown { unknown: bool },
-    Known { speed: f64, unit: MaxSpeedUnits },
-}
-
-#[allow(dead_code)] // TODO: https://github.com/stadiamaps/ferrostar/issues/271
-impl MaxSpeed {
-    /// Get the max speed as meters per second.
-    pub fn get_as_meters_per_second(&self) -> Option<f64> {
-        match self {
-            MaxSpeed::Known { speed, unit } => match unit {
-                MaxSpeedUnits::KilometersPerHour => Some(speed * 0.27778),
-                MaxSpeedUnits::MilesPerHour => Some(speed * 0.44704),
-            },
-            #[allow(unused)]
-            MaxSpeed::Unknown { unknown } => None,
-        }
-    }
-}
-
 #[derive(Deserialize, Debug)]
 pub struct RouteStep {
     /// The distance from the start of the current maneuver to the following step, in meters.
@@ -162,6 +128,9 @@ pub struct BannerInstruction {
     pub distance_along_geometry: f64,
     pub primary: BannerContent,
     pub secondary: Option<BannerContent>,
+    // Sub-maneuver information. This is used to give additional info
+    // about the next maneuver or lane guidance.
+    pub sub: Option<BannerContent>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -185,6 +154,23 @@ pub struct BannerContent {
     /// the original travel.
     #[serde(rename = "degrees")]
     pub roundabout_exit_degrees: Option<u16>,
+    /// Extra information for displaying the instructions (ex lanes, images, etc)
+    pub components: Vec<BannerContentComponent>,
+}
+
+/// Details used to display extra information for the banner instructions.
+/// Note that while all of these are parsed, not all of them are currently
+/// in use.
+#[derive(Deserialize, Debug)]
+pub struct BannerContentComponent {
+    #[serde(rename = "type")]
+    pub component_type: Option<String>,
+    pub directions: Option<Vec<String>>,
+    pub active: Option<bool>,
+    pub image_base_url: Option<String>,
+    pub abbr: Option<String>,
+    pub abbr_priority: Option<u8>,
+    pub active_direction: Option<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -498,32 +484,20 @@ mod tests {
         assert_eq!(secondary.text, "Baltimore / Northern Virginia");
         assert_eq!(secondary.maneuver_type, Some(ManeuverType::Turn));
         assert_eq!(secondary.maneuver_modifier, Some(ManeuverModifier::Left));
-    }
 
-    #[test]
-    fn test_max_speed_unknown() {
-        let max_speed = MaxSpeed::Unknown { unknown: true };
-        assert_eq!(max_speed.get_as_meters_per_second(), None);
-    }
-
-    #[test]
-    fn test_max_speed_kph() {
-        let max_speed = MaxSpeed::Known {
-            speed: 100.0,
-            unit: MaxSpeedUnits::KilometersPerHour,
-        };
+        let submaneuver = instruction.sub.expect("Expected submaneuver content");
+        assert_eq!(submaneuver.components.len(), 3);
         assert_eq!(
-            max_speed.get_as_meters_per_second(),
-            Some(27.778000000000002)
+            submaneuver.components[0].directions,
+            Some(vec!["left".to_string()])
         );
-    }
-
-    #[test]
-    fn test_max_speed_mph() {
-        let max_speed = MaxSpeed::Known {
-            speed: 60.0,
-            unit: MaxSpeedUnits::MilesPerHour,
-        };
-        assert_eq!(max_speed.get_as_meters_per_second(), Some(26.8224));
+        assert_eq!(
+            submaneuver.components[1].directions,
+            Some(vec!["left".to_string(), "straight".to_string()])
+        );
+        assert_eq!(
+            submaneuver.components[2].directions,
+            Some(vec!["right".to_string()])
+        );
     }
 }

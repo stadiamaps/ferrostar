@@ -60,6 +60,11 @@ npm run dev
 npm run build
 ```
 
+#### PR checklist
+
+Run `npm run format:fix` from the `web` directory before committing
+to ensure consistent formatting.
+
 ### iOS
 
 1. Install the latest version of Xcode.
@@ -117,6 +122,10 @@ cargo install cargo-ndk
 4. Open the Gradle workspace ('android/') in Android Studio.
    Gradle builds automatically ensure the core is built,
    so there are no funky scripts needed as on iOS.
+5. (Optional) If you want to use Maven local publishing to test...
+   - Bump the version number to a `SNAPSHOT` in `build.gradle`.
+   - run `./gradlew publishToMavenLocal -Pskip.signing`.
+   - Reference the updated version number in the project, and ensure that `mavenLocal` is one of the `repositories`.
 
 #### PR checklist
 

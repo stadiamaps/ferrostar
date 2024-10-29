@@ -4,15 +4,11 @@ import SwiftUI
 /// When navigation is underway, we use this standardized grid view with pre-defined metadata and interactions.
 /// This is the default UI and can be customized to some extent. If you need more customization,
 /// use the ``InnerGridView``.
-public struct NavigatingInnerGridView<T: SpokenInstructionObserver & ObservableObject>: View,
-    CustomizableNavigatingInnerGridView
-{
+public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     var speedLimit: Measurement<UnitSpeed>?
-
-    let showMute: Bool
-    private let spokenInstructionObserver: T
+    var speedLimitStyle: SpeedLimitView.SignageStyle?
 
     let showZoom: Bool
     let onZoomIn: () -> Void
@@ -20,6 +16,10 @@ public struct NavigatingInnerGridView<T: SpokenInstructionObserver & ObservableO
 
     let showCentering: Bool
     let onCenter: () -> Void
+
+    let showMute: Bool
+    let isMuted: Bool
+    let onMute: () -> Void
 
     // MARK: Customizable Containers
 
@@ -36,6 +36,7 @@ public struct NavigatingInnerGridView<T: SpokenInstructionObserver & ObservableO
     ///
     /// - Parameters:
     ///   - speedLimit: The speed limit provided by the navigation state (or nil)
+    ///   - speedLimitStyle: The speed limit style (Vienna Convention or MUTCD)
     ///   - showZoom: Whether to show the provided zoom control or not.
     ///   - onZoomIn: The on zoom in tapped action. This should be used to zoom the user in one increment.
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
@@ -47,30 +48,35 @@ public struct NavigatingInnerGridView<T: SpokenInstructionObserver & ObservableO
     ///   - spokenInstructionObserver: The spoken instruction observer (for driving mute button state).
     public init(
         speedLimit: Measurement<UnitSpeed>? = nil,
+        speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
+        isMuted: Bool,
+        showMute: Bool = true,
+        onMute: @escaping () -> Void,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
-        onCenter: @escaping () -> Void = {},
-        showMute: Bool = false,
-        spokenInstructionObserver: T = DummyInstructionObserver()
+        onCenter: @escaping () -> Void = {}
     ) {
         self.speedLimit = speedLimit
+        self.speedLimitStyle = speedLimitStyle
+        self.isMuted = isMuted
+        self.showMute = showMute
+        self.onMute = onMute
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
         self.showCentering = showCentering
         self.onCenter = onCenter
-        self.showMute = showMute
-        self.spokenInstructionObserver = spokenInstructionObserver
     }
 
     public var body: some View {
         InnerGridView(
             topLeading: {
-                if let speedLimit {
+                if let speedLimit, let speedLimitStyle {
                     SpeedLimitView(
                         speedLimit: speedLimit,
+                        signageStyle: speedLimitStyle,
                         valueFormatter: formatterCollection.speedValueFormatter,
                         unitFormatter: formatterCollection.speedWithUnitsFormatter
                     )
@@ -79,9 +85,8 @@ public struct NavigatingInnerGridView<T: SpokenInstructionObserver & ObservableO
             topCenter: { topCenter?() },
             topTrailing: {
                 if showMute {
-                    MuteUIButton(spokenInstructionObserver: spokenInstructionObserver)
+                    MuteUIButton(isMuted: isMuted, action: onMute)
                         .shadow(radius: 8)
-                        .padding(.top, 16)
                 }
             },
             midLeading: { midLeading?() },
@@ -127,9 +132,10 @@ public struct NavigatingInnerGridView<T: SpokenInstructionObserver & ObservableO
 
         NavigatingInnerGridView(
             speedLimit: .init(value: 55, unit: .milesPerHour),
-            showZoom: true,
-            showCentering: true,
-            showMute: true
+            speedLimitStyle: .viennaConvention,
+            isMuted: true,
+            showMute: true,
+            onMute: {}
         )
         .padding(.horizontal, 16)
 

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.0"
+agp = "8.7.1"
 kotlin = "2.0.20"
 cargo-ndk = "0.3.4"
 ktfmt = "0.20.1"
@@ -10,20 +10,20 @@ ktx = "1.13.1"
 kotlinx-coroutines = "1.9.0"
 kotlinx-datetime = "0.6.1"
 androidx-appcompat = "1.7.0"
-androidx-activity-compose = "1.9.2"
-compose = "2024.09.02"
+androidx-activity-compose = "1.9.3"
+compose = "2024.10.00"
 okhttp = "4.12.0"
 moshi = "1.15.1"
-maplibre-compose = "0.2.0"
+maplibre-compose = "0.2.3"
 playServicesLocation = "21.3.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-junitCompose = "1.7.2"
+junitCompose = "1.7.4"
 espressoCore = "3.6.1"
 okhttp-mock = "2.0.0"
 mavenPublish = "0.29.0"
-secretsGradlePlugin = "2.0.1"
 material = "1.12.0"
+stadiaAutocompleteSearch = "1.0.0"
 
 [libraries]
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
@@ -65,6 +65,7 @@ androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref
 androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "junitCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+stadiamaps-autocomplete-search = { group = "com.stadiamaps", name = "jetpack-compose-autocomplete", version.ref = "stadiaAutocompleteSearch" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -76,4 +77,3 @@ ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-mapsplatform-secrets-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }

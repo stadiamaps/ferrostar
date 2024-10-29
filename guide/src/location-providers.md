@@ -44,7 +44,21 @@ and unsubscribes itself (Android) or stops location updates automatically (iOS) 
 Ferrostar includes the following live location providers:
 
 * iOS
-  - `CoreLocationProvider` - Location backed by a `CLLocationManager`. See the [iOS tutorial](./ios-getting-started.md) for a usage example.
+  - `CoreLocationProvider` - Location backed by a `CLLocationManager`. See the [iOS tutorial](./ios-getting-started.md#corelocationprovider) for a usage example.
 * Android
-  - [`AndroidSystemLocationProvider`] - Location backed by a android.location.LocationManger` (the class that is included in AOSP). See the [Android tutorial](./android-getting-started.md) for a usage example.
-  - TODO: Provider backed by the Google Fused Location Client
+  - [`AndroidSystemLocationProvider`] - Location backed by an `android.location.LocationManger` (the class that is included in AOSP). See the [Android tutorial](./android-getting-started.md#androidsystemlocationprovider) for a usage example.
+  - [`FusedLocationProvider`] - Location backed by a Google Play Services `FusedLocationClient`, which is proprietary but often provides better location updates. See the [Android tutorial](./android-getting-started.md#google-play-fused-location-client) for a usage example.
+
+## Implementation note: `StaticLocationEngine`
+
+If you dig around the FerrostarMapLibreUI modules, you may come across as `StaticLocationEngine`.
+
+The static location engine exists to bridge between Ferrostar location providers and MapLibre.
+MapLibre uses `LocationEngine` objects, not platform-native location clients, as its first line.
+This is smart, since it makes MapLibre generic enough to support location from other sources.
+For Ferrostar, it enables us to account for things like snapping, simulated routes, etc.
+The easiest way to hide all that complexity from `LocationProvider` implementors
+is to introduce the `StaticLocationEngine` with a simple interface to set location.
+
+This is mostly transparent to developers using Ferrostar,
+but in case you come across it, hopefully this note explains the purpose.

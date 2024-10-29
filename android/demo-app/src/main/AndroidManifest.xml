@@ -21,12 +21,6 @@
         android:theme="@style/Theme.Ferrostar"
         tools:targetApi="31">
 
-        <!--
-            Set a value for stadiaApiKey in local.properties.
-            You can get an API key (no credit card required; free for development and evaluation) at client.stadiamaps.com
-        -->
-        <meta-data android:name="stadiaApiKey" android:value="${stadiaApiKey}" />
-
         <activity
             android:name="com.stadiamaps.ferrostar.MainActivity"
             android:exported="true"
