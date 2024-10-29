@@ -44,6 +44,10 @@ jobs:
       with:
         file_pattern: 'Package.swift'
 
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '16.0'
+
     - name: Build iOS XCFramework
       run: ./build-ios.sh --release
       working-directory: common
@@ -82,7 +86,7 @@ jobs:
     - name: Configure Package.swift for local development
       run: sed -i '' 's/let useLocalFramework = false/let useLocalFramework = true/' Package.swift
 
-    - name: Download libferrostar-rs.xcframework.
+    - name: Download libferrostar-rs.xcframework
       uses: actions/download-artifact@v4
       with:
         path: common
@@ -94,7 +98,7 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '15.3'
+        xcode-version: '16.0'
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -149,7 +153,7 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '15.3'
+        xcode-version: '16.0'
 
     - name: Install xcbeautify
       run: brew install xcbeautify

@@ -18,6 +18,10 @@ jobs:
         fetch-depth: 0  # Ensure that we can operate on the full history
         ref: main
 
+    - uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '16.0'
+
     - name: Build iOS XCFramework
       run: ./build-ios.sh --release
       working-directory: common
