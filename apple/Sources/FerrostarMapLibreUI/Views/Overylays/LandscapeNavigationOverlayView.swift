@@ -19,6 +19,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var bottomTrailing: (() -> AnyView)?
 
     var speedLimit: Measurement<UnitSpeed>?
+    var speedLimitStyle: SpeedLimitView.SignageStyle?
     var showZoom: Bool
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
@@ -29,6 +30,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
+        speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
@@ -38,6 +40,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
+        self.speedLimitStyle = speedLimitStyle
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
@@ -83,6 +86,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
             // view appears
             NavigatingInnerGridView(
                 speedLimit: speedLimit,
+                speedLimitStyle: speedLimitStyle,
                 showZoom: showZoom,
                 onZoomIn: onZoomIn,
                 onZoomOut: onZoomOut,

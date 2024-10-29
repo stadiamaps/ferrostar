@@ -20,6 +20,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     var bottomTrailing: (() -> AnyView)?
 
     var speedLimit: Measurement<UnitSpeed>?
+    var speedLimitStyle: SpeedLimitView.SignageStyle?
     var showZoom: Bool
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
@@ -30,6 +31,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
+        speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
@@ -39,6 +41,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
+        self.speedLimitStyle = speedLimitStyle
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
@@ -58,6 +61,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                 // view appears
                 NavigatingInnerGridView(
                     speedLimit: speedLimit,
+                    speedLimitStyle: speedLimitStyle,
                     showZoom: showZoom,
                     onZoomIn: onZoomIn,
                     onZoomOut: onZoomOut,
@@ -82,7 +86,8 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                         onTapExit: onTapExit
                     )
                 }
-            }.padding(.top, instructionsViewSizeWhenNotExpanded.height)
+            }
+            .padding(.top, instructionsViewSizeWhenNotExpanded.height + 16)
 
             if case .navigating = navigationState?.tripState,
                let visualInstruction = navigationState?.currentVisualInstruction,

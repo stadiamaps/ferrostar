@@ -8,7 +8,7 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ArrivalView on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView {
+public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -17,6 +17,9 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+
+    public var speedLimit: Measurement<UnitSpeed>?
+    public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
@@ -77,7 +80,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
 
                 LandscapeNavigationOverlayView(
                     navigationState: navigationState,
-                    speedLimit: nil,
+                    speedLimit: speedLimit,
+                    speedLimitStyle: speedLimitStyle,
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },

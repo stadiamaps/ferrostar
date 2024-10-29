@@ -7,6 +7,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     var speedLimit: Measurement<UnitSpeed>?
+    var speedLimitStyle: SpeedLimitView.SignageStyle?
 
     var showZoom: Bool
     var onZoomIn: () -> Void
@@ -30,6 +31,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     ///
     /// - Parameters:
     ///   - speedLimit: The speed limit provided by the navigation state (or nil)
+    ///   - speedLimitStyle: The speed limit style (Vienna Convention or MUTCD)
     ///   - showZoom: Whether to show the provided zoom control or not.
     ///   - onZoomIn: The on zoom in tapped action. This should be used to zoom the user in one increment.
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
@@ -39,6 +41,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     /// map on the user).
     public init(
         speedLimit: Measurement<UnitSpeed>? = nil,
+        speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
@@ -46,6 +49,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         onCenter: @escaping () -> Void = {}
     ) {
         self.speedLimit = speedLimit
+        self.speedLimitStyle = speedLimitStyle
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
@@ -56,9 +60,10 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     public var body: some View {
         InnerGridView(
             topLeading: {
-                if let speedLimit {
+                if let speedLimit, let speedLimitStyle {
                     SpeedLimitView(
                         speedLimit: speedLimit,
+                        signageStyle: speedLimitStyle,
                         valueFormatter: formatterCollection.speedValueFormatter,
                         unitFormatter: formatterCollection.speedWithUnitsFormatter
                     )
