@@ -29,12 +29,13 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var onCenter: () -> Void
 
     var onTapExit: (() -> Void)?
-    let currentRoadNameView: AnyView
+    let currentRoadNameView: AnyView?
 
     let showMute: Bool
     let isMuted: Bool
     let onMute: () -> Void
 
+    // NOTE: These don't really follow our usual coding style as they are internal.
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
@@ -48,9 +49,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
         onTapExit: (() -> Void)? = nil,
-        @ViewBuilder currentRoadNameViewBuilder: (String?) -> AnyView = { name in
-            AnyView(CurrentRoadNameView(currentRoadName: name))
-        }
+        currentRoadNameView: AnyView?
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
@@ -64,7 +63,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.showCentering = showCentering
         self.onCenter = onCenter
         self.onTapExit = onTapExit
-        currentRoadNameView = currentRoadNameViewBuilder(navigationState?.currentRoadName)
+        self.currentRoadNameView = currentRoadNameView
     }
 
     var body: some View {

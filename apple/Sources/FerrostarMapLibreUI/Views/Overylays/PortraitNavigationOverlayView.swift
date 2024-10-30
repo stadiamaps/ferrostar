@@ -32,7 +32,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
     var onCenter: () -> Void
 
     var onTapExit: (() -> Void)?
-    let currentRoadNameView: AnyView
+    let currentRoadNameView: AnyView?
 
     let showMute: Bool
     let isMuted: Bool
@@ -51,9 +51,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
         onTapExit: (() -> Void)? = nil,
-        @ViewBuilder currentRoadNameViewBuilder: (String?) -> AnyView = { name in
-            AnyView(CurrentRoadNameView(currentRoadName: name))
-        }
+        currentRoadNameView: AnyView?
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
@@ -67,7 +65,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         self.showCentering = showCentering
         self.onCenter = onCenter
         self.onTapExit = onTapExit
-        currentRoadNameView = currentRoadNameViewBuilder(navigationState?.currentRoadName)
+        self.currentRoadNameView = currentRoadNameView
     }
 
     var body: some View {

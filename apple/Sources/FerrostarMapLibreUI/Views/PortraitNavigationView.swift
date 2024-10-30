@@ -7,7 +7,7 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A portrait orientation navigation view that includes the InstructionsView at the top.
-public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost {
+public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost, CurrentRoadNameViewHost {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -28,7 +28,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
 
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    let currentRoadNameViewBuilder: (String?) -> AnyView
+    public var currentRoadNameView: AnyView?
 
     let isMuted: Bool
     let onTapMute: () -> Void
@@ -58,10 +58,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapMute: @escaping () -> Void,
         onTapExit: (() -> Void)? = nil,
-        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
-        @ViewBuilder currentRoadNameViewBuilder: @escaping (String?) -> AnyView = { name in
-            AnyView(CurrentRoadNameView(currentRoadName: name))
-        }
+        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
@@ -74,7 +71,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
 
         _camera = camera
         self.navigationCamera = navigationCamera
-        self.currentRoadNameViewBuilder = currentRoadNameViewBuilder
+        self.currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
     }
 
     public var body: some View {
@@ -105,7 +102,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
                     showCentering: !camera.isTrackingUserLocationWithCourse,
                     onCenter: { camera = navigationCamera },
                     onTapExit: onTapExit,
-                    currentRoadNameViewBuilder: currentRoadNameViewBuilder
+                    currentRoadNameView: currentRoadNameView
                 )
                 .innerGrid {
                     topCenter?()

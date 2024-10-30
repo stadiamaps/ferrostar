@@ -7,7 +7,7 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost {
+public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost, CurrentRoadNameViewHost {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     @State private var orientation = UIDevice.current.orientation
@@ -15,7 +15,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    let currentRoadNameViewBuilder: (String?) -> AnyView
+    public var currentRoadNameView: AnyView?
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -57,10 +57,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapMute: @escaping () -> Void,
         onTapExit: (() -> Void)? = nil,
-        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] },
-        @ViewBuilder currentRoadNameViewBuilder: @escaping (String?) -> AnyView = { name in
-            AnyView(CurrentRoadNameView(currentRoadName: name))
-        }
+        @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
@@ -73,7 +70,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
         _camera = camera
         self.navigationCamera = navigationCamera
-        self.currentRoadNameViewBuilder = currentRoadNameViewBuilder
+
+        self.currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
     }
 
     public var body: some View {
@@ -109,7 +107,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
                         onTapExit: onTapExit,
-                        currentRoadNameViewBuilder: currentRoadNameViewBuilder
+                        currentRoadNameView: currentRoadNameView
                     )
                     .innerGrid {
                         topCenter?()
@@ -134,7 +132,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
                         onTapExit: onTapExit,
-                        currentRoadNameViewBuilder: currentRoadNameViewBuilder
+                        currentRoadNameView: currentRoadNameView
                     )
                     .innerGrid {
                         topCenter?()
