@@ -95,7 +95,7 @@ struct DemoNavigationView: View {
             )
             .navigationSpeedLimit(
                 speedLimit: ferrostarCore.annotation?.speedLimit,
-                speedLimitStyle: .usStyle
+                speedLimitStyle: .mutcdStyle
             )
             .innerGrid(
                 topCenter: {

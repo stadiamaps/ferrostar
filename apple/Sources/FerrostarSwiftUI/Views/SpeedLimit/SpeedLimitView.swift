@@ -6,8 +6,8 @@ public struct SpeedLimitView: View {
     public enum SignageStyle {
         // TODO: Add improved automatic methods (e.g. route admins, etc)
 
-        /// Only use the US Style
-        case usStyle
+        /// Only use the MUTCD style (mostly in the US)
+        case mutcdStyle
 
         /// Only use the Vienna Convention Style
         case viennaConvention
@@ -33,7 +33,7 @@ public struct SpeedLimitView: View {
     }
 
     public var body: some View {
-        if useUSStyle() {
+        if useMUTCDStyle() {
             USStyleSpeedLimitView(
                 speedLimit: speedLimit,
                 valueFormatter: valueFormatter,
@@ -48,12 +48,12 @@ public struct SpeedLimitView: View {
         }
     }
 
-    private func useUSStyle() -> Bool {
+    private func useMUTCDStyle() -> Bool {
         switch signageStyle {
-        case .usStyle:
-            USSpeedLimitStyleProvider().useUSStyle()
+        case .mutcdStyle:
+            FixedMUTCDStyle().useMUTCDStyle()
         case .viennaConvention:
-            SpeedLimitFixedToViennaConventionStyle().useUSStyle()
+            FixedViennaConventionStyle().useMUTCDStyle()
         }
     }
 }
