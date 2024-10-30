@@ -1,19 +1,26 @@
 package com.stadiamaps.ferrostar.composeui.views
 
 import android.icu.util.ULocale
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,38 +63,33 @@ fun InstructionsView(
     }
 ) {
   var isExpanded by remember { mutableStateOf(initExpanded) }
-  val screenHeight = LocalConfiguration.current.screenHeightDp
-  val collapsedHeight = 100.dp
-
-  val targetHeight = if (isExpanded) screenHeight.dp else collapsedHeight
-  val animatedHeight by animateDpAsState(targetValue = targetHeight)
-
-  val scrollState = rememberScrollState()
+  val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
   Box(
       modifier =
           Modifier.fillMaxWidth()
-              .height(animatedHeight)
+              .heightIn(max = screenHeight)
+              .animateContentSize(animationSpec = spring(stiffness = Spring.StiffnessHigh))
               .background(theme.backgroundColor, RoundedCornerShape(10.dp))
-              .clickable { isExpanded = !isExpanded }
               .padding(16.dp)) {
-        Column(modifier = if (isExpanded) Modifier.verticalScroll(scrollState) else Modifier) {
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
           // Primary content
-          ManeuverInstructionView(
-              text = instructions.primaryContent.text,
-              distanceFormatter = distanceFormatter,
-              distanceToNextManeuver = distanceToNextManeuver,
-              theme = theme) {
-                contentBuilder(instructions)
-              }
+          item {
+            ManeuverInstructionView(
+                text = instructions.primaryContent.text,
+                distanceFormatter = distanceFormatter,
+                distanceToNextManeuver = distanceToNextManeuver,
+                theme = theme) {
+                  contentBuilder(instructions)
+                }
+          }
 
           // TODO: Secondary content
 
           // Expanded content
           if (isExpanded && remainingSteps != null && remainingSteps.count() > 1) {
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(thickness = 1.dp)
-            remainingSteps.drop(1).forEach { step ->
+            item { HorizontalDivider(thickness = 1.dp) }
+            items(remainingSteps.drop(1)) { step ->
               step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
                 Spacer(modifier = Modifier.height(8.dp))
                 ManeuverInstructionView(
@@ -97,9 +99,21 @@ fun InstructionsView(
                     theme = theme) {
                       contentBuilder(upcomingInstruction)
                     }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider(thickness = 1.dp)
               }
+            }
+          }
+
+          item {
+            Button(onClick = { isExpanded = !isExpanded }, modifier = Modifier.fillMaxWidth()) {
+              Icon(
+                  if (isExpanded) {
+                    Icons.Default.KeyboardArrowUp
+                  } else {
+                    Icons.Default.KeyboardArrowDown
+                  },
+                  contentDescription = "Show upcoming maneuvers")
             }
           }
         }
