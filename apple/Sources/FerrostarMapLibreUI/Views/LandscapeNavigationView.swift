@@ -8,7 +8,9 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ``TripProgressView`` on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost, CurrentRoadNameViewHost {
+public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost,
+    CurrentRoadNameViewHost
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -69,7 +71,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         userLayers = makeMapContent()
         _camera = camera
         self.navigationCamera = navigationCamera
-        self.currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
+        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
     }
 
     public var body: some View {

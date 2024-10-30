@@ -7,7 +7,9 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A portrait orientation navigation view that includes the InstructionsView at the top.
-public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost, CurrentRoadNameViewHost {
+public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost,
+    CurrentRoadNameViewHost
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -71,7 +73,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
 
         _camera = camera
         self.navigationCamera = navigationCamera
-        self.currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
+        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
     }
 
     public var body: some View {

@@ -4,7 +4,6 @@ public protocol CurrentRoadNameViewHost {
     var currentRoadNameView: AnyView? { get set }
 }
 
-
 public extension CurrentRoadNameViewHost where Self: View {
     func navigationCurrentRoadView(@ViewBuilder currentRoadNameViewBuilder: () -> some View) -> Self {
         var newSelf = self
@@ -18,22 +17,21 @@ public struct CurrentRoadNameView: View {
     var theme: any RoadNameViewTheme = DefaultRoadNameViewTheme()
     var padding: EdgeInsets = .init(top: 12, leading: 12, bottom: 12, trailing: 12)
     var shape: AnyShape = .init(RoundedRectangle(cornerRadius: 48))
-    var borderWidth: CGFloat = 1
+    var borderWidth: CGFloat = 2
 
-    public init(currentRoadName: String?)
-    {
+    public init(currentRoadName: String?) {
         self.currentRoadName = currentRoadName
     }
 
     public var body: some View {
-        if let currentRoadName {
+        if let currentRoadName, !currentRoadName.isEmpty {
             Text(currentRoadName)
                 .font(theme.textFont)
                 .foregroundStyle(theme.textColor)
                 .padding(padding)
                 .background(theme.backgroundColor)
                 .clipShape(shape)
-                .overlay(shape.stroke(theme.borderColor, lineWidth: borderWidth))
+                .overlay(shape.stroke(theme.borderColor, lineWidth: borderWidth).clipShape(shape))
         }
     }
 }
