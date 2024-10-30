@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/simulation.rs
-assertion_line: 329
+assertion_line: 322
 expression: state
 ---
 current_location:

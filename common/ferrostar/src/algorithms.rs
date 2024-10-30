@@ -28,23 +28,6 @@ use std::time::SystemTime;
 #[cfg(all(test, feature = "web-time"))]
 use web_time::SystemTime;
 
-/// Normalizes a bearing returned from several `geo` crate functions,
-/// which may be negative, into a positive unsigned integer.
-///
-/// NOTE: This function assumes that the input values are in the range -360 to +360,
-/// and does not check the inputs for validity.
-pub(crate) fn normalize_bearing(degrees: f64) -> u16 {
-    let rounded = degrees.round();
-    let normalized = if rounded < 0.0 {
-        rounded + 360.0
-    } else if rounded >= 360.0 {
-        rounded - 360.0
-    } else {
-        rounded
-    };
-    normalized.round() as u16
-}
-
 /// Get the index of the closest *segment* to the user's location within a [`LineString`].
 ///
 /// A [`LineString`] is a set of points (ex: representing the geometry of a maneuver),
@@ -85,13 +68,8 @@ fn get_bearing_to_next_point(
     let current = points.next()?;
     let next = points.next()?;
 
-    // This function may return negative bearing values, but we want to always normalize to [0, 360)
-    let degrees = normalize_bearing(Geodesic::bearing(current, next));
-
-    Some(CourseOverGround {
-        degrees,
-        accuracy: None,
-    })
+    let degrees = Geodesic::bearing(current, next);
+    Some(CourseOverGround::new(degrees, None))
 }
 
 /// Apply a snapped course to a user location.
@@ -728,12 +706,6 @@ proptest! {
         let index = index.unwrap();
         // We should never be able to go past the origin of the final pair
         prop_assert!(index < (coord_len - 1) as u64);
-    }
-
-    #[test]
-    fn test_bearing_correction_valid_range(bearing in -360f64..360f64) {
-        let result = normalize_bearing(bearing);
-        prop_assert!(result < 360);
     }
 
     #[test]

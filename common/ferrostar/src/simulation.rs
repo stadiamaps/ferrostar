@@ -38,7 +38,7 @@
 //! # }
 //! ```
 
-use crate::algorithms::{normalize_bearing, trunc_float};
+use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, Bearing, Densify, Geodesic, Haversine, LineString, Point};
 use polyline::decode_polyline;
@@ -105,10 +105,7 @@ pub fn location_simulation_from_coordinates(
             let current_location = UserLocation {
                 coordinates: *current,
                 horizontal_accuracy: 0.0,
-                course_over_ground: Some(CourseOverGround {
-                    degrees: bearing.round() as u16,
-                    accuracy: None,
-                }),
+                course_over_ground: Some(CourseOverGround::new(bearing, None)),
                 timestamp: SystemTime::now(),
                 speed: None,
             };
@@ -199,15 +196,11 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
     if let Some((next_coordinate, rest)) = state.remaining_locations.split_first() {
         let current_point = Point::from(state.current_location.coordinates);
         let next_point = Point::from(*next_coordinate);
-        let bearing = normalize_bearing(Geodesic::bearing(current_point, next_point));
-
+        let bearing = Geodesic::bearing(current_point, next_point);
         let next_location = UserLocation {
             coordinates: *next_coordinate,
             horizontal_accuracy: 0.0,
-            course_over_ground: Some(CourseOverGround {
-                degrees: bearing,
-                accuracy: None,
-            }),
+            course_over_ground: Some(CourseOverGround::new(bearing, None)),
             timestamp: SystemTime::now(),
             speed: None,
         };
