@@ -50,11 +50,12 @@ fun InstructionsView(
     distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
     theme: InstructionRowTheme = DefaultInstructionRowTheme,
     remainingSteps: List<RouteStep>? = null,
+    initExpanded: Boolean = false,
     contentBuilder: @Composable (VisualInstruction) -> Unit = {
       ManeuverImage(it.primaryContent, tint = MaterialTheme.colorScheme.primary)
     }
 ) {
-  var isExpanded by remember { mutableStateOf(false) }
+  var isExpanded by remember { mutableStateOf(initExpanded) }
   val screenHeight = LocalConfiguration.current.screenHeightDp
   val collapsedHeight = 100.dp
 
