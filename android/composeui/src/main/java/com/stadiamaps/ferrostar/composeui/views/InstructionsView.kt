@@ -50,8 +50,8 @@ fun InstructionsView(
     distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
     theme: InstructionRowTheme = DefaultInstructionRowTheme,
     remainingSteps: List<RouteStep>? = null,
-    content: @Composable () -> Unit = {
-      ManeuverImage(instructions.primaryContent, tint = MaterialTheme.colorScheme.primary)
+    contentBuilder: @Composable (VisualInstruction) -> Unit = {
+      ManeuverImage(it.primaryContent, tint = MaterialTheme.colorScheme.primary)
     }
 ) {
   var isExpanded by remember { mutableStateOf(false) }
@@ -76,8 +76,10 @@ fun InstructionsView(
               text = instructions.primaryContent.text,
               distanceFormatter = distanceFormatter,
               distanceToNextManeuver = distanceToNextManeuver,
-              theme = theme,
-              content = content)
+              theme = theme) {
+                contentBuilder(instructions)
+              }
+
           // TODO: Secondary content
 
           // Expanded content
@@ -91,8 +93,9 @@ fun InstructionsView(
                     text = upcomingInstruction.primaryContent.text,
                     distanceFormatter = distanceFormatter,
                     distanceToNextManeuver = step.distance,
-                    theme = theme,
-                    content = content)
+                    theme = theme) {
+                      contentBuilder(upcomingInstruction)
+                    }
                 Spacer(modifier = Modifier.height(8.dp))
                 HorizontalDivider(thickness = 1.dp)
               }
