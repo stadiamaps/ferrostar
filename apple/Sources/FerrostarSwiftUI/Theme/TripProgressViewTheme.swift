@@ -1,16 +1,16 @@
 import SwiftUI
 
-public enum ArrivalViewStyle: Equatable {
+public enum TripProgressViewStyle: Equatable {
     /// The simplified/default which only shows actual values
     case simplified
 
-    /// An expanded informational arrival view that labels each value.
+    /// An expanded informational progress view that labels each value.
     case informational
 }
 
-public protocol ArrivalViewTheme: Equatable {
-    /// The style of the arrival view controls the general theme.
-    var style: ArrivalViewStyle { get }
+public protocol TripProgressViewTheme: Equatable {
+    /// The style of the trip progress view controls the general appearance/level of detail.
+    var style: TripProgressViewStyle { get }
 
     /// The color for the measurement values (top row)
     var measurementColor: Color { get }
@@ -28,8 +28,8 @@ public protocol ArrivalViewTheme: Equatable {
     var backgroundColor: Color { get }
 }
 
-public struct DefaultArrivalViewTheme: ArrivalViewTheme {
-    public var style: ArrivalViewStyle = .simplified
+public struct DefaultTripProgressViewTheme: TripProgressViewTheme {
+    public var style: TripProgressViewStyle = .simplified
     public var measurementColor: Color = .primary
     public var measurementFont: Font = .title2.bold()
     public var secondaryColor: Color = .secondary

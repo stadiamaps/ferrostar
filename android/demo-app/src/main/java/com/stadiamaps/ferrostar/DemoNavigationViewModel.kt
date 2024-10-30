@@ -41,14 +41,16 @@ class DemoNavigationViewModel : ViewModel(), NavigationViewModel {
       locationStateFlow
           .map { userLocation ->
             // TODO: Heading
-            NavigationUiState(userLocation, null, null, null, null, null, null, false, null, null)
+            NavigationUiState(
+                userLocation, null, null, null, null, null, null, false, null, null, null)
           }
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
               // TODO: Heading
               initialValue =
-                  NavigationUiState(null, null, null, null, null, null, null, false, null, null))
+                  NavigationUiState(
+                      null, null, null, null, null, null, null, false, null, null, null))
 
   override fun toggleMute() {
     // Do nothing

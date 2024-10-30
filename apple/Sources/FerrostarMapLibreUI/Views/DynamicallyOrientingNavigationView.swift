@@ -7,7 +7,9 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost {
+public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost,
+    CurrentRoadNameViewHost
+{
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     @State private var orientation = UIDevice.current.orientation
@@ -15,6 +17,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    public var currentRoadNameView: AnyView?
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -43,8 +46,9 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     ///         on user button it tapped.
     ///   - navigationState: The current ferrostar navigation state provided by the Ferrostar core.
     ///   - minimumSafeAreaInsets: The minimum padding to apply from safe edges. See `complementSafeAreaInsets`.
-    ///   - onTapExit: An optional behavior to run when the ArrivalView exit button is tapped. When nil (default) the
-    ///         exit button is hidden.
+    ///   - onTapExit: An optional behavior to run when the ``TripProgressView`` exit button is tapped. When nil
+    /// (default) the
+    /// exit button is hidden.
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(
         styleURL: URL,
@@ -68,6 +72,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
         _camera = camera
         self.navigationCamera = navigationCamera
+
+        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
     }
 
     public var body: some View {
@@ -102,7 +108,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
-                        onTapExit: onTapExit
+                        onTapExit: onTapExit,
+                        currentRoadNameView: currentRoadNameView
                     )
                     .innerGrid {
                         topCenter?()
@@ -126,7 +133,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
-                        onTapExit: onTapExit
+                        onTapExit: onTapExit,
+                        currentRoadNameView: currentRoadNameView
                     )
                     .innerGrid {
                         topCenter?()

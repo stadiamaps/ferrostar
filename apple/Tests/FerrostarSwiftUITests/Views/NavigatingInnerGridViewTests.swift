@@ -8,7 +8,7 @@ final class NavigatingInnerGridViewTests: XCTestCase {
         assertView {
             NavigatingInnerGridView(
                 speedLimit: .init(value: 55, unit: .milesPerHour),
-                speedLimitStyle: .usStyle,
+                speedLimitStyle: .mutcdStyle,
                 isMuted: true,
                 onMute: {},
                 showZoom: true,

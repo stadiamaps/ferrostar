@@ -35,9 +35,9 @@ import com.stadiamaps.ferrostar.composeui.formatting.DurationFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.EstimatedArrivalDateTimeFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDurationFormatter
-import com.stadiamaps.ferrostar.composeui.theme.ArrivalViewStyle
-import com.stadiamaps.ferrostar.composeui.theme.ArrivalViewTheme
-import com.stadiamaps.ferrostar.composeui.theme.DefaultArrivalViewTheme
+import com.stadiamaps.ferrostar.composeui.theme.DefaultTripProgressViewTheme
+import com.stadiamaps.ferrostar.composeui.theme.TripProgressViewStyle
+import com.stadiamaps.ferrostar.composeui.theme.TripProgressViewTheme
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -60,9 +60,9 @@ import uniffi.ferrostar.TripProgress
  *   button is not displayed.
  */
 @Composable
-fun ArrivalView(
+fun TripProgressView(
     modifier: Modifier = Modifier,
-    theme: ArrivalViewTheme = DefaultArrivalViewTheme,
+    theme: TripProgressViewTheme = DefaultTripProgressViewTheme,
     estimatedArrivalFormatter: DateTimeFormatter = EstimatedArrivalDateTimeFormatter(),
     distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
     durationFormatter: DurationFormatter = LocalizedDurationFormatter(),
@@ -72,74 +72,79 @@ fun ArrivalView(
     onTapExit: (() -> Unit)? = null
 ) {
   Box(modifier) {
-    Row(
-        modifier =
-            Modifier.shadow(12.dp, shape = RoundedCornerShape(50))
-                .background(color = theme.backgroundColor, shape = RoundedCornerShape(50))
-                .padding(start = 32.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically) {
-          Column(
-              modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text =
-                        estimatedArrivalFormatter.format(
-                            progress.estimatedArrivalTime(fromDate, timeZone)),
-                    style = theme.measurementTextStyle)
-                if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+      Row(
+          modifier =
+              Modifier.shadow(12.dp, shape = RoundedCornerShape(50))
+                  .background(color = theme.backgroundColor, shape = RoundedCornerShape(50))
+                  .padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 12.dp),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally) {
                   Text(
-                      text = stringResource(id = R.string.arrival),
-                      style = theme.secondaryTextStyle)
+                      text =
+                          estimatedArrivalFormatter.format(
+                              progress.estimatedArrivalTime(fromDate, timeZone)),
+                      style = theme.measurementTextStyle)
+                  if (theme.style == TripProgressViewStyle.INFORMATIONAL) {
+                    Text(
+                        text = stringResource(id = R.string.arrival),
+                        style = theme.secondaryTextStyle)
+                  }
                 }
-              }
 
-          Column(
-              modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = durationFormatter.format(progress.durationRemaining),
-                    style = theme.measurementTextStyle)
-                if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally) {
                   Text(
-                      text = stringResource(id = R.string.duration),
-                      style = theme.secondaryTextStyle)
+                      text = durationFormatter.format(progress.durationRemaining),
+                      style = theme.measurementTextStyle)
+                  if (theme.style == TripProgressViewStyle.INFORMATIONAL) {
+                    Text(
+                        text = stringResource(id = R.string.duration),
+                        style = theme.secondaryTextStyle)
+                  }
                 }
-              }
 
-          Column(
-              modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = distanceFormatter.format(progress.distanceRemaining),
-                    style = theme.measurementTextStyle)
-                if (theme.style == ArrivalViewStyle.INFORMATIONAL) {
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally) {
                   Text(
-                      text = stringResource(id = R.string.distance),
-                      style = theme.secondaryTextStyle)
+                      text = distanceFormatter.format(progress.distanceRemaining),
+                      style = theme.measurementTextStyle)
+                  if (theme.style == TripProgressViewStyle.INFORMATIONAL) {
+                    Text(
+                        text = stringResource(id = R.string.distance),
+                        style = theme.secondaryTextStyle)
+                  }
                 }
-              }
 
-          // The optional exit button
-          if (onTapExit != null) {
-            Button(
-                onClick = { onTapExit() },
-                modifier = Modifier.size(50.dp),
-                shape = CircleShape,
-                colors =
-                    ButtonDefaults.buttonColors(containerColor = theme.exitButtonBackgroundColor),
-                contentPadding = PaddingValues(0.dp)) {
-                  Icon(
-                      imageVector = Icons.Filled.Close,
-                      contentDescription = stringResource(id = R.string.end_navigation),
-                      tint = theme.exitIconColor)
-                }
+            // The optional exit button
+            if (onTapExit != null) {
+              Button(
+                  onClick = { onTapExit() },
+                  modifier = Modifier.size(50.dp),
+                  shape = CircleShape,
+                  colors =
+                      ButtonDefaults.buttonColors(containerColor = theme.exitButtonBackgroundColor),
+                  contentPadding = PaddingValues(0.dp)) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.end_navigation),
+                        tint = theme.exitIconColor)
+                  }
+            }
           }
-        }
+    }
   }
 }
 
 @Preview
 @Composable
-fun ArrivalViewPreview() {
-  ArrivalView(
+fun ProgressViewPreview() {
+  TripProgressView(
       progress =
           TripProgress(
               distanceRemaining = 124252.0,
@@ -151,15 +156,15 @@ fun ArrivalViewPreview() {
 
 @Preview
 @Composable
-fun ArrivalViewInformationalPreview() {
+fun ProgressViewInformationalPreview() {
   val progress =
       TripProgress(
           distanceRemaining = 1000.0, durationRemaining = 1000.0, distanceToNextManeuver = 500.0)
 
   val theme =
-      object : ArrivalViewTheme {
-        override val style: ArrivalViewStyle
-          @Composable get() = ArrivalViewStyle.INFORMATIONAL
+      object : TripProgressViewTheme {
+        override val style: TripProgressViewStyle
+          @Composable get() = TripProgressViewStyle.INFORMATIONAL
 
         override val measurementTextStyle: TextStyle
           @Composable
@@ -183,7 +188,7 @@ fun ArrivalViewInformationalPreview() {
           @Composable get() = MaterialTheme.colorScheme.background
       }
 
-  ArrivalView(
+  TripProgressView(
       progress = progress,
       theme = theme,
       fromDate = Instant.fromEpochSeconds(1720283624),
@@ -192,14 +197,14 @@ fun ArrivalViewInformationalPreview() {
 
 @Preview
 @Composable
-fun ArrivalViewWithExitPreview() {
+fun ProgressViewWithExitPreview() {
   val progress =
       TripProgress(
           distanceRemaining = 2442522.0,
           durationRemaining = 52012.0,
           distanceToNextManeuver = 500.0)
 
-  ArrivalView(
+  TripProgressView(
       progress = progress,
       fromDate = Instant.fromEpochSeconds(1720283624),
       timeZone = TimeZone.of("America/Los_Angeles"),
@@ -208,7 +213,7 @@ fun ArrivalViewWithExitPreview() {
 
 @Preview(locale = "de_DE")
 @Composable
-fun ArrivalView24HourPreview() {
+fun ProgressView24HourPreview() {
   val estimatedArrivalFormatter =
       EstimatedArrivalDateTimeFormatter(localeOverride = ULocale.GERMANY)
 
@@ -218,7 +223,7 @@ fun ArrivalView24HourPreview() {
           durationRemaining = 52012.0,
           distanceToNextManeuver = 500.0)
 
-  ArrivalView(
+  TripProgressView(
       progress = progress,
       estimatedArrivalFormatter = estimatedArrivalFormatter,
       fromDate = Instant.fromEpochSeconds(1720283624),

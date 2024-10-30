@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -18,8 +19,9 @@ import com.maplibre.compose.camera.CameraState
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.stadiamaps.ferrostar.composeui.views.ArrivalView
+import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
+import com.stadiamaps.ferrostar.composeui.views.TripProgressView
 import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -37,9 +39,16 @@ fun LandscapeNavigationOverlayView(
     navigationCamera: MapViewCamera = navigationMapViewCamera(),
     viewModel: NavigationViewModel,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-    onTapExit: (() -> Unit)? = null
+    currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
+      if (roadName != null) {
+        CurrentRoadNameView(roadName)
+        Spacer(modifier = Modifier.height(8.dp))
+      }
+    },
+    onTapExit: (() -> Unit)? = null,
 ) {
   val uiState by viewModel.uiState.collectAsState()
+  val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
 
   Row(modifier) {
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
@@ -50,7 +59,9 @@ fun LandscapeNavigationOverlayView(
 
       Spacer(modifier = Modifier.weight(1f))
 
-      uiState.progress?.let { progress -> ArrivalView(progress = progress, onTapExit = onTapExit) }
+      uiState.progress?.let { progress ->
+        TripProgressView(progress = progress, onTapExit = onTapExit)
+      }
     }
 
     Spacer(modifier = Modifier.width(16.dp))
@@ -64,7 +75,7 @@ fun LandscapeNavigationOverlayView(
           showZoom = config.showZoom,
           onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
           onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
-          showCentering = camera.value.state !is CameraState.TrackingUserLocationWithBearing,
+          showCentering = !cameraIsTrackingLocation,
           onClickCenter = { camera.value = navigationCamera })
     }
   }

@@ -2,7 +2,7 @@ import Foundation
 
 /// Build a data provider that tells the UI whether to prefer a US style (MUTCD) or Vienna style speed limit sign.
 protocol SpeedLimitStyleProviding {
-    func useUSStyle() -> Bool
+    func useMUTCDStyle() -> Bool
 }
 
 // TODO: Create a location based Provider using:
@@ -12,15 +12,15 @@ protocol SpeedLimitStyleProviding {
 // Region Codes: https://en.wikipedia.org/wiki/IETF_language_tag
 
 /// Always prefer US Style (MUTCD)
-class USSpeedLimitStyleProvider: SpeedLimitStyleProviding {
-    func useUSStyle() -> Bool {
+class FixedMUTCDStyle: SpeedLimitStyleProviding {
+    func useMUTCDStyle() -> Bool {
         true
     }
 }
 
 /// Always prefer Vienna Style
-class SpeedLimitFixedToViennaConventionStyle: SpeedLimitStyleProviding {
-    func useUSStyle() -> Bool {
+class FixedViennaConventionStyle: SpeedLimitStyleProviding {
+    func useMUTCDStyle() -> Bool {
         false
     }
 }

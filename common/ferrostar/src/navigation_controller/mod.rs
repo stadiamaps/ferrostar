@@ -14,6 +14,7 @@ use crate::{
 };
 use geo::{HaversineDistance, LineString, Point};
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
+use std::clone::Clone;
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
@@ -75,7 +76,7 @@ impl NavigationController {
         TripState::Navigating {
             current_step_geometry_index,
             snapped_user_location,
-            remaining_steps: remaining_steps.clone(),
+            remaining_steps,
             // Skip the first waypoint, as it is the current one
             remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
             progress,
