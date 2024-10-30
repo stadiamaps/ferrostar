@@ -67,9 +67,8 @@ fun TripState.currentRoadName() =
  * @return The list of remaining steps (if any).
  */
 fun TripState.remainingSteps() =
-  when (this) {
-    is TripState.Navigating ->
-      this.remainingSteps
-    is TripState.Complete,
-    TripState.Idle -> null
-  }
+    when (this) {
+      is TripState.Navigating -> this.remainingSteps
+      is TripState.Complete,
+      TripState.Idle -> null
+    }
