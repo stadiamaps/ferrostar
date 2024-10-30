@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.core
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
+import com.stadiamaps.ferrostar.core.annotation.valhalla.valhallaExtendedOSRMAnnotationPublisher
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Instant
@@ -248,7 +249,11 @@ class FerrostarCore(
 
     locationProvider.addListener(this, _executor)
 
-    return DefaultNavigationViewModel(this, spokenInstructionObserver, locationProvider)
+    return DefaultNavigationViewModel(
+        this,
+        spokenInstructionObserver,
+        locationProvider,
+        valhallaExtendedOSRMAnnotationPublisher())
   }
 
   /**
