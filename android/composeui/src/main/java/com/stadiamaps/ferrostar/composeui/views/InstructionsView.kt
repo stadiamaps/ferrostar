@@ -1,15 +1,27 @@
 package com.stadiamaps.ferrostar.composeui.views
 
 import android.icu.util.ULocale
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.formatting.DistanceFormatter
@@ -20,6 +32,7 @@ import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverImage
 import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverInstructionView
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
+import uniffi.ferrostar.RouteStep
 import uniffi.ferrostar.VisualInstruction
 import uniffi.ferrostar.VisualInstructionContent
 
@@ -36,24 +49,53 @@ fun InstructionsView(
     distanceToNextManeuver: Double?,
     distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
     theme: InstructionRowTheme = DefaultInstructionRowTheme,
+    remainingSteps: List<RouteStep>? = null,
     content: @Composable () -> Unit = {
-      ManeuverImage(instructions.primaryContent, tint = MaterialTheme.colorScheme.primary)
+        ManeuverImage(instructions.primaryContent, tint = MaterialTheme.colorScheme.primary)
     }
 ) {
-  Column(
-      modifier =
-          Modifier.fillMaxWidth()
-              .shadow(elevation = 5.dp, RoundedCornerShape(10.dp))
-              .background(theme.backgroundColor, RoundedCornerShape(10.dp))
-              .padding(8.dp)) {
-        ManeuverInstructionView(
-            text = instructions.primaryContent.text,
-            distanceFormatter = distanceFormatter,
-            distanceToNextManeuver = distanceToNextManeuver,
-            theme = theme,
-            content = content)
-        // TODO: Secondary instructions
-      }
+    var isExpanded by remember { mutableStateOf(false) }
+    val screenHeight = LocalConfiguration.current.screenHeightDp
+    val collapsedHeight = 100  // Seems right... need to check this though
+    val animatedHeight by animateDpAsState(
+        targetValue = if (isExpanded) screenHeight.dp else collapsedHeight.dp
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(animatedHeight)
+            .background(theme.backgroundColor, RoundedCornerShape(10.dp))
+            .clickable { isExpanded = !isExpanded }
+            .padding(8.dp)
+    ) {
+        Column {
+            ManeuverInstructionView(
+                text = instructions.primaryContent.text,
+                distanceFormatter = distanceFormatter,
+                distanceToNextManeuver = distanceToNextManeuver,
+                theme = theme,
+                content = content
+            )
+            // TODO: Secondary content
+            if (isExpanded && remainingSteps != null) {
+                remainingSteps.drop(1).forEach { step ->
+                    step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
+                        HorizontalDivider(thickness = 1.dp)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        ManeuverInstructionView(
+                            text = upcomingInstruction.primaryContent.text,
+                            distanceFormatter = distanceFormatter,
+                            distanceToNextManeuver = step.distance,
+                            theme = theme,
+                            content = content
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Previews

@@ -54,7 +54,7 @@ fun LandscapeNavigationOverlayView(
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
       uiState.visualInstruction?.let { instructions ->
         InstructionsView(
-            instructions, distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
+            instructions, remainingSteps = uiState.remainingSteps, distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
       }
 
       Spacer(modifier = Modifier.weight(1f))

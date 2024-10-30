@@ -57,7 +57,7 @@ fun PortraitNavigationOverlayView(
   Column(modifier) {
     uiState.visualInstruction?.let { instructions ->
       InstructionsView(
-          instructions, distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
+          instructions, remainingSteps = uiState.remainingSteps, distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
     }
 
     val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
