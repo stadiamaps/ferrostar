@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -56,10 +59,12 @@ fun InstructionsView(
 ) {
     var isExpanded by remember { mutableStateOf(false) }
     val screenHeight = LocalConfiguration.current.screenHeightDp
-    val collapsedHeight = 100  // Seems right... need to check this though
-    val animatedHeight by animateDpAsState(
-        targetValue = if (isExpanded) screenHeight.dp else collapsedHeight.dp
-    )
+    val collapsedHeight = 100.dp
+
+    val targetHeight = if (isExpanded) screenHeight.dp else collapsedHeight
+    val animatedHeight by animateDpAsState(targetValue = targetHeight)
+
+    val scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
@@ -67,9 +72,12 @@ fun InstructionsView(
             .height(animatedHeight)
             .background(theme.backgroundColor, RoundedCornerShape(10.dp))
             .clickable { isExpanded = !isExpanded }
-            .padding(8.dp)
+            .padding(16.dp)
     ) {
-        Column {
+        Column(
+            modifier = if (isExpanded) Modifier.verticalScroll(scrollState) else Modifier
+        ) {
+            // Primary content
             ManeuverInstructionView(
                 text = instructions.primaryContent.text,
                 distanceFormatter = distanceFormatter,
@@ -78,10 +86,13 @@ fun InstructionsView(
                 content = content
             )
             // TODO: Secondary content
-            if (isExpanded && remainingSteps != null) {
+
+            // Expanded content
+            if (isExpanded && remainingSteps != null && remainingSteps.count() > 1) {
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider(thickness = 1.dp)
                 remainingSteps.drop(1).forEach { step ->
                     step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
-                        HorizontalDivider(thickness = 1.dp)
                         Spacer(modifier = Modifier.height(8.dp))
                         ManeuverInstructionView(
                             text = upcomingInstruction.primaryContent.text,
@@ -91,6 +102,7 @@ fun InstructionsView(
                             content = content
                         )
                         Spacer(modifier = Modifier.height(8.dp))
+                        HorizontalDivider(thickness = 1.dp)
                     }
                 }
             }
