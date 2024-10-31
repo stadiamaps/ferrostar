@@ -47,10 +47,13 @@ pub fn index_of_closest_segment_origin(location: UserLocation, line: &LineString
         // Iterate through all segments of the line
         .enumerate()
         // Find the line segment closest to the user's location
-        .min_by(|(_, line1), (_, line2)| {
+        .min_by(|(_, line_segment_1), (_, line_segment_2)| {
             // Note: lines don't implement haversine distances
-            let dist1 = Euclidean::distance(line1, &point);
-            let dist2 = Euclidean::distance(line2, &point);
+            // In case you're tempted to say that this looks like cross track distance,
+            // note that the Line type here is actually a line *segment*,
+            // and we actually want to find the closest segment, not the closest mathematical line.
+            let dist1 = Euclidean::distance(line_segment_1, &point);
+            let dist2 = Euclidean::distance(line_segment_2, &point);
             dist1.total_cmp(&dist2)
         })
         .map(|(index, _)| index as u64)
