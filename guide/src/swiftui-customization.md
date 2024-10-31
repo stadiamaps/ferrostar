@@ -86,4 +86,33 @@ from others,
 and design your own custom overlay configuration,
 mixing the views provided in `FerrostarMapLibre` with your own!
 
-TODO: deeper guide / example.
+## Customizing the high-level navigation views
+
+The `DynamicallyOrientingNavigationView`
+on both platforms also has a high level of flexibility via both constructor arguments and
+(for SwiftUI) view modifiers.
+We won't make an exhaustive list here,
+but have a look at the documentation / code,
+or explore in your IDE.
+
+A few non-obvious notes for SwiftUI users are in order.
+First, if you want to display speed limits,
+make sure you use the `navigationSpeedLimit` view modifier
+on your navigation view.
+We may add a default in the future,
+but which signage to use is somewhat tricky and perhaps app-specific.
+
+Second, road names are included from your routes by default.
+You can change the styling with view modifiers,
+or replace it with your own view like so:
+
+```swift
+// DynamicallyOrientingNavigationView(...)
+    .navigationCurrentRoadView(currentRoadNameViewBuilder: {
+	    // TODO: Your view here, based on state...
+		EmptyView()
+	})
+```
+
+If you want to disable road names completely,
+you can return `EmptyView()` as shown above.

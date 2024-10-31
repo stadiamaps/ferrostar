@@ -12,8 +12,12 @@ use crate::{
     },
     models::{Route, UserLocation},
 };
-use geo::{HaversineDistance, LineString, Point};
+use geo::{
+    algorithm::{Distance, Haversine},
+    geometry::{LineString, Point},
+};
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
+use std::clone::Clone;
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
@@ -75,7 +79,7 @@ impl NavigationController {
         TripState::Navigating {
             current_step_geometry_index,
             snapped_user_location,
-            remaining_steps: remaining_steps.clone(),
+            remaining_steps,
             // Skip the first waypoint, as it is the current one
             remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
             progress,
@@ -124,7 +128,7 @@ impl NavigationController {
                             let next_waypoint: Point = waypoint.coordinate.into();
                             // TODO: This is just a hard-coded threshold for the time being.
                             // More sophisticated behavior will take some time and use cases, so punting on this for now.
-                            current_location.haversine_distance(&next_waypoint) < 100.0
+                            Haversine::distance(current_location, next_waypoint) < 100.0
                         } else {
                             false
                         };

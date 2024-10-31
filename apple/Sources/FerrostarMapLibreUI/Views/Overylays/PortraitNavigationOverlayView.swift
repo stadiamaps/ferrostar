@@ -32,6 +32,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
     var onCenter: () -> Void
 
     var onTapExit: (() -> Void)?
+    let currentRoadNameView: AnyView?
 
     let showMute: Bool
     let isMuted: Bool
@@ -49,7 +50,8 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        onTapExit: (() -> Void)? = nil
+        onTapExit: (() -> Void)? = nil,
+        currentRoadNameView: AnyView?
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
@@ -63,6 +65,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         self.showCentering = showCentering
         self.onCenter = onCenter
         self.onTapExit = onTapExit
+        self.currentRoadNameView = currentRoadNameView
     }
 
     var body: some View {
@@ -99,10 +102,16 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
                 if case .navigating = navigationState?.tripState,
                    let progress = navigationState?.currentProgress
                 {
-                    ArrivalView(
-                        progress: progress,
-                        onTapExit: onTapExit
-                    )
+                    VStack {
+                        if !showCentering {
+                            currentRoadNameView
+                        }
+
+                        TripProgressView(
+                            progress: progress,
+                            onTapExit: onTapExit
+                        )
+                    }
                 }
             }
             .padding(.top, instructionsViewSizeWhenNotExpanded.height + 16)

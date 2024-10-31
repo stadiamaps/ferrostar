@@ -155,7 +155,7 @@ class SimulatedLocationProvider : LocationProvider {
   override fun addListener(listener: LocationUpdateListener, executor: Executor) {
     listeners.add(listener to executor)
 
-    if (simulationJob == null) {
+    if (simulationJob?.isActive != true) {
       simulationJob = scope.launch { startSimulation() }
     }
   }
@@ -172,7 +172,7 @@ class SimulatedLocationProvider : LocationProvider {
     simulationState = locationSimulationFromRoute(route, resampleDistance = 10.0)
     lastLocation = simulationState?.currentLocation
 
-    if (listeners.isNotEmpty() && simulationJob == null) {
+    if (listeners.isNotEmpty() && simulationJob?.isActive != true) {
       simulationJob = scope.launch { startSimulation() }
     }
   }

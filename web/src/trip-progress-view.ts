@@ -5,14 +5,14 @@ function roundToNearest(value: number, unit: number): number {
   return Math.round(value / unit) * unit;
 }
 
-@customElement("arrival-view")
-export class ArrivalView extends LitElement {
+@customElement("trip-progress-view")
+export class TripProgressView extends LitElement {
   @property()
   tripState: any = null;
 
   static styles = [
     css`
-      .arrival-view-card {
+      .progress-view-card {
         display: flex;
         align-items: center;
         justify-content: space-around;
@@ -73,7 +73,7 @@ export class ArrivalView extends LitElement {
   render() {
     if (this.tripState?.Navigating) {
       return html`
-        <div class="arrival-view-card">
+        <div class="progress-view-card">
           <p class="arrival-text">
             ${this.getArrivalTime(
               this.tripState.Navigating.progress.durationRemaining,

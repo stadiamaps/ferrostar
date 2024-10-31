@@ -39,9 +39,9 @@
 //! # }
 //! ```
 
-use crate::algorithms::{normalize_bearing, trunc_float};
+use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
-use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
+use geo::{coord, Bearing, Densify, Geodesic, Haversine, LineString, Point};
 use polyline::decode_polyline;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
@@ -99,13 +99,13 @@ pub enum LocationBias {
     /// Simulates GPS bias by randomly choosing left or right offset on initialization
     /// and maintaining that bias throughout the route.
     /// The f64 parameter specifies the offset distance in meters.
-    /// 
+    ///
     /// This mimics real-world GPS behavior where bias direction is random but typically
     /// remains consistent during a trip.
     Random(f64),
 
     /// No position bias - locations follow the route line exactly.
-    /// 
+    ///
     /// This provides "perfect" GPS behavior, useful for testing basic route following
     /// without position uncertainty.
     None,
@@ -140,14 +140,11 @@ pub fn location_simulation_from_coordinates(
                 LocationBias::None => 0.0,
                 LocationBias::Left(m) | LocationBias::Right(m) | LocationBias::Random(m) => m,
             };
-            
+
             let current_location = UserLocation {
                 coordinates: jittered_current,
                 horizontal_accuracy: accuracy,
-                course_over_ground: Some(CourseOverGround {
-                    degrees: bearing.round() as u16,
-                    accuracy: Some(5),
-                }),
+                course_over_ground: Some(CourseOverGround::new(bearing, Some(5))),
                 timestamp: SystemTime::now(),
                 speed: None,
             };
@@ -163,7 +160,7 @@ pub fn location_simulation_from_coordinates(
                     })
                     .collect();
                 let linestring: LineString = coords.into();
-                let densified_linestring = linestring.densify_haversine(distance);
+                let densified_linestring = linestring.densify::<Haversine>(distance);
                 densified_linestring
                     .points()
                     .map(|point| GeographicCoordinate {
@@ -228,14 +225,14 @@ pub fn location_simulation_from_polyline(
 }
 
 fn add_lateral_offset(
-    current: GeographicCoordinate, 
-    next: GeographicCoordinate, 
-    bias: &LocationBias
-) -> (GeographicCoordinate, f64) {  
+    current: GeographicCoordinate,
+    next: GeographicCoordinate,
+    bias: &LocationBias,
+) -> (GeographicCoordinate, f64) {
     let current_point = Point::from(current);
     let next_point = Point::from(next);
-    let bearing: f64 = normalize_bearing(current_point.geodesic_bearing(next_point)) as f64;
-    
+    let bearing = Geodesic::bearing(current_point, next_point);
+
     match bias {
         LocationBias::None => (current, bearing),
         LocationBias::Left(meters) | LocationBias::Right(meters) | LocationBias::Random(meters) => {
@@ -248,24 +245,31 @@ fn add_lateral_offset(
                         .duration_since(SystemTime::UNIX_EPOCH)
                         .unwrap()
                         .hash(&mut hasher);
-                    if hasher.finish() % 2 == 0 { 1.0 } else { -1.0 }
-                },         
+                    if hasher.finish() % 2 == 0 {
+                        1.0
+                    } else {
+                        -1.0
+                    }
+                }
                 LocationBias::None => unreachable!(),
             };
-            
+
             // calculate perpendicular bearing (±90° from bearing)
             let lateral_bearing_rad = (bearing + sign * 90.0).to_radians();
-            
+
             // offset to approximate degrees
             let offset_deg = meters / 111111.0;
-            
+
             let lat_offset = offset_deg * lateral_bearing_rad.cos();
             let lng_offset = offset_deg * lateral_bearing_rad.sin();
-            
-            (GeographicCoordinate {
-                lat: current.lat + lat_offset,
-                lng: current.lng + lng_offset,
-            }, bearing)
+
+            (
+                GeographicCoordinate {
+                    lat: current.lat + lat_offset,
+                    lng: current.lng + lng_offset,
+                },
+                bearing,
+            )
         }
     }
 }
@@ -283,8 +287,12 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
     if let Some((next_coordinate, rest)) = state.remaining_locations.split_first() {
         let (jittered_next, bearing) = add_lateral_offset(
             *next_coordinate,
-            if let Some(future) = rest.first() { *future } else { *next_coordinate },
-            &state.bias
+            if let Some(future) = rest.first() {
+                *future
+            } else {
+                *next_coordinate
+            },
+            &state.bias,
         );
 
         let accuracy = match state.bias {
@@ -295,14 +303,11 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
         let next_location = UserLocation {
             coordinates: jittered_next,
             horizontal_accuracy: accuracy,
-            course_over_ground: Some(CourseOverGround {
-                degrees: bearing.round() as u16,
-                accuracy: Some(5),
-            }),
+            course_over_ground: Some(CourseOverGround::new(bearing, Some(5))),
             timestamp: SystemTime::now(),
             speed: None,
         };
-        
+
         LocationSimulationState {
             current_location: next_location,
             remaining_locations: Vec::from(rest),
@@ -369,7 +374,7 @@ pub fn js_advance_location_simulation(state: JsValue) -> JsValue {
 mod tests {
     use super::*;
     use crate::algorithms::snap_user_location_to_line;
-    use geo::HaversineDistance;
+    use geo::{Distance, Haversine};
     use rstest::rstest;
 
     #[rstest]
@@ -427,12 +432,9 @@ mod tests {
     fn test_extended_interpolation_simulation() {
         let polyline = r#"umrefAzifwgF?yJf@?|C@?sJ?iL@_BBqD@cDzh@L|@?jBuDjCCl@u@^f@nB?|ABd@s@r@_AAiBBiC@kAlAHrEQ|F@pCNpA?pAAfB?~CkAtXsGRXlDw@rCo@jBc@SwAKoDr@}GLyAJ}AEs@]qBs@gE_@qC?aBBqAVkBZwBLmAFcBG_DOuB?}A^wAjA}Av@eBJoAAyA[sBbCUhAEIoCdAaCd@{@Fer@@ae@?aD?o[Ny@Vk@Sg@C_FCcDT[S_@Ow@F}oCXoAVe@_@e@?mE?cDNm@Og@Ok@Ck^N_BRu@a@OJqFFyDV[a@kAIkSLcF|AgNb@{@U_@JaEN}ETW[cA\_TbAkm@P_H\sE`AgFrCkKlAuGrEo\n@_B|@[~sBa@pAc@|AAh`Aa@jGEnGCrh@AfiAAjAx@TW`DO|CK\mEZ?~LBzBA|_@GtA?zPGlKQ?op@?uO@ggA?wE@uFEwXEyOCeFAkMAsKIot@?_FEoYAsI?yC?eH?}C?}GAy]Bux@Aog@AmKCmFC}YA}WVgBRu@vAaBlC{CxDCR?h@AhHQvGApDA|BAhHA`DC|GGzFDlM@jNA|J?bAkBtACvAArCClINfDdAfFGzW[|HI`FE@eMhHEt^KpJE"#;
         let max_distance = 10.0;
-        let mut state = location_simulation_from_polyline(
-            polyline, 
-            6, 
-            Some(max_distance),
-            LocationBias::None
-        ).expect("Unable to create initial state");
+        let mut state =
+            location_simulation_from_polyline(polyline, 6, Some(max_distance), LocationBias::None)
+                .expect("Unable to create initial state");
         let original_linestring = decode_polyline(polyline, 6).expect("Unable to decode polyline");
 
         // Loop until state no longer changes
@@ -446,7 +448,7 @@ mod tests {
             // The distance between each point in the simulation should be <= max_distance
             let current_point: Point = state.current_location.into();
             let next_point: Point = new_state.current_location.into();
-            let distance = current_point.haversine_distance(&next_point);
+            let distance = Haversine::distance(current_point, next_point);
             // I'm actually not 100% sure why this extra fudge is needed, but it's not a concern for today.
             assert!(
                 distance <= max_distance + 7.0,
@@ -456,7 +458,7 @@ mod tests {
             let snapped =
                 snap_user_location_to_line(new_state.current_location, &original_linestring);
             let snapped_point: Point = snapped.coordinates.into();
-            let distance = next_point.haversine_distance(&snapped_point);
+            let distance = Haversine::distance(next_point, snapped_point);
             assert!(
                 distance <= max_distance,
                 "Expected snapped point to be on the line; was {distance}m away"
@@ -486,15 +488,18 @@ mod tests {
     fn test_location_bias(#[case] bias: LocationBias) {
         let coordinates = vec![
             GeographicCoordinate { lng: 0.0, lat: 0.0 },
-            GeographicCoordinate { lng: 0.0001, lat: 0.0001 },
-            GeographicCoordinate { lng: 0.0002, lat: 0.0002 },
+            GeographicCoordinate {
+                lng: 0.0001,
+                lat: 0.0001,
+            },
+            GeographicCoordinate {
+                lng: 0.0002,
+                lat: 0.0002,
+            },
         ];
 
-        let state = location_simulation_from_coordinates(
-            &coordinates,
-            None,
-            bias.clone()
-        ).expect("Failed to create simulation");
+        let state = location_simulation_from_coordinates(&coordinates, None, bias.clone())
+            .expect("Failed to create simulation");
 
         if matches!(bias, LocationBias::None) {
             assert_eq!(state.current_location.coordinates, coordinates[0]);
@@ -508,7 +513,7 @@ mod tests {
 
         let original_point: Point = coordinates[0].into();
         let offset_point: Point = state.current_location.coordinates.into();
-        let distance = original_point.haversine_distance(&offset_point);
+        let distance = Haversine::distance(original_point, offset_point);
 
         assert!(
             (distance - expected_meters).abs() < 0.1,
@@ -520,20 +525,27 @@ mod tests {
     fn test_bias_consistency() {
         let coordinates = vec![
             GeographicCoordinate { lng: 0.0, lat: 0.0 },
-            GeographicCoordinate { lng: 0.0001, lat: 0.0001 },
-            GeographicCoordinate { lng: 0.0002, lat: 0.0002 },
-            GeographicCoordinate { lng: 0.0003, lat: 0.0003 },
+            GeographicCoordinate {
+                lng: 0.0001,
+                lat: 0.0001,
+            },
+            GeographicCoordinate {
+                lng: 0.0002,
+                lat: 0.0002,
+            },
+            GeographicCoordinate {
+                lng: 0.0003,
+                lat: 0.0003,
+            },
         ];
 
-        let mut state = location_simulation_from_coordinates(
-            &coordinates,
-            None,
-            LocationBias::Random(4.0)
-        ).expect("Failed to create simulation");
+        let mut state =
+            location_simulation_from_coordinates(&coordinates, None, LocationBias::Random(4.0))
+                .expect("Failed to create simulation");
 
         let first_point: Point = state.current_location.coordinates.into();
         let first_original: Point = coordinates[0].into();
-        let initial_distance = first_point.haversine_distance(&first_original);
+        let initial_distance = Haversine::distance(first_point, first_original);
 
         while let Some((next, _)) = state.remaining_locations.split_first() {
             let new_state = advance_location_simulation(&state);
@@ -543,7 +555,7 @@ mod tests {
 
             let current_point: Point = new_state.current_location.coordinates.into();
             let original_point: Point = (*next).into();
-            let distance = current_point.haversine_distance(&original_point);
+            let distance = Haversine::distance(current_point, original_point);
 
             assert!(
                 (distance - initial_distance).abs() < 0.1,

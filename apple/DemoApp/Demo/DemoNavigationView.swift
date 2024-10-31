@@ -56,6 +56,9 @@ struct DemoNavigationView: View {
             locationProvider: locationProvider,
             navigationControllerConfig: config,
             options: ["costing_options": ["bicycle": ["use_roads": 0.2]]],
+            // This is how you can set up annotation publishing;
+            // We provide "extended OSRM" support out of the box,
+            // but this is fully extendable!
             annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
         )
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
@@ -95,7 +98,7 @@ struct DemoNavigationView: View {
             )
             .navigationSpeedLimit(
                 speedLimit: ferrostarCore.annotation?.speedLimit,
-                speedLimitStyle: .usStyle
+                speedLimitStyle: .mutcdStyle
             )
             .innerGrid(
                 topCenter: {
