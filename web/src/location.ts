@@ -42,7 +42,7 @@ export class SimulatedLocationProvider {
   updateCallback: () => void = () => {};
 
   setSimulatedRoute(route: any) {
-    this.simulationState = locationSimulationFromRoute(route, 10.0);
+    this.simulationState = locationSimulationFromRoute(route, 10.0, "None");
     this.lastLocation = this.simulationState?.current_location;
     this.start();
   }

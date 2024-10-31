@@ -87,6 +87,7 @@ pub enum SimulationError {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub enum LocationBias {
     /// Simulates GPS bias by offsetting locations to the left of the route direction.
     /// The f64 parameter specifies the offset distance in meters.
@@ -324,11 +325,12 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
 pub fn js_location_simulation_from_coordinates(
     coordinates: JsValue,
     resample_distance: Option<f64>,
+    bias: LocationBias,
 ) -> Result<JsValue, JsValue> {
     let coordinates: Vec<GeographicCoordinate> = serde_wasm_bindgen::from_value(coordinates)
         .map_err(|error| JsValue::from_str(&error.to_string()))?;
 
-    location_simulation_from_coordinates(&coordinates, resample_distance)
+    location_simulation_from_coordinates(&coordinates, resample_distance, bias)
         .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
         .map_err(|error| JsValue::from_str(&error.to_string()))
 }
@@ -339,11 +341,12 @@ pub fn js_location_simulation_from_coordinates(
 pub fn js_location_simulation_from_route(
     route: JsValue,
     resample_distance: Option<f64>,
+    bias: LocationBias,
 ) -> Result<JsValue, JsValue> {
     let route: Route = serde_wasm_bindgen::from_value(route)
         .map_err(|error| JsValue::from_str(&error.to_string()))?;
 
-    location_simulation_from_route(&route, resample_distance)
+    location_simulation_from_route(&route, resample_distance, bias)
         .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
         .map_err(|error| JsValue::from_str(&error.to_string()))
 }
@@ -355,8 +358,9 @@ pub fn js_location_simulation_from_polyline(
     polyline: &str,
     precision: u32,
     resample_distance: Option<f64>,
+    bias: LocationBias,
 ) -> Result<JsValue, JsValue> {
-    location_simulation_from_polyline(polyline, precision, resample_distance)
+    location_simulation_from_polyline(polyline, precision, resample_distance, bias)
         .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
         .map_err(|error| JsValue::from_str(&error.to_string()))
 }
