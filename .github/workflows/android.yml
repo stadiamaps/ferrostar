@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-build
       cancel-in-progress: true
@@ -53,7 +53,7 @@ jobs:
 
   test:
 
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-test
       cancel-in-progress: true
@@ -99,7 +99,7 @@ jobs:
 
   verify-snapshots:
 
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-snapshots
       cancel-in-progress: true

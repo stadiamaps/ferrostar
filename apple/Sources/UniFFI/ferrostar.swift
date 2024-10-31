@@ -1782,12 +1782,14 @@ public func FfiConverterTypeLaneInfo_lower(_ value: LaneInfo) -> RustBuffer {
 public struct LocationSimulationState {
     public var currentLocation: UserLocation
     public var remainingLocations: [GeographicCoordinate]
+    public var bias: LocationBias
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(currentLocation: UserLocation, remainingLocations: [GeographicCoordinate]) {
+    public init(currentLocation: UserLocation, remainingLocations: [GeographicCoordinate], bias: LocationBias) {
         self.currentLocation = currentLocation
         self.remainingLocations = remainingLocations
+        self.bias = bias
     }
 }
 
@@ -1799,12 +1801,16 @@ extension LocationSimulationState: Equatable, Hashable {
         if lhs.remainingLocations != rhs.remainingLocations {
             return false
         }
+        if lhs.bias != rhs.bias {
+            return false
+        }
         return true
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(currentLocation)
         hasher.combine(remainingLocations)
+        hasher.combine(bias)
     }
 }
 
@@ -1812,13 +1818,15 @@ public struct FfiConverterTypeLocationSimulationState: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LocationSimulationState {
         try LocationSimulationState(
             currentLocation: FfiConverterTypeUserLocation.read(from: &buf),
-            remainingLocations: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf)
+            remainingLocations: FfiConverterSequenceTypeGeographicCoordinate.read(from: &buf),
+            bias: FfiConverterTypeLocationBias.read(from: &buf)
         )
     }
 
     public static func write(_ value: LocationSimulationState, into buf: inout [UInt8]) {
         FfiConverterTypeUserLocation.write(value.currentLocation, into: &buf)
         FfiConverterSequenceTypeGeographicCoordinate.write(value.remainingLocations, into: &buf)
+        FfiConverterTypeLocationBias.write(value.bias, into: &buf)
     }
 }
 
@@ -2869,6 +2877,90 @@ extension InstantiationError: Foundation.LocalizedError {
         String(reflecting: self)
     }
 }
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Controls how simulated locations deviate from the actual route line.
+ * This simulates real-world GPS behavior where readings often have systematic bias.
+ */
+
+public enum LocationBias {
+    /**
+     * Simulates GPS bias by offsetting locations to the left of the route direction.
+     * The f64 parameter specifies the offset distance in meters.
+     */
+    case left(Double)
+    /**
+     * Simulates GPS bias by offsetting locations to the right of the route direction.
+     * The f64 parameter specifies the offset distance in meters.
+     */
+    case right(Double)
+    /**
+     * Simulates GPS bias by randomly choosing left or right offset on initialization
+     * and maintaining that bias throughout the route.
+     * The f64 parameter specifies the offset distance in meters.
+     *
+     * This mimics real-world GPS behavior where bias direction is random but typically
+     * remains consistent during a trip.
+     */
+    case random(Double)
+    /**
+     * No position bias - locations follow the route line exactly.
+     *
+     * This provides "perfect" GPS behavior, useful for testing basic route following
+     * without position uncertainty.
+     */
+    case none
+}
+
+public struct FfiConverterTypeLocationBias: FfiConverterRustBuffer {
+    typealias SwiftType = LocationBias
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LocationBias {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        case 1: return try .left(FfiConverterDouble.read(from: &buf))
+
+        case 2: return try .right(FfiConverterDouble.read(from: &buf))
+
+        case 3: return try .random(FfiConverterDouble.read(from: &buf))
+
+        case 4: return .none
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: LocationBias, into buf: inout [UInt8]) {
+        switch value {
+        case let .left(v1):
+            writeInt(&buf, Int32(1))
+            FfiConverterDouble.write(v1, into: &buf)
+
+        case let .right(v1):
+            writeInt(&buf, Int32(2))
+            FfiConverterDouble.write(v1, into: &buf)
+
+        case let .random(v1):
+            writeInt(&buf, Int32(3))
+            FfiConverterDouble.write(v1, into: &buf)
+
+        case .none:
+            writeInt(&buf, Int32(4))
+        }
+    }
+}
+
+public func FfiConverterTypeLocationBias_lift(_ buf: RustBuffer) throws -> LocationBias {
+    try FfiConverterTypeLocationBias.lift(buf)
+}
+
+public func FfiConverterTypeLocationBias_lower(_ value: LocationBias) -> RustBuffer {
+    FfiConverterTypeLocationBias.lower(value)
+}
+
+extension LocationBias: Equatable, Hashable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
@@ -4345,13 +4437,16 @@ public func getRoutePolyline(route: Route, precision: UInt32) throws -> String {
  *
  * Optionally resamples the input line so that there is a maximum distance between points.
  */
-public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate],
-                                              resampleDistance: Double?) throws -> LocationSimulationState
-{
+public func locationSimulationFromCoordinates(
+    coordinates: [GeographicCoordinate],
+    resampleDistance: Double?,
+    bias: LocationBias
+) throws -> LocationSimulationState {
     try FfiConverterTypeLocationSimulationState.lift(rustCallWithError(FfiConverterTypeSimulationError.lift) {
         uniffi_ferrostar_fn_func_location_simulation_from_coordinates(
             FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates),
-            FfiConverterOptionDouble.lower(resampleDistance), $0
+            FfiConverterOptionDouble.lower(resampleDistance),
+            FfiConverterTypeLocationBias.lower(bias), $0
         )
     })
 }
@@ -4361,14 +4456,18 @@ public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate
  *
  * Optionally resamples the input line so that there is no more than the specified maximum distance between points.
  */
-public func locationSimulationFromPolyline(polyline: String, precision: UInt32,
-                                           resampleDistance: Double?) throws -> LocationSimulationState
-{
+public func locationSimulationFromPolyline(
+    polyline: String,
+    precision: UInt32,
+    resampleDistance: Double?,
+    bias: LocationBias
+) throws -> LocationSimulationState {
     try FfiConverterTypeLocationSimulationState.lift(rustCallWithError(FfiConverterTypeSimulationError.lift) {
         uniffi_ferrostar_fn_func_location_simulation_from_polyline(
             FfiConverterString.lower(polyline),
             FfiConverterUInt32.lower(precision),
-            FfiConverterOptionDouble.lower(resampleDistance), $0
+            FfiConverterOptionDouble.lower(resampleDistance),
+            FfiConverterTypeLocationBias.lower(bias), $0
         )
     })
 }
@@ -4378,11 +4477,14 @@ public func locationSimulationFromPolyline(polyline: String, precision: UInt32,
  *
  * Optionally resamples the route geometry so that there is no more than the specified maximum distance between points.
  */
-public func locationSimulationFromRoute(route: Route, resampleDistance: Double?) throws -> LocationSimulationState {
+public func locationSimulationFromRoute(route: Route, resampleDistance: Double?,
+                                        bias: LocationBias) throws -> LocationSimulationState
+{
     try FfiConverterTypeLocationSimulationState.lift(rustCallWithError(FfiConverterTypeSimulationError.lift) {
         uniffi_ferrostar_fn_func_location_simulation_from_route(
             FfiConverterTypeRoute.lower(route),
-            FfiConverterOptionDouble.lower(resampleDistance), $0
+            FfiConverterOptionDouble.lower(resampleDistance),
+            FfiConverterTypeLocationBias.lower(bias), $0
         )
     })
 }
@@ -4418,13 +4520,13 @@ private var initializationResult: InitializationResult = {
     if uniffi_ferrostar_checksum_func_get_route_polyline() != 31480 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 30262 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 52416 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 12234 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 14615 {
         return InitializationResult.apiChecksumMismatch
     }
-    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 47899 {
+    if uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027 {
         return InitializationResult.apiChecksumMismatch
     }
     if uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 3820 {
