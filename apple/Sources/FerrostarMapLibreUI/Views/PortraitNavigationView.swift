@@ -24,6 +24,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
+    public var bottomLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
     public var minimumSafeAreaInsets: EdgeInsets
@@ -101,8 +102,11 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
-                    showCentering: !camera.isTrackingUserLocationWithCourse,
-                    onCenter: { camera = navigationCamera },
+                    cameraControlState: camera.isTrackingUserLocationWithCourse ? CameraControlState.showRecenter {
+                        // TODO:
+                    } : .showRecenter { // TODO: Third case when not navigating!
+                        camera = navigationCamera
+                    },
                     onTapExit: onTapExit,
                     currentRoadNameView: currentRoadNameView
                 )
@@ -112,6 +116,8 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
                     topTrailing?()
                 } midLeading: {
                     midLeading?()
+                } bottomLeading: {
+                    bottomLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
                 }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)

@@ -28,6 +28,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
+    public var bottomLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
     let isMuted: Bool
@@ -106,8 +107,13 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         showZoom: true,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
+                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+                            if let overviewCamera = navigationState?.routeOverviewCamera {
+                                camera = overviewCamera
+                            }
+                        } : .showRecenter { // TODO: Third case when not navigating!
+                            camera = navigationCamera
+                        },
                         onTapExit: onTapExit,
                         currentRoadNameView: currentRoadNameView
                     )
@@ -117,6 +123,8 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         topTrailing?()
                     } midLeading: {
                         midLeading?()
+                    } bottomLeading: {
+                        bottomLeading?()
                     } bottomTrailing: {
                         bottomTrailing?()
                     }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
@@ -131,8 +139,13 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         showZoom: true,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
+                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+                            if let overviewCamera = navigationState?.routeOverviewCamera {
+                                camera = overviewCamera
+                            }
+                        } : .showRecenter { // TODO: Third case when not navigating!
+                            camera = navigationCamera
+                        },
                         onTapExit: onTapExit,
                         currentRoadNameView: currentRoadNameView
                     )
