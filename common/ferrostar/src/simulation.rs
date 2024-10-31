@@ -253,10 +253,10 @@ fn add_lateral_offset(
                 LocationBias::None => unreachable!(),
             };
             
-            // clculate perpendicular bearing (±90° from bearing)
+            // calculate perpendicular bearing (±90° from bearing)
             let lateral_bearing_rad = (bearing + sign * 90.0).to_radians();
             
-            // offset to approxmate degrees
+            // offset to approximate degrees
             let offset_deg = meters / 111111.0;
             
             let lat_offset = offset_deg * lateral_bearing_rad.cos();
