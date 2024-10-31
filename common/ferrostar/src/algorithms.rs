@@ -12,8 +12,8 @@ use crate::{
     navigation_controller::models::TripProgress,
 };
 use geo::{
-    Bearing, Closest, ClosestPoint, Coord, Distance, Euclidean, Geodesic, Haversine, Length,
-    LineLocatePoint, LineString, Point,
+    Bearing, Closest, Coord, Distance, Euclidean, Geodesic, Haversine, HaversineClosestPoint,
+    Length, LineLocatePoint, LineString, Point,
 };
 
 #[cfg(test)]
@@ -151,8 +151,7 @@ fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
         return None;
     }
 
-    // TODO: Use haversine_closest_point once a new release is cut which doesn't panic on intersections
-    match line.closest_point(point) {
+    match line.haversine_closest_point(point) {
         Closest::Intersection(snapped) | Closest::SinglePoint(snapped) => {
             let (x, y) = (snapped.x(), snapped.y());
             if is_valid_float(x) && is_valid_float(y) {
@@ -191,7 +190,7 @@ fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
 /// };
 /// let off_line = point! {
 ///     x: 1.0,
-/// y: 0.5,
+///     y: 0.5,
 /// };
 ///
 /// // The origin is directly on the line
@@ -201,9 +200,10 @@ fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
 /// assert_eq!(deviation_from_line(&midpoint, &linestring), Some(0.0));
 ///
 /// // This point, however is off the line.
-/// // That's a huge number, because we're dealing with degrees ;)
+/// // That's a huge number, because we're dealing with points jumping by degrees ;)
+/// println!("{:?}", deviation_from_line(&off_line, &linestring));
 /// assert!(deviation_from_line(&off_line, &linestring)
-///     .map_or(false, |deviation| deviation - 39312.21257675703 < f64::EPSILON));
+///     .map_or(false, |deviation| deviation - 39316.14208341989 < f64::EPSILON));
 /// ```
 pub fn deviation_from_line(point: &Point, line: &LineString) -> Option<f64> {
     snap_point_to_line(point, line).and_then(|snapped| {
