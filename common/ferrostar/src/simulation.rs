@@ -43,8 +43,6 @@ use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
 use geo::{coord, Bearing, Densify, Geodesic, Haversine, LineString, Point};
 use polyline::decode_polyline;
-use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
 
 #[cfg(any(test, feature = "wasm-bindgen"))]
 use serde::{Deserialize, Serialize};
@@ -241,12 +239,7 @@ fn add_lateral_offset(
                 LocationBias::Left(_) => -1.0,
                 LocationBias::Right(_) => 1.0,
                 LocationBias::Random(_) => {
-                    let mut hasher = DefaultHasher::new();
-                    SystemTime::now()
-                        .duration_since(SystemTime::UNIX_EPOCH)
-                        .unwrap()
-                        .hash(&mut hasher);
-                    if hasher.finish() % 2 == 0 {
+                    if rand::random() {
                         1.0
                     } else {
                         -1.0
