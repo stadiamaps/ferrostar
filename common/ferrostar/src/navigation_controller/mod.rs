@@ -12,7 +12,10 @@ use crate::{
     },
     models::{Route, UserLocation},
 };
-use geo::{HaversineDistance, LineString, Point};
+use geo::{
+    algorithm::{Distance, Haversine},
+    geometry::{LineString, Point},
+};
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
 use std::clone::Clone;
 
@@ -125,7 +128,7 @@ impl NavigationController {
                             let next_waypoint: Point = waypoint.coordinate.into();
                             // TODO: This is just a hard-coded threshold for the time being.
                             // More sophisticated behavior will take some time and use cases, so punting on this for now.
-                            current_location.haversine_distance(&next_waypoint) < 100.0
+                            Haversine::distance(current_location, next_waypoint) < 100.0
                         } else {
                             false
                         };

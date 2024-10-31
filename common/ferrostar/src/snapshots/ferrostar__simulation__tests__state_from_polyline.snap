@@ -1,5 +1,6 @@
 ---
 source: ferrostar/src/simulation.rs
+assertion_line: 322
 expression: state
 ---
 current_location:
@@ -8,7 +9,7 @@ current_location:
     lng: -149.543469
   horizontal_accuracy: 0
   course_over_ground:
-    degrees: 0
+    degrees: 288
     accuracy: ~
   speed: ~
 remaining_locations:

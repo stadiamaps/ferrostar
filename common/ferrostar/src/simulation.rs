@@ -38,9 +38,9 @@
 //! # }
 //! ```
 
-use crate::algorithms::{normalize_bearing, trunc_float};
+use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
-use geo::{coord, DensifyHaversine, GeodesicBearing, LineString, Point};
+use geo::{coord, Bearing, Densify, Geodesic, Haversine, LineString, Point};
 use polyline::decode_polyline;
 
 #[cfg(any(test, feature = "wasm-bindgen"))]
@@ -101,14 +101,11 @@ pub fn location_simulation_from_coordinates(
         if let Some(next) = rest.first() {
             let current_point = Point::from(*current);
             let next_point = Point::from(*next);
-            let bearing = current_point.geodesic_bearing(next_point);
+            let bearing = Geodesic::bearing(current_point, next_point);
             let current_location = UserLocation {
                 coordinates: *current,
                 horizontal_accuracy: 0.0,
-                course_over_ground: Some(CourseOverGround {
-                    degrees: bearing.round() as u16,
-                    accuracy: None,
-                }),
+                course_over_ground: Some(CourseOverGround::new(bearing, None)),
                 timestamp: SystemTime::now(),
                 speed: None,
             };
@@ -125,7 +122,7 @@ pub fn location_simulation_from_coordinates(
                     })
                     .collect();
                 let linestring: LineString = coords.into();
-                let densified_linestring = linestring.densify_haversine(distance);
+                let densified_linestring = linestring.densify::<Haversine>(distance);
                 densified_linestring
                     .points()
                     .map(|point| GeographicCoordinate {
@@ -199,15 +196,11 @@ pub fn advance_location_simulation(state: &LocationSimulationState) -> LocationS
     if let Some((next_coordinate, rest)) = state.remaining_locations.split_first() {
         let current_point = Point::from(state.current_location.coordinates);
         let next_point = Point::from(*next_coordinate);
-        let bearing = normalize_bearing(current_point.geodesic_bearing(next_point));
-
+        let bearing = Geodesic::bearing(current_point, next_point);
         let next_location = UserLocation {
             coordinates: *next_coordinate,
             horizontal_accuracy: 0.0,
-            course_over_ground: Some(CourseOverGround {
-                degrees: bearing,
-                accuracy: None,
-            }),
+            course_over_ground: Some(CourseOverGround::new(bearing, None)),
             timestamp: SystemTime::now(),
             speed: None,
         };
@@ -277,7 +270,7 @@ pub fn js_advance_location_simulation(state: JsValue) -> JsValue {
 mod tests {
     use super::*;
     use crate::algorithms::snap_user_location_to_line;
-    use geo::HaversineDistance;
+    use geo::{Distance, Haversine};
     use rstest::rstest;
 
     #[rstest]
@@ -348,7 +341,7 @@ mod tests {
             // The distance between each point in the simulation should be <= max_distance
             let current_point: Point = state.current_location.into();
             let next_point: Point = new_state.current_location.into();
-            let distance = current_point.haversine_distance(&next_point);
+            let distance = Haversine::distance(current_point, next_point);
             // I'm actually not 100% sure why this extra fudge is needed, but it's not a concern for today.
             assert!(
                 distance <= max_distance + 7.0,
@@ -358,7 +351,7 @@ mod tests {
             let snapped =
                 snap_user_location_to_line(new_state.current_location, &original_linestring);
             let snapped_point: Point = snapped.coordinates.into();
-            let distance = next_point.haversine_distance(&snapped_point);
+            let distance = Haversine::distance(next_point, snapped_point);
             assert!(
                 distance <= max_distance,
                 "Expected snapped point to be on the line; was {distance}m away"
