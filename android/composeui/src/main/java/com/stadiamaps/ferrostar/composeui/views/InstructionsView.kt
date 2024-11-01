@@ -7,20 +7,17 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,6 +33,7 @@ import com.stadiamaps.ferrostar.composeui.formatting.DistanceFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.composeui.theme.DefaultInstructionRowTheme
 import com.stadiamaps.ferrostar.composeui.theme.InstructionRowTheme
+import com.stadiamaps.ferrostar.composeui.views.controls.PillDragHandle
 import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverImage
 import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverInstructionView
 import uniffi.ferrostar.ManeuverModifier
@@ -66,13 +64,18 @@ fun InstructionsView(
   var isExpanded by remember { mutableStateOf(initExpanded) }
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
-  Box(
+  Column(
       modifier =
           Modifier.fillMaxWidth()
               .heightIn(max = screenHeight)
               .animateContentSize(animationSpec = spring(stiffness = Spring.StiffnessHigh))
               .background(theme.backgroundColor, RoundedCornerShape(10.dp))
-              .padding(16.dp)) {
+              .padding(16.dp)
+              .clickable {
+                // This makes the entire view a click target for expansion.
+                // If only the pill is a click target, you need to be a ninja to tap it.
+                isExpanded = true
+              }) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
           // Primary content
           item {
@@ -105,22 +108,19 @@ fun InstructionsView(
               }
             }
           }
-
-          item {
-            Box(
-                modifier =
-                    Modifier.height(36.dp).fillMaxWidth().clickable { isExpanded = !isExpanded }) {
-                  Icon(
-                      if (isExpanded) {
-                        Icons.Default.KeyboardArrowUp
-                      } else {
-                        Icons.Default.KeyboardArrowDown
-                      },
-                      modifier = Modifier.align(Alignment.Center),
-                      contentDescription = "Show upcoming maneuvers")
-                }
-          }
         }
+
+        if (isExpanded) {
+          Spacer(modifier = Modifier.weight(1.0f))
+        }
+
+        PillDragHandle(
+            isExpanded,
+            // The modifier here lets us keep the container as slim as possible
+            modifier = Modifier.offset(y = 4.dp).align(Alignment.CenterHorizontally),
+            iconTintColor = theme.iconTintColor) {
+              isExpanded = !isExpanded
+            }
       }
 }
 
