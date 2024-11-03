@@ -234,7 +234,7 @@ which uses the text-to-speech engine built into Android.
 You can also use your own implementation,
 such as a local AI model or cloud service like Amazon Polly.
 The `com.stadiamaps.ferrostar.core.SpokenInstructionObserver` interface
-specifies the rquired API.
+specifies the required API.
 PRs welcome to add other publicly accessible speech API implementations.
 
 **TODO documentation:**
