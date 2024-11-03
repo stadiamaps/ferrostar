@@ -99,6 +99,60 @@ For limited testing, FOSSGIS maintains a public server with the URL `https://val
 For production use, you’ll need another solution like a [commercial vendor](./vendors.md)
 or self-hosting.
 
+### Set up Voice Guidance
+
+If your routes include spoken instructions,
+Ferrostar can trigger the speech synthesis at the right time.
+Ferrostar includes the `SpokenInstructionObserver` class, 
+which can use `AVSpeechSynthesizer` or your own speech synthesis.
+
+The `SpeechSynthesizer` protocol
+specifies the required interface,
+and you can build your own implementation on this,
+such as a local AI model or cloud service like Amazon Polly.
+PRs welcome to add other publicly accessible speech API implementations.
+
+Your navigation view can store the spoken instruction observer as an instance variable:
+
+```swift
+@State private var spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer(isMuted: false)
+```
+
+Then, you'll need to configure `FerrostarCore` to use it.
+
+```swift
+ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
+```
+
+Finally, you can use this to drive state on navigation view.
+`DynamicallyOrientingNavigationView` has constructor arguments to configure the mute button UI.
+See the demo app for an example.
+
+### Configure annotation parsing
+
+`FerrostarCore` includes support for parsing arbitrary annotations
+from the route.
+This technique is a de facto standard from OSRM,
+and has been adopted by a wide range of open-source and proprietary solutions.
+The routing APIs from Stadia Maps, Mapbox, and others
+use this to include detailed information like speed limits,
+expected travel speed, and more.
+
+Ferrostar includes a Valhalla extended OSRM annotation parser,
+which works with Valhalla-powered APIs including Stadia Maps.
+The implementation is completely generic,
+so you can define your own model to include custom parameters.
+PRs welcome for other public API annotation models.
+
+To set up annotation parsing,
+simply pass the optional `annotation:` parameter
+to the `FerrostarCore` constructor.
+You can create a Valhalla extended OSRM annotation publisher like so:
+
+```swift
+AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
+```
+
 ## Getting a route
 
 Before getting routes, you’ll need the user’s current location.
