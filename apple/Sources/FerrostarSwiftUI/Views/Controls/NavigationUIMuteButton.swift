@@ -2,7 +2,7 @@ import FerrostarCore
 import FerrostarCoreFFI
 import SwiftUI
 
-public struct MuteUIButton: View {
+public struct NavigationUIMuteButton: View {
     let isMuted: Bool
     let action: () -> Void
 
@@ -12,21 +12,18 @@ public struct MuteUIButton: View {
     }
 
     public var body: some View {
-        Button(action: action) {
+        NavigationUIButton(action: action) {
             Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.2.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
-                .padding()
         }
-        .foregroundColor(.black)
-        .background(Color.white)
-        .clipShape(Circle())
+        .shadow(radius: 8)
     }
 }
 
 #Preview {
-    MuteUIButton(isMuted: true, action: {})
+    NavigationUIMuteButton(isMuted: true, action: {})
 
-    MuteUIButton(isMuted: false, action: {})
+    NavigationUIMuteButton(isMuted: false, action: {})
 }

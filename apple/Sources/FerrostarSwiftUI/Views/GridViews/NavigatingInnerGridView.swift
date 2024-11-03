@@ -87,7 +87,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             topCenter: { topCenter?() },
             topTrailing: {
                 if showMute {
-                    MuteUIButton(isMuted: isMuted, action: onMute)
+                    NavigationUIMuteButton(isMuted: isMuted, action: onMute)
                         .shadow(radius: 8)
                 }
             },
