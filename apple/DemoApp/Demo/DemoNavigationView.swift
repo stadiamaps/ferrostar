@@ -143,7 +143,6 @@ struct DemoNavigationView: View {
                                         .font(.body.bold())
                                 }
                                 .disabled(routes?.isEmpty == true)
-                                .shadow(radius: 10)
                             }
                         } else {
                             NavigationUIButton {

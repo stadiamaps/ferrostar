@@ -88,7 +88,6 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             topTrailing: {
                 if showMute {
                     NavigationUIMuteButton(isMuted: isMuted, action: onMute)
-                        .shadow(radius: 8)
                 }
             },
             midLeading: { midLeading?() },
@@ -99,7 +98,6 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             midTrailing: {
                 if showZoom {
                     NavigationUIZoomButton(onZoomIn: onZoomIn, onZoomOut: onZoomOut)
-                        .shadow(radius: 8)
                 } else {
                     Spacer()
                 }
@@ -112,7 +110,6 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 18, height: 18)
                     }
-                    .shadow(radius: 8)
                 } else {
                     Spacer()
                 }

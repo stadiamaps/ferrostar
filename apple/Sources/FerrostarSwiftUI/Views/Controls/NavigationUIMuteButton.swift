@@ -18,7 +18,6 @@ public struct NavigationUIMuteButton: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 18, height: 18)
         }
-        .shadow(radius: 8)
     }
 }
 
