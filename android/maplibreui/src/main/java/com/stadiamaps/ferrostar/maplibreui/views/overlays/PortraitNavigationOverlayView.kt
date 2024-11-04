@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.DpRect
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.mapbox.mapboxsdk.geometry.LatLngBounds
@@ -69,21 +68,24 @@ fun PortraitNavigationOverlayView(
 
     val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
 
-    val cameraControlState = if (viewModel.isNavigating() && !cameraIsTrackingLocation) {
-      CameraControlState.ShowRecenter {
-        camera.value = navigationCamera
-      }
-    } else {
-      val bbox = uiState.routeGeometry?.boundingBox()
-      if (viewModel.isNavigating() && cameraIsTrackingLocation && bbox != null) {
-        CameraControlState.ShowRouteOverview {
-          val scale = density.density
-          camera.value = MapViewCamera.BoundingBox(LatLngBounds.from(bbox.north, bbox.east, bbox.south, bbox.west), padding = CameraPadding(20.0 * scale, 200.0 * scale, 100.0 * scale, 150.0 * scale))
+    val cameraControlState =
+        if (viewModel.isNavigating() && !cameraIsTrackingLocation) {
+          CameraControlState.ShowRecenter { camera.value = navigationCamera }
+        } else {
+          val bbox = uiState.routeGeometry?.boundingBox()
+          if (viewModel.isNavigating() && cameraIsTrackingLocation && bbox != null) {
+            CameraControlState.ShowRouteOverview {
+              val scale = density.density
+              camera.value =
+                  MapViewCamera.BoundingBox(
+                      LatLngBounds.from(bbox.north, bbox.east, bbox.south, bbox.west),
+                      padding =
+                          CameraPadding(20.0 * scale, 200.0 * scale, 100.0 * scale, 150.0 * scale))
+            }
+          } else {
+            CameraControlState.Hidden
+          }
         }
-      } else {
-        CameraControlState.Hidden
-      }
-    }
 
     NavigatingInnerGridView(
         modifier = Modifier.fillMaxSize().weight(1f).padding(bottom = 16.dp, top = 16.dp),

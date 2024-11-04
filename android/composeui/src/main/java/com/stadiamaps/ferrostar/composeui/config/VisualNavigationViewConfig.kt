@@ -16,7 +16,8 @@ data class VisualNavigationViewConfig(
 ) {
   companion object {
     fun Default() =
-        VisualNavigationViewConfig(showMute = true, showZoom = true, cameraControlState = CameraControlState.Hidden)
+        VisualNavigationViewConfig(
+            showMute = true, showZoom = true, cameraControlState = CameraControlState.Hidden)
   }
 }
 
