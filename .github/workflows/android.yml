@@ -52,7 +52,6 @@ jobs:
       working-directory: android
 
   test:
-
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-test
