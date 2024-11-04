@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "uniffi-bindgen",
+    "uniffi-bindgen-swift",
     "ferrostar",
 ]
 resolver = "2"

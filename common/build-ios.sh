@@ -32,10 +32,11 @@ fat_simulator_lib_dir="target/ios-simulator-fat/release"
 
 generate_ffi() {
   echo "Generating framework module mapping and FFI bindings"
-  cargo run -p uniffi-bindgen generate --library target/aarch64-apple-ios/release/lib$1.dylib --language swift --out-dir target/uniffi-xcframework-staging
+  # NOTE: Convention requires the modulemap be named module.modulemap
+  cargo run -p uniffi-bindgen-swift -- target/aarch64-apple-ios/release/lib$1.a target/uniffi-xcframework-staging --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
   mkdir -p ../apple/Sources/UniFFI/
   mv target/uniffi-xcframework-staging/*.swift ../apple/Sources/UniFFI/
-  mv target/uniffi-xcframework-staging/$1FFI.modulemap target/uniffi-xcframework-staging/module.modulemap  # Convention requires this have a specific name
+  mv target/uniffi-xcframework-staging/module.modulemap target/uniffi-xcframework-staging/module.modulemap
 }
 
 create_fat_simulator_lib() {
