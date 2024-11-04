@@ -1,5 +1,4 @@
 import FerrostarCore
-import FerrostarCoreFFI
 import SwiftUI
 
 public struct NavigationUIMuteButton: View {
@@ -22,7 +21,9 @@ public struct NavigationUIMuteButton: View {
 }
 
 #Preview {
-    NavigationUIMuteButton(isMuted: true, action: {})
+    VStack {
+        NavigationUIMuteButton(isMuted: true, action: {})
 
-    NavigationUIMuteButton(isMuted: false, action: {})
+        NavigationUIMuteButton(isMuted: false, action: {})
+    }
 }
