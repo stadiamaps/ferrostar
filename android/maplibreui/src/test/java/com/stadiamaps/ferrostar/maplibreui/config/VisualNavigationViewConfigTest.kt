@@ -1,5 +1,8 @@
 package com.stadiamaps.ferrostar.maplibreui.config
 
+import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
+import com.stadiamaps.ferrostar.composeui.config.useMuteButton
+import com.stadiamaps.ferrostar.composeui.config.useZoomButton
 import org.junit.Assert.assertFalse
 import org.junit.Test
 

@@ -1,5 +1,7 @@
 package com.stadiamaps.ferrostar.composeui.views.gridviews
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
@@ -7,15 +9,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeOff
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Navigation
-import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.Route
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
+import com.stadiamaps.ferrostar.composeui.config.CameraControlState
 import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIButton
 import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIZoomButton
 
@@ -25,6 +29,7 @@ fun NavigatingInnerGridView(
     showMute: Boolean = true,
     isMuted: Boolean?,
     onClickMute: () -> Unit = {},
+    cameraControlState: CameraControlState = CameraControlState.Hidden,
     showZoom: Boolean = true,
     onClickZoomIn: () -> Unit = {},
     onClickZoomOut: () -> Unit = {},
@@ -41,16 +46,42 @@ fun NavigatingInnerGridView(
       },
       topCenter = topCenter,
       topEnd = {
-        if (showMute && isMuted != null) {
-          NavigationUIButton(onClick = onClickMute) {
-            if (isMuted) {
-              Icon(
-                  Icons.AutoMirrored.Filled.VolumeOff,
-                  contentDescription = stringResource(id = R.string.unmute_description))
-            } else {
-              Icon(
-                  Icons.AutoMirrored.Filled.VolumeUp,
-                  contentDescription = stringResource(id = R.string.mute_description))
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+          when (cameraControlState) {
+            CameraControlState.Hidden -> {
+              // Nothing to draw here :)
+            }
+            is CameraControlState.ShowRecenter -> {
+              NavigationUIButton(
+                onClick = cameraControlState.updateCamera) {
+                Icon(
+                  Icons.Filled.Navigation,
+                  contentDescription = stringResource(id = R.string.recenter))
+              }
+            }
+            is CameraControlState.ShowRouteOverview -> {
+              NavigationUIButton(
+                onClick = cameraControlState.updateCamera) {
+                // TODO: Switch icon based on state
+                Icon(
+                  Icons.Default.Route,
+                  modifier = Modifier.rotate(90.0f),
+                  contentDescription = stringResource(id = R.string.route_overview))
+              }
+            }
+          }
+
+          if (showMute && isMuted != null) {
+            NavigationUIButton(onClick = onClickMute) {
+              if (isMuted) {
+                Icon(
+                    Icons.AutoMirrored.Filled.VolumeOff,
+                    contentDescription = stringResource(id = R.string.unmute_description))
+              } else {
+                Icon(
+                    Icons.AutoMirrored.Filled.VolumeUp,
+                    contentDescription = stringResource(id = R.string.mute_description))
+              }
             }
           }
         }
@@ -62,13 +93,7 @@ fun NavigatingInnerGridView(
         }
       },
       bottomStart = {
-        if (showCentering) {
-          NavigationUIButton(onClick = onClickCenter) {
-            Icon(
-                Icons.Filled.Navigation,
-                contentDescription = stringResource(id = R.string.recenter))
-          }
-        }
+        // TODO: Fill this with something else optionally
       },
       bottomEnd = bottomEnd)
 }

@@ -19,6 +19,7 @@ import com.maplibre.compose.camera.CameraState
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.rememberSaveableMapViewCamera
+import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
 import com.stadiamaps.ferrostar.composeui.views.TripProgressView
@@ -27,7 +28,6 @@ import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
-import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,6 +49,8 @@ fun LandscapeNavigationOverlayView(
 ) {
   val uiState by viewModel.uiState.collectAsState()
   val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
+
+  // TODO: cameraControlState (basically copy implementation from the portrait overlay)
 
   Row(modifier) {
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
