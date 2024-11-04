@@ -27,6 +27,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
+    public var bottomLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
     let isMuted: Bool
@@ -99,8 +100,11 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
-                    showCentering: !camera.isTrackingUserLocationWithCourse,
-                    onCenter: { camera = navigationCamera },
+                    cameraControlState: camera.isTrackingUserLocationWithCourse ? CameraControlState.showRecenter {
+                        // TODO:
+                    } : .showRecenter {
+                        camera = navigationCamera
+                    },
                     onTapExit: onTapExit,
                     currentRoadNameView: currentRoadNameView
                 )
@@ -110,6 +114,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     topTrailing?()
                 } midLeading: {
                     midLeading?()
+                } bottomLeading: {
+                    bottomLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
                 }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)

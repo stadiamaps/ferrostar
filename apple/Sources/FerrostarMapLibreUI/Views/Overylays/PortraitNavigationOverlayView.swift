@@ -19,6 +19,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
+    var bottomLeading: (() -> AnyView)?
     var bottomTrailing: (() -> AnyView)?
 
     var speedLimit: Measurement<UnitSpeed>?
@@ -28,8 +29,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
 
-    var showCentering: Bool
-    var onCenter: () -> Void
+    var cameraControlState: CameraControlState
 
     var onTapExit: (() -> Void)?
     let currentRoadNameView: AnyView?
@@ -48,8 +48,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
-        showCentering: Bool = false,
-        onCenter: @escaping () -> Void = {},
+        cameraControlState: CameraControlState = .hidden,
         onTapExit: (() -> Void)? = nil,
         currentRoadNameView: AnyView?
     ) {
@@ -62,8 +61,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         self.onMute = onMute
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
-        self.showCentering = showCentering
-        self.onCenter = onCenter
+        self.cameraControlState = cameraControlState
         self.onTapExit = onTapExit
         self.currentRoadNameView = currentRoadNameView
     }
@@ -86,8 +84,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
                     showZoom: showZoom,
                     onZoomIn: onZoomIn,
                     onZoomOut: onZoomOut,
-                    showCentering: showCentering,
-                    onCenter: onCenter
+                    cameraControlState: cameraControlState
                 )
                 .innerGrid {
                     topCenter?()
@@ -95,6 +92,8 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
                     topTrailing?()
                 } midLeading: {
                     midLeading?()
+                } bottomLeading: {
+                    bottomLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
                 }
@@ -103,7 +102,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
                    let progress = navigationState?.currentProgress
                 {
                     VStack {
-                        if !showCentering {
+                        if case .showRouteOverview = cameraControlState {
                             currentRoadNameView
                         }
 

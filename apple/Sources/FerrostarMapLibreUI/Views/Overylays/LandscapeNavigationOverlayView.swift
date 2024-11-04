@@ -16,6 +16,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
+    var bottomLeading: (() -> AnyView)?
     var bottomTrailing: (() -> AnyView)?
 
     var speedLimit: Measurement<UnitSpeed>?
@@ -25,8 +26,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
 
-    var showCentering: Bool
-    var onCenter: () -> Void
+    var cameraControlState: CameraControlState
 
     var onTapExit: (() -> Void)?
     let currentRoadNameView: AnyView?
@@ -46,8 +46,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
-        showCentering: Bool = false,
-        onCenter: @escaping () -> Void = {},
+        cameraControlState: CameraControlState = .hidden,
         onTapExit: (() -> Void)? = nil,
         currentRoadNameView: AnyView?
     ) {
@@ -60,8 +59,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
-        self.showCentering = showCentering
-        self.onCenter = onCenter
+        self.cameraControlState = cameraControlState
         self.onTapExit = onTapExit
         self.currentRoadNameView = currentRoadNameView
     }
@@ -117,8 +115,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                 showZoom: showZoom,
                 onZoomIn: onZoomIn,
                 onZoomOut: onZoomOut,
-                showCentering: showCentering,
-                onCenter: onCenter
+                cameraControlState: cameraControlState
             )
             .innerGrid {
                 topCenter?()
@@ -126,6 +123,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                 topTrailing?()
             } midLeading: {
                 midLeading?()
+            } bottomLeading: {
+                bottomLeading?()
             } bottomTrailing: {
                 bottomTrailing?()
             }

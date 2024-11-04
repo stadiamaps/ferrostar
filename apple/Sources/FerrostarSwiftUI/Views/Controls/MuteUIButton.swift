@@ -12,6 +12,7 @@ public struct MuteUIButton: View {
     }
 
     public var body: some View {
+        // TODO: Use NavigationUIButton?
         Button(action: action) {
             Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.2.fill")
                 .resizable()

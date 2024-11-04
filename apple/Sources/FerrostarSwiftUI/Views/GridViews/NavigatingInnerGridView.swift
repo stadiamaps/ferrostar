@@ -1,6 +1,23 @@
 import FerrostarCore
 import SwiftUI
 
+/// Determines which camera control is shown in the navigation inner grid view.
+public enum CameraControlState {
+    /// Don't show any camera control.
+    case hidden
+
+    /// Shows the recenter button.
+    ///
+    /// The action is responsible for resetting the camera
+    /// to a state that follows the user.
+    case showRecenter(() -> Void)
+
+    /// Shows the route overview button.
+    ///
+    /// The action is responsible for transitioning the camera to an overview of the route.
+    case showRouteOverview(() -> Void)
+}
+
 /// When navigation is underway, we use this standardized grid view with pre-defined metadata and interactions.
 /// This is the default UI and can be customized to some extent. If you need more customization,
 /// use the ``InnerGridView``.
@@ -14,8 +31,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     let onZoomIn: () -> Void
     let onZoomOut: () -> Void
 
-    let showCentering: Bool
-    let onCenter: () -> Void
+    let cameraControlState: CameraControlState
 
     let showMute: Bool
     let isMuted: Bool
@@ -26,6 +42,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
+    public var bottomLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
     /// The default navigation inner grid view.
@@ -42,12 +59,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     ///   - showZoom: Whether to show the provided zoom control or not.
     ///   - onZoomIn: The on zoom in tapped action. This should be used to zoom the user in one increment.
     ///   - onZoomOut: The on zoom out tapped action. This should be used to zoom the user out one increment.
-    ///   - showCentering: Whether to show the centering control. This is typically determined by the Map's centering
-    /// state.
-    ///   - onCenter: The action that occurs when the user taps the centering control (to re-center the map on the
-    /// user).
-    ///   - showMute: Whether to show the provided mute toggle or not.
-    ///   - spokenInstructionObserver: The spoken instruction observer (for driving mute button state).
+    ///   - cameraControlState: Which camera control to show (and its respective action).
     public init(
         speedLimit: Measurement<UnitSpeed>? = nil,
         speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
@@ -57,8 +69,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
-        showCentering: Bool = false,
-        onCenter: @escaping () -> Void = {}
+        cameraControlState: CameraControlState = .hidden
     ) {
         self.speedLimit = speedLimit
         self.speedLimitStyle = speedLimitStyle
@@ -68,8 +79,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
-        self.showCentering = showCentering
-        self.onCenter = onCenter
+        self.cameraControlState = cameraControlState
     }
 
     public var body: some View {
@@ -86,6 +96,29 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             },
             topCenter: { topCenter?() },
             topTrailing: {
+                // TODO: Extract to a separate view?
+                switch cameraControlState {
+                case .hidden:
+                    // Nothing
+                    EmptyView()
+                case let .showRecenter(onCenter):
+                    NavigationUIButton(action: onCenter) {
+                        Image(systemName: "location.north.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
+                    }
+                    .shadow(radius: 8)
+                case let .showRouteOverview(onRouteOverview):
+                    NavigationUIButton(action: onRouteOverview) {
+                        Image(systemName: "point.bottomleft.forward.to.point.topright.scurvepath")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 18, height: 18)
+                    }
+                    .shadow(radius: 8)
+                }
+
                 if showMute {
                     MuteUIButton(isMuted: isMuted, action: onMute)
                         .shadow(radius: 8)
@@ -104,19 +137,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
                     Spacer()
                 }
             },
-            bottomLeading: {
-                if showCentering {
-                    NavigationUIButton(action: onCenter) {
-                        Image(systemName: "location.north.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 18, height: 18)
-                    }
-                    .shadow(radius: 8)
-                } else {
-                    Spacer()
-                }
-            },
+            bottomLeading: { bottomLeading?() },
             bottomCenter: {
                 // This view does not allow center content to prevent overlaying the puck.
                 Spacer()
