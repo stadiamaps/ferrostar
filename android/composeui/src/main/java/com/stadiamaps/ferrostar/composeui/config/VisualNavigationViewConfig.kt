@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar.composeui.config
 
-// TODO: Nest cases
 sealed class CameraControlState {
   data object Hidden : CameraControlState()
 

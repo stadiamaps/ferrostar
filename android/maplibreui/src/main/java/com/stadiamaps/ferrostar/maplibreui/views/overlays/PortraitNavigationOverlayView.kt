@@ -96,9 +96,6 @@ fun PortraitNavigationOverlayView(
         showZoom = config.showZoom,
         onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
         onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
-        // TODO: Remove if we go with this model
-        showCentering = !cameraIsTrackingLocation,
-        onClickCenter = { camera.value = navigationCamera },
     )
 
     uiState.progress?.let { progress ->

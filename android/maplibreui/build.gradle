@@ -12,7 +12,7 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar.maplibreui'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         minSdk 25
