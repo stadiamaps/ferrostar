@@ -1,6 +1,6 @@
 # Getting Started on the Web
 
-This section of the guide covers how to integrate **Ferrostar** into a web app using **React**.
+This section of the guide covers how to integrate Ferrostar into a web app.
 While there are limitations to the web [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
 (notably no background updates),
 **Progressive Web Apps (PWAs)** and other mobile-optimized sites
@@ -33,7 +33,7 @@ Then add `wasm()` and `topLevelAwait()` to the `plugins` section of your Vite co
 
 TODO
 
-## Add Ferrostar web components to your React App
+## Add Ferrostar web components to your Web App
 
 The Ferrostar web SDK uses the [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
 to ensure maximum compatibility across frontend frameworks.
@@ -45,7 +45,20 @@ import { FerrostarMap, BrowserLocationProvider } from "@stadiamaps/ferrostar-com
 
 ## Configure the <ferrostar-map> Component
 
-Now you can use Ferrostar in your React component like this:
+Now you can use Ferrostar in your web component like this:
+
+## HTML
+
+```
+<ferrostar-map
+id="ferrostar"
+  valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
+  styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
+  profile="bicycle"
+></ferrostar-map>
+```
+
+## React
 
 ```javascript
 import React from 'react';
