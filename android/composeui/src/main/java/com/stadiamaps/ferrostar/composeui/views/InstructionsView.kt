@@ -97,26 +97,24 @@ fun InstructionsView(
           if (isExpanded) {
             Box(modifier = Modifier.weight(1f)) {
               LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-              ) {
-                if (remainingSteps != null) {
-                  items(remainingSteps.drop(1)) { step ->
-                    step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
-                      ManeuverInstructionView(
-                        text = upcomingInstruction.primaryContent.text,
-                        distanceFormatter = distanceFormatter,
-                        distanceToNextManeuver = step.distance,
-                        theme = theme
-                      ) {
-                        contentBuilder(upcomingInstruction)
+                  modifier = Modifier.fillMaxSize(),
+                  verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (remainingSteps != null) {
+                      items(remainingSteps.drop(1)) { step ->
+                        step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
+                          ManeuverInstructionView(
+                              text = upcomingInstruction.primaryContent.text,
+                              distanceFormatter = distanceFormatter,
+                              distanceToNextManeuver = step.distance,
+                              theme = theme) {
+                                contentBuilder(upcomingInstruction)
+                              }
+                          Spacer(modifier = Modifier.height(8.dp))
+                          HorizontalDivider(thickness = 1.dp)
+                        }
                       }
-                      Spacer(modifier = Modifier.height(8.dp))
-                      HorizontalDivider(thickness = 1.dp)
                     }
                   }
-                }
-              }
             }
           }
 
