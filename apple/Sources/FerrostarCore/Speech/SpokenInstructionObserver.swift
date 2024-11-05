@@ -7,7 +7,7 @@ import Foundation
 public class SpokenInstructionObserver: ObservableObject {
     @Published public private(set) var isMuted: Bool
 
-    private let synthesizer: SpeechSynthesizer
+    let synthesizer: SpeechSynthesizer
     private let queue = DispatchQueue(label: "ferrostar-spoken-instruction-observer", qos: .default)
 
     /// Create a spoken instruction observer with any ``SpeechSynthesizer``
@@ -28,16 +28,16 @@ public class SpokenInstructionObserver: ObservableObject {
             return
         }
 
-        let utterance: AVSpeechUtterance = if #available(iOS 16.0, *),
-                                              let ssml = instruction.ssml,
-                                              let ssmlUtterance = AVSpeechUtterance(ssmlRepresentation: ssml)
-        {
-            ssmlUtterance
-        } else {
-            AVSpeechUtterance(string: instruction.text)
-        }
-
         queue.async {
+            let utterance: AVSpeechUtterance = if #available(iOS 16.0, *),
+                                                  let ssml = instruction.ssml,
+                                                  let ssmlUtterance = AVSpeechUtterance(ssmlRepresentation: ssml)
+            {
+                ssmlUtterance
+            } else {
+                AVSpeechUtterance(string: instruction.text)
+            }
+
             self.synthesizer.speak(utterance)
         }
     }

@@ -11,6 +11,7 @@ public struct NavigationUIButtonStyle: ButtonStyle {
             .foregroundStyle(.primary)
             .clipShape(Capsule())
             .frame(minWidth: 52, minHeight: 52)
+            .shadow(radius: 8)
     }
 }
 

@@ -226,13 +226,16 @@ such as using a Valhalla [Route Provider](./route-providers.md#bundled-support).
 
 ## Set up voice guidance
 
-Ferrostar is able to process spoken instructions generated from some routing engines.
-The `com.stadiamaps.ferrostar.core.SpokenInstructionObserver` interface
-specifies how to create your own observer.
-A reference implementation is provided in the `AndroidTtsObserver` class,
+If your routes include spoken instructions,
+Ferrostar can trigger the speech synthesis at the right time.
+Ferrostar includes the `AndroidTtsObserver` class,
 which uses the text-to-speech engine built into Android.
-PRs welcome for other popular services (ex: Amazon Polly;
-note that some APIs also provide SSML instructions which work great with this!).
+
+You can also use your own implementation,
+such as a local AI model or cloud service like Amazon Polly.
+The `com.stadiamaps.ferrostar.core.SpokenInstructionObserver` interface
+specifies the required API.
+PRs welcome to add other publicly accessible speech API implementations.
 
 **TODO documentation:**
 

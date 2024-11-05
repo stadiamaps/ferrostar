@@ -34,6 +34,7 @@ public struct NavigationUIZoomButton: View {
         .foregroundColor(.primary)
         .background(Color(.systemBackground))
         .clipShape(Capsule())
+        .shadow(radius: 8)
     }
 }
 
