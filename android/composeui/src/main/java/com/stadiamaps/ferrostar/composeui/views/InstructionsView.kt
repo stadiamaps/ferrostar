@@ -7,8 +7,10 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -28,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.formatting.DistanceFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
@@ -64,60 +67,69 @@ fun InstructionsView(
   var isExpanded by remember { mutableStateOf(initExpanded) }
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
-  Column(
+  Box(
       modifier =
           Modifier.fillMaxWidth()
               .heightIn(max = screenHeight)
               .animateContentSize(animationSpec = spring(stiffness = Spring.StiffnessHigh))
               .background(theme.backgroundColor, RoundedCornerShape(10.dp))
-              .padding(16.dp)
-              .clickable {
-                // This makes the entire view a click target for expansion.
-                // If only the pill is a click target, you need to be a ninja to tap it.
-                isExpanded = true
-              }) {
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+              .clickable { isExpanded = true }) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
           // Primary content
-          item {
-            ManeuverInstructionView(
-                text = instructions.primaryContent.text,
-                distanceFormatter = distanceFormatter,
-                distanceToNextManeuver = distanceToNextManeuver,
-                theme = theme) {
-                  contentBuilder(instructions)
-                }
-          }
+          ManeuverInstructionView(
+              text = instructions.primaryContent.text,
+              distanceFormatter = distanceFormatter,
+              distanceToNextManeuver = distanceToNextManeuver,
+              theme = theme) {
+                contentBuilder(instructions)
+              }
 
           // TODO: Secondary content
 
           // Expanded content
           if (isExpanded && remainingSteps != null && remainingSteps.count() > 1) {
-            item { HorizontalDivider(thickness = 1.dp) }
-            items(remainingSteps.drop(1)) { step ->
-              step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
-                Spacer(modifier = Modifier.height(8.dp))
-                ManeuverInstructionView(
-                    text = upcomingInstruction.primaryContent.text,
-                    distanceFormatter = distanceFormatter,
-                    distanceToNextManeuver = step.distance,
-                    theme = theme) {
-                      contentBuilder(upcomingInstruction)
-                    }
-                Spacer(modifier = Modifier.height(16.dp))
-                HorizontalDivider(thickness = 1.dp)
-              }
-            }
-          }
-        }
+            Spacer(modifier = Modifier.height(8.dp))
+            HorizontalDivider(thickness = 1.dp)
+            Spacer(modifier = Modifier.height(8.dp))
 
-        if (isExpanded) {
-          Spacer(modifier = Modifier.weight(1.0f))
+            Box(modifier = Modifier.weight(1f)) {
+              LazyColumn(
+                  modifier = Modifier.fillMaxSize(),
+                  verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(remainingSteps.drop(1)) { step ->
+                      step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
+                        ManeuverInstructionView(
+                            text = upcomingInstruction.primaryContent.text,
+                            distanceFormatter = distanceFormatter,
+                            distanceToNextManeuver = step.distance,
+                            theme = theme) {
+                              contentBuilder(upcomingInstruction)
+                            }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        HorizontalDivider(thickness = 1.dp)
+                      }
+                    }
+                  }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+          }
         }
 
         PillDragHandle(
             isExpanded,
             // The modifier here lets us keep the container as slim as possible
-            modifier = Modifier.offset(y = 4.dp).align(Alignment.CenterHorizontally),
+            modifier =
+                Modifier.offset {
+                      IntOffset(
+                          0,
+                          if (isExpanded) {
+                            (-4 * density).toInt()
+                          } else {
+                            (-8 * density).toInt()
+                          })
+                    }
+                    .align(Alignment.BottomCenter),
             iconTintColor = theme.iconTintColor) {
               isExpanded = !isExpanded
             }
