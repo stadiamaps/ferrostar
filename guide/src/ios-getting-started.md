@@ -115,7 +115,7 @@ PRs welcome to add other publicly accessible speech API implementations.
 Your navigation view can store the spoken instruction observer as an instance variable:
 
 ```swift
-@State private var spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer(isMuted: false)
+@State private var spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer()
 ```
 
 Then, you'll need to configure `FerrostarCore` to use it.
