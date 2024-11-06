@@ -3,6 +3,10 @@ package com.stadiamaps.ferrostar.core
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import uniffi.ferrostar.SpokenInstruction
 
 interface SpokenInstructionObserver {
@@ -17,7 +21,12 @@ interface SpokenInstructionObserver {
   /** Stops speech and clears the queue of spoken utterances. */
   fun stopAndClearQueue()
 
-  var isMuted: Boolean
+  fun setMuted(isMuted: Boolean)
+
+  val muteState: StateFlow<Boolean>
+
+  val isMuted: Boolean
+    get() = muteState.value
 }
 
 /** Observes the status of an [AndroidTtsObserver]. */
@@ -62,14 +71,18 @@ class AndroidTtsObserver(
     private const val TAG = "AndroidTtsObserver"
   }
 
-  override var isMuted: Boolean = false
-    set(value) {
-      field = value
+  private var _muteState: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-      if (value && tts?.isSpeaking == true) {
+  override fun setMuted(isMuted: Boolean) {
+    _muteState.update { _ ->
+      if (isMuted && tts?.isSpeaking == true) {
         tts?.stop()
       }
+      isMuted
     }
+  }
+
+  override val muteState: StateFlow<Boolean> = _muteState.asStateFlow()
 
   var tts: TextToSpeech?
     private set

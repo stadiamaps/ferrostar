@@ -8,8 +8,10 @@ import com.stadiamaps.ferrostar.core.extensions.deviation
 import com.stadiamaps.ferrostar.core.extensions.progress
 import com.stadiamaps.ferrostar.core.extensions.remainingSteps
 import com.stadiamaps.ferrostar.core.extensions.visualInstruction
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import uniffi.ferrostar.GeographicCoordinate
@@ -99,10 +101,12 @@ class DefaultNavigationViewModel(
 ) : ViewModel(), NavigationViewModel {
 
   private var userLocation: UserLocation? = locationProvider.lastLocation
+  private val muteState: StateFlow<Boolean?> =
+      spokenInstructionObserver?.muteState ?: MutableStateFlow(null)
 
   override val uiState =
-      ferrostarCore.state
-          .map { coreState ->
+      combine(ferrostarCore.state, muteState) { a, b -> a to b }
+          .map { (coreState, muteState) ->
             val location = locationProvider.lastLocation
             userLocation =
                 when (coreState.tripState) {
@@ -110,7 +114,7 @@ class DefaultNavigationViewModel(
                   is TripState.Complete,
                   TripState.Idle -> locationProvider.lastLocation
                 }
-            uiState(coreState, spokenInstructionObserver?.isMuted, location, userLocation)
+            uiState(coreState, muteState, location, userLocation)
             // This awkward dance is required because Kotlin doesn't have a way to map over
             // StateFlows
             // without converting to a generic Flow in the process.
@@ -134,7 +138,7 @@ class DefaultNavigationViewModel(
       Log.d("NavigationViewModel", "Spoken instruction observer is null, mute operation ignored.")
       return
     }
-    spokenInstructionObserver.isMuted = !spokenInstructionObserver.isMuted
+    spokenInstructionObserver.setMuted(!spokenInstructionObserver.isMuted)
   }
 
   // TODO: We can add a hook here to override the current road name.
