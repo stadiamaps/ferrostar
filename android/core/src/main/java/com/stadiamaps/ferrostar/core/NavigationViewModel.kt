@@ -103,7 +103,7 @@ class DefaultNavigationViewModel(
 
   private var userLocation: UserLocation? = locationProvider.lastLocation
   private var muteState: MutableStateFlow<Boolean?> =
-      MutableStateFlow(spokenInstructionObserver?.isMuted)
+      remember { mutableStateOf(spokenInstructionObserver?.isMuted) }
 
   override val uiState =
       combine(ferrostarCore.state, muteState) { a, b -> a to b }
