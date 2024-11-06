@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.mapbox.mapboxsdk.geometry.LatLng
@@ -54,13 +55,13 @@ fun NavigationMapView(
     },
     content: @Composable @MapLibreComposable ((State<NavigationUiState>) -> Unit)? = null
 ) {
-  val uiState = viewModel.uiState.collectAsState()
+  val uiState by viewModel.uiState.collectAsState()
 
   // TODO: This works for now, but in the end, the view model may need to "own" the camera.
   // We can move this code if we do such a refactor.
-  var isNavigating = remember { viewModel.isNavigating() }
-  if (viewModel.isNavigating() != isNavigating) {
-    isNavigating = viewModel.isNavigating()
+  var isNavigating = remember { uiState.isNavigating() }
+  if (uiState.isNavigating() != isNavigating) {
+    isNavigating = uiState.isNavigating()
 
     if (isNavigating) {
       camera.value = navigationCamera
@@ -69,12 +70,10 @@ fun NavigationMapView(
 
   val locationEngine = remember { StaticLocationEngine() }
   locationEngine.lastLocation =
-      uiState.value.let { state ->
-        if (snapUserLocationToRoute) {
-          state.snappedLocation?.toAndroidLocation()
-        } else {
-          state.location?.toAndroidLocation()
-        }
+      if (snapUserLocationToRoute) {
+        uiState.snappedLocation?.toAndroidLocation()
+      } else {
+        uiState.location?.toAndroidLocation()
       }
 
   MapView(

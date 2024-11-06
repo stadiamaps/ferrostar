@@ -73,7 +73,7 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       }
 
-  val vmState = viewModel.uiState.collectAsState(scope.coroutineContext)
+  val vmState by viewModel.uiState.collectAsState(scope.coroutineContext)
 
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -104,7 +104,7 @@ fun DemoNavigationScene(
   }
 
   // For smart casting
-  val loc = vmState.value.location
+  val loc = vmState.location
   if (loc == null) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
       Text("Waiting to acquire your GPS location...", modifier = Modifier.padding(innerPadding))
@@ -130,7 +130,7 @@ fun DemoNavigationScene(
         vm.startLocationUpdates(locationProvider)
       },
       userContent = { modifier ->
-        if (!viewModel.isNavigating()) {
+        if (!vmState.isNavigating()) {
           InnerGridView(
               modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
               topCenter = {
@@ -167,7 +167,7 @@ fun DemoNavigationScene(
         // Trivial, if silly example of how to add your own overlay layers.
         // (Also incidentally highlights the lag inherent in MapLibre location tracking
         // as-is.)
-        uiState.value.location?.let { location ->
+        uiState.location?.let { location ->
           Circle(
               center = LatLng(location.coordinates.lat, location.coordinates.lng),
               radius = 10f,

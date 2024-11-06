@@ -33,8 +33,6 @@ fun NavigatingInnerGridView(
     showZoom: Boolean = true,
     onClickZoomIn: () -> Unit = {},
     onClickZoomOut: () -> Unit = {},
-    showCentering: Boolean = true,
-    onClickCenter: () -> Unit = {},
     topCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     centerStart: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     bottomEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) }
