@@ -23,9 +23,7 @@ interface RoadNameViewTheme {
  */
 object DefaultRoadNameViewTheme : RoadNameViewTheme {
   override val textStyle: TextStyle
-    @Composable
-    get() =
-        MaterialTheme.typography.labelSmall.copy(color = MaterialTheme.colorScheme.inverseOnSurface)
+    @Composable get() = MaterialTheme.typography.labelSmall.copy(color = Color.White)
 
   override val backgroundColor: Color
     @Composable get() = Color(0x35, 0x83, 0xdd)
