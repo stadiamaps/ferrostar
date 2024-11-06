@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.RouteStep
@@ -102,8 +101,8 @@ class DefaultNavigationViewModel(
 ) : ViewModel(), NavigationViewModel {
 
   private var userLocation: UserLocation? = locationProvider.lastLocation
-  private var muteState: MutableStateFlow<Boolean?> =
-      MutableStateFlow(spokenInstructionObserver?.isMuted)
+  private val muteState: StateFlow<Boolean?> =
+      spokenInstructionObserver?.muteState ?: MutableStateFlow(null)
 
   override val uiState =
       combine(ferrostarCore.state, muteState) { a, b -> a to b }
@@ -139,10 +138,7 @@ class DefaultNavigationViewModel(
       Log.d("NavigationViewModel", "Spoken instruction observer is null, mute operation ignored.")
       return
     }
-    muteState.update { oldValue ->
-      spokenInstructionObserver.isMuted = !spokenInstructionObserver.isMuted
-      spokenInstructionObserver.isMuted
-    }
+    spokenInstructionObserver.setMuted(!spokenInstructionObserver.isMuted)
   }
 
   // TODO: We can add a hook here to override the current road name.
