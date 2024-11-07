@@ -53,8 +53,6 @@ fun NavigationMapView(
     onMapReadyCallback: ((Style) -> Unit)? = null,
     content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
 ) {
-  // TODO: This works for now, but in the end, the view model may need to "own" the camera.
-  // We can move this code if we do such a refactor.
   var isNavigating by remember { mutableStateOf(uiState.isNavigating()) }
   if (uiState.isNavigating() != isNavigating) {
     isNavigating = uiState.isNavigating()

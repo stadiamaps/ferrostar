@@ -52,17 +52,11 @@ fun NavigatingInnerGridView(
               // Nothing to draw here :)
             }
             is CameraControlState.ShowRecenter -> {
-              NavigationUIButton(
-                  onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
-                    Icon(
-                        Icons.Filled.Navigation,
-                        contentDescription = stringResource(id = R.string.recenter))
-                  }
+              // We decided to put this in the bottom corner for now
             }
             is CameraControlState.ShowRouteOverview -> {
               NavigationUIButton(
                   onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
-                    // TODO: Switch icon based on state
                     Icon(
                         Icons.Default.Route,
                         modifier = Modifier.rotate(90.0f),
@@ -71,7 +65,10 @@ fun NavigatingInnerGridView(
             }
           }
 
-          if (showMute && isMuted != null) {
+          // NOTE: Some controls hidden when the camera is not following the user
+          if (showMute &&
+              isMuted != null &&
+              cameraControlState !is CameraControlState.ShowRecenter) {
             NavigationUIButton(onClick = onClickMute, buttonSize = buttonSize) {
               if (isMuted) {
                 Icon(
@@ -93,23 +90,69 @@ fun NavigatingInnerGridView(
         }
       },
       bottomStart = {
-        // TODO: Fill this with something else optionally
+        if (cameraControlState is CameraControlState.ShowRecenter) {
+          NavigationUIButton(onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
+            Icon(
+                Icons.Filled.Navigation,
+                contentDescription = stringResource(id = R.string.recenter))
+          }
+        }
       },
       bottomEnd = bottomEnd)
 }
 
 @Preview(device = Devices.PIXEL_5)
 @Composable
-fun NavigatingInnerGridViewPreview() {
+fun NavigatingInnerGridViewNonTrackingPreview() {
   NavigatingInnerGridView(
-      modifier = Modifier.fillMaxSize(), isMuted = false, buttonSize = DpSize(56.dp, 56.dp))
+      modifier = Modifier.fillMaxSize(),
+      isMuted = false,
+      buttonSize = DpSize(56.dp, 56.dp),
+      cameraControlState =
+          CameraControlState.ShowRecenter {
+            // Do nothing
+          })
+}
+
+@Preview(device = Devices.PIXEL_5)
+@Composable
+fun NavigatingInnerGridViewTrackingPreview() {
+  NavigatingInnerGridView(
+    modifier = Modifier.fillMaxSize(),
+    isMuted = false,
+    buttonSize = DpSize(56.dp, 56.dp),
+    cameraControlState =
+    CameraControlState.ShowRouteOverview {
+      // Do nothing
+    })
 }
 
 @Preview(
     device =
-        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+        "spec:height=411dp,width=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
-fun NavigatingInnerGridViewLandscapePreview() {
+fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
   NavigatingInnerGridView(
-      modifier = Modifier.fillMaxSize(), isMuted = true, buttonSize = DpSize(56.dp, 56.dp))
+      modifier = Modifier.fillMaxSize(),
+      isMuted = true,
+      buttonSize = DpSize(56.dp, 56.dp),
+      cameraControlState =
+          CameraControlState.ShowRecenter {
+            // Do nothing
+          })
+}
+
+@Preview(
+  device =
+  "spec:height=411dp,width=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+@Composable
+fun NavigatingInnerGridViewLandscapeTrackingPreview() {
+  NavigatingInnerGridView(
+    modifier = Modifier.fillMaxSize(),
+    isMuted = true,
+    buttonSize = DpSize(56.dp, 56.dp),
+    cameraControlState =
+    CameraControlState.ShowRouteOverview {
+      // Do nothing
+    })
 }
