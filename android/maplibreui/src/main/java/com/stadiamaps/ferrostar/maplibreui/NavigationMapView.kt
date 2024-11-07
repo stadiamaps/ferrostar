@@ -31,7 +31,7 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  *   approach and later verified that Google Maps does the same thing in their compose SDK.
  * @param navigationCamera The default camera settings to use when navigation starts. This will be
  *   re-applied to the camera any time that navigation is started.
- * @param viewModel The navigation view model provided by Ferrostar Core.
+ * @param uiState The navigation UI state.
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
@@ -45,7 +45,7 @@ fun NavigationMapView(
     styleUrl: String,
     camera: MutableState<MapViewCamera>,
     navigationCamera: MapViewCamera = navigationMapViewCamera(),
-    viewModel: NavigationViewModel,
+    uiState: NavigationUiState,
     mapControls: State<MapControls>,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
@@ -55,13 +55,11 @@ fun NavigationMapView(
     },
     content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
 ) {
-  val uiState by viewModel.uiState.collectAsState()
-
   // TODO: This works for now, but in the end, the view model may need to "own" the camera.
   // We can move this code if we do such a refactor.
-  var isNavigating = remember { viewModel.isNavigating() }
-  if (viewModel.isNavigating() != isNavigating) {
-    isNavigating = viewModel.isNavigating()
+  var isNavigating = remember { uiState.isNavigating() }
+  if (uiState.isNavigating() != isNavigating) {
+    isNavigating = uiState.isNavigating()
 
     if (isNavigating) {
       camera.value = navigationCamera

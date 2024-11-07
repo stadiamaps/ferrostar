@@ -79,6 +79,8 @@ data class NavigationUiState(
             currentStepRoadName = coreState.tripState.currentRoadName(),
             remainingSteps = coreState.tripState.remainingSteps())
   }
+
+  fun isNavigating(): Boolean = progress != null
 }
 
 interface NavigationViewModel {
@@ -87,8 +89,6 @@ interface NavigationViewModel {
   fun toggleMute()
 
   fun stopNavigation()
-
-  fun isNavigating(): Boolean = uiState.value.progress != null
 
   // TODO: We think the camera may eventually need to be owned by the view model, but that's going
   // to be a very big refactor (maybe even crossing into the MapLibre Compose project)

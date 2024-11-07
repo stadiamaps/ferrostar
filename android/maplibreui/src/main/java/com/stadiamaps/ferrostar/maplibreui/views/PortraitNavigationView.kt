@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,6 +76,8 @@ fun PortraitNavigationView(
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
+  val uiState by viewModel.uiState.collectAsState()
+
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()
 
@@ -90,7 +93,7 @@ fun PortraitNavigationView(
         styleUrl,
         camera,
         navigationCamera,
-        viewModel,
+        uiState,
         mapControls,
         locationRequestProperties,
         snapUserLocationToRoute,

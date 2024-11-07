@@ -69,11 +69,11 @@ fun PortraitNavigationOverlayView(
     val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
 
     val cameraControlState =
-        if (viewModel.isNavigating() && !cameraIsTrackingLocation) {
+        if (uiState.isNavigating() && !cameraIsTrackingLocation) {
           CameraControlState.ShowRecenter { camera.value = navigationCamera }
         } else {
           val bbox = uiState.routeGeometry?.boundingBox()
-          if (viewModel.isNavigating() && cameraIsTrackingLocation && bbox != null) {
+          if (uiState.isNavigating() && cameraIsTrackingLocation && bbox != null) {
             CameraControlState.ShowRouteOverview {
               val scale = density.density
               camera.value =
