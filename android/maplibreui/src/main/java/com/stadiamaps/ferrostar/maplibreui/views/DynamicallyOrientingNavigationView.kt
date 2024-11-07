@@ -92,19 +92,14 @@ fun DynamicallyOrientingNavigationView(
 
   Box(modifier) {
     NavigationMapView(
-        styleUrl,
-        camera,
-        navigationCamera,
-        uiState,
-        mapControls,
-        locationRequestProperties,
-        snapUserLocationToRoute,
-        onMapReadyCallback = {
-          if (uiState.isNavigating()) {
-            camera.value = navigationCamera
-          }
-        },
-        mapContent)
+        styleUrl = styleUrl,
+        camera = camera,
+        navigationCamera = navigationCamera,
+        uiState = uiState,
+        mapControls = mapControls,
+        locationRequestProperties = locationRequestProperties,
+        snapUserLocationToRoute = snapUserLocationToRoute,
+        content = mapContent)
 
     if (uiState.isNavigating()) {
       when (orientation) {

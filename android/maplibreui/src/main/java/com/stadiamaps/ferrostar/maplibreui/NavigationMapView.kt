@@ -37,7 +37,7 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
  *   route line.
  * @param onMapReadyCallback A callback that is invoked when the map is ready to be interacted with.
- *   You must set your desired MapViewCamera tracking mode here!
+ *   If unspecified, the camera will change to `navigationCamera` if navigation is in progress.
  * @param content Any additional composable map symbol content to render.
  */
 @Composable

@@ -8,7 +8,7 @@ on:
 
 jobs:
   format-lint:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-swiftformat
       cancel-in-progress: true
@@ -24,7 +24,7 @@ jobs:
       run: swiftformat . --lint
       
   build-ferrostar:
-    runs-on: macos-14
+    runs-on: macos-15
     permissions:
       contents: write  # To auto-commit Package.swift and binding changes
     
@@ -68,7 +68,7 @@ jobs:
         retention-days: 5
 
   build-demo:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-build-demo
       cancel-in-progress: true
@@ -119,7 +119,7 @@ jobs:
         retention-days: 5
 
   test:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-test
       cancel-in-progress: true
