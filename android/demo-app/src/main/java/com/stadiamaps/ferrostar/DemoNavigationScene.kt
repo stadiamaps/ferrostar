@@ -130,7 +130,7 @@ fun DemoNavigationScene(
         vm.startLocationUpdates(locationProvider)
       },
       userContent = { modifier ->
-        if (!vmState.isNavigating()) {
+        if (!viewModel.isNavigating()) {
           InnerGridView(
               modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
               topCenter = {

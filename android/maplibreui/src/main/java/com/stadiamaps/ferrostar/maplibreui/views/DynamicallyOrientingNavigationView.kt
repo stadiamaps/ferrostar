@@ -75,7 +75,7 @@ fun DynamicallyOrientingNavigationView(
     },
     onTapExit: (() -> Unit)? = null,
     userContent: @Composable (BoxScope.(Modifier) -> Unit)? = null,
-    mapContent: @Composable @MapLibreComposable ((State<NavigationUiState>) -> Unit)? = null,
+    mapContent: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val orientation = LocalConfiguration.current.orientation
 

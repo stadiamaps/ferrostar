@@ -78,9 +78,7 @@ fun LandscapeNavigationOverlayView(
           onClickMute = { viewModel.toggleMute() },
           showZoom = config.showZoom,
           onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
-          onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
-          showCentering = !cameraIsTrackingLocation,
-          onClickCenter = { camera.value = navigationCamera })
+          onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) })
     }
   }
 }

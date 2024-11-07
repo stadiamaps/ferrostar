@@ -53,15 +53,15 @@ fun NavigationMapView(
     onMapReadyCallback: (Style) -> Unit = {
       if (viewModel.isNavigating()) camera.value = navigationCamera
     },
-    content: @Composable @MapLibreComposable ((State<NavigationUiState>) -> Unit)? = null
+    content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
 ) {
   val uiState by viewModel.uiState.collectAsState()
 
   // TODO: This works for now, but in the end, the view model may need to "own" the camera.
   // We can move this code if we do such a refactor.
-  var isNavigating = remember { uiState.isNavigating() }
-  if (uiState.isNavigating() != isNavigating) {
-    isNavigating = uiState.isNavigating()
+  var isNavigating = remember { viewModel.isNavigating() }
+  if (viewModel.isNavigating() != isNavigating) {
+    isNavigating = viewModel.isNavigating()
 
     if (isNavigating) {
       camera.value = navigationCamera
@@ -85,7 +85,7 @@ fun NavigationMapView(
       locationEngine = locationEngine,
       onMapReadyCallback = onMapReadyCallback,
   ) {
-    val geometry = uiState.value.routeGeometry
+    val geometry = uiState.routeGeometry
     if (geometry != null)
         BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0)
 
