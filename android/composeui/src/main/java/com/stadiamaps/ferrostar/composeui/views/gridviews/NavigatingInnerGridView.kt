@@ -129,7 +129,7 @@ fun NavigatingInnerGridViewTrackingPreview() {
 
 @Preview(
     device =
-        "spec:height=411dp,width=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
 fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
   NavigatingInnerGridView(
@@ -144,7 +144,7 @@ fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
 
 @Preview(
     device =
-        "spec:height=411dp,width=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
 fun NavigatingInnerGridViewLandscapeTrackingPreview() {
   NavigatingInnerGridView(
