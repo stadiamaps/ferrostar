@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
 import com.stadiamaps.ferrostar.composeui.config.CameraControlState
@@ -29,6 +30,7 @@ fun NavigatingInnerGridView(
     showMute: Boolean = true,
     isMuted: Boolean?,
     onClickMute: () -> Unit = {},
+    buttonSize: DpSize,
     cameraControlState: CameraControlState = CameraControlState.Hidden,
     showZoom: Boolean = true,
     onClickZoomIn: () -> Unit = {},
@@ -50,25 +52,27 @@ fun NavigatingInnerGridView(
               // Nothing to draw here :)
             }
             is CameraControlState.ShowRecenter -> {
-              NavigationUIButton(onClick = cameraControlState.updateCamera) {
-                Icon(
-                    Icons.Filled.Navigation,
-                    contentDescription = stringResource(id = R.string.recenter))
-              }
+              NavigationUIButton(
+                  onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
+                    Icon(
+                        Icons.Filled.Navigation,
+                        contentDescription = stringResource(id = R.string.recenter))
+                  }
             }
             is CameraControlState.ShowRouteOverview -> {
-              NavigationUIButton(onClick = cameraControlState.updateCamera) {
-                // TODO: Switch icon based on state
-                Icon(
-                    Icons.Default.Route,
-                    modifier = Modifier.rotate(90.0f),
-                    contentDescription = stringResource(id = R.string.route_overview))
-              }
+              NavigationUIButton(
+                  onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
+                    // TODO: Switch icon based on state
+                    Icon(
+                        Icons.Default.Route,
+                        modifier = Modifier.rotate(90.0f),
+                        contentDescription = stringResource(id = R.string.route_overview))
+                  }
             }
           }
 
           if (showMute && isMuted != null) {
-            NavigationUIButton(onClick = onClickMute) {
+            NavigationUIButton(onClick = onClickMute, buttonSize = buttonSize) {
               if (isMuted) {
                 Icon(
                     Icons.AutoMirrored.Filled.VolumeOff,
@@ -85,7 +89,7 @@ fun NavigatingInnerGridView(
       centerStart = centerStart,
       centerEnd = {
         if (showZoom) {
-          NavigationUIZoomButton(onClickZoomIn, onClickZoomOut)
+          NavigationUIZoomButton(buttonSize, onClickZoomIn, onClickZoomOut)
         }
       },
       bottomStart = {
@@ -97,7 +101,8 @@ fun NavigatingInnerGridView(
 @Preview(device = Devices.PIXEL_5)
 @Composable
 fun NavigatingInnerGridViewPreview() {
-  NavigatingInnerGridView(modifier = Modifier.fillMaxSize(), isMuted = false)
+  NavigatingInnerGridView(
+      modifier = Modifier.fillMaxSize(), isMuted = false, buttonSize = DpSize(56.dp, 56.dp))
 }
 
 @Preview(
@@ -105,5 +110,6 @@ fun NavigatingInnerGridViewPreview() {
         "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
 fun NavigatingInnerGridViewLandscapePreview() {
-  NavigatingInnerGridView(modifier = Modifier.fillMaxSize(), isMuted = true)
+  NavigatingInnerGridView(
+      modifier = Modifier.fillMaxSize(), isMuted = true, buttonSize = DpSize(56.dp, 56.dp))
 }

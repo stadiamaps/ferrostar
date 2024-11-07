@@ -1,5 +1,8 @@
 package com.stadiamaps.ferrostar.composeui.config
 
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
+
 sealed class CameraControlState {
   data object Hidden : CameraControlState()
 
@@ -11,6 +14,7 @@ sealed class CameraControlState {
 data class VisualNavigationViewConfig(
     var showMute: Boolean = false,
     var showZoom: Boolean = false,
+    var buttonSize: DpSize = DpSize(56.dp, 56.dp)
 ) {
   companion object {
     fun Default() = VisualNavigationViewConfig(showMute = true, showZoom = true)
@@ -26,5 +30,11 @@ fun VisualNavigationViewConfig.useMuteButton(): VisualNavigationViewConfig {
 /** Enables the zoom button in the navigation view. */
 fun VisualNavigationViewConfig.useZoomButton(): VisualNavigationViewConfig {
   showZoom = true
+  return this
+}
+
+/** Changes the size of navigation buttons. */
+fun VisualNavigationViewConfig.buttonSize(size: DpSize): VisualNavigationViewConfig {
+  buttonSize = size
   return this
 }

@@ -1,8 +1,12 @@
 package com.stadiamaps.ferrostar.maplibreui.config
 
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
+import com.stadiamaps.ferrostar.composeui.config.buttonSize
 import com.stadiamaps.ferrostar.composeui.config.useMuteButton
 import com.stadiamaps.ferrostar.composeui.config.useZoomButton
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Test
 
@@ -39,5 +43,12 @@ class VisualNavigationViewConfigTest {
     val config = VisualNavigationViewConfig().useMuteButton().useZoomButton()
     assert(config.showMute)
     assert(config.showZoom)
+  }
+
+  @Test
+  fun testButtonSize() {
+    val newSize = DpSize(42.dp, 42.dp)
+    val config = VisualNavigationViewConfig().buttonSize(newSize)
+    assertEquals(newSize, config.buttonSize)
   }
 }

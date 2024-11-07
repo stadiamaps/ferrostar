@@ -91,6 +91,7 @@ fun LandscapeNavigationOverlayView(
           showMute = config.showMute,
           isMuted = uiState.isMuted,
           onClickMute = { viewModel.toggleMute() },
+          buttonSize = config.buttonSize,
           cameraControlState = cameraControlState,
           showZoom = config.showZoom,
           onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },

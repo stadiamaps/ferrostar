@@ -135,10 +135,11 @@ fun DynamicallyOrientingNavigationView(
               val bottomPadding = (progressViewHeight + 50) * scale
               val topPadding = (instructionsViewHeight + 50) * scale
               val (startPadding, endPadding) =
-              // TODO: end padding
-              when (layoutDirection) {
-                    LayoutDirection.Ltr -> 20.0 * scale to 100.0 * scale
-                    LayoutDirection.Rtl -> 100.0 * scale to 20.0 * scale
+                  when (layoutDirection) {
+                    LayoutDirection.Ltr ->
+                        20.0 * scale to (config.buttonSize.width.value + 50) * scale
+                    LayoutDirection.Rtl ->
+                        (config.buttonSize.width.value + 50) * scale to 20.0 * scale
                   }
 
               CameraControlState.ShowRouteOverview {
@@ -146,7 +147,11 @@ fun DynamicallyOrientingNavigationView(
                     MapViewCamera.BoundingBox(
                         LatLngBounds.from(bbox.north, bbox.east, bbox.south, bbox.west),
                         padding =
-                            CameraPadding(startPadding, topPadding, endPadding, bottomPadding))
+                            CameraPadding(
+                                startPadding.toDouble(),
+                                topPadding,
+                                endPadding.toDouble(),
+                                bottomPadding))
               }
             } else {
               CameraControlState.Hidden
