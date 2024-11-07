@@ -96,6 +96,7 @@ fun LandscapeNavigationView(
         modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
         config = config,
         camera = camera,
+        navigationCamera = navigationCamera,
         viewModel = viewModel,
         onTapExit = onTapExit,
         currentRoadNameView = currentRoadNameView)

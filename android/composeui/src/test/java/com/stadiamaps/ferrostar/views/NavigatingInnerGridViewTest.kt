@@ -25,11 +25,15 @@ class NavigatingInnerGridViewTest {
 
   @Test
   fun testNavigatingInnerGridViewTrackingLandscape() {
-    paparazzi.snapshot { withSnapshotBackground { NavigatingInnerGridViewLandscapeTrackingPreview() } }
+    paparazzi.snapshot {
+      withSnapshotBackground { NavigatingInnerGridViewLandscapeTrackingPreview() }
+    }
   }
 
   @Test
   fun testNavigatingInnerGridViewNonTrackingLandscape() {
-    paparazzi.snapshot { withSnapshotBackground { NavigatingInnerGridViewLandscapeNonTrackingPreview() } }
+    paparazzi.snapshot {
+      withSnapshotBackground { NavigatingInnerGridViewLandscapeNonTrackingPreview() }
+    }
   }
 }

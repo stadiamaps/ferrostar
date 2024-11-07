@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -23,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.stadiamaps.ferrostar.composeui.config.CameraControlState
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
@@ -33,6 +33,9 @@ import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
+import com.stadiamaps.ferrostar.maplibreui.NavigationViewMetrics
+import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -40,11 +43,10 @@ import kotlinx.coroutines.flow.asStateFlow
 fun LandscapeNavigationOverlayView(
     modifier: Modifier,
     camera: MutableState<MapViewCamera>,
+    navigationCamera: MapViewCamera,
     viewModel: NavigationViewModel,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-    cameraControlState: CameraControlState = CameraControlState.Hidden,
     progressViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
-    instructionsViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
     currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
       if (roadName != null) {
         CurrentRoadNameView(roadName)
@@ -55,6 +57,7 @@ fun LandscapeNavigationOverlayView(
 ) {
   val density = LocalDensity.current
   val uiState by viewModel.uiState.collectAsState()
+  var instructionsViewSize by remember { mutableStateOf(DpSize.Zero) }
 
   Row(modifier) {
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
@@ -63,8 +66,7 @@ fun LandscapeNavigationOverlayView(
             instructions,
             modifier =
                 Modifier.onSizeChanged {
-                  instructionsViewSize.value =
-                      density.run { DpSize(it.width.toDp(), it.height.toDp()) }
+                  instructionsViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
                 },
             remainingSteps = uiState.remainingSteps,
             distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
@@ -92,7 +94,13 @@ fun LandscapeNavigationOverlayView(
           isMuted = uiState.isMuted,
           onClickMute = { viewModel.toggleMute() },
           buttonSize = config.buttonSize,
-          cameraControlState = cameraControlState,
+          cameraControlState =
+              config.cameraControlState(
+                  camera,
+                  navigationCamera,
+                  uiState,
+                  NavigationViewMetrics(progressViewSize.value, instructionsViewSize),
+              ),
           showZoom = config.showZoom,
           onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
           onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) })
@@ -112,6 +120,7 @@ fun LandscapeNavigationOverlayViewPreview() {
   LandscapeNavigationOverlayView(
       modifier = Modifier.fillMaxSize(),
       camera = rememberSaveableMapViewCamera(),
+      navigationCamera = navigationMapViewCamera(),
       viewModel = viewModel,
       onTapExit = {})
 }

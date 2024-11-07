@@ -118,13 +118,13 @@ fun NavigatingInnerGridViewNonTrackingPreview() {
 @Composable
 fun NavigatingInnerGridViewTrackingPreview() {
   NavigatingInnerGridView(
-    modifier = Modifier.fillMaxSize(),
-    isMuted = false,
-    buttonSize = DpSize(56.dp, 56.dp),
-    cameraControlState =
-    CameraControlState.ShowRouteOverview {
-      // Do nothing
-    })
+      modifier = Modifier.fillMaxSize(),
+      isMuted = false,
+      buttonSize = DpSize(56.dp, 56.dp),
+      cameraControlState =
+          CameraControlState.ShowRouteOverview {
+            // Do nothing
+          })
 }
 
 @Preview(
@@ -143,16 +143,16 @@ fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
 }
 
 @Preview(
-  device =
-  "spec:height=411dp,width=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+    device =
+        "spec:height=411dp,width=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
 fun NavigatingInnerGridViewLandscapeTrackingPreview() {
   NavigatingInnerGridView(
-    modifier = Modifier.fillMaxSize(),
-    isMuted = true,
-    buttonSize = DpSize(56.dp, 56.dp),
-    cameraControlState =
-    CameraControlState.ShowRouteOverview {
-      // Do nothing
-    })
+      modifier = Modifier.fillMaxSize(),
+      isMuted = true,
+      buttonSize = DpSize(56.dp, 56.dp),
+      cameraControlState =
+          CameraControlState.ShowRouteOverview {
+            // Do nothing
+          })
 }

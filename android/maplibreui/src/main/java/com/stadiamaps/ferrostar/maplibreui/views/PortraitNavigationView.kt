@@ -100,14 +100,17 @@ fun PortraitNavigationView(
         onMapReadyCallback = { camera.value = navigationCamera },
         content)
 
-    PortraitNavigationOverlayView(
-        modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
-        config = config,
-        camera = camera,
-        viewModel = viewModel,
-        progressViewSize = rememberProgressViewSize,
-        onTapExit = onTapExit,
-        currentRoadNameView = currentRoadNameView)
+    if (uiState.isNavigating()) {
+      PortraitNavigationOverlayView(
+          modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+          config = config,
+          camera = camera,
+          navigationCamera = navigationCamera,
+          viewModel = viewModel,
+          progressViewSize = rememberProgressViewSize,
+          onTapExit = onTapExit,
+          currentRoadNameView = currentRoadNameView)
+    }
   }
 }
 

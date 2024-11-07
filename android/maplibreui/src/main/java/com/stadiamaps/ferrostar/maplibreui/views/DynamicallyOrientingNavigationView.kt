@@ -17,25 +17,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.mapbox.mapboxsdk.geometry.LatLngBounds
-import com.maplibre.compose.camera.CameraState
 import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.camera.models.CameraPadding
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.stadiamaps.ferrostar.composeui.config.CameraControlState
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
 import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
-import com.stadiamaps.ferrostar.core.boundingBox
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
@@ -87,13 +79,9 @@ fun DynamicallyOrientingNavigationView(
 ) {
   val orientation = LocalConfiguration.current.orientation
 
-  // Maintain the actual size of several views for dynamic layout purposes.
+  // Maintain the actual size of the progress view for dynamic layout purposes.
   val rememberProgressViewSize = remember { mutableStateOf(DpSize.Zero) }
   val progressViewSize by rememberProgressViewSize
-
-  val rememberInstructionsViewSize = remember { mutableStateOf(DpSize.Zero) }
-  val instructionsViewSize by rememberInstructionsViewSize
-
   val uiState by viewModel.uiState.collectAsState()
 
   // Get the correct padding based on edge-to-edge status.
@@ -119,54 +107,15 @@ fun DynamicallyOrientingNavigationView(
         mapContent)
 
     if (uiState.isNavigating()) {
-      val cameraIsTrackingLocation =
-          camera.value.state is CameraState.TrackingUserLocationWithBearing
-      val cameraControlState =
-          if (!cameraIsTrackingLocation) {
-            CameraControlState.ShowRecenter { camera.value = navigationCamera }
-          } else {
-            val bbox = uiState.routeGeometry?.boundingBox()
-            if (bbox != null) {
-              val scale = LocalDensity.current.density
-              val progressViewHeight = progressViewSize.height.value.toDouble()
-              val instructionsViewHeight = instructionsViewSize.height.value.toDouble()
-              val layoutDirection = LocalLayoutDirection.current
-
-              val bottomPadding = (progressViewHeight + 50) * scale
-              val topPadding = (instructionsViewHeight + 50) * scale
-              val (startPadding, endPadding) =
-                  when (layoutDirection) {
-                    LayoutDirection.Ltr ->
-                        20.0 * scale to (config.buttonSize.width.value + 50) * scale
-                    LayoutDirection.Rtl ->
-                        (config.buttonSize.width.value + 50) * scale to 20.0 * scale
-                  }
-
-              CameraControlState.ShowRouteOverview {
-                camera.value =
-                    MapViewCamera.BoundingBox(
-                        LatLngBounds.from(bbox.north, bbox.east, bbox.south, bbox.west),
-                        padding =
-                            CameraPadding(
-                                startPadding.toDouble(),
-                                topPadding,
-                                endPadding.toDouble(),
-                                bottomPadding))
-              }
-            } else {
-              CameraControlState.Hidden
-            }
-          }
-
       when (orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
           LandscapeNavigationOverlayView(
               modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
               camera = camera,
+              navigationCamera = navigationCamera,
               viewModel = viewModel,
               config = config,
               progressViewSize = rememberProgressViewSize,
-              instructionsViewSize = rememberInstructionsViewSize,
               onTapExit = onTapExit,
               currentRoadNameView = currentRoadNameView)
         }
@@ -175,11 +124,10 @@ fun DynamicallyOrientingNavigationView(
           PortraitNavigationOverlayView(
               modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
               camera = camera,
+              navigationCamera = navigationCamera,
               viewModel = viewModel,
               config = config,
-              cameraControlState = cameraControlState,
               progressViewSize = rememberProgressViewSize,
-              instructionsViewSize = rememberInstructionsViewSize,
               onTapExit = onTapExit,
               currentRoadNameView = currentRoadNameView)
         }
