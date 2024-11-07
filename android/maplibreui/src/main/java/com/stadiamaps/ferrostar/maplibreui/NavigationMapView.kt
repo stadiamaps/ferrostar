@@ -50,9 +50,7 @@ fun NavigationMapView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
-    onMapReadyCallback: (Style) -> Unit = {
-      if (viewModel.isNavigating()) camera.value = navigationCamera
-    },
+    onMapReadyCallback: ((Style) -> Unit)? = null,
     content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
 ) {
   // TODO: This works for now, but in the end, the view model may need to "own" the camera.
@@ -81,7 +79,8 @@ fun NavigationMapView(
       mapControls,
       locationRequestProperties = locationRequestProperties,
       locationEngine = locationEngine,
-      onMapReadyCallback = onMapReadyCallback,
+      onMapReadyCallback =
+          onMapReadyCallback ?: { if (isNavigating) camera.value = navigationCamera },
   ) {
     val geometry = uiState.routeGeometry
     if (geometry != null)
