@@ -395,6 +395,11 @@ final class FerrostarCoreTests: XCTestCase {
         await fulfillment(of: [routeDeviationCallbackExp], timeout: 1.0)
         await fulfillment(of: [loadedAltRoutesExp], timeout: 1.0)
 
+        // At this point, there is a brief window where the delegate call loading alternate routes has completed,
+        // but the state is still updating. This is a quick hack to fix the tests
+        // in the absence of something more reliable.
+        try? await Task.sleep(nanoseconds: NSEC_PER_SEC / 10)
+
         XCTAssert(core.state?.isCalculatingNewRoute == false, "Expected to no longer be calculating a new route")
     }
 

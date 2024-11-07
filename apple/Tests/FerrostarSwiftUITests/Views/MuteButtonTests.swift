@@ -5,13 +5,13 @@ import XCTest
 final class MuteUIButtonTests: XCTestCase {
     func test_muted() {
         assertView {
-            MuteUIButton(isMuted: true, action: {})
+            NavigationUIMuteButton(isMuted: true, action: {})
         }
     }
 
     func test_unmuted() {
         assertView {
-            MuteUIButton(isMuted: false, action: {})
+            NavigationUIMuteButton(isMuted: false, action: {})
         }
     }
 
@@ -19,13 +19,13 @@ final class MuteUIButtonTests: XCTestCase {
 
     func test_muted_darkMode() {
         assertView(colorScheme: .dark) {
-            MuteUIButton(isMuted: true, action: {})
+            NavigationUIMuteButton(isMuted: true, action: {})
         }
     }
 
     func test_unmuted_darkMode() {
         assertView(colorScheme: .dark) {
-            MuteUIButton(isMuted: false, action: {})
+            NavigationUIMuteButton(isMuted: false, action: {})
         }
     }
 }

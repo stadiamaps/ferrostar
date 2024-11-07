@@ -1,6 +1,8 @@
 package com.stadiamaps.ferrostar.views
 
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
+import com.stadiamaps.ferrostar.core.NavigationUiState
+import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import org.junit.Rule
@@ -32,6 +34,21 @@ class InstructionViewTest {
     paparazzi.snapshot {
       withSnapshotBackground {
         InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
+      }
+    }
+  }
+
+  @Test
+  fun testInstructionViewExpanded() {
+    val state = NavigationUiState.pedestrianExample()
+
+    paparazzi.snapshot {
+      withSnapshotBackground {
+        InstructionsView(
+            instructions = state.visualInstruction!!,
+            remainingSteps = state.remainingSteps,
+            distanceToNextManeuver = 42.0,
+            initExpanded = true)
       }
     }
   }

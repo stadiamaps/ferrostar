@@ -1,7 +1,7 @@
 use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoint, WaypointKind};
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
-use geo::{line_string, BoundingRect, HaversineLength, LineString, Point};
+use geo::{line_string, BoundingRect, Haversine, Length, LineString, Point};
 
 pub fn gen_dummy_route_step(
     start_lng: f64,
@@ -24,7 +24,7 @@ pub fn gen_dummy_route_step(
             (x: start_lng, y: start_lat),
             (x: end_lng, y: end_lat)
         ]
-        .haversine_length(),
+        .length::<Haversine>(),
         duration: 0.0,
         road_name: None,
         instruction: "".to_string(),

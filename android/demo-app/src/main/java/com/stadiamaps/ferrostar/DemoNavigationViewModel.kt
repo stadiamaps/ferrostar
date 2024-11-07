@@ -42,7 +42,7 @@ class DemoNavigationViewModel : ViewModel(), NavigationViewModel {
           .map { userLocation ->
             // TODO: Heading
             NavigationUiState(
-                userLocation, null, null, null, null, null, null, false, null, null, null)
+                userLocation, null, null, null, null, null, null, false, null, null, null, null)
           }
           .stateIn(
               scope = viewModelScope,
@@ -50,7 +50,7 @@ class DemoNavigationViewModel : ViewModel(), NavigationViewModel {
               // TODO: Heading
               initialValue =
                   NavigationUiState(
-                      null, null, null, null, null, null, null, false, null, null, null))
+                      null, null, null, null, null, null, null, false, null, null, null, null))
 
   override fun toggleMute() {
     // Do nothing

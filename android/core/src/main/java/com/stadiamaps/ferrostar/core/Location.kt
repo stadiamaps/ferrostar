@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import uniffi.ferrostar.CourseOverGround
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
+import uniffi.ferrostar.LocationBias
 import uniffi.ferrostar.LocationSimulationState
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.Speed
@@ -155,7 +156,7 @@ class SimulatedLocationProvider : LocationProvider {
   override fun addListener(listener: LocationUpdateListener, executor: Executor) {
     listeners.add(listener to executor)
 
-    if (simulationJob == null) {
+    if (simulationJob?.isActive != true) {
       simulationJob = scope.launch { startSimulation() }
     }
   }
@@ -168,11 +169,11 @@ class SimulatedLocationProvider : LocationProvider {
     }
   }
 
-  fun setSimulatedRoute(route: Route) {
-    simulationState = locationSimulationFromRoute(route, resampleDistance = 10.0)
+  fun setSimulatedRoute(route: Route, bias: LocationBias = LocationBias.None) {
+    simulationState = locationSimulationFromRoute(route, resampleDistance = 10.0, bias)
     lastLocation = simulationState?.currentLocation
 
-    if (listeners.isNotEmpty() && simulationJob == null) {
+    if (listeners.isNotEmpty() && simulationJob?.isActive != true) {
       simulationJob = scope.launch { startSimulation() }
     }
   }
