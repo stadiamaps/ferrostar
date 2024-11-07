@@ -11,12 +11,9 @@ sealed class CameraControlState {
 data class VisualNavigationViewConfig(
     var showMute: Boolean = false,
     var showZoom: Boolean = false,
-    var cameraControlState: CameraControlState
 ) {
   companion object {
-    fun Default() =
-        VisualNavigationViewConfig(
-            showMute = true, showZoom = true, cameraControlState = CameraControlState.Hidden)
+    fun Default() = VisualNavigationViewConfig(showMute = true, showZoom = true)
   }
 }
 

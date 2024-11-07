@@ -115,8 +115,7 @@ fun PortraitNavigationView(
 @Composable
 private fun PortraitNavigationViewPreview() {
   val viewModel =
-      MockNavigationViewModel(
-          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+      MockNavigationViewModel(MutableStateFlow(NavigationUiState.pedestrianExample()).asStateFlow())
 
   PortraitNavigationView(
       Modifier.fillMaxSize(),

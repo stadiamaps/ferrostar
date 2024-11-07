@@ -12,13 +12,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.maplibre.compose.camera.CameraState
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.rememberSaveableMapViewCamera
+import com.stadiamaps.ferrostar.composeui.config.CameraControlState
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.InstructionsView
@@ -28,7 +33,6 @@ import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
-import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -36,9 +40,11 @@ import kotlinx.coroutines.flow.asStateFlow
 fun LandscapeNavigationOverlayView(
     modifier: Modifier,
     camera: MutableState<MapViewCamera>,
-    navigationCamera: MapViewCamera = navigationMapViewCamera(),
     viewModel: NavigationViewModel,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    cameraControlState: CameraControlState = CameraControlState.Hidden,
+    progressViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
+    instructionsViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
     currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
       if (roadName != null) {
         CurrentRoadNameView(roadName)
@@ -47,16 +53,19 @@ fun LandscapeNavigationOverlayView(
     },
     onTapExit: (() -> Unit)? = null,
 ) {
+  val density = LocalDensity.current
   val uiState by viewModel.uiState.collectAsState()
-  val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
-
-  // TODO: cameraControlState (basically copy implementation from the portrait overlay)
 
   Row(modifier) {
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
       uiState.visualInstruction?.let { instructions ->
         InstructionsView(
             instructions,
+            modifier =
+                Modifier.onSizeChanged {
+                  instructionsViewSize.value =
+                      density.run { DpSize(it.width.toDp(), it.height.toDp()) }
+                },
             remainingSteps = uiState.remainingSteps,
             distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
       }
@@ -64,7 +73,13 @@ fun LandscapeNavigationOverlayView(
       Spacer(modifier = Modifier.weight(1f))
 
       uiState.progress?.let { progress ->
-        TripProgressView(progress = progress, onTapExit = onTapExit)
+        TripProgressView(
+            modifier =
+                Modifier.onSizeChanged {
+                  progressViewSize.value = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
+                },
+            progress = progress,
+            onTapExit = onTapExit)
       }
     }
 
@@ -76,6 +91,7 @@ fun LandscapeNavigationOverlayView(
           showMute = config.showMute,
           isMuted = uiState.isMuted,
           onClickMute = { viewModel.toggleMute() },
+          cameraControlState = cameraControlState,
           showZoom = config.showZoom,
           onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
           onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) })

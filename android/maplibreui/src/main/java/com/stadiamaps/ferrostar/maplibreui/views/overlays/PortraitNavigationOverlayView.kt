@@ -18,11 +18,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.maplibre.compose.camera.CameraState
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.camera.extensions.incrementZoom
-import com.maplibre.compose.camera.models.CameraPadding
 import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.stadiamaps.ferrostar.composeui.config.CameraControlState
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
@@ -32,7 +30,6 @@ import com.stadiamaps.ferrostar.composeui.views.TripProgressView
 import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
-import com.stadiamaps.ferrostar.core.boundingBox
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
@@ -46,7 +43,9 @@ fun PortraitNavigationOverlayView(
     navigationCamera: MapViewCamera = navigationMapViewCamera(),
     viewModel: NavigationViewModel,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    cameraControlState: CameraControlState = CameraControlState.Hidden,
     progressViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
+    instructionsViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
     onTapExit: (() -> Unit)? = null,
     currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
       if (roadName != null) {
@@ -62,30 +61,16 @@ fun PortraitNavigationOverlayView(
     uiState.visualInstruction?.let { instructions ->
       InstructionsView(
           instructions,
+          modifier =
+              Modifier.onSizeChanged {
+                instructionsViewSize.value =
+                    density.run { DpSize(it.width.toDp(), it.height.toDp()) }
+              },
           remainingSteps = uiState.remainingSteps,
           distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
     }
 
     val cameraIsTrackingLocation = camera.value.state is CameraState.TrackingUserLocationWithBearing
-
-    val cameraControlState =
-        if (uiState.isNavigating() && !cameraIsTrackingLocation) {
-          CameraControlState.ShowRecenter { camera.value = navigationCamera }
-        } else {
-          val bbox = uiState.routeGeometry?.boundingBox()
-          if (uiState.isNavigating() && cameraIsTrackingLocation && bbox != null) {
-            CameraControlState.ShowRouteOverview {
-              val scale = density.density
-              camera.value =
-                  MapViewCamera.BoundingBox(
-                      LatLngBounds.from(bbox.north, bbox.east, bbox.south, bbox.west),
-                      padding =
-                          CameraPadding(20.0 * scale, 200.0 * scale, 100.0 * scale, 150.0 * scale))
-            }
-          } else {
-            CameraControlState.Hidden
-          }
-        }
 
     NavigatingInnerGridView(
         modifier = Modifier.fillMaxSize().weight(1f).padding(bottom = 16.dp, top = 16.dp),
