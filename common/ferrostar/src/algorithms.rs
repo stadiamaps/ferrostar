@@ -353,7 +353,7 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
     }
 
     let (_, _, traversed) = linestring.lines().try_fold(
-        (0f64, f64::INFINITY, 06f64),
+        (0f64, f64::INFINITY, 0f64),
         |(cum_length, closest_dist_to_point, traversed), segment| {
             // Convert to a LineString so we get haversine ops
             let segment_linestring = LineString::from(segment);
