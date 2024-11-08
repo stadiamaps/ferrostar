@@ -39,10 +39,11 @@ data class NavigationState(
 }
 
 fun NavigationState.isNavigating(): Boolean =
-  when (tripState) {
-    TripState.Complete, TripState.Idle -> false
-    is TripState.Navigating -> true
-  }
+    when (tripState) {
+      TripState.Complete,
+      TripState.Idle -> false
+      is TripState.Navigating -> true
+    }
 
 private val moshi: Moshi = Moshi.Builder().build()
 @OptIn(ExperimentalStdlibApi::class)

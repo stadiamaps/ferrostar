@@ -8,7 +8,6 @@ import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.LocationUpdateListener
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
-import com.stadiamaps.ferrostar.core.extensions.progress
 import com.stadiamaps.ferrostar.core.isNavigating
 import java.util.concurrent.Executors
 import kotlinx.coroutines.flow.MutableStateFlow
