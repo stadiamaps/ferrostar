@@ -44,9 +44,6 @@ fun DemoNavigationScene(
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
-  // FIXME: We are aware that this is not a particularly great pattern.
-  // We are working on improving this. See the discussion on
-  // https://github.com/stadiamaps/ferrostar/pull/295.
   val viewModel = remember { DemoNavigationViewModel() }
   val scope = rememberCoroutineScope()
 

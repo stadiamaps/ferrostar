@@ -21,9 +21,6 @@ import uniffi.ferrostar.Heading
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 
-// NOTE: We are aware that this is not a particularly great ViewModel.
-// We are working on improving this. See the discussion on
-// https://github.com/stadiamaps/ferrostar/pull/295.
 class DemoNavigationViewModel(
     // This is a simple example, but these would typically be dependency injected
     private val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
