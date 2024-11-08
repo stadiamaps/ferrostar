@@ -38,6 +38,12 @@ data class NavigationState(
   companion object
 }
 
+fun NavigationState.isNavigating(): Boolean =
+  when (tripState) {
+    TripState.Complete, TripState.Idle -> false
+    is TripState.Navigating -> true
+  }
+
 private val moshi: Moshi = Moshi.Builder().build()
 @OptIn(ExperimentalStdlibApi::class)
 private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<String, Any>>()
@@ -218,10 +224,7 @@ class FerrostarCore(
    * @throws UserLocationUnknown if the location provider has no last known location.
    */
   @Throws(UserLocationUnknown::class)
-  fun startNavigation(
-      route: Route,
-      config: NavigationControllerConfig? = null
-  ): DefaultNavigationViewModel {
+  fun startNavigation(route: Route, config: NavigationControllerConfig? = null) {
     stopNavigation()
 
     // Start the foreground notification service
@@ -247,8 +250,6 @@ class FerrostarCore(
     _state.value = newState
 
     locationProvider.addListener(this, _executor)
-
-    return DefaultNavigationViewModel(this, spokenInstructionObserver, locationProvider)
   }
 
   /**
@@ -299,9 +300,11 @@ class FerrostarCore(
     }
   }
 
-  fun stopNavigation() {
+  fun stopNavigation(stopLocationUpdates: Boolean = true) {
     foregroundServiceManager?.stopService()
-    locationProvider.removeListener(this)
+    if (stopLocationUpdates) {
+      locationProvider.removeListener(this)
+    }
     _navigationController?.destroy()
     _navigationController = null
     _state.value = NavigationState()

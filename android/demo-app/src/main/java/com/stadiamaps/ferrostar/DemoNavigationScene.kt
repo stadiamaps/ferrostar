@@ -13,29 +13,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mapbox.mapboxsdk.geometry.LatLng
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.maplibre.compose.symbols.Circle
 import com.stadiamaps.autocomplete.AutocompleteSearch
 import com.stadiamaps.autocomplete.center
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
 import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridView
 import com.stadiamaps.ferrostar.core.AndroidSystemLocationProvider
 import com.stadiamaps.ferrostar.core.LocationProvider
-import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.toAndroidLocation
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
-import java.util.concurrent.Executors
-import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uniffi.ferrostar.GeographicCoordinate
@@ -47,15 +41,13 @@ fun DemoNavigationScene(
     savedInstanceState: Bundle?,
     locationProvider: LocationProvider = AppModule.locationProvider,
 ) {
-  val executor = remember { Executors.newSingleThreadScheduledExecutor() }
-
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
-  // NOTE: We are aware that this is not a particularly great pattern.
+  // FIXME: We are aware that this is not a particularly great pattern.
   // We are working on improving this. See the discussion on
   // https://github.com/stadiamaps/ferrostar/pull/295.
-  var viewModel by remember { mutableStateOf<NavigationViewModel>(DemoNavigationViewModel()) }
+  val viewModel = remember { DemoNavigationViewModel() }
   val scope = rememberCoroutineScope()
 
   // Get location permissions.
@@ -82,7 +74,7 @@ fun DemoNavigationScene(
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
             val vm = viewModel
             if ((locationProvider is AndroidSystemLocationProvider ||
-                locationProvider is FusedLocationProvider) && vm is DemoNavigationViewModel) {
+                locationProvider is FusedLocationProvider)) {
               // Activate location updates in the view model
               vm.startLocationUpdates(locationProvider)
             }
@@ -122,13 +114,7 @@ fun DemoNavigationScene(
       // Snapping works well for most motor vehicle navigation.
       // Other travel modes though, such as walking, may not want snapping.
       snapUserLocationToRoute = false,
-      onTapExit = {
-        viewModel.stopNavigation()
-        val vm = DemoNavigationViewModel()
-        viewModel = vm
-
-        vm.startLocationUpdates(locationProvider)
-      },
+      onTapExit = { viewModel.stopNavigation(stopLocationUpdates = false) },
       userContent = { modifier ->
         if (!vmState.isNavigating()) {
           InnerGridView(
@@ -152,7 +138,7 @@ fun DemoNavigationScene(
                                 ))
 
                         val route = routes.first()
-                        viewModel = AppModule.ferrostarCore.startNavigation(route = route)
+                        AppModule.ferrostarCore.startNavigation(route = route)
 
                         if (locationProvider is SimulatedLocationProvider) {
                           locationProvider.setSimulatedRoute(route)
