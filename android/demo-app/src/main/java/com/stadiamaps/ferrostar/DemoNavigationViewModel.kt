@@ -24,7 +24,7 @@ import uniffi.ferrostar.UserLocation
 class DemoNavigationViewModel(
     // This is a simple example, but these would typically be dependency injected
     private val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
-) : ViewModel(), NavigationViewModel {
+) : ViewModel(), LocationUpdateListener, NavigationViewModel {
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)
   private val executor = Executors.newSingleThreadScheduledExecutor()
 
@@ -33,17 +33,11 @@ class DemoNavigationViewModel(
 
   fun startLocationUpdates(locationProvider: LocationProvider) {
     locationStateFlow.update { locationProvider.lastLocation }
-    locationProvider.addListener(
-        object : LocationUpdateListener {
-          override fun onLocationUpdated(location: UserLocation) {
-            locationStateFlow.update { location }
-          }
+    locationProvider.addListener(this, executor)
+  }
 
-          override fun onHeadingUpdated(heading: Heading) {
-            // TODO: Heading
-          }
-        },
-        executor)
+  fun stopLocationUpdates(locationProvider: LocationProvider) {
+    locationProvider.removeListener(this)
   }
 
   override val uiState: StateFlow<NavigationUiState> =
@@ -85,5 +79,13 @@ class DemoNavigationViewModel(
 
   override fun stopNavigation(stopLocationUpdates: Boolean) {
     ferrostarCore.stopNavigation(stopLocationUpdates = stopLocationUpdates)
+  }
+
+  override fun onLocationUpdated(location: UserLocation) {
+    locationStateFlow.update { location }
+  }
+
+  override fun onHeadingUpdated(heading: Heading) {
+    // TODO: Heading
   }
 }

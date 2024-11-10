@@ -114,7 +114,7 @@ fun DemoNavigationScene(
       // Snapping works well for most motor vehicle navigation.
       // Other travel modes though, such as walking, may not want snapping.
       snapUserLocationToRoute = false,
-      onTapExit = { viewModel.stopNavigation(stopLocationUpdates = false) },
+      onTapExit = { viewModel.stopNavigation() },
       userContent = { modifier ->
         if (!vmState.isNavigating()) {
           InnerGridView(
