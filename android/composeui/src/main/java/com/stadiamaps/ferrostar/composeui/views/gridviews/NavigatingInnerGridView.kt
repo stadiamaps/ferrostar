@@ -85,7 +85,7 @@ fun NavigatingInnerGridView(
       },
       centerStart = centerStart,
       centerEnd = {
-        if (showZoom) {
+        if (showZoom && cameraControlState !is CameraControlState.ShowRecenter) {
           NavigationUIZoomButton(buttonSize, onClickZoomIn, onClickZoomOut)
         }
       },
