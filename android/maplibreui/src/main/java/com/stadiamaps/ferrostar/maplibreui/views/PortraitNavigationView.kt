@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +23,7 @@ import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
+import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
 import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
 import com.stadiamaps.ferrostar.core.NavigationUiState
@@ -30,7 +31,6 @@ import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
-import com.stadiamaps.ferrostar.maplibreui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
@@ -74,8 +74,10 @@ fun PortraitNavigationView(
       }
     },
     onTapExit: (() -> Unit)? = null,
-    content: @Composable @MapLibreComposable() ((State<NavigationUiState>) -> Unit)? = null,
+    content: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
+  val uiState by viewModel.uiState.collectAsState()
+
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()
 
@@ -91,21 +93,24 @@ fun PortraitNavigationView(
         styleUrl,
         camera,
         navigationCamera,
-        viewModel,
+        uiState,
         mapControls,
         locationRequestProperties,
         snapUserLocationToRoute,
         onMapReadyCallback = { camera.value = navigationCamera },
         content)
 
-    PortraitNavigationOverlayView(
-        modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
-        config = config,
-        camera = camera,
-        viewModel = viewModel,
-        progressViewSize = rememberProgressViewSize,
-        onTapExit = onTapExit,
-        currentRoadNameView = currentRoadNameView)
+    if (uiState.isNavigating()) {
+      PortraitNavigationOverlayView(
+          modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+          config = config,
+          camera = camera,
+          navigationCamera = navigationCamera,
+          viewModel = viewModel,
+          progressViewSize = rememberProgressViewSize,
+          onTapExit = onTapExit,
+          currentRoadNameView = currentRoadNameView)
+    }
   }
 }
 
@@ -113,8 +118,7 @@ fun PortraitNavigationView(
 @Composable
 private fun PortraitNavigationViewPreview() {
   val viewModel =
-      MockNavigationViewModel(
-          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+      MockNavigationViewModel(MutableStateFlow(NavigationUiState.pedestrianExample()).asStateFlow())
 
   PortraitNavigationView(
       Modifier.fillMaxSize(),

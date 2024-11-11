@@ -56,6 +56,7 @@ import uniffi.ferrostar.VisualInstructionContent
 fun InstructionsView(
     instructions: VisualInstruction,
     distanceToNextManeuver: Double?,
+    modifier: Modifier = Modifier,
     distanceFormatter: DistanceFormatter = LocalizedDistanceFormatter(),
     theme: InstructionRowTheme = DefaultInstructionRowTheme,
     remainingSteps: List<RouteStep>? = null,
@@ -69,7 +70,8 @@ fun InstructionsView(
 
   Box(
       modifier =
-          Modifier.fillMaxWidth()
+          modifier
+              .fillMaxWidth()
               .heightIn(max = screenHeight)
               .animateContentSize(animationSpec = spring(stiffness = Spring.StiffnessHigh))
               .background(theme.backgroundColor, RoundedCornerShape(10.dp))

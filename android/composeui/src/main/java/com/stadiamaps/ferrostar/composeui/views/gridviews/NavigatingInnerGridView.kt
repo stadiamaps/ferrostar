@@ -1,5 +1,7 @@
 package com.stadiamaps.ferrostar.composeui.views.gridviews
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
@@ -7,15 +9,18 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeOff
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Navigation
-import androidx.compose.material.icons.filled.VolumeOff
+import androidx.compose.material.icons.filled.Route
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
+import com.stadiamaps.ferrostar.composeui.config.CameraControlState
 import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIButton
 import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIZoomButton
 
@@ -25,11 +30,11 @@ fun NavigatingInnerGridView(
     showMute: Boolean = true,
     isMuted: Boolean?,
     onClickMute: () -> Unit = {},
+    buttonSize: DpSize,
+    cameraControlState: CameraControlState = CameraControlState.Hidden,
     showZoom: Boolean = true,
     onClickZoomIn: () -> Unit = {},
     onClickZoomOut: () -> Unit = {},
-    showCentering: Boolean = true,
-    onClickCenter: () -> Unit = {},
     topCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     centerStart: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     bottomEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) }
@@ -41,29 +46,52 @@ fun NavigatingInnerGridView(
       },
       topCenter = topCenter,
       topEnd = {
-        if (showMute && isMuted != null) {
-          NavigationUIButton(onClick = onClickMute) {
-            if (isMuted) {
-              Icon(
-                  Icons.AutoMirrored.Filled.VolumeOff,
-                  contentDescription = stringResource(id = R.string.unmute_description))
-            } else {
-              Icon(
-                  Icons.AutoMirrored.Filled.VolumeUp,
-                  contentDescription = stringResource(id = R.string.mute_description))
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+          when (cameraControlState) {
+            CameraControlState.Hidden -> {
+              // Nothing to draw here :)
+            }
+            is CameraControlState.ShowRecenter -> {
+              // We decided to put this in the bottom corner for now
+            }
+            is CameraControlState.ShowRouteOverview -> {
+              NavigationUIButton(
+                  onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
+                    Icon(
+                        Icons.Default.Route,
+                        modifier = Modifier.rotate(90.0f),
+                        contentDescription = stringResource(id = R.string.route_overview))
+                  }
+            }
+          }
+
+          // NOTE: Some controls hidden when the camera is not following the user
+          if (showMute &&
+              isMuted != null &&
+              cameraControlState !is CameraControlState.ShowRecenter) {
+            NavigationUIButton(onClick = onClickMute, buttonSize = buttonSize) {
+              if (isMuted) {
+                Icon(
+                    Icons.AutoMirrored.Filled.VolumeOff,
+                    contentDescription = stringResource(id = R.string.unmute_description))
+              } else {
+                Icon(
+                    Icons.AutoMirrored.Filled.VolumeUp,
+                    contentDescription = stringResource(id = R.string.mute_description))
+              }
             }
           }
         }
       },
       centerStart = centerStart,
       centerEnd = {
-        if (showZoom) {
-          NavigationUIZoomButton(onClickZoomIn, onClickZoomOut)
+        if (showZoom && cameraControlState !is CameraControlState.ShowRecenter) {
+          NavigationUIZoomButton(buttonSize, onClickZoomIn, onClickZoomOut)
         }
       },
       bottomStart = {
-        if (showCentering) {
-          NavigationUIButton(onClick = onClickCenter) {
+        if (cameraControlState is CameraControlState.ShowRecenter) {
+          NavigationUIButton(onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
             Icon(
                 Icons.Filled.Navigation,
                 contentDescription = stringResource(id = R.string.recenter))
@@ -75,14 +103,56 @@ fun NavigatingInnerGridView(
 
 @Preview(device = Devices.PIXEL_5)
 @Composable
-fun NavigatingInnerGridViewPreview() {
-  NavigatingInnerGridView(modifier = Modifier.fillMaxSize(), isMuted = false)
+fun NavigatingInnerGridViewNonTrackingPreview() {
+  NavigatingInnerGridView(
+      modifier = Modifier.fillMaxSize(),
+      isMuted = false,
+      buttonSize = DpSize(56.dp, 56.dp),
+      cameraControlState =
+          CameraControlState.ShowRecenter {
+            // Do nothing
+          })
+}
+
+@Preview(device = Devices.PIXEL_5)
+@Composable
+fun NavigatingInnerGridViewTrackingPreview() {
+  NavigatingInnerGridView(
+      modifier = Modifier.fillMaxSize(),
+      isMuted = false,
+      buttonSize = DpSize(56.dp, 56.dp),
+      cameraControlState =
+          CameraControlState.ShowRouteOverview {
+            // Do nothing
+          })
 }
 
 @Preview(
     device =
         "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
-fun NavigatingInnerGridViewLandscapePreview() {
-  NavigatingInnerGridView(modifier = Modifier.fillMaxSize(), isMuted = true)
+fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
+  NavigatingInnerGridView(
+      modifier = Modifier.fillMaxSize(),
+      isMuted = true,
+      buttonSize = DpSize(56.dp, 56.dp),
+      cameraControlState =
+          CameraControlState.ShowRecenter {
+            // Do nothing
+          })
+}
+
+@Preview(
+    device =
+        "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
+@Composable
+fun NavigatingInnerGridViewLandscapeTrackingPreview() {
+  NavigatingInnerGridView(
+      modifier = Modifier.fillMaxSize(),
+      isMuted = true,
+      buttonSize = DpSize(56.dp, 56.dp),
+      cameraControlState =
+          CameraControlState.ShowRouteOverview {
+            // Do nothing
+          })
 }

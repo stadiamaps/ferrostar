@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -22,11 +23,13 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
 
 @Composable
 fun NavigationUIZoomButton(
+    buttonSize: DpSize,
     onClickZoomIn: () -> Unit,
     onClickZoomOut: () -> Unit,
     containerColor: Color = FloatingActionButtonDefaults.containerColor,
@@ -38,7 +41,7 @@ fun NavigationUIZoomButton(
   Column(modifier = Modifier.shadow(6.dp, shape = RoundedCornerShape(50))) {
     FloatingActionButton(
         onClick = onClickZoomIn,
-        modifier = Modifier.height(56.dp).width(56.dp),
+        modifier = Modifier.size(buttonSize),
         shape = RoundedCornerShape(topStartPercent = 50, topEndPercent = 50),
         containerColor = containerColor,
         contentColor = contentColor,
@@ -48,13 +51,13 @@ fun NavigationUIZoomButton(
               contentDescription = stringResource(id = R.string.zoom_in))
         }
 
-    Box(modifier = Modifier.height(1.dp).width(56.dp)) {
+    Box(modifier = Modifier.height(1.dp).width(buttonSize.width)) {
       HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
     }
 
     FloatingActionButton(
         onClick = onClickZoomOut,
-        modifier = Modifier.height(56.dp).width(56.dp),
+        modifier = Modifier.size(buttonSize),
         shape = RoundedCornerShape(bottomStartPercent = 50, bottomEndPercent = 50),
         containerColor = containerColor,
         contentColor = contentColor,
@@ -69,5 +72,8 @@ fun NavigationUIZoomButton(
 @Preview
 @Composable
 fun NavigationUIZoomButtonPreview() {
-  Box(Modifier.background(Color.LightGray).padding(16.dp)) { NavigationUIZoomButton({}, {}) }
+  Box(Modifier.background(Color.LightGray).padding(16.dp)) {
+    NavigationUIZoomButton(
+        buttonSize = DpSize(56.dp, 56.dp), onClickZoomIn = {}, onClickZoomOut = {})
+  }
 }

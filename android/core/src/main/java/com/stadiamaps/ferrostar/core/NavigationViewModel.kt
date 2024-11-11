@@ -81,6 +81,8 @@ data class NavigationUiState(
             currentStepRoadName = coreState.tripState.currentRoadName(),
             remainingSteps = coreState.tripState.remainingSteps())
   }
+
+  fun isNavigating(): Boolean = progress != null
 }
 
 interface NavigationViewModel {
@@ -88,36 +90,39 @@ interface NavigationViewModel {
 
   fun toggleMute()
 
-  fun stopNavigation()
-
-  fun isNavigating(): Boolean = uiState.value.progress != null
+  fun stopNavigation(stopLocationUpdates: Boolean = true)
 
   // TODO: We think the camera may eventually need to be owned by the view model, but that's going
   // to be a very big refactor (maybe even crossing into the MapLibre Compose project)
 }
 
+/**
+ * A basic implementation of a navigation view model.
+ *
+ * This is sufficient for simple applications, particularly those which only present maps and
+ * navigation for part of the app lifecycle. Apps which revolve around a single map-centric
+ * interface that is reused across navigation sessions will probably need to craft their own view
+ * model.
+ */
 class DefaultNavigationViewModel(
     private val ferrostarCore: FerrostarCore,
-    private val spokenInstructionObserver: SpokenInstructionObserver? = null,
-    private val locationProvider: LocationProvider,
     private val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
 ) : ViewModel(), NavigationViewModel {
 
-  private var userLocation: UserLocation? = locationProvider.lastLocation
   private val muteState: StateFlow<Boolean?> =
-      spokenInstructionObserver?.muteState ?: MutableStateFlow(null)
+      ferrostarCore.spokenInstructionObserver?.muteState ?: MutableStateFlow(null)
 
   override val uiState =
       combine(ferrostarCore.state, muteState) { a, b -> a to b }
           .map { (coreState, muteState) -> annotationPublisher.map(coreState) to muteState }
           .map { (stateWrapper, muteState) ->
             val coreState = stateWrapper.state
-            val location = locationProvider.lastLocation
-            userLocation =
+            val location = ferrostarCore.locationProvider.lastLocation
+            val userLocation =
                 when (coreState.tripState) {
                   is TripState.Navigating -> coreState.tripState.snappedUserLocation
                   is TripState.Complete,
-                  TripState.Idle -> locationProvider.lastLocation
+                  TripState.Idle -> ferrostarCore.locationProvider.lastLocation
                 }
             uiState(coreState, muteState, location, userLocation)
             // This awkward dance is required because Kotlin doesn't have a way to map over
@@ -130,15 +135,16 @@ class DefaultNavigationViewModel(
               initialValue =
                   uiState(
                       ferrostarCore.state.value,
-                      spokenInstructionObserver?.isMuted,
-                      locationProvider.lastLocation,
-                      userLocation))
+                      ferrostarCore.spokenInstructionObserver?.isMuted,
+                      ferrostarCore.locationProvider.lastLocation,
+                      ferrostarCore.locationProvider.lastLocation))
 
-  override fun stopNavigation() {
-    ferrostarCore.stopNavigation()
+  override fun stopNavigation(stopLocationUpdates: Boolean) {
+    ferrostarCore.stopNavigation(stopLocationUpdates = stopLocationUpdates)
   }
 
   override fun toggleMute() {
+    val spokenInstructionObserver = ferrostarCore.spokenInstructionObserver
     if (spokenInstructionObserver == null) {
       Log.d("NavigationViewModel", "Spoken instruction observer is null, mute operation ignored.")
       return

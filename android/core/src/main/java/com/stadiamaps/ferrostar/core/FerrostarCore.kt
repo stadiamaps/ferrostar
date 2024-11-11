@@ -3,7 +3,6 @@ package com.stadiamaps.ferrostar.core
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
-import com.stadiamaps.ferrostar.core.annotation.valhalla.valhallaExtendedOSRMAnnotationPublisher
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Instant
@@ -38,6 +37,13 @@ data class NavigationState(
 ) {
   companion object
 }
+
+fun NavigationState.isNavigating(): Boolean =
+    when (tripState) {
+      TripState.Complete,
+      TripState.Idle -> false
+      is TripState.Navigating -> true
+    }
 
 private val moshi: Moshi = Moshi.Builder().build()
 @OptIn(ExperimentalStdlibApi::class)
@@ -214,15 +220,10 @@ class FerrostarCore(
    * @param route the route to navigate.
    * @param config change the configuration in the core before staring navigation. This was
    *   originally provided on init, but you can set a new value for future sessions.
-   * @return a view model tied to the navigation session. This can be ignored if you're injecting
-   *   the [NavigationViewModel]/[DefaultNavigationViewModel].
    * @throws UserLocationUnknown if the location provider has no last known location.
    */
   @Throws(UserLocationUnknown::class)
-  fun startNavigation(
-      route: Route,
-      config: NavigationControllerConfig? = null
-  ): DefaultNavigationViewModel {
+  fun startNavigation(route: Route, config: NavigationControllerConfig? = null) {
     stopNavigation()
 
     // Start the foreground notification service
@@ -248,12 +249,6 @@ class FerrostarCore(
     _state.value = newState
 
     locationProvider.addListener(this, _executor)
-
-    return DefaultNavigationViewModel(
-        this,
-        spokenInstructionObserver,
-        locationProvider,
-        valhallaExtendedOSRMAnnotationPublisher())
   }
 
   /**
@@ -304,9 +299,11 @@ class FerrostarCore(
     }
   }
 
-  fun stopNavigation() {
+  fun stopNavigation(stopLocationUpdates: Boolean = true) {
     foregroundServiceManager?.stopService()
-    locationProvider.removeListener(this)
+    if (stopLocationUpdates) {
+      locationProvider.removeListener(this)
+    }
     _navigationController?.destroy()
     _navigationController = null
     _state.value = NavigationState()

@@ -125,4 +125,6 @@ object AppModule {
 
   // The AndroidTtsObserver handles spoken instructions as they are triggered by FerrostarCore.
   val ttsObserver: AndroidTtsObserver by lazy { AndroidTtsObserver(appContext) }
+
+  val viewModel: DemoNavigationViewModel by lazy { DemoNavigationViewModel() }
 }

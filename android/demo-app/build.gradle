@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.stadiamaps.ferrostar.demo"
