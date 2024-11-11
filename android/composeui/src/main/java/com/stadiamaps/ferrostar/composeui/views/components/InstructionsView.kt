@@ -67,6 +67,7 @@ fun InstructionsView(
 ) {
   var isExpanded by remember { mutableStateOf(initExpanded) }
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+  val remainingSteps: List<RouteStep> = remainingSteps?.drop(1) ?: emptyList()
 
   Box(
       modifier =
@@ -89,7 +90,7 @@ fun InstructionsView(
           // TODO: Secondary content
 
           // Expanded content
-          val showMultipleRows = isExpanded && remainingSteps != null && remainingSteps.count() > 1
+          val showMultipleRows = isExpanded && remainingSteps.count() > 1
           if (showMultipleRows) {
             Spacer(modifier = Modifier.height(8.dp))
             HorizontalDivider(thickness = 1.dp)
@@ -99,23 +100,27 @@ fun InstructionsView(
           if (isExpanded) {
             Box(modifier = Modifier.weight(1f)) {
               LazyColumn(
-                  modifier = Modifier.fillMaxSize(),
-                  verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                      items(remainingSteps.drop(1)) { step ->
-                        step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
-                          ManeuverInstructionView(
-                              text = upcomingInstruction.primaryContent.text,
-                              distanceFormatter = distanceFormatter,
-                              distanceToNextManeuver = step.distance,
-                              theme = theme) {
-                                contentBuilder(upcomingInstruction)
-                              }
-                          Spacer(modifier = Modifier.height(8.dp))
-                          HorizontalDivider(thickness = 1.dp)
-                        }
-                      }
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+              ) {
+                items(remainingSteps) { step ->
+                  step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
+                    ManeuverInstructionView(
+                      text = upcomingInstruction.primaryContent.text,
+                      distanceFormatter = distanceFormatter,
+                      distanceToNextManeuver = step.distance,
+                      theme = theme
+                    ) {
+                      contentBuilder(upcomingInstruction)
                     }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    HorizontalDivider(thickness = 1.dp)
                   }
+                }
+              }
+            }
+          }
+          }
       }
 }
 

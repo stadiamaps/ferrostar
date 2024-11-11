@@ -1,5 +1,7 @@
 package com.stadiamaps.ferrostar.maplibreui.extensions
 
+import android.graphics.Camera
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.LocalDensity
@@ -11,9 +13,36 @@ import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.camera.models.CameraPadding
 import com.stadiamaps.ferrostar.composeui.config.CameraControlState
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
+import com.stadiamaps.ferrostar.core.BoundingBox
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.boundingBox
 import com.stadiamaps.ferrostar.maplibreui.NavigationViewMetrics
+
+@Composable
+fun VisualNavigationViewConfig.cameraControlState(
+  camera: MutableState<MapViewCamera>,
+  navigationCamera: MapViewCamera,
+  uiState: NavigationUiState,
+  cameraIsTrackingLocation: Boolean,
+  mapViewInsets: PaddingValues,
+  boundingBox: BoundingBox
+): CameraControlState {
+  return if (!cameraIsTrackingLocation) {
+    CameraControlState.ShowRecenter { camera.value = navigationCamera }
+  } else {
+    CameraControlState.ShowRouteOverview {
+      camera.value = MapViewCamera.BoundingBox(
+        bounds = LatLngBounds.from(
+          boundingBox.north,
+          boundingBox.east,
+          boundingBox.south,
+          boundingBox.west
+        ),
+        // TODO: Padding w/ compose 0.4.0
+      )
+    }
+  }
+}
 
 @Composable
 fun VisualNavigationViewConfig.cameraControlState(
@@ -42,7 +71,6 @@ fun VisualNavigationViewConfig.cameraControlState(
           val (startPadding, endPadding) =
               when (layoutDirection) {
                 LayoutDirection.Ltr -> 20.0 * scale to (this.buttonSize.width.value + 50) * scale
-
                 LayoutDirection.Rtl -> (this.buttonSize.width.value + 50) * scale to 20.0 * scale
               }
 

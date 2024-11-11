@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,6 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewComponentConfig
 import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
@@ -30,24 +32,21 @@ import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
+import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
+import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
 fun LandscapeNavigationOverlayView(
-    modifier: Modifier,
-    viewModel: NavigationViewModel,
-    cameraIsTrackingLocation: Boolean,
-    config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-    progressViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
-    currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
-      if (roadName != null) {
-        CurrentRoadNameView(roadName)
-        Spacer(modifier = Modifier.height(8.dp))
-      }
-    },
-    views: VisualNavigationViewComponentConfig = VisualNavigationViewComponentConfig.Default(),
-    onTapExit: (() -> Unit)? = null,
+  modifier: Modifier,
+  viewModel: NavigationViewModel,
+  cameraIsTrackingLocation: Boolean,
+  theme: FerrostarTheme = DefaultFerrostarTheme,
+  config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+  views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
+  progressViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
+  onTapExit: (() -> Unit)? = null,
 ) {
   val density = LocalDensity.current
   val uiState by viewModel.uiState.collectAsState()
@@ -55,36 +54,18 @@ fun LandscapeNavigationOverlayView(
 
   Row(modifier) {
     Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
-      uiState.visualInstruction?.let { instructions ->
-        InstructionsView(
-            instructions,
-            modifier =
-                Modifier.onSizeChanged {
-                  instructionsViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
-                },
-            remainingSteps = uiState.remainingSteps,
-            distanceToNextManeuver = uiState.progress?.distanceToNextManeuver)
-      }
+      views.instructionsView(
+        Modifier.onSizeChanged {
+          instructionsViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }},
+        uiState
+      )
 
       Spacer(modifier = Modifier.weight(1f))
 
-      uiState.progress?.let { progress ->
-        TripProgressView(
-            modifier =
-                Modifier.onSizeChanged {
-                  progressViewSize.value = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
-                },
-            progress = progress,
-            onTapExit = onTapExit)
-      }
-
-  Row(modifier) {
-    Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
-      views.instructionsView(uiState)
-
-      Spacer(modifier = Modifier.weight(1f))
-
-      views.progressView(uiState, onTapExit)
+      views.progressView(
+        Modifier.onSizeChanged {
+          progressViewSize.value = density.run { DpSize(it.width.toDp(), it.height.toDp()) }},
+        uiState, onTapExit)
     }
 
     Spacer(modifier = Modifier.width(16.dp))
@@ -95,7 +76,7 @@ fun LandscapeNavigationOverlayView(
           showMute = config.showMute,
           isMuted = uiState.isMuted,
           onClickMute = { viewModel.toggleMute() },
-          buttonSize = config.buttonSize,
+          buttonSize = theme.buttonSize,
           cameraControlState =
               config.cameraControlState(
                   camera,

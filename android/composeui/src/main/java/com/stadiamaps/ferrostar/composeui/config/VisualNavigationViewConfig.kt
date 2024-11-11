@@ -12,14 +12,11 @@ sealed class CameraControlState {
 }
 
 data class VisualNavigationViewConfig(
-    var showMute: Boolean = false,
-    var showZoom: Boolean = false,
-    var buttonSize: DpSize = DpSize(56.dp, 56.dp)
-data class VisualNavigationViewConfig(
     // Mute
     var showMute: Boolean = false,
     var onMute: (() -> Unit)? = null,
-    // Zoom
+
+  // Zoom
     var showZoom: Boolean = false,
     var onZoomIn: (() -> Unit)? = null,
     var onZoomOut: (() -> Unit)? = null,
@@ -47,8 +44,6 @@ fun VisualNavigationViewConfig.useZoomButton(): VisualNavigationViewConfig {
 }
 
 /** Changes the size of navigation buttons. */
-fun VisualNavigationViewConfig.buttonSize(size: DpSize): VisualNavigationViewConfig {
-  buttonSize = size
 fun VisualNavigationViewConfig.useZoomButton(
   onZoomIn: () -> Unit,
   onZoomOut: () -> Unit
@@ -58,3 +53,8 @@ fun VisualNavigationViewConfig.useZoomButton(
   this.onZoomOut = onZoomOut
   return this
 }
+
+// TODO: How can this be part of the theme?
+//fun VisualNavigationViewConfig.buttonSize(size: DpSize): VisualNavigationViewConfig {
+//  buttonSize = size
+//}
