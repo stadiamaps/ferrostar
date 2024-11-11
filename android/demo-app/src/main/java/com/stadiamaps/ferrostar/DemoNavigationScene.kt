@@ -43,11 +43,11 @@ import uniffi.ferrostar.WaypointKind
 fun DemoNavigationScene(
     savedInstanceState: Bundle?,
     locationProvider: LocationProvider = AppModule.locationProvider,
+    viewModel: DemoNavigationViewModel = AppModule.viewModel
 ) {
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
-  val viewModel = remember { DemoNavigationViewModel() }
   val scope = rememberCoroutineScope()
 
   // Get location permissions.
