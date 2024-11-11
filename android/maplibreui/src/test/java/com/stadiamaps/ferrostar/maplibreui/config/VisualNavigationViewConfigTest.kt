@@ -21,7 +21,7 @@ class VisualNavigationViewConfigTest {
 
   @Test
   fun testDefault() {
-    val config = VisualNavigationViewConfig.Default()
+    val config = VisualNavigationViewConfig.Companion.Default()
     assert(config.showMute)
     assert(config.showZoom)
   }

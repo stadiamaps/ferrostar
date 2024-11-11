@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views.gridviews
+package com.stadiamaps.ferrostar.composeui.views.components.gridviews
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

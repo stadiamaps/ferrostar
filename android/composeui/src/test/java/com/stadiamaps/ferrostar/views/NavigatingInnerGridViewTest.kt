@@ -1,9 +1,9 @@
 package com.stadiamaps.ferrostar.views
 
-import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridViewLandscapeNonTrackingPreview
-import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridViewLandscapeTrackingPreview
-import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridViewNonTrackingPreview
-import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridViewTrackingPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewLandscapeNonTrackingPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewLandscapeTrackingPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewNonTrackingPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewTrackingPreview
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import org.junit.Rule

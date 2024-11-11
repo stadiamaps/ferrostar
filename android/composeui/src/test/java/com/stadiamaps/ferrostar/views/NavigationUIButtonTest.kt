@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIButton
-import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIZoomButton
+import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIButton
+import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIZoomButton
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import org.junit.Rule
 import org.junit.Test

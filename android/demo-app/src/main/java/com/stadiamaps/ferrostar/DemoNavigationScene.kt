@@ -24,7 +24,7 @@ import com.maplibre.compose.symbols.Circle
 import com.stadiamaps.autocomplete.AutocompleteSearch
 import com.stadiamaps.autocomplete.center
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
-import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridView
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.InnerGridView
 import com.stadiamaps.ferrostar.core.AndroidSystemLocationProvider
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider

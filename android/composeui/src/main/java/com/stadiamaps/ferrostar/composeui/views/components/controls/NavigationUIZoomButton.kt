@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views.controls
+package com.stadiamaps.ferrostar.composeui.views.components.controls
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

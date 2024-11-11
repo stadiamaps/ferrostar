@@ -33,5 +33,5 @@ object DefaultInstructionRowTheme : InstructionRowTheme {
     @Composable get() = MaterialTheme.colorScheme.onSurface
 
   override val backgroundColor: Color
-    @Composable get() = MaterialTheme.colorScheme.surfaceContainerLow
+    @Composable get() = MaterialTheme.colorScheme.surface
 }

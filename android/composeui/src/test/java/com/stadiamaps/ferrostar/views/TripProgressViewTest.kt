@@ -1,9 +1,9 @@
 package com.stadiamaps.ferrostar.views
 
-import com.stadiamaps.ferrostar.composeui.views.ProgressView24HourPreview
-import com.stadiamaps.ferrostar.composeui.views.ProgressViewInformationalPreview
-import com.stadiamaps.ferrostar.composeui.views.ProgressViewWithExitPreview
-import com.stadiamaps.ferrostar.composeui.views.TripProgressView
+import com.stadiamaps.ferrostar.composeui.views.components.ProgressView24HourPreview
+import com.stadiamaps.ferrostar.composeui.views.components.ProgressViewInformationalPreview
+import com.stadiamaps.ferrostar.composeui.views.components.ProgressViewWithExitPreview
+import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import kotlinx.datetime.Instant

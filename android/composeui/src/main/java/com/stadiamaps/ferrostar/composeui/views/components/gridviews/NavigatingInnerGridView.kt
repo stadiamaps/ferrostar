@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views.gridviews
+package com.stadiamaps.ferrostar.composeui.views.components.gridviews
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
 import com.stadiamaps.ferrostar.composeui.config.CameraControlState
-import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIButton
-import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIZoomButton
+import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIButton
+import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIZoomButton
 
 @Composable
 fun NavigatingInnerGridView(
@@ -93,8 +93,9 @@ fun NavigatingInnerGridView(
         if (cameraControlState is CameraControlState.ShowRecenter) {
           NavigationUIButton(onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
             Icon(
-                Icons.Filled.Navigation,
-                contentDescription = stringResource(id = R.string.recenter))
+              Icons.Filled.Navigation,
+              contentDescription = stringResource(id = R.string.recenter)
+            )
           }
         }
       },

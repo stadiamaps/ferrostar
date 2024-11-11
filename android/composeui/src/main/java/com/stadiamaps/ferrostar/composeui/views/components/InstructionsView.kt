@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views
+package com.stadiamaps.ferrostar.composeui.views.components
 
 import android.icu.util.ULocale
 import androidx.compose.animation.animateContentSize
@@ -36,9 +36,9 @@ import com.stadiamaps.ferrostar.composeui.formatting.DistanceFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.composeui.theme.DefaultInstructionRowTheme
 import com.stadiamaps.ferrostar.composeui.theme.InstructionRowTheme
-import com.stadiamaps.ferrostar.composeui.views.controls.PillDragHandle
-import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverImage
-import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverInstructionView
+import com.stadiamaps.ferrostar.composeui.views.components.controls.PillDragHandle
+import com.stadiamaps.ferrostar.composeui.views.components.maneuver.ManeuverImage
+import com.stadiamaps.ferrostar.composeui.views.components.maneuver.ManeuverInstructionView
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.RouteStep
@@ -101,7 +101,6 @@ fun InstructionsView(
               LazyColumn(
                   modifier = Modifier.fillMaxSize(),
                   verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (remainingSteps != null) {
                       items(remainingSteps.drop(1)) { step ->
                         step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
                           ManeuverInstructionView(
@@ -117,31 +116,6 @@ fun InstructionsView(
                       }
                     }
                   }
-            }
-          }
-
-          if (showMultipleRows) {
-            Spacer(modifier = Modifier.height(16.dp))
-          }
-        }
-
-        PillDragHandle(
-            isExpanded,
-            // The modifier here lets us keep the container as slim as possible
-            modifier =
-                Modifier.offset {
-                      IntOffset(
-                          0,
-                          if (isExpanded) {
-                            (-4 * density).toInt()
-                          } else {
-                            (-8 * density).toInt()
-                          })
-                    }
-                    .align(Alignment.BottomCenter),
-            iconTintColor = theme.iconTintColor) {
-              isExpanded = !isExpanded
-            }
       }
 }
 

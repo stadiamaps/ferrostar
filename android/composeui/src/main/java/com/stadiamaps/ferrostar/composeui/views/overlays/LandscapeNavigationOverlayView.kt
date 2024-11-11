@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.maplibreui.views.overlays
+package com.stadiamaps.ferrostar.composeui.views.overlays
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,30 +20,24 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
-import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.camera.extensions.incrementZoom
-import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
-import com.stadiamaps.ferrostar.composeui.views.CurrentRoadNameView
-import com.stadiamaps.ferrostar.composeui.views.InstructionsView
-import com.stadiamaps.ferrostar.composeui.views.TripProgressView
-import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridView
+import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewComponentConfig
+import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
+import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
+import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
-import com.stadiamaps.ferrostar.maplibreui.NavigationViewMetrics
-import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
-import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
+import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
 fun LandscapeNavigationOverlayView(
     modifier: Modifier,
-    camera: MutableState<MapViewCamera>,
-    navigationCamera: MapViewCamera,
     viewModel: NavigationViewModel,
+    cameraIsTrackingLocation: Boolean,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     progressViewSize: MutableState<DpSize> = remember { mutableStateOf(DpSize.Zero) },
     currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
@@ -53,6 +46,7 @@ fun LandscapeNavigationOverlayView(
         Spacer(modifier = Modifier.height(8.dp))
       }
     },
+    views: VisualNavigationViewComponentConfig = VisualNavigationViewComponentConfig.Default(),
     onTapExit: (() -> Unit)? = null,
 ) {
   val density = LocalDensity.current
@@ -83,6 +77,14 @@ fun LandscapeNavigationOverlayView(
             progress = progress,
             onTapExit = onTapExit)
       }
+
+  Row(modifier) {
+    Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
+      views.instructionsView(uiState)
+
+      Spacer(modifier = Modifier.weight(1f))
+
+      views.progressView(uiState, onTapExit)
     }
 
     Spacer(modifier = Modifier.width(16.dp))
@@ -102,8 +104,11 @@ fun LandscapeNavigationOverlayView(
                   NavigationViewMetrics(progressViewSize.value, instructionsViewSize),
               ),
           showZoom = config.showZoom,
-          onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
-          onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) })
+          onClickZoomIn = { config.onZoomIn?.invoke() },
+          onClickZoomOut = { config.onZoomOut?.invoke() },
+          showCentering = !cameraIsTrackingLocation,
+          onClickCenter = { config.onCenterLocation?.invoke() },
+      )
     }
   }
 }
@@ -119,8 +124,8 @@ fun LandscapeNavigationOverlayViewPreview() {
 
   LandscapeNavigationOverlayView(
       modifier = Modifier.fillMaxSize(),
-      camera = rememberSaveableMapViewCamera(),
-      navigationCamera = navigationMapViewCamera(),
       viewModel = viewModel,
-      onTapExit = {})
+      cameraIsTrackingLocation = false,
+      onTapExit = {}
+  )
 }

@@ -3,7 +3,7 @@ package com.stadiamaps.ferrostar.views
 import androidx.compose.ui.graphics.Color
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
 import app.cash.paparazzi.Paparazzi
-import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverImage
+import com.stadiamaps.ferrostar.composeui.views.components.maneuver.ManeuverImage
 import org.junit.Rule
 import org.junit.Test
 import uniffi.ferrostar.ManeuverModifier
