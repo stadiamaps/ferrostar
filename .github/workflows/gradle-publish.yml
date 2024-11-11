@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: macos-13
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: read

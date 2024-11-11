@@ -17,4 +17,5 @@
     <string name="preparing">Preparing...</string>
     <string name="arrived_title">Arrived</string>
     <string name="arrived_description">You have arrived at your destination.</string>
+    <string name="route_overview">Route Overview</string>
 </resources>

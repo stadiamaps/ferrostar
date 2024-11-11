@@ -73,5 +73,5 @@ class MockNavigationViewModel(override val uiState: StateFlow<NavigationUiState>
     ViewModel(), NavigationViewModel {
   override fun toggleMute() {}
 
-  override fun stopNavigation() {}
+  override fun stopNavigation(stopLocationUpdates: Boolean) {}
 }

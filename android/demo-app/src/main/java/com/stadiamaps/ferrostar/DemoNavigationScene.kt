@@ -13,8 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -29,12 +27,10 @@ import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
 import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridView
 import com.stadiamaps.ferrostar.core.AndroidSystemLocationProvider
 import com.stadiamaps.ferrostar.core.LocationProvider
-import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.toAndroidLocation
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
-import java.util.concurrent.Executors
 import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,16 +42,11 @@ import uniffi.ferrostar.WaypointKind
 fun DemoNavigationScene(
     savedInstanceState: Bundle?,
     locationProvider: LocationProvider = AppModule.locationProvider,
+    viewModel: DemoNavigationViewModel = AppModule.viewModel
 ) {
-  val executor = remember { Executors.newSingleThreadScheduledExecutor() }
-
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
-  // NOTE: We are aware that this is not a particularly great pattern.
-  // We are working on improving this. See the discussion on
-  // https://github.com/stadiamaps/ferrostar/pull/295.
-  var viewModel by remember { mutableStateOf<NavigationViewModel>(DemoNavigationViewModel()) }
   val scope = rememberCoroutineScope()
 
   // Get location permissions.
@@ -73,7 +64,7 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       }
 
-  val vmState = viewModel.uiState.collectAsState(scope.coroutineContext)
+  val vmState by viewModel.uiState.collectAsState(scope.coroutineContext)
 
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -82,7 +73,7 @@ fun DemoNavigationScene(
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
             val vm = viewModel
             if ((locationProvider is AndroidSystemLocationProvider ||
-                locationProvider is FusedLocationProvider) && vm is DemoNavigationViewModel) {
+                locationProvider is FusedLocationProvider)) {
               // Activate location updates in the view model
               vm.startLocationUpdates(locationProvider)
             }
@@ -104,7 +95,7 @@ fun DemoNavigationScene(
   }
 
   // For smart casting
-  val loc = vmState.value.location
+  val loc = vmState.location
   if (loc == null) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
       Text("Waiting to acquire your GPS location...", modifier = Modifier.padding(innerPadding))
@@ -122,15 +113,9 @@ fun DemoNavigationScene(
       // Snapping works well for most motor vehicle navigation.
       // Other travel modes though, such as walking, may not want snapping.
       snapUserLocationToRoute = false,
-      onTapExit = {
-        viewModel.stopNavigation()
-        val vm = DemoNavigationViewModel()
-        viewModel = vm
-
-        vm.startLocationUpdates(locationProvider)
-      },
+      onTapExit = { viewModel.stopNavigation() },
       userContent = { modifier ->
-        if (!viewModel.isNavigating()) {
+        if (!vmState.isNavigating()) {
           InnerGridView(
               modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
               topCenter = {
@@ -152,7 +137,7 @@ fun DemoNavigationScene(
                                 ))
 
                         val route = routes.first()
-                        viewModel = AppModule.ferrostarCore.startNavigation(route = route)
+                        AppModule.ferrostarCore.startNavigation(route = route)
 
                         if (locationProvider is SimulatedLocationProvider) {
                           locationProvider.setSimulatedRoute(route)
@@ -167,7 +152,7 @@ fun DemoNavigationScene(
         // Trivial, if silly example of how to add your own overlay layers.
         // (Also incidentally highlights the lag inherent in MapLibre location tracking
         // as-is.)
-        uiState.value.location?.let { location ->
+        uiState.location?.let { location ->
           Circle(
               center = LatLng(location.coordinates.lat, location.coordinates.lng),
               radius = 10f,
