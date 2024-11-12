@@ -3,6 +3,8 @@ package com.stadiamaps.ferrostar.core
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stadiamaps.ferrostar.core.annotation.AnnotationPublisher
+import com.stadiamaps.ferrostar.core.annotation.NoOpAnnotationPublisher
 import com.stadiamaps.ferrostar.core.extensions.currentRoadName
 import com.stadiamaps.ferrostar.core.extensions.deviation
 import com.stadiamaps.ferrostar.core.extensions.progress
@@ -104,6 +106,7 @@ interface NavigationViewModel {
  */
 class DefaultNavigationViewModel(
     private val ferrostarCore: FerrostarCore,
+    private val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
 ) : ViewModel(), NavigationViewModel {
 
   private val muteState: StateFlow<Boolean?> =
@@ -111,7 +114,9 @@ class DefaultNavigationViewModel(
 
   override val uiState =
       combine(ferrostarCore.state, muteState) { a, b -> a to b }
-          .map { (coreState, muteState) ->
+          .map { (coreState, muteState) -> annotationPublisher.map(coreState) to muteState }
+          .map { (stateWrapper, muteState) ->
+            val coreState = stateWrapper.state
             val location = ferrostarCore.locationProvider.lastLocation
             val userLocation =
                 when (coreState.tripState) {

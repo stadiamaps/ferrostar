@@ -220,8 +220,6 @@ class FerrostarCore(
    * @param route the route to navigate.
    * @param config change the configuration in the core before staring navigation. This was
    *   originally provided on init, but you can set a new value for future sessions.
-   * @return a view model tied to the navigation session. This can be ignored if you're injecting
-   *   the [NavigationViewModel]/[DefaultNavigationViewModel].
    * @throws UserLocationUnknown if the location provider has no last known location.
    */
   @Throws(UserLocationUnknown::class)
