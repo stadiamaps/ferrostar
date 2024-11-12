@@ -53,10 +53,12 @@ import kotlinx.coroutines.flow.asStateFlow
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
  *   route line.
+ * @param theme The navigation UI theme to use for the view.
  * @param config The configuration for the navigation view.
- * @param overlayModifier The modifier to apply to the overlay view.
+ * @param views The navigation view component builder to use for the view.
+ * @param mapViewInsets The padding inset representing the open area of the map.
  * @param onTapExit The callback to invoke when the exit button is tapped.
- * @param content Any additional composable map symbol content to render.
+ * @param mapContent Any additional composable map symbol content to render.
  */
 @Composable
 fun LandscapeNavigationView(
@@ -73,7 +75,7 @@ fun LandscapeNavigationView(
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
     onTapExit: (() -> Unit)? = null,
-    content: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
+    mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.uiState.collectAsState()
 
@@ -92,7 +94,7 @@ fun LandscapeNavigationView(
         locationRequestProperties,
         snapUserLocationToRoute,
         onMapReadyCallback = { camera.value = navigationCamera },
-        content)
+        mapContent)
 
     LandscapeNavigationOverlayView(
         modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),

@@ -52,11 +52,11 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgres
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
  *   route line.
+ * @param theme The navigation UI theme to use for the view.
  * @param config The configuration for the navigation view.
+ * @param views The navigation view component builder to use for the view.
+ * @param mapViewInsets The padding inset representing the open area of the map.
  * @param onTapExit The callback to invoke when the exit button is tapped.
- * @param userContent Any composable with additional content to render. The most common use of this
- *   parameter is to display custom UI when there is no navigation in progress. See the demo app for
- *   an example that adds a search box.
  * @param mapContent Any additional composable map symbol content to render.
  */
 @Composable
