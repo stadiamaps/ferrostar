@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.models.CameraControlState
-import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
-import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
+import com.stadiamaps.ferrostar.composeui.theme.DefaultNavigationUITheme
+import com.stadiamaps.ferrostar.composeui.theme.NavigationUITheme
 import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
 import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
@@ -33,7 +33,7 @@ data class NavigationViewComponentBuilder(
     // maplibre specific.
 ) {
   companion object {
-    fun Default(theme: FerrostarTheme = DefaultFerrostarTheme) =
+    fun Default(theme: NavigationUITheme = DefaultNavigationUITheme) =
         NavigationViewComponentBuilder(
             instructionsView = { modifier, uiState ->
               uiState.visualInstruction?.let { instructions ->

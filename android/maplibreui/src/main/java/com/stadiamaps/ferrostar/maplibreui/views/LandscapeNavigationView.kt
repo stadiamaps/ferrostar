@@ -23,8 +23,8 @@ import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
-import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
-import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
+import com.stadiamaps.ferrostar.composeui.theme.DefaultNavigationUITheme
+import com.stadiamaps.ferrostar.composeui.theme.NavigationUITheme
 import com.stadiamaps.ferrostar.composeui.views.overlays.LandscapeNavigationOverlayView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -68,7 +68,7 @@ fun LandscapeNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
-    theme: FerrostarTheme = DefaultFerrostarTheme,
+    theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },

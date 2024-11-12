@@ -24,8 +24,8 @@ import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.models.CameraControlState
 import com.stadiamaps.ferrostar.composeui.models.NavigationViewMetrics
-import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
-import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
+import com.stadiamaps.ferrostar.composeui.theme.DefaultNavigationUITheme
+import com.stadiamaps.ferrostar.composeui.theme.NavigationUITheme
 import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -39,7 +39,7 @@ fun PortraitNavigationOverlayView(
     modifier: Modifier,
     viewModel: NavigationViewModel,
     cameraControlState: CameraControlState,
-    theme: FerrostarTheme = DefaultFerrostarTheme,
+    theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues>,

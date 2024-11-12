@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
-interface FerrostarTheme {
+interface NavigationUITheme {
   @get:Composable val instructionRowTheme: InstructionRowTheme
   @get:Composable val roadNameViewTheme: RoadNameViewTheme
   @get:Composable val tripProgressViewTheme: TripProgressViewTheme
   @get:Composable val buttonSize: DpSize
 }
 
-object DefaultFerrostarTheme : FerrostarTheme {
+object DefaultNavigationUITheme : NavigationUITheme {
   override val instructionRowTheme: InstructionRowTheme
     @Composable get() = DefaultInstructionRowTheme
 
