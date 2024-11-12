@@ -30,7 +30,7 @@ fun PillDragHandle(
     toggle: () -> Unit = {}
 ) {
   val handleHeight = if (isExpanded) 36.dp else 4.dp
-  Box(modifier = modifier.height(handleHeight).clickable(onClick = toggle)) {
+  Box(modifier = modifier.fillMaxWidth().height(handleHeight).clickable(onClick = toggle)) {
     if (isExpanded) {
       Icon(
           Icons.Rounded.KeyboardArrowUp,

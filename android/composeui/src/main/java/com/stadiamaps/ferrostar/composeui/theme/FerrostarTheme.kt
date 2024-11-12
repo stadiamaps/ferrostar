@@ -1,7 +1,6 @@
 package com.stadiamaps.ferrostar.composeui.theme
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
@@ -14,18 +13,14 @@ interface FerrostarTheme {
 
 object DefaultFerrostarTheme : FerrostarTheme {
   override val instructionRowTheme: InstructionRowTheme
-    @Composable
-    get() = DefaultInstructionRowTheme
+    @Composable get() = DefaultInstructionRowTheme
 
   override val roadNameViewTheme: RoadNameViewTheme
-    @Composable
-    get() = DefaultRoadNameViewTheme
+    @Composable get() = DefaultRoadNameViewTheme
 
   override val tripProgressViewTheme: TripProgressViewTheme
-    @Composable
-    get() = DefaultTripProgressViewTheme
+    @Composable get() = DefaultTripProgressViewTheme
 
   override val buttonSize: DpSize
-    @Composable
-    get() = DpSize(56.dp, 56.dp)
+    @Composable get() = DpSize(56.dp, 56.dp)
 }

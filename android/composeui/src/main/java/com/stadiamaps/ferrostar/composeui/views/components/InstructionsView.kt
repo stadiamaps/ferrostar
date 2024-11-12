@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +61,7 @@ fun InstructionsView(
     remainingSteps: List<RouteStep>? = null,
     initExpanded: Boolean = false,
     contentBuilder: @Composable (VisualInstruction) -> Unit = {
-      ManeuverImage(it.primaryContent, tint = MaterialTheme.colorScheme.primary)
+      ManeuverImage(it.primaryContent, tint = theme.iconTintColor)
     }
 ) {
   var isExpanded by remember { mutableStateOf(initExpanded) }
@@ -100,27 +99,47 @@ fun InstructionsView(
           if (isExpanded) {
             Box(modifier = Modifier.weight(1f)) {
               LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-              ) {
-                items(remainingSteps) { step ->
-                  step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
-                    ManeuverInstructionView(
-                      text = upcomingInstruction.primaryContent.text,
-                      distanceFormatter = distanceFormatter,
-                      distanceToNextManeuver = step.distance,
-                      theme = theme
-                    ) {
-                      contentBuilder(upcomingInstruction)
+                  modifier = Modifier.fillMaxSize(),
+                  verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(remainingSteps) { step ->
+                      step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
+                        ManeuverInstructionView(
+                            text = upcomingInstruction.primaryContent.text,
+                            distanceFormatter = distanceFormatter,
+                            distanceToNextManeuver = step.distance,
+                            theme = theme) {
+                              contentBuilder(upcomingInstruction)
+                            }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        HorizontalDivider(thickness = 1.dp)
+                      }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    HorizontalDivider(thickness = 1.dp)
                   }
-                }
-              }
             }
           }
+
+          if (showMultipleRows) {
+            Spacer(modifier = Modifier.height(16.dp))
           }
+        }
+
+        PillDragHandle(
+            isExpanded,
+            // The modifier here lets us keep the container as slim as possible
+            modifier =
+                Modifier.offset {
+                      IntOffset(
+                          0,
+                          if (isExpanded) {
+                            (-4 * density).toInt()
+                          } else {
+                            (-8 * density).toInt()
+                          })
+                    }
+                    .align(Alignment.BottomCenter),
+            iconTintColor = theme.iconTintColor) {
+              isExpanded = !isExpanded
+            }
       }
 }
 

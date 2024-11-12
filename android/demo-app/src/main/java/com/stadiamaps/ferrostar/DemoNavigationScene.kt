@@ -16,28 +16,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.maplibre.compose.symbols.Circle
-import com.stadiamaps.autocomplete.AutocompleteSearch
 import com.stadiamaps.autocomplete.center
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
+import com.stadiamaps.ferrostar.composeui.config.withCustomOverlayView
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
-import com.stadiamaps.ferrostar.composeui.views.components.gridviews.InnerGridView
 import com.stadiamaps.ferrostar.core.AndroidSystemLocationProvider
 import com.stadiamaps.ferrostar.core.LocationProvider
-import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
-import com.stadiamaps.ferrostar.core.toAndroidLocation
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
 import kotlin.math.min
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.Waypoint
-import uniffi.ferrostar.WaypointKind
 
 @Composable
 fun DemoNavigationScene(
@@ -114,45 +106,18 @@ fun DemoNavigationScene(
       // Snapping works well for most motor vehicle navigation.
       // Other travel modes though, such as walking, may not want snapping.
       snapUserLocationToRoute = false,
-      views = NavigationViewComponentBuilder.Default(
-        customOverlayView = { modifier ->
-          if (!vmState.isNavigating()) {
-            InnerGridView(
-              modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
-              topCenter = {
-                AppModule.stadiaApiKey?.let { apiKey ->
-                  AutocompleteSearch(apiKey = apiKey, userLocation = loc.toAndroidLocation()) {
-                      feature ->
-                    feature.center()?.let { center ->
-                      // Fetch a route in the background
-                      scope.launch(Dispatchers.IO) {
-                        // TODO: Fail gracefully
-                        val routes =
-                          AppModule.ferrostarCore.getRoutes(
-                            loc,
-                            listOf(
-                              Waypoint(
-                                coordinate =
-                                GeographicCoordinate(center.latitude, center.longitude),
-                                kind = WaypointKind.BREAK),
-                            ))
-
-                        val route = routes.first()
-                        AppModule.ferrostarCore.startNavigation(route = route)
-
-                        if (locationProvider is SimulatedLocationProvider) {
-                          locationProvider.setSimulatedRoute(route)
-                        }
-                      }
-                    }
-                  }
-                }
-              })
-          }
-        }
-      ),
-      onTapExit = { viewModel.stopNavigation() }
-    ) { uiState ->
+      views =
+          NavigationViewComponentBuilder.Default()
+              .withCustomOverlayView(
+                  customOverlayView = { modifier ->
+                    AutocompleteOverlay(
+                        modifier = modifier,
+                        scope = scope,
+                        isNavigating = vmState.isNavigating(),
+                        locationProvider = locationProvider,
+                        loc = loc)
+                  }),
+      onTapExit = { viewModel.stopNavigation() }) { uiState ->
         // Trivial, if silly example of how to add your own overlay layers.
         // (Also incidentally highlights the lag inherent in MapLibre location tracking
         // as-is.)
