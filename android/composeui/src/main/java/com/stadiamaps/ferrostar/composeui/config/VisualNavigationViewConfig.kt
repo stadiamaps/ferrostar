@@ -1,16 +1,5 @@
 package com.stadiamaps.ferrostar.composeui.config
 
-import androidx.compose.ui.unit.DpSize
-import androidx.compose.ui.unit.dp
-
-sealed class CameraControlState {
-  data object Hidden : CameraControlState()
-
-  data class ShowRecenter(val updateCamera: () -> Unit) : CameraControlState()
-
-  data class ShowRouteOverview(val updateCamera: () -> Unit) : CameraControlState()
-}
-
 data class VisualNavigationViewConfig(
     // Mute
     var showMute: Boolean = false,

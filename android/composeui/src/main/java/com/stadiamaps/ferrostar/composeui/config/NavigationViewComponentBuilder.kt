@@ -1,10 +1,12 @@
 package com.stadiamaps.ferrostar.composeui.config
 
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
 import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
 import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
@@ -15,11 +17,15 @@ data class NavigationViewComponentBuilder(
   val instructionsView: @Composable (modifier: Modifier, uiState: NavigationUiState) -> Unit,
   val progressView: @Composable (modifier: Modifier, uiState: NavigationUiState, onTapExit: (() -> Unit)?) -> Unit,
   val streetNameView: @Composable (modifier: Modifier, roadName: String?) -> Unit,
+  val customOverlayView: @Composable (BoxScope.(Modifier) -> Unit)? = null,
   // TODO: We may reasonably be able to add the NavigationMapView here. But not sure how much value that would add
   //    since most of the hard config already exists within the overlay views which are not maplibre specific.
 ) {
   companion object {
-    fun Default(theme: FerrostarTheme) = NavigationViewComponentBuilder(
+    fun Default(
+      theme: FerrostarTheme = DefaultFerrostarTheme,
+      customOverlayView: @Composable (BoxScope.(Modifier) -> Unit)? = null
+    ) = NavigationViewComponentBuilder(
       instructionsView = { modifier, uiState ->
         uiState.visualInstruction?.let { instructions ->
           InstructionsView(
@@ -50,7 +56,8 @@ data class NavigationViewComponentBuilder(
           )
           Spacer(modifier = Modifier.height(8.dp))
         }
-      }
+      },
+      customOverlayView
     )
   }
 }

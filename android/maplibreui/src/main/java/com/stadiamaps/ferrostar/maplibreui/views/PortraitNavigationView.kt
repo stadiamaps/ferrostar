@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.maplibreui.views
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +24,12 @@ import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
+import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
+import com.stadiamaps.ferrostar.composeui.models.CameraControlState
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
+import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
+import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
 import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -35,6 +40,8 @@ import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 import com.stadiamaps.ferrostar.composeui.views.overlays.PortraitNavigationOverlayView
+import com.stadiamaps.ferrostar.core.boundingBox
+import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -66,13 +73,10 @@ fun PortraitNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
+    theme: FerrostarTheme = DefaultFerrostarTheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-    currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
-      if (roadName != null) {
-        CurrentRoadNameView(roadName)
-        Spacer(modifier = Modifier.height(8.dp))
-      }
-    },
+    views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
+    mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
     onTapExit: (() -> Unit)? = null,
     content: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
@@ -81,12 +85,10 @@ fun PortraitNavigationView(
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()
 
-  // Maintain the actual size of the progress view for MapControl layout purposes.
-  val rememberProgressViewSize = remember { mutableStateOf(DpSize.Zero) }
-  val progressViewSize by rememberProgressViewSize
-
   // Get the map control positioning based on the progress view.
-  val mapControls = rememberMapControlsForProgressViewHeight(progressViewSize.height)
+  // TODO: I think we should just remove all annotations for nav & make a better tool if needed.
+//  val mapControls = rememberMapControlsForProgressViewHeight(progressViewSize.height)
+  val mapControls = rememberMapControlsForProgressViewHeight()
 
   Box(modifier) {
     NavigationMapView(
@@ -102,14 +104,24 @@ fun PortraitNavigationView(
 
     if (uiState.isNavigating()) {
       PortraitNavigationOverlayView(
-          modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
-          config = config,
+        modifier =  Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+        viewModel = viewModel,
+        cameraControlState = config.cameraControlState(
           camera = camera,
           navigationCamera = navigationCamera,
-          viewModel = viewModel,
-          progressViewSize = rememberProgressViewSize,
-          onTapExit = onTapExit,
-          currentRoadNameView = currentRoadNameView)
+          mapViewInsets = mapViewInsets.value,
+          boundingBox = uiState.routeGeometry?.boundingBox(),
+        ),
+        theme = theme,
+        config = config,
+        views = views,
+        mapViewInsets = mapViewInsets,
+        onTapExit = onTapExit
+      )
+
+      views.customOverlayView?.let { customOverlayView ->
+        customOverlayView(Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
+      }
     }
   }
 }
@@ -121,7 +133,18 @@ private fun PortraitNavigationViewPreview() {
       MockNavigationViewModel(MutableStateFlow(NavigationUiState.pedestrianExample()).asStateFlow())
 
   PortraitNavigationView(
-      Modifier.fillMaxSize(),
-      styleUrl = "https://demotiles.maplibre.org/style.json",
-      viewModel = viewModel)
+    Modifier.fillMaxSize(),
+    styleUrl = "https://demotiles.maplibre.org/style.json",
+    viewModel = viewModel,
+    camera = TODO(),
+    navigationCamera = TODO(),
+    locationRequestProperties = TODO(),
+    snapUserLocationToRoute = TODO(),
+    theme = TODO(),
+    config = TODO(),
+    views = TODO(),
+    mapViewInsets = TODO(),
+    onTapExit = TODO(),
+    content = TODO()
+  )
 }

@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.camera.cameraPaddingFractionOfScreen
+import com.maplibre.compose.camera.models.CameraPadding
 
 sealed class NavigationActivity(val zoom: Double, val pitch: Double) {
   /** The recommended camera configuration for automotive navigation. */
@@ -32,7 +32,7 @@ fun navigationMapViewCamera(
   val screenOrientation = LocalConfiguration.current.orientation
   val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 0.5f else 0.0f
 
-  val cameraPadding = cameraPaddingFractionOfScreen(start = start, top = 0.5f)
+  val cameraPadding = CameraPadding.fractionOfScreen(start = start, top = 0.5f)
 
   return MapViewCamera.TrackingUserLocationWithBearing(
       zoom = activity.zoom, pitch = activity.pitch, padding = cameraPadding)

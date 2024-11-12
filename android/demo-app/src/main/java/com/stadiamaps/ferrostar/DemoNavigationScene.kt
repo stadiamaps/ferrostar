@@ -23,6 +23,7 @@ import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.maplibre.compose.symbols.Circle
 import com.stadiamaps.autocomplete.AutocompleteSearch
 import com.stadiamaps.autocomplete.center
+import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
 import com.stadiamaps.ferrostar.composeui.views.components.gridviews.InnerGridView
 import com.stadiamaps.ferrostar.core.AndroidSystemLocationProvider
@@ -113,10 +114,10 @@ fun DemoNavigationScene(
       // Snapping works well for most motor vehicle navigation.
       // Other travel modes though, such as walking, may not want snapping.
       snapUserLocationToRoute = false,
-      onTapExit = { viewModel.stopNavigation() },
-      userContent = { modifier ->
-        if (!vmState.isNavigating()) {
-          InnerGridView(
+      views = NavigationViewComponentBuilder.Default(
+        customOverlayView = { modifier ->
+          if (!vmState.isNavigating()) {
+            InnerGridView(
               modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
               topCenter = {
                 AppModule.stadiaApiKey?.let { apiKey ->
@@ -127,14 +128,14 @@ fun DemoNavigationScene(
                       scope.launch(Dispatchers.IO) {
                         // TODO: Fail gracefully
                         val routes =
-                            AppModule.ferrostarCore.getRoutes(
-                                loc,
-                                listOf(
-                                    Waypoint(
-                                        coordinate =
-                                            GeographicCoordinate(center.latitude, center.longitude),
-                                        kind = WaypointKind.BREAK),
-                                ))
+                          AppModule.ferrostarCore.getRoutes(
+                            loc,
+                            listOf(
+                              Waypoint(
+                                coordinate =
+                                GeographicCoordinate(center.latitude, center.longitude),
+                                kind = WaypointKind.BREAK),
+                            ))
 
                         val route = routes.first()
                         AppModule.ferrostarCore.startNavigation(route = route)
@@ -147,8 +148,11 @@ fun DemoNavigationScene(
                   }
                 }
               })
+          }
         }
-      }) { uiState ->
+      ),
+      onTapExit = { viewModel.stopNavigation() }
+    ) { uiState ->
         // Trivial, if silly example of how to add your own overlay layers.
         // (Also incidentally highlights the lag inherent in MapLibre location tracking
         // as-is.)

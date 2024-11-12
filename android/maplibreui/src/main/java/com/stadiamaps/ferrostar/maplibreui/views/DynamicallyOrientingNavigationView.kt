@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.maplibreui.views
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
@@ -23,8 +24,11 @@ import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
+import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
+import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
+import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
 import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -34,6 +38,8 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 import com.stadiamaps.ferrostar.composeui.views.overlays.LandscapeNavigationOverlayView
 import com.stadiamaps.ferrostar.composeui.views.overlays.PortraitNavigationOverlayView
+import com.stadiamaps.ferrostar.core.boundingBox
+import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 
 /**
  * A dynamically orienting navigation view that switches between portrait and landscape orientations
@@ -66,15 +72,11 @@ fun DynamicallyOrientingNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
+    theme: FerrostarTheme = DefaultFerrostarTheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-    currentRoadNameView: @Composable (String?) -> Unit = { roadName ->
-      if (roadName != null) {
-        CurrentRoadNameView(roadName)
-        Spacer(modifier = Modifier.height(8.dp))
-      }
-    },
+    views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
+    mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
     onTapExit: (() -> Unit)? = null,
-    userContent: @Composable (BoxScope.(Modifier) -> Unit)? = null,
     mapContent: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val orientation = LocalConfiguration.current.orientation
@@ -105,32 +107,44 @@ fun DynamicallyOrientingNavigationView(
       when (orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
           LandscapeNavigationOverlayView(
-              modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+            modifier =  Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+            viewModel = viewModel,
+            cameraControlState = config.cameraControlState(
               camera = camera,
               navigationCamera = navigationCamera,
-              viewModel = viewModel,
-              config = config,
-              progressViewSize = rememberProgressViewSize,
-              onTapExit = onTapExit,
-              currentRoadNameView = currentRoadNameView)
+              mapViewInsets = mapViewInsets.value,
+              boundingBox = uiState.routeGeometry?.boundingBox(),
+            ),
+            theme = theme,
+            config = config,
+            views = views,
+            mapViewInsets = mapViewInsets,
+            onTapExit = onTapExit
+          )
         }
 
         else -> {
           PortraitNavigationOverlayView(
-              modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+            modifier =  Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+            viewModel = viewModel,
+            cameraControlState = config.cameraControlState(
               camera = camera,
               navigationCamera = navigationCamera,
-              viewModel = viewModel,
-              config = config,
-              progressViewSize = rememberProgressViewSize,
-              onTapExit = onTapExit,
-              currentRoadNameView = currentRoadNameView)
+              mapViewInsets = mapViewInsets.value,
+              boundingBox = uiState.routeGeometry?.boundingBox(),
+            ),
+            theme = theme,
+            config = config,
+            views = views,
+            mapViewInsets = mapViewInsets,
+            onTapExit = onTapExit
+          )
         }
       }
     }
 
-    if (userContent != null) {
-      userContent(Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
+    views.customOverlayView?.let { customOverlayView ->
+      customOverlayView(Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
     }
   }
 }
