@@ -2,10 +2,8 @@ package com.stadiamaps.ferrostar.maplibreui.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -27,19 +25,17 @@ import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
 import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
 import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
-import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
+import com.stadiamaps.ferrostar.composeui.views.overlays.LandscapeNavigationOverlayView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
+import com.stadiamaps.ferrostar.core.boundingBox
 import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
+import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
-import com.stadiamaps.ferrostar.composeui.views.overlays.LandscapeNavigationOverlayView
-import com.stadiamaps.ferrostar.composeui.views.overlays.PortraitNavigationOverlayView
-import com.stadiamaps.ferrostar.core.boundingBox
-import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -64,20 +60,20 @@ import kotlinx.coroutines.flow.asStateFlow
  */
 @Composable
 fun LandscapeNavigationView(
-  modifier: Modifier,
-  styleUrl: String,
-  camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
-  navigationCamera: MapViewCamera = navigationMapViewCamera(),
-  viewModel: NavigationViewModel,
-  locationRequestProperties: LocationRequestProperties =
-    LocationRequestProperties.NavigationDefault(),
-  snapUserLocationToRoute: Boolean = true,
-  theme: FerrostarTheme = DefaultFerrostarTheme,
-  config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-  views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
-  mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
-  onTapExit: (() -> Unit)? = null,
-  content: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
+    modifier: Modifier,
+    styleUrl: String,
+    camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
+    navigationCamera: MapViewCamera = navigationMapViewCamera(),
+    viewModel: NavigationViewModel,
+    locationRequestProperties: LocationRequestProperties =
+        LocationRequestProperties.NavigationDefault(),
+    snapUserLocationToRoute: Boolean = true,
+    theme: FerrostarTheme = DefaultFerrostarTheme,
+    config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
+    mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
+    onTapExit: (() -> Unit)? = null,
+    content: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.uiState.collectAsState()
 
@@ -99,20 +95,20 @@ fun LandscapeNavigationView(
         content)
 
     LandscapeNavigationOverlayView(
-      modifier =  Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
-      viewModel = viewModel,
-      cameraControlState = config.cameraControlState(
-        camera = camera,
-        navigationCamera = navigationCamera,
-        mapViewInsets = mapViewInsets.value,
-        boundingBox = uiState.routeGeometry?.boundingBox(),
-      ),
-      theme = theme,
-      config = config,
-      views = views,
-      mapViewInsets = mapViewInsets,
-      onTapExit = onTapExit
-    )
+        modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+        viewModel = viewModel,
+        cameraControlState =
+            config.cameraControlState(
+                camera = camera,
+                navigationCamera = navigationCamera,
+                mapViewInsets = mapViewInsets.value,
+                boundingBox = uiState.routeGeometry?.boundingBox(),
+            ),
+        theme = theme,
+        config = config,
+        views = views,
+        mapViewInsets = mapViewInsets,
+        onTapExit = onTapExit)
 
     views.customOverlayView?.let { customOverlayView ->
       customOverlayView(Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))

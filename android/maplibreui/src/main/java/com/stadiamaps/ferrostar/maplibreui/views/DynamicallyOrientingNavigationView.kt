@@ -2,9 +2,7 @@ package com.stadiamaps.ferrostar.maplibreui.views
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,17 +27,16 @@ import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.runtime.paddingForGridView
 import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
 import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
-import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
-import com.stadiamaps.ferrostar.core.NavigationUiState
-import com.stadiamaps.ferrostar.core.NavigationViewModel
-import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
-import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
-import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 import com.stadiamaps.ferrostar.composeui.views.overlays.LandscapeNavigationOverlayView
 import com.stadiamaps.ferrostar.composeui.views.overlays.PortraitNavigationOverlayView
+import com.stadiamaps.ferrostar.core.NavigationUiState
+import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.boundingBox
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
+import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 
 /**
  * A dynamically orienting navigation view that switches between portrait and landscape orientations
@@ -107,38 +104,38 @@ fun DynamicallyOrientingNavigationView(
       when (orientation) {
         Configuration.ORIENTATION_LANDSCAPE -> {
           LandscapeNavigationOverlayView(
-            modifier =  Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
-            viewModel = viewModel,
-            cameraControlState = config.cameraControlState(
-              camera = camera,
-              navigationCamera = navigationCamera,
-              mapViewInsets = mapViewInsets.value,
-              boundingBox = uiState.routeGeometry?.boundingBox(),
-            ),
-            theme = theme,
-            config = config,
-            views = views,
-            mapViewInsets = mapViewInsets,
-            onTapExit = onTapExit
-          )
+              modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+              viewModel = viewModel,
+              cameraControlState =
+                  config.cameraControlState(
+                      camera = camera,
+                      navigationCamera = navigationCamera,
+                      mapViewInsets = mapViewInsets.value,
+                      boundingBox = uiState.routeGeometry?.boundingBox(),
+                  ),
+              theme = theme,
+              config = config,
+              views = views,
+              mapViewInsets = mapViewInsets,
+              onTapExit = onTapExit)
         }
 
         else -> {
           PortraitNavigationOverlayView(
-            modifier =  Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
-            viewModel = viewModel,
-            cameraControlState = config.cameraControlState(
-              camera = camera,
-              navigationCamera = navigationCamera,
-              mapViewInsets = mapViewInsets.value,
-              boundingBox = uiState.routeGeometry?.boundingBox(),
-            ),
-            theme = theme,
-            config = config,
-            views = views,
-            mapViewInsets = mapViewInsets,
-            onTapExit = onTapExit
-          )
+              modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding),
+              viewModel = viewModel,
+              cameraControlState =
+                  config.cameraControlState(
+                      camera = camera,
+                      navigationCamera = navigationCamera,
+                      mapViewInsets = mapViewInsets.value,
+                      boundingBox = uiState.routeGeometry?.boundingBox(),
+                  ),
+              theme = theme,
+              config = config,
+              views = views,
+              mapViewInsets = mapViewInsets,
+              onTapExit = onTapExit)
         }
       }
     }

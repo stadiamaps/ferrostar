@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -25,29 +23,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
-import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridView
-import com.stadiamaps.ferrostar.core.NavigationUiState
-import com.stadiamaps.ferrostar.core.NavigationViewModel
-import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
-import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.models.CameraControlState
 import com.stadiamaps.ferrostar.composeui.models.NavigationViewMetrics
 import com.stadiamaps.ferrostar.composeui.theme.DefaultFerrostarTheme
 import com.stadiamaps.ferrostar.composeui.theme.FerrostarTheme
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridView
+import com.stadiamaps.ferrostar.core.NavigationUiState
+import com.stadiamaps.ferrostar.core.NavigationViewModel
+import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
+import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
 fun LandscapeNavigationOverlayView(
-  modifier: Modifier,
-  viewModel: NavigationViewModel,
-  cameraControlState: CameraControlState,
-  theme: FerrostarTheme = DefaultFerrostarTheme,
-  config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
-  views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
-  mapViewInsets: MutableState<PaddingValues>,
-  onTapExit: (() -> Unit)? = null,
+    modifier: Modifier,
+    viewModel: NavigationViewModel,
+    cameraControlState: CameraControlState,
+    theme: FerrostarTheme = DefaultFerrostarTheme,
+    config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
+    mapViewInsets: MutableState<PaddingValues>,
+    onTapExit: (() -> Unit)? = null,
 ) {
   val density = LocalDensity.current
   val uiState by viewModel.uiState.collectAsState()
@@ -55,31 +53,29 @@ fun LandscapeNavigationOverlayView(
   var instructionsViewSize by remember { mutableStateOf(DpSize.Zero) }
   var progressViewSize by remember { mutableStateOf(DpSize.Zero) }
 
-  mapViewInsets.value = NavigationViewMetrics(
-    progressViewSize = progressViewSize,
-    instructionsViewSize = instructionsViewSize,
-    buttonSize = theme.buttonSize
-  ).mapViewInsets(
-    top = 32.dp,
-    bottom = 16.dp
-  )
+  mapViewInsets.value =
+      NavigationViewMetrics(
+              progressViewSize = progressViewSize,
+              instructionsViewSize = instructionsViewSize,
+              buttonSize = theme.buttonSize)
+          .mapViewInsets(top = 32.dp, bottom = 16.dp)
 
   Row(modifier) {
-    Column(modifier = Modifier
-      .fillMaxHeight()
-      .fillMaxWidth(0.5f)) {
+    Column(modifier = Modifier.fillMaxHeight().fillMaxWidth(0.5f)) {
       views.instructionsView(
-        Modifier.onSizeChanged {
-          instructionsViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }},
-        uiState
-      )
+          Modifier.onSizeChanged {
+            instructionsViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
+          },
+          uiState)
 
       Spacer(modifier = Modifier.weight(1f))
 
       views.progressView(
-        Modifier.onSizeChanged {
-          progressViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }},
-        uiState, onTapExit)
+          Modifier.onSizeChanged {
+            progressViewSize = density.run { DpSize(it.width.toDp(), it.height.toDp()) }
+          },
+          uiState,
+          onTapExit)
     }
 
     Spacer(modifier = Modifier.width(16.dp))
@@ -96,12 +92,8 @@ fun LandscapeNavigationOverlayView(
           onClickZoomIn = { config.onZoomIn?.invoke() },
           onClickZoomOut = { config.onZoomOut?.invoke() },
           bottomCenter = {
-            views.streetNameView(
-              Modifier.padding(top = 16.dp),
-              uiState.currentStepRoadName
-            )
-          }
-      )
+            views.streetNameView(Modifier.padding(top = 16.dp), uiState.currentStepRoadName)
+          })
     }
   }
 }
@@ -116,10 +108,10 @@ fun LandscapeNavigationOverlayViewPreview() {
           MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
 
   LandscapeNavigationOverlayView(
-    modifier = Modifier.fillMaxSize(),
-    viewModel = viewModel,
-    cameraControlState = CameraControlState.Hidden,
-    mapViewInsets = remember { mutableStateOf(PaddingValues()) },
-    onTapExit = {  },
+      modifier = Modifier.fillMaxSize(),
+      viewModel = viewModel,
+      cameraControlState = CameraControlState.Hidden,
+      mapViewInsets = remember { mutableStateOf(PaddingValues()) },
+      onTapExit = {},
   )
 }

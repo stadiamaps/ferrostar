@@ -5,13 +5,13 @@ data class VisualNavigationViewConfig(
     var showMute: Boolean = false,
     var onMute: (() -> Unit)? = null,
 
-  // Zoom
+    // Zoom
     var showZoom: Boolean = false,
     var onZoomIn: (() -> Unit)? = null,
     var onZoomOut: (() -> Unit)? = null,
     // Center Camera
     // TODO: Not sure this is the best place for this bool since it's required.
-//    var showCentering: Boolean = false,
+    //    var showCentering: Boolean = false,
     var onCenterLocation: (() -> Unit)? = null,
 ) {
   companion object {
@@ -34,8 +34,8 @@ fun VisualNavigationViewConfig.useZoomButton(): VisualNavigationViewConfig {
 
 /** Changes the size of navigation buttons. */
 fun VisualNavigationViewConfig.useZoomButton(
-  onZoomIn: () -> Unit,
-  onZoomOut: () -> Unit
+    onZoomIn: () -> Unit,
+    onZoomOut: () -> Unit
 ): VisualNavigationViewConfig {
   showZoom = true
   this.onZoomIn = onZoomIn
@@ -44,6 +44,6 @@ fun VisualNavigationViewConfig.useZoomButton(
 }
 
 // TODO: How can this be part of the theme?
-//fun VisualNavigationViewConfig.buttonSize(size: DpSize): VisualNavigationViewConfig {
+// fun VisualNavigationViewConfig.buttonSize(size: DpSize): VisualNavigationViewConfig {
 //  buttonSize = size
-//}
+// }

@@ -114,45 +114,45 @@ fun DemoNavigationScene(
       // Snapping works well for most motor vehicle navigation.
       // Other travel modes though, such as walking, may not want snapping.
       snapUserLocationToRoute = false,
-      views = NavigationViewComponentBuilder.Default(
-        customOverlayView = { modifier ->
-          if (!vmState.isNavigating()) {
-            InnerGridView(
-              modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
-              topCenter = {
-                AppModule.stadiaApiKey?.let { apiKey ->
-                  AutocompleteSearch(apiKey = apiKey, userLocation = loc.toAndroidLocation()) {
-                      feature ->
-                    feature.center()?.let { center ->
-                      // Fetch a route in the background
-                      scope.launch(Dispatchers.IO) {
-                        // TODO: Fail gracefully
-                        val routes =
-                          AppModule.ferrostarCore.getRoutes(
-                            loc,
-                            listOf(
-                              Waypoint(
-                                coordinate =
-                                GeographicCoordinate(center.latitude, center.longitude),
-                                kind = WaypointKind.BREAK),
-                            ))
+      views =
+          NavigationViewComponentBuilder.Default(
+              customOverlayView = { modifier ->
+                if (!vmState.isNavigating()) {
+                  InnerGridView(
+                      modifier = modifier.fillMaxSize().padding(bottom = 16.dp, top = 16.dp),
+                      topCenter = {
+                        AppModule.stadiaApiKey?.let { apiKey ->
+                          AutocompleteSearch(
+                              apiKey = apiKey, userLocation = loc.toAndroidLocation()) { feature ->
+                                feature.center()?.let { center ->
+                                  // Fetch a route in the background
+                                  scope.launch(Dispatchers.IO) {
+                                    // TODO: Fail gracefully
+                                    val routes =
+                                        AppModule.ferrostarCore.getRoutes(
+                                            loc,
+                                            listOf(
+                                                Waypoint(
+                                                    coordinate =
+                                                        GeographicCoordinate(
+                                                            center.latitude, center.longitude),
+                                                    kind = WaypointKind.BREAK),
+                                            ))
 
-                        val route = routes.first()
-                        AppModule.ferrostarCore.startNavigation(route = route)
+                                    val route = routes.first()
+                                    AppModule.ferrostarCore.startNavigation(route = route)
 
-                        if (locationProvider is SimulatedLocationProvider) {
-                          locationProvider.setSimulatedRoute(route)
+                                    if (locationProvider is SimulatedLocationProvider) {
+                                      locationProvider.setSimulatedRoute(route)
+                                    }
+                                  }
+                                }
+                              }
                         }
-                      }
-                    }
-                  }
+                      })
                 }
-              })
-          }
-        }
-      ),
-      onTapExit = { viewModel.stopNavigation() }
-    ) { uiState ->
+              }),
+      onTapExit = { viewModel.stopNavigation() }) { uiState ->
         // Trivial, if silly example of how to add your own overlay layers.
         // (Also incidentally highlights the lag inherent in MapLibre location tracking
         // as-is.)
