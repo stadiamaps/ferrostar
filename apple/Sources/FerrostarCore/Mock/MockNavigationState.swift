@@ -68,7 +68,8 @@ public extension NavigationState {
                             ),
                         ],
                         spokenInstructions: [],
-                        annotations: nil
+                        annotations: nil,
+                        incidents: []
                     ),
                 ],
                 remainingWaypoints: [],

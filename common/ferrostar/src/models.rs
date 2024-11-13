@@ -322,6 +322,8 @@ pub struct RouteStep {
     pub spoken_instructions: Vec<SpokenInstruction>,
     /// A list of json encoded strings representing annotations between each coordinate along the step.
     pub annotations: Option<Vec<String>>,
+    /// A list of incidents that occur along the step.
+    pub incidents: Vec<Incident>,
 }
 
 impl RouteStep {
@@ -460,6 +462,107 @@ pub enum ManeuverModifier {
     Left,
     #[serde(rename = "sharp left")]
     SharpLeft,
+}
+
+/// The type of incident that has occurred.
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(any(test, feature = "wasm-bindgen"), derive(Serialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[serde(rename_all = "snake_case")]
+pub enum IncidentType {
+    Accident,
+    Congestion,
+    Construction,
+    DisabledVehicle,
+    LaneRestriction,
+    MassTransit,
+    Miscellaneous,
+    OtherNews,
+    PlannedEvent,
+    RoadClosure,
+    RoadHazard,
+    Weather,
+}
+
+/// The impact of the incident that has occurred.
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(any(test, feature = "wasm-bindgen"), derive(Serialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[serde(rename_all = "lowercase")]
+pub enum Impact {
+    Unknown,
+    Critical,
+    Major,
+    Minor,
+    Low,
+}
+
+/// The lane type blocked by the incident.
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(any(test, feature = "wasm-bindgen"), derive(Serialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[serde(rename_all = "lowercase")]
+pub enum BlockedLane {
+    Left,
+    #[serde(rename = "left center")]
+    LeftCenter,
+    #[serde(rename = "left turn lane")]
+    LeftTurnLane,
+    Center,
+    Right,
+    #[serde(rename = "right center")]
+    RightCenter,
+    #[serde(rename = "right turn lane")]
+    RightTurnLane,
+    #[serde(rename = "hov")]
+    HOV,
+}
+
+/// Details about congestion for an incident.
+#[derive(Deserialize, Serialize, Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct Congestion {
+    pub value: u8,
+}
+
+/// Details about an incident
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct Incident {
+    pub id: String,
+    pub incident_type: IncidentType,
+    pub description: Option<String>,
+    pub long_description: Option<String>,
+    pub creation_time: Option<String>,
+    pub start_time: Option<String>,
+    pub end_time: Option<String>,
+    pub impact: Option<Impact>,
+    pub lanes_blocked: Vec<BlockedLane>,
+    pub num_lanes_blocked: Option<u8>,
+    pub congestion: Option<Congestion>,
+    pub closed: Option<bool>,
+    pub geometry_index_start: u64,
+    pub geometry_index_end: Option<u64>,
+    pub sub_type: Option<String>,
+    pub sub_type_description: Option<String>,
+    pub iso_3166_1_alpha2: Option<String>,
+    pub iso_3166_1_alpha3: Option<String>,
+    pub affected_road_names: Vec<String>,
+    pub south_west: Option<GeographicCoordinate>,
+    pub north_east: Option<GeographicCoordinate>,
 }
 
 /// The content of a visual instruction.

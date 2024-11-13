@@ -122,7 +122,8 @@ class FerrostarCoreTest {
                                   triggerDistanceBeforeManeuver = 42.0)),
                       spokenInstructions = listOf(),
                       duration = 0.0,
-                      annotations = null)))
+                      annotations = null,
+                      incidents = listOf())))
 
   @Test
   fun test401UnauthorizedRouteResponse() = runTest {

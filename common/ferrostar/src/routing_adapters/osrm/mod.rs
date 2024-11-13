@@ -5,7 +5,7 @@ pub mod utilities;
 
 use super::RouteResponseParser;
 use crate::models::{
-    AnyAnnotationValue, GeographicCoordinate, LaneInfo, RouteStep, SpokenInstruction,
+    AnyAnnotationValue, GeographicCoordinate, Incident, LaneInfo, RouteStep, SpokenInstruction,
     VisualInstruction, VisualInstructionContent, Waypoint, WaypointKind,
 };
 use crate::routing_adapters::utilities::get_coordinates_from_geometry;
@@ -101,6 +101,13 @@ impl Route {
                         .as_ref()
                         .map(|leg_annotation| utilities::zip_annotations(leg_annotation.clone()));
 
+                    // Convert all incidents into a vector of Incident objects.
+                    let incident_items = leg
+                        .incidents
+                        .iter()
+                        .map(|incident| Incident::from(incident))
+                        .collect::<Vec<Incident>>();
+
                     // Index for the annotations slice
                     let mut start_index: usize = 0;
 
@@ -120,12 +127,49 @@ impl Route {
                         let annotation_slice =
                             get_annotation_slice(annotations.clone(), start_index, end_index).ok();
 
+                        let relevant_incidents_slice = incident_items
+                            .iter()
+                            .filter(|incident| {
+                                let incident_start = incident.geometry_index_start as usize;
+
+                                match incident.geometry_index_end {
+                                    Some(end) => {
+                                        let incident_end = end as usize;
+                                        incident_start >= start_index && incident_end <= end_index
+                                    }
+                                    None => {
+                                        incident_start >= start_index && incident_start <= end_index
+                                    }
+                                }
+                            })
+                            .map(|incident| {
+                                let mut adjusted_incident = incident.clone();
+                                if adjusted_incident.geometry_index_start - start_index as u64 > 0 {
+                                    adjusted_incident.geometry_index_start -= start_index as u64;
+                                } else {
+                                    adjusted_incident.geometry_index_start = 0;
+                                }
+
+                                if let Some(end) = adjusted_incident.geometry_index_end {
+                                    let adjusted_end = end - start_index as u64;
+                                    adjusted_incident.geometry_index_end =
+                                        Some(if adjusted_end > end_index as u64 {
+                                            end_index as u64
+                                        } else {
+                                            adjusted_end
+                                        })
+                                }
+                                adjusted_incident
+                            })
+                            .collect::<Vec<Incident>>();
+
                         start_index = end_index;
 
                         return RouteStep::from_osrm_and_geom(
                             step,
                             step_geometry,
                             annotation_slice,
+                            relevant_incidents_slice,
                         );
                     });
                 })
@@ -151,6 +195,7 @@ impl RouteStep {
         value: &OsrmRouteStep,
         geometry: Vec<GeographicCoordinate>,
         annotations: Option<Vec<AnyAnnotationValue>>,
+        incidents: Vec<Incident>,
     ) -> Result<Self, ParsingError> {
         let visual_instructions = value
             .banner_instructions
@@ -232,6 +277,7 @@ impl RouteStep {
             visual_instructions,
             spoken_instructions,
             annotations: annotations_as_strings,
+            incidents,
         })
     }
 }

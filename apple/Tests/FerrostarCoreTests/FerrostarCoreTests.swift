@@ -43,7 +43,8 @@ let mockRoute = Route(
             triggerDistanceBeforeManeuver: 42
         )],
         spokenInstructions: [],
-        annotations: nil
+        annotations: nil,
+        incidents: []
     )]
 )
 

@@ -399,6 +399,22 @@ fileprivate class UniffiHandleMap<T> {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterUInt8: FfiConverterPrimitive {
+    typealias FfiType = UInt8
+    typealias SwiftType = UInt8
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UInt8 {
+        return try lift(readInt(&buf))
+    }
+
+    public static func write(_ value: UInt8, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterUInt16: FfiConverterPrimitive {
     typealias FfiType = UInt16
     typealias SwiftType = UInt16
@@ -1677,6 +1693,67 @@ public func FfiConverterTypeBoundingBox_lower(_ value: BoundingBox) -> RustBuffe
 
 
 /**
+ * Details about congestion for an incident.
+ */
+public struct Congestion {
+    public var value: UInt8
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(value: UInt8) {
+        self.value = value
+    }
+}
+
+
+
+extension Congestion: Equatable, Hashable {
+    public static func ==(lhs: Congestion, rhs: Congestion) -> Bool {
+        if lhs.value != rhs.value {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(value)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeCongestion: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Congestion {
+        return
+            try Congestion(
+                value: FfiConverterUInt8.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: Congestion, into buf: inout [UInt8]) {
+        FfiConverterUInt8.write(value.value, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeCongestion_lift(_ buf: RustBuffer) throws -> Congestion {
+    return try FfiConverterTypeCongestion.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeCongestion_lower(_ value: Congestion) -> RustBuffer {
+    return FfiConverterTypeCongestion.lower(value)
+}
+
+
+/**
  * The direction in which the user/device is observed to be traveling.
  */
 public struct CourseOverGround {
@@ -1932,6 +2009,227 @@ public func FfiConverterTypeHeading_lift(_ buf: RustBuffer) throws -> Heading {
 #endif
 public func FfiConverterTypeHeading_lower(_ value: Heading) -> RustBuffer {
     return FfiConverterTypeHeading.lower(value)
+}
+
+
+/**
+ * Details about an incident
+ */
+public struct Incident {
+    public var id: String
+    public var incidentType: IncidentType
+    public var description: String?
+    public var longDescription: String?
+    public var creationTime: String?
+    public var startTime: String?
+    public var endTime: String?
+    public var impact: Impact?
+    public var lanesBlocked: [BlockedLane]
+    public var numLanesBlocked: UInt8?
+    public var congestion: Congestion?
+    public var closed: Bool?
+    public var geometryIndexStart: UInt64
+    public var geometryIndexEnd: UInt64?
+    public var subType: String?
+    public var subTypeDescription: String?
+    public var iso31661Alpha2: String?
+    public var iso31661Alpha3: String?
+    public var affectedRoadNames: [String]
+    public var southWest: GeographicCoordinate?
+    public var northEast: GeographicCoordinate?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(id: String, incidentType: IncidentType, description: String?, longDescription: String?, creationTime: String?, startTime: String?, endTime: String?, impact: Impact?, lanesBlocked: [BlockedLane], numLanesBlocked: UInt8?, congestion: Congestion?, closed: Bool?, geometryIndexStart: UInt64, geometryIndexEnd: UInt64?, subType: String?, subTypeDescription: String?, iso31661Alpha2: String?, iso31661Alpha3: String?, affectedRoadNames: [String], southWest: GeographicCoordinate?, northEast: GeographicCoordinate?) {
+        self.id = id
+        self.incidentType = incidentType
+        self.description = description
+        self.longDescription = longDescription
+        self.creationTime = creationTime
+        self.startTime = startTime
+        self.endTime = endTime
+        self.impact = impact
+        self.lanesBlocked = lanesBlocked
+        self.numLanesBlocked = numLanesBlocked
+        self.congestion = congestion
+        self.closed = closed
+        self.geometryIndexStart = geometryIndexStart
+        self.geometryIndexEnd = geometryIndexEnd
+        self.subType = subType
+        self.subTypeDescription = subTypeDescription
+        self.iso31661Alpha2 = iso31661Alpha2
+        self.iso31661Alpha3 = iso31661Alpha3
+        self.affectedRoadNames = affectedRoadNames
+        self.southWest = southWest
+        self.northEast = northEast
+    }
+}
+
+
+
+extension Incident: Equatable, Hashable {
+    public static func ==(lhs: Incident, rhs: Incident) -> Bool {
+        if lhs.id != rhs.id {
+            return false
+        }
+        if lhs.incidentType != rhs.incidentType {
+            return false
+        }
+        if lhs.description != rhs.description {
+            return false
+        }
+        if lhs.longDescription != rhs.longDescription {
+            return false
+        }
+        if lhs.creationTime != rhs.creationTime {
+            return false
+        }
+        if lhs.startTime != rhs.startTime {
+            return false
+        }
+        if lhs.endTime != rhs.endTime {
+            return false
+        }
+        if lhs.impact != rhs.impact {
+            return false
+        }
+        if lhs.lanesBlocked != rhs.lanesBlocked {
+            return false
+        }
+        if lhs.numLanesBlocked != rhs.numLanesBlocked {
+            return false
+        }
+        if lhs.congestion != rhs.congestion {
+            return false
+        }
+        if lhs.closed != rhs.closed {
+            return false
+        }
+        if lhs.geometryIndexStart != rhs.geometryIndexStart {
+            return false
+        }
+        if lhs.geometryIndexEnd != rhs.geometryIndexEnd {
+            return false
+        }
+        if lhs.subType != rhs.subType {
+            return false
+        }
+        if lhs.subTypeDescription != rhs.subTypeDescription {
+            return false
+        }
+        if lhs.iso31661Alpha2 != rhs.iso31661Alpha2 {
+            return false
+        }
+        if lhs.iso31661Alpha3 != rhs.iso31661Alpha3 {
+            return false
+        }
+        if lhs.affectedRoadNames != rhs.affectedRoadNames {
+            return false
+        }
+        if lhs.southWest != rhs.southWest {
+            return false
+        }
+        if lhs.northEast != rhs.northEast {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(incidentType)
+        hasher.combine(description)
+        hasher.combine(longDescription)
+        hasher.combine(creationTime)
+        hasher.combine(startTime)
+        hasher.combine(endTime)
+        hasher.combine(impact)
+        hasher.combine(lanesBlocked)
+        hasher.combine(numLanesBlocked)
+        hasher.combine(congestion)
+        hasher.combine(closed)
+        hasher.combine(geometryIndexStart)
+        hasher.combine(geometryIndexEnd)
+        hasher.combine(subType)
+        hasher.combine(subTypeDescription)
+        hasher.combine(iso31661Alpha2)
+        hasher.combine(iso31661Alpha3)
+        hasher.combine(affectedRoadNames)
+        hasher.combine(southWest)
+        hasher.combine(northEast)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeIncident: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Incident {
+        return
+            try Incident(
+                id: FfiConverterString.read(from: &buf), 
+                incidentType: FfiConverterTypeIncidentType.read(from: &buf), 
+                description: FfiConverterOptionString.read(from: &buf), 
+                longDescription: FfiConverterOptionString.read(from: &buf), 
+                creationTime: FfiConverterOptionString.read(from: &buf), 
+                startTime: FfiConverterOptionString.read(from: &buf), 
+                endTime: FfiConverterOptionString.read(from: &buf), 
+                impact: FfiConverterOptionTypeImpact.read(from: &buf), 
+                lanesBlocked: FfiConverterSequenceTypeBlockedLane.read(from: &buf), 
+                numLanesBlocked: FfiConverterOptionUInt8.read(from: &buf), 
+                congestion: FfiConverterOptionTypeCongestion.read(from: &buf), 
+                closed: FfiConverterOptionBool.read(from: &buf), 
+                geometryIndexStart: FfiConverterUInt64.read(from: &buf), 
+                geometryIndexEnd: FfiConverterOptionUInt64.read(from: &buf), 
+                subType: FfiConverterOptionString.read(from: &buf), 
+                subTypeDescription: FfiConverterOptionString.read(from: &buf), 
+                iso31661Alpha2: FfiConverterOptionString.read(from: &buf), 
+                iso31661Alpha3: FfiConverterOptionString.read(from: &buf), 
+                affectedRoadNames: FfiConverterSequenceString.read(from: &buf), 
+                southWest: FfiConverterOptionTypeGeographicCoordinate.read(from: &buf), 
+                northEast: FfiConverterOptionTypeGeographicCoordinate.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: Incident, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.id, into: &buf)
+        FfiConverterTypeIncidentType.write(value.incidentType, into: &buf)
+        FfiConverterOptionString.write(value.description, into: &buf)
+        FfiConverterOptionString.write(value.longDescription, into: &buf)
+        FfiConverterOptionString.write(value.creationTime, into: &buf)
+        FfiConverterOptionString.write(value.startTime, into: &buf)
+        FfiConverterOptionString.write(value.endTime, into: &buf)
+        FfiConverterOptionTypeImpact.write(value.impact, into: &buf)
+        FfiConverterSequenceTypeBlockedLane.write(value.lanesBlocked, into: &buf)
+        FfiConverterOptionUInt8.write(value.numLanesBlocked, into: &buf)
+        FfiConverterOptionTypeCongestion.write(value.congestion, into: &buf)
+        FfiConverterOptionBool.write(value.closed, into: &buf)
+        FfiConverterUInt64.write(value.geometryIndexStart, into: &buf)
+        FfiConverterOptionUInt64.write(value.geometryIndexEnd, into: &buf)
+        FfiConverterOptionString.write(value.subType, into: &buf)
+        FfiConverterOptionString.write(value.subTypeDescription, into: &buf)
+        FfiConverterOptionString.write(value.iso31661Alpha2, into: &buf)
+        FfiConverterOptionString.write(value.iso31661Alpha3, into: &buf)
+        FfiConverterSequenceString.write(value.affectedRoadNames, into: &buf)
+        FfiConverterOptionTypeGeographicCoordinate.write(value.southWest, into: &buf)
+        FfiConverterOptionTypeGeographicCoordinate.write(value.northEast, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIncident_lift(_ buf: RustBuffer) throws -> Incident {
+    return try FfiConverterTypeIncident.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIncident_lower(_ value: Incident) -> RustBuffer {
+    return FfiConverterTypeIncident.lower(value)
 }
 
 
@@ -2318,6 +2616,10 @@ public struct RouteStep {
      * A list of json encoded strings representing annotations between each coordinate along the step.
      */
     public var annotations: [String]?
+    /**
+     * A list of incidents that occur along the step.
+     */
+    public var incidents: [Incident]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -2349,7 +2651,10 @@ public struct RouteStep {
          */spokenInstructions: [SpokenInstruction], 
         /**
          * A list of json encoded strings representing annotations between each coordinate along the step.
-         */annotations: [String]?) {
+         */annotations: [String]?, 
+        /**
+         * A list of incidents that occur along the step.
+         */incidents: [Incident]) {
         self.geometry = geometry
         self.distance = distance
         self.duration = duration
@@ -2358,6 +2663,7 @@ public struct RouteStep {
         self.visualInstructions = visualInstructions
         self.spokenInstructions = spokenInstructions
         self.annotations = annotations
+        self.incidents = incidents
     }
 }
 
@@ -2389,6 +2695,9 @@ extension RouteStep: Equatable, Hashable {
         if lhs.annotations != rhs.annotations {
             return false
         }
+        if lhs.incidents != rhs.incidents {
+            return false
+        }
         return true
     }
 
@@ -2401,6 +2710,7 @@ extension RouteStep: Equatable, Hashable {
         hasher.combine(visualInstructions)
         hasher.combine(spokenInstructions)
         hasher.combine(annotations)
+        hasher.combine(incidents)
     }
 }
 
@@ -2419,7 +2729,8 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
                 instruction: FfiConverterString.read(from: &buf), 
                 visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf), 
                 spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf), 
-                annotations: FfiConverterOptionSequenceString.read(from: &buf)
+                annotations: FfiConverterOptionSequenceString.read(from: &buf), 
+                incidents: FfiConverterSequenceTypeIncident.read(from: &buf)
         )
     }
 
@@ -2432,6 +2743,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
         FfiConverterSequenceTypeVisualInstruction.write(value.visualInstructions, into: &buf)
         FfiConverterSequenceTypeSpokenInstruction.write(value.spokenInstructions, into: &buf)
         FfiConverterOptionSequenceString.write(value.annotations, into: &buf)
+        FfiConverterSequenceTypeIncident.write(value.incidents, into: &buf)
     }
 }
 
@@ -3186,6 +3498,115 @@ public func FfiConverterTypeWaypoint_lower(_ value: Waypoint) -> RustBuffer {
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
+ * The lane type blocked by the incident.
+ */
+
+public enum BlockedLane {
+    
+    case left
+    case leftCenter
+    case leftTurnLane
+    case center
+    case right
+    case rightCenter
+    case rightTurnLane
+    case hov
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeBlockedLane: FfiConverterRustBuffer {
+    typealias SwiftType = BlockedLane
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> BlockedLane {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .left
+        
+        case 2: return .leftCenter
+        
+        case 3: return .leftTurnLane
+        
+        case 4: return .center
+        
+        case 5: return .right
+        
+        case 6: return .rightCenter
+        
+        case 7: return .rightTurnLane
+        
+        case 8: return .hov
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: BlockedLane, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .left:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .leftCenter:
+            writeInt(&buf, Int32(2))
+        
+        
+        case .leftTurnLane:
+            writeInt(&buf, Int32(3))
+        
+        
+        case .center:
+            writeInt(&buf, Int32(4))
+        
+        
+        case .right:
+            writeInt(&buf, Int32(5))
+        
+        
+        case .rightCenter:
+            writeInt(&buf, Int32(6))
+        
+        
+        case .rightTurnLane:
+            writeInt(&buf, Int32(7))
+        
+        
+        case .hov:
+            writeInt(&buf, Int32(8))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeBlockedLane_lift(_ buf: RustBuffer) throws -> BlockedLane {
+    return try FfiConverterTypeBlockedLane.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeBlockedLane_lower(_ value: BlockedLane) -> RustBuffer {
+    return FfiConverterTypeBlockedLane.lower(value)
+}
+
+
+
+extension BlockedLane: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
  * Controls filtering/post-processing of user course by the [`NavigationController`].
  */
 
@@ -3254,6 +3675,231 @@ public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> R
 
 
 extension CourseFiltering: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * The impact of the incident that has occurred.
+ */
+
+public enum Impact {
+    
+    case unknown
+    case critical
+    case major
+    case minor
+    case low
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeImpact: FfiConverterRustBuffer {
+    typealias SwiftType = Impact
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Impact {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .unknown
+        
+        case 2: return .critical
+        
+        case 3: return .major
+        
+        case 4: return .minor
+        
+        case 5: return .low
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: Impact, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .unknown:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .critical:
+            writeInt(&buf, Int32(2))
+        
+        
+        case .major:
+            writeInt(&buf, Int32(3))
+        
+        
+        case .minor:
+            writeInt(&buf, Int32(4))
+        
+        
+        case .low:
+            writeInt(&buf, Int32(5))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeImpact_lift(_ buf: RustBuffer) throws -> Impact {
+    return try FfiConverterTypeImpact.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeImpact_lower(_ value: Impact) -> RustBuffer {
+    return FfiConverterTypeImpact.lower(value)
+}
+
+
+
+extension Impact: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * The type of incident that has occurred.
+ */
+
+public enum IncidentType {
+    
+    case accident
+    case congestion
+    case construction
+    case disabledVehicle
+    case laneRestriction
+    case massTransit
+    case miscellaneous
+    case otherNews
+    case plannedEvent
+    case roadClosure
+    case roadHazard
+    case weather
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeIncidentType: FfiConverterRustBuffer {
+    typealias SwiftType = IncidentType
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> IncidentType {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .accident
+        
+        case 2: return .congestion
+        
+        case 3: return .construction
+        
+        case 4: return .disabledVehicle
+        
+        case 5: return .laneRestriction
+        
+        case 6: return .massTransit
+        
+        case 7: return .miscellaneous
+        
+        case 8: return .otherNews
+        
+        case 9: return .plannedEvent
+        
+        case 10: return .roadClosure
+        
+        case 11: return .roadHazard
+        
+        case 12: return .weather
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: IncidentType, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .accident:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .congestion:
+            writeInt(&buf, Int32(2))
+        
+        
+        case .construction:
+            writeInt(&buf, Int32(3))
+        
+        
+        case .disabledVehicle:
+            writeInt(&buf, Int32(4))
+        
+        
+        case .laneRestriction:
+            writeInt(&buf, Int32(5))
+        
+        
+        case .massTransit:
+            writeInt(&buf, Int32(6))
+        
+        
+        case .miscellaneous:
+            writeInt(&buf, Int32(7))
+        
+        
+        case .otherNews:
+            writeInt(&buf, Int32(8))
+        
+        
+        case .plannedEvent:
+            writeInt(&buf, Int32(9))
+        
+        
+        case .roadClosure:
+            writeInt(&buf, Int32(10))
+        
+        
+        case .roadHazard:
+            writeInt(&buf, Int32(11))
+        
+        
+        case .weather:
+            writeInt(&buf, Int32(12))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIncidentType_lift(_ buf: RustBuffer) throws -> IncidentType {
+    return try FfiConverterTypeIncidentType.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIncidentType_lower(_ value: IncidentType) -> RustBuffer {
+    return FfiConverterTypeIncidentType.lower(value)
+}
+
+
+
+extension IncidentType: Equatable, Hashable {}
 
 
 
@@ -4559,6 +5205,30 @@ extension WaypointKind: Equatable, Hashable {}
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionUInt8: FfiConverterRustBuffer {
+    typealias SwiftType = UInt8?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterUInt8.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterUInt8.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     typealias SwiftType = UInt16?
 
@@ -4631,6 +5301,30 @@ fileprivate struct FfiConverterOptionDouble: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionBool: FfiConverterRustBuffer {
+    typealias SwiftType = Bool?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterBool.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterBool.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionString: FfiConverterRustBuffer {
     typealias SwiftType = String?
 
@@ -4655,6 +5349,30 @@ fileprivate struct FfiConverterOptionString: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeCongestion: FfiConverterRustBuffer {
+    typealias SwiftType = Congestion?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeCongestion.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeCongestion.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffer {
     typealias SwiftType = CourseOverGround?
 
@@ -4671,6 +5389,30 @@ fileprivate struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffe
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeCourseOverGround.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeGeographicCoordinate: FfiConverterRustBuffer {
+    typealias SwiftType = GeographicCoordinate?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeGeographicCoordinate.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeGeographicCoordinate.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -4767,6 +5509,30 @@ fileprivate struct FfiConverterOptionTypeVisualInstructionContent: FfiConverterR
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeVisualInstructionContent.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeImpact: FfiConverterRustBuffer {
+    typealias SwiftType = Impact?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeImpact.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeImpact.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -4921,6 +5687,31 @@ fileprivate struct FfiConverterSequenceTypeGeographicCoordinate: FfiConverterRus
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterSequenceTypeIncident: FfiConverterRustBuffer {
+    typealias SwiftType = [Incident]
+
+    public static func write(_ value: [Incident], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeIncident.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [Incident] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [Incident]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeIncident.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterSequenceTypeLaneInfo: FfiConverterRustBuffer {
     typealias SwiftType = [LaneInfo]
 
@@ -5063,6 +5854,31 @@ fileprivate struct FfiConverterSequenceTypeWaypoint: FfiConverterRustBuffer {
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             seq.append(try FfiConverterTypeWaypoint.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeBlockedLane: FfiConverterRustBuffer {
+    typealias SwiftType = [BlockedLane]
+
+    public static func write(_ value: [BlockedLane], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeBlockedLane.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [BlockedLane] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [BlockedLane]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeBlockedLane.read(from: &buf))
         }
         return seq
     }

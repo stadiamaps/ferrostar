@@ -4,7 +4,9 @@
 //! by others which are now pseudo-standardized (ex: Mapbox). We omit some fields which are not
 //! needed for navigation.
 
-use crate::models::{ManeuverModifier, ManeuverType};
+use crate::models::{
+    BlockedLane, Congestion, Impact, IncidentType, ManeuverModifier, ManeuverType,
+};
 use alloc::{string::String, vec::Vec};
 use serde::Deserialize;
 use serde_json::Value;
@@ -67,12 +69,45 @@ pub struct RouteLeg {
     /// A Mapbox and Valhalla extension which indicates which waypoints are passed through rather than creating a new leg.
     #[serde(default)]
     pub via_waypoints: Vec<ViaWaypoint>,
+    /// Incidents along the route.
+    #[serde(default)]
+    pub incidents: Vec<OsrmIncident>,
 }
 
 #[derive(Deserialize, Debug, Clone, PartialEq)]
 pub struct AnyAnnotation {
     #[serde(flatten)]
     pub values: HashMap<String, Vec<Value>>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct OsrmIncident {
+    pub id: String,
+    #[serde(rename = "type")]
+    pub incident_type: IncidentType,
+    pub description: Option<String>,
+    pub long_description: Option<String>,
+    pub creation_time: Option<String>,
+    pub start_time: Option<String>,
+    pub end_time: Option<String>,
+    pub impact: Option<Impact>,
+    #[serde(default)]
+    pub lanes_blocked: Vec<BlockedLane>,
+    pub num_lanes_blocked: Option<u8>,
+    pub congestion: Option<Congestion>,
+    pub closed: Option<bool>,
+    pub geometry_index_start: u64,
+    pub geometry_index_end: Option<u64>,
+    pub sub_type: Option<String>,
+    pub sub_type_description: Option<String>,
+    pub iso_3166_1_alpha2: Option<String>,
+    pub iso_3166_1_alpha3: Option<String>,
+    #[serde(default)]
+    pub affected_road_names: Vec<String>,
+    pub south: Option<f64>,
+    pub west: Option<f64>,
+    pub north: Option<f64>,
+    pub east: Option<f64>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -498,6 +533,90 @@ mod tests {
         assert_eq!(
             submaneuver.components[2].directions,
             Some(vec!["right".to_string()])
+        );
+    }
+
+    #[test]
+    fn deserialize_incidents() {
+        let data = r#"
+        {
+          "id": "13956787949218641",
+          "type": "construction",
+          "creation_time": "2024-11-13T16:39:17Z",
+          "start_time": "2023-04-03T22:00:00Z",
+          "end_time": "2024-11-26T04:59:00Z",
+          "iso_3166_1_alpha2": "US",
+          "iso_3166_1_alpha3": "USA",
+          "description": "I-84 W/B: intermittent lane closures from Exit 57 CT-15 to US-44 Connecticut Blvd",
+          "long_description": "Intermittent lane closures due to barrier repairs on I-84 Westbound from Exit 57 CT-15 to US-44 Connecticut Blvd.",
+          "impact": "major",
+          "sub_type": "CONSTRUCTION",
+          "alertc_codes": [
+            701,
+            703
+          ],
+          "traffic_codes": {
+            "incident_primary_code": 701
+          },
+          "lanes_blocked": [],
+          "length": 2403,
+          "south": 41.763362,
+          "west": -72.661148,
+          "north": 41.769363,
+          "east": -72.633712,
+          "congestion": {
+            "value": 101
+          },
+          "geometry_index_start": 2932,
+          "geometry_index_end": 3017,
+          "affected_road_names": [
+            "Officer Brian A. Aselton Memorial Highway"
+          ],
+          "affected_road_names_unknown": [
+            "I 84 West/US 6"
+          ],
+          "affected_road_names_en": [
+            "Officer Brian A. Aselton Memorial Highway"
+          ]
+          }
+        "#;
+
+        let incident: OsrmIncident = serde_json::from_str(data).expect("Failed to parse Incident");
+
+        // help me finish this test
+        assert_eq!(incident.id, "13956787949218641");
+        assert_eq!(incident.incident_type, IncidentType::Construction);
+        assert_eq!(
+            incident.creation_time,
+            Some("2024-11-13T16:39:17Z".to_string())
+        );
+        assert_eq!(
+            incident.start_time,
+            Some("2023-04-03T22:00:00Z".to_string())
+        );
+        assert_eq!(incident.end_time, Some("2024-11-26T04:59:00Z".to_string()));
+        assert_eq!(incident.iso_3166_1_alpha2, Some("US".to_string()));
+        assert_eq!(incident.iso_3166_1_alpha3, Some("USA".to_string()));
+        assert_eq!(
+            incident.description,
+            Some(
+                "I-84 W/B: intermittent lane closures from Exit 57 CT-15 to US-44 Connecticut Blvd"
+                    .to_string()
+            )
+        );
+        assert_eq!(incident.impact, Some(Impact::Major));
+        assert_eq!(incident.sub_type, Some("CONSTRUCTION".to_string()));
+        assert_eq!(incident.lanes_blocked, vec![]);
+        assert_eq!(incident.south, Some(41.763362));
+        assert_eq!(incident.west, Some(-72.661148));
+        assert_eq!(incident.north, Some(41.769363));
+        assert_eq!(incident.east, Some(-72.633712));
+        assert_eq!(incident.congestion.unwrap().value, 101);
+        assert_eq!(incident.geometry_index_start, 2932);
+        assert_eq!(incident.geometry_index_end, Some(3017));
+        assert_eq!(
+            incident.affected_road_names,
+            vec!["Officer Brian A. Aselton Memorial Highway"]
         );
     }
 }

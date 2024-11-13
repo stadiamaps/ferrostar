@@ -27,6 +27,7 @@
           ▿ GeographicCoordinate
             - lat: 1.0
             - lng: 1.0
+        - incidents: 0 elements
         - instruction: "Sail straight"
         ▿ roadName: Optional<String>
           - some: "foo road"
