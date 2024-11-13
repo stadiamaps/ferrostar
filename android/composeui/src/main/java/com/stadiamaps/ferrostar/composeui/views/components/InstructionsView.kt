@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views
+package com.stadiamaps.ferrostar.composeui.views.components
 
 import android.icu.util.ULocale
 import androidx.compose.animation.animateContentSize
@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,9 +35,9 @@ import com.stadiamaps.ferrostar.composeui.formatting.DistanceFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.composeui.theme.DefaultInstructionRowTheme
 import com.stadiamaps.ferrostar.composeui.theme.InstructionRowTheme
-import com.stadiamaps.ferrostar.composeui.views.controls.PillDragHandle
-import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverImage
-import com.stadiamaps.ferrostar.composeui.views.maneuver.ManeuverInstructionView
+import com.stadiamaps.ferrostar.composeui.views.components.controls.PillDragHandle
+import com.stadiamaps.ferrostar.composeui.views.components.maneuver.ManeuverImage
+import com.stadiamaps.ferrostar.composeui.views.components.maneuver.ManeuverInstructionView
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.RouteStep
@@ -62,11 +61,12 @@ fun InstructionsView(
     remainingSteps: List<RouteStep>? = null,
     initExpanded: Boolean = false,
     contentBuilder: @Composable (VisualInstruction) -> Unit = {
-      ManeuverImage(it.primaryContent, tint = MaterialTheme.colorScheme.primary)
+      ManeuverImage(it.primaryContent, tint = theme.iconTintColor)
     }
 ) {
   var isExpanded by remember { mutableStateOf(initExpanded) }
   val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+  val remainingSteps: List<RouteStep> = remainingSteps?.drop(1) ?: emptyList()
 
   Box(
       modifier =
@@ -89,7 +89,7 @@ fun InstructionsView(
           // TODO: Secondary content
 
           // Expanded content
-          val showMultipleRows = isExpanded && remainingSteps != null && remainingSteps.count() > 1
+          val showMultipleRows = isExpanded && remainingSteps.count() > 1
           if (showMultipleRows) {
             Spacer(modifier = Modifier.height(8.dp))
             HorizontalDivider(thickness = 1.dp)
@@ -101,19 +101,17 @@ fun InstructionsView(
               LazyColumn(
                   modifier = Modifier.fillMaxSize(),
                   verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    if (remainingSteps != null) {
-                      items(remainingSteps.drop(1)) { step ->
-                        step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
-                          ManeuverInstructionView(
-                              text = upcomingInstruction.primaryContent.text,
-                              distanceFormatter = distanceFormatter,
-                              distanceToNextManeuver = step.distance,
-                              theme = theme) {
-                                contentBuilder(upcomingInstruction)
-                              }
-                          Spacer(modifier = Modifier.height(8.dp))
-                          HorizontalDivider(thickness = 1.dp)
-                        }
+                    items(remainingSteps) { step ->
+                      step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
+                        ManeuverInstructionView(
+                            text = upcomingInstruction.primaryContent.text,
+                            distanceFormatter = distanceFormatter,
+                            distanceToNextManeuver = step.distance,
+                            theme = theme) {
+                              contentBuilder(upcomingInstruction)
+                            }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        HorizontalDivider(thickness = 1.dp)
                       }
                     }
                   }

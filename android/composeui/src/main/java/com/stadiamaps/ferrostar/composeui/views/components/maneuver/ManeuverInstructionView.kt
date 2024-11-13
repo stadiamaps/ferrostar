@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views.maneuver
+package com.stadiamaps.ferrostar.composeui.views.components.maneuver
 
 import android.icu.util.ULocale
 import androidx.compose.foundation.Image

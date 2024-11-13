@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views
+package com.stadiamaps.ferrostar.composeui.views.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

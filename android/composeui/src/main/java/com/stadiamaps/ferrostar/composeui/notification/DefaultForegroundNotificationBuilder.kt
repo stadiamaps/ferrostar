@@ -12,7 +12,7 @@ import com.stadiamaps.ferrostar.composeui.formatting.DurationFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.EstimatedArrivalDateTimeFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDurationFormatter
-import com.stadiamaps.ferrostar.composeui.views.maneuver.maneuverIcon
+import com.stadiamaps.ferrostar.composeui.views.components.maneuver.maneuverIcon
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import com.stadiamaps.ferrostar.core.service.ForegroundNotificationBuilder
 import uniffi.ferrostar.TripProgress

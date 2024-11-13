@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views.gridviews
+package com.stadiamaps.ferrostar.composeui.views.components.gridviews
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,9 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
-import com.stadiamaps.ferrostar.composeui.config.CameraControlState
-import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIButton
-import com.stadiamaps.ferrostar.composeui.views.controls.NavigationUIZoomButton
+import com.stadiamaps.ferrostar.composeui.models.CameraControlState
+import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIButton
+import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIZoomButton
 
 @Composable
 fun NavigatingInnerGridView(
@@ -37,6 +37,7 @@ fun NavigatingInnerGridView(
     onClickZoomOut: () -> Unit = {},
     topCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     centerStart: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
+    bottomCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
     bottomEnd: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) }
 ) {
   InnerGridView(
@@ -98,6 +99,7 @@ fun NavigatingInnerGridView(
           }
         }
       },
+      bottomCenter = bottomCenter,
       bottomEnd = bottomEnd)
 }
 

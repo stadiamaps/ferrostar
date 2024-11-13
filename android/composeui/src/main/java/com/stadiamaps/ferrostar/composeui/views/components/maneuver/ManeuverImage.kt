@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views.maneuver
+package com.stadiamaps.ferrostar.composeui.views.components.maneuver
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.size

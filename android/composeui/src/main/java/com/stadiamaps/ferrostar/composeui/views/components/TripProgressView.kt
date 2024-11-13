@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views
+package com.stadiamaps.ferrostar.composeui.views.components
 
 import android.icu.util.ULocale
 import androidx.compose.foundation.background

@@ -1,6 +1,6 @@
 package com.stadiamaps.ferrostar.views
 
-import com.stadiamaps.ferrostar.composeui.views.InstructionsView
+import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.support.paparazziDefault

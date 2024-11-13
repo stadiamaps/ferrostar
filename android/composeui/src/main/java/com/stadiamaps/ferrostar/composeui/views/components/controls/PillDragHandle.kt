@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.composeui.views.controls
+package com.stadiamaps.ferrostar.composeui.views.components.controls
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +30,7 @@ fun PillDragHandle(
     toggle: () -> Unit = {}
 ) {
   val handleHeight = if (isExpanded) 36.dp else 4.dp
-  Box(modifier = modifier.height(handleHeight).clickable(onClick = toggle)) {
+  Box(modifier = modifier.fillMaxWidth().height(handleHeight).clickable(onClick = toggle)) {
     if (isExpanded) {
       Icon(
           Icons.Rounded.KeyboardArrowUp,
