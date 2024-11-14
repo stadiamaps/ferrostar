@@ -104,7 +104,7 @@ interface NavigationViewModel {
  * interface that is reused across navigation sessions will probably need to craft their own view
  * model.
  */
-class DefaultNavigationViewModel(
+open class DefaultNavigationViewModel(
     private val ferrostarCore: FerrostarCore,
     private val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
 ) : ViewModel(), NavigationViewModel {
