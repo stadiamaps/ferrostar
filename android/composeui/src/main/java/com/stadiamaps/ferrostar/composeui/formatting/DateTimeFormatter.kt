@@ -1,10 +1,10 @@
 package com.stadiamaps.ferrostar.composeui.formatting
 
 import android.icu.util.ULocale
+import java.time.format.FormatStyle
 import java.util.Locale
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime
-import java.time.format.FormatStyle
 
 interface DateTimeFormatter {
   fun format(dateTime: LocalDateTime): String
