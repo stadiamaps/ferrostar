@@ -16,9 +16,7 @@ class EstimatedArrivalDateTimeFormatter(
 ) : DateTimeFormatter {
   override fun format(dateTime: LocalDateTime): String {
     val locale = localeOverride?.let { Locale(it.language, it.country) } ?: Locale.getDefault()
-    val formatter =
-        java.time.format.DateTimeFormatter.ofLocalizedTime(unitStyle)
-            .withLocale(locale)
+    val formatter = java.time.format.DateTimeFormatter.ofLocalizedTime(unitStyle).withLocale(locale)
     return formatter.format(dateTime.toJavaLocalDateTime())
   }
 }
