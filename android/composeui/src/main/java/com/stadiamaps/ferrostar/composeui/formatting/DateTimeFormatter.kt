@@ -11,11 +11,11 @@ interface DateTimeFormatter {
 }
 
 class EstimatedArrivalDateTimeFormatter(
-    private var locale: ULocale = ULocale.getDefault(),
+    private var localeOverride: ULocale? = null,
     private val unitStyle: FormatStyle = FormatStyle.LONG
 ) : DateTimeFormatter {
   override fun format(dateTime: LocalDateTime): String {
-    val locale = locale.let { Locale(it.language, it.country) }
+    val locale = localeOverride?.let { Locale(it.language, it.country) } ?: Locale.getDefault()
     val formatter =
         java.time.format.DateTimeFormatter.ofLocalizedTime(unitStyle)
             .withLocale(locale)
