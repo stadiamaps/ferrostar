@@ -12,7 +12,7 @@ interface DateTimeFormatter {
 
 class EstimatedArrivalDateTimeFormatter(
     private var localeOverride: ULocale? = null,
-    private val unitStyle: FormatStyle = FormatStyle.LONG
+    private val unitStyle: FormatStyle = FormatStyle.SHORT
 ) : DateTimeFormatter {
   override fun format(dateTime: LocalDateTime): String {
     val locale = localeOverride?.let { Locale(it.language, it.country) } ?: Locale.getDefault()
