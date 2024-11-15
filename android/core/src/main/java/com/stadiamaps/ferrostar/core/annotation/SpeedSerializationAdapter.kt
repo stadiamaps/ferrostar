@@ -18,7 +18,7 @@ class SpeedSerializationAdapter : JsonAdapter<Speed>() {
         is Speed.NoLimit -> writer.name("none").value(true)
         is Speed.Unknown -> writer.name("unknown").value(true)
         is Speed.Value ->
-            writer.name("value").value(speed.value).name("unit").value(speed.unit.text)
+            writer.name("speed").value(speed.value).name("unit").value(speed.unit.text)
       }
       writer.endObject()
     }
@@ -33,7 +33,7 @@ class SpeedSerializationAdapter : JsonAdapter<Speed>() {
     var unit: String? = null
 
     while (reader.hasNext()) {
-      when (reader.selectName(JsonReader.Options.of("none", "unknown", "value", "unit"))) {
+      when (reader.selectName(JsonReader.Options.of("none", "unknown", "speed", "unit"))) {
         0 -> none = reader.nextBoolean()
         1 -> unknown = reader.nextBoolean()
         2 -> value = reader.nextDouble()

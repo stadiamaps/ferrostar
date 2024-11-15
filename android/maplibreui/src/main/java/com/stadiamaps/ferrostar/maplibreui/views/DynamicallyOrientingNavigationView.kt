@@ -140,7 +140,7 @@ fun DynamicallyOrientingNavigationView(
       }
     }
 
-    views.customOverlayView?.let { customOverlayView ->
+    views.getCustomOverlayView()?.let { customOverlayView ->
       customOverlayView(Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
     }
   }

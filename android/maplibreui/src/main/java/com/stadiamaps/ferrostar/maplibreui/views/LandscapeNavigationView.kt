@@ -112,7 +112,7 @@ fun LandscapeNavigationView(
         mapViewInsets = mapViewInsets,
         onTapExit = onTapExit)
 
-    views.customOverlayView?.let { customOverlayView ->
+    views.getCustomOverlayView()?.let { customOverlayView ->
       customOverlayView(Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
     }
   }
