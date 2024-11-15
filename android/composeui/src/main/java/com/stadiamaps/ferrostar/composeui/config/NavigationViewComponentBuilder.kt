@@ -19,7 +19,9 @@ import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 
 data class NavigationViewComponentBuilder(
-    internal val instructionsView: @Composable (modifier: Modifier, uiState: NavigationUiState) -> Unit,
+    internal val instructionsView:
+        @Composable
+        (modifier: Modifier, uiState: NavigationUiState) -> Unit,
     internal val progressView:
         @Composable
         (modifier: Modifier, uiState: NavigationUiState, onTapExit: (() -> Unit)?) -> Unit,
@@ -74,7 +76,6 @@ data class NavigationViewComponentBuilder(
   }
 
   fun getCustomOverlayView(): @Composable (BoxScope.(Modifier) -> Unit)? = customOverlayView
-
 }
 
 fun NavigationViewComponentBuilder.withInstructionsView(
