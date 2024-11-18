@@ -1,5 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
+assertion_line: 452
 expression: states
 snapshot_kind: text
 ---
@@ -1820,7 +1821,7 @@ snapshot_kind: text
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 2
+    current_step_geometry_index: 0
     snapped_user_location:
       coordinates:
         lat: 40.775191
@@ -8255,7 +8256,7 @@ snapshot_kind: text
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 9
+    current_step_geometry_index: 0
     snapped_user_location:
       coordinates:
         lat: 40.775214
@@ -21125,7 +21126,7 @@ snapshot_kind: text
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 18
+    current_step_geometry_index: 0
     snapped_user_location:
       coordinates:
         lat: 40.773943
@@ -44445,7 +44446,7 @@ snapshot_kind: text
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 17
+    current_step_geometry_index: 0
     snapped_user_location:
       coordinates:
         lat: 40.775971
@@ -59850,7 +59851,7 @@ snapshot_kind: text
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 51
+    current_step_geometry_index: 0
     snapped_user_location:
       coordinates:
         lat: 40.775543
@@ -61332,7 +61333,7 @@ snapshot_kind: text
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 7
+    current_step_geometry_index: 0
     snapped_user_location:
       coordinates:
         lat: 40.775673
@@ -64018,7 +64019,7 @@ snapshot_kind: text
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 6
+    current_step_geometry_index: 0
     snapped_user_location:
       coordinates:
         lat: 40.777985

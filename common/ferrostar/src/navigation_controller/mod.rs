@@ -120,30 +120,18 @@ impl NavigationController {
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
 
-                        // we need to update the geometry index, since the step has changed
-                        let (updated_current_step_geometry_index, updated_snapped_user_location) =
-                            if let Some(current_route_step) = remaining_steps.first() {
-                                let current_step_linestring = current_route_step.get_linestring();
-                                self.snap_user_to_line(
-                                    *snapped_user_location,
-                                    &current_step_linestring,
-                                )
-                            } else {
-                                (*current_step_geometry_index, *snapped_user_location)
-                            };
-
                         // Update remaining waypoints
-                        let should_advance_waypoint =
-                            if let Some(waypoint) = remaining_waypoints.first() {
-                                let current_location: Point =
-                                    updated_snapped_user_location.coordinates.into();
-                                let next_waypoint: Point = waypoint.coordinate.into();
-                                // TODO: This is just a hard-coded threshold for the time being.
-                                // More sophisticated behavior will take some time and use cases, so punting on this for now.
-                                Haversine::distance(current_location, next_waypoint) < 100.0
-                            } else {
-                                false
-                            };
+                        let should_advance_waypoint = if let Some(waypoint) =
+                            remaining_waypoints.first()
+                        {
+                            let current_location: Point = snapped_user_location.coordinates.into();
+                            let next_waypoint: Point = waypoint.coordinate.into();
+                            // TODO: This is just a hard-coded threshold for the time being.
+                            // More sophisticated behavior will take some time and use cases, so punting on this for now.
+                            Haversine::distance(current_location, next_waypoint) < 100.0
+                        } else {
+                            false
+                        };
 
                         let remaining_waypoints = if should_advance_waypoint {
                             let mut remaining_waypoints = remaining_waypoints.clone();
@@ -154,7 +142,7 @@ impl NavigationController {
                         };
 
                         let progress = calculate_trip_progress(
-                            &(updated_snapped_user_location).into(),
+                            &(*snapped_user_location).into(),
                             &linestring,
                             &remaining_steps,
                         );
@@ -169,8 +157,8 @@ impl NavigationController {
                             .and_then(|index| current_step.get_annotation_at_current_index(index));
 
                         TripState::Navigating {
-                            current_step_geometry_index: updated_current_step_geometry_index,
-                            snapped_user_location: updated_snapped_user_location,
+                            current_step_geometry_index: *current_step_geometry_index,
+                            snapped_user_location: *snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
                             progress,
@@ -275,6 +263,18 @@ impl NavigationController {
                             current_step,
                         );
 
+                        // we need to update the geometry index, since the step has changed
+                        let (updated_current_step_geometry_index, updated_snapped_user_location) =
+                            if let Some(current_route_step) = remaining_steps.first() {
+                                let current_step_linestring = current_route_step.get_linestring();
+                                self.snap_user_to_line(
+                                    snapped_user_location,
+                                    &current_step_linestring,
+                                )
+                            } else {
+                                (current_step_geometry_index, snapped_user_location)
+                            };
+
                         let visual_instruction = current_step
                             .get_active_visual_instruction(progress.distance_to_next_maneuver)
                             .cloned();
@@ -286,8 +286,8 @@ impl NavigationController {
                             .and_then(|index| current_step.get_annotation_at_current_index(index));
 
                         TripState::Navigating {
-                            current_step_geometry_index,
-                            snapped_user_location,
+                            current_step_geometry_index: updated_current_step_geometry_index,
+                            snapped_user_location: updated_snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
                             progress,
