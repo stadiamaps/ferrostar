@@ -3,13 +3,10 @@ package com.stadiamaps.ferrostar.core.measurement
 enum class SpeedUnit {
   MetersPerSecond,
   MilesPerHour,
-  KilometersPerHour;
+  KilometersPerHour
 }
 
-class MeasurementSpeed(
-  val value: Double,
-  val unit: SpeedUnit
-) {
+class MeasurementSpeed(val value: Double, val unit: SpeedUnit) {
 
   companion object {
     // TODO: Move this to a shared conversions constants file?
@@ -30,13 +27,15 @@ class MeasurementSpeed(
         return when (converted) {
           SpeedUnit.MetersPerSecond -> value / METERS_PER_SECOND_TO_MILES_PER_HOUR
           SpeedUnit.MilesPerHour -> value
-          SpeedUnit.KilometersPerHour -> value / METERS_PER_SECOND_TO_MILES_PER_HOUR * METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
+          SpeedUnit.KilometersPerHour ->
+              value / METERS_PER_SECOND_TO_MILES_PER_HOUR * METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
         }
       }
       SpeedUnit.KilometersPerHour -> {
         return when (converted) {
           SpeedUnit.MetersPerSecond -> value / METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
-          SpeedUnit.MilesPerHour -> value / METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR * METERS_PER_SECOND_TO_MILES_PER_HOUR
+          SpeedUnit.MilesPerHour ->
+              value / METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR * METERS_PER_SECOND_TO_MILES_PER_HOUR
           SpeedUnit.KilometersPerHour -> value
         }
       }
