@@ -11,7 +11,6 @@ use ferrostar::routing_adapters::RouteResponseParser;
 
 #[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
-
 #[cfg(all(feature = "web-time"))]
 use web_time::SystemTime;
 

@@ -5,7 +5,7 @@ use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstructio
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use geo::LineString;
-#[cfg(feature = "wasm-bindgen")]
+#[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
@@ -13,8 +13,9 @@ use tsify::Tsify;
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
@@ -34,7 +35,8 @@ pub struct TripProgress {
 /// and [`update_user_location`](super::NavigationController::update_user_location).
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.

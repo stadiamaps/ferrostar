@@ -263,6 +263,18 @@ impl NavigationController {
                             current_step,
                         );
 
+                        // we need to update the geometry index, since the step has changed
+                        let (updated_current_step_geometry_index, updated_snapped_user_location) =
+                            if let Some(current_route_step) = remaining_steps.first() {
+                                let current_step_linestring = current_route_step.get_linestring();
+                                self.snap_user_to_line(
+                                    snapped_user_location,
+                                    &current_step_linestring,
+                                )
+                            } else {
+                                (current_step_geometry_index, snapped_user_location)
+                            };
+
                         let visual_instruction = current_step
                             .get_active_visual_instruction(progress.distance_to_next_maneuver)
                             .cloned();
@@ -274,8 +286,8 @@ impl NavigationController {
                             .and_then(|index| current_step.get_annotation_at_current_index(index));
 
                         TripState::Navigating {
-                            current_step_geometry_index,
-                            snapped_user_location,
+                            current_step_geometry_index: updated_current_step_geometry_index,
+                            snapped_user_location: updated_snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
                             progress,
@@ -370,5 +382,73 @@ impl JsNavigationController {
 
         serde_wasm_bindgen::to_value(&self.0.update_user_location(location, &state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::deviation_detection::RouteDeviationTracking;
+    use crate::navigation_controller::models::{CourseFiltering, StepAdvanceMode};
+    use crate::navigation_controller::test_helpers::get_extended_route;
+    use crate::simulation::{
+        advance_location_simulation, location_simulation_from_route, LocationBias,
+    };
+
+    #[test]
+    fn complex_route_snapshot_test() {
+        let route = get_extended_route();
+        let mut simulation_state =
+            location_simulation_from_route(&route, Some(10.0), LocationBias::None)
+                .expect("Unable to create simulation");
+
+        let controller = NavigationController::new(
+            route,
+            NavigationControllerConfig {
+                // NOTE: We will use an exact location to trigger the update;
+                // this is not testing the thresholds.
+                step_advance: StepAdvanceMode::DistanceToEndOfStep {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                },
+                route_deviation_tracking: RouteDeviationTracking::None,
+                snapped_location_course_filtering: CourseFiltering::Raw,
+            },
+        );
+
+        let mut state = controller.get_initial_state(simulation_state.current_location);
+        let mut states = vec![state.clone()];
+        loop {
+            let new_simulation_state = advance_location_simulation(&simulation_state);
+            let new_state =
+                controller.update_user_location(new_simulation_state.current_location, &state);
+            if new_simulation_state == simulation_state {
+                break;
+            }
+
+            match new_state {
+                TripState::Idle => {}
+                TripState::Navigating {
+                    current_step_geometry_index,
+                    ref remaining_steps,
+                    ..
+                } => {
+                    if let Some(index) = current_step_geometry_index {
+                        let geom_length = remaining_steps[0].geometry.len() as u64;
+                        assert!(
+                            index < geom_length,
+                            "index = {index}, geom_length = {geom_length}"
+                        );
+                    }
+                }
+                TripState::Complete => {}
+            }
+
+            simulation_state = new_simulation_state;
+            state = new_state;
+            states.push(state.clone());
+        }
+
+        insta::assert_yaml_snapshot!(states);
     }
 }
