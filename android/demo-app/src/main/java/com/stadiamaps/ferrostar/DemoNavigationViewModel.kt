@@ -24,7 +24,7 @@ import uniffi.ferrostar.UserLocation
 
 class DemoNavigationViewModel(
     // This is a simple example, but these would typically be dependency injected
-    override val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
+    val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
     annotationPublisher: AnnotationPublisher<*> = valhallaExtendedOSRMAnnotationPublisher()
 ) : DefaultNavigationViewModel(ferrostarCore, annotationPublisher), LocationUpdateListener {
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)

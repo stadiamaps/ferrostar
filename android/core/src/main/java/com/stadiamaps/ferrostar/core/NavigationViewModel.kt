@@ -105,8 +105,8 @@ interface NavigationViewModel {
  * model.
  */
 open class DefaultNavigationViewModel(
-    open val ferrostarCore: FerrostarCore,
-    open val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
+    private val ferrostarCore: FerrostarCore,
+    private val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
 ) : ViewModel(), NavigationViewModel {
 
   private val muteState: StateFlow<Boolean?> =
