@@ -1,13 +1,14 @@
 package com.stadiamaps.ferrostar
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stadiamaps.ferrostar.core.DefaultNavigationViewModel
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.LocationUpdateListener
 import com.stadiamaps.ferrostar.core.NavigationUiState
-import com.stadiamaps.ferrostar.core.NavigationViewModel
+import com.stadiamaps.ferrostar.core.annotation.AnnotationPublisher
+import com.stadiamaps.ferrostar.core.annotation.valhalla.valhallaExtendedOSRMAnnotationPublisher
 import com.stadiamaps.ferrostar.core.isNavigating
 import java.util.concurrent.Executors
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +24,9 @@ import uniffi.ferrostar.UserLocation
 
 class DemoNavigationViewModel(
     // This is a simple example, but these would typically be dependency injected
-    private val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
-) : ViewModel(), LocationUpdateListener, NavigationViewModel {
+    val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
+    annotationPublisher: AnnotationPublisher<*> = valhallaExtendedOSRMAnnotationPublisher()
+) : DefaultNavigationViewModel(ferrostarCore, annotationPublisher), LocationUpdateListener {
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)
   private val executor = Executors.newSingleThreadScheduledExecutor()
 
@@ -40,7 +42,7 @@ class DemoNavigationViewModel(
     locationProvider.removeListener(this)
   }
 
-  override val uiState: StateFlow<NavigationUiState> =
+  override val navigationUiState: StateFlow<NavigationUiState> =
       combine(ferrostarCore.state, muteState, locationStateFlow) { a, b, c -> Triple(a, b, c) }
           .map { (ferrostarCoreState, isMuted, userLocation) ->
             if (ferrostarCoreState.isNavigating()) {

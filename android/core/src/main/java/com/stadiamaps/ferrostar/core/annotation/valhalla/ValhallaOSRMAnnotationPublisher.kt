@@ -10,5 +10,6 @@ fun valhallaExtendedOSRMAnnotationPublisher(): AnnotationPublisher<ValhallaOSRME
   val moshi =
       Moshi.Builder().add(SpeedSerializationAdapter()).add(KotlinJsonAdapterFactory()).build()
   val adapter = moshi.adapter(ValhallaOSRMExtendedAnnotation::class.java)
-  return DefaultAnnotationPublisher<ValhallaOSRMExtendedAnnotation>(adapter) { it?.speedLimit }
+  return DefaultAnnotationPublisher<ValhallaOSRMExtendedAnnotation>(
+      adapter, speedLimitMapper = { it?.speedLimit })
 }

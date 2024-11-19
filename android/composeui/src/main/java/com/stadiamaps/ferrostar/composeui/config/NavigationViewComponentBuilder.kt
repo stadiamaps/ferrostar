@@ -19,14 +19,16 @@ import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
 import com.stadiamaps.ferrostar.core.NavigationUiState
 
 data class NavigationViewComponentBuilder(
-    val instructionsView: @Composable (modifier: Modifier, uiState: NavigationUiState) -> Unit,
-    val progressView:
+    internal val instructionsView:
+        @Composable
+        (modifier: Modifier, uiState: NavigationUiState) -> Unit,
+    internal val progressView:
         @Composable
         (modifier: Modifier, uiState: NavigationUiState, onTapExit: (() -> Unit)?) -> Unit,
-    val streetNameView:
+    internal val streetNameView:
         @Composable
         (modifier: Modifier, roadName: String?, cameraControlState: CameraControlState) -> Unit,
-    val customOverlayView: @Composable (BoxScope.(Modifier) -> Unit)? = null,
+    internal val customOverlayView: @Composable (BoxScope.(Modifier) -> Unit)? = null,
     // TODO: We may reasonably be able to add the NavigationMapView here. But not sure how much
     // value that would add
     //    since most of the hard config already exists within the overlay views which are not
@@ -72,6 +74,8 @@ data class NavigationViewComponentBuilder(
               }
             })
   }
+
+  fun getCustomOverlayView(): @Composable (BoxScope.(Modifier) -> Unit)? = customOverlayView
 }
 
 fun NavigationViewComponentBuilder.withInstructionsView(

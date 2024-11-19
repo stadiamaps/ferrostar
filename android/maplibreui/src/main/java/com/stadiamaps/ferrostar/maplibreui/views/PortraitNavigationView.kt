@@ -80,7 +80,7 @@ fun PortraitNavigationView(
     onTapExit: (() -> Unit)? = null,
     mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
-  val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.navigationUiState.collectAsState()
 
   LaunchedEffect(mapViewInsets.value) {
     Log.d("PortraitNavigationView", "mapViewInsets.value: ${mapViewInsets.value}")
@@ -123,7 +123,7 @@ fun PortraitNavigationView(
           mapViewInsets = mapViewInsets,
           onTapExit = onTapExit)
 
-      views.customOverlayView?.let { customOverlayView ->
+      views.getCustomOverlayView()?.let { customOverlayView ->
         customOverlayView(
             Modifier.windowInsetsPadding(WindowInsets.systemBars).padding(gridPadding))
       }

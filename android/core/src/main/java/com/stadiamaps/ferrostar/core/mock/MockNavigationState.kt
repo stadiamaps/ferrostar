@@ -69,7 +69,7 @@ fun NavigationUiState.Companion.pedestrianExample(): NavigationUiState =
         UserLocation.pedestrianExample(),
         UserLocation.pedestrianExample())
 
-class MockNavigationViewModel(override val uiState: StateFlow<NavigationUiState>) :
+class MockNavigationViewModel(override val navigationUiState: StateFlow<NavigationUiState>) :
     ViewModel(), NavigationViewModel {
   override fun toggleMute() {}
 

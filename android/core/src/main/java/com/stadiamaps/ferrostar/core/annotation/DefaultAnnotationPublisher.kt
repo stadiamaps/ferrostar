@@ -7,6 +7,7 @@ import uniffi.ferrostar.TripState
 class DefaultAnnotationPublisher<T>(
     private val adapter: JsonAdapter<T>,
     private val speedLimitMapper: (T?) -> Speed?,
+    private val onError: ((Throwable) -> Unit)? = null
 ) : AnnotationPublisher<T> {
 
   override fun map(state: NavigationState): AnnotationWrapper<T> {
@@ -16,10 +17,10 @@ class DefaultAnnotationPublisher<T>(
 
   private fun decodeAnnotations(state: NavigationState): T? {
     return if (state.tripState is TripState.Navigating) {
-      val json = state.tripState.annotationJson
-      if (json != null) {
-        adapter.fromJson(json)
-      } else {
+      try {
+        state.tripState.annotationJson?.let { adapter.fromJson(it) }
+      } catch (e: Exception) {
+        onError?.invoke(e)
         null
       }
     } else {
