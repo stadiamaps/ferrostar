@@ -18,4 +18,8 @@
     <string name="arrived_title">Arrived</string>
     <string name="arrived_description">You have arrived at your destination.</string>
     <string name="route_overview">Route Overview</string>
+
+    <string name="unit_short_mps">m/s</string>
+    <string name="unit_short_kph">km/h</string>
+    <string name="unit_short_mph">mph</string>
 </resources>
