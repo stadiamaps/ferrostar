@@ -57,7 +57,7 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       }
 
-  val vmState by viewModel.uiState.collectAsState(scope.coroutineContext)
+  val navigationUiState by viewModel.navigationUiState.collectAsState(scope.coroutineContext)
 
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -88,7 +88,7 @@ fun DemoNavigationScene(
   }
 
   // For smart casting
-  val loc = vmState.location
+  val loc = navigationUiState.location
   if (loc == null) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
       Text("Waiting to acquire your GPS location...", modifier = Modifier.padding(innerPadding))
@@ -113,7 +113,7 @@ fun DemoNavigationScene(
                     AutocompleteOverlay(
                         modifier = modifier,
                         scope = scope,
-                        isNavigating = vmState.isNavigating(),
+                        isNavigating = navigationUiState.isNavigating(),
                         locationProvider = locationProvider,
                         loc = loc)
                   }),

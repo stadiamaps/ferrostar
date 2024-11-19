@@ -77,7 +77,7 @@ fun LandscapeNavigationView(
     onTapExit: (() -> Unit)? = null,
     mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
-  val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.navigationUiState.collectAsState()
 
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()

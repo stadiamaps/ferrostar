@@ -86,7 +86,7 @@ data class NavigationUiState(
 }
 
 interface NavigationViewModel {
-  val uiState: StateFlow<NavigationUiState>
+  val navigationUiState: StateFlow<NavigationUiState>
 
   fun toggleMute()
 
@@ -105,14 +105,14 @@ interface NavigationViewModel {
  * model.
  */
 open class DefaultNavigationViewModel(
-    private val ferrostarCore: FerrostarCore,
-    private val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
+    open val ferrostarCore: FerrostarCore,
+    open val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
 ) : ViewModel(), NavigationViewModel {
 
   private val muteState: StateFlow<Boolean?> =
       ferrostarCore.spokenInstructionObserver?.muteState ?: MutableStateFlow(null)
 
-  override val uiState =
+  override val navigationUiState =
       combine(ferrostarCore.state, muteState) { a, b -> a to b }
           .map { (coreState, muteState) -> annotationPublisher.map(coreState) to muteState }
           .map { (stateWrapper, muteState) ->

@@ -55,7 +55,7 @@ fun LandscapeNavigationOverlayView(
   val windowInsets = WindowInsets.statusBars.asPaddingValues()
   val halfOfScreen: Dp = with(density) { LocalConfiguration.current.screenWidthDp.dp / 2 }
 
-  val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.navigationUiState.collectAsState()
 
   var instructionsViewSize by remember { mutableStateOf(DpSize.Zero) }
   var progressViewSize by remember { mutableStateOf(DpSize.Zero) }

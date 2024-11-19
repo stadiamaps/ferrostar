@@ -80,7 +80,7 @@ fun PortraitNavigationView(
     onTapExit: (() -> Unit)? = null,
     mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
-  val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.navigationUiState.collectAsState()
 
   LaunchedEffect(mapViewInsets.value) {
     Log.d("PortraitNavigationView", "mapViewInsets.value: ${mapViewInsets.value}")

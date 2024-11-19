@@ -81,7 +81,7 @@ fun DynamicallyOrientingNavigationView(
   // Maintain the actual size of the progress view for dynamic layout purposes.
   val rememberProgressViewSize = remember { mutableStateOf(DpSize.Zero) }
   val progressViewSize by rememberProgressViewSize
-  val uiState by viewModel.uiState.collectAsState()
+  val uiState by viewModel.navigationUiState.collectAsState()
 
   // Get the correct padding based on edge-to-edge status.
   val gridPadding = paddingForGridView()
