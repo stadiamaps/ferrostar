@@ -4,7 +4,6 @@ import CarPlay
 
 extension NavigationState {
     
-    
     var currentTravelEstimate: CPTravelEstimates? {
         guard let metersRemaining = self.currentProgress?.distanceRemaining,
               let secondsRemaining = self.currentProgress?.durationRemaining else { return nil }

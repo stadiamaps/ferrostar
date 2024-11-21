@@ -1,15 +1,23 @@
 import CarPlay
 import UIKit
 import SwiftUI
+import FerrostarCore
 import FerrostarCarPlayUI
 
 class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
-    private var interfaceController: CPInterfaceController?
-    private var carWindow: CPWindow?
-    private var mapTemplate: CPMapTemplate?
     
-    init(ferrostarCore: FerrostarCore) {
+    // Get the AppDelegate associated with the SwiftUI App/@main as the type you defined it as.
+    @UIApplicationDelegateAdaptor(DemoAppDelegate.self) var appDelegate
+    
+    private var ferrostarManager: FerrostarCarPlayManager?
+    
+    func configure() {
+        guard ferrostarManager == nil else { return }
         
+        ferrostarManager = FerrostarCarPlayManager(
+            ferrostarCore: appDelegate.appEnvironment.ferrostarCore,
+            styleURL: AppDefaults.mapStyleURL
+        )
     }
     
     func templateApplicationScene(
@@ -17,27 +25,10 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
-        
-        // Retain references to the interface controller and window for
-        // the entire duration of the CarPlay session.
-        self.interfaceController = interfaceController
-        self.carWindow = window
-        
-        // Assign the window's root view controller to the view controller
-        // that draws your map content.
-        window.rootViewController = UIHostingController(rootView: CarPlayNavigationView())
-        
-        // Create a map template and set it as the root.
-        let mapTemplate = self.makeMapTemplate()
-        interfaceController.setRootTemplate(mapTemplate, animated: true,
-            completion: nil)
-    }
-    
-    func makeMapTemplate() -> CPMapTemplate {
-        let mapTemplate = CPMapTemplate()
-        
-        
-        return mapTemplate
+        configure()
+        ferrostarManager!.templateApplicationScene(templateApplicationScene,
+                                                   didConnect: interfaceController,
+                                                   to: window)
     }
 }
 

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1611A5592B2E6E98006B131D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1611A5532B2E6E98006B131D /* Assets.xcassets */; };
 		1611A55B2B2E6E98006B131D /* DemoNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5562B2E6E98006B131D /* DemoNavigationView.swift */; };
-		1611A55C2B2E6E98006B131D /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5572B2E6E98006B131D /* ConfigurationView.swift */; };
 		1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5582B2E6E98006B131D /* DemoApp.swift */; };
 		1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */; };
 		1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679C2B2F6F85008BFF1F /* APIKeys.swift */; };
@@ -21,7 +20,8 @@
 		169A1D582B2E8280006CE59E /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */; };
 		169B50132B2E46800008EBB7 /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 169B50122B2E46800008EBB7 /* FerrostarCore */; };
 		169B50152B2E46800008EBB7 /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 169B50142B2E46800008EBB7 /* FerrostarMapLibreUI */; };
-		E90D97912B8AF507005E43F8 /* Navigation Delegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90D97902B8AF507005E43F8 /* Navigation Delegate.swift */; };
+		16C8F1732CEEBE570014DE3D /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C8F1722CEEBE530014DE3D /* AppEnvironment.swift */; };
+		E90D97912B8AF507005E43F8 /* NavigationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */; };
 		E9505FCA2AD449B30016BF0A /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FC92AD449B30016BF0A /* FerrostarCore */; };
 		E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */; };
 /* End PBXBuildFile section */
@@ -31,14 +31,14 @@
 		1611A5532B2E6E98006B131D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1611A5552B2E6E98006B131D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1611A5562B2E6E98006B131D /* DemoNavigationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoNavigationView.swift; sourceTree = "<group>"; };
-		1611A5572B2E6E98006B131D /* ConfigurationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
 		1611A5582B2E6E98006B131D /* DemoApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		1663679C2B2F6F85008BFF1F /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationData.swift; sourceTree = "<group>"; };
 		168ECA792B2E8C42007B11DE /* API-Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "API-Keys.plist"; sourceTree = "<group>"; };
 		168ECA7B2B2F6A1E007B11DE /* Ferrostar Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ferrostar Demo-Info.plist"; sourceTree = "<group>"; };
-		E90D97902B8AF507005E43F8 /* Navigation Delegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Navigation Delegate.swift"; sourceTree = "<group>"; };
+		16C8F1722CEEBE530014DE3D /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationDelegate.swift; sourceTree = "<group>"; };
 		E9505FB72AD449700016BF0A /* Ferrostar Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ferrostar Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9DD18E42B18EE7A00CAF29A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E9DD18E52B18F4BD00CAF29A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -70,9 +70,9 @@
 				1611A5542B2E6E98006B131D /* Preview Content */,
 				1663679B2B2F6F79008BFF1F /* Helpers */,
 				1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */,
+				16C8F1722CEEBE530014DE3D /* AppEnvironment.swift */,
+				E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */,
 				1611A5562B2E6E98006B131D /* DemoNavigationView.swift */,
-				1611A5572B2E6E98006B131D /* ConfigurationView.swift */,
-				E90D97902B8AF507005E43F8 /* Navigation Delegate.swift */,
 				1611A5582B2E6E98006B131D /* DemoApp.swift */,
 			);
 			path = Demo;
@@ -209,11 +209,11 @@
 			files = (
 				1611A55B2B2E6E98006B131D /* DemoNavigationView.swift in Sources */,
 				1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */,
-				1611A55C2B2E6E98006B131D /* ConfigurationView.swift in Sources */,
 				1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */,
 				1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */,
+				16C8F1732CEEBE570014DE3D /* AppEnvironment.swift in Sources */,
 				1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */,
-				E90D97912B8AF507005E43F8 /* Navigation Delegate.swift in Sources */,
+				E90D97912B8AF507005E43F8 /* NavigationDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

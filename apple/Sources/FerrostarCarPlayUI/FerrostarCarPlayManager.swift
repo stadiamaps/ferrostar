@@ -2,65 +2,48 @@ import Foundation
 import UIKit
 import SwiftUI
 import CarPlay
+import MapLibreSwiftUI
 import FerrostarCore
 import FerrostarMapLibreUI
 
 @MainActor
 public class FerrostarCarPlayManager: NSObject, CPInterfaceControllerDelegate, CPSessionConfigurationDelegate {
 
-    public static let shared = FerrostarCarPlayManager()
-
+    // MARK: CarPlay Controller & Windows
+    
+    private var sessionConfiguration: CPSessionConfiguration!
+    
     private var interfaceController: CPInterfaceController?
     private var carWindow: CPWindow?
+    
     private var mapTemplate: CPMapTemplate?
     
-    let ferrostarCore: FerrostarCore
+//    private var instrumentClusterWindow: UIWindow?
+//    var currentTravelEstimates: CPTravelEstimates?
+//    var navigationSession: CPNavigationSession?
+//    var displayLink: CADisplayLink?
+//    var activeManeuver: CPManeuver?
+//    var activeEstimates: CPTravelEstimates?
+//    var lastCompletedManeuverFrame: CGRect?
     
-    // MARK: CarPlay Controller & Windows
+    private let ferrostarCore: FerrostarCore
+    private let styleURL: URL
+    
+    private var viewController: UIHostingController<AnyView>!
 
-    private var carplayInterfaceController: CPInterfaceController?
-    private var carWindow: UIWindow?
-    private var instrumentClusterWindow: UIWindow?
-
-//    private(set) var mapTemplate: MapTemplate!
-
-    var currentTravelEstimates: CPTravelEstimates?
-    var navigationSession: CPNavigationSession?
-    var displayLink: CADisplayLink?
-    var activeManeuver: CPManeuver?
-    var activeEstimates: CPTravelEstimates?
-    var lastCompletedManeuverFrame: CGRect?
-    var sessionConfiguration: CPSessionConfiguration!
-
-    // MARK: ViewControllers
-    private var viewController: UIHostingController<CarPlayNavigationView>!
-
-    init(ferrostarCore: FerrostarCore) {
+    public init(
+        ferrostarCore: FerrostarCore,
+        styleURL: URL
+    ) {
+        self.ferrostarCore = ferrostarCore
+        self.styleURL = styleURL
         
-    }
-    
-    func configureMainWindow(cpWindow: CPWindow) {
-        
-    }
-    
-    func configureInstrumenCluster() {
-        
-    }
-    
-    
-    
-    public override init() {
         super.init()
-
-        viewController = UIHostingController(rootView: CarPlayNavigationView())
-        sessionConfiguration = CPSessionConfiguration(delegate: self)
-
-//        mainMapViewController.mapViewActionProvider = self
+        
+//        sessionConfiguration = CPSessionConfiguration(delegate: self)
     }
-
-    // MARK: CPTemplateApplicationSceneDelegate
-
-    func templateApplicationScene(
+    
+    public func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
@@ -73,7 +56,10 @@ public class FerrostarCarPlayManager: NSObject, CPInterfaceControllerDelegate, C
         
         // Assign the window's root view controller to the view controller
         // that draws your map content.
-        window.rootViewController = viewController
+        window.rootViewController = UIHostingController {
+            CarPlayNavigationView(styleURL: styleURL)
+                .environmentObject(ferrostarCore)
+        }
         
         // Create a map template and set it as the root.
         let mapTemplate = self.makeMapTemplate()
@@ -81,19 +67,45 @@ public class FerrostarCarPlayManager: NSObject, CPInterfaceControllerDelegate, C
             completion: nil)
     }
     
-    public func interfaceController(_ interfaceController: CPInterfaceController, didDisconnectWith window: CPWindow) {
-        carplayInterfaceController = nil
-        carWindow?.isHidden = true
+    func makeMapTemplate() -> CPMapTemplate {
+        let mapTemplate = CPMapTemplate()
+        return mapTemplate
+    }
+}
+
+extension FerrostarCarPlayManager: CPTemplateApplicationDashboardSceneDelegate {
+
+    public func templateApplicationDashboardScene(
+        _ templateApplicationDashboardScene: CPTemplateApplicationDashboardScene,
+        didConnect dashboardController: CPDashboardController,
+        to window: UIWindow
+    ) {
+
     }
 
-    // MARK: InterfaceControllerDelegate
-
-    public func instrumentClusterControllerDidConnect(_ instrumentClusterWindow: UIWindow) {
-
-    }
-
-    public func instrumentClusterControllerDidDisconnectWindow(_ instrumentClusterWindow: UIWindow) {
+    public func templateApplicationDashboardScene(
+        _ templateApplicationDashboardScene: CPTemplateApplicationDashboardScene,
+        didDisconnect dashboardController: CPDashboardController,
+        from window: UIWindow
+    ) {
 
     }
 
 }
+
+extension FerrostarCarPlayManager: CPTemplateApplicationInstrumentClusterSceneDelegate {
+    public func templateApplicationInstrumentClusterScene(
+        _ templateApplicationInstrumentClusterScene: CPTemplateApplicationInstrumentClusterScene,
+        didConnect instrumentClusterController: CPInstrumentClusterController
+    ) {
+
+    }
+
+    public func templateApplicationInstrumentClusterScene(
+        _ templateApplicationInstrumentClusterScene: CPTemplateApplicationInstrumentClusterScene,
+       didDisconnectInstrumentClusterController instrumentClusterController: CPInstrumentClusterController
+    ) {
+
+    }
+}
+
