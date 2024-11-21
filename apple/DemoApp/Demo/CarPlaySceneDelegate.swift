@@ -1,25 +1,24 @@
 import CarPlay
-import UIKit
-import SwiftUI
-import FerrostarCore
 import FerrostarCarPlayUI
+import FerrostarCore
+import SwiftUI
+import UIKit
 
 class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
-    
     // Get the AppDelegate associated with the SwiftUI App/@main as the type you defined it as.
     @UIApplicationDelegateAdaptor(DemoAppDelegate.self) var appDelegate
-    
+
     private var ferrostarManager: FerrostarCarPlayManager?
-    
+
     func configure() {
         guard ferrostarManager == nil else { return }
-        
+
         ferrostarManager = FerrostarCarPlayManager(
             ferrostarCore: appDelegate.appEnvironment.ferrostarCore,
             styleURL: AppDefaults.mapStyleURL
         )
     }
-    
+
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
@@ -33,36 +32,25 @@ class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
 }
 
 extension CarPlaySceneDelegate: CPTemplateApplicationDashboardSceneDelegate {
+    func templateApplicationDashboardScene(_: CPTemplateApplicationDashboardScene,
+                                           didConnect _: CPDashboardController,
+                                           to _: UIWindow) {}
 
-    func templateApplicationDashboardScene(_ templateApplicationDashboardScene: CPTemplateApplicationDashboardScene,
-                                           didConnect dashboardController: CPDashboardController,
-                                           to window: UIWindow) {
-
-    }
-
-    func templateApplicationDashboardScene(_ templateApplicationDashboardScene: CPTemplateApplicationDashboardScene,
-                                           didDisconnect dashboardController: CPDashboardController,
-                                           from window: UIWindow) {
-
-    }
-
+    func templateApplicationDashboardScene(_: CPTemplateApplicationDashboardScene,
+                                           didDisconnect _: CPDashboardController,
+                                           from _: UIWindow) {}
 }
 
 extension CarPlaySceneDelegate: CPTemplateApplicationInstrumentClusterSceneDelegate {
-
     // swiftlint:disable identifier_name vertical_parameter_alignment
     func templateApplicationInstrumentClusterScene(
-        _ templateApplicationInstrumentClusterScene: CPTemplateApplicationInstrumentClusterScene,
-        didConnect instrumentClusterController: CPInstrumentClusterController
-    ) {
-
-    }
+        _: CPTemplateApplicationInstrumentClusterScene,
+        didConnect _: CPInstrumentClusterController
+    ) {}
 
     func templateApplicationInstrumentClusterScene(
-        _ templateApplicationInstrumentClusterScene: CPTemplateApplicationInstrumentClusterScene,
-       didDisconnectInstrumentClusterController instrumentClusterController: CPInstrumentClusterController
-    ) {
-
-    }
+        _: CPTemplateApplicationInstrumentClusterScene,
+        didDisconnectInstrumentClusterController _: CPInstrumentClusterController
+    ) {}
     // swiftlint:enable identifier_name vertical_parameter_alignment
 }

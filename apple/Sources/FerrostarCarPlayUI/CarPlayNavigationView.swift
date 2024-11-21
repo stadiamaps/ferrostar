@@ -1,16 +1,16 @@
-import SwiftUI
+import FerrostarCore
+import FerrostarMapLibreUI
+import FerrostarSwiftUI
 import MapLibre
 import MapLibreSwiftDSL
 import MapLibreSwiftUI
-import FerrostarCore
-import FerrostarSwiftUI
-import FerrostarMapLibreUI
+import SwiftUI
 
 public struct CarPlayNavigationView: View, SpeedLimitViewHost,
     CurrentRoadNameViewHost
 {
     @EnvironmentObject var ferrostarCore: FerrostarCore
-    
+
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -77,4 +77,3 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
         }
     }
 }
-

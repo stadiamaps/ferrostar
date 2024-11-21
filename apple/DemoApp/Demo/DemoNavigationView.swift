@@ -9,10 +9,9 @@ import MapLibreSwiftUI
 import SwiftUI
 
 struct DemoNavigationView: View {
-
     @EnvironmentObject private var appEnvironment: AppEnvironment
     @EnvironmentObject private var ferrostarCore: FerrostarCore
-    
+
     @State private var isFetchingRoutes = false
     @State private var routes: [Route]?
     @State private var errorMessage: String? {
@@ -25,10 +24,10 @@ struct DemoNavigationView: View {
     }
 
     @State private var camera: MapViewCamera = .center(AppDefaults.initialLocation.coordinate, zoom: 14)
-    
+
     var body: some View {
         let locationServicesEnabled = appEnvironment.locationProvider.authorizationStatus == .authorizedAlways
-        || appEnvironment.locationProvider.authorizationStatus == .authorizedWhenInUse
+            || appEnvironment.locationProvider.authorizationStatus == .authorizedWhenInUse
 
         NavigationStack {
             DynamicallyOrientingNavigationView(
@@ -117,12 +116,12 @@ struct DemoNavigationView: View {
 
     func getRoutes() async {
         do {
-            self.routes = try await appEnvironment.getRoutes()
+            routes = try await appEnvironment.getRoutes()
         } catch {
             print("DemoApp: error getting routes: \(error)")
         }
     }
-    
+
     func startNavigation() throws {
         guard let route = routes?.first else {
             print("DemoApp: No route")
@@ -138,7 +137,7 @@ struct DemoNavigationView: View {
         camera = .center(AppDefaults.initialLocation.coordinate, zoom: 14)
         allowAutoLock()
     }
-    
+
     var locationLabel: String {
         guard let userLocation = appEnvironment.locationProvider.lastLocation else {
             return "No location - authed as \(appEnvironment.locationProvider.authorizationStatus)"

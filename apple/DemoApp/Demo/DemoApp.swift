@@ -7,9 +7,8 @@ class DemoAppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct DemoApp: App {
-    
     @UIApplicationDelegateAdaptor(DemoAppDelegate.self) private var appDelegate: DemoAppDelegate
-    
+
     var body: some Scene {
         WindowGroup {
             DemoNavigationView()

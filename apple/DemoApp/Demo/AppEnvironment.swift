@@ -1,11 +1,12 @@
-import SwiftUI
 import CoreLocation
 import FerrostarCore
 import FerrostarCoreFFI
+import SwiftUI
 
-struct AppDefaults {
+enum AppDefaults {
     static let initialLocation = CLLocation(latitude: 37.332726, longitude: -122.031790)
-    static let mapStyleURL = URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!
+    static let mapStyleURL =
+        URL(string: "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=\(APIKeys.shared.stadiaMapsAPIKey)")!
 }
 
 enum DemoAppError: Error {
@@ -16,13 +17,12 @@ enum DemoAppError: Error {
 
 /// This is a shared core where ferrostar lives
 class AppEnvironment: ObservableObject {
-    
     var locationProvider: LocationProviding
     @Published var ferrostarCore: FerrostarCore
     @Published var spokenInstructionObserver: SpokenInstructionObserver
-    
+
     let navigationDelegate = NavigationDelegate()
-    
+
     init(initialLocation: CLLocation = AppDefaults.initialLocation) {
         let simulated = SimulatedLocationProvider(location: initialLocation)
         simulated.warpFactor = 2
@@ -30,7 +30,7 @@ class AppEnvironment: ObservableObject {
 
         // Set up the a standard Apple AV Speech Synth.
         spokenInstructionObserver = .initAVSpeechSynthesizer()
-        
+
         // Configure the navigation session.
         // You have a lot of flexibility here based on your use case.
         let config = SwiftNavigationControllerConfig(
@@ -52,7 +52,7 @@ class AppEnvironment: ObservableObject {
             // but this is fully extendable!
             annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
         )
-        
+
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
 
@@ -64,7 +64,7 @@ class AppEnvironment: ObservableObject {
         // or replace with your own.
         ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
     }
-    
+
     func getRoutes() async throws -> [Route] {
         guard let userLocation = locationProvider.lastLocation else {
             throw DemoAppError.noUserLocation
@@ -74,16 +74,16 @@ class AppEnvironment: ObservableObject {
             coordinate: GeographicCoordinate(lat: $0.coordinate.latitude, lng: $0.coordinate.longitude),
             kind: .break
         ) }
-        
+
         let routes = try await ferrostarCore.getRoutes(initialLocation: userLocation,
                                                        waypoints: waypoints)
 
         guard let route = routes.first else {
             throw DemoAppError.noRoutes
         }
-        
+
         print("DemoApp: successfully fetched routes")
-        
+
         if let simulated = locationProvider as? SimulatedLocationProvider {
             // This configures the simulator to the desired route.
             // The ferrostarCore.startNavigation will still start the location
@@ -92,10 +92,10 @@ class AppEnvironment: ObservableObject {
                 .lastLocation = UserLocation(clCoordinateLocation2D: route.geometry.first!.clLocationCoordinate2D)
             print("DemoApp: setting initial location")
         }
-        
+
         return routes
     }
-    
+
     func startNavigation(route: Route) throws {
         if let simulated = locationProvider as? SimulatedLocationProvider {
             // This configures the simulator to the desired route.
@@ -114,5 +114,4 @@ class AppEnvironment: ObservableObject {
     func stopNavigation() {
         ferrostarCore.stopNavigation()
     }
-    
 }
