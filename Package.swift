@@ -62,7 +62,7 @@ let package = Package(
         .library(
             name: "FerrostarCarPlayUI",
             targets: ["FerrostarCarPlayUI"]
-        )
+        ),
     ],
     dependencies: [
         maplibreSwiftUIDSLPackage,
@@ -80,7 +80,7 @@ let package = Package(
                 .target(name: "FerrostarSwiftUI"),
                 .target(name: "FerrostarMapLibreUI"),
                 .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
-                .product(name: "MapLibreSwiftUI", package: "swiftui-dsl")
+                .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
             ],
             path: "apple/Sources/FerrostarCarPlayUI"
         ),
