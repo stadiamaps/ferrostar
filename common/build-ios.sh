@@ -10,6 +10,9 @@ set -u
 # This is only needed when cutting a new release, not for local development.
 release=false
 
+# enable githooks, so swiftformat runs as a pre commit hook
+git config core.hooksPath .githooks
+
 for arg in "$@"
 do
     case $arg in
