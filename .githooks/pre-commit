@@ -3,8 +3,12 @@
 if which swiftformat >/dev/null; then
 	./.githooks/git-format-staged --formatter "swiftformat stdin --stdinpath '{}'" "apple/*.swift"
 else
-	echo "error: SwiftFormat not installed"
-	echo "error: Install it via 'brew install swiftformat'"
-	echo "error: or download from https://github.com/nicklockwood/SwiftFormat"
-	exit 1
+	staged_swift_files=$(git diff --cached --name-only --diff-filter=ACMR | grep '\.swift$')
+	
+	if [[ -n "$staged_swift_files" ]]; then
+		echo "error: commit contains swift files & SwiftFormat is not installed"
+		echo "error: Install it via 'brew install swiftformat'"
+		echo "error: or download from https://github.com/nicklockwood/SwiftFormat"
+		exit 1
+	fi
 fi
