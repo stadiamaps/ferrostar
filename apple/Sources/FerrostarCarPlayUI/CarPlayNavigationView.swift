@@ -51,7 +51,7 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
 
         userLayers = makeMapContent()
         self.navigationCamera = navigationCamera
-        // TODO: Correct me
+        // TODO: This needs to be instantiated differently to make use of the CarPlay ferrostarCore environment object.
 //        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: ferrostarCore.state?.currentRoadName))
     }
 
@@ -70,10 +70,6 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
                 }
                 .navigationMapViewContentInset(.landscape(within: geometry))
             }
-//            .task {
-//                try! await Task.sleep(for: .seconds(10))
-//                camera = .center(.init(latitude: 37.131726, longitude: -122.031790), zoom: 10)
-//            }
         }
     }
 }
