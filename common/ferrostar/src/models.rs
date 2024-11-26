@@ -25,9 +25,12 @@ use web_time::SystemTime;
 use tsify::Tsify;
 
 use std::collections::HashMap;
+use chrono::{DateTime, Utc};
+use uniffi::deps::anyhow::anyhow;
 use uuid::Uuid;
 
 use crate::algorithms::get_linestring;
+use crate::UniffiCustomTypeConverter;
 
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
@@ -531,10 +534,18 @@ pub enum BlockedLane {
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct Congestion {
+    /// The level of congestion caused by the incident.
+    ///
+    /// 0 = no congestion
+    ///
+    /// 100 = road closed
+    ///
+    /// Other values mean no congestion was calculated
     pub value: u8,
 }
 
-/// Details about an incident
+/// An incident affecting the free flow of traffic,
+/// such as constructions, accidents, and congestion.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
@@ -542,27 +553,66 @@ pub struct Congestion {
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct Incident {
+    /// A unique identifier for the incident.
     pub id: String,
+    /// The type of incident.
     pub incident_type: IncidentType,
+    /// A short description of the incident.
     pub description: Option<String>,
+    /// A longer description of the incident.
     pub long_description: Option<String>,
-    pub creation_time: Option<String>,
-    pub start_time: Option<String>,
-    pub end_time: Option<String>,
+    /// The time at which the incident was *last* created.
+    ///
+    /// NB: This can change throughout the life of the incident.
+    pub creation_time: Option<DateTime<Utc>>,
+    /// The time at which the incident started or is expected to start (ex: planned closure).
+    pub start_time: Option<DateTime<Utc>>,
+    /// The time at which the incident ended or is expected to end.
+    pub end_time: Option<DateTime<Utc>>,
+    /// The level of impact to traffic.
     pub impact: Option<Impact>,
+    /// Lanes which are blocked by the incident.
     pub lanes_blocked: Vec<BlockedLane>,
-    pub num_lanes_blocked: Option<u8>,
+    /// Info about the amount of congestion on the road around the incident.
     pub congestion: Option<Congestion>,
+    /// Is the road completely closed?
     pub closed: Option<bool>,
+    /// The index into the [`RouteStep`] geometry where the incident starts.
     pub geometry_index_start: u64,
+    /// The index into the [`RouteStep`] geometry where the incident ends.
     pub geometry_index_end: Option<u64>,
+    /// Optional additional information about the type of incident (free-form text).
     pub sub_type: Option<String>,
+    /// Optional descriptions about the type of incident (free-form text).
     pub sub_type_description: Option<String>,
+    /// The ISO 3166-1 alpha-2 code of the country in which the incident occurs.
     pub iso_3166_1_alpha2: Option<String>,
+    /// The ISO 3166-1 alpha-3 code of the country in which the incident occurs.
     pub iso_3166_1_alpha3: Option<String>,
+    /// A list of road names affected by the incident.
     pub affected_road_names: Vec<String>,
-    pub south_west: Option<GeographicCoordinate>,
-    pub north_east: Option<GeographicCoordinate>,
+    /// The bounding box over which the incident occurs.
+    pub bbox: Option<BoundingBox>,
+}
+
+// Silliness to keep the macro happy; TODO: open a ticket
+#[cfg(feature = "uniffi")]
+type UtcDateTime = DateTime<Utc>;
+
+#[cfg(feature = "uniffi")]
+uniffi::custom_type!(UtcDateTime, i64);
+
+#[cfg(feature = "uniffi")]
+impl UniffiCustomTypeConverter for DateTime<Utc> {
+    type Builtin = i64;
+
+    fn into_custom(val: Self::Builtin) -> uniffi::Result<Self> {
+        Self::from_timestamp_millis(val).ok_or(anyhow!("Timestamp {val} out of range"))
+    }
+
+    fn from_custom(obj: Self) -> Self::Builtin {
+        obj.timestamp_millis()
+    }
 }
 
 /// The content of a visual instruction.

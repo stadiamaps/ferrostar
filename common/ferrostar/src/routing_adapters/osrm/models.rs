@@ -12,6 +12,9 @@ use serde::Deserialize;
 use serde_json::Value;
 #[cfg(feature = "alloc")]
 use std::collections::HashMap;
+use chrono::{DateTime, Utc};
+#[cfg(test)]
+use serde::Serialize;
 
 #[derive(Deserialize, Debug)]
 #[serde(transparent)]
@@ -71,7 +74,7 @@ pub struct RouteLeg {
     pub via_waypoints: Vec<ViaWaypoint>,
     /// Incidents along the route.
     #[serde(default)]
-    pub incidents: Vec<OsrmIncident>,
+    pub incidents: Vec<MapboxOsrmIncident>,
 }
 
 #[derive(Deserialize, Debug, Clone, PartialEq)]
@@ -80,16 +83,18 @@ pub struct AnyAnnotation {
     pub values: HashMap<String, Vec<Value>>,
 }
 
+/// A traffic incident, as modeled in the Mapbox OSRM extensions.
+#[cfg_attr(test, derive(Serialize))]
 #[derive(Deserialize, Debug)]
-pub struct OsrmIncident {
+pub struct MapboxOsrmIncident {
     pub id: String,
     #[serde(rename = "type")]
     pub incident_type: IncidentType,
     pub description: Option<String>,
     pub long_description: Option<String>,
-    pub creation_time: Option<String>,
-    pub start_time: Option<String>,
-    pub end_time: Option<String>,
+    pub creation_time: Option<DateTime<Utc>>,
+    pub start_time: Option<DateTime<Utc>>,
+    pub end_time: Option<DateTime<Utc>>,
     pub impact: Option<Impact>,
     #[serde(default)]
     pub lanes_blocked: Vec<BlockedLane>,
@@ -578,45 +583,11 @@ mod tests {
           "affected_road_names_en": [
             "Officer Brian A. Aselton Memorial Highway"
           ]
-          }
+        }
         "#;
 
-        let incident: OsrmIncident = serde_json::from_str(data).expect("Failed to parse Incident");
+        let incident: MapboxOsrmIncident = serde_json::from_str(data).expect("Failed to parse Incident");
 
-        // help me finish this test
-        assert_eq!(incident.id, "13956787949218641");
-        assert_eq!(incident.incident_type, IncidentType::Construction);
-        assert_eq!(
-            incident.creation_time,
-            Some("2024-11-13T16:39:17Z".to_string())
-        );
-        assert_eq!(
-            incident.start_time,
-            Some("2023-04-03T22:00:00Z".to_string())
-        );
-        assert_eq!(incident.end_time, Some("2024-11-26T04:59:00Z".to_string()));
-        assert_eq!(incident.iso_3166_1_alpha2, Some("US".to_string()));
-        assert_eq!(incident.iso_3166_1_alpha3, Some("USA".to_string()));
-        assert_eq!(
-            incident.description,
-            Some(
-                "I-84 W/B: intermittent lane closures from Exit 57 CT-15 to US-44 Connecticut Blvd"
-                    .to_string()
-            )
-        );
-        assert_eq!(incident.impact, Some(Impact::Major));
-        assert_eq!(incident.sub_type, Some("CONSTRUCTION".to_string()));
-        assert_eq!(incident.lanes_blocked, vec![]);
-        assert_eq!(incident.south, Some(41.763362));
-        assert_eq!(incident.west, Some(-72.661148));
-        assert_eq!(incident.north, Some(41.769363));
-        assert_eq!(incident.east, Some(-72.633712));
-        assert_eq!(incident.congestion.unwrap().value, 101);
-        assert_eq!(incident.geometry_index_start, 2932);
-        assert_eq!(incident.geometry_index_end, Some(3017));
-        assert_eq!(
-            incident.affected_road_names,
-            vec!["Officer Brian A. Aselton Memorial Highway"]
-        );
+        insta::assert_yaml_snapshot!(incident);
     }
 }

@@ -1,5 +1,5 @@
-use super::models::{AnyAnnotation, OsrmIncident};
-use crate::models::{AnyAnnotationValue, GeographicCoordinate, Incident};
+use super::models::{AnyAnnotation, MapboxOsrmIncident};
+use crate::models::{AnyAnnotationValue, BoundingBox, GeographicCoordinate, Incident};
 use crate::routing_adapters::error::ParsingError;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -47,8 +47,8 @@ pub(crate) fn zip_annotations(annotation: AnyAnnotation) -> Vec<AnyAnnotationVal
         .collect::<Vec<AnyAnnotationValue>>();
 }
 
-impl From<&OsrmIncident> for Incident {
-    fn from(incident: &OsrmIncident) -> Self {
+impl From<&MapboxOsrmIncident> for Incident {
+    fn from(incident: &MapboxOsrmIncident) -> Self {
         Incident {
             id: incident.id.clone(),
             incident_type: incident.incident_type,
@@ -59,7 +59,6 @@ impl From<&OsrmIncident> for Incident {
             end_time: incident.end_time.clone(),
             impact: incident.impact,
             lanes_blocked: incident.lanes_blocked.clone(),
-            num_lanes_blocked: incident.num_lanes_blocked,
             congestion: incident.congestion.clone(),
             closed: incident.closed,
             geometry_index_start: incident.geometry_index_start,
@@ -69,18 +68,19 @@ impl From<&OsrmIncident> for Incident {
             iso_3166_1_alpha2: incident.iso_3166_1_alpha2.clone(),
             iso_3166_1_alpha3: incident.iso_3166_1_alpha3.clone(),
             affected_road_names: incident.affected_road_names.clone(),
-            south_west: match (incident.south, incident.west) {
-                (Some(south), Some(west)) => Some(GeographicCoordinate {
-                    lat: south,
-                    lng: west,
-                }),
-                _ => None,
-            },
-            north_east: match (incident.north, incident.east) {
-                (Some(north), Some(east)) => Some(GeographicCoordinate {
-                    lat: north,
-                    lng: east,
-                }),
+            bbox: match (incident.south, incident.west, incident.north, incident.east) {
+                (Some(south), Some(west), Some(north), Some(east)) => Some(
+                    BoundingBox {
+                        sw: GeographicCoordinate {
+                            lat: south,
+                            lng: west,
+                        },
+                        ne: GeographicCoordinate {
+                            lat: north,
+                            lng: east,
+                        },
+                    }
+                ),
                 _ => None,
             },
         }

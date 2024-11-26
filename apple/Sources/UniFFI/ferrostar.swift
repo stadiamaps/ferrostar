@@ -463,6 +463,22 @@ fileprivate struct FfiConverterUInt64: FfiConverterPrimitive {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterInt64: FfiConverterPrimitive {
+    typealias FfiType = Int64
+    typealias SwiftType = Int64
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Int64 {
+        return try lift(readInt(&buf))
+    }
+
+    public static func write(_ value: Int64, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterDouble: FfiConverterPrimitive {
     typealias FfiType = Double
     typealias SwiftType = Double
@@ -1696,11 +1712,29 @@ public func FfiConverterTypeBoundingBox_lower(_ value: BoundingBox) -> RustBuffe
  * Details about congestion for an incident.
  */
 public struct Congestion {
+    /**
+     * The level of congestion caused by the incident.
+     *
+     * 0 = no congestion
+     *
+     * 100 = road closed
+     *
+     * Other values mean no congestion was calculated
+     */
     public var value: UInt8
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(value: UInt8) {
+    public init(
+        /**
+         * The level of congestion caused by the incident.
+         *
+         * 0 = no congestion
+         *
+         * 100 = road closed
+         *
+         * Other values mean no congestion was calculated
+         */value: UInt8) {
         self.value = value
     }
 }
@@ -2013,34 +2047,151 @@ public func FfiConverterTypeHeading_lower(_ value: Heading) -> RustBuffer {
 
 
 /**
- * Details about an incident
+ * An incident affecting the free flow of traffic,
+ * such as constructions, accidents, and congestion.
  */
 public struct Incident {
+    /**
+     * A unique identifier for the incident.
+     */
     public var id: String
+    /**
+     * The type of incident.
+     */
     public var incidentType: IncidentType
+    /**
+     * A short description of the incident.
+     */
     public var description: String?
+    /**
+     * A longer description of the incident.
+     */
     public var longDescription: String?
-    public var creationTime: String?
-    public var startTime: String?
-    public var endTime: String?
+    /**
+     * The time at which the incident was *last* created.
+     *
+     * NB: This can change throughout the life of the incident.
+     */
+    public var creationTime: UtcDateTime?
+    /**
+     * The time at which the incident started or is expected to start (ex: planned closure).
+     */
+    public var startTime: UtcDateTime?
+    /**
+     * The time at which the incident ended or is expected to end.
+     */
+    public var endTime: UtcDateTime?
+    /**
+     * The level of impact to traffic.
+     */
     public var impact: Impact?
+    /**
+     * Lanes which are blocked by the incident.
+     */
     public var lanesBlocked: [BlockedLane]
-    public var numLanesBlocked: UInt8?
+    /**
+     * Info about the amount of congestion on the road around the incident.
+     */
     public var congestion: Congestion?
+    /**
+     * Is the road completely closed?
+     */
     public var closed: Bool?
+    /**
+     * The index into the [`RouteStep`] geometry where the incident starts.
+     */
     public var geometryIndexStart: UInt64
+    /**
+     * The index into the [`RouteStep`] geometry where the incident ends.
+     */
     public var geometryIndexEnd: UInt64?
+    /**
+     * Optional additional information about the type of incident (free-form text).
+     */
     public var subType: String?
+    /**
+     * Optional descriptions about the type of incident (free-form text).
+     */
     public var subTypeDescription: String?
+    /**
+     * The ISO 3166-1 alpha-2 code of the country in which the incident occurs.
+     */
     public var iso31661Alpha2: String?
+    /**
+     * The ISO 3166-1 alpha-3 code of the country in which the incident occurs.
+     */
     public var iso31661Alpha3: String?
+    /**
+     * A list of road names affected by the incident.
+     */
     public var affectedRoadNames: [String]
-    public var southWest: GeographicCoordinate?
-    public var northEast: GeographicCoordinate?
+    /**
+     * The bounding box over which the incident occurs.
+     */
+    public var bbox: BoundingBox?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(id: String, incidentType: IncidentType, description: String?, longDescription: String?, creationTime: String?, startTime: String?, endTime: String?, impact: Impact?, lanesBlocked: [BlockedLane], numLanesBlocked: UInt8?, congestion: Congestion?, closed: Bool?, geometryIndexStart: UInt64, geometryIndexEnd: UInt64?, subType: String?, subTypeDescription: String?, iso31661Alpha2: String?, iso31661Alpha3: String?, affectedRoadNames: [String], southWest: GeographicCoordinate?, northEast: GeographicCoordinate?) {
+    public init(
+        /**
+         * A unique identifier for the incident.
+         */id: String, 
+        /**
+         * The type of incident.
+         */incidentType: IncidentType, 
+        /**
+         * A short description of the incident.
+         */description: String?, 
+        /**
+         * A longer description of the incident.
+         */longDescription: String?, 
+        /**
+         * The time at which the incident was *last* created.
+         *
+         * NB: This can change throughout the life of the incident.
+         */creationTime: UtcDateTime?, 
+        /**
+         * The time at which the incident started or is expected to start (ex: planned closure).
+         */startTime: UtcDateTime?, 
+        /**
+         * The time at which the incident ended or is expected to end.
+         */endTime: UtcDateTime?, 
+        /**
+         * The level of impact to traffic.
+         */impact: Impact?, 
+        /**
+         * Lanes which are blocked by the incident.
+         */lanesBlocked: [BlockedLane], 
+        /**
+         * Info about the amount of congestion on the road around the incident.
+         */congestion: Congestion?, 
+        /**
+         * Is the road completely closed?
+         */closed: Bool?, 
+        /**
+         * The index into the [`RouteStep`] geometry where the incident starts.
+         */geometryIndexStart: UInt64, 
+        /**
+         * The index into the [`RouteStep`] geometry where the incident ends.
+         */geometryIndexEnd: UInt64?, 
+        /**
+         * Optional additional information about the type of incident (free-form text).
+         */subType: String?, 
+        /**
+         * Optional descriptions about the type of incident (free-form text).
+         */subTypeDescription: String?, 
+        /**
+         * The ISO 3166-1 alpha-2 code of the country in which the incident occurs.
+         */iso31661Alpha2: String?, 
+        /**
+         * The ISO 3166-1 alpha-3 code of the country in which the incident occurs.
+         */iso31661Alpha3: String?, 
+        /**
+         * A list of road names affected by the incident.
+         */affectedRoadNames: [String], 
+        /**
+         * The bounding box over which the incident occurs.
+         */bbox: BoundingBox?) {
         self.id = id
         self.incidentType = incidentType
         self.description = description
@@ -2050,7 +2201,6 @@ public struct Incident {
         self.endTime = endTime
         self.impact = impact
         self.lanesBlocked = lanesBlocked
-        self.numLanesBlocked = numLanesBlocked
         self.congestion = congestion
         self.closed = closed
         self.geometryIndexStart = geometryIndexStart
@@ -2060,8 +2210,7 @@ public struct Incident {
         self.iso31661Alpha2 = iso31661Alpha2
         self.iso31661Alpha3 = iso31661Alpha3
         self.affectedRoadNames = affectedRoadNames
-        self.southWest = southWest
-        self.northEast = northEast
+        self.bbox = bbox
     }
 }
 
@@ -2096,9 +2245,6 @@ extension Incident: Equatable, Hashable {
         if lhs.lanesBlocked != rhs.lanesBlocked {
             return false
         }
-        if lhs.numLanesBlocked != rhs.numLanesBlocked {
-            return false
-        }
         if lhs.congestion != rhs.congestion {
             return false
         }
@@ -2126,10 +2272,7 @@ extension Incident: Equatable, Hashable {
         if lhs.affectedRoadNames != rhs.affectedRoadNames {
             return false
         }
-        if lhs.southWest != rhs.southWest {
-            return false
-        }
-        if lhs.northEast != rhs.northEast {
+        if lhs.bbox != rhs.bbox {
             return false
         }
         return true
@@ -2145,7 +2288,6 @@ extension Incident: Equatable, Hashable {
         hasher.combine(endTime)
         hasher.combine(impact)
         hasher.combine(lanesBlocked)
-        hasher.combine(numLanesBlocked)
         hasher.combine(congestion)
         hasher.combine(closed)
         hasher.combine(geometryIndexStart)
@@ -2155,8 +2297,7 @@ extension Incident: Equatable, Hashable {
         hasher.combine(iso31661Alpha2)
         hasher.combine(iso31661Alpha3)
         hasher.combine(affectedRoadNames)
-        hasher.combine(southWest)
-        hasher.combine(northEast)
+        hasher.combine(bbox)
     }
 }
 
@@ -2172,12 +2313,11 @@ public struct FfiConverterTypeIncident: FfiConverterRustBuffer {
                 incidentType: FfiConverterTypeIncidentType.read(from: &buf), 
                 description: FfiConverterOptionString.read(from: &buf), 
                 longDescription: FfiConverterOptionString.read(from: &buf), 
-                creationTime: FfiConverterOptionString.read(from: &buf), 
-                startTime: FfiConverterOptionString.read(from: &buf), 
-                endTime: FfiConverterOptionString.read(from: &buf), 
+                creationTime: FfiConverterOptionTypeUtcDateTime.read(from: &buf), 
+                startTime: FfiConverterOptionTypeUtcDateTime.read(from: &buf), 
+                endTime: FfiConverterOptionTypeUtcDateTime.read(from: &buf), 
                 impact: FfiConverterOptionTypeImpact.read(from: &buf), 
                 lanesBlocked: FfiConverterSequenceTypeBlockedLane.read(from: &buf), 
-                numLanesBlocked: FfiConverterOptionUInt8.read(from: &buf), 
                 congestion: FfiConverterOptionTypeCongestion.read(from: &buf), 
                 closed: FfiConverterOptionBool.read(from: &buf), 
                 geometryIndexStart: FfiConverterUInt64.read(from: &buf), 
@@ -2187,8 +2327,7 @@ public struct FfiConverterTypeIncident: FfiConverterRustBuffer {
                 iso31661Alpha2: FfiConverterOptionString.read(from: &buf), 
                 iso31661Alpha3: FfiConverterOptionString.read(from: &buf), 
                 affectedRoadNames: FfiConverterSequenceString.read(from: &buf), 
-                southWest: FfiConverterOptionTypeGeographicCoordinate.read(from: &buf), 
-                northEast: FfiConverterOptionTypeGeographicCoordinate.read(from: &buf)
+                bbox: FfiConverterOptionTypeBoundingBox.read(from: &buf)
         )
     }
 
@@ -2197,12 +2336,11 @@ public struct FfiConverterTypeIncident: FfiConverterRustBuffer {
         FfiConverterTypeIncidentType.write(value.incidentType, into: &buf)
         FfiConverterOptionString.write(value.description, into: &buf)
         FfiConverterOptionString.write(value.longDescription, into: &buf)
-        FfiConverterOptionString.write(value.creationTime, into: &buf)
-        FfiConverterOptionString.write(value.startTime, into: &buf)
-        FfiConverterOptionString.write(value.endTime, into: &buf)
+        FfiConverterOptionTypeUtcDateTime.write(value.creationTime, into: &buf)
+        FfiConverterOptionTypeUtcDateTime.write(value.startTime, into: &buf)
+        FfiConverterOptionTypeUtcDateTime.write(value.endTime, into: &buf)
         FfiConverterOptionTypeImpact.write(value.impact, into: &buf)
         FfiConverterSequenceTypeBlockedLane.write(value.lanesBlocked, into: &buf)
-        FfiConverterOptionUInt8.write(value.numLanesBlocked, into: &buf)
         FfiConverterOptionTypeCongestion.write(value.congestion, into: &buf)
         FfiConverterOptionBool.write(value.closed, into: &buf)
         FfiConverterUInt64.write(value.geometryIndexStart, into: &buf)
@@ -2212,8 +2350,7 @@ public struct FfiConverterTypeIncident: FfiConverterRustBuffer {
         FfiConverterOptionString.write(value.iso31661Alpha2, into: &buf)
         FfiConverterOptionString.write(value.iso31661Alpha3, into: &buf)
         FfiConverterSequenceString.write(value.affectedRoadNames, into: &buf)
-        FfiConverterOptionTypeGeographicCoordinate.write(value.southWest, into: &buf)
-        FfiConverterOptionTypeGeographicCoordinate.write(value.northEast, into: &buf)
+        FfiConverterOptionTypeBoundingBox.write(value.bbox, into: &buf)
     }
 }
 
@@ -5205,30 +5342,6 @@ extension WaypointKind: Equatable, Hashable {}
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-fileprivate struct FfiConverterOptionUInt8: FfiConverterRustBuffer {
-    typealias SwiftType = UInt8?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterUInt8.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterUInt8.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
 fileprivate struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     typealias SwiftType = UInt16?
 
@@ -5349,6 +5462,30 @@ fileprivate struct FfiConverterOptionString: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeBoundingBox: FfiConverterRustBuffer {
+    typealias SwiftType = BoundingBox?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeBoundingBox.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeBoundingBox.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeCongestion: FfiConverterRustBuffer {
     typealias SwiftType = Congestion?
 
@@ -5389,30 +5526,6 @@ fileprivate struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffe
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeCourseOverGround.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-fileprivate struct FfiConverterOptionTypeGeographicCoordinate: FfiConverterRustBuffer {
-    typealias SwiftType = GeographicCoordinate?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterTypeGeographicCoordinate.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterTypeGeographicCoordinate.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -5629,6 +5742,30 @@ fileprivate struct FfiConverterOptionSequenceTypeLaneInfo: FfiConverterRustBuffe
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterSequenceTypeLaneInfo.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeUtcDateTime: FfiConverterRustBuffer {
+    typealias SwiftType = UtcDateTime?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeUtcDateTime.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeUtcDateTime.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -5909,6 +6046,57 @@ fileprivate struct FfiConverterDictionaryStringString: FfiConverterRustBuffer {
         return dict
     }
 }
+
+
+
+
+/**
+ * Typealias from the type name used in the UDL file to the custom type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
+public typealias UtcDateTime = Date
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeUtcDateTime: FfiConverter {
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UtcDateTime {
+        let builtinValue = try FfiConverterInt64.read(from: &buf)
+        return Date(timeIntervalSince1970: Double(builtinValue) / 1000.0)
+    }
+
+    public static func write(_ value: UtcDateTime, into buf: inout [UInt8]) {
+        let builtinValue = Int64(value.timeIntervalSince1970 * 1000)
+        return FfiConverterInt64.write(builtinValue, into: &buf)
+    }
+
+    public static func lift(_ value: Int64) throws -> UtcDateTime {
+        let builtinValue = try FfiConverterInt64.lift(value)
+        return Date(timeIntervalSince1970: Double(builtinValue) / 1000.0)
+    }
+
+    public static func lower(_ value: UtcDateTime) -> Int64 {
+        let builtinValue = Int64(value.timeIntervalSince1970 * 1000)
+        return FfiConverterInt64.lower(builtinValue)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeUtcDateTime_lift(_ value: Int64) throws -> UtcDateTime {
+    return try FfiConverterTypeUtcDateTime.lift(value)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeUtcDateTime_lower(_ value: UtcDateTime) -> Int64 {
+    return FfiConverterTypeUtcDateTime.lower(value)
+}
+
 
 
 

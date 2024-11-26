@@ -105,7 +105,7 @@ impl Route {
                     let incident_items = leg
                         .incidents
                         .iter()
-                        .map(|incident| Incident::from(incident))
+                        .map(Incident::from)
                         .collect::<Vec<Incident>>();
 
                     // Index for the annotations slice
