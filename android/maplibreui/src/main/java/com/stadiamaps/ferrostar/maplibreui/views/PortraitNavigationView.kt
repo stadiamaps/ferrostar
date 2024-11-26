@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maplibre.compose.camera.MapViewCamera
+import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
@@ -119,6 +120,8 @@ fun PortraitNavigationView(
               ),
           theme = theme,
           config = config,
+          onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
+          onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
           views = views,
           mapViewInsets = mapViewInsets,
           onTapExit = onTapExit)

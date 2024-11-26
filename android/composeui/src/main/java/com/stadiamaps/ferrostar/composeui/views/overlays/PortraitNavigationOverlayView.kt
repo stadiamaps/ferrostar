@@ -41,6 +41,8 @@ fun PortraitNavigationOverlayView(
     cameraControlState: CameraControlState,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
+    onClickZoomIn: (() -> Unit)? = null,
+    onClickZoomOut: (() -> Unit)? = null,
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues>,
     onTapExit: (() -> Unit)? = null,
@@ -77,8 +79,8 @@ fun PortraitNavigationOverlayView(
         buttonSize = theme.buttonSize,
         cameraControlState = cameraControlState,
         showZoom = config.showZoom,
-        onClickZoomIn = { config.onZoomIn?.invoke() },
-        onClickZoomOut = { config.onZoomOut?.invoke() },
+        onClickZoomIn = { onClickZoomIn?.invoke() },
+        onClickZoomOut = { onClickZoomOut?.invoke() },
         bottomCenter = {
           views.streetNameView(Modifier, uiState.currentStepRoadName, cameraControlState)
         },
