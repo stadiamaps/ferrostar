@@ -69,18 +69,16 @@ impl From<&MapboxOsrmIncident> for Incident {
             iso_3166_1_alpha3: incident.iso_3166_1_alpha3.clone(),
             affected_road_names: incident.affected_road_names.clone(),
             bbox: match (incident.south, incident.west, incident.north, incident.east) {
-                (Some(south), Some(west), Some(north), Some(east)) => Some(
-                    BoundingBox {
-                        sw: GeographicCoordinate {
-                            lat: south,
-                            lng: west,
-                        },
-                        ne: GeographicCoordinate {
-                            lat: north,
-                            lng: east,
-                        },
-                    }
-                ),
+                (Some(south), Some(west), Some(north), Some(east)) => Some(BoundingBox {
+                    sw: GeographicCoordinate {
+                        lat: south,
+                        lng: west,
+                    },
+                    ne: GeographicCoordinate {
+                        lat: north,
+                        lng: east,
+                    },
+                }),
                 _ => None,
             },
         }

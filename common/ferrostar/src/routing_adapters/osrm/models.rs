@@ -8,13 +8,13 @@ use crate::models::{
     BlockedLane, Congestion, Impact, IncidentType, ManeuverModifier, ManeuverType,
 };
 use alloc::{string::String, vec::Vec};
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
+#[cfg(test)]
+use serde::Serialize;
 use serde_json::Value;
 #[cfg(feature = "alloc")]
 use std::collections::HashMap;
-use chrono::{DateTime, Utc};
-#[cfg(test)]
-use serde::Serialize;
 
 #[derive(Deserialize, Debug)]
 #[serde(transparent)]
@@ -586,7 +586,8 @@ mod tests {
         }
         "#;
 
-        let incident: MapboxOsrmIncident = serde_json::from_str(data).expect("Failed to parse Incident");
+        let incident: MapboxOsrmIncident =
+            serde_json::from_str(data).expect("Failed to parse Incident");
 
         insta::assert_yaml_snapshot!(incident);
     }
