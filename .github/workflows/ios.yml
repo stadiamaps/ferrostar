@@ -37,7 +37,11 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
-      run: ! grep -q 'let useLocalFramework = true' Package.swift && ! grep -q 'let useLocalMapLibreSwiftUIDSL = true' Package.swift
+      run: |
+        if grep -q 'let useLocalFramework = true' Package.swift || grep -q 'let useLocalMapLibreSwiftUIDSL = true' Package.swift; then
+          echo "Error: Package.swift is configured for local development. Please set the flags to false."
+          exit 1
+        fi
 
     - name: Commit changed files (it is easy to forget useLocalFramework in Package.swift)
       uses: stefanzweifel/git-auto-commit-action@v5
