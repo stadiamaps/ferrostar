@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.maplibre.compose.camera.MapViewCamera
+import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
@@ -115,6 +116,8 @@ fun DynamicallyOrientingNavigationView(
                   ),
               theme = theme,
               config = config,
+              onClickZoomIn = { camera.value.incrementZoom(1.0) },
+              onClickZoomOut = { camera.value.incrementZoom(-1.0) },
               views = views,
               mapViewInsets = mapViewInsets,
               onTapExit = onTapExit)
@@ -133,6 +136,8 @@ fun DynamicallyOrientingNavigationView(
                   ),
               theme = theme,
               config = config,
+              onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
+              onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
               views = views,
               mapViewInsets = mapViewInsets,
               onTapExit = onTapExit)
