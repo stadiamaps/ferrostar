@@ -71,6 +71,7 @@ public class FerrostarCarPlayManager: NSObject, CPInterfaceControllerDelegate, C
     }
 }
 
+@MainActor
 extension FerrostarCarPlayManager: CPTemplateApplicationDashboardSceneDelegate {
     public func templateApplicationDashboardScene(
         _: CPTemplateApplicationDashboardScene,
@@ -85,6 +86,7 @@ extension FerrostarCarPlayManager: CPTemplateApplicationDashboardSceneDelegate {
     ) {}
 }
 
+@MainActor
 extension FerrostarCarPlayManager: CPTemplateApplicationInstrumentClusterSceneDelegate {
     public func templateApplicationInstrumentClusterScene(
         _: CPTemplateApplicationInstrumentClusterScene,
