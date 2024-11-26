@@ -52,11 +52,16 @@ let package = Package(
             targets: [
                 "FerrostarMapLibreUI",
                 "FerrostarSwiftUI",
+                "FerrostarCarPlayUI",
             ] // TODO: Remove FerrostarSwiftUI from FerrostarMapLibreUI once we can fix the demo app swift package config (broken in Xcode 15.3)
         ),
         .library(
             name: "FerrostarSwiftUI",
             targets: ["FerrostarSwiftUI"]
+        ),
+        .library(
+            name: "FerrostarCarPlayUI",
+            targets: ["FerrostarCarPlayUI"]
         ),
     ],
     dependencies: [
@@ -68,6 +73,17 @@ let package = Package(
     ],
     targets: [
         binaryTarget,
+        .target(
+            name: "FerrostarCarPlayUI",
+            dependencies: [
+                .target(name: "FerrostarCore"),
+                .target(name: "FerrostarSwiftUI"),
+                .target(name: "FerrostarMapLibreUI"),
+                .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
+                .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
+            ],
+            path: "apple/Sources/FerrostarCarPlayUI"
+        ),
         .target(
             name: "FerrostarCore",
             dependencies: [.target(name: "FerrostarCoreFFI")],
