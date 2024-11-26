@@ -116,8 +116,8 @@ fun DynamicallyOrientingNavigationView(
                   ),
               theme = theme,
               config = config,
-              onClickZoomIn = { camera.value.incrementZoom(1.0) },
-              onClickZoomOut = { camera.value.incrementZoom(-1.0) },
+              onClickZoomIn = { camera.value = camera.value.incrementZoom(1.0) },
+              onClickZoomOut = { camera.value = camera.value.incrementZoom(-1.0) },
               views = views,
               mapViewInsets = mapViewInsets,
               onTapExit = onTapExit)
