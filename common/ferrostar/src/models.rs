@@ -26,11 +26,9 @@ use tsify::Tsify;
 
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
-use uniffi::deps::anyhow::anyhow;
 use uuid::Uuid;
 
 use crate::algorithms::get_linestring;
-use crate::UniffiCustomTypeConverter;
 
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
@@ -564,10 +562,13 @@ pub struct Incident {
     /// The time at which the incident was *last* created.
     ///
     /// NB: This can change throughout the life of the incident.
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
     pub creation_time: Option<DateTime<Utc>>,
     /// The time at which the incident started or is expected to start (ex: planned closure).
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
     pub start_time: Option<DateTime<Utc>>,
     /// The time at which the incident ended or is expected to end.
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
     pub end_time: Option<DateTime<Utc>>,
     /// The level of impact to traffic.
     pub impact: Option<Impact>,
@@ -593,26 +594,6 @@ pub struct Incident {
     pub affected_road_names: Vec<String>,
     /// The bounding box over which the incident occurs.
     pub bbox: Option<BoundingBox>,
-}
-
-// Silliness to keep the macro happy; TODO: open a ticket
-#[cfg(feature = "uniffi")]
-type UtcDateTime = DateTime<Utc>;
-
-#[cfg(feature = "uniffi")]
-uniffi::custom_type!(UtcDateTime, i64);
-
-#[cfg(feature = "uniffi")]
-impl UniffiCustomTypeConverter for DateTime<Utc> {
-    type Builtin = i64;
-
-    fn into_custom(val: Self::Builtin) -> uniffi::Result<Self> {
-        Self::from_timestamp_millis(val).ok_or(anyhow!("Timestamp {val} out of range"))
-    }
-
-    fn from_custom(obj: Self) -> Self::Builtin {
-        obj.timestamp_millis()
-    }
 }
 
 /// The content of a visual instruction.
