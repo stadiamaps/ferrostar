@@ -56,11 +56,11 @@ jobs:
       run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
 
     - name: Commit changed files (it is easy to forget about ferrostar.swift)
-        run: |
-          if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
-            echo "Dirty files detected"
-            exit 1
-          fi
+      run: |
+        if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
+          echo "Dirty files detected"
+          exit 1
+        fi
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
