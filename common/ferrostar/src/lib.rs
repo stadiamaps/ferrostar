@@ -31,21 +31,24 @@ pub mod routing_adapters;
 pub mod simulation;
 
 #[cfg(feature = "uniffi")]
-use models::Route;
+mod uniffi_deps {
+    pub use crate::models::Route;
+    pub use crate::routing_adapters::{
+        error::{InstantiationError, ParsingError},
+        osrm::{
+            models::{Route as OsrmRoute, Waypoint as OsrmWaypoint},
+            OsrmResponseParser,
+        },
+        valhalla::ValhallaHttpRequestGenerator,
+        RouteRequestGenerator, RouteResponseParser,
+    };
+    pub use chrono::{DateTime, Utc};
+    pub use std::{str::FromStr, sync::Arc};
+    pub use uniffi::deps::anyhow::anyhow;
+    pub use uuid::Uuid;
+}
 #[cfg(feature = "uniffi")]
-use routing_adapters::{
-    error::{InstantiationError, ParsingError},
-    osrm::{
-        models::{Route as OsrmRoute, Waypoint as OsrmWaypoint},
-        OsrmResponseParser,
-    },
-    valhalla::ValhallaHttpRequestGenerator,
-    RouteRequestGenerator, RouteResponseParser,
-};
-#[cfg(feature = "uniffi")]
-use std::{str::FromStr, sync::Arc};
-#[cfg(feature = "uniffi")]
-use uuid::Uuid;
+use uniffi_deps::*;
 
 #[cfg(feature = "uniffi")]
 uniffi::setup_scaffolding!();
@@ -63,6 +66,26 @@ impl UniffiCustomTypeConverter for Uuid {
 
     fn from_custom(obj: Self) -> Self::Builtin {
         obj.to_string()
+    }
+}
+
+// Silliness to keep the macro happy; TODO: open a ticket
+#[cfg(feature = "uniffi")]
+type UtcDateTime = DateTime<Utc>;
+
+#[cfg(feature = "uniffi")]
+uniffi::custom_type!(UtcDateTime, i64);
+
+#[cfg(feature = "uniffi")]
+impl UniffiCustomTypeConverter for DateTime<Utc> {
+    type Builtin = i64;
+
+    fn into_custom(val: Self::Builtin) -> uniffi::Result<Self> {
+        Self::from_timestamp_millis(val).ok_or(anyhow!("Timestamp {val} out of range"))
+    }
+
+    fn from_custom(obj: Self) -> Self::Builtin {
+        obj.timestamp_millis()
     }
 }
 

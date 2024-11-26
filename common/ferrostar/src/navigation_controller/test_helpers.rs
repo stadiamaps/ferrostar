@@ -48,6 +48,7 @@ pub fn gen_dummy_route_step(
         visual_instructions: vec![],
         spoken_instructions: vec![],
         annotations: None,
+        incidents: vec![],
     }
 }
 

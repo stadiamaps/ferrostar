@@ -75,6 +75,7 @@
           ▿ GeographicCoordinate
             - lat: 60.534991
             - lng: -149.548581
+        - incidents: 0 elements
         - instruction: "Drive west on AK 1/Seward Highway."
         ▿ roadName: Optional<String>
           - some: "Seward Highway"
@@ -91,6 +92,7 @@
           ▿ GeographicCoordinate
             - lat: 60.534991
             - lng: -149.548581
+        - incidents: 0 elements
         - instruction: "You have arrived at your destination."
         ▿ roadName: Optional<String>
           - some: "Seward Highway"

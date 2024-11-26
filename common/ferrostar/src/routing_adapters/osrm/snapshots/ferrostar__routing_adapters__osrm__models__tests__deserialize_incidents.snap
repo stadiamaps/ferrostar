@@ -1,0 +1,30 @@
+---
+source: ferrostar/src/routing_adapters/osrm/models.rs
+expression: incident
+snapshot_kind: text
+---
+id: "13956787949218641"
+type: construction
+description: "I-84 W/B: intermittent lane closures from Exit 57 CT-15 to US-44 Connecticut Blvd"
+long_description: Intermittent lane closures due to barrier repairs on I-84 Westbound from Exit 57 CT-15 to US-44 Connecticut Blvd.
+creation_time: "2024-11-13T16:39:17Z"
+start_time: "2023-04-03T22:00:00Z"
+end_time: "2024-11-26T04:59:00Z"
+impact: major
+lanes_blocked: []
+num_lanes_blocked: ~
+congestion:
+  value: 101
+closed: ~
+geometry_index_start: 2932
+geometry_index_end: 3017
+sub_type: CONSTRUCTION
+sub_type_description: ~
+iso_3166_1_alpha2: US
+iso_3166_1_alpha3: USA
+affected_road_names:
+  - Officer Brian A. Aselton Memorial Highway
+south: 41.763362
+west: -72.661148
+north: 41.769363
+east: -72.633712

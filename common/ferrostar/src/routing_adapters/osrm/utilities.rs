@@ -1,5 +1,5 @@
-use super::models::AnyAnnotation;
-use crate::models::AnyAnnotationValue;
+use super::models::{AnyAnnotation, MapboxOsrmIncident};
+use crate::models::{AnyAnnotationValue, BoundingBox, GeographicCoordinate, Incident};
 use crate::routing_adapters::error::ParsingError;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -45,6 +45,44 @@ pub(crate) fn zip_annotations(annotation: AnyAnnotation) -> Vec<AnyAnnotationVal
         })
         .map(|value| AnyAnnotationValue { value })
         .collect::<Vec<AnyAnnotationValue>>();
+}
+
+impl From<&MapboxOsrmIncident> for Incident {
+    fn from(incident: &MapboxOsrmIncident) -> Self {
+        Incident {
+            id: incident.id.clone(),
+            incident_type: incident.incident_type,
+            description: incident.description.clone(),
+            long_description: incident.long_description.clone(),
+            creation_time: incident.creation_time.clone(),
+            start_time: incident.start_time.clone(),
+            end_time: incident.end_time.clone(),
+            impact: incident.impact,
+            lanes_blocked: incident.lanes_blocked.clone(),
+            congestion: incident.congestion.clone(),
+            closed: incident.closed,
+            geometry_index_start: incident.geometry_index_start,
+            geometry_index_end: incident.geometry_index_end,
+            sub_type: incident.sub_type.clone(),
+            sub_type_description: incident.sub_type_description.clone(),
+            iso_3166_1_alpha2: incident.iso_3166_1_alpha2.clone(),
+            iso_3166_1_alpha3: incident.iso_3166_1_alpha3.clone(),
+            affected_road_names: incident.affected_road_names.clone(),
+            bbox: match (incident.south, incident.west, incident.north, incident.east) {
+                (Some(south), Some(west), Some(north), Some(east)) => Some(BoundingBox {
+                    sw: GeographicCoordinate {
+                        lat: south,
+                        lng: west,
+                    },
+                    ne: GeographicCoordinate {
+                        lat: north,
+                        lng: east,
+                    },
+                }),
+                _ => None,
+            },
+        }
+    }
 }
 
 #[cfg(test)]
