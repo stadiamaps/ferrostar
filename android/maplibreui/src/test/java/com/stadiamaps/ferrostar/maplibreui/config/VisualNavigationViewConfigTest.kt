@@ -24,22 +24,19 @@ class VisualNavigationViewConfigTest {
 
   @Test
   fun testUseMuteButton() {
-    val config = VisualNavigationViewConfig().useMuteButton(onMute = {})
+    val config = VisualNavigationViewConfig().useMuteButton()
     assert(config.showMute)
   }
 
   @Test
   fun testUseZoomButton() {
-    val config = VisualNavigationViewConfig().useZoomButton(onZoomIn = {}, onZoomOut = {})
+    val config = VisualNavigationViewConfig().useZoomButton()
     assert(config.showZoom)
   }
 
   @Test
   fun testUseMuteButtonAndZoomButton() {
-    val config =
-        VisualNavigationViewConfig()
-            .useMuteButton(onMute = {})
-            .useZoomButton(onZoomIn = {}, onZoomOut = {})
+    val config = VisualNavigationViewConfig().useMuteButton().useZoomButton()
     assert(config.showMute)
     assert(config.showZoom)
   }
