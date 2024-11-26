@@ -37,7 +37,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
-      run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
+      run: ! grep -q 'let useLocalFramework = true' Package.swift && ! grep -q 'let useLocalMapLibreSwiftUIDSL = true' Package.swift
 
     - name: Commit changed files (it is easy to forget useLocalFramework in Package.swift)
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -56,9 +56,11 @@ jobs:
       run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
 
     - name: Commit changed files (it is easy to forget about ferrostar.swift)
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        file_pattern: 'apple/Sources/UniFFI/*'
+        run: |
+          if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
+            echo "Dirty files detected"
+            exit 1
+          fi
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
