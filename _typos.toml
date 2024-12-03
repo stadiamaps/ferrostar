@@ -1,6 +1,7 @@
 [default]
 extend-ignore-re = [
   "VALHALLA_EXTENDED_OSRM_RESPONSE.*",
+  "MAPBOX_OSRM_RESPONSE_WITH_EXITS.*",
 ]
 
 [default.extend-words]
