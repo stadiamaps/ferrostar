@@ -219,9 +219,9 @@ impl RouteStep {
                 }),
                 sub_content: banner.sub.as_ref().map(|sub| VisualInstructionContent {
                     text: sub.text.clone(),
-                    maneuver_type: None,
-                    maneuver_modifier: None,
-                    roundabout_exit_degrees: None,
+                    maneuver_type: sub.maneuver_type,
+                    maneuver_modifier: sub.maneuver_modifier,
+                    roundabout_exit_degrees: sub.roundabout_exit_degrees,
                     lane_info: {
                         let lane_infos: Vec<LaneInfo> = sub
                             .components
