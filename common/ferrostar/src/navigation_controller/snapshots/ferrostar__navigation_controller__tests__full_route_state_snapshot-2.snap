@@ -14117,7 +14117,11 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: 0
       distanceRemaining: 0
