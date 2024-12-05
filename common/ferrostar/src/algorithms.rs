@@ -281,15 +281,21 @@ pub fn should_advance_to_next_step(
                                 return true;
                             }
                         }
-                        SpecialAdvanceConditions::MinimumDistanceFromEnd(distance) => {
-                            // Short-circuit: if we are close to the end of the step,
-                            // we MUST NOT advance. This doesn't apply to the final step.
-                            if next_route_step.is_some()
-                                && is_close_enough_to_end_of_linestring(
-                                    &current_position,
-                                    current_step_linestring,
-                                    f64::from(distance),
-                                )
+                        SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(distance) => {
+                            // Short-circuit: do NOT advance if we are within `distance`
+                            // of the current route step.
+                            //
+                            // Historical note: we previously considered checking distance from the
+                            // end of the current step instead, but this actually failed
+                            // the self-intersecting route tests, since the step break isn't
+                            // necessarily near the intersection.
+                            //
+                            // The last step is special and this logic does not apply.
+                            if next_route_step.is_some() && deviation_from_line(
+                                &current_position,
+                                &current_step_linestring,
+                            )
+                            .map_or(true, |deviation| deviation <= f64::from(distance))
                             {
                                 return false;
                             }

@@ -155,13 +155,16 @@ pub enum SpecialAdvanceConditions {
     /// This results in *early* advance when the user is near the goal.
     AdvanceAtDistanceFromEnd(u16),
     /// Requires that the user be at least this far (distance in meters)
-    /// from the end of the current step.
+    /// from the current route step.
     ///
     /// This results in *delayed* advance,
     /// but is more robust to spurious / unwanted step changes in scenarios including
     /// self-intersecting routes (sudden jump to the next step)
     /// and pauses at intersections (advancing too soon before the maneuver is complete).
-    MinimumDistanceFromEnd(u16),
+    ///
+    /// Note that this could be theoretically less robust to things like U-turns,
+    /// but we need a bit more real-world testing to confirm if it's an issue.
+    MinimumDistanceFromCurrentStepLine(u16),
 }
 
 #[derive(Clone)]

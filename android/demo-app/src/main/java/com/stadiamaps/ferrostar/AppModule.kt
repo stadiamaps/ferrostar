@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient
 import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
+import uniffi.ferrostar.SpecialAdvanceConditions
 import uniffi.ferrostar.StepAdvanceMode
 
 /**
@@ -86,7 +87,10 @@ object AppModule {
             navigationControllerConfig =
                 NavigationControllerConfig(
                     StepAdvanceMode.RelativeLineStringDistance(
-                        minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
+                        minimumHorizontalAccuracy = 25U,
+                        specialAdvanceConditions =
+                        // NOTE: We have not yet put this threshold through extensive real-world testing
+                            SpecialAdvanceConditions.MinimumDistanceFromEnd(10U)),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),
             options =

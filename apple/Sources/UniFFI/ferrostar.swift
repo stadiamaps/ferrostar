@@ -5015,6 +5015,94 @@ extension SimulationError: Foundation.LocalizedError {
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
+ * Special conditions which alter the normal step advance logic,
+ */
+
+public enum SpecialAdvanceConditions {
+    
+    /**
+     * Allows navigation to advance to the next step as soon as the user
+     * comes within this distance (in meters) of the end of the current step.
+     *
+     * This results in *early* advance when the user is near the goal.
+     */
+    case advanceAtDistanceFromEnd(UInt16
+    )
+    /**
+     * Requires that the user be at least this far (distance in meters)
+     * from the end of the current step.
+     *
+     * This results in *delayed* advance,
+     * but is more robust to spurious / unwanted step changes in scenarios including
+     * self-intersecting routes (sudden jump to the next step)
+     * and pauses at intersections (advancing too soon before the maneuver is complete).
+     */
+    case minimumDistanceFromEnd(UInt16
+    )
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
+    typealias SwiftType = SpecialAdvanceConditions
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SpecialAdvanceConditions {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .advanceAtDistanceFromEnd(try FfiConverterUInt16.read(from: &buf)
+        )
+        
+        case 2: return .minimumDistanceFromEnd(try FfiConverterUInt16.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: SpecialAdvanceConditions, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .advanceAtDistanceFromEnd(v1):
+            writeInt(&buf, Int32(1))
+            FfiConverterUInt16.write(v1, into: &buf)
+            
+        
+        case let .minimumDistanceFromEnd(v1):
+            writeInt(&buf, Int32(2))
+            FfiConverterUInt16.write(v1, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeSpecialAdvanceConditions_lift(_ buf: RustBuffer) throws -> SpecialAdvanceConditions {
+    return try FfiConverterTypeSpecialAdvanceConditions.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeSpecialAdvanceConditions_lower(_ value: SpecialAdvanceConditions) -> RustBuffer {
+    return FfiConverterTypeSpecialAdvanceConditions.lower(value)
+}
+
+
+
+extension SpecialAdvanceConditions: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
  * The step advance mode describes when the current maneuver has been successfully completed,
  * and we should advance to the next step.
  */
@@ -5042,17 +5130,18 @@ public enum StepAdvanceMode {
     )
     /**
      * Automatically advances when the user's distance to the *next* step's linestring  is less
-     * than the distance to the current step's linestring.
+     * than the distance to the current step's linestring, subject to certain conditions.
      */
     case relativeLineStringDistance(
         /**
          * The minimum required horizontal accuracy of the user location, in meters.
-         * Values larger than this cannot trigger a step advance.
+         * Values larger than this cannot ever trigger a step advance.
          */minimumHorizontalAccuracy: UInt16, 
         /**
-         * At this (optional) distance, navigation should advance to the next step regardless
-         * of which `LineString` appears closer.
-         */automaticAdvanceDistance: UInt16?
+         * Optional extra conditions which refine the step advance logic.
+         *
+         * See the enum variant documentation for details.
+         */specialAdvanceConditions: SpecialAdvanceConditions?
     )
 }
 
@@ -5072,7 +5161,7 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
         case 2: return .distanceToEndOfStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
         )
         
-        case 3: return .relativeLineStringDistance(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), automaticAdvanceDistance: try FfiConverterOptionUInt16.read(from: &buf)
+        case 3: return .relativeLineStringDistance(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), specialAdvanceConditions: try FfiConverterOptionTypeSpecialAdvanceConditions.read(from: &buf)
         )
         
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -5093,10 +5182,10 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             
         
-        case let .relativeLineStringDistance(minimumHorizontalAccuracy,automaticAdvanceDistance):
+        case let .relativeLineStringDistance(minimumHorizontalAccuracy,specialAdvanceConditions):
             writeInt(&buf, Int32(3))
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
-            FfiConverterOptionUInt16.write(automaticAdvanceDistance, into: &buf)
+            FfiConverterOptionTypeSpecialAdvanceConditions.write(specialAdvanceConditions, into: &buf)
             
         }
     }
@@ -5694,6 +5783,30 @@ fileprivate struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeManeuverType.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
+    typealias SwiftType = SpecialAdvanceConditions?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeSpecialAdvanceConditions.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeSpecialAdvanceConditions.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
