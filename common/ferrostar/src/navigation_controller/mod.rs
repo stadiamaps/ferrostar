@@ -387,34 +387,22 @@ impl JsNavigationController {
 
 #[cfg(test)]
 mod tests {
-    use rstest::rstest;
     use super::*;
     use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-    use crate::navigation_controller::models::{CourseFiltering, StepAdvanceMode, SpecialAdvanceConditions};
-    use crate::navigation_controller::test_helpers::{get_extended_route, get_self_intersecting_route};
+    use crate::navigation_controller::models::{
+        CourseFiltering, SpecialAdvanceConditions, StepAdvanceMode,
+    };
+    use crate::navigation_controller::test_helpers::{
+        get_extended_route, get_self_intersecting_route,
+    };
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
     };
 
-    // Full simulations for several routes with different settings
-    #[rstest]
-    #[case::extended_exact_distance(get_extended_route(), StepAdvanceMode::DistanceToEndOfStep {
-        distance: 0,
-        minimum_horizontal_accuracy: 0,
-    })]
-    #[case::self_intersecting_exact_distance(get_self_intersecting_route(), StepAdvanceMode::DistanceToEndOfStep {
-        distance: 0,
-        minimum_horizontal_accuracy: 0,
-    })]
-    #[case::extended_relative_linestring(get_extended_route(), StepAdvanceMode::RelativeLineStringDistance {
-        minimum_horizontal_accuracy: 0,
-        special_advance_conditions: None,
-    })]
-    #[case::self_intersecting_relative_linestring(get_self_intersecting_route(), StepAdvanceMode::RelativeLineStringDistance {
-        minimum_horizontal_accuracy: 0,
-        special_advance_conditions: Some(SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)),
-    })]
-    fn test_full_route_state_snapshot(#[case] route: Route, #[case] step_advance: StepAdvanceMode) {
+    fn test_full_route_state_snapshot(
+        route: Route,
+        step_advance: StepAdvanceMode,
+    ) -> Vec<TripState> {
         let mut simulation_state =
             location_simulation_from_route(&route, Some(10.0), LocationBias::None)
                 .expect("Unable to create simulation");
@@ -430,7 +418,7 @@ mod tests {
                 // we want to know about it.
                 route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
                     minimum_horizontal_accuracy: 0,
-                    max_acceptable_deviation: 0.0
+                    max_acceptable_deviation: 0.0,
                 },
                 snapped_location_course_filtering: CourseFiltering::Raw,
             },
@@ -476,6 +464,65 @@ mod tests {
             states.push(state.clone());
         }
 
-        insta::assert_yaml_snapshot!(states);
+        states
+    }
+
+    // Full simulations for several routes with different settings
+
+    #[test]
+    fn test_extended_exact_distance() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_extended_route(),
+            StepAdvanceMode::DistanceToEndOfStep {
+                distance: 0,
+                minimum_horizontal_accuracy: 0,
+            }
+        ));
+    }
+
+    #[test]
+    fn test_extended_relative_linestring() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_extended_route(),
+            StepAdvanceMode::RelativeLineStringDistance {
+                minimum_horizontal_accuracy: 0,
+                special_advance_conditions: None,
+            }
+        ));
+    }
+
+    #[test]
+    fn test_self_intersecting_exact_distance() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_self_intersecting_route(),
+            StepAdvanceMode::DistanceToEndOfStep {
+                distance: 0,
+                minimum_horizontal_accuracy: 0,
+            }
+        ));
+    }
+
+    #[test]
+    fn test_self_intersecting_relative_linestring() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_self_intersecting_route(),
+            StepAdvanceMode::RelativeLineStringDistance {
+                minimum_horizontal_accuracy: 0,
+                special_advance_conditions: None,
+            }
+        ));
+    }
+
+    #[test]
+    fn test_self_intersecting_relative_linestring_min_line_distance() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_self_intersecting_route(),
+            StepAdvanceMode::RelativeLineStringDistance {
+                minimum_horizontal_accuracy: 0,
+                special_advance_conditions: Some(
+                    SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
+                ),
+            }
+        ));
     }
 }

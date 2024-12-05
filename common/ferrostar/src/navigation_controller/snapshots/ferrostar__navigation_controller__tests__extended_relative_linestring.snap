@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: states
+expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{ minimum_horizontal_accuracy: 0, special_advance_conditions: None, })"
 snapshot_kind: text
 ---
 - Navigating:

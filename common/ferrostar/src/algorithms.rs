@@ -291,11 +291,9 @@ pub fn should_advance_to_next_step(
                             // necessarily near the intersection.
                             //
                             // The last step is special and this logic does not apply.
-                            if next_route_step.is_some() && deviation_from_line(
-                                &current_position,
-                                &current_step_linestring,
-                            )
-                            .map_or(true, |deviation| deviation <= f64::from(distance))
+                            if next_route_step.is_some()
+                                && deviation_from_line(&current_position, &current_step_linestring)
+                                    .map_or(true, |deviation| deviation <= f64::from(distance))
                             {
                                 return false;
                             }

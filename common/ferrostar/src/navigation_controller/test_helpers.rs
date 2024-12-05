@@ -5,10 +5,12 @@ use alloc::string::ToString;
 use geo::{line_string, BoundingRect, Haversine, Length, LineString, Point};
 
 // A longer + more complex route
-const VALHALLA_EXTENDED_OSRM_RESPONSE: &str = include_str!("fixtures/valhalla_extended_osrm_response.json");
+const VALHALLA_EXTENDED_OSRM_RESPONSE: &str =
+    include_str!("fixtures/valhalla_extended_osrm_response.json");
 
 // A self-intersecting route
-const VALHALLA_SELF_INTERSECTING_OSRM_RESPONSE: &str = include_str!("fixtures/valhalla_self_intersecting_osrm_response.json");
+const VALHALLA_SELF_INTERSECTING_OSRM_RESPONSE: &str =
+    include_str!("fixtures/valhalla_self_intersecting_osrm_response.json");
 
 /// Gets a longer + more complex route.
 ///
