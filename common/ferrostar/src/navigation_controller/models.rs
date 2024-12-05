@@ -130,16 +130,38 @@ pub enum StepAdvanceMode {
         minimum_horizontal_accuracy: u16,
     },
     /// Automatically advances when the user's distance to the *next* step's linestring  is less
-    /// than the distance to the current step's linestring.
+    /// than the distance to the current step's linestring, subject to certain conditions.
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     RelativeLineStringDistance {
         /// The minimum required horizontal accuracy of the user location, in meters.
-        /// Values larger than this cannot trigger a step advance.
+        /// Values larger than this cannot ever trigger a step advance.
         minimum_horizontal_accuracy: u16,
-        /// At this (optional) distance, navigation should advance to the next step regardless
-        /// of which `LineString` appears closer.
-        automatic_advance_distance: Option<u16>,
+        /// Optional extra conditions which refine the step advance logic.
+        ///
+        /// See the enum variant documentation for details.
+        special_advance_conditions: Option<SpecialAdvanceConditions>,
     },
+}
+
+/// Special conditions which alter the normal step advance logic,
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
+pub enum SpecialAdvanceConditions {
+    /// Allows navigation to advance to the next step as soon as the user
+    /// comes within this distance (in meters) of the end of the current step.
+    ///
+    /// This results in *early* advance when the user is near the goal.
+    AdvanceAtDistanceFromEnd(u16),
+    /// Requires that the user be at least this far (distance in meters)
+    /// from the end of the current step.
+    ///
+    /// This results in *delayed* advance,
+    /// but is more robust to spurious / unwanted step changes in scenarios including
+    /// self-intersecting routes (sudden jump to the next step)
+    /// and pauses at intersections (advancing too soon before the maneuver is complete).
+    MinimumDistanceFromEnd(u16),
 }
 
 #[derive(Clone)]
