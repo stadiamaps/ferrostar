@@ -64,7 +64,7 @@ fun NavigationMapView(
 
   val locationEngine = remember { StaticLocationEngine() }
   locationEngine.lastLocation =
-      if (snapUserLocationToRoute) {
+      if (snapUserLocationToRoute && isNavigating) {
         uiState.snappedLocation?.toAndroidLocation()
       } else {
         uiState.location?.toAndroidLocation()
