@@ -400,7 +400,7 @@ class FerrostarCoreTest {
                 StepAdvanceMode.RelativeLineStringDistance(
                     16U,
                     specialAdvanceConditions =
-                        SpecialAdvanceConditions.MinimumDistanceFromEnd(16U)),
+                        SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(16U)),
             routeDeviationTracking =
                 RouteDeviationTracking.Custom(
                     detector =

@@ -90,7 +90,7 @@ object AppModule {
                         minimumHorizontalAccuracy = 25U,
                         specialAdvanceConditions =
                         // NOTE: We have not yet put this threshold through extensive real-world testing
-                            SpecialAdvanceConditions.MinimumDistanceFromEnd(10U)),
+                            SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),
             options =
