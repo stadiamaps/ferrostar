@@ -606,7 +606,7 @@ proptest! {
             // we'll never advance unless the threshold is zero
             let cond = should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &exact_user_location, StepAdvanceMode::RelativeLineStringDistance {
                 minimum_horizontal_accuracy,
-                special_advance_conditions: threshold.map(|distance| SpecialAdvanceConditions::MinimumDistanceFromEnd(distance))
+                special_advance_conditions: threshold.map(|distance| SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(distance))
             });
             // In plain English:
             // - If a threshold is absent, we always advance when we are exactly at the location
