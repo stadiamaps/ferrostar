@@ -35,6 +35,7 @@ let mockRoute = Route(
         distance: 1,
         duration: 0,
         roadName: "foo road",
+        exits: [],
         instruction: "Sail straight", // 🏴‍☠️⛵️
         visualInstructions: [VisualInstruction(
             primaryContent: instructionContent,

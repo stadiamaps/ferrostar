@@ -319,6 +319,7 @@ expression: routes
       distance: 111.251
       duration: 90.107
       road_name: ""
+      exits: []
       instruction: Walk west on the walkway.
       visual_instructions:
         - primary_content:
@@ -347,6 +348,7 @@ expression: routes
       distance: 9
       duration: 6.353
       road_name: ""
+      exits: []
       instruction: Turn left onto the walkway.
       visual_instructions:
         - primary_content:
@@ -372,6 +374,7 @@ expression: routes
       distance: 16
       duration: 12.424
       road_name: Laeva
+      exits: []
       instruction: Turn right onto Laeva.
       visual_instructions:
         - primary_content:
@@ -399,6 +402,7 @@ expression: routes
       distance: 15
       duration: 11.224
       road_name: ""
+      exits: []
       instruction: Bear right.
       visual_instructions:
         - primary_content:
@@ -428,6 +432,7 @@ expression: routes
       distance: 38
       duration: 26.824
       road_name: ""
+      exits: []
       instruction: Bear left onto the walkway.
       visual_instructions:
         - primary_content:
@@ -453,6 +458,7 @@ expression: routes
       distance: 7
       duration: 4.941
       road_name: ""
+      exits: []
       instruction: Continue.
       visual_instructions:
         - primary_content:
@@ -484,6 +490,7 @@ expression: routes
       distance: 70
       duration: 52.275
       road_name: Admiralisild; Admiral Bridge
+      exits: []
       instruction: Turn right onto Admiralisild/Admiral Bridge.
       visual_instructions:
         - primary_content:
@@ -511,6 +518,7 @@ expression: routes
       distance: 46
       duration: 33.471
       road_name: ""
+      exits: []
       instruction: Continue on the walkway.
       visual_instructions:
         - primary_content:
@@ -536,6 +544,7 @@ expression: routes
       distance: 131
       duration: 101.718
       road_name: ""
+      exits: []
       instruction: Turn left onto the walkway.
       visual_instructions:
         - primary_content:
@@ -567,6 +576,7 @@ expression: routes
       distance: 25
       duration: 21.906
       road_name: ""
+      exits: []
       instruction: Turn right onto the walkway.
       visual_instructions:
         - primary_content:
@@ -596,6 +606,7 @@ expression: routes
       distance: 16
       duration: 12.294
       road_name: ""
+      exits: []
       instruction: Turn left onto the walkway.
       visual_instructions:
         - primary_content:
@@ -639,6 +650,7 @@ expression: routes
       distance: 91
       duration: 72.235
       road_name: Logi
+      exits: []
       instruction: Turn right onto Logi.
       visual_instructions:
         - primary_content:
@@ -664,6 +676,7 @@ expression: routes
       distance: 8
       duration: 5.647
       road_name: ""
+      exits: []
       instruction: Turn left onto the walkway.
       visual_instructions:
         - primary_content:
@@ -695,6 +708,7 @@ expression: routes
       distance: 85
       duration: 64.447
       road_name: ""
+      exits: []
       instruction: Turn right onto the walkway.
       visual_instructions:
         - primary_content:
@@ -826,6 +840,7 @@ expression: routes
       distance: 1254
       duration: 966.424
       road_name: Kultuurikilomeeter
+      exits: []
       instruction: Bear left onto Kultuurikilomeeter.
       visual_instructions:
         - primary_content:
@@ -853,6 +868,7 @@ expression: routes
       distance: 23
       duration: 18.235
       road_name: ""
+      exits: []
       instruction: Turn right onto the walkway.
       visual_instructions:
         - primary_content:
@@ -880,6 +896,7 @@ expression: routes
       distance: 16
       duration: 11.294
       road_name: ""
+      exits: []
       instruction: Turn left onto the walkway.
       visual_instructions:
         - primary_content:
@@ -943,6 +960,7 @@ expression: routes
       distance: 347
       duration: 263.849
       road_name: ""
+      exits: []
       instruction: Turn left onto the crosswalk.
       visual_instructions:
         - primary_content:
@@ -968,6 +986,7 @@ expression: routes
       distance: 2
       duration: 1.412
       road_name: ""
+      exits: []
       instruction: Turn right onto the walkway.
       visual_instructions:
         - primary_content:
@@ -1019,6 +1038,7 @@ expression: routes
       distance: 241
       duration: 184.456
       road_name: ""
+      exits: []
       instruction: Turn left onto the walkway.
       visual_instructions:
         - primary_content:
@@ -1044,6 +1064,7 @@ expression: routes
       distance: 28
       duration: 20.951
       road_name: Allveelaeva
+      exits: []
       instruction: Bear left onto Allveelaeva.
       visual_instructions:
         - primary_content:
@@ -1071,6 +1092,7 @@ expression: routes
       distance: 25.099
       duration: 24.804
       road_name: Peetri
+      exits: []
       instruction: Turn right onto Peetri.
       visual_instructions:
         - primary_content:
@@ -1096,6 +1118,7 @@ expression: routes
       distance: 0
       duration: 0
       road_name: Peetri
+      exits: []
       instruction: You have arrived at your destination.
       visual_instructions:
         - primary_content:

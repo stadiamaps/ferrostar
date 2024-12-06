@@ -71,6 +71,7 @@ struct RouteStepFactory: TestFixtureFactory {
             distance: 100,
             duration: 99,
             roadName: roadNameBuilder(n),
+            exits: [],
             instruction: "Walk west on \(roadNameBuilder(n))",
             visualInstructions: [visualInstructionBuilder(n)],
             spokenInstructions: [],

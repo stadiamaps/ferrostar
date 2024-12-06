@@ -433,6 +433,7 @@ expression: routes
       distance: 2089.442
       duration: 301.262
       road_name: ""
+      exits: []
       instruction: Drive southeast.
       visual_instructions:
         - primary_content:
@@ -461,6 +462,7 @@ expression: routes
       distance: 0
       duration: 0
       road_name: ""
+      exits: []
       instruction: You have arrived at your destination.
       visual_instructions:
         - primary_content:

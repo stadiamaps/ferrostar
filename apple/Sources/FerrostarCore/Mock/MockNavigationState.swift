@@ -52,6 +52,7 @@ public extension NavigationState {
                         distance: 100,
                         duration: 99,
                         roadName: "Jefferson St.",
+                        exits: [],
                         instruction: "Walk west on Jefferson St.",
                         visualInstructions: [
                             VisualInstruction(
