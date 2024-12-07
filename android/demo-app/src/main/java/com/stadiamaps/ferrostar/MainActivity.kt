@@ -9,8 +9,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
 import com.stadiamaps.ferrostar.core.AndroidTtsStatusListener
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
-import uniffi.ferrostar.createFerrostarLogger
 import java.util.Locale
+import uniffi.ferrostar.createFerrostarLogger
 
 class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
   companion object {
