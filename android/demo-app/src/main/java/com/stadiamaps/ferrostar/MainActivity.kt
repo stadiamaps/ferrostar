@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
 import com.stadiamaps.ferrostar.core.AndroidTtsStatusListener
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
+import uniffi.ferrostar.createFerrostarLogger
 import java.util.Locale
 
 class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
@@ -43,6 +44,9 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
     // Set up the location provider
     //    AppModule.locationProvider.lastLocation = initialSimulatedLocation
     //    AppModule.locationProvider.warpFactor = 2u
+
+    // Setup the global Ferrostar logger
+    createFerrostarLogger()
 
     // Edge to edge (this will be default in Android 15)
     // See https://developer.android.com/codelabs/edge-to-edge#0

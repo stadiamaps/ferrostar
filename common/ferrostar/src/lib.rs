@@ -23,12 +23,36 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
+#[cfg(target_os = "android")]
+use android_logger::{Config, FilterBuilder};
+
 pub mod algorithms;
 pub mod deviation_detection;
 pub mod models;
 pub mod navigation_controller;
 pub mod routing_adapters;
 pub mod simulation;
+
+#[cfg(target_os = "android")]
+fn init_logger() {
+    android_logger::init_once(
+        Config::default()
+            .with_max_level(log::LevelFilter::Trace)
+            .with_tag("ferrostar.core"),
+    );
+    log::info!("Ferrostar android logger initialized");
+}
+
+#[cfg(not(target_os = "android"))]
+fn init_logger() {
+    // Add fallback logging initialization for non-Android platforms
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn create_ferrostar_logger() {
+    init_logger();
+}
 
 #[cfg(feature = "uniffi")]
 mod uniffi_deps {
