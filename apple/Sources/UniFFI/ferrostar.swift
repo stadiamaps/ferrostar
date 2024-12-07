@@ -6165,6 +6165,11 @@ public func advanceLocationSimulation(state: LocationSimulationState) -> Locatio
     )
 })
 }
+public func createFerrostarLogger() {try! rustCall() {
+    uniffi_ferrostar_fn_func_create_ferrostar_logger($0
+    )
+}
+}
 /**
  * Creates a [`RouteResponseParser`] capable of parsing OSRM responses.
  *
@@ -6283,6 +6288,9 @@ private var initializationResult: InitializationResult = {
         return InitializationResult.contractVersionMismatch
     }
     if (uniffi_ferrostar_checksum_func_advance_location_simulation() != 26307) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 18551) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 16550) {
