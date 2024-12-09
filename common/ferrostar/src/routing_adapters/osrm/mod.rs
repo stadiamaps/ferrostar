@@ -292,11 +292,15 @@ impl RouteStep {
 mod tests {
     use super::*;
 
-    const STANDARD_OSRM_POLYLINE6_RESPONSE: &str = include_str!("fixtures/standard_osrm_polyline6_response.json");
+    const STANDARD_OSRM_POLYLINE6_RESPONSE: &str =
+        include_str!("fixtures/standard_osrm_polyline6_response.json");
     const VALHALLA_OSRM_RESPONSE: &str = include_str!("fixtures/valhalla_osrm_response.json");
-    const VALHALLA_OSRM_RESPONSE_VIA_WAYS: &str = include_str!("fixtures/valhalla_osrm_response_via_ways.json");
-    const VALHALLA_EXTENDED_OSRM_RESPONSE: &str = include_str!("fixtures/valhalla_extended_osrm_response.json");
-    const VALHALLA_OSRM_RESPONSE_WITH_EXITS: &str = include_str!("fixtures/valhalla_osrm_response_with_exit_info.json");
+    const VALHALLA_OSRM_RESPONSE_VIA_WAYS: &str =
+        include_str!("fixtures/valhalla_osrm_response_via_ways.json");
+    const VALHALLA_EXTENDED_OSRM_RESPONSE: &str =
+        include_str!("fixtures/valhalla_extended_osrm_response.json");
+    const VALHALLA_OSRM_RESPONSE_WITH_EXITS: &str =
+        include_str!("fixtures/valhalla_osrm_response_with_exit_info.json");
 
     #[test]
     fn parse_standard_osrm() {
