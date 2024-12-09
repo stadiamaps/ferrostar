@@ -1,11 +1,10 @@
 [default]
 extend-ignore-re = [
   "VALHALLA_EXTENDED_OSRM_RESPONSE.*",
-  "MAPBOX_OSRM_RESPONSE_WITH_EXITS.*",
 ]
 
 [default.extend-words]
 rememberable = "rememberable"
 
 [files]
-extend-exclude = ["**/build/*", "*.pbxproj", "**/dist/*", "guide/**/*.js"]
+extend-exclude = ["**/build/*", "*.pbxproj", "**/dist/*", "guide/**/*.js", "**/fixtures/*"]
