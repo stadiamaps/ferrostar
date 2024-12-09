@@ -2734,10 +2734,7 @@ public struct RouteStep {
      */
     public var roadName: String?
     /**
-     * A list of exits (name or number)
-     *
-     * NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
-     * and Valhalla.
+     * A list of exits (name or number).
      */
     public var exits: [String]
     /**
@@ -2781,10 +2778,7 @@ public struct RouteStep {
          * The name of the road being traveled on (useful for certain UI styles).
          */roadName: String?, 
         /**
-         * A list of exits (name or number)
-         *
-         * NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
-         * and Valhalla.
+         * A list of exits (name or number).
          */exits: [String], 
         /**
          * A description of the maneuver (ex: "Turn wright onto main street").
