@@ -311,10 +311,7 @@ pub struct RouteStep {
     pub duration: f64,
     /// The name of the road being traveled on (useful for certain UI styles).
     pub road_name: Option<String>,
-    /// A list of exits (name or number)
-    ///
-    /// NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
-    /// and Valhalla.
+    /// A list of exits (name or number).
     pub exits: Vec<String>,
     /// A description of the maneuver (ex: "Turn wright onto main street").
     ///

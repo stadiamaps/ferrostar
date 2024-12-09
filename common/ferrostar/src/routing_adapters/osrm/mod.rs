@@ -267,7 +267,7 @@ impl RouteStep {
         });
 
         let exits = match value.exits.clone() {
-            Some(exit_text) => exit_text.split(';').map(|s| s.to_string()).collect(),
+            Some(exit_text) => exit_text.split(';').map(|s| s.trim().to_string()).collect(),
             None => Vec::new(),
         };
 
