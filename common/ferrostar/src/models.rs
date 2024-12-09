@@ -311,6 +311,8 @@ pub struct RouteStep {
     pub duration: f64,
     /// The name of the road being traveled on (useful for certain UI styles).
     pub road_name: Option<String>,
+    /// A list of exits (name or number).
+    pub exits: Vec<String>,
     /// A description of the maneuver (ex: "Turn wright onto main street").
     ///
     /// Note for UI implementers: the context this appears in (or doesn't)

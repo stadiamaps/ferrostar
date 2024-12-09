@@ -62,6 +62,7 @@ pub fn gen_dummy_route_step(
         .length::<Haversine>(),
         duration: 0.0,
         road_name: None,
+        exits: vec![],
         instruction: "".to_string(),
         visual_instructions: vec![],
         spoken_instructions: vec![],

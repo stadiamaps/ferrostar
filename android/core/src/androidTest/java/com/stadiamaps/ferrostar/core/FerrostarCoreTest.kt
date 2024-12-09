@@ -113,6 +113,7 @@ class FerrostarCoreTest {
                       geometry = mockGeom,
                       distance = 1.0,
                       roadName = "foo road",
+                      exits = listOf(),
                       instruction = "Sail straight",
                       visualInstructions =
                           listOf(

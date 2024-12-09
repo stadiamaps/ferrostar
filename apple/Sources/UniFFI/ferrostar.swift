@@ -2734,6 +2734,10 @@ public struct RouteStep {
      */
     public var roadName: String?
     /**
+     * A list of exits (name or number).
+     */
+    public var exits: [String]
+    /**
      * A description of the maneuver (ex: "Turn wright onto main street").
      *
      * Note for UI implementers: the context this appears in (or doesn't)
@@ -2774,6 +2778,9 @@ public struct RouteStep {
          * The name of the road being traveled on (useful for certain UI styles).
          */roadName: String?, 
         /**
+         * A list of exits (name or number).
+         */exits: [String], 
+        /**
          * A description of the maneuver (ex: "Turn wright onto main street").
          *
          * Note for UI implementers: the context this appears in (or doesn't)
@@ -2796,6 +2803,7 @@ public struct RouteStep {
         self.distance = distance
         self.duration = duration
         self.roadName = roadName
+        self.exits = exits
         self.instruction = instruction
         self.visualInstructions = visualInstructions
         self.spokenInstructions = spokenInstructions
@@ -2818,6 +2826,9 @@ extension RouteStep: Equatable, Hashable {
             return false
         }
         if lhs.roadName != rhs.roadName {
+            return false
+        }
+        if lhs.exits != rhs.exits {
             return false
         }
         if lhs.instruction != rhs.instruction {
@@ -2843,6 +2854,7 @@ extension RouteStep: Equatable, Hashable {
         hasher.combine(distance)
         hasher.combine(duration)
         hasher.combine(roadName)
+        hasher.combine(exits)
         hasher.combine(instruction)
         hasher.combine(visualInstructions)
         hasher.combine(spokenInstructions)
@@ -2863,6 +2875,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
                 distance: FfiConverterDouble.read(from: &buf), 
                 duration: FfiConverterDouble.read(from: &buf), 
                 roadName: FfiConverterOptionString.read(from: &buf), 
+                exits: FfiConverterSequenceString.read(from: &buf), 
                 instruction: FfiConverterString.read(from: &buf), 
                 visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf), 
                 spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf), 
@@ -2876,6 +2889,7 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
         FfiConverterDouble.write(value.distance, into: &buf)
         FfiConverterDouble.write(value.duration, into: &buf)
         FfiConverterOptionString.write(value.roadName, into: &buf)
+        FfiConverterSequenceString.write(value.exits, into: &buf)
         FfiConverterString.write(value.instruction, into: &buf)
         FfiConverterSequenceTypeVisualInstruction.write(value.visualInstructions, into: &buf)
         FfiConverterSequenceTypeSpokenInstruction.write(value.spokenInstructions, into: &buf)
@@ -6281,6 +6295,11 @@ public func advanceLocationSimulation(state: LocationSimulationState) -> Locatio
     )
 })
 }
+public func createFerrostarLogger() {try! rustCall() {
+    uniffi_ferrostar_fn_func_create_ferrostar_logger($0
+    )
+}
+}
 /**
  * Creates a [`RouteResponseParser`] capable of parsing OSRM responses.
  *
@@ -6399,6 +6418,9 @@ private var initializationResult: InitializationResult = {
         return InitializationResult.contractVersionMismatch
     }
     if (uniffi_ferrostar_checksum_func_advance_location_simulation() != 26307) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 18551) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 16550) {

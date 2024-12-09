@@ -59,7 +59,7 @@ jobs:
     - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
       run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
 
-    - name: Commit changed files (it is easy to forget about ferrostar.swift)
+    - name: Detect changed files (it is easy to forget about ferrostar.swift)
       run: |
         if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
           echo "Dirty files detected"
