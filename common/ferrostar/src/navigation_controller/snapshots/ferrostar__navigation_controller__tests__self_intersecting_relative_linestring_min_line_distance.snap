@@ -29,6 +29,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -82,6 +83,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -125,6 +128,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -138,6 +142,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -182,6 +187,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -235,6 +241,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -278,6 +286,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -291,6 +300,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -335,6 +345,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -388,6 +399,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -431,6 +444,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -444,6 +458,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -488,6 +503,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -541,6 +557,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -584,6 +602,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -597,6 +616,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -641,6 +661,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -694,6 +715,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -737,6 +760,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -750,6 +774,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -794,6 +819,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -847,6 +873,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -890,6 +918,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -903,6 +932,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -947,6 +977,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -1000,6 +1031,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -1043,6 +1076,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -1056,6 +1090,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -1100,6 +1135,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -1153,6 +1189,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -1196,6 +1234,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -1209,6 +1248,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -1253,6 +1293,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -1306,6 +1347,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -1349,6 +1392,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -1362,6 +1406,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -1406,6 +1451,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -1459,6 +1505,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -1502,6 +1550,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -1515,6 +1564,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -1559,6 +1609,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -1612,6 +1663,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -1655,6 +1708,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -1668,6 +1722,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -1712,6 +1767,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -1765,6 +1821,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -1808,6 +1866,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -1821,6 +1880,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -1865,6 +1925,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -1918,6 +1979,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -1961,6 +2024,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -1974,6 +2038,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -2018,6 +2083,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -2071,6 +2137,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -2114,6 +2182,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -2127,6 +2196,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -2171,6 +2241,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -2224,6 +2295,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -2267,6 +2340,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -2280,6 +2354,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -2324,6 +2399,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -2377,6 +2453,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -2420,6 +2498,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -2433,6 +2512,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -2477,6 +2557,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -2530,6 +2611,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -2573,6 +2656,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -2586,6 +2670,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -2630,6 +2715,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -2683,6 +2769,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -2726,6 +2814,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -2739,6 +2828,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -2783,6 +2873,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -2836,6 +2927,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -2879,6 +2972,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -2892,6 +2986,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -2936,6 +3031,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -2989,6 +3085,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -3032,6 +3130,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -3045,6 +3144,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -3089,6 +3189,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -3142,6 +3243,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -3185,6 +3288,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -3198,6 +3302,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -3242,6 +3347,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -3295,6 +3401,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -3338,6 +3446,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -3351,6 +3460,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -3395,6 +3505,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -3448,6 +3559,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -3491,6 +3604,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -3504,6 +3618,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -3548,6 +3663,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -3601,6 +3717,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -3644,6 +3762,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -3657,6 +3776,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -3701,6 +3821,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -3754,6 +3875,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -3797,6 +3920,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -3810,6 +3934,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -3854,6 +3979,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -3907,6 +4033,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -3950,6 +4078,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -3963,6 +4092,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -4007,6 +4137,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -4060,6 +4191,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -4103,6 +4236,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -4116,6 +4250,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -4160,6 +4295,7 @@ snapshot_kind: text
         distance: 264.647
         duration: 10.705
         road_name: ""
+        exits: []
         instruction: Drive southwest on I 205 South/OR 213 South.
         visual_instructions: []
         spoken_instructions: []
@@ -4213,6 +4349,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -4256,6 +4394,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -4269,6 +4408,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -4347,6 +4487,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -4390,6 +4532,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -4403,6 +4546,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -4481,6 +4625,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -4524,6 +4670,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -4537,6 +4684,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -4615,6 +4763,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -4658,6 +4808,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -4671,6 +4822,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -4749,6 +4901,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -4792,6 +4946,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -4805,6 +4960,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -4883,6 +5039,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -4926,6 +5084,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -4939,6 +5098,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -5017,6 +5177,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -5060,6 +5222,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -5073,6 +5236,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -5151,6 +5315,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -5194,6 +5360,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -5207,6 +5374,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -5285,6 +5453,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -5328,6 +5498,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -5341,6 +5512,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -5419,6 +5591,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -5462,6 +5636,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -5475,6 +5650,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -5553,6 +5729,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -5596,6 +5774,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -5609,6 +5788,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -5687,6 +5867,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -5730,6 +5912,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -5743,6 +5926,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -5821,6 +6005,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -5864,6 +6050,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -5877,6 +6064,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -5955,6 +6143,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -5998,6 +6188,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -6011,6 +6202,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -6089,6 +6281,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -6132,6 +6326,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -6145,6 +6340,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -6223,6 +6419,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -6266,6 +6464,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -6279,6 +6478,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -6357,6 +6557,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -6400,6 +6602,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -6413,6 +6616,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -6491,6 +6695,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -6534,6 +6740,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -6547,6 +6754,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -6625,6 +6833,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -6668,6 +6878,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -6681,6 +6892,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -6759,6 +6971,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -6802,6 +7016,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -6815,6 +7030,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -6893,6 +7109,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -6936,6 +7154,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -6949,6 +7168,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -7027,6 +7247,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -7070,6 +7292,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -7083,6 +7306,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -7161,6 +7385,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -7204,6 +7430,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -7217,6 +7444,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -7295,6 +7523,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -7338,6 +7568,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -7351,6 +7582,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -7429,6 +7661,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -7472,6 +7706,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -7485,6 +7720,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -7563,6 +7799,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -7606,6 +7844,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -7619,6 +7858,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -7697,6 +7937,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -7740,6 +7982,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -7753,6 +7996,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -7831,6 +8075,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -7874,6 +8120,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -7887,6 +8134,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -7965,6 +8213,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -8008,6 +8258,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -8021,6 +8272,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -8099,6 +8351,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -8142,6 +8396,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -8155,6 +8410,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -8233,6 +8489,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -8276,6 +8534,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -8289,6 +8548,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -8367,6 +8627,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -8410,6 +8672,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -8423,6 +8686,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -8501,6 +8765,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -8544,6 +8810,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -8557,6 +8824,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -8635,6 +8903,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -8678,6 +8948,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -8691,6 +8962,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -8769,6 +9041,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -8812,6 +9086,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -8825,6 +9100,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -8903,6 +9179,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -8946,6 +9224,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -8959,6 +9238,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9037,6 +9317,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -9080,6 +9362,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9093,6 +9376,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9171,6 +9455,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -9214,6 +9500,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9227,6 +9514,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9305,6 +9593,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -9348,6 +9638,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9361,6 +9652,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9439,6 +9731,8 @@ snapshot_kind: text
         distance: 295
         duration: 12.258
         road_name: ""
+        exits:
+          - "10"
         instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
         visual_instructions: []
         spoken_instructions: []
@@ -9482,6 +9776,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9495,6 +9790,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9563,6 +9859,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9576,6 +9873,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9644,6 +9942,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9657,6 +9956,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9725,6 +10025,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9738,6 +10039,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9806,6 +10108,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9819,6 +10122,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9887,6 +10191,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9900,6 +10205,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -9968,6 +10274,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -9981,6 +10288,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10049,6 +10357,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10062,6 +10371,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10130,6 +10440,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10143,6 +10454,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10211,6 +10523,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10224,6 +10537,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10292,6 +10606,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10305,6 +10620,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10373,6 +10689,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10386,6 +10703,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10454,6 +10772,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10467,6 +10786,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10535,6 +10855,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10548,6 +10869,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10616,6 +10938,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10629,6 +10952,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10697,6 +11021,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10710,6 +11035,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10778,6 +11104,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10791,6 +11118,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10859,6 +11187,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10872,6 +11201,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -10940,6 +11270,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -10953,6 +11284,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11021,6 +11353,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11034,6 +11367,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11102,6 +11436,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11115,6 +11450,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11183,6 +11519,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11196,6 +11533,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11264,6 +11602,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11277,6 +11616,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11345,6 +11685,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11358,6 +11699,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11426,6 +11768,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11439,6 +11782,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11507,6 +11851,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11520,6 +11865,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11588,6 +11934,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11601,6 +11948,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11669,6 +12017,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11682,6 +12031,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11750,6 +12100,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11763,6 +12114,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11831,6 +12183,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11844,6 +12197,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11912,6 +12266,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -11925,6 +12280,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -11993,6 +12349,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12006,6 +12363,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12074,6 +12432,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12087,6 +12446,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12155,6 +12515,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12168,6 +12529,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12236,6 +12598,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12249,6 +12612,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12317,6 +12681,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12330,6 +12695,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12398,6 +12764,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12411,6 +12778,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12479,6 +12847,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12492,6 +12861,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12560,6 +12930,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12573,6 +12944,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12641,6 +13013,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12654,6 +13027,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12722,6 +13096,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12735,6 +13110,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12803,6 +13179,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12816,6 +13193,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12884,6 +13262,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12897,6 +13276,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -12965,6 +13345,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -12978,6 +13359,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13046,6 +13428,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13059,6 +13442,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13127,6 +13511,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13140,6 +13525,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13208,6 +13594,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13221,6 +13608,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13289,6 +13677,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13302,6 +13691,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13370,6 +13760,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13383,6 +13774,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13451,6 +13843,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13464,6 +13857,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13532,6 +13926,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13545,6 +13940,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13613,6 +14009,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13626,6 +14023,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13694,6 +14092,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13707,6 +14106,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13775,6 +14175,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13788,6 +14189,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13856,6 +14258,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13869,6 +14272,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -13937,6 +14341,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -13950,6 +14355,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -14018,6 +14424,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -14031,6 +14438,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
@@ -14099,6 +14507,7 @@ snapshot_kind: text
         distance: 513.266
         duration: 25.269
         road_name: Cascade Highway
+        exits: []
         instruction: Keep right to take OR 213 South/Cascade Highway.
         visual_instructions: []
         spoken_instructions: []
@@ -14112,6 +14521,7 @@ snapshot_kind: text
         distance: 0
         duration: 0
         road_name: Cascade Highway
+        exits: []
         instruction: You have arrived at your destination.
         visual_instructions: []
         spoken_instructions: []
