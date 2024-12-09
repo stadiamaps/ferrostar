@@ -5030,14 +5030,17 @@ public enum SpecialAdvanceConditions {
     )
     /**
      * Requires that the user be at least this far (distance in meters)
-     * from the end of the current step.
+     * from the current route step.
      *
      * This results in *delayed* advance,
      * but is more robust to spurious / unwanted step changes in scenarios including
      * self-intersecting routes (sudden jump to the next step)
      * and pauses at intersections (advancing too soon before the maneuver is complete).
+     *
+     * Note that this could be theoretically less robust to things like U-turns,
+     * but we need a bit more real-world testing to confirm if it's an issue.
      */
-    case minimumDistanceFromEnd(UInt16
+    case minimumDistanceFromCurrentStepLine(UInt16
     )
 }
 
@@ -5055,7 +5058,7 @@ public struct FfiConverterTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
         case 1: return .advanceAtDistanceFromEnd(try FfiConverterUInt16.read(from: &buf)
         )
         
-        case 2: return .minimumDistanceFromEnd(try FfiConverterUInt16.read(from: &buf)
+        case 2: return .minimumDistanceFromCurrentStepLine(try FfiConverterUInt16.read(from: &buf)
         )
         
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -5071,7 +5074,7 @@ public struct FfiConverterTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
             FfiConverterUInt16.write(v1, into: &buf)
             
         
-        case let .minimumDistanceFromEnd(v1):
+        case let .minimumDistanceFromCurrentStepLine(v1):
             writeInt(&buf, Int32(2))
             FfiConverterUInt16.write(v1, into: &buf)
             
