@@ -1,0 +1,57 @@
+{
+  "code": "Ok",
+  "routes": [
+    {
+      "geometry": "qikdcB{~dpXmxRbaBuqAoqKyy@svFwNcfKzsAysMdr@evD`m@qrAohBi}A{OkdGjg@ajDZww@lJ}Jrs@}`CvzBq`E`PiB`~A|l@z@feA",
+      "legs": [
+        {
+          "steps": [],
+          "summary": "",
+          "weight": 263.1,
+          "duration": 260.2,
+          "distance": 1886.3
+        },
+        {
+          "steps": [],
+          "summary": "",
+          "weight": 370.5,
+          "duration": 370.5,
+          "distance": 2845.5
+        }
+      ],
+      "weight_name": "routability",
+      "weight": 633.6,
+      "duration": 630.7,
+      "distance": 4731.8
+    }
+  ],
+  "waypoints": [
+    {
+      "hint": "Dv8JgCp3moUXAAAABQAAAAAAAAAgAAAAIXRPQYXNK0AAAAAAcPePQQsAAAADAAAAAAAAABAAAAA6-wAA_kvMAKlYIQM8TMwArVghAwAA7wrXLH_K",
+      "distance": 4.231521214,
+      "name": "Friedrichstraße",
+      "location": [
+        13.388798,
+        52.517033
+      ]
+    },
+    {
+      "hint": "JEvdgVmFiocGAAAACgAAAAAAAAB3AAAAppONQOodwkAAAAAA8TeEQgYAAAAKAAAAAAAAAHcAAAA6-wAAfm7MABiJIQOCbswA_4ghAwAAXwXXLH_K",
+      "distance": 2.795148358,
+      "name": "Torstraße",
+      "location": [
+        13.39763,
+        52.529432
+      ]
+    },
+    {
+      "hint": "oSkYgP___38fAAAAUQAAACYAAAAeAAAAeosKQlNOX0IQ7CZCjsMGQh8AAABRAAAAJgAAAB4AAAA6-wAASufMAOdwIQNL58wA03AhAwQAvxDXLH_K",
+      "distance": 2.226580806,
+      "name": "Platz der Vereinten Nationen",
+      "location": [
+        13.428554,
+        52.523239
+      ]
+    }
+  ]
+}

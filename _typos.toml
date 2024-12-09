@@ -7,4 +7,4 @@ extend-ignore-re = [
 rememberable = "rememberable"
 
 [files]
-extend-exclude = ["**/build/*", "*.pbxproj", "**/dist/*", "guide/**/*.js"]
+extend-exclude = ["**/build/*", "*.pbxproj", "**/dist/*", "guide/**/*.js", "**/fixtures/*"]
