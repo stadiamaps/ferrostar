@@ -1,0 +1,304 @@
+---
+source: ferrostar/src/routing_adapters/osrm/mod.rs
+expression: routes
+snapshot_kind: text
+---
+- geometry:
+    - lat: 45.377106
+      lng: -122.584167
+    - lat: 45.376869
+      lng: -122.584504
+    - lat: 45.376527
+      lng: -122.584983
+    - lat: 45.375948
+      lng: -122.585794
+    - lat: 45.375411
+      lng: -122.586549
+    - lat: 45.374846
+      lng: -122.587677
+    - lat: 45.374808
+      lng: -122.587796
+    - lat: 45.374781
+      lng: -122.587928
+    - lat: 45.374774
+      lng: -122.588028
+    - lat: 45.37478
+      lng: -122.588136
+    - lat: 45.374789
+      lng: -122.588209
+    - lat: 45.374812
+      lng: -122.588294
+    - lat: 45.374849
+      lng: -122.588384
+    - lat: 45.37488
+      lng: -122.588451
+    - lat: 45.374919
+      lng: -122.588512
+    - lat: 45.374978
+      lng: -122.588569
+    - lat: 45.375024
+      lng: -122.58861
+    - lat: 45.375075
+      lng: -122.58864
+    - lat: 45.375143
+      lng: -122.588661
+    - lat: 45.375324
+      lng: -122.588722
+    - lat: 45.375415
+      lng: -122.588676
+    - lat: 45.375483
+      lng: -122.588617
+    - lat: 45.375559
+      lng: -122.58852
+    - lat: 45.37561
+      lng: -122.588432
+    - lat: 45.375657
+      lng: -122.58831
+    - lat: 45.375703
+      lng: -122.588114
+    - lat: 45.375631
+      lng: -122.58789
+    - lat: 45.375576
+      lng: -122.587713
+    - lat: 45.375506
+      lng: -122.58758
+    - lat: 45.375468
+      lng: -122.587524
+    - lat: 45.37531
+      lng: -122.587349
+    - lat: 45.375003
+      lng: -122.587226
+    - lat: 45.374495
+      lng: -122.587017
+    - lat: 45.374137
+      lng: -122.586867
+    - lat: 45.373646
+      lng: -122.586686
+    - lat: 45.373572
+      lng: -122.586658
+    - lat: 45.373194
+      lng: -122.586506
+    - lat: 45.372855
+      lng: -122.586367
+    - lat: 45.372463
+      lng: -122.586234
+    - lat: 45.372156
+      lng: -122.586125
+    - lat: 45.371846
+      lng: -122.586016
+    - lat: 45.371508
+      lng: -122.585901
+  bbox:
+    sw:
+      lat: 45.371508
+      lng: -122.588722
+    ne:
+      lat: 45.377106
+      lng: -122.584167
+  distance: 1072.913
+  waypoints:
+    - coordinate:
+        lat: 45.377106
+        lng: -122.584167
+      kind: Break
+    - coordinate:
+        lat: 45.371508
+        lng: -122.585901
+      kind: Break
+  steps:
+    - geometry:
+        - lat: 45.377106
+          lng: -122.584167
+        - lat: 45.376869
+          lng: -122.584504
+        - lat: 45.376527
+          lng: -122.584983
+        - lat: 45.375948
+          lng: -122.585794
+        - lat: 45.375411
+          lng: -122.586549
+      distance: 264.647
+      duration: 10.705
+      road_name: ""
+      exits: []
+      instruction: Drive southwest on I 205 South/OR 213 South.
+      visual_instructions:
+        - primary_content:
+            text: "OR 213 South: Oregon City, Molalla"
+            maneuver_type: off ramp
+            maneuver_modifier: slight right
+            roundabout_exit_degrees: ~
+            lane_info: ~
+          secondary_content: ~
+          sub_content:
+            text: ""
+            maneuver_type: ~
+            maneuver_modifier: ~
+            roundabout_exit_degrees: ~
+            lane_info:
+              - active: false
+                directions:
+                  - straight
+                active_direction: ~
+              - active: false
+                directions:
+                  - straight
+                active_direction: ~
+              - active: false
+                directions:
+                  - straight
+                  - slight right
+                active_direction: slight right
+              - active: true
+                directions:
+                  - slight right
+                active_direction: slight right
+          trigger_distance_before_maneuver: 264.647
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+    - geometry:
+        - lat: 45.375411
+          lng: -122.586549
+        - lat: 45.374846
+          lng: -122.587677
+        - lat: 45.374808
+          lng: -122.587796
+        - lat: 45.374781
+          lng: -122.587928
+        - lat: 45.374774
+          lng: -122.588028
+        - lat: 45.37478
+          lng: -122.588136
+        - lat: 45.374789
+          lng: -122.588209
+        - lat: 45.374812
+          lng: -122.588294
+        - lat: 45.374849
+          lng: -122.588384
+        - lat: 45.37488
+          lng: -122.588451
+        - lat: 45.374919
+          lng: -122.588512
+        - lat: 45.374978
+          lng: -122.588569
+        - lat: 45.375024
+          lng: -122.58861
+        - lat: 45.375075
+          lng: -122.58864
+        - lat: 45.375143
+          lng: -122.588661
+        - lat: 45.375324
+          lng: -122.588722
+        - lat: 45.375415
+          lng: -122.588676
+        - lat: 45.375483
+          lng: -122.588617
+        - lat: 45.375559
+          lng: -122.58852
+        - lat: 45.37561
+          lng: -122.588432
+        - lat: 45.375657
+          lng: -122.58831
+        - lat: 45.375703
+          lng: -122.588114
+      distance: 295
+      duration: 12.258
+      road_name: ""
+      exits:
+        - "10"
+      instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
+      visual_instructions:
+        - primary_content:
+            text: Cascade Highway
+            maneuver_type: fork
+            maneuver_modifier: slight right
+            roundabout_exit_degrees: ~
+            lane_info: ~
+          secondary_content: ~
+          sub_content:
+            text: ""
+            maneuver_type: ~
+            maneuver_modifier: ~
+            roundabout_exit_degrees: ~
+            lane_info:
+              - active: true
+                directions:
+                  - straight
+                  - slight right
+                active_direction: slight right
+              - active: true
+                directions:
+                  - slight right
+                active_direction: slight right
+          trigger_distance_before_maneuver: 295
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+    - geometry:
+        - lat: 45.375703
+          lng: -122.588114
+        - lat: 45.375631
+          lng: -122.58789
+        - lat: 45.375576
+          lng: -122.587713
+        - lat: 45.375506
+          lng: -122.58758
+        - lat: 45.375468
+          lng: -122.587524
+        - lat: 45.37531
+          lng: -122.587349
+        - lat: 45.375003
+          lng: -122.587226
+        - lat: 45.374495
+          lng: -122.587017
+        - lat: 45.374137
+          lng: -122.586867
+        - lat: 45.373646
+          lng: -122.586686
+        - lat: 45.373572
+          lng: -122.586658
+        - lat: 45.373194
+          lng: -122.586506
+        - lat: 45.372855
+          lng: -122.586367
+        - lat: 45.372463
+          lng: -122.586234
+        - lat: 45.372156
+          lng: -122.586125
+        - lat: 45.371846
+          lng: -122.586016
+        - lat: 45.371508
+          lng: -122.585901
+      distance: 513.266
+      duration: 25.269
+      road_name: Cascade Highway
+      exits: []
+      instruction: Keep right to take OR 213 South/Cascade Highway.
+      visual_instructions:
+        - primary_content:
+            text: You have arrived at your destination.
+            maneuver_type: arrive
+            maneuver_modifier: ~
+            roundabout_exit_degrees: ~
+            lane_info: ~
+          secondary_content: ~
+          sub_content: ~
+          trigger_distance_before_maneuver: 513.266
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+    - geometry:
+        - lat: 45.371508
+          lng: -122.585901
+        - lat: 45.371508
+          lng: -122.585901
+      distance: 0
+      duration: 0
+      road_name: Cascade Highway
+      exits: []
+      instruction: You have arrived at your destination.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
