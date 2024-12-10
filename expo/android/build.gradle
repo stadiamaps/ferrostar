@@ -1,0 +1,102 @@
+apply plugin: 'com.android.library'
+
+group = 'expo.modules.ferrostar'
+version = '0.6.0'
+
+def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
+apply from: expoModulesCorePlugin
+applyKotlinExpoModulesCorePlugin()
+useCoreDependencies()
+useExpoPublishing()
+
+// If you want to use the managed Android SDK versions from expo-modules-core, set this to true.
+// The Android SDK versions will be bumped from time to time in SDK releases and may introduce breaking changes in your module code.
+// Most of the time, you may like to manage the Android SDK versions yourself.
+buildscript {
+  ext.kotlin_version = '1.9.24'
+  // Simple helper that allows the root project to override versions declared by this library.
+  ext.safeExtGet = { prop, fallback ->
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+  }
+  repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:8.3.2'
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+  }
+}
+project.android {
+  compileSdkVersion safeExtGet("compileSdkVersion", 34)
+  defaultConfig {
+    minSdkVersion safeExtGet("minSdkVersion", 26)
+    targetSdkVersion safeExtGet("targetSdkVersion", 34)
+  }
+}
+
+android {
+  // Enables Compose functionality
+  buildFeatures {
+    compose true
+  }
+
+  composeOptions {
+    kotlinCompilerExtensionVersion '1.5.14'
+  }  
+
+  namespace "expo.modules.ferrostar"
+  defaultConfig {
+    versionCode 1
+    versionName "0.6.0"
+  }
+  compileOptions {
+    coreLibraryDesugaringEnabled true
+  }
+  lintOptions {
+    abortOnError false
+  }
+  dependencies {
+    // Desugar
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
+
+    // Importing Jetpack Compose
+    def composeBom = platform("androidx.compose:compose-bom:2024.11.00")
+    implementation composeBom
+    androidTestImplementation composeBom
+
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.ui:ui-graphics"
+    implementation "androidx.compose.material3:material3"
+    implementation "androidx.activity:activity-compose"
+
+    // Ferrostar
+    def ferrostarVersion = '0.23.0'
+    implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
+    implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
+    implementation "com.stadiamaps.ferrostar:composeui:${ferrostarVersion}"
+
+    // Optional - if using Google Play Service's FusedLocation
+    implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"
+    implementation "com.google.android.gms:play-services-location:21.3.0"
+
+    // okhttp3
+    implementation platform("com.squareup.okhttp3:okhttp-bom:4.12.0")
+    implementation 'com.squareup.okhttp3:okhttp'
+
+    implementation "androidx.compose.ui:ui-tooling-preview"
+    debugImplementation "androidx.compose.ui:ui-tooling"
+
+    // React Native
+    implementation "com.facebook.react:react-native:+"
+  }
+}
+
+allprojects {
+  repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+  }
+}

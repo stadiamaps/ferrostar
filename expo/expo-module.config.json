@@ -1,0 +1,12 @@
+{
+  "platforms": ["ios", "android"],
+  "ios": {
+    "modules": ["ExpoFerrostarModule"]
+  },
+  "android": {
+    "modules": [
+      "expo.modules.ferrostar.ExpoFerrostarModule",
+      "expo.modules.ferrostar.ExpoOfflineManagerModule"
+    ]
+  }
+}
