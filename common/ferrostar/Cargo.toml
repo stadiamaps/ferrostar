@@ -29,7 +29,7 @@ wasm_js = [
 
 [dependencies]
 chrono = { version = "0.4.38", features = ["serde"] }
-geo = "0.29.0"
+geo = "0.29.3"
 polyline = "0.11.0"
 rand = "0.8.5"
 serde = { version = "1.0.215", features = ["derive"] }
@@ -41,7 +41,6 @@ uuid = { version = "1.11.0", features = ["v4", "serde"] }
 getrandom = { version = "0.2.15", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
-itertools = "0.13.0"
 tsify = { version = "0.4.5", default-features = false, features = ["js"] }
 log = "0.4.22"
 
