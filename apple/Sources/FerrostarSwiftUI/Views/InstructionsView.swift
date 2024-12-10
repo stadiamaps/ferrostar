@@ -87,7 +87,7 @@ public struct InstructionsView: View {
                 maneuverType: visualInstruction.primaryContent.maneuverType,
                 maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
                 distanceFormatter: distanceFormatter,
-                distanceToNextManeuver: step.distance == 0 ? nil : step.distance,
+                distanceToNextManeuver: step.distance,
                 theme: primaryRowTheme
             )
             .font(.title2.bold())
@@ -106,7 +106,7 @@ public struct InstructionsView: View {
                         maneuverType: visualInstruction.primaryContent.maneuverType,
                         maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
                         distanceFormatter: distanceFormatter,
-                        distanceToNextManeuver: distanceToNextManeuver == 0 ? nil : distanceToNextManeuver,
+                        distanceToNextManeuver: distanceToNextManeuver,
                         theme: primaryRowTheme
                     )
                     .font(.title2.bold())
