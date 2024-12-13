@@ -430,9 +430,6 @@ mod tests {
             let new_simulation_state = advance_location_simulation(&simulation_state);
             let new_state =
                 controller.update_user_location(new_simulation_state.current_location, &state);
-            if new_simulation_state == simulation_state {
-                break;
-            }
 
             match new_state {
                 TripState::Idle => {}
@@ -456,12 +453,15 @@ mod tests {
                     // routes, for example.
                     assert_eq!(deviation, &RouteDeviation::NoDeviation);
                 }
-                TripState::Complete => {}
+                TripState::Complete => {
+                    states.push(new_state);
+                    break;
+                }
             }
 
             simulation_state = new_simulation_state;
-            state = new_state;
-            states.push(state.clone());
+            state = new_state.clone();
+            states.push(new_state);
         }
 
         states

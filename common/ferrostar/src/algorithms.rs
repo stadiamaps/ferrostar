@@ -291,11 +291,17 @@ pub fn should_advance_to_next_step(
                             // necessarily near the intersection.
                             //
                             // The last step is special and this logic does not apply.
-                            if next_route_step.is_some()
-                                && deviation_from_line(&current_position, &current_step_linestring)
+                            if let Some(next_step) = next_route_step {
+                                // Note this special next_step distance check; otherwise we get stuck at the end!
+                                if next_step.distance > f64::from(distance)
+                                    && deviation_from_line(
+                                        &current_position,
+                                        &current_step_linestring,
+                                    )
                                     .map_or(true, |deviation| deviation <= f64::from(distance))
-                            {
-                                return false;
+                                {
+                                    return false;
+                                }
                             }
                         }
                     }
@@ -599,18 +605,6 @@ proptest! {
                 special_advance_conditions: threshold.map(|distance| SpecialAdvanceConditions::AdvanceAtDistanceFromEnd(distance))
             });
             prop_assert!(cond);
-
-            // When we enable min distance from end checks,
-            // we'll never advance unless the threshold is zero
-            let cond = should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &exact_user_location, StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy,
-                special_advance_conditions: threshold.map(|distance| SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(distance))
-            });
-            // In plain English:
-            // - If a threshold is absent, we always advance when we are exactly at the location
-            // - If a threshold is present, only advance if the threshold is zero
-            //   (since the location is exact) OR we're on the last step.
-            prop_assert_eq!(cond, threshold.map_or(true, |t| t == 0 || !has_next_step));
 
             // Should always fail (unless excess_inaccuracy is zero), as the horizontal accuracy is worse than (>) than the desired error threshold
             prop_assert_eq!(should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &inaccurate_user_location, StepAdvanceMode::DistanceToEndOfStep {

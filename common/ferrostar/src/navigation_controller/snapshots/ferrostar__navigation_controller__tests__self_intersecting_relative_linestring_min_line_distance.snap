@@ -14458,7 +14458,7 @@ snapshot_kind: text
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 15
+    current_step_geometry_index: 0
     snapped_user_location:
       coordinates:
         lat: 45.371508
@@ -14469,50 +14469,6 @@ snapshot_kind: text
         accuracy: 5
       speed: ~
     remaining_steps:
-      - geometry:
-          - lat: 45.375703
-            lng: -122.588114
-          - lat: 45.375631
-            lng: -122.58789
-          - lat: 45.375576
-            lng: -122.587713
-          - lat: 45.375506
-            lng: -122.58758
-          - lat: 45.375468
-            lng: -122.587524
-          - lat: 45.37531
-            lng: -122.587349
-          - lat: 45.375003
-            lng: -122.587226
-          - lat: 45.374495
-            lng: -122.587017
-          - lat: 45.374137
-            lng: -122.586867
-          - lat: 45.373646
-            lng: -122.586686
-          - lat: 45.373572
-            lng: -122.586658
-          - lat: 45.373194
-            lng: -122.586506
-          - lat: 45.372855
-            lng: -122.586367
-          - lat: 45.372463
-            lng: -122.586234
-          - lat: 45.372156
-            lng: -122.586125
-          - lat: 45.371846
-            lng: -122.586016
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 513.266
-        duration: 25.269
-        road_name: Cascade Highway
-        exits: []
-        instruction: Keep right to take OR 213 South/Cascade Highway.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
       - geometry:
           - lat: 45.371508
             lng: -122.585901
@@ -14527,11 +14483,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 0
       distanceRemaining: 0
@@ -14540,3 +14492,4 @@ snapshot_kind: text
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
+- Complete
