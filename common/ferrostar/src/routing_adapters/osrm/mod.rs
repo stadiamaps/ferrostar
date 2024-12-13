@@ -111,7 +111,7 @@ impl Route {
                     // Index for the annotations slice
                     let mut start_index: usize = 0;
 
-                    return leg.steps.iter().map(move |step| {
+                    leg.steps.iter().map(move |step| {
                         let step_geometry =
                             get_coordinates_from_geometry(&step.geometry, polyline_precision)?;
 
@@ -157,7 +157,7 @@ impl Route {
                                             end_index as u64
                                         } else {
                                             adjusted_end
-                                        })
+                                        });
                                 }
                                 adjusted_incident
                             })
@@ -165,13 +165,13 @@ impl Route {
 
                         start_index = end_index;
 
-                        return RouteStep::from_osrm_and_geom(
+                        RouteStep::from_osrm_and_geom(
                             step,
                             step_geometry,
                             annotation_slice,
                             relevant_incidents_slice,
-                        );
-                    });
+                        )
+                    })
                 })
                 .collect::<Result<Vec<_>, _>>()?;
 
