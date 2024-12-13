@@ -38,6 +38,7 @@ pub struct TripProgress {
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[allow(clippy::large_enum_variant)]
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.
     Idle,
@@ -83,6 +84,7 @@ pub enum TripState {
     Complete,
 }
 
+#[allow(clippy::large_enum_variant)]
 pub enum StepAdvanceStatus {
     /// Navigation has advanced, and the information on the next step is embedded.
     Advanced {
