@@ -23,7 +23,7 @@ pub(crate) fn get_annotation_slice(
         .map(<[AnyAnnotationValue]>::to_vec)
 }
 
-/// Converts the the OSRM-style annotation object consisting of separate arrays
+/// Converts the OSRM-style annotation object consisting of separate arrays
 /// to a single vector of parsed objects (one for each coordinate pair).
 pub(crate) fn zip_annotations(annotation: AnyAnnotation) -> Vec<AnyAnnotationValue> {
     let source: HashMap<String, Vec<Value>> = annotation.values;
@@ -31,7 +31,7 @@ pub(crate) fn zip_annotations(annotation: AnyAnnotation) -> Vec<AnyAnnotationVal
     // Get the length of the array (assumed to be the same for all annotations)
     let length = source.values().next().map_or(0, Vec::len);
 
-    return (0..length)
+    (0..length)
         .map(|i| {
             source
                 .iter()
@@ -44,7 +44,7 @@ pub(crate) fn zip_annotations(annotation: AnyAnnotation) -> Vec<AnyAnnotationVal
                 .collect::<HashMap<String, Value>>() // Collect the key-value pairs into a hashmap.
         })
         .map(|value| AnyAnnotationValue { value })
-        .collect::<Vec<AnyAnnotationValue>>();
+        .collect::<Vec<AnyAnnotationValue>>()
 }
 
 impl From<&MapboxOsrmIncident> for Incident {
@@ -54,9 +54,9 @@ impl From<&MapboxOsrmIncident> for Incident {
             incident_type: incident.incident_type,
             description: incident.description.clone(),
             long_description: incident.long_description.clone(),
-            creation_time: incident.creation_time.clone(),
-            start_time: incident.start_time.clone(),
-            end_time: incident.end_time.clone(),
+            creation_time: incident.creation_time,
+            start_time: incident.start_time,
+            end_time: incident.end_time,
             impact: incident.impact,
             lanes_blocked: incident.lanes_blocked.clone(),
             congestion: incident.congestion.clone(),

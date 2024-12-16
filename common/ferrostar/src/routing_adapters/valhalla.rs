@@ -128,7 +128,7 @@ impl ValhallaHttpRequestGenerator {
         profile: String,
         options_json: Option<&str>,
     ) -> Result<Self, InstantiationError> {
-        let parsed_options = match options_json.as_deref() {
+        let parsed_options = match options_json {
             // TODO: Another error variant
             Some(options) => serde_json::from_str::<JsonValue>(options)?
                 .as_object()

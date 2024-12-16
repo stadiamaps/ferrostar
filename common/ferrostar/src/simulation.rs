@@ -252,7 +252,7 @@ fn add_lateral_offset(
             let lateral_bearing_rad = (bearing + sign * 90.0).to_radians();
 
             // offset to approximate degrees
-            let offset_deg = meters / 111111.0;
+            let offset_deg = meters / 111_111.0;
 
             let lat_offset = offset_deg * lateral_bearing_rad.cos();
             let lng_offset = offset_deg * lateral_bearing_rad.sin();

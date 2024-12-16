@@ -72,6 +72,7 @@ mod uniffi_deps {
     pub use uuid::Uuid;
 }
 #[cfg(feature = "uniffi")]
+#[allow(clippy::wildcard_imports)]
 use uniffi_deps::*;
 
 #[cfg(feature = "uniffi")]
