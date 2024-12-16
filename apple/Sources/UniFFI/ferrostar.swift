@@ -3465,6 +3465,10 @@ public struct VisualInstructionContent {
      * Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
      */
     public var laneInfo: [LaneInfo]?
+    /**
+     * The exit number (or similar identifier like "8B").
+     */
+    public var exitNumbers: [String]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -3487,12 +3491,16 @@ public struct VisualInstructionContent {
          */roundaboutExitDegrees: UInt16?, 
         /**
          * Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
-         */laneInfo: [LaneInfo]?) {
+         */laneInfo: [LaneInfo]?, 
+        /**
+         * The exit number (or similar identifier like "8B").
+         */exitNumbers: [String]) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
         self.roundaboutExitDegrees = roundaboutExitDegrees
         self.laneInfo = laneInfo
+        self.exitNumbers = exitNumbers
     }
 }
 
@@ -3515,6 +3523,9 @@ extension VisualInstructionContent: Equatable, Hashable {
         if lhs.laneInfo != rhs.laneInfo {
             return false
         }
+        if lhs.exitNumbers != rhs.exitNumbers {
+            return false
+        }
         return true
     }
 
@@ -3524,6 +3535,7 @@ extension VisualInstructionContent: Equatable, Hashable {
         hasher.combine(maneuverModifier)
         hasher.combine(roundaboutExitDegrees)
         hasher.combine(laneInfo)
+        hasher.combine(exitNumbers)
     }
 }
 
@@ -3539,7 +3551,8 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
                 maneuverType: FfiConverterOptionTypeManeuverType.read(from: &buf), 
                 maneuverModifier: FfiConverterOptionTypeManeuverModifier.read(from: &buf), 
                 roundaboutExitDegrees: FfiConverterOptionUInt16.read(from: &buf), 
-                laneInfo: FfiConverterOptionSequenceTypeLaneInfo.read(from: &buf)
+                laneInfo: FfiConverterOptionSequenceTypeLaneInfo.read(from: &buf), 
+                exitNumbers: FfiConverterSequenceString.read(from: &buf)
         )
     }
 
@@ -3549,6 +3562,7 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
         FfiConverterOptionTypeManeuverModifier.write(value.maneuverModifier, into: &buf)
         FfiConverterOptionUInt16.write(value.roundaboutExitDegrees, into: &buf)
         FfiConverterOptionSequenceTypeLaneInfo.write(value.laneInfo, into: &buf)
+        FfiConverterSequenceString.write(value.exitNumbers, into: &buf)
     }
 }
 

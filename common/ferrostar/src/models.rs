@@ -633,6 +633,8 @@ pub struct VisualInstructionContent {
     pub roundabout_exit_degrees: Option<u16>,
     /// Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
     pub lane_info: Option<Vec<LaneInfo>>,
+    /// The exit number (or similar identifier like "8B").
+    pub exit_numbers: Vec<String>,
 }
 
 /// An instruction for visual display (usually as banners) at a specific point along a [`RouteStep`].

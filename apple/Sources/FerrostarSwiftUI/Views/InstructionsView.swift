@@ -157,14 +157,16 @@ public struct InstructionsView: View {
                     maneuverType: .turn,
                     maneuverModifier: .right,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 secondaryContent: VisualInstructionContent(
                     text: "Merge onto Hwy 123",
                     maneuverType: .merge,
                     maneuverModifier: .right,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 subContent: nil,
                 triggerDistanceBeforeManeuver: 123
@@ -178,7 +180,8 @@ public struct InstructionsView: View {
                     maneuverType: .rotary,
                     maneuverModifier: .slightRight,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 secondaryContent: nil,
                 subContent: nil,
@@ -193,7 +196,8 @@ public struct InstructionsView: View {
                     maneuverType: .merge,
                     maneuverModifier: .slightLeft,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 secondaryContent: nil,
                 subContent: nil,
@@ -210,14 +214,16 @@ public struct InstructionsView: View {
                     maneuverType: .turn,
                     maneuverModifier: .right,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 secondaryContent: VisualInstructionContent(
                     text: "Merge onto Hwy 123",
                     maneuverType: .merge,
                     maneuverModifier: .right,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 subContent: nil,
                 triggerDistanceBeforeManeuver: 123

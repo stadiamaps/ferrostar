@@ -36,6 +36,7 @@
         ▿ visualInstructions: 1 element
           ▿ VisualInstruction
             ▿ primaryContent: VisualInstructionContent
+              - exitNumbers: 0 elements
               - laneInfo: Optional<Array<LaneInfo>>.none
               ▿ maneuverModifier: Optional<ManeuverModifier>
                 - some: ManeuverModifier.straight
