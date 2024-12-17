@@ -61,7 +61,8 @@ public extension NavigationState {
                                     maneuverType: .turn,
                                     maneuverModifier: .left,
                                     roundaboutExitDegrees: nil,
-                                    laneInfo: nil
+                                    laneInfo: nil,
+                                    exitNumbers: []
                                 ),
                                 secondaryContent: nil,
                                 subContent: nil,

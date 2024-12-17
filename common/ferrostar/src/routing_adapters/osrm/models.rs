@@ -211,6 +211,7 @@ pub struct BannerContentComponent {
     pub abbr: Option<String>,
     pub abbr_priority: Option<u8>,
     pub active_direction: Option<String>,
+    pub text: Option<String>,
 }
 
 #[derive(Deserialize, Debug)]
