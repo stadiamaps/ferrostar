@@ -217,7 +217,7 @@ pub fn deviation_from_line(point: &Point, line: &LineString) -> Option<f64> {
     })
 }
 
-fn is_close_enough_to_end_of_linestring(
+fn is_within_threshold_to_end_of_linestring(
     current_position: &Point,
     current_step_linestring: &LineString,
     threshold: f64,
@@ -254,7 +254,7 @@ pub fn should_advance_to_next_step(
             if user_location.horizontal_accuracy > minimum_horizontal_accuracy.into() {
                 false
             } else {
-                is_close_enough_to_end_of_linestring(
+                is_within_threshold_to_end_of_linestring(
                     &current_position,
                     current_step_linestring,
                     f64::from(distance),
@@ -273,7 +273,7 @@ pub fn should_advance_to_next_step(
                         SpecialAdvanceConditions::AdvanceAtDistanceFromEnd(distance) => {
                             // Short-circuit: if we are close to the end of the step,
                             // we may advance early.
-                            if is_close_enough_to_end_of_linestring(
+                            if is_within_threshold_to_end_of_linestring(
                                 &current_position,
                                 current_step_linestring,
                                 f64::from(distance),
