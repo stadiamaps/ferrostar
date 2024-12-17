@@ -22,6 +22,7 @@
 	- [Android Foreground Services](./android-foreground-service.md)
 	- [Web](./web-customization.md)
 	- [iOS CarPlay](./ios-carplay.md)
+	- [Annotations (speed limits, traffic, etc.)](./annotations.md)
 
 # Contributor Guide
 
