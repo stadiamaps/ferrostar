@@ -1,14 +1,12 @@
 package com.stadiamaps.ferrostar
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,30 +14,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import com.mapbox.mapboxsdk.geometry.LatLng
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.maplibre.compose.symbols.Circle
 import com.stadiamaps.autocomplete.center
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
+import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.config.withCustomOverlayView
+import com.stadiamaps.ferrostar.composeui.config.withSpeedLimitStyle
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
-import com.stadiamaps.ferrostar.core.AndroidSystemLocationProvider
-import com.stadiamaps.ferrostar.core.LocationProvider
-import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
+import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageStyle
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
 import kotlin.math.min
-import kotlinx.coroutines.launch
 
 @Composable
 fun DemoNavigationScene(
     savedInstanceState: Bundle?,
-    locationProvider: LocationProvider = AppModule.locationProvider,
     viewModel: DemoNavigationViewModel = AppModule.viewModel
 ) {
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
+  val context = LocalContext.current
   val scope = rememberCoroutineScope()
 
   // Get location permissions.
@@ -64,12 +63,7 @@ fun DemoNavigationScene(
           permissions ->
         when {
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-            val vm = viewModel
-            if ((locationProvider is AndroidSystemLocationProvider ||
-                locationProvider is FusedLocationProvider)) {
-              // Activate location updates in the view model
-              vm.startLocationUpdates(locationProvider)
-            }
+            viewModel.startLocationUpdates()
           }
           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
             // TODO: Probably alert the user that this is unusable for navigation
@@ -83,17 +77,12 @@ fun DemoNavigationScene(
 
   // FIXME: This is restarting navigation every time the screen is rotated.
   LaunchedEffect(savedInstanceState) {
-    // Request all permissions
-    permissionsLauncher.launch(allPermissions)
-  }
-
-  // For smart casting
-  val loc = navigationUiState.location
-  if (loc == null) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-      Text("Waiting to acquire your GPS location...", modifier = Modifier.padding(innerPadding))
+    if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+        PackageManager.PERMISSION_GRANTED) {
+      viewModel.startLocationUpdates()
+    } else {
+      permissionsLauncher.launch(allPermissions)
     }
-    return
   }
 
   // Set up the map!
@@ -106,16 +95,19 @@ fun DemoNavigationScene(
       // Snapping works well for most motor vehicle navigation.
       // Other travel modes though, such as walking, may not want snapping.
       snapUserLocationToRoute = false,
+      config = VisualNavigationViewConfig.Default().withSpeedLimitStyle(SignageStyle.MUTCD),
       views =
           NavigationViewComponentBuilder.Default()
               .withCustomOverlayView(
                   customOverlayView = { modifier ->
-                    AutocompleteOverlay(
-                        modifier = modifier,
-                        scope = scope,
-                        isNavigating = navigationUiState.isNavigating(),
-                        locationProvider = locationProvider,
-                        loc = loc)
+                    navigationUiState.location?.let { loc ->
+                      AutocompleteOverlay(
+                          modifier = modifier,
+                          scope = scope,
+                          isNavigating = navigationUiState.isNavigating(),
+                          locationProvider = viewModel.locationProvider,
+                          loc = loc)
+                    }
                   }),
       onTapExit = { viewModel.stopNavigation() }) { uiState ->
         // Trivial, if silly example of how to add your own overlay layers.

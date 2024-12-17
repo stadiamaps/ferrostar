@@ -92,6 +92,8 @@ fun LandscapeNavigationOverlayView(
     Column(modifier = Modifier.fillMaxHeight()) {
       NavigatingInnerGridView(
           modifier = Modifier.fillMaxSize(),
+          speedLimit = uiState.currentAnnotation?.speedLimit,
+          speedLimitStyle = config.speedLimitStyle,
           showMute = config.showMute,
           isMuted = uiState.isMuted,
           onClickMute = { viewModel.toggleMute() },

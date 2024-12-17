@@ -22,7 +22,7 @@ public struct SpeedLimitView: View {
 
     public init(
         speedLimit: Measurement<UnitSpeed>,
-        signageStyle: SignageStyle = .viennaConvention, // Change the default once we have a better solution.
+        signageStyle: SignageStyle,
         valueFormatter: NumberFormatter = DefaultFormatters.speedFormatter,
         unitFormatter: MeasurementFormatter = DefaultFormatters.speedWithUnitsFormatter
     ) {
@@ -60,9 +60,9 @@ public struct SpeedLimitView: View {
 
 #Preview {
     VStack {
-        SpeedLimitView(speedLimit: .init(value: 24.5, unit: .metersPerSecond))
+        SpeedLimitView(speedLimit: .init(value: 24.5, unit: .metersPerSecond), signageStyle: .viennaConvention)
 
-        SpeedLimitView(speedLimit: .init(value: 27.8, unit: .metersPerSecond))
+        SpeedLimitView(speedLimit: .init(value: 27.8, unit: .metersPerSecond), signageStyle: .viennaConvention)
             .environment(\.locale, .init(identifier: "fr_FR"))
     }
     .padding()

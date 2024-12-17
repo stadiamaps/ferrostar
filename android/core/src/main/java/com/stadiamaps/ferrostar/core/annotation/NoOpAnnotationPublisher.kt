@@ -4,6 +4,6 @@ import com.stadiamaps.ferrostar.core.NavigationState
 
 class NoOpAnnotationPublisher : AnnotationPublisher<Unit> {
   override fun map(state: NavigationState): AnnotationWrapper<Unit> {
-    return AnnotationWrapper(state = state)
+    return AnnotationWrapper()
   }
 }
