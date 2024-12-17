@@ -69,36 +69,6 @@ class DemoNavigationViewModel(
                       null,
                       null))
 
-  //  override val navigationUiState: StateFlow<NavigationUiState> =
-  //      combine(ferrostarCore.state, muteState, locationStateFlow) { a, b, c -> Triple(a, b, c) }
-  //          .map { (ferrostarCoreState, isMuted, userLocation) ->
-  //            if (ferrostarCoreState.isNavigating()) {
-  //              val tripState = ferrostarCoreState.tripState
-  //              val location = ferrostarCore.locationProvider.lastLocation
-  //              val snappedLocation =
-  //                  when (tripState) {
-  //                    is TripState.Navigating -> tripState.snappedUserLocation
-  //                    is TripState.Complete,
-  //                    TripState.Idle -> ferrostarCore.locationProvider.lastLocation
-  //                  }
-  //              NavigationUiState.fromFerrostar(
-  //                  ferrostarCoreState, isMuted, location, snappedLocation)
-  //            } else {
-  //              // TODO: Heading
-  //              NavigationUiState(
-  //                  userLocation, null, null, null, null, null, null, false, null, null, null,
-  // null, null)
-  //            }
-  //          }
-  //          .stateIn(
-  //              scope = viewModelScope,
-  //              started = SharingStarted.WhileSubscribed(),
-  //              // TODO: Heading
-  //              initialValue =
-  //                  NavigationUiState(
-  //                      null, null, null, null, null, null, null, false, null, null, null, null,
-  // null))
-
   override fun toggleMute() {
     val spokenInstructionObserver = ferrostarCore.spokenInstructionObserver
     if (spokenInstructionObserver == null) {

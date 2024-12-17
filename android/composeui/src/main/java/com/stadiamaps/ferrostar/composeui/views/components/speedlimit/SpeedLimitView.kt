@@ -18,7 +18,7 @@ enum class SignageStyle {
 fun SpeedLimitView(
     modifier: Modifier = Modifier,
     speedLimit: MeasurementSpeed,
-    signageStyle: SignageStyle = SignageStyle.ViennaConvention, // TODO: This could be nicer
+    signageStyle: SignageStyle,
     context: Context = LocalContext.current,
     formatter: MeasurementSpeedFormatter = MeasurementSpeedFormatter(context, speedLimit),
     locale: ULocale = ULocale.getDefault()

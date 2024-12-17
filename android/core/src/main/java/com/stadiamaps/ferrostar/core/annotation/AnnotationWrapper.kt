@@ -5,11 +5,8 @@ import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
 
 data class AnnotationWrapper<T>(
     val annotation: T? = null,
-    val speed: Speed? = null,
-    //    val state: NavigationState
+    val speed: Speed? = null
 ) {
-  fun getAnnotationType(): T? = annotation
-
   val speedLimit: MeasurementSpeed?
     get() =
         when (speed) {
