@@ -19,56 +19,55 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import uniffi.ferrostar.Heading
-import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 
 class DemoNavigationViewModel(
     // This is a simple example, but these would typically be dependency injected
     val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
+    val locationProvider: LocationProvider = AppModule.locationProvider,
     annotationPublisher: AnnotationPublisher<*> = valhallaExtendedOSRMAnnotationPublisher()
 ) : DefaultNavigationViewModel(ferrostarCore, annotationPublisher), LocationUpdateListener {
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)
   private val executor = Executors.newSingleThreadScheduledExecutor()
 
-  private val muteState: StateFlow<Boolean?> =
-      ferrostarCore.spokenInstructionObserver?.muteState ?: MutableStateFlow(null)
-
-  fun startLocationUpdates(locationProvider: LocationProvider) {
+  fun startLocationUpdates() {
     locationStateFlow.update { locationProvider.lastLocation }
     locationProvider.addListener(this, executor)
   }
 
-  fun stopLocationUpdates(locationProvider: LocationProvider) {
+  fun stopLocationUpdates() {
     locationProvider.removeListener(this)
   }
 
+  // Here's an example of injecting a custom location into the navigation UI state when isNavigating
+  // is false.
   override val navigationUiState: StateFlow<NavigationUiState> =
-      combine(ferrostarCore.state, muteState, locationStateFlow) { a, b, c -> Triple(a, b, c) }
-          .map { (ferrostarCoreState, isMuted, userLocation) ->
-            if (ferrostarCoreState.isNavigating()) {
-              val tripState = ferrostarCoreState.tripState
-              val location = ferrostarCore.locationProvider.lastLocation
-              val snappedLocation =
-                  when (tripState) {
-                    is TripState.Navigating -> tripState.snappedUserLocation
-                    is TripState.Complete,
-                    TripState.Idle -> ferrostarCore.locationProvider.lastLocation
-                  }
-              NavigationUiState.fromFerrostar(
-                  ferrostarCoreState, isMuted, location, snappedLocation)
+      combine(super.navigationUiState, locationStateFlow) { a, b -> Pair(a, b) }
+          .map { (uiState, location) ->
+            if (uiState.isNavigating()) {
+              uiState
             } else {
-              // TODO: Heading
-              NavigationUiState(
-                  userLocation, null, null, null, null, null, null, false, null, null, null, null)
+              uiState.copy(location = location)
             }
           }
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
-              // TODO: Heading
               initialValue =
                   NavigationUiState(
-                      null, null, null, null, null, null, null, false, null, null, null, null))
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      false,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null))
 
   override fun toggleMute() {
     val spokenInstructionObserver = ferrostarCore.spokenInstructionObserver

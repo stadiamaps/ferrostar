@@ -73,6 +73,8 @@ fun PortraitNavigationOverlayView(
 
     NavigatingInnerGridView(
         modifier = Modifier.fillMaxSize().weight(1f).padding(bottom = 16.dp, top = 16.dp),
+        speedLimit = uiState.currentAnnotation?.speedLimit,
+        speedLimitStyle = config.speedLimitStyle,
         showMute = config.showMute,
         isMuted = uiState.isMuted,
         onClickMute = { viewModel.toggleMute() },

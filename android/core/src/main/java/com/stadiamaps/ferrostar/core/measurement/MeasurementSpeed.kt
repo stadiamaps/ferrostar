@@ -1,42 +1,59 @@
 package com.stadiamaps.ferrostar.core.measurement
 
-enum class SpeedUnit {
+enum class MeasurementSpeedUnit {
   MetersPerSecond,
   MilesPerHour,
-  KilometersPerHour
+  KilometersPerHour,
+  Knots
 }
 
-class MeasurementSpeed(val value: Double, val unit: SpeedUnit) {
+class MeasurementSpeed(val value: Double, val unit: MeasurementSpeedUnit) {
 
   companion object {
     // TODO: Move this to a shared conversions constants file?
     const val METERS_PER_SECOND_TO_MILES_PER_HOUR = 2.23694
     const val METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR = 3.6
+    const val METERS_PER_SECOND_TO_KNOTS = 1.94384
   }
 
-  fun value(converted: SpeedUnit): Double {
+  fun value(converted: MeasurementSpeedUnit): Double {
     when (unit) {
-      SpeedUnit.MetersPerSecond -> {
+      MeasurementSpeedUnit.MetersPerSecond -> {
         return when (converted) {
-          SpeedUnit.MetersPerSecond -> value
-          SpeedUnit.MilesPerHour -> value * METERS_PER_SECOND_TO_MILES_PER_HOUR
-          SpeedUnit.KilometersPerHour -> value * METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
+          MeasurementSpeedUnit.MetersPerSecond -> value
+          MeasurementSpeedUnit.MilesPerHour -> value * METERS_PER_SECOND_TO_MILES_PER_HOUR
+          MeasurementSpeedUnit.KilometersPerHour -> value * METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
+          MeasurementSpeedUnit.Knots -> value * METERS_PER_SECOND_TO_KNOTS
         }
       }
-      SpeedUnit.MilesPerHour -> {
+      MeasurementSpeedUnit.MilesPerHour -> {
         return when (converted) {
-          SpeedUnit.MetersPerSecond -> value / METERS_PER_SECOND_TO_MILES_PER_HOUR
-          SpeedUnit.MilesPerHour -> value
-          SpeedUnit.KilometersPerHour ->
+          MeasurementSpeedUnit.MetersPerSecond -> value / METERS_PER_SECOND_TO_MILES_PER_HOUR
+          MeasurementSpeedUnit.MilesPerHour -> value
+          MeasurementSpeedUnit.KilometersPerHour ->
               value / METERS_PER_SECOND_TO_MILES_PER_HOUR * METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
+          MeasurementSpeedUnit.Knots ->
+              value / METERS_PER_SECOND_TO_MILES_PER_HOUR * METERS_PER_SECOND_TO_KNOTS
         }
       }
-      SpeedUnit.KilometersPerHour -> {
+      MeasurementSpeedUnit.KilometersPerHour -> {
         return when (converted) {
-          SpeedUnit.MetersPerSecond -> value / METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
-          SpeedUnit.MilesPerHour ->
+          MeasurementSpeedUnit.MetersPerSecond -> value / METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
+          MeasurementSpeedUnit.MilesPerHour ->
               value / METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR * METERS_PER_SECOND_TO_MILES_PER_HOUR
-          SpeedUnit.KilometersPerHour -> value
+          MeasurementSpeedUnit.KilometersPerHour -> value
+          MeasurementSpeedUnit.Knots ->
+              value / METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR * METERS_PER_SECOND_TO_KNOTS
+        }
+      }
+      MeasurementSpeedUnit.Knots -> {
+        return when (converted) {
+          MeasurementSpeedUnit.MetersPerSecond -> value / METERS_PER_SECOND_TO_KNOTS
+          MeasurementSpeedUnit.MilesPerHour ->
+              value / METERS_PER_SECOND_TO_KNOTS * METERS_PER_SECOND_TO_MILES_PER_HOUR
+          MeasurementSpeedUnit.KilometersPerHour ->
+              value / METERS_PER_SECOND_TO_KNOTS * METERS_PER_SECOND_TO_KILOMETERS_PER_HOUR
+          MeasurementSpeedUnit.Knots -> value
         }
       }
     }

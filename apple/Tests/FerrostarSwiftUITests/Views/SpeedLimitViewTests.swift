@@ -44,11 +44,11 @@ final class SpeedLimitViewTests: XCTestCase {
 
     func assertLocalizedSpeedLimitViews() {
         assertView {
-            SpeedLimitView(speedLimit: .init(value: 24.5, unit: .metersPerSecond))
+            SpeedLimitView(speedLimit: .init(value: 24.5, unit: .metersPerSecond), signageStyle: .mutcdStyle)
         }
 
         assertView {
-            SpeedLimitView(speedLimit: .init(value: 27.8, unit: .metersPerSecond))
+            SpeedLimitView(speedLimit: .init(value: 27.8, unit: .metersPerSecond), signageStyle: .viennaConvention)
                 .environment(\.locale, .init(identifier: "fr_FR"))
         }
     }
@@ -97,11 +97,11 @@ final class SpeedLimitViewTests: XCTestCase {
 
     func assertLocalizedSpeedLimitViews_darkMode() {
         assertView(colorScheme: .dark) {
-            SpeedLimitView(speedLimit: .init(value: 24.5, unit: .metersPerSecond))
+            SpeedLimitView(speedLimit: .init(value: 24.5, unit: .metersPerSecond), signageStyle: .mutcdStyle)
         }
 
         assertView(colorScheme: .dark) {
-            SpeedLimitView(speedLimit: .init(value: 27.8, unit: .metersPerSecond))
+            SpeedLimitView(speedLimit: .init(value: 27.8, unit: .metersPerSecond), signageStyle: .viennaConvention)
                 .environment(\.locale, .init(identifier: "fr_FR"))
         }
     }
