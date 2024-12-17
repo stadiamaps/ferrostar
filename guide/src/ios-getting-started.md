@@ -153,6 +153,17 @@ You can create a Valhalla extended OSRM annotation publisher like so:
 AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
 ```
 
+### Bringing it all together: a typical config
+
+Here’s an example of a typical `FerrostarCore` init.
+NOTE: The step advance configuration in particular requires special attention.
+Refer to the documentation before blindly setting values.
+
+```swift
+FerrostarCore(valhallaEndpointUrl: URL(string: "https://api.stadiamaps.com/route/v1?api_key=\(stadiaMapsAPIKey)")!, profile: profile, locationProvider: locationProvider, navigationControllerConfig: SwiftNavigationControllerConfig(stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, specialAdvanceConditions: .minimumDistanceFromCurrentStepLine(10)), routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 25), snappedLocationCourseFiltering: .snapToRoute),                                                           networkSession: URLSession.shared,
+    annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM())
+```
+
 ## Getting a route
 
 Before getting routes, you’ll need the user’s current location.
@@ -182,7 +193,7 @@ Task {
 Once you or the user has selected a route, it’s time to start navigating!
 
 ```swift
-try ferrostarCore.startNavigation(route: route, config: SwiftNavigationControllerConfig(stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10), routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 25)))
+try ferrostarCore.startNavigation(route: route,)
 ```
 
 From this point, `FerrostarCore` automatically starts the `LocationProvider` updates,
