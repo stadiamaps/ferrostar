@@ -123,15 +123,11 @@ To make use of it,
 you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`
 in your Gradle dependencies block.
 
-Just as with the `AndroidSystemLocationProvider`,
-you probably need to declare it as a `lateinit var` instance variable first,
-and then initialize later once the `Context` is available.
+You can initialize the provider like so.
+In an `Activity`, the context is simply `this`.
+In other cases, get a context using an appropriate method.
 
 ```kotlin
-// Instance variable definition
-private lateinit var locationProvider: FusedLocationProvider
-
-// Later when the activity loads and a context is available
 locationProvider = FusedLocationProvider(context = this)
 ```
 
@@ -154,14 +150,7 @@ Otherwise, you’re probably better off using the Fused Location Client from Goo
 
 </div>
 
-Initializing this provider requires an Android `Context`,
-so you probably need to declare it as a `lateinit var` instance variable.
-
-```kotlin
-private lateinit var locationProvider: AndroidSystemLocationProvider
-```
-
-You can initialize it like so.
+You can initialize the provider like so.
 In an `Activity`, the context is simply `this`.
 In other cases, get a context using an appropriate method.
 
