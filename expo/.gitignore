@@ -1,0 +1,6 @@
+android/build
+android/gradle
+
+/node_modules/
+
+android/local.properties
