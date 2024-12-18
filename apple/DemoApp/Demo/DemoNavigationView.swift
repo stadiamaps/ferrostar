@@ -49,6 +49,7 @@ struct DemoNavigationView: View {
                 }
             )
             .navigationSpeedLimit(
+                // Configure speed limit signage based on user preference or location
                 speedLimit: ferrostarCore.annotation?.speedLimit,
                 speedLimitStyle: .mutcdStyle
             )

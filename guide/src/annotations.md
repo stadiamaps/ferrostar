@@ -10,13 +10,26 @@ from the route response,
 and will handle the most common ones from Valhalla-based servers
 (like Stadia Maps and Mapbox) with just one line of code.
 
-The implementation is completely generic,
+## OSRM-style annotation data structure
+
+In the OSRM data model, annotations are a list
+with each entry representing a line segment between consecutive
+coordinates along the route geometry.
+This allows for fine-grained details which may change through the course of a maneuver.
+
+While OSRM’s annotations aren’t particularly interesting for most use cases,
+many implementations use this for speed limit, traffic congestion, and similar info.
+
+The implementation in Ferrostar is generic,
 so you can define your own model to include custom parameters.
 PRs welcome for other public API annotation models.
 
-## Swift
+## Setting up an annotation publisher
 
-Here’s how to create a Valhalla extended OSRM annotation publisher in Swift:
+Here’s how to set up an annotation publisher using the bundled one
+(for Valhalla-based solutions like Stadia Maps and Mapbox).
+
+### Swift
 
 ```swift
 let annotationPublisher = AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
@@ -24,11 +37,10 @@ let annotationPublisher = AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.va
 
 Pass this publisher via the optional `annotation:` parameter
 of the `FerrostarCore` constructor.
+Now you can use the `annotation` property on your `FerrostarCore` instance
+to get the annotation based on the user’s snapped location.
 
-## Kotlin
-
-In Kotlin, you can create a Valhalla extended OSRM annotation publisher
-by importing and invoking an extension method:
+### Kotlin
 
 ```kotlin
 import com.stadiamaps.ferrostar.core.annotation.valhalla.valhallaExtendedOSRMAnnotationPublisher
@@ -50,4 +62,39 @@ class DemoNavigationViewModel(
 ) : DefaultNavigationViewModel(ferrostarCore, annotationPublisher), LocationUpdateListener {
     // ...
 }
+```
+
+## Displaying speed limits in your app
+
+The provided navigation views for iOS and Android
+supports speed limits out of the box!
+Both demo apps include examples of how to configure it.
+
+### SwiftUI
+
+For SwiftUI, you can configure speed limit display using the `navigationSpeedLimit`
+view modifier on your navigation view:
+
+```swift
+DynamicallyOrientingNavigationView(
+    // Other arguments...
+)
+.navigationSpeedLimit(
+    // Configure speed limit signage based on user preference or location
+    speedLimit: ferrostarCore.annotation?.speedLimit,
+    speedLimitStyle: .mutcdStyle
+)
+```
+
+### Jetpack Compose
+
+With Jetpack Compose, you can configure speed limit display with the optional
+`config` parameter:
+
+```kotlin
+DynamicallyOrientingNavigationView(
+    // Other arguments...
+    // Configure speed limit signage based on user preference or location
+    config = VisualNavigationViewConfig.Default().withSpeedLimitStyle(SignageStyle.MUTCD)
+)
 ```
