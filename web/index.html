@@ -43,7 +43,9 @@
         stepAdvance: {
           RelativeLineStringDistance: {
             minimumHorizontalAccuracy: 25,
-            automaticAdvanceDistance: 10,
+            specialAdvanceConditions: {
+              MinimumDistanceFromCurrentStepLine: 10,
+            },
           },
         },
         routeDeviationTracking: {
@@ -89,21 +91,7 @@
             const route = routes[0];
 
             // Start the navigation
-            ferrostar.startNavigation(route, {
-              stepAdvance: {
-                RelativeLineStringDistance: {
-                  minimumHorizontalAccuracy: 25,
-                  automaticAdvanceDistance: 10,
-                },
-              },
-              routeDeviationTracking: {
-                StaticThreshold: {
-                  minimumHorizontalAccuracy: 25,
-                  maxAcceptableDeviation: 10.0,
-                },
-              },
-              snappedLocationCourseFiltering: "Raw",
-            });
+            ferrostar.startNavigation(route, config);
           },
         });
 

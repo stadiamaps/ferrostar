@@ -12,7 +12,16 @@ The step advance mode describes when a maneuver is “complete”
 and navigation should advance to the next step.
 We have a few built-in variants in the core,
 which you can find in the [Rust documentation](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/enum.StepAdvanceMode.html).
-The high-level platform wrappers also have this and should show in your IDE documentation panel.
+It’s worth having a careful read over these to understand the various behaviors.
+The high-level platform wrappers also have docs which should show in your IDE documentation panel/popups.
+
+<div class="warning">
+
+The casing for some the configurations gets wonky in the TypeScript bindings.
+Have a look at the [web demo](https://github.com/stadiamaps/ferrostar/blob/main/web/index.html)
+for an example.
+
+</div>
 
 If you want to build your own custom step advance logic,
 set the `StepAdvanceMode` to manual,

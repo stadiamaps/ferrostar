@@ -31,6 +31,7 @@ import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.RouteRequestGenerator
 import uniffi.ferrostar.RouteResponseParser
 import uniffi.ferrostar.RouteStep
+import uniffi.ferrostar.SpecialAdvanceConditions
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
@@ -397,7 +398,11 @@ class FerrostarCoreTest {
     core.startNavigation(
         routes.first(),
         NavigationControllerConfig(
-            stepAdvance = StepAdvanceMode.RelativeLineStringDistance(16U, 16U),
+            stepAdvance =
+                StepAdvanceMode.RelativeLineStringDistance(
+                    16U,
+                    specialAdvanceConditions =
+                        SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(16U)),
             routeDeviationTracking =
                 RouteDeviationTracking.Custom(
                     detector =
