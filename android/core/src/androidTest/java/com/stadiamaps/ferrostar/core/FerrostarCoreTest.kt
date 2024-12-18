@@ -100,7 +100,8 @@ class FerrostarCoreTest {
           maneuverType = ManeuverType.DEPART,
           maneuverModifier = ManeuverModifier.STRAIGHT,
           roundaboutExitDegrees = null,
-          laneInfo = null)
+          laneInfo = null,
+          exitNumbers = emptyList())
   private val mockRoute =
       Route(
           geometry = mockGeom,

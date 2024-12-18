@@ -18,6 +18,7 @@ use crate::routing_adapters::{
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::{string::ToString, vec, vec::Vec};
 use geo::BoundingRect;
+use models::BannerContent;
 use polyline::decode_polyline;
 use utilities::get_annotation_slice;
 use uuid::Uuid;
@@ -191,6 +192,15 @@ impl Route {
 }
 
 impl RouteStep {
+    fn extract_exit_numbers(banner_content: &BannerContent) -> Vec<String> {
+        banner_content
+            .components
+            .iter()
+            .filter(|component| component.component_type.as_deref() == Some("exit-number"))
+            .filter_map(|component| component.text.clone())
+            .collect()
+    }
+
     fn from_osrm_and_geom(
         value: &OsrmRouteStep,
         geometry: Vec<GeographicCoordinate>,
@@ -207,6 +217,7 @@ impl RouteStep {
                     maneuver_modifier: banner.primary.maneuver_modifier,
                     roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
                     lane_info: None,
+                    exit_numbers: Self::extract_exit_numbers(&banner.primary),
                 },
                 secondary_content: banner.secondary.as_ref().map(|secondary| {
                     VisualInstructionContent {
@@ -215,6 +226,7 @@ impl RouteStep {
                         maneuver_modifier: secondary.maneuver_modifier,
                         roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
                         lane_info: None,
+                        exit_numbers: Self::extract_exit_numbers(&secondary),
                     }
                 }),
                 sub_content: banner.sub.as_ref().map(|sub| VisualInstructionContent {
@@ -240,6 +252,7 @@ impl RouteStep {
                             Some(lane_infos)
                         }
                     },
+                    exit_numbers: Self::extract_exit_numbers(&sub),
                 }),
                 trigger_distance_before_maneuver: banner.distance_along_geometry,
             })

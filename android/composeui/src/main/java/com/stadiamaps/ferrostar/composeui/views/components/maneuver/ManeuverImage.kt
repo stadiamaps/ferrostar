@@ -54,7 +54,8 @@ fun ManeuverImageLeftTurnPreview() {
           maneuverType = ManeuverType.TURN,
           maneuverModifier = ManeuverModifier.LEFT,
           roundaboutExitDegrees = null,
-          laneInfo = null))
+          laneInfo = null,
+          exitNumbers = emptyList()))
 }
 
 @Preview
@@ -66,5 +67,6 @@ fun ManeuverImageContinueUturnPreview() {
           maneuverType = ManeuverType.CONTINUE,
           maneuverModifier = ManeuverModifier.U_TURN,
           roundaboutExitDegrees = null,
-          laneInfo = null))
+          laneInfo = null,
+          exitNumbers = emptyList()))
 }

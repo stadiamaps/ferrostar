@@ -26,7 +26,8 @@ class InstructionViewTest {
                     maneuverType = ManeuverType.TURN,
                     maneuverModifier = ManeuverModifier.LEFT,
                     roundaboutExitDegrees = null,
-                    laneInfo = null),
+                    laneInfo = null,
+                    exitNumbers = emptyList()),
             secondaryContent = null,
             subContent = null,
             triggerDistanceBeforeManeuver = 42.0)
