@@ -1,5 +1,6 @@
 import Geolocation, {
   type GeolocationConfiguration,
+  type GeolocationOptions,
 } from '@react-native-community/geolocation';
 import {
   GeographicCoordinate,
@@ -16,16 +17,30 @@ export interface LocationProviderInterface {
 
 export interface LocationUpdateListener {
   onLocationUpdate(location: UserLocation): void;
-  onnHeadingUpdate(heading: Heading): void;
+  onHeadingUpdate(heading: Heading): void;
 }
 
 export class LocationProvider implements LocationProviderInterface {
   lastLocation?: UserLocation;
   lastHeading?: Heading;
 
+  private locationUpdateOptions: GeolocationOptions;
   private listeners: Map<LocationUpdateListener, number> = new Map();
 
-  constructor(config: GeolocationConfiguration) {
+  constructor(
+    config: GeolocationConfiguration = {
+      skipPermissionRequests: false,
+      authorizationLevel: 'auto',
+      locationProvider: 'auto',
+      enableBackgroundLocationUpdates: false,
+    },
+    options: GeolocationOptions = {
+      enableHighAccuracy: true,
+      interval: 1000,
+      fastestInterval: 0,
+    }
+  ) {
+    this.locationUpdateOptions = options;
     Geolocation.setRNConfiguration(config);
   }
 
@@ -42,27 +57,31 @@ export class LocationProvider implements LocationProviderInterface {
       return;
     }
 
-    const watchId = Geolocation.watchPosition((location) => {
-      const { coords, timestamp } = location;
-      const userLocation = UserLocation.new({
-        coordinates: GeographicCoordinate.new({
-          lat: coords.latitude,
-          lng: coords.longitude,
-        }),
-        horizontalAccuracy: coords.accuracy,
-        // TODO: map these parameters to the correct types not 100% which ones are correct
-        courseOverGround: undefined,
-        speed:
-          coords.speed !== null
-            ? {
-                value: coords.speed,
-                accuracy: undefined,
-              }
-            : undefined,
-        timestamp: new Date(timestamp),
-      });
-      listener.onLocationUpdate(userLocation);
-    });
+    const watchId = Geolocation.watchPosition(
+      (location) => {
+        const { coords, timestamp } = location;
+        const userLocation = UserLocation.new({
+          coordinates: GeographicCoordinate.new({
+            lat: coords.latitude,
+            lng: coords.longitude,
+          }),
+          horizontalAccuracy: coords.accuracy,
+          // TODO: map these parameters to the correct types not 100% which ones are correct
+          courseOverGround: undefined,
+          speed:
+            coords.speed !== null
+              ? {
+                  value: coords.speed,
+                  accuracy: undefined,
+                }
+              : undefined,
+          timestamp: new Date(timestamp),
+        });
+        listener.onLocationUpdate(userLocation);
+      },
+      undefined,
+      this.locationUpdateOptions
+    );
 
     this.listeners.set(listener, watchId);
   }

@@ -1,5 +1,6 @@
 import {
   GeographicCoordinate,
+  Heading,
   NavigationController,
   NavigationControllerConfig,
   Route,
@@ -10,6 +11,11 @@ import {
 } from '../generated/ferrostar';
 import { getNanoTime } from './_utils';
 import type { AlternativeRouteProcessor } from './AlternativeRouteProcessor';
+import {
+  LocationProvider,
+  type LocationProviderInterface,
+  type LocationUpdateListener,
+} from './LocationProvider';
 import {
   CorrectiveAction,
   type RouteDeviationHandler,
@@ -74,8 +80,9 @@ export class NavigationState {
  * NOTE: It is the responsibility of the caller to ensure that the location manager is authorized to
  * access the user's location.
  */
-export class FerrostarCore {
+export class FerrostarCore implements LocationUpdateListener {
   navigationControllerConfig: NavigationControllerConfig;
+  locationProvider: LocationProviderInterface;
   routeProvider: RouteProviderInterface;
 
   /**
@@ -122,6 +129,7 @@ export class FerrostarCore {
     profile: string,
     navigationControllerConfig: NavigationControllerConfig,
     options: Record<string, any> = {},
+    locationProvider: LocationProviderInterface = new LocationProvider(),
     routeProvider: RouteProviderInterface = new RouteProvider(
       valhallaEndpointURL,
       profile,
@@ -130,6 +138,7 @@ export class FerrostarCore {
   ) {
     this.navigationControllerConfig = navigationControllerConfig;
     this.routeProvider = routeProvider;
+    this.locationProvider = locationProvider;
   }
 
   async getRoutes(
@@ -192,6 +201,7 @@ export class FerrostarCore {
     this._state.set(initialTripState, route.geometry, false);
 
     // Add location provider listener here
+    this.locationProvider.addListener(this);
   }
 
   /**
@@ -251,7 +261,7 @@ export class FerrostarCore {
 
   stopNavigation(stopLocationUpdates: boolean = true) {
     if (stopLocationUpdates) {
-      // TODO: Add remove location listener
+      this.locationProvider.removeListener(this);
     }
     this._navigationController?.uniffiDestroy();
     this._navigationController = undefined;
@@ -329,9 +339,36 @@ export class FerrostarCore {
           break;
       }
     }
-
-    // TODO: handle the spoken instructions queue here
-
-    // TODO: foreground service update here
   }
+
+  onLocationUpdate(location: UserLocation): void {
+    this._lastLocation = location;
+    const controller = this._navigationController;
+
+    if (controller === undefined) {
+      return;
+    }
+
+    const newState = controller.updateUserLocation(
+      location,
+      this._state.tripState
+    );
+
+    this.handleStateUpdate(newState, location);
+
+    this._state.set(
+      newState,
+      this._state.routeGeometry,
+      this.isCalculatingNewRoute
+    );
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onHeadingUpdate(heading: Heading): void {
+    // TODO: heading update
+  }
+
+  // TODO: handle the spoken instructions queue here
+
+  // TODO: foreground service update here
 }
