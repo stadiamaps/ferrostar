@@ -2666,6 +2666,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-community/geolocation@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@react-native-community/geolocation@npm:3.4.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 4a1a334de5b8345ee5ca9af987718a4cdd0b401b6d024268330c98736eccd0bebf45fd1d4cb396558f429a4670e5b29da0b5b7ebd4e51ca12972d4b08b55d4bc
+  languageName: node
+  linkType: hard
+
 "@react-native/assets-registry@npm:0.76.5":
   version: 0.76.5
   resolution: "@react-native/assets-registry@npm:0.76.5"
@@ -10634,6 +10644,7 @@ __metadata:
     "@commitlint/config-conventional": ^17.0.2
     "@evilmartians/lefthook": ^1.5.0
     "@react-native-community/cli": 15.0.1
+    "@react-native-community/geolocation": ^3.4.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
     "@types/jest": ^29.5.5
