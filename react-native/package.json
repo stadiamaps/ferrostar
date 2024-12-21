@@ -205,6 +205,7 @@
     "version": "0.45.5"
   },
   "dependencies": {
+    "@maplibre/maplibre-react-native": "^10.0.0-alpha.28",
     "@react-native-community/geolocation": "^3.4.0",
     "uniffi-bindgen-react-native": "^0.28.3-1"
   }

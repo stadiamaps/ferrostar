@@ -123,6 +123,7 @@ export class FerrostarCore implements LocationUpdateListener {
   _routeRequestInFlight: boolean = false;
   _lastAutomaticeRecalculation?: number;
   _lastLocation?: UserLocation;
+  _listeners: Map<number, (state: NavigationState) => void> = new Map();
 
   constructor(
     valhallaEndpointURL: string,
@@ -288,57 +289,76 @@ export class FerrostarCore implements LocationUpdateListener {
       ? getNanoTime() - this._lastAutomaticeRecalculation >
         this.minimumTimeBeforeRecalculaton
       : true;
-    if (!this._routeRequestInFlight && isGreaterThanMinimumTime) {
-      const action =
-        this.deviationHandler?.correctiveActionForDeviation(
-          this,
-          newState.inner.deviation.inner.deviationFromRouteLine,
-          newState.inner.remainingWaypoints
-        ) ?? CorrectiveAction.GetNewRoutes;
 
-      switch (action) {
-        case CorrectiveAction.DoNothing:
-          break;
-        case CorrectiveAction.GetNewRoutes:
-          this.isCalculatingNewRoute = true;
-          try {
-            const routes = await this.getRoutes(
-              location,
-              newState.inner.remainingWaypoints
-            );
-            const config = this.navigationControllerConfig;
-            const processor = this.alternativeRouteProcessor;
-            const state = this._state;
-            // Make sure we are still navigating and the new route is still relevant.
-            if (
-              TripState.Navigating.instanceOf(state.tripState) &&
-              RouteDeviation.OffRoute.instanceOf(
-                state.tripState.inner.deviation
-              )
-            ) {
-              if (processor !== undefined) {
-                processor.loadedAlternativeRoutes(this, routes);
-              } else if (routes.length > 0) {
-                // Default behavior when there is no user-defined behavior:
-                // accept the first route, as this is what most users want when they go off route.
-                const firstRoute = routes[0];
-                // Stupid TS can't figure out that firstRoute is not undefined here.
-                if (firstRoute === undefined) {
-                  throw new Error('No route found');
-                }
-
-                this.replaceRoute(firstRoute, config);
-              }
-            }
-          } catch (e) {
-            console.log('FerrostarCore', `Failed to recalculate route: ${e}`);
-          } finally {
-            this._lastAutomaticeRecalculation = getNanoTime();
-            this.isCalculatingNewRoute = false;
-          }
-          break;
-      }
+    if (this._routeRequestInFlight || !isGreaterThanMinimumTime) {
+      return;
     }
+
+    const action =
+      this.deviationHandler?.correctiveActionForDeviation(
+        this,
+        newState.inner.deviation.inner.deviationFromRouteLine,
+        newState.inner.remainingWaypoints
+      ) ?? CorrectiveAction.GetNewRoutes;
+
+    switch (action) {
+      case CorrectiveAction.DoNothing:
+        break;
+      case CorrectiveAction.GetNewRoutes:
+        this.isCalculatingNewRoute = true;
+        try {
+          const routes = await this.getRoutes(
+            location,
+            newState.inner.remainingWaypoints
+          );
+          const config = this.navigationControllerConfig;
+          const processor = this.alternativeRouteProcessor;
+          const state = this._state;
+          // Make sure we are still navigating and the new route is still relevant.
+          if (
+            TripState.Navigating.instanceOf(state.tripState) &&
+            RouteDeviation.OffRoute.instanceOf(state.tripState.inner.deviation)
+          ) {
+            if (processor !== undefined) {
+              processor.loadedAlternativeRoutes(this, routes);
+            } else if (routes.length > 0) {
+              // Default behavior when there is no user-defined behavior:
+              // accept the first route, as this is what most users want when they go off route.
+              const firstRoute = routes[0];
+              // Stupid TS can't figure out that firstRoute is not undefined here.
+              if (firstRoute === undefined) {
+                throw new Error('No route found');
+              }
+
+              this.replaceRoute(firstRoute, config);
+            }
+          }
+        } catch (e) {
+          console.log('FerrostarCore', `Failed to recalculate route: ${e}`);
+        } finally {
+          this._lastAutomaticeRecalculation = getNanoTime();
+          this.isCalculatingNewRoute = false;
+        }
+        break;
+    }
+
+    // Send listeners the new state
+    this._listeners.forEach((listener) => {
+      listener(this._state);
+    });
+  }
+
+  addStateListener(listener: (state: NavigationState) => void): number {
+    // Create id for listener
+    const id = this._listeners.size + 1;
+
+    this._listeners.set(id, listener);
+
+    return id;
+  }
+
+  removeStateListener(id: number): void {
+    this._listeners.delete(id);
   }
 
   onLocationUpdate(location: UserLocation): void {
@@ -363,6 +383,7 @@ export class FerrostarCore implements LocationUpdateListener {
     );
   }
 
+  // TODO: remove once we have a way to update the heading
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onHeadingUpdate(heading: Heading): void {
     // TODO: heading update
