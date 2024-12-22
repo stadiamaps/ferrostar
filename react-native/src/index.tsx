@@ -20,3 +20,5 @@ export default {
   ferrostar,
 };
 
+export * from './core';
+export * from './views';

@@ -51,9 +51,9 @@ export class LocationProvider implements LocationProviderInterface {
    * permissions are enabled before calling this.
    */
   addListener(listener: LocationUpdateListener): void {
-    console.log('LocationProvider', 'Add location listener');
+    console.log('Add location listener');
     if (this.listeners.has(listener)) {
-      console.log('LocationProvider', 'Already registered; skipping');
+      console.log('Already registered; skipping');
       return;
     }
 
@@ -87,7 +87,7 @@ export class LocationProvider implements LocationProviderInterface {
   }
 
   removeListener(listener: LocationUpdateListener): void {
-    console.log('LocationProvider', 'Remove location listener');
+    console.log('Remove location listener');
     const watchId = this.listeners.get(listener);
 
     if (watchId === undefined) {

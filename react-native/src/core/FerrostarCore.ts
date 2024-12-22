@@ -150,6 +150,9 @@ export class FerrostarCore implements LocationUpdateListener {
       this._routeRequestInFlight = true;
 
       return await this.routeProvider.getRoute(initialLocation, waypoints);
+    } catch (e) {
+      console.log(`Failed to get routes: ${e}`);
+      return [];
     } finally {
       this._routeRequestInFlight = false;
     }
@@ -186,20 +189,22 @@ export class FerrostarCore implements LocationUpdateListener {
       return;
     }
 
-    // TODO: Add location provider last location here when implemented.
-    const startingLocation = UserLocation.new({
-      coordinates: firstRouteLocation,
-      horizontalAccuracy: 0.0,
-      courseOverGround: undefined,
-      timestamp: new Date(),
-      speed: undefined,
-    });
+    const startingLocation =
+      this.locationProvider.lastLocation ??
+      UserLocation.new({
+        coordinates: firstRouteLocation,
+        horizontalAccuracy: 0.0,
+        courseOverGround: undefined,
+        timestamp: new Date(),
+        speed: undefined,
+      });
 
     const initialTripState = controller.getInitialState(startingLocation);
-    this.handleStateUpdate(initialTripState, startingLocation);
 
     this._navigationController = controller;
     this._state.set(initialTripState, route.geometry, false);
+
+    this.handleStateUpdate(initialTripState, startingLocation);
 
     // Add location provider listener here
     this.locationProvider.addListener(this);
@@ -228,19 +233,21 @@ export class FerrostarCore implements LocationUpdateListener {
       return;
     }
 
-    const startingLocation = UserLocation.new({
-      coordinates: firstRouteLocation,
-      horizontalAccuracy: 0.0,
-      courseOverGround: undefined,
-      timestamp: new Date(),
-      speed: undefined,
-    });
+    const startingLocation =
+      this.locationProvider.lastLocation ??
+      UserLocation.new({
+        coordinates: firstRouteLocation,
+        horizontalAccuracy: 0.0,
+        courseOverGround: undefined,
+        timestamp: new Date(),
+        speed: undefined,
+      });
+
     this._navigationController = controller;
     const newState = controller.getInitialState(startingLocation);
+    this._state.set(newState, route.geometry, false);
 
     this.handleStateUpdate(newState, startingLocation);
-
-    this._state.set(newState, route.geometry, false);
   }
 
   advanceToNextStep() {
@@ -252,12 +259,13 @@ export class FerrostarCore implements LocationUpdateListener {
     }
 
     const newState = controller.advanceToNextStep(this._state.tripState);
-    this.handleStateUpdate(newState, location);
     this._state.set(
       newState,
       this._state.routeGeometry,
       this.isCalculatingNewRoute
     );
+
+    this.handleStateUpdate(newState, location);
   }
 
   stopNavigation(stopLocationUpdates: boolean = true) {
@@ -268,6 +276,11 @@ export class FerrostarCore implements LocationUpdateListener {
     this._navigationController = undefined;
     this._state.reset();
     // TODO: handle state change event here
+    // Send listeners the new state
+    this._listeners.forEach((listener) => {
+      listener(this._state);
+    });
+
     this._queuedUtteranceIds = [];
     // TODO: add TTS observer to clear queued utterances
   }
@@ -279,67 +292,67 @@ export class FerrostarCore implements LocationUpdateListener {
     }
 
     // If we're not recalculating a new route, we don't care about state changes.
-    if (!RouteDeviation.OffRoute.instanceOf(newState.inner.deviation)) {
-      return;
-    }
+    if (RouteDeviation.OffRoute.instanceOf(newState.inner.deviation)) {
+      // Check that the last automatic recalculation wasn't too recent.
+      // We have to do some weird thing here with hrTime since JavaScript doesn't have a nice nanoseoncds method.
+      const isGreaterThanMinimumTime = this._lastAutomaticeRecalculation
+        ? getNanoTime() - this._lastAutomaticeRecalculation >
+          this.minimumTimeBeforeRecalculaton
+        : true;
 
-    // Check that the last automatic recalculation wasn't too recent.
-    // We have to do some weird thing here with hrTime since JavaScript doesn't have a nice nanoseoncds method.
-    const isGreaterThanMinimumTime = this._lastAutomaticeRecalculation
-      ? getNanoTime() - this._lastAutomaticeRecalculation >
-        this.minimumTimeBeforeRecalculaton
-      : true;
+      if (this._routeRequestInFlight || !isGreaterThanMinimumTime) {
+        return;
+      }
 
-    if (this._routeRequestInFlight || !isGreaterThanMinimumTime) {
-      return;
-    }
+      const action =
+        this.deviationHandler?.correctiveActionForDeviation(
+          this,
+          newState.inner.deviation.inner.deviationFromRouteLine,
+          newState.inner.remainingWaypoints
+        ) ?? CorrectiveAction.GetNewRoutes;
 
-    const action =
-      this.deviationHandler?.correctiveActionForDeviation(
-        this,
-        newState.inner.deviation.inner.deviationFromRouteLine,
-        newState.inner.remainingWaypoints
-      ) ?? CorrectiveAction.GetNewRoutes;
+      switch (action) {
+        case CorrectiveAction.DoNothing:
+          break;
+        case CorrectiveAction.GetNewRoutes:
+          this.isCalculatingNewRoute = true;
+          try {
+            const routes = await this.getRoutes(
+              location,
+              newState.inner.remainingWaypoints
+            );
+            const config = this.navigationControllerConfig;
+            const processor = this.alternativeRouteProcessor;
+            const state = this._state;
+            // Make sure we are still navigating and the new route is still relevant.
+            if (
+              TripState.Navigating.instanceOf(state.tripState) &&
+              RouteDeviation.OffRoute.instanceOf(
+                state.tripState.inner.deviation
+              )
+            ) {
+              if (processor !== undefined) {
+                processor.loadedAlternativeRoutes(this, routes);
+              } else if (routes.length > 0) {
+                // Default behavior when there is no user-defined behavior:
+                // accept the first route, as this is what most users want when they go off route.
+                const firstRoute = routes[0];
+                // Stupid TS can't figure out that firstRoute is not undefined here.
+                if (firstRoute === undefined) {
+                  throw new Error('No route found');
+                }
 
-    switch (action) {
-      case CorrectiveAction.DoNothing:
-        break;
-      case CorrectiveAction.GetNewRoutes:
-        this.isCalculatingNewRoute = true;
-        try {
-          const routes = await this.getRoutes(
-            location,
-            newState.inner.remainingWaypoints
-          );
-          const config = this.navigationControllerConfig;
-          const processor = this.alternativeRouteProcessor;
-          const state = this._state;
-          // Make sure we are still navigating and the new route is still relevant.
-          if (
-            TripState.Navigating.instanceOf(state.tripState) &&
-            RouteDeviation.OffRoute.instanceOf(state.tripState.inner.deviation)
-          ) {
-            if (processor !== undefined) {
-              processor.loadedAlternativeRoutes(this, routes);
-            } else if (routes.length > 0) {
-              // Default behavior when there is no user-defined behavior:
-              // accept the first route, as this is what most users want when they go off route.
-              const firstRoute = routes[0];
-              // Stupid TS can't figure out that firstRoute is not undefined here.
-              if (firstRoute === undefined) {
-                throw new Error('No route found');
+                this.replaceRoute(firstRoute, config);
               }
-
-              this.replaceRoute(firstRoute, config);
             }
+          } catch (e) {
+            console.log(`Failed to recalculate route: ${e}`);
+          } finally {
+            this._lastAutomaticeRecalculation = getNanoTime();
+            this.isCalculatingNewRoute = false;
           }
-        } catch (e) {
-          console.log('FerrostarCore', `Failed to recalculate route: ${e}`);
-        } finally {
-          this._lastAutomaticeRecalculation = getNanoTime();
-          this.isCalculatingNewRoute = false;
-        }
-        break;
+          break;
+      }
     }
 
     // Send listeners the new state

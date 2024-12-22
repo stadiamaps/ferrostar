@@ -5,6 +5,7 @@ import type {
   UserLocation,
 } from '../generated/ferrostar';
 import { RouteAdapter, RouteRequest } from '../generated/ferrostar';
+import { ab2json } from './_utils';
 import {
   InvalidStatusCodeException,
   NoRequestBodyException,
@@ -38,15 +39,20 @@ export class RouteProvider implements RouteProviderInterface {
     waypoints: Array<Waypoint>
   ): Promise<Array<Route>> {
     const request = this.adapter.generateRequest(userLocation, waypoints);
-    if (!RouteRequest.HttpPost.instanceOf(request)) {
+    if (
+      !RouteRequest.HttpPost.instanceOf(request) ||
+      request.inner.body.byteLength <= 0
+    ) {
       throw new NoRequestBodyException();
     }
 
     const { inner } = request;
+    const body = ab2json(inner.body);
 
     const response = await fetch(inner.url, {
+      method: 'POST',
       ...inner.headers,
-      body: inner.body,
+      body: JSON.stringify(body),
     });
 
     const bytes = await response.arrayBuffer();
