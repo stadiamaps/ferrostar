@@ -121,7 +121,7 @@ export class FerrostarCore implements LocationUpdateListener {
   _navigationController?: NavigationController;
   _state: NavigationState = NavigationState.instance();
   _routeRequestInFlight: boolean = false;
-  _lastAutomaticeRecalculation?: number;
+  _lastAutomaticRecalculation?: number;
   _lastLocation?: UserLocation;
   _listeners: Map<number, (state: NavigationState) => void> = new Map();
 
@@ -295,8 +295,8 @@ export class FerrostarCore implements LocationUpdateListener {
     if (RouteDeviation.OffRoute.instanceOf(newState.inner.deviation)) {
       // Check that the last automatic recalculation wasn't too recent.
       // We have to do some weird thing here with hrTime since JavaScript doesn't have a nice nanoseoncds method.
-      const isGreaterThanMinimumTime = this._lastAutomaticeRecalculation
-        ? getNanoTime() - this._lastAutomaticeRecalculation >
+      const isGreaterThanMinimumTime = this._lastAutomaticRecalculation
+        ? getNanoTime() - this._lastAutomaticRecalculation >
           this.minimumTimeBeforeRecalculaton
         : true;
 
@@ -348,7 +348,7 @@ export class FerrostarCore implements LocationUpdateListener {
           } catch (e) {
             console.log(`Failed to recalculate route: ${e}`);
           } finally {
-            this._lastAutomaticeRecalculation = getNanoTime();
+            this._lastAutomaticRecalculation = getNanoTime();
             this.isCalculatingNewRoute = false;
           }
           break;

@@ -8,7 +8,7 @@ installer.installRustCrate();
 export * from './generated/ferrostar';
 
 // Now import the bindings so we can:
-// - intialize them
+// - initialize them
 // - export them as namespaced objects as the default export.
 import * as ferrostar from './generated/ferrostar';
 
