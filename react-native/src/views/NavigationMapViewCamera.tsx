@@ -78,7 +78,7 @@ const NavigationMapViewCamera = ({
       zoomLevel={activity.zoom}
       pitch={activity.pitch}
       followUserLocation
-      followUserMode={UserTrackingMode.FollowWithHeading}
+      followUserMode={UserTrackingMode.FollowWithCourse}
     />
   );
 };

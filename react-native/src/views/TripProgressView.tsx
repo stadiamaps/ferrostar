@@ -6,7 +6,10 @@ import {
   Text,
 } from 'react-native';
 import type { TripProgress } from '../generated/ferrostar';
-import { LocalizedDurationFormatter } from './_utils';
+import {
+  LocalizedDurationFormatter,
+  LocalizedDistanceFormatter,
+} from './_utils';
 
 type TripProgressViewProps = {
   progress?: TripProgress;
@@ -16,6 +19,7 @@ type TripProgressViewProps = {
 };
 
 const DurationFormatter = LocalizedDurationFormatter();
+const DistanceFormatter = LocalizedDistanceFormatter();
 
 const TripProgressView = ({
   progress,
@@ -36,7 +40,10 @@ const TripProgressView = ({
       <View style={defaultStyle.box}>
         <View>
           <Text style={defaultStyle.text}>
-            {estimatedArrival.toLocaleTimeString()}
+            {estimatedArrival.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
           </Text>
         </View>
         <View>
@@ -46,7 +53,7 @@ const TripProgressView = ({
         </View>
         <View>
           <Text style={defaultStyle.text}>
-            {progress.distanceRemaining.toFixed(0)}
+            {DistanceFormatter.format(progress.distanceRemaining)}
           </Text>
         </View>
         {onTapExit != null && (

@@ -27,6 +27,7 @@ const NavigationView = (props: NavigationViewProps) => {
   }, [uiState]);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // We need to find a way to override the location manager from within maplibre-react-native
   const location = useMemo(() => {
     if (snapUserLocationToRoute && isNavigating) {
       return uiState?.snappedLocation;
@@ -54,11 +55,18 @@ const NavigationView = (props: NavigationViewProps) => {
     <View style={{ flex: 1, position: 'relative' }}>
       <MapView compassEnabled={false} {...props}>
         {isNavigating ? (
-          <NavigationMapViewCamera />
+          <>
+            <NavigationMapViewCamera />
+            <UserLocation
+              renderMode="native"
+              androidRenderMode="gps"
+              animated
+            />
+          </>
         ) : (
           <>
             <Camera followUserLocation />
-            <UserLocation />
+            <UserLocation renderMode="native" />
           </>
         )}
         <BorderedPolyline points={uiState?.routeGeometry ?? []} zIndex={0} />

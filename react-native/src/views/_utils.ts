@@ -1,3 +1,5 @@
+import { Settings, I18nManager, Platform } from 'react-native';
+
 type UnitStyle = 'short' | 'long';
 
 type DurationUnit = 'days' | 'hours' | 'minutes' | 'seconds';
@@ -91,12 +93,55 @@ export const LocalizedDurationFormatter = () => {
   function format(durtionSeconds: number): string {
     const durationRecord = calculate(durtionSeconds);
 
-    console.log(Object.entries(durationRecord));
     return Object.entries(durationRecord)
       .filter((it) => it[1] > 0)
       .flatMap((it) => `${it[1]}${getUnitString(it[0] as DurationUnit, it[1])}`)
       .join(' ');
   }
+
+  return {
+    format,
+  };
+};
+
+export function getLocale() {
+  let currentLocale = 'en';
+
+  if (Platform.OS === 'ios') {
+    const settings = Settings.get('AppleLocale');
+    const locale = settings || settings?.[0];
+    if (locale) currentLocale = locale;
+  } else {
+    const locale = I18nManager.getConstants().localeIdentifier;
+    if (locale) currentLocale = locale;
+  }
+
+  return currentLocale;
+}
+
+export const LocalizedDistanceFormatter = () => {
+  const locale = getLocale().replace('_', '-');
+  function format(distanceInMeters: number): string {
+    // We want to the distance in kilometers only if it's greater than 1000 meters
+    const distanceInKilometers = distanceInMeters / 1000;
+    if (distanceInKilometers > 1) {
+      return new Intl.NumberFormat(locale, {
+        style: 'unit',
+        unit: 'kilometer',
+        unitDisplay: 'short',
+        maximumFractionDigits: 0,
+      }).format(distanceInKilometers);
+    } else {
+      return new Intl.NumberFormat(locale, {
+        style: 'unit',
+        unit: 'meter',
+        unitDisplay: 'short',
+        maximumFractionDigits: 0,
+      }).format(distanceInMeters);
+    }
+  }
+
+  format.unit = 'm';
 
   return {
     format,
