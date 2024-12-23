@@ -113,7 +113,7 @@ export class FerrostarCore implements LocationUpdateListener {
   alternativeRouteProcessor?: AlternativeRouteProcessor;
 
   // Maintains a set of utterance IDs which been seen previously.
-  // This helps us maintian the guarantee that the observer won't see the same one twice.
+  // This helps us maintain the guarantee that the observer won't see the same one twice.
   _queuedUtteranceIds: Array<string> = [];
 
   isCalculatingNewRoute: boolean = false;
