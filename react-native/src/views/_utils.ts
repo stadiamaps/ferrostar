@@ -11,7 +11,11 @@ type CalculatedResult = {
   seconds: number;
 };
 
-export const LocalizedDurationFormatter = () => {
+export type Formatter = {
+  format(input: number): string;
+};
+
+export function LocalizedDurationFormatter(): Formatter {
   const units: DurationUnit[] = ['days', 'hours', 'minutes', 'seconds'];
   const unitStyle: UnitStyle = 'short';
 
@@ -90,8 +94,8 @@ export const LocalizedDurationFormatter = () => {
     }
   }
 
-  function format(durtionSeconds: number): string {
-    const durationRecord = calculate(durtionSeconds);
+  function format(input: number): string {
+    const durationRecord = calculate(input);
 
     return Object.entries(durationRecord)
       .filter((it) => it[1] > 0)
@@ -102,7 +106,7 @@ export const LocalizedDurationFormatter = () => {
   return {
     format,
   };
-};
+}
 
 export function getLocale() {
   let currentLocale = 'en';
@@ -119,11 +123,11 @@ export function getLocale() {
   return currentLocale;
 }
 
-export const LocalizedDistanceFormatter = () => {
+export function LocalizedDistanceFormatter(): Formatter {
   const locale = getLocale().replace('_', '-');
-  function format(distanceInMeters: number): string {
+  function format(input: number): string {
     // We want to the distance in kilometers only if it's greater than 1000 meters
-    const distanceInKilometers = distanceInMeters / 1000;
+    const distanceInKilometers = input / 1000;
     if (distanceInKilometers > 1) {
       return new Intl.NumberFormat(locale, {
         style: 'unit',
@@ -137,7 +141,7 @@ export const LocalizedDistanceFormatter = () => {
         unit: 'meter',
         unitDisplay: 'short',
         maximumFractionDigits: 0,
-      }).format(distanceInMeters);
+      }).format(input);
     }
   }
 
@@ -146,4 +150,4 @@ export const LocalizedDistanceFormatter = () => {
   return {
     format,
   };
-};
+}

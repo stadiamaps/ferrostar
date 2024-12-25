@@ -10,6 +10,7 @@ import BorderedPolyline from './BorderedPolyline';
 import NavigationMapViewCamera from './NavigationMapViewCamera';
 import TripProgressView from './TripProgressView';
 import { View } from 'react-native';
+import InstructionsView from './InstructionsView';
 
 MapLibreGL.setAccessToken(null);
 
@@ -26,8 +27,10 @@ const NavigationView = (props: NavigationViewProps) => {
     return uiState?.isNavigating() ?? false;
   }, [uiState]);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   // We need to find a way to override the location manager from within maplibre-react-native
+  // or we need to create a custom puck that can have a custom navigation when navigating.
+  // But that is only when the snapToRouteLocation is true.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const location = useMemo(() => {
     if (snapUserLocationToRoute && isNavigating) {
       return uiState?.snappedLocation;
@@ -72,6 +75,11 @@ const NavigationView = (props: NavigationViewProps) => {
         <BorderedPolyline points={uiState?.routeGeometry ?? []} zIndex={0} />
         {children}
       </MapView>
+      <InstructionsView
+        instructions={uiState?.visualInstruction}
+        remainingSteps={uiState?.remainingSteps}
+        distanceToNextManeuver={uiState?.progress?.distanceToNextManeuver ?? 0}
+      />
       <TripProgressView
         progress={uiState?.progress}
         onTapExit={() => core.stopNavigation()}
