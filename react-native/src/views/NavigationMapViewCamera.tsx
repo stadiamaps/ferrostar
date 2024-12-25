@@ -72,13 +72,11 @@ const NavigationMapViewCamera = ({
 
   return (
     <Camera
-      defaultSettings={{
-        padding,
-      }}
-      zoomLevel={activity.zoom}
-      pitch={activity.pitch}
       followUserLocation
       followUserMode={UserTrackingMode.FollowWithCourse}
+      followZoomLevel={activity.zoom}
+      followPitch={activity.pitch}
+      padding={padding}
     />
   );
 };
