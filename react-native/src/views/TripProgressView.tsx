@@ -10,6 +10,7 @@ import {
   LocalizedDurationFormatter,
   LocalizedDistanceFormatter,
 } from './_utils';
+import { getManeuverIcon } from './maneuver/_icons';
 
 type TripProgressViewProps = {
   progress?: TripProgress;
@@ -38,27 +39,31 @@ const TripProgressView = ({
   return (
     <View style={defaultStyle.container}>
       <View style={defaultStyle.box}>
-        <View>
-          <Text style={defaultStyle.text}>
-            {estimatedArrival.toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </Text>
-        </View>
-        <View>
-          <Text style={defaultStyle.text}>
-            {DurationFormatter.format(progress.durationRemaining)}
-          </Text>
-        </View>
-        <View>
-          <Text style={defaultStyle.text}>
-            {DistanceFormatter.format(progress.distanceRemaining)}
-          </Text>
+        <View style={defaultStyle.centerBox}>
+          <View>
+            <Text style={defaultStyle.text}>
+              {estimatedArrival.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </Text>
+          </View>
+          <View>
+            <Text style={defaultStyle.text}>
+              {DurationFormatter.format(progress.durationRemaining)}
+            </Text>
+          </View>
+          <View>
+            <Text style={defaultStyle.text}>
+              {DistanceFormatter.format(progress.distanceRemaining)}
+            </Text>
+          </View>
         </View>
         {onTapExit != null && (
           <Pressable style={defaultStyle.tapExit} onPress={onTapExit}>
-            <Text style={defaultStyle.text}>X</Text>
+            <Text style={defaultStyle.text}>
+              {getManeuverIcon('close', 24, 24, '#FFF')}
+            </Text>
           </Pressable>
         )}
       </View>
@@ -81,16 +86,23 @@ const defaultStyle = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     borderRadius: 100,
     padding: 10,
   },
+  centerBox: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 30,
+  },
   // Full circle button
   tapExit: {
-    backgroundColor: '#d3d3d3',
+    backgroundColor: '#52525b',
     borderRadius: 100,
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
     justifyContent: 'center',
     alignItems: 'center',
   },
