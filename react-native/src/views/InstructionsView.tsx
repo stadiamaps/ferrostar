@@ -1,7 +1,14 @@
 import { useMemo, useState } from 'react';
 import type { RouteStep, VisualInstruction } from '../generated/ferrostar';
 import { LocalizedDistanceFormatter, type Formatter } from './_utils';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import ManeuverImage from './maneuver/ManeuverImage';
 
 export type InstructionViewProps = {
@@ -24,6 +31,7 @@ const InstructionsView = ({
   distanceFormatter = LocalizedDistanceFormatter(),
   remainingSteps,
 }: InstructionViewProps) => {
+  const { height } = useWindowDimensions();
   const [isExpanded, setIsExpanded] = useState(false);
 
   // These are the steps that will be listed in the dropdown menu
@@ -34,6 +42,10 @@ const InstructionsView = ({
   const upcomingInstructions = useMemo(() => {
     return nextSteps.map((step) => step.visualInstructions[0] ?? null);
   }, [nextSteps]);
+
+  const instructionListHeight = useMemo(() => {
+    return height * 0.7;
+  }, [height]);
 
   const handleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -48,20 +60,28 @@ const InstructionsView = ({
           style={defaultStyle.instructionButton}
           onPress={handleExpand}
         >
-          <ManeuverImage content={instructions.primaryContent} />
-          <View>
-            <Text style={defaultStyle.distanceText}>
-              {distanceFormatter.format(distanceToNextManeuver)}
-            </Text>
-            <Text style={defaultStyle.instructionText}>
-              {instructions.primaryContent.text}
-            </Text>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
+            <ManeuverImage content={instructions.primaryContent} />
+            <View style={{ flex: 1 }}>
+              <Text style={defaultStyle.distanceText}>
+                {distanceFormatter.format(distanceToNextManeuver)}
+              </Text>
+              <Text style={defaultStyle.instructionText}>
+                {instructions.primaryContent.text}
+              </Text>
+            </View>
           </View>
+          <View style={defaultStyle.pill} />
         </Pressable>
       </View>
       {isExpanded && (
-        <View style={defaultStyle.column}>
+        <View style={defaultStyle.instructionList}>
           <FlatList
+            style={{
+              maxHeight: instructionListHeight,
+              backgroundColor: '#fff',
+              borderRadius: 10,
+            }}
             data={upcomingInstructions}
             renderItem={({ item, index }) => {
               if (!item) return null;
@@ -74,7 +94,10 @@ const InstructionsView = ({
                         item.triggerDistanceBeforeManeuver
                       )}
                     </Text>
-                    <Text style={defaultStyle.instructionText}>
+                    <Text
+                      style={defaultStyle.instructionText}
+                      numberOfLines={1}
+                    >
                       {item.primaryContent.text}
                     </Text>
                   </View>
@@ -105,14 +128,24 @@ const defaultStyle = StyleSheet.create({
     marginTop: 10,
     marginRight: 10,
     marginLeft: 10,
+    height: 90,
+  },
+  instructionList: {
+    flex: 1,
+    flexDirection: 'column',
+    borderRadius: 10,
+    marginTop: 10,
+    marginRight: 10,
+    marginLeft: 10,
   },
   instructionButton: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     padding: 10,
     alignItems: 'center',
   },
   instructionText: {
+    flex: 1,
     fontSize: 18,
     color: '#000',
   },
@@ -126,6 +159,15 @@ const defaultStyle = StyleSheet.create({
   distanceText: {
     fontSize: 16,
     color: '#000',
+  },
+  pill: {
+    flex: 1,
+    width: 24,
+    maxHeight: 2,
+    borderRadius: 12,
+    backgroundColor: '#000',
+    alignSelf: 'center',
+    marginTop: 10,
   },
 });
 
