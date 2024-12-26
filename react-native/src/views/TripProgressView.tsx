@@ -29,11 +29,8 @@ const TripProgressView = ({
 }: TripProgressViewProps) => {
   if (progress === undefined) return;
 
-  // TODO: fix this
   const estimatedArrival = new Date(
-    fromDate.getTime() +
-      progress.distanceRemaining * 1000 +
-      fromDate.getTimezoneOffset() * 60 * 1000
+    fromDate.getTime() + progress.durationRemaining * 1000
   );
 
   return (
