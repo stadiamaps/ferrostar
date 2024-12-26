@@ -9,82 +9,82 @@ export type IconType =
   | 'continue'
   | 'continue_left'
   | 'continue_right'
-  | 'continue_slight_left'
-  | 'continue_slight_right'
+  | 'continue_slightleft'
+  | 'continue_slightright'
   | 'continue_straight'
   | 'continue_uturn'
   | 'depart'
   | 'depart_left'
   | 'depart_right'
   | 'depart_straight'
-  | 'end_of_road_left'
-  | 'end_of_road_right'
+  | 'endofroad_left'
+  | 'endofroad_right'
   | 'flag'
   | 'fork'
   | 'fork_left'
   | 'fork_right'
-  | 'fork_slight_left'
-  | 'fork_slight_right'
+  | 'fork_slightleft'
+  | 'fork_slightright'
   | 'fork_straight'
   | 'invalid'
   | 'invalid_left'
   | 'invalid_right'
-  | 'invalid_slight_left'
-  | 'invalid_slight_right'
+  | 'invalid_slightleft'
+  | 'invalid_slightright'
   | 'invalid_straight'
   | 'invalid_uturn'
   | 'merge_left'
   | 'merge_right'
-  | 'merge_slight_left'
-  | 'merge_slight_right'
+  | 'merge_slightleft'
+  | 'merge_slightright'
   | 'merge_straight'
-  | 'new_name_left'
-  | 'new_name_right'
-  | 'new_name_sharp_left'
-  | 'new_name_sharp_right'
-  | 'new_name_slight_left'
-  | 'new_name_slight_right'
-  | 'new_name_straight'
+  | 'newname_left'
+  | 'newname_right'
+  | 'newname_sharpleft'
+  | 'newname_sharpright'
+  | 'newname_slightleft'
+  | 'newname_slightright'
+  | 'newname_straight'
   | 'notification_left'
   | 'notification_right'
-  | 'notification_sharp_left'
-  | 'notification_sharp_right'
-  | 'notification_slight_left'
-  | 'notification_slight_right'
+  | 'notification_sharpleft'
+  | 'notification_sharpright'
+  | 'notification_slightleft'
+  | 'notification_slightright'
   | 'notification_straight'
-  | 'off_ramp_left'
-  | 'off_ramp_right'
-  | 'off_ramp_slight_left'
-  | 'off_ramp_slight_right'
-  | 'on_ramp_left'
-  | 'on_ramp_right'
-  | 'on_ramp_sharp_left'
-  | 'on_ramp_sharp_right'
-  | 'on_ramp_slight_left'
-  | 'on_ramp_slight_right'
-  | 'on_ramp_straight'
+  | 'offramp_left'
+  | 'offramp_right'
+  | 'offramp_slightleft'
+  | 'offramp_slightright'
+  | 'onramp_left'
+  | 'onramp_right'
+  | 'onramp_sharpleft'
+  | 'onramp_sharpright'
+  | 'onramp_slightleft'
+  | 'onramp_slightright'
+  | 'onramp_straight'
   | 'rotary'
   | 'rotary_left'
   | 'rotary_right'
-  | 'rotary_sharp_left'
-  | 'rotary_sharp_right'
-  | 'rotary_slight_left'
-  | 'rotary_slight_right'
+  | 'rotary_sharpleft'
+  | 'rotary_sharpright'
+  | 'rotary_slightleft'
+  | 'rotary_slightright'
   | 'rotary_straight'
   | 'roundabout'
   | 'roundabout_left'
   | 'roundabout_right'
-  | 'roundabout_sharp_left'
-  | 'roundabout_sharp_right'
-  | 'roundabout_slight_left'
-  | 'roundabout_slight_right'
+  | 'roundabout_sharpleft'
+  | 'roundabout_sharpright'
+  | 'roundabout_slightleft'
+  | 'roundabout_slightright'
   | 'roundabout_straight'
   | 'turn_left'
   | 'turn_right'
-  | 'turn_sharp_left'
-  | 'turn_sharp_right'
-  | 'turn_slight_left'
-  | 'turn_slight_right'
+  | 'turn_sharpleft'
+  | 'turn_sharpright'
+  | 'turn_slightleft'
+  | 'turn_slightright'
   | 'turn_straight'
   | 'updown'
   | 'uturn';
@@ -1058,9 +1058,9 @@ export function getManeuverIcon(
       return ContinueLeft({ width, height });
     case 'continue_right':
       return ContinueRight({ width, height });
-    case 'continue_slight_left':
+    case 'continue_slightleft':
       return ContinueSlightLeft({ width, height });
-    case 'continue_slight_right':
+    case 'continue_slightright':
       return ContinueSlightRight({ width, height });
     case 'continue_straight':
       return ContinueStraight({ width, height });
@@ -1074,9 +1074,9 @@ export function getManeuverIcon(
       return DepartRight({ width, height });
     case 'depart_straight':
       return DepartStraight({ width, height });
-    case 'end_of_road_left':
+    case 'endofroad_left':
       return EndOfRoadLeft({ width, height });
-    case 'end_of_road_right':
+    case 'endofroad_right':
       return EndOfRoadRight({ width, height });
     case 'flag':
       return Flag({ width, height });
@@ -1086,9 +1086,9 @@ export function getManeuverIcon(
       return ForkLeft({ width, height });
     case 'fork_right':
       return ForkRight({ width, height });
-    case 'fork_slight_left':
+    case 'fork_slightleft':
       return ForkSlightLeft({ width, height });
-    case 'fork_slight_right':
+    case 'fork_slightright':
       return ForkSlightRight({ width, height });
     case 'fork_straight':
       return ForkStraight({ width, height });
@@ -1098,9 +1098,9 @@ export function getManeuverIcon(
       return InvalidLeft({ width, height });
     case 'invalid_right':
       return InvalidRight({ width, height });
-    case 'invalid_slight_left':
+    case 'invalid_slightleft':
       return InvalidSlightLeft({ width, height });
-    case 'invalid_slight_right':
+    case 'invalid_slightright':
       return InvalidSlightRight({ width, height });
     case 'invalid_straight':
       return InvalidStraight({ width, height });
@@ -1110,59 +1110,59 @@ export function getManeuverIcon(
       return MergeLeft({ width, height });
     case 'merge_right':
       return MergeRight({ width, height });
-    case 'merge_slight_left':
+    case 'merge_slightleft':
       return MergeSlightLeft({ width, height });
-    case 'merge_slight_right':
+    case 'merge_slightright':
       return MergeSlightRight({ width, height });
-    case 'new_name_left':
+    case 'newname_left':
       return NewNameLeft({ width, height });
-    case 'new_name_right':
+    case 'newname_right':
       return NewNameRight({ width, height });
-    case 'new_name_sharp_left':
+    case 'newname_sharpleft':
       return NewNameSharpLeft({ width, height });
-    case 'new_name_sharp_right':
+    case 'newname_sharpright':
       return NewNameSharpRight({ width, height });
-    case 'new_name_slight_left':
+    case 'newname_slightleft':
       return NewNameSlightLeft({ width, height });
-    case 'new_name_slight_right':
+    case 'newname_slightright':
       return NewNameSlightRight({ width, height });
-    case 'new_name_straight':
+    case 'newname_straight':
       return NewNameStraight({ width, height });
     case 'notification_left':
       return NotificationLeft({ width, height });
     case 'notification_right':
       return NotificationRight({ width, height });
-    case 'notification_sharp_left':
+    case 'notification_sharpleft':
       return NotificationSharpLeft({ width, height });
-    case 'notification_sharp_right':
+    case 'notification_sharpright':
       return NotificationSharpRight({ width, height });
-    case 'notification_slight_left':
+    case 'notification_slightleft':
       return NotificationSlightLeft({ width, height });
-    case 'notification_slight_right':
+    case 'notification_slightright':
       return NotificationSlightRight({ width, height });
     case 'notification_straight':
       return NotificationStraight({ width, height });
-    case 'off_ramp_left':
+    case 'offramp_left':
       return OffRampLeft({ width, height });
-    case 'off_ramp_right':
+    case 'offramp_right':
       return OffRampRight({ width, height });
-    case 'off_ramp_slight_left':
+    case 'offramp_slightleft':
       return OffRampSlightLeft({ width, height });
-    case 'off_ramp_slight_right':
+    case 'offramp_slightright':
       return OffRampSlightRight({ width, height });
-    case 'on_ramp_left':
+    case 'onramp_left':
       return OnRampLeft({ width, height });
-    case 'on_ramp_right':
+    case 'onramp_right':
       return OnRampRight({ width, height });
-    case 'on_ramp_sharp_left':
+    case 'onramp_sharpleft':
       return OnRampSharpLeft({ width, height });
-    case 'on_ramp_sharp_right':
+    case 'onramp_sharpright':
       return OnRampSharpRight({ width, height });
-    case 'on_ramp_slight_left':
+    case 'onramp_slightleft':
       return OnRampSlightLeft({ width, height });
-    case 'on_ramp_slight_right':
+    case 'onramp_slightright':
       return OnRampSlightRight({ width, height });
-    case 'on_ramp_straight':
+    case 'onramp_straight':
       return OnRampStraight({ width, height });
     case 'rotary':
       return Rotary({ width, height });
@@ -1170,13 +1170,13 @@ export function getManeuverIcon(
       return RotaryLeft({ width, height });
     case 'rotary_right':
       return RotaryRight({ width, height });
-    case 'rotary_sharp_left':
+    case 'rotary_sharpleft':
       return RotarySharpLeft({ width, height });
-    case 'rotary_sharp_right':
+    case 'rotary_sharpright':
       return RotarySharpRight({ width, height });
-    case 'rotary_slight_left':
+    case 'rotary_slightleft':
       return RotarySlightLeft({ width, height });
-    case 'rotary_slight_right':
+    case 'rotary_slightright':
       return RotarySlightRight({ width, height });
     case 'rotary_straight':
       return RotaryStraight({ width, height });
@@ -1186,13 +1186,13 @@ export function getManeuverIcon(
       return RoundaboutLeft({ width, height });
     case 'roundabout_right':
       return RoundaboutRight({ width, height });
-    case 'roundabout_sharp_left':
+    case 'roundabout_sharpleft':
       return RoundaboutSharpLeft({ width, height });
-    case 'roundabout_sharp_right':
+    case 'roundabout_sharpright':
       return RoundaboutSharpRight({ width, height });
-    case 'roundabout_slight_left':
+    case 'roundabout_slightleft':
       return RoundaboutSlightLeft({ width, height });
-    case 'roundabout_slight_right':
+    case 'roundabout_slightright':
       return RoundaboutSlightRight({ width, height });
     case 'roundabout_straight':
       return RoundaboutStraight({ width, height });
@@ -1200,13 +1200,13 @@ export function getManeuverIcon(
       return TurnLeft({ width, height });
     case 'turn_right':
       return TurnRight({ width, height });
-    case 'turn_sharp_left':
+    case 'turn_sharpleft':
       return TurnSharpLeft({ width, height });
-    case 'turn_sharp_right':
+    case 'turn_sharpright':
       return TurnSharpRight({ width, height });
-    case 'turn_slight_left':
+    case 'turn_slightleft':
       return TurnSlightLeft({ width, height });
-    case 'turn_slight_right':
+    case 'turn_slightright':
       return TurnSlightRight({ width, height });
     case 'turn_straight':
       return TurnStraight({ width, height });
