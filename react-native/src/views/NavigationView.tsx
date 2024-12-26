@@ -11,6 +11,7 @@ import NavigationMapViewCamera from './NavigationMapViewCamera';
 import TripProgressView from './TripProgressView';
 import { View } from 'react-native';
 import InstructionsView from './InstructionsView';
+import MapControls from './MapControls';
 
 MapLibreGL.setAccessToken(null);
 
@@ -56,7 +57,7 @@ const NavigationView = (props: NavigationViewProps) => {
 
   return (
     <View style={{ flex: 1, position: 'relative' }}>
-      <MapView compassEnabled={false} {...props}>
+      <MapView compassEnabled={false} attributionEnabled={false} {...props}>
         {isNavigating ? (
           <>
             <NavigationMapViewCamera />
@@ -80,6 +81,7 @@ const NavigationView = (props: NavigationViewProps) => {
         remainingSteps={uiState?.remainingSteps}
         distanceToNextManeuver={uiState?.progress?.distanceToNextManeuver ?? 0}
       />
+      <MapControls />
       <TripProgressView
         progress={uiState?.progress}
         onTapExit={() => core.stopNavigation()}
