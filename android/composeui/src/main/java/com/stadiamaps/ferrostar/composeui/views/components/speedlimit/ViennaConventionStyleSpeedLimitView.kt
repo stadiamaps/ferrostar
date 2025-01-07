@@ -60,16 +60,16 @@ fun ViennaConventionStyleSpeedLimitView(
                         text = formattedSpeed,
                         fontSize =
                             when {
-                              formattedSpeed.length > 3 -> 14.sp
-                              formattedSpeed.length > 2 -> 18.sp
-                              else -> 24.sp
+                              formattedSpeed.length > 3 -> 18.sp
+                              formattedSpeed.length > 2 -> 24.sp
+                              else -> 29.sp
                             },
                         fontWeight = FontWeight.ExtraBold,
                         lineHeight =
                             when {
-                              formattedSpeed.length > 3 -> 16.sp
-                              formattedSpeed.length > 2 -> 20.sp
-                              else -> 26.sp
+                              formattedSpeed.length > 3 -> 20.sp
+                              formattedSpeed.length > 2 -> 26.sp
+                              else -> 30.sp
                             },
                         color = Color.Black,
                         textAlign = TextAlign.Center)
