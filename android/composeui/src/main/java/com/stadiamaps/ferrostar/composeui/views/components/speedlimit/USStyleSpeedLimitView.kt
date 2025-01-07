@@ -83,11 +83,12 @@ fun USStyleSpeedLimitView(
 
                           Text(
                               text = formattedSpeed,
-                              fontSize = when {
-                                (formattedSpeed.length < 3) -> 30.sp
-                                (formattedSpeed.length == 3) -> 24.sp
-                                else -> 18.sp
-                              },
+                              fontSize =
+                                  when {
+                                    (formattedSpeed.length < 3) -> 30.sp
+                                    (formattedSpeed.length == 3) -> 24.sp
+                                    else -> 18.sp
+                                  },
                               lineHeight = if (formattedSpeed.length > 3) 26.sp else 32.sp,
                               fontWeight = FontWeight.ExtraBold,
                               color = Color.Black,
