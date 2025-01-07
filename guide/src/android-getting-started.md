@@ -259,7 +259,7 @@ which uses the text-to-speech engine built into Android.
 The `AndroidTtsObserver` follows lifecycle recommendations from the Android documentation,
 [TextToSpeech shutdown behavior](https://developer.android.com/reference/android/speech/tts/TextToSpeech#shutdown()).
 This design means your activity should call `shutdown` on the observer in the `onDestroy` method and start it again
-in `onStart` if you want to continue using it. If the instance is shut down and not started again, you will have spoken instructions.
+in `onStart` if you want to continue using it. If the instance is shut down and not started again, you will not have spoken instructions.
 
 ```kotlin
 override fun onStart() {
