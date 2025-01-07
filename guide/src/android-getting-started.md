@@ -119,7 +119,7 @@ If your app uses Google Play Services,
 you can use the `FusedLocationProvider`
 This normally offers better device positioning than the default Android location provider
 on supported devices.
-To make use of it, 
+To make use of it,
 you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`
 in your Gradle dependencies block.
 
@@ -255,6 +255,23 @@ If your routes include spoken instructions,
 Ferrostar can trigger the speech synthesis at the right time.
 Ferrostar includes the `AndroidTtsObserver` class,
 which uses the text-to-speech engine built into Android.
+
+The `AndroidTtsObserver` follows lifecycle recommendations from the Android documentation,
+[TextToSpeech shutdown behavior](https://developer.android.com/reference/android/speech/tts/TextToSpeech#shutdown()).
+This design means your activity should call `shutdown` on the observer in the `onDestroy` method and start it again
+in `onStart` if you want to continue using it. If the instance is shut down and not started again, you will have spoken instructions.
+
+```kotlin
+override fun onStart() {
+    super.onStart()
+    ttsObserver.start()
+}
+
+override fun onDestroy() {
+    super.onDestroy()
+    ttsObserver.shutdown()
+}
+```
 
 You can also use your own implementation,
 such as a local AI model or cloud service like Amazon Polly.

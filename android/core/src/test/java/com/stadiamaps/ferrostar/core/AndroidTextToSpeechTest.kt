@@ -8,16 +8,16 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verify
+import java.util.UUID
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
 import junit.framework.TestCase.assertTrue
+import kotlin.uuid.ExperimentalUuidApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import uniffi.ferrostar.SpokenInstruction
-import java.util.UUID
-import kotlin.uuid.ExperimentalUuidApi
 
 class AndroidTextToSpeechTest {
 
@@ -32,10 +32,7 @@ class AndroidTextToSpeechTest {
     every { Log.e(any(), any()) } returns 0
 
     context = mockk(relaxed = true)
-    androidTts = AndroidTtsObserver(
-      context = context,
-      engine = engine
-    )
+    androidTts = AndroidTtsObserver(context = context, engine = engine)
   }
 
   @Test
@@ -59,30 +56,22 @@ class AndroidTextToSpeechTest {
 
   @Test
   fun `test setMuted while speaking`() = runTest {
-    val tts = mockk<TextToSpeech>(relaxed = true) {
-      every { isSpeaking } returns true
-    }
+    val tts = mockk<TextToSpeech>(relaxed = true) { every { isSpeaking } returns true }
     androidTts.start(tts)
     androidTts.setMuted(true)
 
     verify { tts.stop() }
 
-    androidTts.muteState.test {
-      assertTrue(awaitItem())
-    }
+    androidTts.muteState.test { assertTrue(awaitItem()) }
 
     androidTts.setMuted(false)
 
-    androidTts.muteState.test {
-      assertFalse(awaitItem())
-    }
+    androidTts.muteState.test { assertFalse(awaitItem()) }
   }
 
   @Test
   fun `test setMuted without speaking`() {
-    val tts = mockk<TextToSpeech>(relaxed = true) {
-      every { isSpeaking } returns false
-    }
+    val tts = mockk<TextToSpeech>(relaxed = true) { every { isSpeaking } returns false }
     androidTts.start(tts)
     androidTts.setMuted(true)
 
@@ -107,10 +96,11 @@ class AndroidTextToSpeechTest {
     androidTts.onInit(TextToSpeech.SUCCESS)
 
     val uuid = UUID.randomUUID()
-    val instruction = mockk<SpokenInstruction> {
-      every { text } returns "Hello, World!"
-      every { utteranceId } returns uuid
-    }
+    val instruction =
+        mockk<SpokenInstruction> {
+          every { text } returns "Hello, World!"
+          every { utteranceId } returns uuid
+        }
 
     androidTts.onSpokenInstructionTrigger(instruction)
 
@@ -133,10 +123,11 @@ class AndroidTextToSpeechTest {
     androidTts.statusObserver = observer
 
     val uuid = UUID.randomUUID()
-    val instruction = mockk<SpokenInstruction> {
-      every { text } returns "Hello, World!"
-      every { utteranceId } returns uuid
-    }
+    val instruction =
+        mockk<SpokenInstruction> {
+          every { text } returns "Hello, World!"
+          every { utteranceId } returns uuid
+        }
 
     androidTts.onSpokenInstructionTrigger(instruction)
 
@@ -153,14 +144,17 @@ class AndroidTextToSpeechTest {
     androidTts.onInit(TextToSpeech.SUCCESS)
 
     val uuid = UUID.randomUUID()
-    val instruction = mockk<SpokenInstruction> {
-      every { text } returns "Hello, World!"
-      every { utteranceId } returns uuid
-    }
+    val instruction =
+        mockk<SpokenInstruction> {
+          every { text } returns "Hello, World!"
+          every { utteranceId } returns uuid
+        }
 
     androidTts.onSpokenInstructionTrigger(instruction)
 
-    verify(exactly = 0) { tts.speak("Hello, World!", TextToSpeech.QUEUE_ADD, any(), uuid.toString()) }
+    verify(exactly = 0) {
+      tts.speak("Hello, World!", TextToSpeech.QUEUE_ADD, any(), uuid.toString())
+    }
   }
 
   @OptIn(ExperimentalUuidApi::class)
@@ -172,15 +166,17 @@ class AndroidTextToSpeechTest {
     androidTts.onInit(TextToSpeech.ERROR)
 
     val uuid = UUID.randomUUID()
-    val instruction = mockk<SpokenInstruction> {
-      every { text } returns "Hello, World!"
-      every { utteranceId } returns uuid
-    }
+    val instruction =
+        mockk<SpokenInstruction> {
+          every { text } returns "Hello, World!"
+          every { utteranceId } returns uuid
+        }
 
     androidTts.onSpokenInstructionTrigger(instruction)
 
     verify { Log.e(any(), any()) }
-    verify(exactly = 0) { tts.speak("Hello, World!", TextToSpeech.QUEUE_ADD, any(), uuid.toString()) }
+    verify(exactly = 0) {
+      tts.speak("Hello, World!", TextToSpeech.QUEUE_ADD, any(), uuid.toString())
+    }
   }
-
 }

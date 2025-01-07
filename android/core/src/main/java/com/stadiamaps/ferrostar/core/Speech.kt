@@ -4,12 +4,12 @@ import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
 import androidx.annotation.VisibleForTesting
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import uniffi.ferrostar.SpokenInstruction
-import java.lang.ref.WeakReference
 
 interface SpokenInstructionObserver {
 
@@ -45,8 +45,8 @@ interface AndroidTtsStatusListener {
   /**
    * Invoked when the [TextToSpeech] instance is shut down and released to nil.
    *
-   * After this point you must initialize a new instance to use TTS
-   * by calling [AndroidTtsObserver.start].
+   * After this point you must initialize a new instance to use TTS by calling
+   * [AndroidTtsObserver.start].
    */
   fun onTtsShutdownAndRelease()
 
@@ -124,9 +124,7 @@ class AndroidTtsObserver(
    *
    * Except [onInit] to fire when the engine is ready.
    */
-  fun start(
-    @VisibleForTesting injectedTts: TextToSpeech? = null
-  ) {
+  fun start(@VisibleForTesting injectedTts: TextToSpeech? = null) {
     if (context == null) {
       android.util.Log.e(TAG, "Context is null. Unable to start TTS.")
       return

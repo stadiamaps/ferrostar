@@ -90,6 +90,7 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
   }
 
   override fun onTtsShutdownAndRelease() {
-    android.util.Log.i(TAG, "TTS shutdown and release. After this point you must call start() again.")
+    android.util.Log.i(
+        TAG, "TTS shutdown and release. After this point you must call start() again.")
   }
 }
