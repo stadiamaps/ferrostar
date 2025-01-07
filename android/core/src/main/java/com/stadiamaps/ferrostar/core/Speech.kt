@@ -3,6 +3,8 @@ package com.stadiamaps.ferrostar.core
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
+import androidx.annotation.VisibleForTesting
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import uniffi.ferrostar.SpokenInstruction
 
 interface SpokenInstructionObserver {
+
   /**
    * Handles spoken instructions as they are triggered.
    *
@@ -40,6 +43,14 @@ interface AndroidTtsStatusListener {
   fun onTtsInitialized(tts: TextToSpeech?, status: Int)
 
   /**
+   * Invoked when the [TextToSpeech] instance is shut down and released to nil.
+   *
+   * After this point you must initialize a new instance to use TTS by calling
+   * [AndroidTtsObserver.start].
+   */
+  fun onTtsShutdownAndRelease()
+
+  /**
    * Invoked whenever [TextToSpeech.speak] returns a status code other than [TextToSpeech.SUCCESS].
    */
   fun onTtsSpeakError(utteranceId: String, status: Int)
@@ -64,7 +75,8 @@ interface AndroidTtsStatusListener {
  */
 class AndroidTtsObserver(
     context: Context,
-    engine: String? = null,
+    private val weakContext: WeakReference<Context> = WeakReference(context),
+    private val engine: String? = null,
     var statusObserver: AndroidTtsStatusListener? = null,
 ) : SpokenInstructionObserver, OnInitListener {
   companion object {
@@ -72,6 +84,9 @@ class AndroidTtsObserver(
   }
 
   private var _muteState: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+  private val context: Context?
+    get() = weakContext.get()
 
   override fun setMuted(isMuted: Boolean) {
     _muteState.update { _ ->
@@ -84,7 +99,7 @@ class AndroidTtsObserver(
 
   override val muteState: StateFlow<Boolean> = _muteState.asStateFlow()
 
-  var tts: TextToSpeech?
+  var tts: TextToSpeech? = null
     private set
 
   /**
@@ -104,8 +119,23 @@ class AndroidTtsObserver(
   val isInitializedSuccessfully: Boolean
     get() = initStatus == TextToSpeech.SUCCESS
 
-  init {
-    tts = TextToSpeech(context, this, engine)
+  /**
+   * Starts a new [TextToSpeech] instance.
+   *
+   * Except [onInit] to fire when the engine is ready.
+   */
+  fun start(@VisibleForTesting injectedTts: TextToSpeech? = null) {
+    if (context == null) {
+      android.util.Log.e(TAG, "Context is null. Unable to start TTS.")
+      return
+    }
+
+    if (tts != null) {
+      android.util.Log.e(TAG, "TTS engine is already initialized.")
+      return
+    }
+
+    tts = injectedTts ?: TextToSpeech(context, this, engine)
   }
 
   /**
@@ -114,8 +144,13 @@ class AndroidTtsObserver(
    * Fails silently if TTS is unavailable.
    */
   override fun onSpokenInstructionTrigger(spokenInstruction: SpokenInstruction) {
-    val tts = tts
-    if (tts != null && isInitializedSuccessfully && !isMuted) {
+    if (tts == null) {
+      android.util.Log.e(TAG, "TTS engine is not initialized.")
+      return
+    }
+    val tts = tts ?: return
+
+    if (isInitializedSuccessfully && !isMuted) {
       // In the future, someone may wish to parse SSML to get more natural utterances into TtsSpans.
       // Amazon Polly is generally the intended target for SSML on Android though.
       val status =
@@ -148,11 +183,12 @@ class AndroidTtsObserver(
   /**
    * Shuts down the underlying [TextToSpeech] engine.
    *
-   * The instance will no longer be usable after this. This method should usually be called from an
-   * activity's onDestroy method.
+   * The instance will be shut down and released after this call. You must call [start] to use TTS
+   * again. If you call this method, ensure that you've handled an start again.
    */
   fun shutdown() {
     tts?.shutdown()
     tts = null
+    statusObserver?.onTtsShutdownAndRelease()
   }
 }
