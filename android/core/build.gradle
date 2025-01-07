@@ -55,6 +55,9 @@ dependencies {
     implementation 'net.java.dev.jna:jna:5.15.0@aar'
 
     testImplementation libs.junit
+    testImplementation libs.kotlinx.coroutines.test
+    testImplementation libs.mockk
+    testImplementation libs.turbine
 
     // These probably shouldn't have to be androidTestImplementation... see rant in
     // ValhallaCoreTest.kt
