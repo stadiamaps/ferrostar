@@ -2,8 +2,9 @@ import {
   Camera,
   UserTrackingMode,
   type CameraPadding,
+  type CameraRef,
 } from '@maplibre/maplibre-react-native';
-import { useMemo } from 'react';
+import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
 import { Dimensions, PixelRatio, useWindowDimensions } from 'react-native';
 
 export class NavigationActivity {
@@ -27,6 +28,7 @@ export class NavigationActivity {
 
 type NavigationMapViewCameraProps = {
   activity?: NavigationActivity;
+  bounds?: { ne: [number, number]; sw: [number, number] } | null;
 };
 
 /**
@@ -37,9 +39,17 @@ type NavigationMapViewCameraProps = {
  * @param activity The type of activity the camera is being used for.
  * @return The recommended navigation MapViewCamera
  */
-const NavigationMapViewCamera = ({
-  activity = NavigationActivity.Automotive,
-}: NavigationMapViewCameraProps) => {
+const NavigationMapViewCamera = forwardRef<
+  CameraRef,
+  NavigationMapViewCameraProps
+>(({ activity = NavigationActivity.Automotive, bounds = null }, outerRef) => {
+  const innerRef = useRef<CameraRef>(null);
+
+  useImperativeHandle<CameraRef | null, CameraRef | null>(
+    outerRef,
+    () => innerRef.current
+  );
+
   const { width, height } = useWindowDimensions();
   const orientation = useMemo(() => {
     return height > width ? 'portrait' : 'landscape';
@@ -72,13 +82,13 @@ const NavigationMapViewCamera = ({
 
   return (
     <Camera
-      followUserLocation
+      ref={innerRef}
+      followUserLocation={true}
       followUserMode={UserTrackingMode.FollowWithCourse}
       followZoomLevel={activity.zoom}
       followPitch={activity.pitch}
-      padding={padding}
     />
   );
-};
+});
 
 export default NavigationMapViewCamera;
