@@ -1,9 +1,10 @@
-import MapLibreGL, {
+import {
   Camera,
   type CameraRef,
   type MapViewRef,
   MapView,
   UserLocation,
+  setAccessToken,
 } from '@maplibre/maplibre-react-native';
 import { bbox } from '@turf/bbox';
 import {
@@ -23,7 +24,7 @@ import { StyleSheet, View } from 'react-native';
 import InstructionsView from './InstructionsView';
 import MapControls from './MapControls';
 
-MapLibreGL.setAccessToken(null);
+setAccessToken(null);
 
 type NavigationViewProps = ComponentProps<typeof MapView> & {
   core: FerrostarCore;
