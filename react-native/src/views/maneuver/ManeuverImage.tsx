@@ -5,7 +5,7 @@ import {
   type VisualInstructionContent,
 } from '../../generated/ferrostar';
 import { StyleSheet, View } from 'react-native';
-import { getManeuverIcon, type IconType } from './_icons';
+import { getIcon, type IconType } from './_icons';
 
 type ManeuverImageProps = {
   content: VisualInstructionContent;
@@ -31,9 +31,7 @@ export const ManeuverImage = ({ content }: ManeuverImageProps) => {
 
   if (maneuverIcon === null) return null;
 
-  return (
-    <View style={style.text}>{getManeuverIcon(maneuverIcon, 48, 48)}</View>
-  );
+  return <View style={style.text}>{getIcon(maneuverIcon, 48, 48)}</View>;
 };
 
 const style = StyleSheet.create({

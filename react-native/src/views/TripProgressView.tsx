@@ -10,7 +10,7 @@ import {
   LocalizedDurationFormatter,
   LocalizedDistanceFormatter,
 } from './_utils';
-import { getManeuverIcon } from './maneuver/_icons';
+import { getIcon } from './maneuver/_icons';
 
 type TripProgressViewProps = {
   progress?: TripProgress;
@@ -59,7 +59,7 @@ const TripProgressView = ({
         {onTapExit != null && (
           <Pressable style={defaultStyle.tapExit} onPress={onTapExit}>
             <Text style={defaultStyle.text}>
-              {getManeuverIcon('close', 24, 24, '#FFF')}
+              {getIcon('close', 24, 24, '#FFF')}
             </Text>
           </Pressable>
         )}

@@ -87,7 +87,12 @@ export type IconType =
   | 'turn_slightright'
   | 'turn_straight'
   | 'updown'
-  | 'uturn';
+  | 'uturn'
+  | 'volume_off'
+  | 'volume_up'
+  | 'route'
+  | 'remove'
+  | 'add';
 
 const Arrive = (props: SvgProps) => {
   return (
@@ -1035,7 +1040,59 @@ const Uturn = (props: SvgProps) => {
   );
 };
 
-export function getManeuverIcon(
+const VolumeUp = (props: SvgProps) => {
+  return (
+    <Svg fill="none" viewBox="0 0 20 20" {...props}>
+      <Path
+        fill="#000"
+        d="M11.5 16.833v-1.562a5.2 5.2 0 0 0 2.896-1.943 5.37 5.37 0 0 0 1.104-3.323q0-1.86-1.115-3.307a5.63 5.63 0 0 0-2.885-1.99V3.146q2.416.521 3.958 2.437Q17 7.5 17 9.98t-1.531 4.406-3.969 2.448M3 11.98v-4h3l4-4v12l-4-4zm8.5 1.146V6.833a3.3 3.3 0 0 1 1.47 1.275q.53.85.53 1.881a3.44 3.44 0 0 1-.53 1.86q-.53.847-1.47 1.276m-3-5.52L6.625 9.478H4.5v1h2.125L8.5 12.354z"
+      />
+    </Svg>
+  );
+};
+
+const VolumeOff = (props: SvgProps) => {
+  return (
+    <Svg fill="none" viewBox="0 0 20 20" {...props}>
+      <Path
+        fill="#000"
+        d="m16 18.125-2.23-2.23a7 7 0 0 1-1.093.553 8 8 0 0 1-1.177.385v-1.541q.25-.105.594-.24t.573-.26L10 12.125v3.896l-4-4H3v-4h2.875L1.875 4l1.063-1.062 14.125 14.125zm-.125-4.354-1.083-1.084q.334-.604.52-1.28.188-.678.188-1.386a5.27 5.27 0 0 0-1.115-3.302 5.63 5.63 0 0 0-2.885-1.99V3.188q2.438.478 3.969 2.416T17 10.021q0 1-.292 1.948a7.4 7.4 0 0 1-.833 1.802m-2.583-2.584L11.5 9.397V6.854a3.2 3.2 0 0 1 1.469 1.281q.531.865.531 1.886 0 .292-.042.583a2.3 2.3 0 0 1-.166.584M10 7.897 8.063 5.958 10 4.021zm-1.5 4.5v-1.771L7 9.125l-.375.396H4.5v1h2.125z"
+      />
+    </Svg>
+  );
+};
+
+const Route = (props: SvgProps) => {
+  return (
+    <Svg fill="none" viewBox="0 0 20 20" {...props}>
+      <Path
+        fill="#000"
+        d="M7.75 17a2.89 2.89 0 0 1-2.125-.878 2.89 2.89 0 0 1-.875-2.113V7.896a2.48 2.48 0 0 1-1.26-.917A2.44 2.44 0 0 1 3 5.5q0-1.042.74-1.77A2.43 2.43 0 0 1 5.51 3q1.032 0 1.76.73A2.4 2.4 0 0 1 8 5.5q0 .855-.5 1.5t-1.25.875v6.126q0 .618.442 1.059t1.062.44 1.059-.44A1.45 1.45 0 0 0 9.25 14V6q0-1.25.875-2.125A2.9 2.9 0 0 1 12.25 3q1.25 0 2.125.875T15.25 6v6.125q.75.229 1.25.875.5.645.5 1.5 0 1.042-.73 1.77a2.4 2.4 0 0 1-1.77.73q-1.02 0-1.76-.73A2.4 2.4 0 0 1 12 14.5q0-.791.5-1.48.5-.686 1.25-.911V5.992a1.43 1.43 0 0 0-.442-1.054 1.46 1.46 0 0 0-1.062-.438q-.621 0-1.059.44A1.45 1.45 0 0 0 10.75 6v8q0 1.25-.875 2.125A2.9 2.9 0 0 1 7.75 17M5.5 6.5q.424 0 .713-.287A.97.97 0 0 0 6.5 5.5a.97.97 0 0 0-.287-.713A.97.97 0 0 0 5.5 4.5a.97.97 0 0 0-.713.287.97.97 0 0 0-.287.713q0 .424.287.713.288.287.713.287m9 9q.424 0 .713-.287a.97.97 0 0 0 .287-.713.97.97 0 0 0-.287-.713.97.97 0 0 0-.713-.287.97.97 0 0 0-.713.287.97.97 0 0 0-.287.713q0 .424.287.713.288.287.713.287"
+      />
+    </Svg>
+  );
+};
+
+const Remove = (props: SvgProps) => {
+  return (
+    <Svg fill="none" viewBox="0 0 20 20" {...props}>
+      <Path fill="#000" d="M4.833 10.75v-1.5h10.334v1.5z" />
+    </Svg>
+  );
+};
+
+const Add = (props: SvgProps) => {
+  return (
+    <Svg fill="none" viewBox="0 0 20 20" {...props}>
+      <Path
+        fill="#000"
+        d="M9.25 10.75H5v-1.5h4.25V5h1.5v4.25H15v1.5h-4.25V15h-1.5z"
+      />
+    </Svg>
+  );
+};
+
+export function getIcon(
   icon: IconType,
   width: number = 20,
   height: number = 20,
@@ -1214,6 +1271,16 @@ export function getManeuverIcon(
       return Updown({ width, height });
     case 'uturn':
       return Uturn({ width, height });
+    case 'volume_off':
+      return VolumeOff({ width, height });
+    case 'volume_up':
+      return VolumeUp({ width, height });
+    case 'route':
+      return Route({ width, height });
+    case 'remove':
+      return Remove({ width, height });
+    case 'add':
+      return Add({ width, height });
     default:
       return null;
   }
