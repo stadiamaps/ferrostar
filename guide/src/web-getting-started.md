@@ -40,7 +40,7 @@ to ensure maximum compatibility across frontend frameworks.
 You can import the components just like other things you’re used to in JavaScript.
 
 ```javascript
-import { FerrostarMap, BrowserLocationProvider } from "@stadiamaps/ferrostar-components";
+import { FerrostarMap, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
 ```
 
 ## Configure the `<ferrostar-map>` component
