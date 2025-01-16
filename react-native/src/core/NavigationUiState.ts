@@ -75,6 +75,11 @@ export class NavigationUiState {
     this.remainingSteps = remainingSteps;
   }
 
+  setMuted(isMuted: boolean): NavigationUiState {
+    this.isMuted = isMuted;
+    return this;
+  }
+
   static fromFerrostar(
     coreState: NavigationState,
     isMuted?: boolean,

@@ -1,15 +1,25 @@
 import MapLibreGL, {
   Camera,
+  type CameraRef,
+  type MapViewRef,
   MapView,
   UserLocation,
 } from '@maplibre/maplibre-react-native';
-import { useEffect, useMemo, useState, type ComponentProps } from 'react';
+import { bbox } from '@turf/bbox';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentProps,
+} from 'react';
 import { FerrostarCore } from '../core/FerrostarCore';
 import { NavigationUiState } from '../core/NavigationUiState';
 import BorderedPolyline from './BorderedPolyline';
 import NavigationMapViewCamera from './NavigationMapViewCamera';
 import TripProgressView from './TripProgressView';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import InstructionsView from './InstructionsView';
 import MapControls from './MapControls';
 
@@ -22,11 +32,74 @@ type NavigationViewProps = ComponentProps<typeof MapView> & {
 
 const NavigationView = (props: NavigationViewProps) => {
   const { core, children, snapUserLocationToRoute = true } = props;
+  const mapRef = useRef<MapViewRef>(null);
+  const cameraRef = useRef<CameraRef>(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const [routeBounds, setRouteBounds] = useState<{
+    ne: [number, number];
+    sw: [number, number];
+  } | null>(null);
   const [uiState, setUiState] = useState<NavigationUiState>();
 
   const isNavigating = useMemo(() => {
     return uiState?.isNavigating() ?? false;
   }, [uiState]);
+
+  const handleMute = () => {
+    setIsMuted(!isMuted);
+    if (uiState === undefined) return;
+
+    setUiState(uiState.setMuted(!isMuted));
+  };
+
+  const handleRoutePress = useCallback(() => {
+    if (!uiState) return;
+
+    // If the route is already focused, we need to reset the camera to follow the user.
+    if (routeBounds) {
+      setRouteBounds(null);
+      return;
+    }
+
+    if (
+      uiState.routeGeometry === undefined ||
+      uiState.routeGeometry.length === 0
+    ) {
+      return;
+    }
+
+    const lineString = {
+      type: 'Feature' as const,
+      properties: {},
+      geometry: {
+        type: 'LineString' as const,
+        coordinates: uiState.routeGeometry.map((point) => [
+          point.lng,
+          point.lat,
+        ]) as [number, number][],
+      },
+    };
+    const [minX, minY, maxX, maxY] = bbox(lineString);
+    const ne = [minX, minY] satisfies [number, number];
+    const sw = [maxX, maxY] satisfies [number, number];
+
+    setRouteBounds({ ne, sw });
+  }, [routeBounds, uiState]);
+
+  const handleZoom = useCallback(
+    async (type: 'in' | 'out') => {
+      if (!cameraRef.current || !mapRef.current) return;
+      const zoom = await mapRef.current.getZoom();
+
+      if (type === 'in') {
+        cameraRef.current.zoomTo(zoom + 1);
+        return;
+      }
+
+      cameraRef.current.zoomTo(zoom - 1);
+    },
+    [cameraRef]
+  );
 
   // We need to find a way to override the location manager from within maplibre-react-native
   // or we need to create a custom puck that can have a custom navigation when navigating.
@@ -47,20 +120,31 @@ const NavigationView = (props: NavigationViewProps) => {
 
   useEffect(() => {
     const watchId = core.addStateListener((state) => {
-      setUiState(NavigationUiState.fromFerrostar(state));
+      setUiState(
+        NavigationUiState.fromFerrostar(
+          state,
+          isMuted,
+          core.locationProvider.lastLocation
+        )
+      );
     });
 
     return () => {
       core.removeStateListener(watchId);
     };
-  }, [core]);
+  });
 
   return (
-    <View style={{ flex: 1, position: 'relative' }}>
-      <MapView compassEnabled={false} attributionEnabled={false} {...props}>
+    <View style={defaultStyle.container}>
+      <MapView
+        ref={mapRef}
+        compassEnabled={false}
+        attributionEnabled={false}
+        {...props}
+      >
         {isNavigating ? (
           <>
-            <NavigationMapViewCamera />
+            <NavigationMapViewCamera ref={cameraRef} bounds={routeBounds} />
             <UserLocation
               renderMode="native"
               androidRenderMode="gps"
@@ -69,7 +153,7 @@ const NavigationView = (props: NavigationViewProps) => {
           </>
         ) : (
           <>
-            <Camera followUserLocation />
+            <Camera ref={cameraRef} followUserLocation />
             <UserLocation renderMode="native" />
           </>
         )}
@@ -81,7 +165,14 @@ const NavigationView = (props: NavigationViewProps) => {
         remainingSteps={uiState?.remainingSteps}
         distanceToNextManeuver={uiState?.progress?.distanceToNextManeuver ?? 0}
       />
-      <MapControls />
+      <MapControls
+        isNavigating={isNavigating}
+        isMuted={uiState?.isMuted ?? false}
+        onRoutePress={handleRoutePress}
+        onMutePress={handleMute}
+        onZoomIn={() => handleZoom('in')}
+        onZoomOut={() => handleZoom('out')}
+      />
       <TripProgressView
         progress={uiState?.progress}
         onTapExit={() => core.stopNavigation()}
@@ -89,5 +180,12 @@ const NavigationView = (props: NavigationViewProps) => {
     </View>
   );
 };
+
+const defaultStyle = StyleSheet.create({
+  container: {
+    flex: 1,
+    position: 'relative',
+  },
+});
 
 export default NavigationView;
