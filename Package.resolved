@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "b84a0decbe9ca1caeff1402efdce71349c09d790",
-        "version" : "6.8.1"
+        "revision" : "3615e3cc81b09b78b58b183660815b0f36107b3b",
+        "version" : "6.10.0"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "revision" : "da977ecb20974c4b1cf185f5fd38771b2d4674fb",
-        "version" : "0.0.10"
+        "revision" : "e1b311b01c11415099341eee49769185e965ac4c",
+        "version" : "0.2.0"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
       "state" : {
-        "revision" : "42a086182681cf661f5c47c9b7dc3931de18c6d7",
-        "version" : "1.17.6"
+        "revision" : "2e6a85b73fc14e27d7542165ae73b1a10516ca9a",
+        "version" : "1.17.7"
       }
     },
     {
@@ -50,8 +50,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "e9ad08274471fb30e8cfddf55c3a6c5426943b20",
-        "version" : "0.4.3"
+        "revision" : "61cffb65b6d58289c152ae1aaed526b75bb13ade",
+        "version" : "0.5.1"
+      }
+    },
+    {
+      "identity" : "xctest-dynamic-overlay",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
+      "state" : {
+        "revision" : "a3f634d1a409c7979cabc0a71b3f26ffa9fc8af1",
+        "version" : "1.4.3"
       }
     }
   ],
