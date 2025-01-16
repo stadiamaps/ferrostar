@@ -57,6 +57,35 @@ export class LocationProvider implements LocationProviderInterface {
       return;
     }
 
+    if (this.lastLocation == null) {
+      Geolocation.getCurrentPosition(
+        (location) => {
+          const { coords, timestamp } = location;
+          const userLocation = {
+            coordinates: {
+              lat: coords.latitude,
+              lng: coords.longitude,
+            },
+            horizontalAccuracy: coords.accuracy,
+            // TODO: map these parameters to the correct types not 100% which ones are correct
+            courseOverGround: undefined,
+            speed:
+              coords.speed !== null
+                ? {
+                    value: coords.speed,
+                    accuracy: undefined,
+                  }
+                : undefined,
+            timestamp: new Date(timestamp),
+          };
+          this.lastLocation = userLocation;
+          listener.onLocationUpdate(userLocation);
+        },
+        undefined,
+        this.locationUpdateOptions
+      );
+    }
+
     const watchId = Geolocation.watchPosition(
       (location) => {
         const { coords, timestamp } = location;
@@ -77,6 +106,7 @@ export class LocationProvider implements LocationProviderInterface {
               : undefined,
           timestamp: new Date(timestamp),
         });
+        this.lastLocation = userLocation;
         listener.onLocationUpdate(userLocation);
       },
       undefined,

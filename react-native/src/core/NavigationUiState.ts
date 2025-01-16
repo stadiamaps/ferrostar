@@ -87,7 +87,7 @@ export class NavigationUiState {
     }
     return new NavigationUiState(
       location,
-      snappedLocation,
+      snappedLocation ?? tripState?.inner.snappedUserLocation,
       undefined,
       coreState.routeGeometry,
       tripState?.inner.visualInstruction,
