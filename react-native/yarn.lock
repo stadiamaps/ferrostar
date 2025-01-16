@@ -2264,9 +2264,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@maplibre/maplibre-react-native@npm:^10.0.0-alpha.28":
-  version: 10.0.0-beta.13
-  resolution: "@maplibre/maplibre-react-native@npm:10.0.0-beta.13"
+"@maplibre/maplibre-react-native@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@maplibre/maplibre-react-native@npm:10.0.0"
   dependencies:
     "@turf/distance": ^7.1.0
     "@turf/helpers": ^7.1.0
@@ -2286,7 +2286,7 @@ __metadata:
       optional: true
     "@types/react":
       optional: true
-  checksum: a04327b27dbdc3ace4ab749489436d4702826b72218f85999f60ca9c3f0cbd4129356c3e194918aac0415951fccbbed139e2d8038ed99a1fbe8215637e1b9063
+  checksum: a4c8141d1d856efe50477a066b6e5db941b776283a8df4e25c2cd1325abc8cfe2b231dab684122a2668faf6237cd1d32bb7538504c3a64efef58c54c1575d2ac
   languageName: node
   linkType: hard
 
@@ -3048,6 +3048,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turf/bbox@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@turf/bbox@npm:7.2.0"
+  dependencies:
+    "@turf/helpers": ^7.2.0
+    "@turf/meta": ^7.2.0
+    "@types/geojson": ^7946.0.10
+    tslib: ^2.8.1
+  checksum: 34dfb634d04bc20be292a211e0fdef610556bead4bb5a38174fe040c59f041b4a0e2f586148c2c8b88677b1c5af08a07de5745235233dbaa0197fd67bf21e0da
+  languageName: node
+  linkType: hard
+
 "@turf/bearing@npm:^7.1.0":
   version: 7.1.0
   resolution: "@turf/bearing@npm:7.1.0"
@@ -3094,6 +3106,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turf/helpers@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@turf/helpers@npm:7.2.0"
+  dependencies:
+    "@types/geojson": ^7946.0.10
+    tslib: ^2.8.1
+  checksum: 44697cf00db81ef8c4a43d13c7fc59ad06a50a5fae78f8d5e735fcdf89822107611585dcec0e973ae56248327a0f8f835dfbee952ec08bb6b7154592ce14aa5e
+  languageName: node
+  linkType: hard
+
 "@turf/invariant@npm:^7.1.0":
   version: 7.1.0
   resolution: "@turf/invariant@npm:7.1.0"
@@ -3137,6 +3159,16 @@ __metadata:
     "@turf/helpers": ^7.1.0
     "@types/geojson": ^7946.0.10
   checksum: 4d133de0a72af88b7831cce19f6640833efd7faa4b58762eda7e76da27402963addf0b147b83af6592d21960461c81a6fb17aa46dd641421a171310cc92806b8
+  languageName: node
+  linkType: hard
+
+"@turf/meta@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@turf/meta@npm:7.2.0"
+  dependencies:
+    "@turf/helpers": ^7.2.0
+    "@types/geojson": ^7946.0.10
+  checksum: 77de8b1e345511e62ea421581dcdaf0d46b20d2440137f116341ed2213ba519da39aba6fd041098eb63a65d52cefb179206cc663ab4d289f220cf00f49f95bb0
   languageName: node
   linkType: hard
 
@@ -5462,6 +5494,13 @@ __metadata:
   dependencies:
     type-fest: ^4.18.2
   checksum: a53425ed992f136db3c591b06bcf94f46fed7136b81703121e446c961043684e8996b9ce8f87b24d2859d82c8b14c18c3b1905352bb3a1ccc5e373153f43bf48
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^16.4.5":
+  version: 16.4.7
+  resolution: "dotenv@npm:16.4.7"
+  checksum: c27419b5875a44addcc56cc69b7dc5b0e6587826ca85d5b355da9303c6fc317fc9989f1f18366a16378c9fdd9532d14117a1abe6029cc719cdbbef6eaef2cea4
   languageName: node
   linkType: hard
 
@@ -10852,6 +10891,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-dotenv@npm:^3.4.11":
+  version: 3.4.11
+  resolution: "react-native-dotenv@npm:3.4.11"
+  dependencies:
+    dotenv: ^16.4.5
+  peerDependencies:
+    "@babel/runtime": ^7.20.6
+  checksum: 3ebac2c2ed79dd7e4920fd3fc2da9187413b7190231618e4858b46c47833677838b96d531afe7bd5c4b0a60454dba40cb8708722210df5d522e30aefbf41da05
+  languageName: node
+  linkType: hard
+
 "react-native-ferrostar-example@workspace:example":
   version: 0.0.0-use.local
   resolution: "react-native-ferrostar-example@workspace:example"
@@ -10859,7 +10909,7 @@ __metadata:
     "@babel/core": ^7.25.2
     "@babel/preset-env": ^7.25.3
     "@babel/runtime": ^7.25.0
-    "@maplibre/maplibre-react-native": ^10.0.0-alpha.28
+    "@maplibre/maplibre-react-native": ^10.0.0
     "@react-native-community/cli": 15.0.1
     "@react-native-community/cli-platform-android": 15.0.1
     "@react-native-community/cli-platform-ios": 15.0.1
@@ -10870,6 +10920,7 @@ __metadata:
     react: 18.3.1
     react-native: 0.76.5
     react-native-builder-bob: ^0.32.0
+    react-native-dotenv: ^3.4.11
     react-native-svg: ^15.10.1
   languageName: unknown
   linkType: soft
@@ -10880,11 +10931,12 @@ __metadata:
   dependencies:
     "@commitlint/config-conventional": ^17.0.2
     "@evilmartians/lefthook": ^1.5.0
-    "@maplibre/maplibre-react-native": ^10.0.0-alpha.28
+    "@maplibre/maplibre-react-native": ^10.0.0
     "@react-native-community/cli": 15.0.1
     "@react-native-community/geolocation": ^3.4.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
+    "@turf/bbox": ^7.2.0
     "@types/jest": ^29.5.5
     "@types/react": ^18.2.44
     commitlint: ^17.0.2
@@ -12503,7 +12555,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.6.2":
+"tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.6.2, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: e4aba30e632b8c8902b47587fd13345e2827fa639e7c3121074d5ee0880723282411a8838f830b55100cbe4517672f84a2472667d355b81e8af165a55dc6203a
