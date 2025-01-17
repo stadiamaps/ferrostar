@@ -31,7 +31,7 @@ if useLocalMapLibreSwiftUIDSL {
 } else {
     maplibreSwiftUIDSLPackage = .package(
         url: "https://github.com/maplibre/swiftui-dsl",
-        from: "0.4.0"
+        from: "0.5.1"
     )
 }
 
@@ -68,7 +68,7 @@ let package = Package(
         maplibreSwiftUIDSLPackage,
         .package(
             url: "https://github.com/pointfreeco/swift-snapshot-testing",
-            from: "1.15.0"
+            from: "1.17.7"
         ),
     ],
     targets: [
