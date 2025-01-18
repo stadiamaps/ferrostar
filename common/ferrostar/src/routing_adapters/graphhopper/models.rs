@@ -1,15 +1,12 @@
 use serde::{Deserialize};
-
+use alloc::collections::BTreeMap as HashMap;
+use crate::models::{ GeographicCoordinate };
 
 #[derive(Deserialize, Debug)]
 pub struct GraphHopperRouteResponse {
     pub paths: Vec<GraphHopperPath>,
     pub message: Option<String>
 }
-
-/*
-// path details currently unused
-use alloc::collections::BTreeMap as HashMap;
 
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
@@ -18,40 +15,38 @@ pub enum DetailEntryValue {
     Str(String),
     Bool(bool),
     Float(f64),
-    Null,
 }
 
 #[derive(Deserialize, Debug)]
 #[serde(from = "Vec<serde_json::Value>")]
 pub struct DetailEntry {
-    first: u32, // probably usize better like we do for instruction.interval
-    second: u32,
-    value: DetailEntryValue,
+    pub start_index: usize,
+    pub end_index: usize,
+    pub value: Option<DetailEntryValue>,
 }
 
 impl From<Vec<serde_json::Value>> for DetailEntry {
     fn from(vec: Vec<serde_json::Value>) -> Self {
-        let first = vec[0].as_i64().unwrap_or_default() as u32;
-        let second = vec[1].as_i64().unwrap_or_default() as u32;
+        let start_index = vec[0].as_i64().unwrap_or_default() as usize;
+        let end_index = vec[1].as_i64().unwrap_or_default() as usize;
 
         let value = match &vec[2] {
-            serde_json::Value::String(s) => DetailEntryValue::Str(s.clone()),
+            serde_json::Value::String(s) => Some(DetailEntryValue::Str(s.clone())),
             serde_json::Value::Number(n) => {
                 if n.is_i64() {
-                    DetailEntryValue::Int(n.as_i64().unwrap() as i32)
+                    Some(DetailEntryValue::Int(n.as_i64().unwrap() as i32))
                 } else {
-                    DetailEntryValue::Float(n.as_f64().unwrap())
+                    Some(DetailEntryValue::Float(n.as_f64().unwrap()))
                 }
             },
-            serde_json::Value::Bool(b) => DetailEntryValue::Bool(*b),
-            serde_json::Value::Null => DetailEntryValue::Null,
-            _ => DetailEntryValue::Null,
+            serde_json::Value::Bool(b) => Some(DetailEntryValue::Bool(*b)),
+            serde_json::Value::Null => None,
+            _ => None,
         };
 
-        DetailEntry { first, second, value }
+        DetailEntry { start_index, end_index, value }
     }
 }
-*/
 
 #[derive(Deserialize, Debug)]
 pub struct GraphHopperPath {
@@ -59,7 +54,7 @@ pub struct GraphHopperPath {
     pub time: f64,
     pub bbox: Vec<f64>,
     pub instructions: Vec<GraphHopperInstruction>,
-    // pub details: HashMap<String, Vec<DetailEntry>>,
+    pub details: HashMap<String, Vec<DetailEntry>>,
     pub points: String, // encoded polyline
     pub points_encoded:	bool,
     pub points_encoded_multiplier: f64,
@@ -70,10 +65,18 @@ pub struct GraphHopperInstruction {
     pub distance: f64,
     pub time: f64,
     pub heading: Option<f64>,
+    pub exit_number: Option<u32>,
     pub turn_angle: Option<f64>,
     pub sign: i32,
     pub interval: Vec<usize>,
     pub text: String,
     pub street_ref: Option<String>,
     pub street_name: String,
+}
+
+// temporary structure until we understand internal maxspeed handling
+pub struct MaxSpeedEntry {
+    pub geometry: Vec<GeographicCoordinate>,
+    pub speed_limit: Option<f64>,
+    pub unit: String,
 }

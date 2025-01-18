@@ -11,7 +11,7 @@ use crate::models::{
 
 use crate::routing_adapters::error::{RoutingRequestGenerationError, InstantiationError, ParsingError};
 use crate::routing_adapters::{RouteRequest, Route, RouteRequestGenerator};
-use crate::routing_adapters::graphhopper::models::{GraphHopperRouteResponse, GraphHopperPath};
+use crate::routing_adapters::graphhopper::models::{GraphHopperRouteResponse, GraphHopperPath, DetailEntryValue, MaxSpeedEntry};
 
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
@@ -82,7 +82,7 @@ impl RouteRequestGenerator for GraphHopperHttpRequestGenerator {
                 "instructions": true,
                 "profile": &self.profile,
                 "points": points,
-                "details": ["leg_time", "leg_distance"],
+                "details": ["leg_time", "max_speed"],
             });
 
             for (k, v) in &self.options {
@@ -142,10 +142,29 @@ impl Route {
                 .coords()
                 .map(|coord| GeographicCoordinate::from(*coord))
                 .collect();
+
+        let speed_limits = path.details.get("max_speed");
+        let mut sl_result = Vec::new();
+        if let Some(speed_limits) = speed_limits {
+            for speed_limit_detail in speed_limits {
+               let sub_geo: Vec<GeographicCoordinate> = geometry[speed_limit_detail.start_index..speed_limit_detail.end_index].to_vec();
+               let value: Option<f64>;
+               match speed_limit_detail.value {
+                   Some(DetailEntryValue::Float(f)) => { value = Some(f); },
+                   Some(DetailEntryValue::Int(i)) => { value = Some(i as f64); },
+                   _ => { value = None; }
+               }
+
+               sl_result.push(MaxSpeedEntry {
+                  geometry: sub_geo,
+                  speed_limit: value,
+                  unit: "km/h".to_string(),
+               })
+            }
+        }
+
         let mut steps = Vec::new();
-
         for instruction in &path.instructions {
-
             let turn_angle = if instruction.sign == 6 {
                 instruction.turn_angle.map(|angle| ((angle * 180.0 / PI) % 360.0).round() as u16)
             } else {
@@ -155,7 +174,7 @@ impl Route {
             let (maneuver_type, maneuver_modifier) = Self::get_maneuver(instruction.sign);
             let visual_instruction_content = VisualInstructionContent {
                  text: instruction.text.clone(), // displayed on the map
-                 exit_numbers: [].to_vec(),
+                 exit_numbers: instruction.exit_number.into_iter().map(|num| num.to_string()).collect(),
                  maneuver_modifier: maneuver_modifier,
                  maneuver_type: Some(maneuver_type),
                  lane_info: None,
