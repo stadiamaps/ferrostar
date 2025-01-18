@@ -146,7 +146,6 @@ class FerrostarCore(
       foregroundServiceManager: ForegroundServiceManager? = null,
       options: Map<String, Any> = emptyMap(),
   ) : this(
-      // TODO NOW write some tests for graphhopper
       RouteProvider.RouteAdapter(
           if (routingEngine == "graphhopper") RouteAdapter.newGraphhopperHttp(
               routingEndpointURL.toString(), profile, jsonAdapter.toJson(options))

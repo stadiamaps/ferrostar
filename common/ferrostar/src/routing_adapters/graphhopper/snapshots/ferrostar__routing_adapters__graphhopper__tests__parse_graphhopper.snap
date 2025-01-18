@@ -1,0 +1,135 @@
+---
+source: ferrostar/src/routing_adapters/graphhopper/mod.rs
+expression: routes
+---
+- geometry:
+    - lat: 51.434945
+      lng: 14.256877
+    - lat: 51.435351
+      lng: 14.257956
+    - lat: 51.435783
+      lng: 14.259048
+    - lat: 51.435797
+      lng: 14.259106
+    - lat: 51.435798
+      lng: 14.259165
+    - lat: 51.435587
+      lng: 14.259435
+    - lat: 51.435385
+      lng: 14.259672
+    - lat: 51.435339
+      lng: 14.259598
+    - lat: 51.435309
+      lng: 14.259575
+    - lat: 51.435277
+      lng: 14.259563
+    - lat: 51.435212
+      lng: 14.259573
+    - lat: 51.43511
+      lng: 14.259316
+    - lat: 51.434693
+      lng: 14.258224
+  bbox:
+    sw:
+      lat: 51.434693
+      lng: 14.256877
+    ne:
+      lat: 51.435798
+      lng: 14.259672
+  distance: 375.119
+  waypoints: []
+  steps:
+    - geometry:
+        - lat: 51.434945
+          lng: 14.256877
+        - lat: 51.435351
+          lng: 14.257956
+        - lat: 51.435783
+          lng: 14.259048
+        - lat: 51.435797
+          lng: 14.259106
+        - lat: 51.435798
+          lng: 14.259165
+        - lat: 51.435587
+          lng: 14.259435
+      distance: 243.286
+      duration: 54.741
+      road_name: Straße des Friedens
+      exits: []
+      instruction: Continue onto Straße des Friedens
+      visual_instructions:
+        - primary_content:
+            text: Continue onto Straße des Friedens
+            maneuver_type: continue
+            maneuver_modifier: ~
+            roundabout_exit_degrees: ~
+            lane_info: ~
+            exit_numbers: []
+          secondary_content: ~
+          sub_content: ~
+          trigger_distance_before_maneuver: 243.286
+      spoken_instructions:
+        - text: Continue onto Straße des Friedens
+          ssml: "<Speak>Continue onto Straße des Friedens</Speak>"
+          trigger_distance_before_maneuver: 243.286
+      annotations: ~
+      incidents: []
+    - geometry:
+        - lat: 51.435385
+          lng: 14.259672
+        - lat: 51.435339
+          lng: 14.259598
+        - lat: 51.435309
+          lng: 14.259575
+        - lat: 51.435277
+          lng: 14.259563
+        - lat: 51.435212
+          lng: 14.259573
+        - lat: 51.43511
+          lng: 14.259316
+      distance: 131.833
+      duration: 16.951
+      road_name: Dr.-Wilhelm-Külz-Straße
+      exits: []
+      instruction: "At roundabout, take exit 1 onto Dr.-Wilhelm-Külz-Straße"
+      visual_instructions:
+        - primary_content:
+            text: "At roundabout, take exit 1 onto Dr.-Wilhelm-Külz-Straße"
+            maneuver_type: roundabout
+            maneuver_modifier: ~
+            roundabout_exit_degrees: 0
+            lane_info: ~
+            exit_numbers:
+              - "1"
+          secondary_content: ~
+          sub_content: ~
+          trigger_distance_before_maneuver: 131.833
+      spoken_instructions:
+        - text: "At roundabout, take exit 1 onto Dr.-Wilhelm-Külz-Straße"
+          ssml: "<Speak>At roundabout, take exit 1 onto Dr.-Wilhelm-Külz-Straße</Speak>"
+          trigger_distance_before_maneuver: 131.833
+      annotations: ~
+      incidents: []
+    - geometry: []
+      distance: 0
+      duration: 0
+      road_name: ""
+      exits: []
+      instruction: Arrive at destination
+      visual_instructions:
+        - primary_content:
+            text: Arrive at destination
+            maneuver_type: arrive
+            maneuver_modifier: ~
+            roundabout_exit_degrees: ~
+            lane_info: ~
+            exit_numbers: []
+          secondary_content: ~
+          sub_content: ~
+          trigger_distance_before_maneuver: 0
+      spoken_instructions:
+        - text: Arrive at destination
+          ssml: "<Speak>Arrive at destination</Speak>"
+          trigger_distance_before_maneuver: 0
+      annotations: ~
+      incidents: []

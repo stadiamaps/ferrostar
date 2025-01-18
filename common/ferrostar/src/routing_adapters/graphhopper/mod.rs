@@ -3,10 +3,10 @@ pub(crate) mod models;
 use super::RouteResponseParser;
 use polyline::decode_polyline;
 use std::f64::consts::PI;
-
+use uuid::Uuid;
 use crate::models::{
     BoundingBox, GeographicCoordinate, RouteStep, Waypoint, UserLocation, ManeuverModifier, ManeuverType,
-    VisualInstructionContent, VisualInstruction,
+    VisualInstructionContent, VisualInstruction, SpokenInstruction,
 };
 
 use crate::routing_adapters::error::{RoutingRequestGenerationError, InstantiationError, ParsingError};
@@ -143,6 +143,7 @@ impl Route {
                 .map(|coord| GeographicCoordinate::from(*coord))
                 .collect();
 
+        // TODO copy speed limits into "annotations", but which format?
         let speed_limits = path.details.get("max_speed");
         let mut sl_result = Vec::new();
         if let Some(speed_limits) = speed_limits {
@@ -171,6 +172,14 @@ impl Route {
                 None
             };
 
+            let ssml = format!("<Speak>{}</Speak>", instruction.text);
+            let spoken_instruction = SpokenInstruction {
+                text: instruction.text.clone(),
+                ssml: Some(ssml),
+                trigger_distance_before_maneuver: instruction.distance,
+                utterance_id: Uuid::new_v4(),
+            };
+
             let (maneuver_type, maneuver_modifier) = Self::get_maneuver(instruction.sign);
             let visual_instruction_content = VisualInstructionContent {
                  text: instruction.text.clone(), // displayed on the map
@@ -188,16 +197,16 @@ impl Route {
             };
             let sub_geo: Vec<GeographicCoordinate> = geometry[instruction.interval[0]..instruction.interval[1]].to_vec();
             steps.push(RouteStep {
-             geometry: sub_geo,
-             distance: instruction.distance,
-             duration: instruction.time / 1000.0,
-             road_name: Some(instruction.street_name.clone()),
-             exits: [].to_vec(),
-             annotations: None,
-             instruction: instruction.text.clone(), // purpose of this text?
-             visual_instructions: [visual_instruction].to_vec(),
-             spoken_instructions: [].to_vec(),
-             incidents: [].to_vec(),
+                geometry: sub_geo,
+                distance: instruction.distance,
+                duration: instruction.time / 1000.0,
+                road_name: Some(instruction.street_name.clone()),
+                exits: [].to_vec(),
+                annotations: None,
+                instruction: instruction.text.clone(), // purpose of this text?
+                visual_instructions: [visual_instruction].to_vec(),
+                spoken_instructions: [spoken_instruction].to_vec(),
+                incidents: [].to_vec(),
             });
         }
 
@@ -233,5 +242,33 @@ impl Route {
             8 => (ManeuverType::Turn, Some(ManeuverModifier::UTurn)), // right u-turn
             _ => (ManeuverType::Notification, None), // (unknown sign)
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const GRAPHHOPPER_ERR_RSP: &str = include_str!("fixtures/graphhopper_rsp_error_with_elevation.json");
+    const GRAPHHOPPER_RESPONSE: &str = include_str!("fixtures/graphhopper_response.json");
+
+    #[test]
+    fn error_on_invalid_polyline() {
+        let parser = GraphHopperResponseParser::new();
+        let result = parser.parse_response(GRAPHHOPPER_ERR_RSP.into());
+        assert!(result.is_err(), "Expected an error, but got: {:?}", result);
+
+        let err = result.unwrap_err();
+        assert_eq!(format!("{}", err), "Failed to parse route geometry: no longitude to go with latitude at index: 77.");
+    }
+
+    #[test]
+    fn parse_graphhopper() {
+        let parser = GraphHopperResponseParser::new();
+        let routes = parser
+            .parse_response(GRAPHHOPPER_RESPONSE.into())
+            .expect("GraphHopper route response parsing failed:");
+        insta::assert_yaml_snapshot!(routes);
     }
 }
