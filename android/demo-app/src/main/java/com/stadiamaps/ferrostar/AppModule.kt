@@ -39,12 +39,20 @@ object AppModule {
   //
   // NOTE: Don't set this directly in source code. Add a line to your local.properties file:
   // stadiaApiKey=YOUR-API-KEY
+  // graphhopperApiKey=YOUR-API-KEY
   val stadiaApiKey =
-      if (BuildConfig.stadiaApiKey.isBlank() || BuildConfig.stadiaApiKey == "null") {
-        null
-      } else {
-        BuildConfig.stadiaApiKey
-      }
+    if (BuildConfig.stadiaApiKey.isBlank() || BuildConfig.stadiaApiKey == "null") {
+      null
+    } else {
+      BuildConfig.stadiaApiKey
+    }
+
+  val graphhopperApiKey =
+    if (BuildConfig.graphhopperApiKey.isBlank() || BuildConfig.graphhopperApiKey == "null") {
+      null
+    } else {
+      BuildConfig.graphhopperApiKey
+    }
 
   val mapStyleUrl: String by lazy {
     if (stadiaApiKey != null)
@@ -52,8 +60,10 @@ object AppModule {
     else "https://demotiles.maplibre.org/style.json"
   }
 
-  val valhallaEndpointUrl: URL by lazy {
-    if (stadiaApiKey != null) {
+  val routingEndpointURL: URL by lazy {
+    if (graphhopperApiKey != null) {
+      URL("https://graphhopper.com/api/1/route/?key=$graphhopperApiKey")
+    } else if (stadiaApiKey != null) {
       URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
     } else {
       URL("https://valhalla1.openstreeetmap.de/route")
@@ -77,10 +87,34 @@ object AppModule {
   }
 
   val ferrostarCore: FerrostarCore by lazy {
+
+      val options = mapOf(
+          "costingOptions" to
+                  // Just an example... You can set multiple costing options for any profile
+                  // in Valhalla.
+                  // If your app uses multiple routing modes, you can have a master settings
+                  // map, or construct a new one each time.
+                  mapOf(
+                      "low_speed_vehicle" to
+                              mapOf(
+                                  "vehicle_type" to "golf_cart",
+                                  "top_speed" to 32 // 24kph ~= 15mph
+                              )),
+          "units" to "miles")
+
+      // You can use the GraphHopper custom model like this:
+      // val options =
+      //    mapOf(
+      //        "ch.disable" to true,
+      //        "custom_model" to
+      //            mapOf("distance_influence" to 100)
+      //    )
+
     val core =
         FerrostarCore(
-            valhallaEndpointURL = valhallaEndpointUrl,
-            profile = "auto",
+            routingEndpointURL = routingEndpointURL,
+            routingEngine = "graphhopper",
+            profile = "car",
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
@@ -94,20 +128,7 @@ object AppModule {
                             SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),
-            options =
-                mapOf(
-                    "costingOptions" to
-                        // Just an example... You can set multiple costing options for any profile
-                        // in Valhalla.
-                        // If your app uses multiple routing modes, you can have a master settings
-                        // map, or construct a new one each time.
-                        mapOf(
-                            "low_speed_vehicle" to
-                                mapOf(
-                                    "vehicle_type" to "golf_cart",
-                                    "top_speed" to 32 // 24kph ~= 15mph
-                                    )),
-                    "units" to "miles"))
+            options = options)
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!

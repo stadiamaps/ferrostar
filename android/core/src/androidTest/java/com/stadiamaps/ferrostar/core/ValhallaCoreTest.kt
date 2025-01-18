@@ -247,7 +247,8 @@ class ValhallaCoreTest {
         }
     val core =
         FerrostarCore(
-            valhallaEndpointURL = URL(valhallaEndpointUrl),
+            routingEndpointURL = URL(valhallaEndpointUrl),
+            routingEngine = "valhalla",
             profile = "auto",
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
@@ -295,7 +296,8 @@ class ValhallaCoreTest {
         }
     val core =
         FerrostarCore(
-            valhallaEndpointURL = URL(valhallaEndpointUrl),
+            routingEndpointURL = URL(valhallaEndpointUrl),
+            routingEngine = "valhalla",
             profile = "auto",
             httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
             locationProvider = SimulatedLocationProvider(),
