@@ -1,17 +1,21 @@
 pub(crate) mod models;
 
 use super::RouteResponseParser;
+use crate::models::{
+    BoundingBox, GeographicCoordinate, ManeuverModifier, ManeuverType, RouteStep,
+    SpokenInstruction, UserLocation, VisualInstruction, VisualInstructionContent, Waypoint,
+};
 use polyline::decode_polyline;
 use std::f64::consts::PI;
 use uuid::Uuid;
-use crate::models::{
-    BoundingBox, GeographicCoordinate, RouteStep, Waypoint, UserLocation, ManeuverModifier, ManeuverType,
-    VisualInstructionContent, VisualInstruction, SpokenInstruction,
-};
 
-use crate::routing_adapters::error::{RoutingRequestGenerationError, InstantiationError, ParsingError};
-use crate::routing_adapters::{RouteRequest, Route, RouteRequestGenerator};
-use crate::routing_adapters::graphhopper::models::{GraphHopperRouteResponse, GraphHopperPath, DetailEntryValue, MaxSpeedEntry};
+use crate::routing_adapters::error::{
+    InstantiationError, ParsingError, RoutingRequestGenerationError,
+};
+use crate::routing_adapters::graphhopper::models::{
+    DetailEntryValue, GraphHopperPath, GraphHopperRouteResponse, MaxSpeedEntry,
+};
+use crate::routing_adapters::{Route, RouteRequest, RouteRequestGenerator};
 
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
@@ -68,13 +72,16 @@ impl RouteRequestGenerator for GraphHopperHttpRequestGenerator {
             let headers =
                 HashMap::from([("Content-Type".to_string(), "application/json".to_string())]);
 
-            let mut points: Vec<Vec<f64>> = vec![
-                vec![user_location.coordinates.lng, user_location.coordinates.lat],
-            ];
+            let mut points: Vec<Vec<f64>> = vec![vec![
+                user_location.coordinates.lng,
+                user_location.coordinates.lat,
+            ]];
 
-            points.extend(waypoints.iter().map(|waypoint| {
-                vec![waypoint.coordinate.lng, waypoint.coordinate.lat]
-            }));
+            points.extend(
+                waypoints
+                    .iter()
+                    .map(|waypoint| vec![waypoint.coordinate.lng, waypoint.coordinate.lat]),
+            );
 
             let mut args = json!({
                 // "points_encoded": false,
@@ -99,12 +106,11 @@ impl RouteRequestGenerator for GraphHopperHttpRequestGenerator {
     }
 }
 
-pub struct GraphHopperResponseParser {
-}
+pub struct GraphHopperResponseParser {}
 
 impl GraphHopperResponseParser {
     pub fn new() -> Self {
-        Self { }
+        Self {}
     }
 }
 
@@ -113,7 +119,9 @@ impl RouteResponseParser for GraphHopperResponseParser {
         let res: GraphHopperRouteResponse = serde_json::from_slice(&response)?;
 
         if let Some(message) = &res.message {
-            Err(ParsingError::InvalidStatusCode { code: message.to_string() })
+            Err(ParsingError::InvalidStatusCode {
+                code: message.to_string(),
+            })
         } else {
             res.paths
                 .iter()
@@ -125,49 +133,59 @@ impl RouteResponseParser for GraphHopperResponseParser {
 
 impl Route {
     pub fn from_graphhopper(path: &GraphHopperPath) -> Result<Self, ParsingError> {
-
         if !path.points_encoded {
-            return Err(ParsingError::InvalidRouteObject{
+            return Err(ParsingError::InvalidRouteObject {
                 error: "points must be encoded".to_string(),
             });
         }
 
-        let linestring = decode_polyline(&path.points, path.points_encoded_multiplier.log(10.0).round() as u32).map_err(|error| {
-            ParsingError::InvalidGeometry {
-                error: error.to_string(),
-            }
+        let linestring = decode_polyline(
+            &path.points,
+            path.points_encoded_multiplier.log(10.0).round() as u32,
+        )
+        .map_err(|error| ParsingError::InvalidGeometry {
+            error: error.to_string(),
         })?;
 
         let geometry: Vec<GeographicCoordinate> = linestring
-                .coords()
-                .map(|coord| GeographicCoordinate::from(*coord))
-                .collect();
+            .coords()
+            .map(|coord| GeographicCoordinate::from(*coord))
+            .collect();
 
         // TODO copy speed limits into "annotations", but which format?
         let speed_limits = path.details.get("max_speed");
         let mut sl_result = Vec::new();
         if let Some(speed_limits) = speed_limits {
             for speed_limit_detail in speed_limits {
-               let sub_geo: Vec<GeographicCoordinate> = geometry[speed_limit_detail.start_index..speed_limit_detail.end_index].to_vec();
-               let value: Option<f64>;
-               match speed_limit_detail.value {
-                   Some(DetailEntryValue::Float(f)) => { value = Some(f); },
-                   Some(DetailEntryValue::Int(i)) => { value = Some(i as f64); },
-                   _ => { value = None; }
-               }
+                let sub_geo: Vec<GeographicCoordinate> =
+                    geometry[speed_limit_detail.start_index..speed_limit_detail.end_index].to_vec();
+                let value: Option<f64>;
+                match speed_limit_detail.value {
+                    Some(DetailEntryValue::Float(f)) => {
+                        value = Some(f);
+                    }
+                    Some(DetailEntryValue::Int(i)) => {
+                        value = Some(i as f64);
+                    }
+                    _ => {
+                        value = None;
+                    }
+                }
 
-               sl_result.push(MaxSpeedEntry {
-                  geometry: sub_geo,
-                  speed_limit: value,
-                  unit: "km/h".to_string(),
-               })
+                sl_result.push(MaxSpeedEntry {
+                    geometry: sub_geo,
+                    speed_limit: value,
+                    unit: "km/h".to_string(),
+                })
             }
         }
 
         let mut steps = Vec::new();
         for instruction in &path.instructions {
             let turn_angle = if instruction.sign == 6 {
-                instruction.turn_angle.map(|angle| ((angle * 180.0 / PI) % 360.0).round() as u16)
+                instruction
+                    .turn_angle
+                    .map(|angle| ((angle * 180.0 / PI) % 360.0).round() as u16)
             } else {
                 None
             };
@@ -182,12 +200,16 @@ impl Route {
 
             let (maneuver_type, maneuver_modifier) = Self::get_maneuver(instruction.sign);
             let visual_instruction_content = VisualInstructionContent {
-                 text: instruction.text.clone(), // displayed on the map
-                 exit_numbers: instruction.exit_number.into_iter().map(|num| num.to_string()).collect(),
-                 maneuver_modifier: maneuver_modifier,
-                 maneuver_type: Some(maneuver_type),
-                 lane_info: None,
-                 roundabout_exit_degrees: turn_angle,
+                text: instruction.text.clone(), // displayed on the map
+                exit_numbers: instruction
+                    .exit_number
+                    .into_iter()
+                    .map(|num| num.to_string())
+                    .collect(),
+                maneuver_modifier,
+                maneuver_type: Some(maneuver_type),
+                lane_info: None,
+                roundabout_exit_degrees: turn_angle,
             };
             let visual_instruction = VisualInstruction {
                 primary_content: visual_instruction_content,
@@ -195,7 +217,8 @@ impl Route {
                 sub_content: None,
                 trigger_distance_before_maneuver: instruction.distance,
             };
-            let sub_geo: Vec<GeographicCoordinate> = geometry[instruction.interval[0]..instruction.interval[1]].to_vec();
+            let sub_geo: Vec<GeographicCoordinate> =
+                geometry[instruction.interval[0]..instruction.interval[1]].to_vec();
             steps.push(RouteStep {
                 geometry: sub_geo,
                 distance: instruction.distance,
@@ -210,8 +233,14 @@ impl Route {
             });
         }
 
-        let sw = GeographicCoordinate { lng: path.bbox[0], lat: path.bbox[1] };
-        let ne = GeographicCoordinate { lng: path.bbox[2], lat: path.bbox[3] };
+        let sw = GeographicCoordinate {
+            lng: path.bbox[0],
+            lat: path.bbox[1],
+        };
+        let ne = GeographicCoordinate {
+            lng: path.bbox[2],
+            lat: path.bbox[3],
+        };
         Ok(Route {
             geometry,
             bbox: BoundingBox { sw, ne },
@@ -225,9 +254,9 @@ impl Route {
         // unclear how to specify left/right u-turn or a via point
         match sign {
             -98 => (ManeuverType::Turn, Some(ManeuverModifier::UTurn)), // unknown u-turn
-            -8 => (ManeuverType::Turn, Some(ManeuverModifier::UTurn)), // left u-turn
+            -8 => (ManeuverType::Turn, Some(ManeuverModifier::UTurn)),  // left u-turn
             -7 => (ManeuverType::Turn, Some(ManeuverModifier::Left)),
-            -6 => (ManeuverType::ExitRoundabout, None),                // not yet filled from GraphHopper
+            -6 => (ManeuverType::ExitRoundabout, None), // not yet filled from GraphHopper
             -3 => (ManeuverType::Turn, Some(ManeuverModifier::SharpLeft)),
             -2 => (ManeuverType::Turn, Some(ManeuverModifier::Left)),
             -1 => (ManeuverType::Turn, Some(ManeuverModifier::SlightLeft)),
@@ -240,17 +269,17 @@ impl Route {
             6 => (ManeuverType::Roundabout, None), // Instruction before entering a roundabout
             7 => (ManeuverType::Turn, Some(ManeuverModifier::Right)),
             8 => (ManeuverType::Turn, Some(ManeuverModifier::UTurn)), // right u-turn
-            _ => (ManeuverType::Notification, None), // (unknown sign)
+            _ => (ManeuverType::Notification, None),                  // (unknown sign)
         }
     }
 }
-
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    const GRAPHHOPPER_ERR_RSP: &str = include_str!("fixtures/graphhopper_rsp_error_with_elevation.json");
+    const GRAPHHOPPER_ERR_RSP: &str =
+        include_str!("fixtures/graphhopper_rsp_error_with_elevation.json");
     const GRAPHHOPPER_RESPONSE: &str = include_str!("fixtures/graphhopper_response.json");
 
     #[test]
@@ -260,7 +289,10 @@ mod tests {
         assert!(result.is_err(), "Expected an error, but got: {:?}", result);
 
         let err = result.unwrap_err();
-        assert_eq!(format!("{}", err), "Failed to parse route geometry: no longitude to go with latitude at index: 77.");
+        assert_eq!(
+            format!("{}", err),
+            "Failed to parse route geometry: no longitude to go with latitude at index: 77."
+        );
     }
 
     #[test]

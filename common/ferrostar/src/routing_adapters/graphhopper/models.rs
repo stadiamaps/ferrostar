@@ -1,11 +1,11 @@
-use serde::{Deserialize};
+use crate::models::GeographicCoordinate;
 use alloc::collections::BTreeMap as HashMap;
-use crate::models::{ GeographicCoordinate };
+use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
 pub struct GraphHopperRouteResponse {
     pub paths: Vec<GraphHopperPath>,
-    pub message: Option<String>
+    pub message: Option<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -38,13 +38,17 @@ impl From<Vec<serde_json::Value>> for DetailEntry {
                 } else {
                     Some(DetailEntryValue::Float(n.as_f64().unwrap()))
                 }
-            },
+            }
             serde_json::Value::Bool(b) => Some(DetailEntryValue::Bool(*b)),
             serde_json::Value::Null => None,
             _ => None,
         };
 
-        DetailEntry { start_index, end_index, value }
+        DetailEntry {
+            start_index,
+            end_index,
+            value,
+        }
     }
 }
 
@@ -56,7 +60,7 @@ pub struct GraphHopperPath {
     pub instructions: Vec<GraphHopperInstruction>,
     pub details: HashMap<String, Vec<DetailEntry>>,
     pub points: String, // encoded polyline
-    pub points_encoded:	bool,
+    pub points_encoded: bool,
     pub points_encoded_multiplier: f64,
 }
 
