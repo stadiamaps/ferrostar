@@ -49,7 +49,7 @@ export default function App() {
         },
         {
           enableHighAccuracy: true,
-          fastestInterval: 0,
+          fastestInterval: 1000,
           interval: 1000,
         }
       );
