@@ -55,7 +55,7 @@ android {
 
     sourceSets {
       main {
-        manifest.srcFile "src/main/AndroidManifest.xml"
+        manifest.srcFile "src/main/AndroidManifestNew.xml"
       }
     }
   }
