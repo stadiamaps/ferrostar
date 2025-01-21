@@ -2,18 +2,18 @@ import { Button, StyleSheet, View } from 'react-native';
 import {
   CourseFiltering,
   FerrostarCore,
-  NavigationView,
   RouteDeviationTracking,
   SpecialAdvanceConditions,
   StepAdvanceMode,
   WaypointKind,
-} from 'react-native-ferrostar';
+} from 'react-native-ferrostar/core';
+import { NavigationView } from 'react-native-ferrostar/views';
 import Geolocation, {
   type GeolocationResponse,
 } from '@react-native-community/geolocation';
 import { useEffect, useMemo, useState } from 'react';
 
-const apiKey = process.env.STADIA_MAPS_API_KEY ?? "";
+const apiKey = process.env.STADIA_MAPS_API_KEY ?? '';
 const styleUrl = `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=${apiKey}`;
 
 export default function App() {

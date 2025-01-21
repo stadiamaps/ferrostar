@@ -58,8 +58,13 @@
     "type": "git",
     "url": "git+https://github.com/stadiamaps/ferrostar.git"
   },
-  "author": "Benjamin Trounson <btrounson@outlook.co.nz> (https://github.com/bjtrounson)",
-  "license": "MIT",
+  "collaborators": [
+    "Benjamin Trounson <btrounson@outlook.co.nz> (https://github.com/bjtrounson)",
+    "Ian Wagner <ian@stadiamaps.com>",
+    "Jacob Fielding <jacob@rallista.app>",
+    "Luke Seelenbinder <luke@stadiamaps.com>"
+  ],
+  "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/stadiamaps/ferrostar/issues"
   },
