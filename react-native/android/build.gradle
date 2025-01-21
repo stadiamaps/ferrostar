@@ -51,7 +51,7 @@ def supportsNamespace() {
 
 android {
   if (supportsNamespace()) {
-    namespace "com.ferrostar"
+    namespace "com.stadiamaps.ferrostar"
 
     sourceSets {
       main {
