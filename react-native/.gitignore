@@ -84,3 +84,9 @@ android/generated
 # Uniffi bindings
 rust_modules/
 *.a
+cpp/
+android/src/main/java/
+ios/
+src/Native*
+src/generated/ 
+src/index.ts*
