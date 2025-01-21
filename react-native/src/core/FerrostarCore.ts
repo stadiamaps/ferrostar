@@ -73,9 +73,9 @@ export class NavigationState {
  * the navigation with location updates and other events.
  *
  * The usual flow is for callers to configure an instance of the core reuse the instance for as long
- * as it makes sense (necessarily somewhat app-specific). You can first call [getRoutes] to fetch a
+ * as it makes sense (necessarily somewhat app-specific). You can first call {@link getRoutes} to fetch a
  * list of possible routes asynchronously. After selecting a suitable route (either interactively by
- * the user or programmatically), call [startNavigation] to start a session.
+ * the user or programmatically), call {@link startNavigation} to start a session.
  *
  * NOTE: It is the responsibility of the caller to ensure that the location manager is authorized to
  * access the user's location.
@@ -98,7 +98,7 @@ export class FerrostarCore implements LocationUpdateListener {
    * Controls what happens when the user deviates from the route.
    *
    * The default behavior (when this property is `null`) is to fetch new routes automatically. These
-   * will be passed to the [alternativeRouteProcessor] or, if none is specified, navigation will
+   * will be passed to the {@link AlternativeRouteProcessor} or, if none is specified, navigation will
    * automatically proceed according to the first route.
    */
   deviationHandler?: RouteDeviationHandler;
@@ -108,7 +108,7 @@ export class FerrostarCore implements LocationUpdateListener {
    *
    * The default behavior (when this property is `null`) is to automatically reroute the user when
    * an alternative route arrives due to the user being off course. In all other cases, no action
-   * will be taken unless an [AlternativeRouteProcessor] is provided.
+   * will be taken unless an {@link AlternativeRouteProcessor} is provided.
    */
   alternativeRouteProcessor?: AlternativeRouteProcessor;
 
@@ -167,7 +167,7 @@ export class FerrostarCore implements LocationUpdateListener {
    * views.
    *
    * WARNING: If you want to reuse the existing view model, ex: when getting a new route after going
-   * off course, use [replaceRoute] instead! Otherwise, you will miss out on updates as the old view
+   * off course, use {@link replaceRoute} instead! Otherwise, you will miss out on updates as the old view
    * model is "orphaned"!
    *
    * @param route the route to navigate.
