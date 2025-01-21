@@ -69,7 +69,7 @@ export class NavigationState {
 }
 
 /**
- * This is the entrypoint for end users of Ferrostar on Android, and is responsible for "driving"
+ * This is the entrypoint for end users of Ferrostar on React Native, and is responsible for "driving"
  * the navigation with location updates and other events.
  *
  * The usual flow is for callers to configure an instance of the core reuse the instance for as long
