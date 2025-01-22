@@ -169,6 +169,79 @@ pub enum SpecialAdvanceConditions {
     MinimumDistanceFromCurrentStepLine(u16),
 }
 
+/// When implementing custom step advance logic, this trait allows you to define
+/// whether the condition should advance to the next conditon, the next step or not.
+/// Typically
+trait StepAdvanceCondition {
+    /// When this condition is met,
+    fn should_increment_condition(
+        &self,
+        user_location: &UserLocation,
+        current_step: &RouteStep,
+    ) -> bool;
+
+    /// Immediately advance entirely to the next step regardless of following conditions.
+    ///
+    /// This is a way to short circuit the condition evaluation and advance to the next step immediately.
+    fn should_advance_step(&self, user_location: &UserLocation, current_step: &RouteStep) -> bool;
+}
+
+struct OrAdvanceConditions {
+    conditions: Vec<Box<dyn StepAdvanceCondition>>,
+}
+
+impl StepAdvanceCondition for OrAdvanceConditions {
+    fn should_increment_condition(
+        &self,
+        user_location: &UserLocation,
+        current_step: &RouteStep,
+    ) -> bool {
+        self.conditions
+            .iter()
+            .any(|c| c.should_increment_condition(user_location, current_step))
+    }
+
+    fn should_advance_step(&self, user_location: &UserLocation, current_step: &RouteStep) -> bool {
+        self.conditions
+            .iter()
+            .any(|c| c.should_advance_step(user_location, current_step))
+    }
+}
+
+struct AndAdvanceConditions {
+    conditions: Vec<Box<dyn StepAdvanceCondition>>,
+}
+
+impl StepAdvanceCondition for AndAdvanceConditions {
+    fn should_increment_condition(
+        &self,
+        user_location: &UserLocation,
+        current_step: &RouteStep,
+    ) -> bool {
+        self.conditions
+            .iter()
+            .all(|c| c.should_increment_condition(user_location, current_step))
+    }
+
+    fn should_advance_step(&self, user_location: &UserLocation, current_step: &RouteStep) -> bool {
+        self.conditions
+            .iter()
+            .all(|c| c.should_advance_step(user_location, current_step))
+    }
+}
+
+struct StepAdvanceConfig {
+    /// An ordered list of conditions that must be met to advance to the next step.
+    /// The StepAdvanceCondition can choose to advance the condition, skip and advance
+    /// to the next step or a combination.
+    ///
+    /// If the last condition is reached, the step advance will occur for both
+    /// a step or a condition advance condition.
+    ///
+    /// The conditions are evaluated in order.
+    conditions: Vec<Box<dyn StepAdvanceCondition>>,
+}
+
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
@@ -176,7 +249,7 @@ pub enum SpecialAdvanceConditions {
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
     /// Configures when navigation advances to the next step in the route.
-    pub step_advance: StepAdvanceMode,
+    pub step_advance: StepAdvanceConfig,
     /// Configures when the user is deemed to be off course.
     ///
     /// NOTE: This is distinct from the action that is taken.

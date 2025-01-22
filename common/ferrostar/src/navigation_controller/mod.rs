@@ -32,6 +32,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 pub struct NavigationController {
     route: Route,
     config: NavigationControllerConfig,
+    step_advance: StepAdvanceTree,
 }
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
