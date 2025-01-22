@@ -4,6 +4,7 @@ use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
+use std::cell::RefCell;
 use geo::LineString;
 #[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
@@ -38,50 +39,62 @@ pub struct TripProgress {
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
-#[allow(clippy::large_enum_variant)]
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.
     Idle,
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     /// The navigation controller is actively navigating a trip.
-    Navigating {
-        /// The index of the closest coordinate to the user's snapped location.
-        ///
-        /// This index is relative to the *current* [`RouteStep`]'s geometry.
-        current_step_geometry_index: Option<u64>,
-        /// A location on the line string that
-        snapped_user_location: UserLocation,
-        /// The ordered list of steps that remain in the trip.
-        ///
-        /// The step at the front of the list is always the current step.
-        /// We currently assume that you cannot move backward to a previous step.
-        remaining_steps: Vec<RouteStep>,
-        /// Remaining waypoints to visit on the route.
-        ///
-        /// The waypoint at the front of the list is always the *next* waypoint "goal."
-        /// Unlike the current step, there is no value in tracking the "current" waypoint,
-        /// as the main use of waypoints is recalculation when the user deviates from the route.
-        /// (In most use cases, a route will have only two waypoints, but more complex use cases
-        /// may have multiple intervening points that are visited along the route.)
-        /// This list is updated as the user advances through the route.
-        remaining_waypoints: Vec<Waypoint>,
-        /// The trip progress includes information that is useful for showing the
-        /// user's progress along the full navigation trip, the route and its components.
-        progress: TripProgress,
-        /// The route deviation status: is the user following the route or not?
-        deviation: RouteDeviation,
-        /// The visual instruction that should be displayed in the user interface.
-        visual_instruction: Option<VisualInstruction>,
-        /// The most recent spoken instruction that should be synthesized using TTS.
-        ///
-        /// Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
-        spoken_instruction: Option<SpokenInstruction>,
-        /// Annotation data at the current location.
-        /// This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
-        annotation_json: Option<String>,
-    },
+    /// TODO: Maybe break these fields out into a separate state
+    Navigating(NavigatingTripState),
     /// The navigation controller has reached the end of the trip.
     Complete,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct NavigatingTripState {
+    // TODO: Probably make these accessor methods
+    /// The index of the closest coordinate to the user's snapped location.
+    ///
+    /// This index is relative to the *current* [`RouteStep`]'s geometry.
+    pub current_step_geometry_index: Option<u64>,
+    /// A location on the line string that
+    pub snapped_user_location: UserLocation,
+    /// The ordered list of steps that remain in the trip.
+    ///
+    /// The step at the front of the list is always the current step.
+    /// We currently assume that you cannot move backward to a previous step.
+    pub remaining_steps: Vec<RouteStep>,
+    /// Remaining waypoints to visit on the route.
+    ///
+    /// The waypoint at the front of the list is always the *next* waypoint "goal."
+    /// Unlike the current step, there is no value in tracking the "current" waypoint,
+    /// as the main use of waypoints is recalculation when the user deviates from the route.
+    /// (In most use cases, a route will have only two waypoints, but more complex use cases
+    /// may have multiple intervening points that are visited along the route.)
+    /// This list is updated as the user advances through the route.
+    pub remaining_waypoints: Vec<Waypoint>,
+    /// The trip progress includes information that is useful for showing the
+    /// user's progress along the full navigation trip, the route and its components.
+    pub progress: TripProgress,
+    /// The route deviation status: is the user following the route or not?
+    pub deviation: RouteDeviation,
+    /// The visual instruction that should be displayed in the user interface.
+    pub visual_instruction: Option<VisualInstruction>,
+    /// The most recent spoken instruction that should be synthesized using TTS.
+    ///
+    /// Note it is the responsibility of the platform layer to ensure that utterances are not synthesized multiple times. This property simply reports the current spoken instruction.
+    pub spoken_instruction: Option<SpokenInstruction>,
+    /// Annotation data at the current location.
+    /// This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
+    pub annotation_json: Option<String>,
+    /// The step advance condition(s; this may be a conditional tree effectively).
+    ///
+    /// This gets replaced with the default value on advancing to a new step.
+    pub current_condition: Box<dyn StepAdvanceCondition>,
 }
 
 #[allow(clippy::large_enum_variant)]
@@ -170,76 +183,65 @@ pub enum SpecialAdvanceConditions {
 }
 
 /// When implementing custom step advance logic, this trait allows you to define
-/// whether the condition should advance to the next conditon, the next step or not.
-/// Typically
-trait StepAdvanceCondition {
-    /// When this condition is met,
-    fn should_increment_condition(
-        &self,
-        user_location: &UserLocation,
-        current_step: &RouteStep,
-    ) -> bool;
-
+/// whether the condition should advance to the next condition, the next step or not.
+// TODO: Figure out how to export the trait with UniFFI or introduce a "wrapper" exportable implementation
+// #[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
+pub trait StepAdvanceCondition: Default {
     /// Immediately advance entirely to the next step regardless of following conditions.
     ///
     /// This is a way to short circuit the condition evaluation and advance to the next step immediately.
-    fn should_advance_step(&self, user_location: &UserLocation, current_step: &RouteStep) -> bool;
+    fn should_advance_step(&mut self, user_location: &UserLocation, current_step: &NavigatingTripState) -> bool;
+
+    /// Creates a fresh instance free of any internal state modifications.
+    ///
+    /// Uses [Default::default] internally.
+    fn new_instance(&self) -> Self {
+        Self::default()
+    }
 }
 
+#[derive(Default)]
+struct EntryAndExitCondition {
+    has_entered: bool,
+}
+
+impl StepAdvanceCondition for EntryAndExitCondition {
+    // FIXME: navigating state
+    fn should_advance_step(&mut self, user_location: &UserLocation, current_step: &NavigatingTripState) -> bool {
+        // Do some real check her
+        if self.has_entered {
+            true
+        } else {
+            self.has_entered = true;
+            false
+        }
+    }
+}
+
+#[derive(Default)]
 struct OrAdvanceConditions {
     conditions: Vec<Box<dyn StepAdvanceCondition>>,
 }
 
 impl StepAdvanceCondition for OrAdvanceConditions {
-    fn should_increment_condition(
-        &self,
-        user_location: &UserLocation,
-        current_step: &RouteStep,
-    ) -> bool {
-        self.conditions
-            .iter()
-            .any(|c| c.should_increment_condition(user_location, current_step))
-    }
-
-    fn should_advance_step(&self, user_location: &UserLocation, current_step: &RouteStep) -> bool {
+    fn should_advance_step(&mut self, user_location: &UserLocation, current_step: &RouteStep) -> bool {
         self.conditions
             .iter()
             .any(|c| c.should_advance_step(user_location, current_step))
     }
 }
 
+#[derive(Default)]
 struct AndAdvanceConditions {
     conditions: Vec<Box<dyn StepAdvanceCondition>>,
 }
 
 impl StepAdvanceCondition for AndAdvanceConditions {
-    fn should_increment_condition(
-        &self,
-        user_location: &UserLocation,
-        current_step: &RouteStep,
-    ) -> bool {
-        self.conditions
-            .iter()
-            .all(|c| c.should_increment_condition(user_location, current_step))
-    }
-
-    fn should_advance_step(&self, user_location: &UserLocation, current_step: &RouteStep) -> bool {
+    fn should_advance_step(&mut self, user_location: &UserLocation, current_step: &RouteStep) -> bool {
         self.conditions
             .iter()
             .all(|c| c.should_advance_step(user_location, current_step))
     }
-}
-
-struct StepAdvanceConfig {
-    /// An ordered list of conditions that must be met to advance to the next step.
-    /// The StepAdvanceCondition can choose to advance the condition, skip and advance
-    /// to the next step or a combination.
-    ///
-    /// If the last condition is reached, the step advance will occur for both
-    /// a step or a condition advance condition.
-    ///
-    /// The conditions are evaluated in order.
-    conditions: Vec<Box<dyn StepAdvanceCondition>>,
 }
 
 #[derive(Clone)]
@@ -248,8 +250,7 @@ struct StepAdvanceConfig {
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
-    /// Configures when navigation advances to the next step in the route.
-    pub step_advance: StepAdvanceConfig,
+    pub step_advance_condition: Box<dyn StepAdvanceCondition>,
     /// Configures when the user is deemed to be off course.
     ///
     /// NOTE: This is distinct from the action that is taken.
