@@ -86,6 +86,7 @@ rust_modules/
 *.a
 cpp/
 android/src/main/java/
+android/cpp-adapter.cpp
 ios/
 src/Native*
 src/generated/ 
