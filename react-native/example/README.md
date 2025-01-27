@@ -1,46 +1,22 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
-
 # Getting Started
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+> **Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
-## Step 1: Start the Metro Server
+## Step 1: Generate the Rust Bindings
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+> **Note**: This project can't be run on Windows currently in development. Please use WSL2, Linux or macOS.
 
-To start Metro, run the following command from the _root_ of your React Native project:
+You will need to generate bindings for the platform you are targeting. This need to be done within the root of the project `/react-native`.
 
-```bash
-# using npm
-npm start
+You can do this by running the following command:
+**Android**: `yarn run ubrn:android`
+**iOS**: `yarn run ubrn:ios`
 
-# OR using Yarn
-yarn start
-```
+## Step 2: Run the App
 
-## Step 2: Start your Application
+> **Note**: You will need to set the **STADIA_API_KEY** environment variable to your API key before running the app. Or replace the current layer being used with your own.
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
+1. Open a terminal in the root of the project `/react-native` and run: `yarn run example`. This will start the Metro bundler and will prompt which platform you want to run the app on.
 
 If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
 
