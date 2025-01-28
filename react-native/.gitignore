@@ -88,7 +88,7 @@ cpp/
 android/src/main/java/
 android/cpp-adapter.cpp
 android/CMakeLists.txt
-android/AndroidManifest.xml
+android/src/main/AndroidManifest.xml
 ios/
 src/Native*
 src/generated/ 
