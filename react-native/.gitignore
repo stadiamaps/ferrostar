@@ -87,7 +87,10 @@ rust_modules/
 cpp/
 android/src/main/java/
 android/cpp-adapter.cpp
+android/CMakeLists.txt
+android/AndroidManifest.xml
 ios/
 src/Native*
 src/generated/ 
 src/index.ts*
+
