@@ -129,7 +129,7 @@ export class FerrostarCore implements LocationUpdateListener {
     valhallaEndpointURL: string,
     profile: string,
     navigationControllerConfig: NavigationControllerConfig,
-    options: Record<string, any> = {},
+    options: Record<string, unknown> = {},
     locationProvider: LocationProviderInterface = new LocationProvider(),
     routeProvider: RouteProviderInterface = new RouteProvider(
       valhallaEndpointURL,
@@ -398,7 +398,7 @@ export class FerrostarCore implements LocationUpdateListener {
 
   // TODO: remove once we have a way to update the heading
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onHeadingUpdate(heading: Heading): void {
+  onHeadingUpdate(_heading: Heading): void {
     // TODO: heading update
   }
 
