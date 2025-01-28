@@ -8,6 +8,13 @@ import {
   type UserLocation,
   type VisualInstruction,
 } from '../generated/ferrostar';
+import {
+  currentRoadName,
+  deviation,
+  progress,
+  remainingSteps,
+  visualInstruction,
+} from './_utils';
 import type { NavigationState } from './FerrostarCore';
 
 export class NavigationUiState {
@@ -86,23 +93,19 @@ export class NavigationUiState {
     location?: UserLocation,
     snappedLocation?: UserLocation
   ): NavigationUiState {
-    let tripState;
-    if (TripState.Navigating.instanceOf(coreState.tripState)) {
-      tripState = coreState.tripState;
-    }
     return new NavigationUiState(
       location,
-      snappedLocation ?? tripState?.inner.snappedUserLocation,
+      snappedLocation,
       undefined,
       coreState.routeGeometry,
-      tripState?.inner.visualInstruction,
+      visualInstruction(coreState.tripState),
       undefined,
-      tripState?.inner.progress,
+      progress(coreState.tripState),
       coreState.isCalculatingNewRoute,
-      tripState?.inner.deviation,
+      deviation(coreState.tripState),
       isMuted,
-      undefined, // TODO: Android seems to have this type but it's not in the TS definition
-      tripState?.inner.remainingSteps
+      currentRoadName(coreState.tripState),
+      remainingSteps(coreState.tripState)
     );
   }
 

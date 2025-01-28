@@ -23,6 +23,7 @@ import TripProgressView from './TripProgressView';
 import { StyleSheet, View } from 'react-native';
 import InstructionsView from './InstructionsView';
 import MapControls from './MapControls';
+import { snappedUserLocation } from '../core/_utils';
 
 setAccessToken(null);
 
@@ -125,7 +126,10 @@ const NavigationView = (props: NavigationViewProps) => {
         NavigationUiState.fromFerrostar(
           state,
           isMuted,
-          core.locationProvider.lastLocation
+          snappedUserLocation(
+            state.tripState,
+            core.locationProvider.lastLocation
+          )
         )
       );
     });
