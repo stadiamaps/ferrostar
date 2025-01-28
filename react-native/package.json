@@ -200,7 +200,7 @@
       "android": "android/generated"
     },
     "android": {
-      "javaPackageName": "com.ferrostar"
+      "javaPackageName": "com.stadiamaps.ferrostar"
     },
     "includesGeneratedCode": true
   },
