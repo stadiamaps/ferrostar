@@ -71,6 +71,7 @@ fun LandscapeNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
+    showCompleteRoute: Boolean = true,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
@@ -94,6 +95,7 @@ fun LandscapeNavigationView(
         mapControls,
         locationRequestProperties,
         snapUserLocationToRoute,
+        showCompleteRoute,
         onMapReadyCallback = { camera.value = navigationCamera },
         mapContent)
 

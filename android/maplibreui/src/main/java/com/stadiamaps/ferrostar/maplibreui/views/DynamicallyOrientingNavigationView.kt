@@ -70,6 +70,7 @@ fun DynamicallyOrientingNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
+    showCompleteRoute: Boolean = true,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
@@ -99,6 +100,7 @@ fun DynamicallyOrientingNavigationView(
         mapControls = mapControls,
         locationRequestProperties = locationRequestProperties,
         snapUserLocationToRoute = snapUserLocationToRoute,
+        showCompleteRoute = showCompleteRoute,
         content = mapContent)
 
     if (uiState.isNavigating()) {

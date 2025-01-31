@@ -36,6 +36,8 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
  *   route line.
+ * @param showCompleteRoute If true, the complete route will be displayed.
+ *   If false, only the remaining geometry will be displayed on the polyline.
  * @param onMapReadyCallback A callback that is invoked when the map is ready to be interacted with.
  *   If unspecified, the camera will change to `navigationCamera` if navigation is in progress.
  * @param content Any additional composable map symbol content to render.
@@ -50,6 +52,7 @@ fun NavigationMapView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
+    showCompleteRoute: Boolean = true,
     onMapReadyCallback: ((Style) -> Unit)? = null,
     content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
 ) {
@@ -70,6 +73,11 @@ fun NavigationMapView(
         uiState.location?.toAndroidLocation()
       }
 
+    val polylineGeometry = uiState.routeGeometry?.let {
+        if (showCompleteRoute && isNavigating) it.subList(uiState.remainingSteps?.size ?: 0, it.size)
+        else it
+    }
+
   MapView(
       modifier = Modifier.fillMaxSize(),
       styleUrl,
@@ -80,9 +88,8 @@ fun NavigationMapView(
       onMapReadyCallback =
           onMapReadyCallback ?: { if (isNavigating) camera.value = navigationCamera },
   ) {
-    val geometry = uiState.routeGeometry
-    if (geometry != null)
-        BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0)
+    if (polylineGeometry != null)
+        BorderedPolyline(points = polylineGeometry.map { LatLng(it.lat, it.lng) }, zIndex = 0)
 
     if (content != null) {
       content(uiState)
