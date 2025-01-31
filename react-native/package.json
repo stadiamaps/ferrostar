@@ -92,14 +92,33 @@
     "react-native-builder-bob": "^0.32.0",
     "release-it": "^17.10.0",
     "turbo": "^1.10.7",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@maplibre/maplibre-react-native": "^10.0.0",
+    "@turf/bbox": "^7.2.0",
+    "react-native-svg": "^15.10.1",
+    "@react-native-community/geolocation": "^3.4.0"
   },
   "resolutions": {
     "@types/react": "^18.2.44"
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "@maplibre/maplibre-react-native": ">=10.0.0",
+    "@turf/bbox": ">=7.2.0",
+    "react-native-svg": ">=15.10.1",
+    "@react-native-community/geolocation": ">=3.4.0"
+  },
+  "peerDependenciesMeta": {
+    "@maplibre/maplibre-react-native": {
+      "optional": true
+    },
+    "@turf/bbox": {
+      "optional": true
+    },
+    "react-native-svg": {
+      "optional": true
+    }
   },
   "workspaces": [
     "example"
@@ -210,10 +229,6 @@
     "version": "0.45.5"
   },
   "dependencies": {
-    "@maplibre/maplibre-react-native": "^10.0.0",
-    "@react-native-community/geolocation": "^3.4.0",
-    "@turf/bbox": "^7.2.0",
-    "react-native-svg": "^15.10.1",
     "uniffi-bindgen-react-native": "^0.28.3-1"
   }
 }
