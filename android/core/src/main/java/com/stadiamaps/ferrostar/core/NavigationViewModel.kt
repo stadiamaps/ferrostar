@@ -7,6 +7,7 @@ import com.stadiamaps.ferrostar.core.annotation.AnnotationPublisher
 import com.stadiamaps.ferrostar.core.annotation.AnnotationWrapper
 import com.stadiamaps.ferrostar.core.annotation.NoOpAnnotationPublisher
 import com.stadiamaps.ferrostar.core.extensions.currentRoadName
+import com.stadiamaps.ferrostar.core.extensions.currentStepGeometryIndex
 import com.stadiamaps.ferrostar.core.extensions.deviation
 import com.stadiamaps.ferrostar.core.extensions.progress
 import com.stadiamaps.ferrostar.core.extensions.remainingSteps
@@ -57,6 +58,9 @@ data class NavigationUiState(
     val isMuted: Boolean?,
     /** The name of the road which the current route step is traversing. */
     val currentStepRoadName: String?,
+    /** The index of the closest coordinate to the user's snapped location.
+     *  The index is Relative to the *current* (i.e. first in remainingSteps) RouteStep Geometry */
+    val currentStepGeometryIndex: Int?,
     /** The remaining steps in the trip (including the current step). */
     val remainingSteps: List<RouteStep>?,
     /** The route annotation object at the current location. */
@@ -83,6 +87,7 @@ data class NavigationUiState(
             routeDeviation = coreState.tripState.deviation(),
             isMuted = isMuted,
             currentStepRoadName = coreState.tripState.currentRoadName(),
+            currentStepGeometryIndex = coreState.tripState.currentStepGeometryIndex(),
             remainingSteps = coreState.tripState.remainingSteps(),
             currentAnnotation = annotation)
   }
