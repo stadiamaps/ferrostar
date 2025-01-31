@@ -24,7 +24,7 @@ dependencies {
     def ferrostarVersion = 'X.Y.Z'
     implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
     implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
-	implementation "com.stadiamaps.ferrostar:composeui:${ferrostarVersion}"
+    implementation "com.stadiamaps.ferrostar:composeui:${ferrostarVersion}"
 
     // Optional - if using Google Play Service's FusedLocation
     implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"
