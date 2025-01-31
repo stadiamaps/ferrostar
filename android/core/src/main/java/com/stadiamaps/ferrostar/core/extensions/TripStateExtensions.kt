@@ -72,3 +72,15 @@ fun TripState.remainingSteps() =
       is TripState.Complete,
       TripState.Idle -> null
     }
+
+/**
+ * Get the remaining waypoints (starting at the *next* waypoint "goal") in the current trip.
+ *
+ * @return The list of remaining waypoints (if any).
+ */
+fun TripState.remainingWaypoints() =
+    when (this) {
+      is TripState.Navigating -> this.remainingWaypoints
+      is TripState.Complete,
+      TripState.Idle -> null
+    }
