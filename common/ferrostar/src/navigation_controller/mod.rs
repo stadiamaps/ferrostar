@@ -251,6 +251,7 @@ impl NavigationController {
                         visual_instruction: _,
                         spoken_instruction: _,
                         annotation_json: _,
+                        current_condition: _,
                     } => {
                         // Recalculate deviation. This happens later, as the current step may have changed.
                         // The distance to the next maneuver will be updated by advance_to_next_step if needed.
@@ -295,6 +296,7 @@ impl NavigationController {
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
+                            current_condition: self.config.step_advance_condition.new_instance(),
                         }
                     }
                     TripState::Complete => TripState::Complete,
