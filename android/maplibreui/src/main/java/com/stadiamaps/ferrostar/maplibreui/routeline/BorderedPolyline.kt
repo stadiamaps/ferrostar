@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.maplibreui
+package com.stadiamaps.ferrostar.maplibreui.routeline
 
 import androidx.compose.runtime.Composable
 import com.mapbox.mapboxsdk.geometry.LatLng

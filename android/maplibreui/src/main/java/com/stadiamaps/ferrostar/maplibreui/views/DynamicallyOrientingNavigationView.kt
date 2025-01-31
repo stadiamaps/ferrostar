@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -36,6 +35,7 @@ import com.stadiamaps.ferrostar.core.boundingBox
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
+import com.stadiamaps.ferrostar.maplibreui.routeline.NavigationPathBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 
@@ -70,11 +70,11 @@ fun DynamicallyOrientingNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
-    showCompleteRoute: Boolean = true,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
+    navigationPathBuilder: NavigationPathBuilder = NavigationPathBuilder.Default(),
     onTapExit: (() -> Unit)? = null,
     mapContent: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
@@ -100,7 +100,7 @@ fun DynamicallyOrientingNavigationView(
         mapControls = mapControls,
         locationRequestProperties = locationRequestProperties,
         snapUserLocationToRoute = snapUserLocationToRoute,
-        showCompleteRoute = showCompleteRoute,
+        navigationPathBuilder = navigationPathBuilder,
         content = mapContent)
 
     if (uiState.isNavigating()) {

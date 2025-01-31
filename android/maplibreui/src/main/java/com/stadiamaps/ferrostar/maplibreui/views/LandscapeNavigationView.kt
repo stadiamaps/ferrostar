@@ -35,6 +35,7 @@ import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
+import com.stadiamaps.ferrostar.maplibreui.routeline.NavigationPathBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -71,11 +72,11 @@ fun LandscapeNavigationView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
-    showCompleteRoute: Boolean = true,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
+    navigationPathBuilder: NavigationPathBuilder = NavigationPathBuilder.Default(),
     onTapExit: (() -> Unit)? = null,
     mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
@@ -95,7 +96,7 @@ fun LandscapeNavigationView(
         mapControls,
         locationRequestProperties,
         snapUserLocationToRoute,
-        showCompleteRoute,
+        navigationPathBuilder,
         onMapReadyCallback = { camera.value = navigationCamera },
         mapContent)
 
