@@ -1,24 +1,10 @@
-pub(crate) mod models;
-
-use super::RouteResponseParser;
-use crate::models::{
-    BoundingBox, GeographicCoordinate, ManeuverModifier, ManeuverType, RouteStep,
-    SpokenInstruction, UserLocation, VisualInstruction, VisualInstructionContent, Waypoint,
-};
-use polyline::decode_polyline;
-use std::f64::consts::PI;
-use uuid::Uuid;
+use crate::models::{UserLocation, Waypoint};
 
 use crate::routing_adapters::error::{
-    InstantiationError, ParsingError, RoutingRequestGenerationError,
+    InstantiationError, RoutingRequestGenerationError,
 };
-use crate::routing_adapters::graphhopper::models::{
-    DetailEntryValue, GraphHopperPath, GraphHopperRouteResponse, MaxSpeedEntry,
-};
-use crate::routing_adapters::{Route, RouteRequest, RouteRequestGenerator};
+use crate::routing_adapters::{RouteRequest, RouteRequestGenerator};
 
-#[cfg(all(not(feature = "std"), feature = "alloc"))]
-use alloc::collections::BTreeMap as HashMap;
 use serde_json::{json, Map, Value as JsonValue};
 #[cfg(feature = "std")]
 use std::collections::HashMap;
@@ -84,12 +70,11 @@ impl RouteRequestGenerator for GraphHopperHttpRequestGenerator {
             );
 
             let mut args = json!({
-                // "points_encoded": false,
-                "elevation": false, // this lets us use the in-built polyline algo
-                "instructions": true,
                 "profile": &self.profile,
                 "points": points,
-                "details": ["leg_time", "max_speed"],
+                "locale": "en",
+                "type": "mapbox",
+                "voice_units": "metric",
             });
 
             for (k, v) in &self.options {
@@ -103,204 +88,5 @@ impl RouteRequestGenerator for GraphHopperHttpRequestGenerator {
                 body,
             })
         }
-    }
-}
-
-pub struct GraphHopperResponseParser {}
-
-impl GraphHopperResponseParser {
-    pub fn new() -> Self {
-        Self {}
-    }
-}
-
-impl RouteResponseParser for GraphHopperResponseParser {
-    fn parse_response(&self, response: Vec<u8>) -> Result<Vec<Route>, ParsingError> {
-        let res: GraphHopperRouteResponse = serde_json::from_slice(&response)?;
-
-        if let Some(message) = &res.message {
-            Err(ParsingError::InvalidStatusCode {
-                code: message.to_string(),
-            })
-        } else {
-            res.paths
-                .iter()
-                .map(|path| Route::from_graphhopper(path))
-                .collect::<Result<Vec<_>, _>>()
-        }
-    }
-}
-
-impl Route {
-    pub fn from_graphhopper(path: &GraphHopperPath) -> Result<Self, ParsingError> {
-        if !path.points_encoded {
-            return Err(ParsingError::InvalidRouteObject {
-                error: "points must be encoded".to_string(),
-            });
-        }
-
-        let linestring = decode_polyline(
-            &path.points,
-            path.points_encoded_multiplier.log(10.0).round() as u32,
-        )
-        .map_err(|error| ParsingError::InvalidGeometry {
-            error: error.to_string(),
-        })?;
-
-        let geometry: Vec<GeographicCoordinate> = linestring
-            .coords()
-            .map(|coord| GeographicCoordinate::from(*coord))
-            .collect();
-
-        // TODO copy speed limits into "annotations", but which format?
-        let speed_limits = path.details.get("max_speed");
-        let mut sl_result = Vec::new();
-        if let Some(speed_limits) = speed_limits {
-            for speed_limit_detail in speed_limits {
-                let sub_geo: Vec<GeographicCoordinate> =
-                    geometry[speed_limit_detail.start_index..speed_limit_detail.end_index].to_vec();
-                let value: Option<f64>;
-                match speed_limit_detail.value {
-                    Some(DetailEntryValue::Float(f)) => {
-                        value = Some(f);
-                    }
-                    Some(DetailEntryValue::Int(i)) => {
-                        value = Some(i as f64);
-                    }
-                    _ => {
-                        value = None;
-                    }
-                }
-
-                sl_result.push(MaxSpeedEntry {
-                    geometry: sub_geo,
-                    speed_limit: value,
-                    unit: "km/h".to_string(),
-                })
-            }
-        }
-
-        let mut steps = Vec::new();
-        for instruction in &path.instructions {
-            let turn_angle = if instruction.sign == 6 {
-                instruction
-                    .turn_angle
-                    .map(|angle| ((angle * 180.0 / PI) % 360.0).round() as u16)
-            } else {
-                None
-            };
-
-            let ssml = format!("<Speak>{}</Speak>", instruction.text);
-            let spoken_instruction = SpokenInstruction {
-                text: instruction.text.clone(),
-                ssml: Some(ssml),
-                trigger_distance_before_maneuver: instruction.distance,
-                utterance_id: Uuid::new_v4(),
-            };
-
-            let (maneuver_type, maneuver_modifier) = Self::get_maneuver(instruction.sign);
-            let visual_instruction_content = VisualInstructionContent {
-                text: instruction.text.clone(), // displayed on the map
-                exit_numbers: instruction
-                    .exit_number
-                    .into_iter()
-                    .map(|num| num.to_string())
-                    .collect(),
-                maneuver_modifier,
-                maneuver_type: Some(maneuver_type),
-                lane_info: None,
-                roundabout_exit_degrees: turn_angle,
-            };
-            let visual_instruction = VisualInstruction {
-                primary_content: visual_instruction_content,
-                secondary_content: None,
-                sub_content: None,
-                trigger_distance_before_maneuver: instruction.distance,
-            };
-            let sub_geo: Vec<GeographicCoordinate> =
-                geometry[instruction.interval[0]..instruction.interval[1]].to_vec();
-            steps.push(RouteStep {
-                geometry: sub_geo,
-                distance: instruction.distance,
-                duration: instruction.time / 1000.0,
-                road_name: Some(instruction.street_name.clone()),
-                exits: [].to_vec(),
-                annotations: None,
-                instruction: instruction.text.clone(), // purpose of this text?
-                visual_instructions: [visual_instruction].to_vec(),
-                spoken_instructions: [spoken_instruction].to_vec(),
-                incidents: [].to_vec(),
-            });
-        }
-
-        let sw = GeographicCoordinate {
-            lng: path.bbox[0],
-            lat: path.bbox[1],
-        };
-        let ne = GeographicCoordinate {
-            lng: path.bbox[2],
-            lat: path.bbox[3],
-        };
-        Ok(Route {
-            geometry,
-            bbox: BoundingBox { sw, ne },
-            distance: path.distance,
-            waypoints: [].to_vec(),
-            steps,
-        })
-    }
-
-    fn get_maneuver(sign: i32) -> (ManeuverType, Option<ManeuverModifier>) {
-        // unclear how to specify left/right u-turn or a via point
-        match sign {
-            -98 => (ManeuverType::Turn, Some(ManeuverModifier::UTurn)), // unknown u-turn
-            -8 => (ManeuverType::Turn, Some(ManeuverModifier::UTurn)),  // left u-turn
-            -7 => (ManeuverType::Turn, Some(ManeuverModifier::Left)),
-            -6 => (ManeuverType::ExitRoundabout, None), // not yet filled from GraphHopper
-            -3 => (ManeuverType::Turn, Some(ManeuverModifier::SharpLeft)),
-            -2 => (ManeuverType::Turn, Some(ManeuverModifier::Left)),
-            -1 => (ManeuverType::Turn, Some(ManeuverModifier::SlightLeft)),
-            0 => (ManeuverType::Continue, None),
-            1 => (ManeuverType::Turn, Some(ManeuverModifier::SlightRight)),
-            2 => (ManeuverType::Turn, Some(ManeuverModifier::Right)),
-            3 => (ManeuverType::Turn, Some(ManeuverModifier::SharpRight)),
-            4 => (ManeuverType::Arrive, None), // Finish instruction
-            5 => (ManeuverType::Depart, None), // Instruction before a via point
-            6 => (ManeuverType::Roundabout, None), // Instruction before entering a roundabout
-            7 => (ManeuverType::Turn, Some(ManeuverModifier::Right)),
-            8 => (ManeuverType::Turn, Some(ManeuverModifier::UTurn)), // right u-turn
-            _ => (ManeuverType::Notification, None),                  // (unknown sign)
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    const GRAPHHOPPER_ERR_RSP: &str =
-        include_str!("fixtures/graphhopper_rsp_error_with_elevation.json");
-    const GRAPHHOPPER_RESPONSE: &str = include_str!("fixtures/graphhopper_response.json");
-
-    #[test]
-    fn error_on_invalid_polyline() {
-        let parser = GraphHopperResponseParser::new();
-        let result = parser.parse_response(GRAPHHOPPER_ERR_RSP.into());
-        assert!(result.is_err(), "Expected an error, but got: {:?}", result);
-
-        let err = result.unwrap_err();
-        assert_eq!(
-            format!("{}", err),
-            "Failed to parse route geometry: no longitude to go with latitude at index: 77."
-        );
-    }
-
-    #[test]
-    fn parse_graphhopper() {
-        let parser = GraphHopperResponseParser::new();
-        let routes = parser
-            .parse_response(GRAPHHOPPER_RESPONSE.into())
-            .expect("GraphHopper route response parsing failed:");
-        insta::assert_yaml_snapshot!(routes);
     }
 }

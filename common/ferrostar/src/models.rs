@@ -394,7 +394,7 @@ pub struct SpokenInstruction {
     pub text: String,
     /// Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
     pub ssml: Option<String>,
-    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    /// How far (in meters) from the upcoming maneuver the instruction should start being spoken.
     pub trigger_distance_before_maneuver: f64,
     /// A unique identifier for this instruction.
     ///

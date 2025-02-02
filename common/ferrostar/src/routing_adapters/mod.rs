@@ -53,7 +53,6 @@ use alloc::{string::String, sync::Arc, vec::Vec};
 use crate::routing_adapters::osrm::OsrmResponseParser;
 use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
 
-use crate::routing_adapters::graphhopper::GraphHopperResponseParser;
 use crate::routing_adapters::graphhopper::GraphHopperHttpRequestGenerator;
 
 pub mod error;
@@ -179,7 +178,7 @@ impl RouteAdapter {
                 profile,
                 options_json.as_deref(),
             )?);
-            let response_parser = Arc::new(GraphHopperResponseParser::new());
+            let response_parser = Arc::new(OsrmResponseParser::new(6));
             Ok(Self::new(request_generator, response_parser))
         }
 
