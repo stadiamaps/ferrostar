@@ -62,15 +62,16 @@ fun TripState.currentRoadName() =
     }
 
 /**
- * Get the current step geometry index - closest coordinate to the user's snapped location
- * This index is relative to the *current* [`RouteStep`]'s geometry.
+ * Get the current step geometry index - closest coordinate to the user's snapped location This
+ * index is relative to the *current* [`RouteStep`]'s geometry.
+ *
  * @return The current step geometry index (if available and navigating).
  */
 fun TripState.currentStepGeometryIndex() =
     when (this) {
-        is TripState.Navigating -> this.currentStepGeometryIndex?.toInt()
-        is TripState.Complete,
-        TripState.Idle -> null
+      is TripState.Navigating -> this.currentStepGeometryIndex?.toInt()
+      is TripState.Complete,
+      TripState.Idle -> null
     }
 
 /**

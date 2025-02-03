@@ -36,7 +36,8 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
  *   route line.
- * @param navigationPathBuilder The navigation path builder to use for rendering the route line on the MapView.
+ * @param navigationPathBuilder The navigation path builder to use for rendering the route line on
+ *   the MapView.
  * @param onMapReadyCallback A callback that is invoked when the map is ready to be interacted with.
  *   If unspecified, the camera will change to `navigationCamera` if navigation is in progress.
  * @param content Any additional composable map symbol content to render.

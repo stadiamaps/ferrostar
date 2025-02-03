@@ -58,8 +58,10 @@ data class NavigationUiState(
     val isMuted: Boolean?,
     /** The name of the road which the current route step is traversing. */
     val currentStepRoadName: String?,
-    /** The index of the closest coordinate to the user's snapped location.
-     *  The index is Relative to the *current* (i.e. first in remainingSteps) RouteStep Geometry */
+    /**
+     * The index of the closest coordinate to the user's snapped location. The index is Relative to
+     * the *current* (i.e. first in remainingSteps) RouteStep Geometry
+     */
     val currentStepGeometryIndex: Int?,
     /** The remaining steps in the trip (including the current step). */
     val remainingSteps: List<RouteStep>?,
