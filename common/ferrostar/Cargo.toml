@@ -35,7 +35,7 @@ rand = "0.8.5"
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = { version = "1.0.134", default-features = false }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
-thiserror = "2.0.3"
+thiserror = "2.0.11"
 uniffi = { workspace = true, optional = true }
 uuid = { version = "1.11.0", features = ["v4", "serde"] }
 getrandom = { version = "0.2.15", optional = true }
