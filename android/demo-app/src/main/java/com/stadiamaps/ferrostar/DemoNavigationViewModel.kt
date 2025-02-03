@@ -67,6 +67,7 @@ class DemoNavigationViewModel(
                       null,
                       null,
                       null,
+                      null,
                       null))
 
   override fun toggleMute() {
