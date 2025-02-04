@@ -19,7 +19,7 @@ import com.maplibre.compose.settings.MapControls
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.toAndroidLocation
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
-import com.stadiamaps.ferrostar.maplibreui.routeline.NavigationPathBuilder
+import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 
 /**
@@ -36,8 +36,8 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
  *   route line.
- * @param navigationPathBuilder The navigation path builder to use for rendering the route line on
- *   the MapView.
+ * @param routeOverlayBuilder The route overlay builder to use for rendering the route line on the
+ *   MapView.
  * @param onMapReadyCallback A callback that is invoked when the map is ready to be interacted with.
  *   If unspecified, the camera will change to `navigationCamera` if navigation is in progress.
  * @param content Any additional composable map symbol content to render.
@@ -52,7 +52,7 @@ fun NavigationMapView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
-    navigationPathBuilder: NavigationPathBuilder = NavigationPathBuilder.Default(),
+    routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     onMapReadyCallback: ((Style) -> Unit)? = null,
     content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
 ) {
@@ -83,7 +83,7 @@ fun NavigationMapView(
       onMapReadyCallback =
           onMapReadyCallback ?: { if (isNavigating) camera.value = navigationCamera },
   ) {
-    navigationPathBuilder.navigationPath(uiState)
+    routeOverlayBuilder.navigationPath(uiState)
 
     if (content != null) {
       content(uiState)
