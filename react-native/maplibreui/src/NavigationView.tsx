@@ -15,15 +15,15 @@ import {
   useState,
   type ComponentProps,
 } from 'react';
-import { FerrostarCore } from '../core/FerrostarCore';
-import { NavigationUiState } from '../core/NavigationUiState';
+import { FerrostarCore } from '../../uniffi/src/core/FerrostarCore';
+import { NavigationUiState } from '../../uniffi/src/core/NavigationUiState';
 import BorderedPolyline from './BorderedPolyline';
 import NavigationMapViewCamera from './NavigationMapViewCamera';
 import TripProgressView from './TripProgressView';
 import { StyleSheet, View } from 'react-native';
 import InstructionsView from './InstructionsView';
 import MapControls from './MapControls';
-import { snappedUserLocation } from '../core/_utils';
+import { snappedUserLocation } from '../../uniffi/src/core/_utils';
 
 setAccessToken(null);
 

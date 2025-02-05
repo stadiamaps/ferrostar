@@ -1,0 +1,12 @@
+{
+  "name": "ferrostar-rn-core",
+  "version": "0.27.0",
+  "description": "Ferrostar React Native Core",
+  "source": "./src/index.ts",
+  "main": "./lib/commonjs/index.js",
+  "module": "./lib/module/index.js",
+  "dependencies": {
+    "ferrostar-rn-uniffi": "*"
+  },
+  "packageManager": "yarn@3.6.1"
+}

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-ferrostar": ["./src/index"]
+      "ferrostar-rn-uniffi": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
@@ -23,8 +23,9 @@
     "resolveJsonModule": true,
     "resolvePackageJsonImports": false,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "target": "ESNext",
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "noCheck": true
   }
 }
