@@ -82,6 +82,15 @@ class FerrostarCore(
   var minimumTimeBeforeRecalculaton: Long = 5
 
   /**
+   * The minimum distance (in meters) the user must move before performing another route
+   * recalculation.
+   *
+   * This ensures that, while the user remains off the route, we don't keep triggering useless
+   * recalculations.
+   */
+  var minimumMovementBeforeRecalculation = 50.0
+
+  /**
    * Controls what happens when the user deviates from the route.
    *
    * The default behavior (when this property is `null`) is to fetch new routes automatically. These
@@ -126,6 +135,8 @@ class FerrostarCore(
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
   private var _lastLocation: UserLocation? = null
+  // The last location from which we triggered a recalculation
+  private var _lastRecalculationLocation: UserLocation? = null
 
   private var _config: NavigationControllerConfig = navigationControllerConfig
 
@@ -309,6 +320,7 @@ class FerrostarCore(
     _state.value = NavigationState()
     _queuedUtteranceIds.clear()
     spokenInstructionObserver?.stopAndClearQueue()
+    _lastRecalculationLocation = null
   }
 
   /**
@@ -320,9 +332,15 @@ class FerrostarCore(
   private fun handleStateUpdate(newState: TripState, location: UserLocation) {
     if (newState is TripState.Navigating) {
       if (newState.deviation is RouteDeviation.OffRoute) {
-        if (!_routeRequestInFlight &&
+        if (!_routeRequestInFlight && // We can't have a request in flight already
             _lastAutomaticRecalculation?.let {
+              // Ensure a minimum cool down before a new route fetch
               System.nanoTime() - it > minimumTimeBeforeRecalculaton
+            } != false &&
+            _lastRecalculationLocation?.let {
+              // Don't recalculate again if the user hasn't moved much
+              it.toAndroidLocation().distanceTo(location.toAndroidLocation()) >
+                  minimumMovementBeforeRecalculation
             } != false) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
@@ -334,6 +352,7 @@ class FerrostarCore(
             }
             is CorrectiveAction.GetNewRoutes -> {
               isCalculatingNewRoute = true
+              _lastRecalculationLocation = location
               _scope.launch {
                 try {
                   val routes = getRoutes(location, action.waypoints)

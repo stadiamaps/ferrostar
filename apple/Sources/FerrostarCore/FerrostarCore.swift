@@ -327,7 +327,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                           self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? -TimeInterval
                           .greatestFiniteMagnitude < -self
                           .minimumTimeBeforeRecalculaton,
-                          // Don't recalculate if the user hasn't moved much
+                          // Don't recalculate again if the user hasn't moved much
                           self.lastRecalculationLocation?.clLocation
                           .distance(from: location.clLocation) ?? .greatestFiniteMagnitude > self
                           .minimumMovementBeforeRecaluclation
