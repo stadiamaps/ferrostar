@@ -3,7 +3,7 @@ extern crate ferrostar;
 use ferrostar::deviation_detection::RouteDeviationTracking;
 use ferrostar::models::{Route, UserLocation};
 use ferrostar::navigation_controller::models::{
-    CourseFiltering, NavigationControllerConfig, StepAdvanceMode, TripState,
+    CourseFiltering, NavigationControllerConfig, StepAdvanceMode, TripState, WaypointAdvanceMode,
 };
 use ferrostar::navigation_controller::NavigationController;
 use ferrostar::routing_adapters::osrm::OsrmResponseParser;
@@ -44,6 +44,7 @@ fn same_location_results_in_identical_state() {
     let controller = NavigationController::new(
         route,
         NavigationControllerConfig {
+            waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             step_advance: StepAdvanceMode::Manual,
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
@@ -81,6 +82,7 @@ fn simple_route_state_machine_manual_advance() {
     let controller = NavigationController::new(
         route,
         NavigationControllerConfig {
+            waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             step_advance: StepAdvanceMode::Manual,
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
@@ -152,6 +154,7 @@ fn simple_route_state_machine_advances_with_location_change() {
     let controller = NavigationController::new(
         route,
         NavigationControllerConfig {
+            waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             // NOTE: We will use an exact location to trigger the update;
             // this is not testing the thresholds.
             step_advance: StepAdvanceMode::DistanceToEndOfStep {

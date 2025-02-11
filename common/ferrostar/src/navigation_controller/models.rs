@@ -169,12 +169,24 @@ pub enum SpecialAdvanceConditions {
     MinimumDistanceFromCurrentStepLine(u16),
 }
 
+// Condition to advance the remaining waypoints.
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
+pub enum WaypointAdvanceMode {
+    /// Advance when the waypoint is within a certain range of meters from the user's location.
+    WaypointWithinRange(f64),
+}
+
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
+    /// Configures when navigation advances to next waypoint in the route.
+    pub waypoint_advance: WaypointAdvanceMode,
     /// Configures when navigation advances to the next step in the route.
     pub step_advance: StepAdvanceMode,
     /// Configures when the user is deemed to be off course.
