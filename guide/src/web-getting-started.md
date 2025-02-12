@@ -3,7 +3,7 @@
 This section of the guide covers how to integrate Ferrostar into a web app.
 While there are limitations to the web [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
 (notably no background updates),
-PWAs and other mobile-optimized sites
+**Progressive Web Apps (PWAs)** and other mobile-optimized sites
 can be a great solution when a native iOS/Android app is impractical or prohibitively expensive.
 
 We'll cover the "batteries included" approach, but flag areas for customization and overrides along the way.
@@ -33,7 +33,7 @@ Then add `wasm()` and `topLevelAwait()` to the `plugins` section of your Vite co
 
 TODO
 
-## Add Ferrostar web components to your web app
+## Add Ferrostar web components to your Web App
 
 The Ferrostar web SDK uses the [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
 to ensure maximum compatibility across frontend frameworks.
@@ -43,34 +43,56 @@ You can import the components just like other things you’re used to in JavaScr
 import { FerrostarMap, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
 ```
 
-## Configure the `<ferrostar-map>` component
+## Configure the <ferrostar-map> Component
 
-Now you can use Ferrostar in your HTML like this:
+Now you can use Ferrostar in your web component like this:
 
-```html
+## HTML
+
+```
 <ferrostar-map
-  id="ferrostar"
+id="ferrostar"
   valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
   styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
   profile="bicycle"
 ></ferrostar-map>
 ```
 
-Here we have used Stadia Maps URLs, which should work without authentication for local development.
-(Refer to the [authentication docs](https://docs.stadiamaps.com/authentication/)
-for network deployment details; you can start with a free account.)
+## React
 
-See the [vendors appendix](./vendors.md) for a list of other compatible vendors.
+```javascript
+import React from 'react';
+import { FerrostarMap } from "@stadiamaps/ferrostar-webcomponents";
 
-`<ferrostar-map>`  additionally requires setting some CSS manually, or it will be invisible!
+const MyMapComponent = () => {
+return (
+<ferrostar-map
+id="ferrostar"
+valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
+styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
+profile="bicycle"
+style={{ display: 'block', width: '100%', height: '100%' }} ></ferrostar-map>
+);
+};
+
+export default MyMapComponent;
+```
+
+---
+
+## CSS Requirements
+
+The `<ferrostar-map>` component requires setting some CSS manually; otherwise, it will be invisible!
 
 ```css
 ferrostar-map {
-  display: block;
-  width: 100%;
-  height: 100%;
+display: block;
+width: 100%;
+height: 100%;
 }
 ```
+
+---
 
 That’s all you need to get started!
 
