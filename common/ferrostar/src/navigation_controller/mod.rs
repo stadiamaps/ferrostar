@@ -195,7 +195,7 @@ impl NavigationController {
                     remaining_steps,
                 );
 
-                // Trim the remaining waypoints if we should advance.
+                // Trim the remaining waypoints if needed.
                 let remaining_waypoints = if self.should_advance_waypoint(state) {
                     let mut remaining_waypoints = remaining_waypoints.clone();
                     remaining_waypoints.remove(0);
