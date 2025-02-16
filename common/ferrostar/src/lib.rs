@@ -131,7 +131,7 @@ impl UniffiCustomTypeConverter for DateTime<Utc> {
 fn create_valhalla_request_generator(
     endpoint_url: String,
     profile: String,
-    options_json: &Option<String>,
+    options_json: Option<String>,
 ) -> Result<Arc<dyn RouteRequestGenerator>, InstantiationError> {
     Ok(Arc::new(ValhallaHttpRequestGenerator::with_options_json(
         endpoint_url,
