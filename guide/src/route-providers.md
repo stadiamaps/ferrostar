@@ -163,6 +163,49 @@ sequenceDiagram
     CustomRouteProvider--)FerrostarCore: [Route] or error
 ```
 
+When using a custom provider, it can be challenging to construct the
+ferrostar `Route` object from your provider's response. Ferrostar offers
+multiple shortcuts for this including `createRouteFromOsrm`
+and `createRouteFromOsrmRoute`. These methods allow you create a ferrostar route
+directly from OSRM formatted json byte data.
+
+Example
+
+```kt
+class MyCustomRouteProvider(
+  private val client: MyClient
+): CustomRouteProvider {
+
+  private val moshi: Moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
+
+  override suspend fun getRoutes(
+    userLocation: UserLocation,
+    waypoints: List<Waypoint>
+  ): List<Route> {
+    val myRequest = SomeRequestType(userLocation, waypoints)
+    val myResponse = client.getRoute(myRequest)
+
+    // Convert our response's waypoints into ferrostar waypoints.
+    val outWaypoints = myResponse.waypoints.map {
+      it.toFerrostarWaypoint()
+    }
+
+    val jsonAdapter = moshi.adapter(MyOsrmRoute::class.java)
+    // Using the intermediate OSRM route JSON. We map our custom response
+    // data into ferrostar waypionts.
+    val routes = myResponse.routes {
+      val osrmRoute = jsonAdapter.toJson(it.route).encodeToByteArray()
+      createRouteFromOsrmRoute(osrmRoute, outWaypoints, MyCustomRouteProvider.POLYLINE_PRECISION)
+    }
+    return routes
+  }
+
+  companion object {
+    const val POLYLINE_PRECISION: UInt = 6u
+  }
+}
+```
+
 ## Using a `RouteProvider`
 
 The parts of Ferrostar concerned with routing are managed

@@ -6345,6 +6345,22 @@ public func createRouteFromOsrm(routeData: Data, waypointData: Data, polylinePre
 })
 }
 /**
+ * Creates a [`Route`] from OSRM route data and ferrostar waypoints.
+ *
+ * This uses the same logic as the [`OsrmResponseParser`] and is designed to be fairly flexible,
+ * supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
+ * which contain richer information like banners and voice instructions for navigation.
+ */
+public func createRouteFromOsrmRoute(routeData: Data, waypoints: [Waypoint], polylinePrecision: UInt32)throws  -> Route {
+    return try  FfiConverterTypeRoute.lift(try rustCallWithError(FfiConverterTypeParsingError.lift) {
+    uniffi_ferrostar_fn_func_create_route_from_osrm_route(
+        FfiConverterData.lower(routeData),
+        FfiConverterSequenceTypeWaypoint.lower(waypoints),
+        FfiConverterUInt32.lower(polylinePrecision),$0
+    )
+})
+}
+/**
  * Creates a [`RouteRequestGenerator`]
  * which generates requests to an arbitrary Valhalla server (using the OSRM response format).
  *
@@ -6441,6 +6457,9 @@ private var initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_route_from_osrm() != 42270) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_create_route_from_osrm_route() != 43326) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 16275) {
