@@ -153,7 +153,7 @@ impl RouteAdapter {
     pub fn new_valhalla_http(
         endpoint_url: String,
         profile: String,
-        options_json: Option<String>,
+        options_json: &Option<String>,
     ) -> Result<Self, InstantiationError> {
         let request_generator = Arc::new(ValhallaHttpRequestGenerator::with_options_json(
             endpoint_url,

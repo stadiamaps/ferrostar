@@ -81,6 +81,14 @@ impl Route {
             })
             .collect();
 
+        Self::from_osrm_route(route, &waypoints, polyline_precision)
+    }
+
+    pub fn from_osrm_route(
+        route: &OsrmRoute,
+        waypoints: &Vec<Waypoint>,
+        polyline_precision: u32,
+    ) -> Result<Self, ParsingError> {
         let linestring = decode_polyline(&route.geometry, polyline_precision).map_err(|error| {
             ParsingError::InvalidGeometry {
                 error: error.to_string(),
