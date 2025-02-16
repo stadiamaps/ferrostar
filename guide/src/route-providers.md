@@ -169,7 +169,7 @@ multiple shortcuts for this including `createRouteFromOsrm`
 and `createRouteFromOsrmRoute`. These methods allow you create a ferrostar route
 directly from OSRM formatted json byte data.
 
-Example
+#### Example (kotlin)
 
 ```kt
 class MyCustomRouteProvider(
@@ -205,6 +205,11 @@ class MyCustomRouteProvider(
   }
 }
 ```
+
+For different formats, you can manually
+convert sub-types by initializing a ferrostar Route directly, or contribute your
+own route provider to the core rust code. Sharing this functionality in the core
+avoids having to reimplement this verbose functionality for each platform.
 
 ## Using a `RouteProvider`
 
