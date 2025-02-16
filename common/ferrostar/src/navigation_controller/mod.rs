@@ -335,7 +335,7 @@ impl NavigationController {
                 ..
             } => {
                 // Update remaining waypoints
-                if let Some(waypoint) = remaining_waypoints.first() {
+                remaining_waypoints.first().is_some_and(|waypoint| {
                     let current_location: Point = snapped_user_location.coordinates.into();
                     let next_waypoint: Point = waypoint.coordinate.into();
                     match self.config.waypoint_advance {
@@ -343,9 +343,7 @@ impl NavigationController {
                             Haversine::distance(current_location, next_waypoint) < range
                         }
                     }
-                } else {
-                    false
-                }
+                })
             }
             _ => false,
         }

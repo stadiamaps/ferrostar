@@ -2526,6 +2526,10 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 
 public struct NavigationControllerConfig {
     /**
+     * Configures when navigation advances to next waypoint in the route.
+     */
+    public var waypointAdvance: WaypointAdvanceMode
+    /**
      * Configures when navigation advances to the next step in the route.
      */
     public var stepAdvance: StepAdvanceMode
@@ -2545,6 +2549,9 @@ public struct NavigationControllerConfig {
     // declare one manually.
     public init(
         /**
+         * Configures when navigation advances to next waypoint in the route.
+         */waypointAdvance: WaypointAdvanceMode, 
+        /**
          * Configures when navigation advances to the next step in the route.
          */stepAdvance: StepAdvanceMode, 
         /**
@@ -2556,6 +2563,7 @@ public struct NavigationControllerConfig {
         /**
          * Configures how the heading component of the snapped location is reported in [`TripState`].
          */snappedLocationCourseFiltering: CourseFiltering) {
+        self.waypointAdvance = waypointAdvance
         self.stepAdvance = stepAdvance
         self.routeDeviationTracking = routeDeviationTracking
         self.snappedLocationCourseFiltering = snappedLocationCourseFiltering
@@ -2571,6 +2579,7 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
         return
             try NavigationControllerConfig(
+                waypointAdvance: FfiConverterTypeWaypointAdvanceMode.read(from: &buf), 
                 stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf), 
                 routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf), 
                 snappedLocationCourseFiltering: FfiConverterTypeCourseFiltering.read(from: &buf)
@@ -2578,6 +2587,7 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
+        FfiConverterTypeWaypointAdvanceMode.write(value.waypointAdvance, into: &buf)
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
         FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
         FfiConverterTypeCourseFiltering.write(value.snappedLocationCourseFiltering, into: &buf)
@@ -5381,6 +5391,69 @@ public func FfiConverterTypeTripState_lower(_ value: TripState) -> RustBuffer {
 
 
 extension TripState: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum WaypointAdvanceMode {
+    
+    /**
+     * Advance when the waypoint is within a certain range of meters from the user's location.
+     */
+    case waypointWithinRange(Double
+    )
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeWaypointAdvanceMode: FfiConverterRustBuffer {
+    typealias SwiftType = WaypointAdvanceMode
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> WaypointAdvanceMode {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .waypointWithinRange(try FfiConverterDouble.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: WaypointAdvanceMode, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .waypointWithinRange(v1):
+            writeInt(&buf, Int32(1))
+            FfiConverterDouble.write(v1, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeWaypointAdvanceMode_lift(_ buf: RustBuffer) throws -> WaypointAdvanceMode {
+    return try FfiConverterTypeWaypointAdvanceMode.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeWaypointAdvanceMode_lower(_ value: WaypointAdvanceMode) -> RustBuffer {
+    return FfiConverterTypeWaypointAdvanceMode.lower(value)
+}
+
+
+
+extension WaypointAdvanceMode: Equatable, Hashable {}
 
 
 

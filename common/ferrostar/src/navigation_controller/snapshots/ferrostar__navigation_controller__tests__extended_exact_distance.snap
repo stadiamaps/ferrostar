@@ -1,7 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMode::DistanceToEndOfStep\n{ distance: 0, minimum_horizontal_accuracy: 0, })"
-snapshot_kind: text
+expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvanceMode::DistanceToEndOfStep {\n        distance: 0,\n        minimum_horizontal_accuracy: 0,\n    })"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -66824,11 +66823,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 85.66591581649834
       distanceRemaining: 85.66591581649834
@@ -66909,11 +66904,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 76.85045894609027
       distanceRemaining: 76.85045894609027
@@ -66994,11 +66985,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 68.06307191980636
       distanceRemaining: 68.06307191980636
@@ -67079,11 +67066,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 59.33350267279684
       distanceRemaining: 59.33350267279684
@@ -67164,11 +67147,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 50.460228023936
       distanceRemaining: 50.460228023936
@@ -67249,11 +67228,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 41.73065877610483
       distanceRemaining: 41.73065877610483
@@ -67334,11 +67309,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 33.83685913763435
       distanceRemaining: 33.83685913763435
@@ -67419,11 +67390,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 25.91526920319194
       distanceRemaining: 25.91526920319194
@@ -67504,11 +67471,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 18.02146956389788
       distanceRemaining: 18.02146956389788
@@ -67589,11 +67552,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 10.127669926036617
       distanceRemaining: 10.127669926036617
@@ -67674,11 +67633,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 40.777985
-          lng: -74.040048
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 5.050100380126253
       distanceRemaining: 5.050100380126253

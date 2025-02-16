@@ -1,7 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{\n    minimum_horizontal_accuracy: 0, special_advance_conditions:\n    Some(SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)),\n})"
-snapshot_kind: text
+expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    StepAdvanceMode::RelativeLineStringDistance {\n        minimum_horizontal_accuracy: 0,\n        special_advance_conditions: Some(SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)),\n    })"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -13780,11 +13779,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 82.96117352281715
       distanceRemaining: 82.96117352281715
@@ -13863,11 +13858,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 74.14908645333895
       distanceRemaining: 74.14908645333895
@@ -13946,11 +13937,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 65.33239360462073
       distanceRemaining: 65.33239360462073
@@ -14029,11 +14016,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 56.377924515734776
       distanceRemaining: 56.377924515734776
@@ -14112,11 +14095,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 47.5612316665073
       distanceRemaining: 47.5612316665073
@@ -14195,11 +14174,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 38.64260412903741
       distanceRemaining: 38.64260412903741
@@ -14278,11 +14253,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 29.024470298729454
       distanceRemaining: 29.024470298729454
@@ -14361,11 +14332,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 19.3038707696021
       distanceRemaining: 19.3038707696021
@@ -14444,11 +14411,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 9.720599529127298
       distanceRemaining: 9.720599529127298
