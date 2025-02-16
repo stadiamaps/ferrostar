@@ -30,6 +30,7 @@ import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
+import uniffi.ferrostar.WaypointAdvanceMode
 import uniffi.ferrostar.WaypointKind
 
 const val simpleRoute =
@@ -254,7 +255,10 @@ class ValhallaCoreTest {
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(
-                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
+                    WaypointAdvanceMode.WaypointWithinRange(100.0),
+                    StepAdvanceMode.Manual,
+                    RouteDeviationTracking.None,
+                    CourseFiltering.RAW))
 
     return runTest {
       val routes =
@@ -302,7 +306,10 @@ class ValhallaCoreTest {
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(
-                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW),
+                    WaypointAdvanceMode.WaypointWithinRange(100.0),
+                    StepAdvanceMode.Manual,
+                    RouteDeviationTracking.None,
+                    CourseFiltering.RAW),
             options = mapOf("costing_options" to mapOf("auto" to mapOf("useTolls" to 0))))
 
     return runTest {
