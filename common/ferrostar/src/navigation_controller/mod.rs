@@ -340,7 +340,9 @@ impl NavigationController {
                     let next_waypoint: Point = waypoint.coordinate.into();
                     match self.config.waypoint_advance {
                         WaypointAdvanceMode::WaypointWithinRange(range) => {
-                            Haversine::distance(current_location, next_waypoint) < range
+                            let dist = Haversine::distance(current_location, next_waypoint);
+                            println!("Dist: {}", dist);
+                            dist < range
                         }
                     }
                 })

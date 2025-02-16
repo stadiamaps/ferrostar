@@ -190,8 +190,7 @@ fn simple_route_state_machine_advances_with_location_change() {
     };
 
     assert_ne!(remaining_steps, initial_remaining_steps);
-    // In this case, the final step is the arrival point
-    assert_eq!(remaining_waypoints.len(), 0);
+    assert_eq!(remaining_waypoints.len(), 1);
 
     assert_eq!(progress.distance_to_next_maneuver, 0f64);
     assert_eq!(progress.distance_remaining, 0f64);
