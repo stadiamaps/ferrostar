@@ -169,7 +169,23 @@ pub enum SpecialAdvanceConditions {
     MinimumDistanceFromCurrentStepLine(u16),
 }
 
-// Condition to advance the remaining waypoints.
+/// Controls when a waypoint should be marked as complete.
+///
+/// While a route may consist of thousands of points, waypoints are special.
+/// A simple trip will have only one waypoint: the final destination.
+/// A more complex trip may have several intermediate stops.
+/// Just as the navigation state keeps track of which steps remain in the route,
+/// it also tracks which waypoints are still remaining.
+///
+/// Tracking waypoints enables Ferrostar to reroute users when they stray off the route line.
+/// The waypoint advance mode specifies how the framework decides
+/// that a waypoint has been visited (and is removed from the list).
+///
+/// NOTE: Advancing to the next *step* and advancing to the next *waypoint*
+/// are separate processes.
+/// This will not normally cause any issues, but keep in mind that
+/// manually advancing to the next step does not *necessarily* imply
+/// that the waypoint will be marked as complete!
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]

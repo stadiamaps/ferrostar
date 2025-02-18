@@ -45,6 +45,7 @@ Swift:
 
 ```swift
 let config = SwiftNavigationControllerConfig(
+    waypointAdvance: .waypointWithinRange(100.0),
     stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16),
     routeDeviationTracking: .custom(detector: { _, _, _ in
         // Pretend that the user is always off route
@@ -60,6 +61,7 @@ Kotlin:
 
 ```kotlin
 val config = NavigationControllerConfig(
+    WaypointAdvanceMode.WaypointWithinRange(100.0),
     stepAdvance = StepAdvanceMode.RelativeLineStringDistance(16U, 16U),
     routeDeviationTracking =
         RouteDeviationTracking.Custom(
