@@ -3,13 +3,12 @@
 use crate::{
     models::CourseOverGround,
     navigation_controller::models::{
-        StepAdvanceMode,
         StepAdvanceStatus::{self, Advanced, EndOfRoute},
     },
 };
 use crate::{
     models::{GeographicCoordinate, RouteStep, UserLocation},
-    navigation_controller::models::{SpecialAdvanceConditions, TripProgress},
+    navigation_controller::models::{TripProgress},
 };
 use geo::{
     Bearing, Closest, Coord, Distance, Euclidean, Geodesic, Haversine, HaversineClosestPoint,
@@ -27,6 +26,7 @@ use {
 use std::time::SystemTime;
 #[cfg(all(test, feature = "web-time"))]
 use web_time::SystemTime;
+use crate::navigation_controller::step_advance::models::{SpecialAdvanceConditions, StepAdvanceMode};
 
 /// Get the index of the closest *segment* to the user's location within a [`LineString`].
 ///

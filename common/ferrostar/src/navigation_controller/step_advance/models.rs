@@ -1,4 +1,6 @@
-use crate::{models::UserLocation, navigation_controller::models::NavigatingTripState};
+use serde::Deserialize;
+use tsify::Tsify;
+use crate::{models::UserLocation, navigation_controller::models::TripState};
 
 use super::StepAdvanceCondition;
 
@@ -17,7 +19,7 @@ impl StepAdvanceCondition for EntryAndExitCondition {
     fn should_advance_step(
         &mut self,
         user_location: &UserLocation,
-        trip_state: &NavigatingTripState,
+        trip_state: &TripState,
     ) -> bool {
         // Do some real check her
         if self.has_entered {
@@ -69,8 +71,7 @@ pub enum StepAdvanceMode {
         special_advance_conditions: Option<SpecialAdvanceConditions>,
     },
     // TODO: Customizations for this if it works.
-    /// The entry and exit method for step advance.
-    EntryAndExit,
+    // EntryAndExit,
 }
 
 /// Special conditions which alter the normal step advance logic,

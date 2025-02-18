@@ -221,7 +221,7 @@ impl NavigationController {
                     &current_step_linestring,
                     remaining_steps.get(1),
                     &location,
-                    self.config.step_advance,
+                    &self.config.step_advance_condition,
                 ) {
                     // Advance to the next step
                     self.advance_to_next_step(&intermediate_state)
@@ -402,11 +402,13 @@ impl JsNavigationController {
 
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
     use super::*;
     use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
     use crate::navigation_controller::models::{
-        CourseFiltering, SpecialAdvanceConditions, StepAdvanceMode,
+        CourseFiltering,
     };
+    use crate::navigation_controller::step_advance::models::{SpecialAdvanceConditions, StepAdvanceMode};
     use crate::navigation_controller::test_helpers::{
         get_extended_route, get_self_intersecting_route,
     };
@@ -426,9 +428,6 @@ mod tests {
             route,
             NavigationControllerConfig {
                 waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
-                // NOTE: We will use a few varieties here via parameterized testing,
-                // but the point of this test is *not* testing the thresholds.
-                step_advance,
                 // Careful setup: if the user is ever off the route
                 // (ex: because of an improper automatic step advance),
                 // we want to know about it.
@@ -437,6 +436,7 @@ mod tests {
                     max_acceptable_deviation: 0.0,
                 },
                 snapped_location_course_filtering: CourseFiltering::Raw,
+                step_advance_condition: Arc::new(todo!()),
             },
         );
 
