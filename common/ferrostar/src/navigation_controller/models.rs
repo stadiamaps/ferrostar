@@ -7,8 +7,11 @@ use alloc::vec::Vec;
 use geo::LineString;
 #[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
+
+use super::step_advance::StepAdvanceCondition;
 
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
@@ -110,12 +113,28 @@ pub enum CourseFiltering {
     Raw,
 }
 
-/// The step advance mode describes when the current maneuver has been successfully completed,
-/// and we should advance to the next step.
+/// Controls when a waypoint should be marked as complete.
+///
+/// While a route may consist of thousands of points, waypoints are special.
+/// A simple trip will have only one waypoint: the final destination.
+/// A more complex trip may have several intermediate stops.
+/// Just as the navigation state keeps track of which steps remain in the route,
+/// it also tracks which waypoints are still remaining.
+///
+/// Tracking waypoints enables Ferrostar to reroute users when they stray off the route line.
+/// The waypoint advance mode specifies how the framework decides
+/// that a waypoint has been visited (and is removed from the list).
+///
+/// NOTE: Advancing to the next *step* and advancing to the next *waypoint*
+/// are separate processes.
+/// This will not normally cause any issues, but keep in mind that
+/// manually advancing to the next step does not *necessarily* imply
+/// that the waypoint will be marked as complete!
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
+<<<<<<< Updated upstream
 pub enum StepAdvanceMode {
     /// Never advances to the next step automatically;
     /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
@@ -190,6 +209,8 @@ pub enum SpecialAdvanceConditions {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
+=======
+>>>>>>> Stashed changes
 pub enum WaypointAdvanceMode {
     /// Advance when the waypoint is within a certain range of meters from the user's location.
     WaypointWithinRange(f64),
@@ -204,7 +225,11 @@ pub struct NavigationControllerConfig {
     /// Configures when navigation advances to next waypoint in the route.
     pub waypoint_advance: WaypointAdvanceMode,
     /// Configures when navigation advances to the next step in the route.
+<<<<<<< Updated upstream
     pub step_advance: StepAdvanceMode,
+=======
+    pub step_advance_condition: Box<dyn StepAdvanceCondition>,
+>>>>>>> Stashed changes
     /// Configures when the user is deemed to be off course.
     ///
     /// NOTE: This is distinct from the action that is taken.
