@@ -341,9 +341,7 @@ impl NavigationController {
                     let next_waypoint: Point = waypoint.coordinate.into();
                     match self.config.waypoint_advance {
                         WaypointAdvanceMode::WaypointWithinRange(range) => {
-                            let dist = Haversine::distance(current_location, next_waypoint);
-                            println!("Dist: {}", dist);
-                            dist < range
+                            Haversine::distance(current_location, next_waypoint) < range
                         }
                     }
                 })
@@ -428,6 +426,12 @@ mod tests {
             route,
             NavigationControllerConfig {
                 waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
+<<<<<<< HEAD
+=======
+                // NOTE: We will use a few varieties here via parameterized testing,
+                // but the point of this test is *not* testing the thresholds.
+                step_advance,
+>>>>>>> 140b6c2f3794d90f77d88ea53987a6d50d490678
                 // Careful setup: if the user is ever off the route
                 // (ex: because of an improper automatic step advance),
                 // we want to know about it.

@@ -182,6 +182,9 @@ ferrostar.startNavigation(route, {
     },
   },
   snappedLocationCourseFiltering: "Raw",
+  waypointAdvance: {
+    WaypointWithinRange: 100,
+  },
 });
 ```
 
