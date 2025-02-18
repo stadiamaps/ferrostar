@@ -1,4 +1,5 @@
 import CarPlay
+import Combine
 import FerrostarCore
 import FerrostarMapLibreUI
 import Foundation
@@ -21,11 +22,13 @@ public class FerrostarCarPlayManager: NSObject, CPInterfaceControllerDelegate, C
 //    var currentTravelEstimates: CPTravelEstimates?
 //    var navigationSession: CPNavigationSession?
 //    var displayLink: CADisplayLink?
-//    var activeManeuver: CPManeuver?
 //    var activeEstimates: CPTravelEstimates?
 //    var lastCompletedManeuverFrame: CGRect?
 
     private let ferrostarCore: FerrostarCore
+    private let stateManager: CarPlayStateManager
+    private var cancellables = Set<AnyCancellable>()
+
     private let styleURL: URL
 
     private var viewController: UIHostingController<AnyView>!
@@ -35,9 +38,29 @@ public class FerrostarCarPlayManager: NSObject, CPInterfaceControllerDelegate, C
         styleURL: URL
     ) {
         self.ferrostarCore = ferrostarCore
+        stateManager = CarPlayStateManager(ferrostarCore: ferrostarCore)
         self.styleURL = styleURL
 
         super.init()
+
+        stateManager.$currentManeuver
+            .sink { [weak self] maneuver in
+                guard let self, let mapTemplate else { return }
+
+                if let maneuver {
+                    // If there's no navigation session, create one
+                    if mapTemplate.navigationSession == nil {
+                        mapTemplate.startNavigationSession()
+                    }
+
+                    // Update the current maneuver
+                    mapTemplate.navigationSession?.upcomingManeuvers = [maneuver]
+                } else {
+                    // If there's no maneuver, end the navigation session
+                    mapTemplate.navigationSession?.finish()
+                }
+            }
+            .store(in: &cancellables)
 
 //        sessionConfiguration = CPSessionConfiguration(delegate: self)
     }
