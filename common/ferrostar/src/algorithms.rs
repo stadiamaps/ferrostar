@@ -2,13 +2,11 @@
 
 use crate::{
     models::CourseOverGround,
-    navigation_controller::models::{
-        StepAdvanceStatus::{self, Advanced, EndOfRoute},
-    },
+    navigation_controller::models::StepAdvanceStatus::{self, Advanced, EndOfRoute},
 };
 use crate::{
     models::{GeographicCoordinate, RouteStep, UserLocation},
-    navigation_controller::models::{TripProgress},
+    navigation_controller::models::TripProgress,
 };
 use geo::{
     Bearing, Closest, Coord, Distance, Euclidean, Geodesic, Haversine, HaversineClosestPoint,
@@ -22,11 +20,13 @@ use {
     proptest::{collection::vec, prelude::*},
 };
 
+use crate::navigation_controller::step_advance::models::{
+    SpecialAdvanceConditions, StepAdvanceMode,
+};
 #[cfg(all(test, feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
 #[cfg(all(test, feature = "web-time"))]
 use web_time::SystemTime;
-use crate::navigation_controller::step_advance::models::{SpecialAdvanceConditions, StepAdvanceMode};
 
 /// Get the index of the closest *segment* to the user's location within a [`LineString`].
 ///
@@ -217,7 +217,7 @@ pub fn deviation_from_line(point: &Point, line: &LineString) -> Option<f64> {
     })
 }
 
-fn is_within_threshold_to_end_of_linestring(
+pub(crate) fn is_within_threshold_to_end_of_linestring(
     current_position: &Point,
     current_step_linestring: &LineString,
     threshold: f64,
@@ -246,21 +246,6 @@ pub fn should_advance_to_next_step(
     let current_position = Point::from(user_location.coordinates);
 
     match step_advance_mode {
-        StepAdvanceMode::Manual => false,
-        StepAdvanceMode::DistanceToEndOfStep {
-            distance,
-            minimum_horizontal_accuracy,
-        } => {
-            if user_location.horizontal_accuracy > minimum_horizontal_accuracy.into() {
-                false
-            } else {
-                is_within_threshold_to_end_of_linestring(
-                    &current_position,
-                    current_step_linestring,
-                    f64::from(distance),
-                )
-            }
-        }
         StepAdvanceMode::RelativeLineStringDistance {
             minimum_horizontal_accuracy,
             special_advance_conditions,
@@ -270,40 +255,8 @@ pub fn should_advance_to_next_step(
             } else {
                 if let Some(condition) = special_advance_conditions {
                     match condition {
-                        SpecialAdvanceConditions::AdvanceAtDistanceFromEnd(distance) => {
-                            // Short-circuit: if we are close to the end of the step,
-                            // we may advance early.
-                            if is_within_threshold_to_end_of_linestring(
-                                &current_position,
-                                current_step_linestring,
-                                f64::from(distance),
-                            ) {
-                                return true;
-                            }
-                        }
-                        SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(distance) => {
-                            // Short-circuit: do NOT advance if we are within `distance`
-                            // of the current route step.
-                            //
-                            // Historical note: we previously considered checking distance from the
-                            // end of the current step instead, but this actually failed
-                            // the self-intersecting route tests, since the step break isn't
-                            // necessarily near the intersection.
-                            //
-                            // The last step is special and this logic does not apply.
-                            if let Some(next_step) = next_route_step {
-                                // Note this special next_step distance check; otherwise we get stuck at the end!
-                                if next_step.distance > f64::from(distance)
-                                    && deviation_from_line(
-                                        &current_position,
-                                        &current_step_linestring,
-                                    )
-                                    .map_or(true, |deviation| deviation <= f64::from(distance))
-                                {
-                                    return false;
-                                }
-                            }
-                        }
+                        SpecialAdvanceConditions::AdvanceAtDistanceFromEnd(distance) => {}
+                        SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(distance) => {}
                     }
                 }
 
