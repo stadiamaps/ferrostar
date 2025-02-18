@@ -164,9 +164,9 @@ sequenceDiagram
 ```
 
 When using a custom provider, it can be challenging to construct the
-ferrostar `Route` object from your provider's response. Ferrostar offers
+Ferrostar `Route` object from your provider's response. Ferrostar offers
 multiple shortcuts for this including `createRouteFromOsrm`
-and `createRouteFromOsrmRoute`. These methods allow you create a ferrostar route
+and `createRouteFromOsrmRoute`. These methods allow you create a Ferrostar `Route`
 directly from OSRM formatted json byte data.
 
 #### Example (kotlin)
@@ -207,7 +207,7 @@ class MyCustomRouteProvider(
 ```
 
 For different formats, you can manually
-convert sub-types by initializing a ferrostar Route directly, or contribute your
+convert sub-types by initializing a Ferrostar `Route` directly, or contribute your
 own route provider to the core rust code. Sharing this functionality in the core
 avoids having to reimplement this verbose functionality for each platform.
 

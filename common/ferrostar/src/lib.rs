@@ -179,9 +179,9 @@ fn create_route_from_osrm(
 #[uniffi::export]
 fn create_route_from_osrm_route(
     route_data: &[u8],
-    waypoints: &Vec<Waypoint>,
+    waypoints: &[Waypoint],
     polyline_precision: u32,
 ) -> Result<Route, ParsingError> {
     let route: OsrmRoute = serde_json::from_slice(route_data)?;
-    Route::from_osrm_route(&route, waypoints, polyline_precision)
+    Route::from_osrm_with_standard_waypoints(&route, waypoints, polyline_precision)
 }
