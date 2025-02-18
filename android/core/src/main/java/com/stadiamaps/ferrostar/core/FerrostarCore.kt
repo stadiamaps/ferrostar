@@ -285,6 +285,9 @@ class FerrostarCore(
         locationProvider.lastLocation
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
+    _queuedUtteranceIds.clear()
+    spokenInstructionObserver?.stopAndClearQueue()
+
     _navigationController = controller
     _state.update {
       val newState = controller.getInitialState(startingLocation)
