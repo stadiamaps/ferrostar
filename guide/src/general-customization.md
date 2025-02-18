@@ -12,6 +12,17 @@ These customizations apply to the [`NavigationController`](https://docs.rs/ferro
 They are surfaced at the platform layer
 as an argument to the `startNavigation` method of `FerrostarCore`.
 
+### Waypoint advance
+
+The waypoint advance is configured by the `WaypointAdvanceMode`. Our original (V0.27.0 and earlier) hardcoded implementation
+simply checked if the user was within 100 meters of the waypoint when the step was being advanced. The waypoint advance logic
+is separated from step advance to ensure that the user will advance waypoint regardless of step advance conditions.
+
+To match Ferrostar's original default, use `WaypointAdvanceMode::WaypointWithinRange(100.0)`.
+
+The waypoint advance mode has access to the entire TripState anytime the user location is updated. As a result more complex
+implementations would be welcome additions to the library.
+
 #### Step advance
 
 The step advance mode controls when navigation advances to the next step in the route.
