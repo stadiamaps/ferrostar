@@ -6444,11 +6444,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ferrostar-rn-core@workspace:core":
+"ferrostar-rn-core@*, ferrostar-rn-core@workspace:core":
   version: 0.0.0-use.local
   resolution: "ferrostar-rn-core@workspace:core"
   dependencies:
+    "@react-native-community/geolocation": ^3.4.0
     ferrostar-rn-uniffi: "*"
+    react-native-builder-bob: ^0.32.0
+    typescript: ^5.2.2
+    typescript-eslint: ^8.22.0
+  languageName: unknown
+  linkType: soft
+
+"ferrostar-rn-maplibreui@workspace:maplibreui":
+  version: 0.0.0-use.local
+  resolution: "ferrostar-rn-maplibreui@workspace:maplibreui"
+  dependencies:
+    "@maplibre/maplibre-react-native": ^10.0.0
+    "@turf/bbox": ^7.2.0
+    ferrostar-rn-core: "*"
+    ferrostar-rn-uniffi: "*"
+    react-native-svg: ^15.10.1
+    typescript: ^5.2.2
+    typescript-eslint: ^8.22.0
   languageName: unknown
   linkType: soft
 
@@ -6459,12 +6477,9 @@ __metadata:
     "@commitlint/config-conventional": ^17.0.2
     "@eslint/js": ^9.19.0
     "@evilmartians/lefthook": ^1.5.0
-    "@maplibre/maplibre-react-native": ^10.0.0
     "@react-native-community/cli": 15.0.1
-    "@react-native-community/geolocation": ^3.4.0
     "@react-native/eslint-config": ^0.73.1
     "@release-it/conventional-changelog": ^9.0.2
-    "@turf/bbox": ^7.2.0
     "@types/jest": ^29.5.5
     "@types/react": ^18.2.44
     commitlint: ^17.0.2
@@ -6478,7 +6493,6 @@ __metadata:
     react: 18.3.1
     react-native: 0.76.5
     react-native-builder-bob: ^0.32.0
-    react-native-svg: ^15.10.1
     release-it: ^17.10.0
     turbo: ^1.10.7
     typescript: ^5.2.2

@@ -3,8 +3,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "paths": {
-      "ferrostar-rn-uniffi": ["./src/index"]
+      "ferrostar-rn-maplibreui": ["./src/index"]
     }
-  },
-  "exclude": ["example", "lib", "rust_modules"]
+  }
 }

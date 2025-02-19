@@ -5,8 +5,8 @@ import {
   MapView,
   UserLocation,
   setAccessToken,
-} from '@maplibre/maplibre-react-native';
-import { bbox } from '@turf/bbox';
+} from "@maplibre/maplibre-react-native";
+import { bbox } from "@turf/bbox";
 import {
   useCallback,
   useEffect,
@@ -14,16 +14,18 @@ import {
   useRef,
   useState,
   type ComponentProps,
-} from 'react';
-import { FerrostarCore } from '../../uniffi/src/core/FerrostarCore';
-import { NavigationUiState } from '../../uniffi/src/core/NavigationUiState';
-import BorderedPolyline from './BorderedPolyline';
-import NavigationMapViewCamera from './NavigationMapViewCamera';
-import TripProgressView from './TripProgressView';
-import { StyleSheet, View } from 'react-native';
-import InstructionsView from './InstructionsView';
-import MapControls from './MapControls';
-import { snappedUserLocation } from '../../uniffi/src/core/_utils';
+} from "react";
+import {
+  FerrostarCore,
+  NavigationUiState,
+  snappedUserLocation,
+} from "ferrostar-rn-core";
+import BorderedPolyline from "./BorderedPolyline";
+import NavigationMapViewCamera from "./NavigationMapViewCamera";
+import TripProgressView from "./TripProgressView";
+import { StyleSheet, View } from "react-native";
+import InstructionsView from "./InstructionsView";
+import MapControls from "./MapControls";
 
 setAccessToken(null);
 
@@ -71,10 +73,10 @@ const NavigationView = (props: NavigationViewProps) => {
     }
 
     const lineString = {
-      type: 'Feature' as const,
+      type: "Feature" as const,
       properties: {},
       geometry: {
-        type: 'LineString' as const,
+        type: "LineString" as const,
         coordinates: uiState.routeGeometry.map((point) => [
           point.lng,
           point.lat,
@@ -89,18 +91,18 @@ const NavigationView = (props: NavigationViewProps) => {
   }, [routeBounds, uiState]);
 
   const handleZoom = useCallback(
-    async (type: 'in' | 'out') => {
+    async (type: "in" | "out") => {
       if (!cameraRef.current || !mapRef.current) return;
       const zoom = await mapRef.current.getZoom();
 
-      if (type === 'in') {
+      if (type === "in") {
         cameraRef.current.zoomTo(zoom + 1);
         return;
       }
 
       cameraRef.current.zoomTo(zoom - 1);
     },
-    [cameraRef]
+    [cameraRef],
   );
 
   // We need to find a way to override the location manager from within maplibre-react-native
@@ -128,9 +130,9 @@ const NavigationView = (props: NavigationViewProps) => {
           isMuted,
           snappedUserLocation(
             state.tripState,
-            core.locationProvider.lastLocation
-          )
-        )
+            core.locationProvider.lastLocation,
+          ),
+        ),
       );
     });
 
@@ -175,8 +177,8 @@ const NavigationView = (props: NavigationViewProps) => {
         isMuted={uiState?.isMuted ?? false}
         onRoutePress={handleRoutePress}
         onMutePress={handleMute}
-        onZoomIn={() => handleZoom('in')}
-        onZoomOut={() => handleZoom('out')}
+        onZoomIn={() => handleZoom("in")}
+        onZoomOut={() => handleZoom("out")}
       />
       <TripProgressView
         progress={uiState?.progress}
@@ -189,7 +191,7 @@ const NavigationView = (props: NavigationViewProps) => {
 const defaultStyle = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
+    position: "relative",
   },
 });
 

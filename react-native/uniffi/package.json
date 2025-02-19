@@ -8,11 +8,11 @@
   "exports": {
     ".": {
       "import": {
-        "types": "./lib/typescript/commonjs/src/index.d.ts",
+        "types": "./src/index.tsx",
         "default": "./lib/module/index.js"
       },
       "require": {
-        "types": "./lib/typescript/commonjs/src/index.d.ts",
+        "types": "./src/index.tsx",
         "default": "./lib/commonjs/index.js"
       }
     }
@@ -185,7 +185,7 @@
       [
         "typescript",
         {
-          "project": "tsconfig.build.json",
+          "project": "tsconfig.json",
           "esm": true
         }
       ]
@@ -210,10 +210,6 @@
     "version": "0.45.5"
   },
   "dependencies": {
-    "@maplibre/maplibre-react-native": "^10.0.0",
-    "@react-native-community/geolocation": "^3.4.0",
-    "@turf/bbox": "^7.2.0",
-    "react-native-svg": "^15.10.1",
     "uniffi-bindgen-react-native": "^0.28.3-2"
   }
 }

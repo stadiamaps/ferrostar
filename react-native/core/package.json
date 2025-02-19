@@ -5,8 +5,75 @@
   "source": "./src/index.ts",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/typescript/commonjs/core/src/index.d.ts",
+        "default": "./lib/module/index.js"
+      },
+      "require": {
+        "types": "./lib/typescript/commonjs/core/src/index.d.ts",
+        "default": "./lib/commonjs/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "prepare": "bob build"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android"
+  ],
+  "repository": "git+https://github.com/stadiamaps/ferrostar.git",
+  "collaborators": [
+    "Benjamin Trounson <btrounson@outlook.co.nz> (https://github.com/bjtrounson)",
+    "Ian Wagner <ian@stadiamaps.com>",
+    "Jacob Fielding <jacob@rallista.app>",
+    "Luke Seelenbinder <luke@stadiamaps.com>"
+  ],
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/stadiamaps/ferrostar/issues"
+  },
+  "homepage": "https://github.com/stadiamaps/ferrostar#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "react-native-builder-bob": "^0.32.0",
+    "typescript": "^5.2.2",
+    "typescript-eslint": "^8.22.0"
+  },
   "dependencies": {
+    "@react-native-community/geolocation": "^3.4.0",
     "ferrostar-rn-uniffi": "*"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "codegen",
+      [
+        "commonjs",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.json",
+          "esm": true
+        }
+      ]
+    ]
   },
   "packageManager": "yarn@3.6.1"
 }

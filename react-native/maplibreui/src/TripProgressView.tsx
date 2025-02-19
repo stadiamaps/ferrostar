@@ -4,13 +4,13 @@ import {
   View,
   Pressable,
   Text,
-} from 'react-native';
-import type { TripProgress } from '../generated/ferrostar';
+} from "react-native";
+import type { TripProgress } from "ferrostar-rn-core";
 import {
   LocalizedDurationFormatter,
   LocalizedDistanceFormatter,
-} from './_utils';
-import { getIcon } from './maneuver/_icons';
+} from "./_utils";
+import { getIcon } from "./maneuver/_icons";
 
 type TripProgressViewProps = {
   progress?: TripProgress;
@@ -30,7 +30,7 @@ const TripProgressView = ({
   if (progress === undefined) return;
 
   const estimatedArrival = new Date(
-    fromDate.getTime() + progress.durationRemaining * 1000
+    fromDate.getTime() + progress.durationRemaining * 1000,
   );
 
   return (
@@ -40,8 +40,8 @@ const TripProgressView = ({
           <View>
             <Text style={defaultStyle.text}>
               {estimatedArrival.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </Text>
           </View>
@@ -59,7 +59,7 @@ const TripProgressView = ({
         {onTapExit != null && (
           <Pressable style={defaultStyle.tapExit} onPress={onTapExit}>
             <Text style={defaultStyle.text}>
-              {getIcon('close', 24, 24, '#FFF')}
+              {getIcon("close", 24, 24, "#FFF")}
             </Text>
           </Pressable>
         )}
@@ -71,8 +71,8 @@ const TripProgressView = ({
 const defaultStyle = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
-    position: 'absolute',
+    flexDirection: "column",
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
@@ -80,33 +80,33 @@ const defaultStyle = StyleSheet.create({
   },
   box: {
     flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 100,
     padding: 10,
   },
   centerBox: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginHorizontal: 30,
   },
   // Full circle button
   tapExit: {
-    backgroundColor: '#52525b',
+    backgroundColor: "#52525b",
     borderRadius: 100,
     width: 48,
     height: 48,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
 });
 

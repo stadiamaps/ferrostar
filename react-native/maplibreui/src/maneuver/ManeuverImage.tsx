@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 import {
   ManeuverModifier,
   ManeuverType,
   type VisualInstructionContent,
-} from '../../generated/ferrostar';
-import { StyleSheet, View } from 'react-native';
-import { getIcon, type IconType } from './_icons';
+} from "ferrostar-rn-uniffi";
+import { StyleSheet, View } from "react-native";
+import { getIcon, type IconType } from "./_icons";
 
 type ManeuverImageProps = {
   content: VisualInstructionContent;

@@ -8,20 +8,20 @@ import {
   TripState,
   UserLocation,
   Waypoint,
-} from '../generated/ferrostar';
-import { getNanoTime } from './_utils';
-import type { AlternativeRouteProcessor } from './AlternativeRouteProcessor';
+} from "ferrostar-rn-uniffi";
+import { getNanoTime } from "./_utils";
+import type { AlternativeRouteProcessor } from "./AlternativeRouteProcessor";
 import {
   LocationProvider,
   type LocationProviderInterface,
   type LocationUpdateListener,
-} from './LocationProvider';
+} from "./LocationProvider";
 import {
   CorrectiveAction,
   type RouteDeviationHandler,
-} from './RouteDeviationHandler';
-import type { RouteProviderInterface } from './RouteProvider';
-import { RouteProvider } from './RouteProvider';
+} from "./RouteDeviationHandler";
+import type { RouteProviderInterface } from "./RouteProvider";
+import { RouteProvider } from "./RouteProvider";
 
 /**
  * Represents the complete state of the navigation session provided by FerrostarCore-RS
@@ -54,7 +54,7 @@ export class NavigationState {
   set(
     tripState: TripState,
     routeGeometry: Array<GeographicCoordinate>,
-    isCalculatingNewRoute: boolean
+    isCalculatingNewRoute: boolean,
   ) {
     this.tripState = tripState;
     this.routeGeometry = routeGeometry;
@@ -134,8 +134,8 @@ export class FerrostarCore implements LocationUpdateListener {
     routeProvider: RouteProviderInterface = new RouteProvider(
       valhallaEndpointURL,
       profile,
-      options
-    )
+      options,
+    ),
   ) {
     this.navigationControllerConfig = navigationControllerConfig;
     this.routeProvider = routeProvider;
@@ -144,7 +144,7 @@ export class FerrostarCore implements LocationUpdateListener {
 
   async getRoutes(
     initialLocation: UserLocation,
-    waypoints: Array<Waypoint>
+    waypoints: Array<Waypoint>,
   ): Promise<Array<Route>> {
     try {
       this._routeRequestInFlight = true;
@@ -181,7 +181,7 @@ export class FerrostarCore implements LocationUpdateListener {
     this.navigationControllerConfig = config ?? this.navigationControllerConfig;
     const controller = new NavigationController(
       route,
-      this.navigationControllerConfig
+      this.navigationControllerConfig,
     );
 
     const firstRouteLocation = route.geometry[0];
@@ -225,7 +225,7 @@ export class FerrostarCore implements LocationUpdateListener {
 
     const controller = new NavigationController(
       route,
-      this.navigationControllerConfig
+      this.navigationControllerConfig,
     );
 
     const firstRouteLocation = route.geometry[0];
@@ -262,7 +262,7 @@ export class FerrostarCore implements LocationUpdateListener {
     this._state.set(
       newState,
       this._state.routeGeometry,
-      this.isCalculatingNewRoute
+      this.isCalculatingNewRoute,
     );
 
     this.handleStateUpdate(newState, location);
@@ -308,7 +308,7 @@ export class FerrostarCore implements LocationUpdateListener {
         this.deviationHandler?.correctiveActionForDeviation(
           this,
           newState.inner.deviation.inner.deviationFromRouteLine,
-          newState.inner.remainingWaypoints
+          newState.inner.remainingWaypoints,
         ) ?? CorrectiveAction.GetNewRoutes;
 
       switch (action) {
@@ -319,7 +319,7 @@ export class FerrostarCore implements LocationUpdateListener {
           try {
             const routes = await this.getRoutes(
               location,
-              newState.inner.remainingWaypoints
+              newState.inner.remainingWaypoints,
             );
             const config = this.navigationControllerConfig;
             const processor = this.alternativeRouteProcessor;
@@ -328,7 +328,7 @@ export class FerrostarCore implements LocationUpdateListener {
             if (
               TripState.Navigating.instanceOf(state.tripState) &&
               RouteDeviation.OffRoute.instanceOf(
-                state.tripState.inner.deviation
+                state.tripState.inner.deviation,
               )
             ) {
               if (processor !== undefined) {
@@ -339,7 +339,7 @@ export class FerrostarCore implements LocationUpdateListener {
                 const firstRoute = routes[0];
                 // Stupid TS can't figure out that firstRoute is not undefined here.
                 if (firstRoute === undefined) {
-                  throw new Error('No route found');
+                  throw new Error("No route found");
                 }
 
                 this.replaceRoute(firstRoute, config);
@@ -384,7 +384,7 @@ export class FerrostarCore implements LocationUpdateListener {
 
     const newState = controller.updateUserLocation(
       location,
-      this._state.tripState
+      this._state.tripState,
     );
 
     this.handleStateUpdate(newState, location);
@@ -392,7 +392,7 @@ export class FerrostarCore implements LocationUpdateListener {
     this._state.set(
       newState,
       this._state.routeGeometry,
-      this.isCalculatingNewRoute
+      this.isCalculatingNewRoute,
     );
   }
 
