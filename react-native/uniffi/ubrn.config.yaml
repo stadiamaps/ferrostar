@@ -1,5 +1,4 @@
 ---
 rust:
-  repo: https://github.com/stadiamaps/ferrostar
-  branch: main
+  directory: ../../
   manifestPath: common/ferrostar/Cargo.toml
