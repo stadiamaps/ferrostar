@@ -1,10 +1,9 @@
 {
   "extends": "../tsconfig.base",
   "compilerOptions": {
-    "jsx": "react-jsx",
     "paths": {
       "ferrostar-rn-uniffi": ["./src/index"]
     }
   },
-  "exclude": ["example", "lib", "rust_modules"]
+  "exclude": ["lib"]
 }

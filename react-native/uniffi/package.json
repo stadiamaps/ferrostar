@@ -41,7 +41,6 @@
     "ubrn:android": "ubrn build android --config ubrn.config.yaml --and-generate",
     "ubrn:checkout": "ubrn checkout      --config ubrn.config.yaml",
     "ubrn:clean": "rm -Rf cpp/ android/src/main/java ios/ src/Native* src/generated/ src/index.ts*",
-    "example": "yarn workspace react-native-ferrostar-example",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -73,29 +72,17 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.0.2",
-    "@eslint/js": "^9.19.0",
-    "@evilmartians/lefthook": "^1.5.0",
     "@react-native-community/cli": "15.0.1",
-    "@react-native/eslint-config": "^0.73.1",
     "@release-it/conventional-changelog": "^9.0.2",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.2.44",
-    "commitlint": "^17.0.2",
     "del-cli": "^5.1.0",
-    "eslint": "^9.19.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "globals": "^15.14.0",
     "jest": "^29.7.0",
-    "prettier": "^3.0.3",
     "react": "18.3.1",
     "react-native": "0.76.5",
     "react-native-builder-bob": "^0.32.0",
     "release-it": "^17.10.0",
-    "turbo": "^1.10.7",
-    "typescript": "^5.2.2",
-    "typescript-eslint": "^8.22.0"
+    "typescript": "^5.2.2"
   },
   "resolutions": {
     "@types/react": "^18.2.44"

@@ -125,7 +125,7 @@ def isNewArchitectureEnabled() {
 if (isNewArchitectureEnabled()) {
     // Since our library doesn't invoke codegen automatically we need to do it here.
     tasks.register('invokeLibraryCodegen', Exec) {
-      workingDir "$rootDir/../../"
+      workingDir "$rootDir/../../uniffi/"
       def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
 
       if (isWindows) {

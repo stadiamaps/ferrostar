@@ -8,8 +8,8 @@ module.exports = {
     },
   },
   dependencies: {
-    [pkg.name]: {
-      root: path.join(__dirname, '..'),
+    'ferrostar-rn-uniffi': {
+      root: path.join(__dirname, '../uniffi'),
       platforms: {
         // Codegen script incorrectly fails without this
         // So we explicitly specify the platforms with empty object

@@ -4,5 +4,6 @@
     "paths": {
       "ferrostar-rn-core": ["./src/index"]
     }
-  }
+  },
+  "exclude": ["lib"]
 }

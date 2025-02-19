@@ -3,17 +3,28 @@
   "version": "0.27.0",
   "description": "Ferrostar React Native MapLibre UI",
   "source": "./src/index.ts",
-  "types": "./src/index.ts",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/typescript/commonjs/maplibreui/src/index.d.ts",
+        "default": "./lib/module/index.js"
+      },
+      "require": {
+        "types": "./lib/typescript/commonjs/maplibreui/src/index.d.ts",
+        "default": "./lib/commonjs/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "prepare": "bob build"
+  },
   "keywords": [
     "react-native",
     "ios",
     "android"
   ],
-  "scripts": {
-    "typecheck": "tsc"
-  },
   "repository": "git+https://github.com/stadiamaps/ferrostar.git",
   "collaborators": [
     "Benjamin Trounson <btrounson@outlook.co.nz> (https://github.com/bjtrounson)",
@@ -30,8 +41,20 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
-    "typescript-eslint": "^8.22.0"
+    "@react-native-community/cli": "15.0.1",
+    "@types/jest": "^29.5.5",
+    "@types/react": "^18.2.44",
+    "react": "18.3.1",
+    "react-native": "0.76.5",
+    "react-native-builder-bob": "^0.32.0",
+    "typescript": "^5.2.2"
+  },
+  "resolutions": {
+    "@types/react": "^18.2.44"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
   },
   "dependencies": {
     "@maplibre/maplibre-react-native": "^10.0.0",
@@ -39,6 +62,31 @@
     "ferrostar-rn-core": "*",
     "ferrostar-rn-uniffi": "*",
     "react-native-svg": "^15.10.1"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      [
+        "commonjs",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "typescript",
+        {
+          "project": "tsconfig.json",
+          "esm": true
+        }
+      ]
+    ]
   },
   "packageManager": "yarn@3.6.1"
 }

@@ -8,6 +8,8 @@
     "ubrn:android": "yarn workspace ferrostar-rn-uniffi ubrn:android",
     "ubrn:checkout": "yarn workspace ferrostar-rn-uniffi ubrn:checkout",
     "ubrn:clean": "yarn workspace ferrostar-rn-uniffi ubrn:clean",
+    "build:android": "yarn workspace ferrostar-rn-uniffi ubrn:android && yarn workspace ferrostar-rn-core prepare && yarn workspace ferrostar-rn-maplibreui prepare",
+    "example": "yarn workspace ferrostar-rn-example start",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -34,12 +36,13 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@react-native/eslint-config": "^0.73.1",
     "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
+    "globals": "^15.15.0",
     "prettier": "^3.0.3",
-    "react-native-builder-bob": "^0.32.0",
-    "typescript": "^5.2.2",
     "typescript-eslint": "^8.22.0"
   },
   "workspaces": [

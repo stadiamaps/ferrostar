@@ -1,9 +1,9 @@
 {
   "extends": "../tsconfig.base",
   "compilerOptions": {
-    "jsx": "react-jsx",
     "paths": {
       "ferrostar-rn-maplibreui": ["./src/index"]
     }
-  }
+  },
+  "exclude": ["lib"]
 }

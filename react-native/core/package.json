@@ -41,6 +41,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
+    "@react-native-community/cli": "15.0.1",
     "react-native-builder-bob": "^0.32.0",
     "typescript": "^5.2.2"
   },
@@ -52,7 +53,6 @@
     "source": "src",
     "output": "lib",
     "targets": [
-      "codegen",
       [
         "commonjs",
         {
