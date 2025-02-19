@@ -7,15 +7,15 @@ import {
   type TripProgress,
   type UserLocation,
   type VisualInstruction,
-} from '../generated/ferrostar';
+} from "ferrostar-rn-uniffi";
 import {
   currentRoadName,
   deviation,
   progress,
   remainingSteps,
   visualInstruction,
-} from './_utils';
-import type { NavigationState } from './FerrostarCore';
+} from "./_utils";
+import type { NavigationState } from "./FerrostarCore";
 
 export class NavigationUiState {
   /** The user's location as reported by the location provider. */
@@ -66,7 +66,7 @@ export class NavigationUiState {
     routeDeviation?: RouteDeviation,
     isMuted?: boolean,
     currentStepRoadName?: string,
-    remainingSteps?: Array<RouteStep>
+    remainingSteps?: Array<RouteStep>,
   ) {
     this.location = location;
     this.snappedLocation = snappedLocation;
@@ -91,7 +91,7 @@ export class NavigationUiState {
     coreState: NavigationState,
     isMuted?: boolean,
     location?: UserLocation,
-    snappedLocation?: UserLocation
+    snappedLocation?: UserLocation,
   ): NavigationUiState {
     return new NavigationUiState(
       location,
@@ -105,7 +105,7 @@ export class NavigationUiState {
       deviation(coreState.tripState),
       isMuted,
       currentRoadName(coreState.tripState),
-      remainingSteps(coreState.tripState)
+      remainingSteps(coreState.tripState),
     );
   }
 

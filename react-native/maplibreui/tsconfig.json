@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.base",
+  "compilerOptions": {
+    "paths": {
+      "ferrostar-rn-maplibreui": ["./src/index"]
+    }
+  },
+  "exclude": ["lib"]
+}

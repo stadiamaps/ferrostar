@@ -1,5 +1,5 @@
-import type { Waypoint } from '../generated/ferrostar';
-import type { FerrostarCore } from './FerrostarCore';
+import type { Waypoint } from "ferrostar-rn-uniffi";
+import type { FerrostarCore } from "./FerrostarCore";
 
 export enum CorrectiveAction {
   DoNothing,
@@ -10,6 +10,6 @@ export interface RouteDeviationHandler {
   correctiveActionForDeviation(
     core: FerrostarCore,
     deviationInMeters: number,
-    remainingWaypoints: Array<Waypoint>
+    remainingWaypoints: Array<Waypoint>,
   ): CorrectiveAction;
 }

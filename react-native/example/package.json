@@ -1,5 +1,5 @@
 {
-  "name": "react-native-ferrostar-example",
+  "name": "ferrostar-rn-example",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -12,6 +12,9 @@
   "dependencies": {
     "@maplibre/maplibre-react-native": "^10.0.0",
     "@react-native-community/geolocation": "^3.4.0",
+    "ferrostar-rn-core": "*",
+    "ferrostar-rn-maplibreui": "*",
+    "ferrostar-rn-uniffi": "*",
     "react": "18.3.1",
     "react-native": "0.76.5",
     "react-native-dotenv": "^3.4.11",
@@ -27,7 +30,11 @@
     "@react-native/babel-preset": "0.76.5",
     "@react-native/metro-config": "0.76.5",
     "@react-native/typescript-config": "0.76.5",
+    "@types/node": "^22.13.4",
     "react-native-builder-bob": "^0.32.0"
+  },
+  "resolutions": {
+    "@types/react": "^18.2.44"
   },
   "engines": {
     "node": ">=18"

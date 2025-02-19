@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.base",
+  "compilerOptions": {
+    "paths": {
+      "ferrostar-rn-uniffi": ["./src/index"]
+    }
+  },
+  "exclude": ["lib"]
+}

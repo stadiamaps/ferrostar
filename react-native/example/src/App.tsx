@@ -1,13 +1,14 @@
 import { Button, StyleSheet, View } from 'react-native';
 import {
   CourseFiltering,
-  FerrostarCore,
   RouteDeviationTracking,
   SpecialAdvanceConditions,
   StepAdvanceMode,
+  WaypointAdvanceMode,
   WaypointKind,
-} from 'react-native-ferrostar/core';
-import { NavigationView } from 'react-native-ferrostar/views';
+} from 'ferrostar-rn-uniffi';
+import { FerrostarCore } from 'ferrostar-rn-core';
+import { NavigationView } from 'ferrostar-rn-maplibreui';
 import Geolocation, {
   type GeolocationResponse,
 } from '@react-native-community/geolocation';
@@ -32,6 +33,7 @@ export default function App() {
           maxAcceptableDeviation: 50,
         }),
         snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
+        waypointAdvance: WaypointAdvanceMode.WaypointWithinRange.new(50),
       }),
     []
   );

@@ -1,5 +1,5 @@
-import type { Route } from '../generated/ferrostar';
-import type { FerrostarCore } from './FerrostarCore';
+import type { Route } from "ferrostar-rn-uniffi";
+import type { FerrostarCore } from "./FerrostarCore";
 
 /** Reacts to the core loading alternative routes. */
 export interface AlternativeRouteProcessor {

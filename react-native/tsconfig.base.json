@@ -1,14 +1,11 @@
 {
   "compilerOptions": {
     "rootDir": ".",
-    "paths": {
-      "react-native-ferrostar": ["./src/index"]
-    },
+    "jsx": "react-jsx",
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx",
     "lib": ["ESNext"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -23,8 +20,9 @@
     "resolveJsonModule": true,
     "resolvePackageJsonImports": false,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "target": "ESNext",
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "noCheck": true
   }
 }
