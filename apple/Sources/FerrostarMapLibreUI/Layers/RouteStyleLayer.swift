@@ -63,6 +63,7 @@ public struct RouteStyleLayer: StyleLayerCollection {
                            curveType: .exponential,
                            parameters: NSExpression(forConstantValue: 1.5),
                            stops: NSExpression(forConstantValue: [14: 6, 18: 24]))
+                .renderBelow(.symbols)
         }
 
         LineStyleLayer(identifier: "\(identifier)-polyline", source: source)
@@ -73,5 +74,6 @@ public struct RouteStyleLayer: StyleLayerCollection {
                        curveType: .exponential,
                        parameters: NSExpression(forConstantValue: 1.5),
                        stops: NSExpression(forConstantValue: [14: 3, 18: 16]))
+            .renderBelow(.symbols)
     }
 }

@@ -34,6 +34,7 @@ class AppEnvironment: ObservableObject {
         // Configure the navigation session.
         // You have a lot of flexibility here based on your use case.
         let config = SwiftNavigationControllerConfig(
+            waypointAdvance: .waypointWithinRange(100.0),
             stepAdvance: .relativeLineStringDistance(
                 minimumHorizontalAccuracy: 32,
                 specialAdvanceConditions: .minimumDistanceFromCurrentStepLine(10)

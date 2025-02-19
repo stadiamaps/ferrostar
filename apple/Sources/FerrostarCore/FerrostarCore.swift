@@ -78,6 +78,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This adds a minimum delay (default 5 seconds).
     public var minimumTimeBeforeRecalculaton: TimeInterval = 5
 
+    /// The minimum distance (in meters) the user must move before performing another route recaluclation.
+    ///
+    /// This ensures that, while the user remains off the route, we don't keep triggering useless recalculations.
+    public var minimumMovementBeforeRecaluclation = CLLocationDistance(50)
+
     /// The observable state of the model (for easy binding in SwiftUI views).
     @Published public private(set) var state: NavigationState?
 
@@ -90,6 +95,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
     private var lastLocation: UserLocation? = nil
+    // The last location from which we triggered a recalculation
+    private var lastRecalculationLocation: UserLocation? = nil
     private var recalculationTask: Task<Void, Never>?
     private var queuedUtteranceIDs: Set<UUID> = Set()
 
@@ -288,6 +295,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()
         spokenInstructionObserver?.stopAndClearQueue()
+        lastRecalculationLocation = nil
     }
 
     /// Internal state update.
@@ -314,10 +322,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     // No action
                     break
                 case let .offRoute(deviationFromRouteLine: deviationFromRouteLine):
-                    guard !self.routeRequestInFlight,
+                    guard !self.routeRequestInFlight, // We can't have a request in flight already
+                          // Ensure a minimum cool down before a new route fetch
                           self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? -TimeInterval
                           .greatestFiniteMagnitude < -self
-                          .minimumTimeBeforeRecalculaton
+                          .minimumTimeBeforeRecalculaton,
+                          // Don't recalculate again if the user hasn't moved much
+                          self.lastRecalculationLocation?.clLocation
+                          .distance(from: location.clLocation) ?? .greatestFiniteMagnitude > self
+                          .minimumMovementBeforeRecaluclation
                     else {
                         break
                     }
@@ -331,6 +344,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         break
                     case let .getNewRoutes(waypoints):
                         self.state?.isCalculatingNewRoute = true
+                        self.lastRecalculationLocation = location
                         self.recalculationTask = Task {
                             do {
                                 let routes = try await self.getRoutes(

@@ -42,8 +42,7 @@
   },
   "devDependencies": {
     "react-native-builder-bob": "^0.32.0",
-    "typescript": "^5.2.2",
-    "typescript-eslint": "^8.22.0"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@react-native-community/geolocation": "^3.4.0",
