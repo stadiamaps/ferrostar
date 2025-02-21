@@ -31,7 +31,7 @@ wasm_js = [
 chrono = { version = "0.4.39", features = ["serde"] }
 geo = "0.29.3"
 polyline = "0.11.0"
-rand = "0.8.5"
+rand = "0.9.0"
 serde = { version = "1.0.217", features = ["derive"] }
 serde_json = { version = "1.0.138", default-features = false }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
