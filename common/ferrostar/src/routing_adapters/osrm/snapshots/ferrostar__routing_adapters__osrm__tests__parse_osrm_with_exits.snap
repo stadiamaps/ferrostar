@@ -1,7 +1,6 @@
 ---
 source: ferrostar/src/routing_adapters/osrm/mod.rs
 expression: routes
-snapshot_kind: text
 ---
 - geometry:
     - lat: 45.377106
@@ -129,6 +128,8 @@ snapshot_kind: text
             maneuver_modifier: slight right
             roundabout_exit_degrees: ~
             lane_info: ~
+            exit_numbers:
+              - "10"
           secondary_content: ~
           sub_content:
             text: ""
@@ -153,6 +154,7 @@ snapshot_kind: text
                 directions:
                   - slight right
                 active_direction: slight right
+            exit_numbers: []
           trigger_distance_before_maneuver: 264.647
       spoken_instructions: []
       annotations: redacted annotations json strings vec
@@ -215,6 +217,7 @@ snapshot_kind: text
             maneuver_modifier: slight right
             roundabout_exit_degrees: ~
             lane_info: ~
+            exit_numbers: []
           secondary_content: ~
           sub_content:
             text: ""
@@ -231,6 +234,7 @@ snapshot_kind: text
                 directions:
                   - slight right
                 active_direction: slight right
+            exit_numbers: []
           trigger_distance_before_maneuver: 295
       spoken_instructions: []
       annotations: redacted annotations json strings vec
@@ -282,6 +286,7 @@ snapshot_kind: text
             maneuver_modifier: ~
             roundabout_exit_degrees: ~
             lane_info: ~
+            exit_numbers: []
           secondary_content: ~
           sub_content: ~
           trigger_distance_before_maneuver: 513.266

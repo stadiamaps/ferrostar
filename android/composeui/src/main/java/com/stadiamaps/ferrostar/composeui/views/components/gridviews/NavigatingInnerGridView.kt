@@ -23,10 +23,16 @@ import com.stadiamaps.ferrostar.composeui.R
 import com.stadiamaps.ferrostar.composeui.models.CameraControlState
 import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIButton
 import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIZoomButton
+import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageStyle
+import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SpeedLimitView
+import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeed
+import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
 
 @Composable
 fun NavigatingInnerGridView(
     modifier: Modifier,
+    speedLimit: MeasurementSpeed? = null,
+    speedLimitStyle: SignageStyle? = null,
     showMute: Boolean = true,
     isMuted: Boolean?,
     onClickMute: () -> Unit = {},
@@ -43,7 +49,9 @@ fun NavigatingInnerGridView(
   InnerGridView(
       modifier,
       topStart = {
-        // TODO: SpeedLimitView goes here
+        speedLimit?.let {
+          speedLimitStyle?.let { style -> SpeedLimitView(speedLimit = it, signageStyle = style) }
+        }
       },
       topCenter = topCenter,
       topEnd = {
@@ -108,6 +116,8 @@ fun NavigatingInnerGridView(
 fun NavigatingInnerGridViewNonTrackingPreview() {
   NavigatingInnerGridView(
       modifier = Modifier.fillMaxSize(),
+      speedLimit = MeasurementSpeed(24.6, MeasurementSpeedUnit.MetersPerSecond),
+      speedLimitStyle = SignageStyle.MUTCD,
       isMuted = false,
       buttonSize = DpSize(56.dp, 56.dp),
       cameraControlState =
@@ -121,6 +131,8 @@ fun NavigatingInnerGridViewNonTrackingPreview() {
 fun NavigatingInnerGridViewTrackingPreview() {
   NavigatingInnerGridView(
       modifier = Modifier.fillMaxSize(),
+      speedLimit = MeasurementSpeed(24.6, MeasurementSpeedUnit.MetersPerSecond),
+      speedLimitStyle = SignageStyle.MUTCD,
       isMuted = false,
       buttonSize = DpSize(56.dp, 56.dp),
       cameraControlState =
@@ -136,6 +148,8 @@ fun NavigatingInnerGridViewTrackingPreview() {
 fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
   NavigatingInnerGridView(
       modifier = Modifier.fillMaxSize(),
+      speedLimit = MeasurementSpeed(27.8, MeasurementSpeedUnit.MetersPerSecond),
+      speedLimitStyle = SignageStyle.ViennaConvention,
       isMuted = true,
       buttonSize = DpSize(56.dp, 56.dp),
       cameraControlState =
@@ -151,6 +165,8 @@ fun NavigatingInnerGridViewLandscapeNonTrackingPreview() {
 fun NavigatingInnerGridViewLandscapeTrackingPreview() {
   NavigatingInnerGridView(
       modifier = Modifier.fillMaxSize(),
+      speedLimit = MeasurementSpeed(27.8, MeasurementSpeedUnit.MetersPerSecond),
+      speedLimitStyle = SignageStyle.ViennaConvention,
       isMuted = true,
       buttonSize = DpSize(56.dp, 56.dp),
       cameraControlState =

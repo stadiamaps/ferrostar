@@ -23,7 +23,8 @@ let instructionContent = VisualInstructionContent(
     maneuverType: .depart,
     maneuverModifier: .straight,
     roundaboutExitDegrees: nil,
-    laneInfo: nil
+    laneInfo: nil,
+    exitNumbers: []
 )
 let mockRoute = Route(
     geometry: mockGeom,
@@ -122,6 +123,7 @@ final class FerrostarCoreTests: XCTestCase {
             routeAdapter: routeAdapter,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -165,6 +167,7 @@ final class FerrostarCoreTests: XCTestCase {
             routeAdapter: mockPOSTRouteAdapter,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -200,6 +203,7 @@ final class FerrostarCoreTests: XCTestCase {
             routeAdapter: mockGETRouteAdapter,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -238,6 +242,7 @@ final class FerrostarCoreTests: XCTestCase {
             profile: "low_speed_vehicle",
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -284,6 +289,7 @@ final class FerrostarCoreTests: XCTestCase {
             customRouteProvider: mockCustomRouteProvider,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -330,6 +336,7 @@ final class FerrostarCoreTests: XCTestCase {
             routeAdapter: mockPOSTRouteAdapter,
             locationProvider: locationProvider,
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -384,7 +391,11 @@ final class FerrostarCoreTests: XCTestCase {
 
         locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0).userLocation
         let config = SwiftNavigationControllerConfig(
-            stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16),
+            waypointAdvance: .waypointWithinRange(100.0),
+            stepAdvance: .relativeLineStringDistance(
+                minimumHorizontalAccuracy: 16,
+                specialAdvanceConditions: .advanceAtDistanceFromEnd(16)
+            ),
             routeDeviationTracking: .custom(detector: { _, _, _ in
                 // Pretend that the user is always off route
                 .offRoute(deviationFromRouteLine: 42)

@@ -2526,6 +2526,10 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 
 public struct NavigationControllerConfig {
     /**
+     * Configures when navigation advances to next waypoint in the route.
+     */
+    public var waypointAdvance: WaypointAdvanceMode
+    /**
      * Configures when navigation advances to the next step in the route.
      */
     public var stepAdvance: StepAdvanceMode
@@ -2545,6 +2549,9 @@ public struct NavigationControllerConfig {
     // declare one manually.
     public init(
         /**
+         * Configures when navigation advances to next waypoint in the route.
+         */waypointAdvance: WaypointAdvanceMode, 
+        /**
          * Configures when navigation advances to the next step in the route.
          */stepAdvance: StepAdvanceMode, 
         /**
@@ -2556,6 +2563,7 @@ public struct NavigationControllerConfig {
         /**
          * Configures how the heading component of the snapped location is reported in [`TripState`].
          */snappedLocationCourseFiltering: CourseFiltering) {
+        self.waypointAdvance = waypointAdvance
         self.stepAdvance = stepAdvance
         self.routeDeviationTracking = routeDeviationTracking
         self.snappedLocationCourseFiltering = snappedLocationCourseFiltering
@@ -2571,6 +2579,7 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationControllerConfig {
         return
             try NavigationControllerConfig(
+                waypointAdvance: FfiConverterTypeWaypointAdvanceMode.read(from: &buf), 
                 stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf), 
                 routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf), 
                 snappedLocationCourseFiltering: FfiConverterTypeCourseFiltering.read(from: &buf)
@@ -2578,6 +2587,7 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
     }
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
+        FfiConverterTypeWaypointAdvanceMode.write(value.waypointAdvance, into: &buf)
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
         FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
         FfiConverterTypeCourseFiltering.write(value.snappedLocationCourseFiltering, into: &buf)
@@ -3465,6 +3475,10 @@ public struct VisualInstructionContent {
      * Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
      */
     public var laneInfo: [LaneInfo]?
+    /**
+     * The exit number (or similar identifier like "8B").
+     */
+    public var exitNumbers: [String]
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -3487,12 +3501,16 @@ public struct VisualInstructionContent {
          */roundaboutExitDegrees: UInt16?, 
         /**
          * Detailed information about the lanes. This is typically only present in sub-maneuver instructions.
-         */laneInfo: [LaneInfo]?) {
+         */laneInfo: [LaneInfo]?, 
+        /**
+         * The exit number (or similar identifier like "8B").
+         */exitNumbers: [String]) {
         self.text = text
         self.maneuverType = maneuverType
         self.maneuverModifier = maneuverModifier
         self.roundaboutExitDegrees = roundaboutExitDegrees
         self.laneInfo = laneInfo
+        self.exitNumbers = exitNumbers
     }
 }
 
@@ -3515,6 +3533,9 @@ extension VisualInstructionContent: Equatable, Hashable {
         if lhs.laneInfo != rhs.laneInfo {
             return false
         }
+        if lhs.exitNumbers != rhs.exitNumbers {
+            return false
+        }
         return true
     }
 
@@ -3524,6 +3545,7 @@ extension VisualInstructionContent: Equatable, Hashable {
         hasher.combine(maneuverModifier)
         hasher.combine(roundaboutExitDegrees)
         hasher.combine(laneInfo)
+        hasher.combine(exitNumbers)
     }
 }
 
@@ -3539,7 +3561,8 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
                 maneuverType: FfiConverterOptionTypeManeuverType.read(from: &buf), 
                 maneuverModifier: FfiConverterOptionTypeManeuverModifier.read(from: &buf), 
                 roundaboutExitDegrees: FfiConverterOptionUInt16.read(from: &buf), 
-                laneInfo: FfiConverterOptionSequenceTypeLaneInfo.read(from: &buf)
+                laneInfo: FfiConverterOptionSequenceTypeLaneInfo.read(from: &buf), 
+                exitNumbers: FfiConverterSequenceString.read(from: &buf)
         )
     }
 
@@ -3549,6 +3572,7 @@ public struct FfiConverterTypeVisualInstructionContent: FfiConverterRustBuffer {
         FfiConverterOptionTypeManeuverModifier.write(value.maneuverModifier, into: &buf)
         FfiConverterOptionUInt16.write(value.roundaboutExitDegrees, into: &buf)
         FfiConverterOptionSequenceTypeLaneInfo.write(value.laneInfo, into: &buf)
+        FfiConverterSequenceString.write(value.exitNumbers, into: &buf)
     }
 }
 
@@ -5029,6 +5053,97 @@ extension SimulationError: Foundation.LocalizedError {
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
+ * Special conditions which alter the normal step advance logic,
+ */
+
+public enum SpecialAdvanceConditions {
+    
+    /**
+     * Allows navigation to advance to the next step as soon as the user
+     * comes within this distance (in meters) of the end of the current step.
+     *
+     * This results in *early* advance when the user is near the goal.
+     */
+    case advanceAtDistanceFromEnd(UInt16
+    )
+    /**
+     * Requires that the user be at least this far (distance in meters)
+     * from the current route step.
+     *
+     * This results in *delayed* advance,
+     * but is more robust to spurious / unwanted step changes in scenarios including
+     * self-intersecting routes (sudden jump to the next step)
+     * and pauses at intersections (advancing too soon before the maneuver is complete).
+     *
+     * Note that this could be theoretically less robust to things like U-turns,
+     * but we need a bit more real-world testing to confirm if it's an issue.
+     */
+    case minimumDistanceFromCurrentStepLine(UInt16
+    )
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
+    typealias SwiftType = SpecialAdvanceConditions
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SpecialAdvanceConditions {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .advanceAtDistanceFromEnd(try FfiConverterUInt16.read(from: &buf)
+        )
+        
+        case 2: return .minimumDistanceFromCurrentStepLine(try FfiConverterUInt16.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: SpecialAdvanceConditions, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .advanceAtDistanceFromEnd(v1):
+            writeInt(&buf, Int32(1))
+            FfiConverterUInt16.write(v1, into: &buf)
+            
+        
+        case let .minimumDistanceFromCurrentStepLine(v1):
+            writeInt(&buf, Int32(2))
+            FfiConverterUInt16.write(v1, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeSpecialAdvanceConditions_lift(_ buf: RustBuffer) throws -> SpecialAdvanceConditions {
+    return try FfiConverterTypeSpecialAdvanceConditions.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeSpecialAdvanceConditions_lower(_ value: SpecialAdvanceConditions) -> RustBuffer {
+    return FfiConverterTypeSpecialAdvanceConditions.lower(value)
+}
+
+
+
+extension SpecialAdvanceConditions: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
  * The step advance mode describes when the current maneuver has been successfully completed,
  * and we should advance to the next step.
  */
@@ -5056,17 +5171,18 @@ public enum StepAdvanceMode {
     )
     /**
      * Automatically advances when the user's distance to the *next* step's linestring  is less
-     * than the distance to the current step's linestring.
+     * than the distance to the current step's linestring, subject to certain conditions.
      */
     case relativeLineStringDistance(
         /**
          * The minimum required horizontal accuracy of the user location, in meters.
-         * Values larger than this cannot trigger a step advance.
+         * Values larger than this cannot ever trigger a step advance.
          */minimumHorizontalAccuracy: UInt16, 
         /**
-         * At this (optional) distance, navigation should advance to the next step regardless
-         * of which `LineString` appears closer.
-         */automaticAdvanceDistance: UInt16?
+         * Optional extra conditions which refine the step advance logic.
+         *
+         * See the enum variant documentation for details.
+         */specialAdvanceConditions: SpecialAdvanceConditions?
     )
 }
 
@@ -5086,7 +5202,7 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
         case 2: return .distanceToEndOfStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
         )
         
-        case 3: return .relativeLineStringDistance(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), automaticAdvanceDistance: try FfiConverterOptionUInt16.read(from: &buf)
+        case 3: return .relativeLineStringDistance(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), specialAdvanceConditions: try FfiConverterOptionTypeSpecialAdvanceConditions.read(from: &buf)
         )
         
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -5107,10 +5223,10 @@ public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             
         
-        case let .relativeLineStringDistance(minimumHorizontalAccuracy,automaticAdvanceDistance):
+        case let .relativeLineStringDistance(minimumHorizontalAccuracy,specialAdvanceConditions):
             writeInt(&buf, Int32(3))
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
-            FfiConverterOptionUInt16.write(automaticAdvanceDistance, into: &buf)
+            FfiConverterOptionTypeSpecialAdvanceConditions.write(specialAdvanceConditions, into: &buf)
             
         }
     }
@@ -5275,6 +5391,88 @@ public func FfiConverterTypeTripState_lower(_ value: TripState) -> RustBuffer {
 
 
 extension TripState: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Controls when a waypoint should be marked as complete.
+ *
+ * While a route may consist of thousands of points, waypoints are special.
+ * A simple trip will have only one waypoint: the final destination.
+ * A more complex trip may have several intermediate stops.
+ * Just as the navigation state keeps track of which steps remain in the route,
+ * it also tracks which waypoints are still remaining.
+ *
+ * Tracking waypoints enables Ferrostar to reroute users when they stray off the route line.
+ * The waypoint advance mode specifies how the framework decides
+ * that a waypoint has been visited (and is removed from the list).
+ *
+ * NOTE: Advancing to the next *step* and advancing to the next *waypoint*
+ * are separate processes.
+ * This will not normally cause any issues, but keep in mind that
+ * manually advancing to the next step does not *necessarily* imply
+ * that the waypoint will be marked as complete!
+ */
+
+public enum WaypointAdvanceMode {
+    
+    /**
+     * Advance when the waypoint is within a certain range of meters from the user's location.
+     */
+    case waypointWithinRange(Double
+    )
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeWaypointAdvanceMode: FfiConverterRustBuffer {
+    typealias SwiftType = WaypointAdvanceMode
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> WaypointAdvanceMode {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .waypointWithinRange(try FfiConverterDouble.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: WaypointAdvanceMode, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .waypointWithinRange(v1):
+            writeInt(&buf, Int32(1))
+            FfiConverterDouble.write(v1, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeWaypointAdvanceMode_lift(_ buf: RustBuffer) throws -> WaypointAdvanceMode {
+    return try FfiConverterTypeWaypointAdvanceMode.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeWaypointAdvanceMode_lower(_ value: WaypointAdvanceMode) -> RustBuffer {
+    return FfiConverterTypeWaypointAdvanceMode.lower(value)
+}
+
+
+
+extension WaypointAdvanceMode: Equatable, Hashable {}
 
 
 
@@ -5708,6 +5906,30 @@ fileprivate struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeManeuverType.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
+    typealias SwiftType = SpecialAdvanceConditions?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeSpecialAdvanceConditions.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeSpecialAdvanceConditions.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -6215,6 +6437,22 @@ public func createRouteFromOsrm(routeData: Data, waypointData: Data, polylinePre
 })
 }
 /**
+ * Creates a [`Route`] from OSRM route data and ferrostar waypoints.
+ *
+ * This uses the same logic as the [`OsrmResponseParser`] and is designed to be fairly flexible,
+ * supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
+ * which contain richer information like banners and voice instructions for navigation.
+ */
+public func createRouteFromOsrmRoute(routeData: Data, waypoints: [Waypoint], polylinePrecision: UInt32)throws  -> Route {
+    return try  FfiConverterTypeRoute.lift(try rustCallWithError(FfiConverterTypeParsingError.lift) {
+    uniffi_ferrostar_fn_func_create_route_from_osrm_route(
+        FfiConverterData.lower(routeData),
+        FfiConverterSequenceTypeWaypoint.lower(waypoints),
+        FfiConverterUInt32.lower(polylinePrecision),$0
+    )
+})
+}
+/**
  * Creates a [`RouteRequestGenerator`]
  * which generates requests to an arbitrary Valhalla server (using the OSRM response format).
  *
@@ -6311,6 +6549,9 @@ private var initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_route_from_osrm() != 42270) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_create_route_from_osrm_route() != 43326) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 16275) {

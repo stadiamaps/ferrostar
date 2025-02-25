@@ -16,7 +16,7 @@ use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
 };
-use models::{NavigationControllerConfig, StepAdvanceStatus, TripState};
+use models::{NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode};
 use std::clone::Clone;
 
 #[cfg(feature = "wasm-bindgen")]
@@ -120,27 +120,6 @@ impl NavigationController {
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
 
-                        // Update remaining waypoints
-                        let should_advance_waypoint = if let Some(waypoint) =
-                            remaining_waypoints.first()
-                        {
-                            let current_location: Point = snapped_user_location.coordinates.into();
-                            let next_waypoint: Point = waypoint.coordinate.into();
-                            // TODO: This is just a hard-coded threshold for the time being.
-                            // More sophisticated behavior will take some time and use cases, so punting on this for now.
-                            Haversine::distance(current_location, next_waypoint) < 100.0
-                        } else {
-                            false
-                        };
-
-                        let remaining_waypoints = if should_advance_waypoint {
-                            let mut remaining_waypoints = remaining_waypoints.clone();
-                            remaining_waypoints.remove(0);
-                            remaining_waypoints
-                        } else {
-                            remaining_waypoints.clone()
-                        };
-
                         let progress = calculate_trip_progress(
                             &(*snapped_user_location).into(),
                             &linestring,
@@ -160,7 +139,7 @@ impl NavigationController {
                             current_step_geometry_index: *current_step_geometry_index,
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
-                            remaining_waypoints,
+                            remaining_waypoints: remaining_waypoints.clone(),
                             progress,
                             // NOTE: We *can't* run deviation calculations in this method,
                             // as it requires a non-snapped user location.
@@ -215,6 +194,16 @@ impl NavigationController {
                     &current_step_linestring,
                     remaining_steps,
                 );
+
+                // Trim the remaining waypoints if needed.
+                let remaining_waypoints = if self.should_advance_waypoint(state) {
+                    let mut remaining_waypoints = remaining_waypoints.clone();
+                    remaining_waypoints.remove(0);
+                    remaining_waypoints
+                } else {
+                    remaining_waypoints.clone()
+                };
+
                 let intermediate_state = TripState::Navigating {
                     current_step_geometry_index,
                     snapped_user_location,
@@ -336,6 +325,29 @@ impl NavigationController {
 
         (current_step_geometry_index, snapped_with_course)
     }
+
+    /// Determines if the navigation controller should advance to the next waypoint.
+    fn should_advance_waypoint(&self, state: &TripState) -> bool {
+        match state {
+            TripState::Navigating {
+                snapped_user_location,
+                ref remaining_waypoints,
+                ..
+            } => {
+                // Update remaining waypoints
+                remaining_waypoints.first().is_some_and(|waypoint| {
+                    let current_location: Point = snapped_user_location.coordinates.into();
+                    let next_waypoint: Point = waypoint.coordinate.into();
+                    match self.config.waypoint_advance {
+                        WaypointAdvanceMode::WaypointWithinRange(range) => {
+                            Haversine::distance(current_location, next_waypoint) < range
+                        }
+                    }
+                })
+            }
+            _ => false,
+        }
+    }
 }
 
 /// JavaScript wrapper for `NavigationController`.
@@ -388,16 +400,21 @@ impl JsNavigationController {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::deviation_detection::RouteDeviationTracking;
-    use crate::navigation_controller::models::{CourseFiltering, StepAdvanceMode};
-    use crate::navigation_controller::test_helpers::get_extended_route;
+    use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
+    use crate::navigation_controller::models::{
+        CourseFiltering, SpecialAdvanceConditions, StepAdvanceMode,
+    };
+    use crate::navigation_controller::test_helpers::{
+        get_extended_route, get_self_intersecting_route,
+    };
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
     };
 
-    #[test]
-    fn complex_route_snapshot_test() {
-        let route = get_extended_route();
+    fn test_full_route_state_snapshot(
+        route: Route,
+        step_advance: StepAdvanceMode,
+    ) -> Vec<TripState> {
         let mut simulation_state =
             location_simulation_from_route(&route, Some(10.0), LocationBias::None)
                 .expect("Unable to create simulation");
@@ -405,13 +422,17 @@ mod tests {
         let controller = NavigationController::new(
             route,
             NavigationControllerConfig {
-                // NOTE: We will use an exact location to trigger the update;
-                // this is not testing the thresholds.
-                step_advance: StepAdvanceMode::DistanceToEndOfStep {
-                    distance: 0,
+                waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
+                // NOTE: We will use a few varieties here via parameterized testing,
+                // but the point of this test is *not* testing the thresholds.
+                step_advance,
+                // Careful setup: if the user is ever off the route
+                // (ex: because of an improper automatic step advance),
+                // we want to know about it.
+                route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
                     minimum_horizontal_accuracy: 0,
+                    max_acceptable_deviation: 0.0,
                 },
-                route_deviation_tracking: RouteDeviationTracking::None,
                 snapped_location_course_filtering: CourseFiltering::Raw,
             },
         );
@@ -422,33 +443,99 @@ mod tests {
             let new_simulation_state = advance_location_simulation(&simulation_state);
             let new_state =
                 controller.update_user_location(new_simulation_state.current_location, &state);
-            if new_simulation_state == simulation_state {
-                break;
-            }
 
             match new_state {
                 TripState::Idle => {}
                 TripState::Navigating {
                     current_step_geometry_index,
                     ref remaining_steps,
+                    ref deviation,
                     ..
                 } => {
                     if let Some(index) = current_step_geometry_index {
                         let geom_length = remaining_steps[0].geometry.len() as u64;
+                        // Regression test that the geometry index is valid
                         assert!(
                             index < geom_length,
                             "index = {index}, geom_length = {geom_length}"
                         );
                     }
+
+                    // Regression test that we are never marked as off the route.
+                    // We used to encounter this with relative step advance on self-intersecting
+                    // routes, for example.
+                    assert_eq!(deviation, &RouteDeviation::NoDeviation);
                 }
-                TripState::Complete => {}
+                TripState::Complete => {
+                    states.push(new_state);
+                    break;
+                }
             }
 
             simulation_state = new_simulation_state;
-            state = new_state;
-            states.push(state.clone());
+            state = new_state.clone();
+            states.push(new_state);
         }
 
-        insta::assert_yaml_snapshot!(states);
+        states
+    }
+
+    // Full simulations for several routes with different settings
+
+    #[test]
+    fn test_extended_exact_distance() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_extended_route(),
+            StepAdvanceMode::DistanceToEndOfStep {
+                distance: 0,
+                minimum_horizontal_accuracy: 0,
+            }
+        ));
+    }
+
+    #[test]
+    fn test_extended_relative_linestring() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_extended_route(),
+            StepAdvanceMode::RelativeLineStringDistance {
+                minimum_horizontal_accuracy: 0,
+                special_advance_conditions: None,
+            }
+        ));
+    }
+
+    #[test]
+    fn test_self_intersecting_exact_distance() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_self_intersecting_route(),
+            StepAdvanceMode::DistanceToEndOfStep {
+                distance: 0,
+                minimum_horizontal_accuracy: 0,
+            }
+        ));
+    }
+
+    #[test]
+    fn test_self_intersecting_relative_linestring() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_self_intersecting_route(),
+            StepAdvanceMode::RelativeLineStringDistance {
+                minimum_horizontal_accuracy: 0,
+                special_advance_conditions: None,
+            }
+        ));
+    }
+
+    #[test]
+    fn test_self_intersecting_relative_linestring_min_line_distance() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_self_intersecting_route(),
+            StepAdvanceMode::RelativeLineStringDistance {
+                minimum_horizontal_accuracy: 0,
+                special_advance_conditions: Some(
+                    SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
+                ),
+            }
+        ));
     }
 }

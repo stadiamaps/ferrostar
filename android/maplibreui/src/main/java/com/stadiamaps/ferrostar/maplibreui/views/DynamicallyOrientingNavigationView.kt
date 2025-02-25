@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -36,6 +35,7 @@ import com.stadiamaps.ferrostar.core.boundingBox
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
+import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
 
@@ -53,6 +53,8 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgres
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
  *   route line.
+ * @param routeOverlayBuilder The route overlay builder to use for rendering the route line on the
+ *   MapView.
  * @param theme The navigation UI theme to use for the view.
  * @param config The configuration for the navigation view.
  * @param views The navigation view component builder to use for the view.
@@ -74,6 +76,7 @@ fun DynamicallyOrientingNavigationView(
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
+    routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     onTapExit: (() -> Unit)? = null,
     mapContent: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
@@ -99,6 +102,7 @@ fun DynamicallyOrientingNavigationView(
         mapControls = mapControls,
         locationRequestProperties = locationRequestProperties,
         snapUserLocationToRoute = snapUserLocationToRoute,
+        routeOverlayBuilder = routeOverlayBuilder,
         content = mapContent)
 
     if (uiState.isNavigating()) {

@@ -12,7 +12,7 @@ class DefaultAnnotationPublisher<T>(
 
   override fun map(state: NavigationState): AnnotationWrapper<T> {
     val annotations = decodeAnnotations(state)
-    return AnnotationWrapper(annotations, speedLimitMapper(annotations), state)
+    return AnnotationWrapper(annotations, speedLimitMapper(annotations))
   }
 
   private fun decodeAnnotations(state: NavigationState): T? {

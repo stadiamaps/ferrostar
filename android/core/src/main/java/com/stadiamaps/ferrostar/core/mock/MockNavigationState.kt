@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import com.stadiamaps.ferrostar.core.NavigationState
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
+import com.stadiamaps.ferrostar.core.annotation.AnnotationWrapper
+import com.stadiamaps.ferrostar.core.annotation.Speed as SpeedLimit
+import com.stadiamaps.ferrostar.core.annotation.SpeedUnit
+import com.stadiamaps.ferrostar.core.annotation.valhalla.ValhallaOSRMExtendedAnnotation
 import java.time.Instant
 import kotlinx.coroutines.flow.StateFlow
 import uniffi.ferrostar.CourseOverGround
@@ -26,6 +30,16 @@ fun UserLocation.Companion.pedestrianExample(): UserLocation {
       courseOverGround = CourseOverGround(90u, 1u),
       timestamp = Instant.now(),
       speed = Speed(1.0, 1.0))
+}
+
+fun AnnotationWrapper.Companion.pedestrianExample():
+    AnnotationWrapper<ValhallaOSRMExtendedAnnotation> {
+  return AnnotationWrapper(
+      ValhallaOSRMExtendedAnnotation(
+          speedLimit = SpeedLimit.Value(40.0, SpeedUnit.KILOMETERS_PER_HOUR),
+          speed = 1.0,
+          distance = 1.0,
+          duration = 1.0))
 }
 
 /** Mocked example for UI testing. */
@@ -51,7 +65,8 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
                               maneuverType = ManeuverType.TURN,
                               maneuverModifier = ManeuverModifier.RIGHT,
                               roundaboutExitDegrees = null,
-                              laneInfo = null),
+                              laneInfo = null,
+                              exitNumbers = emptyList()),
                       secondaryContent = null,
                       subContent = null,
                       triggerDistanceBeforeManeuver = 0.0,
@@ -67,7 +82,8 @@ fun NavigationUiState.Companion.pedestrianExample(): NavigationUiState =
         NavigationState.pedestrianExample(),
         false,
         UserLocation.pedestrianExample(),
-        UserLocation.pedestrianExample())
+        UserLocation.pedestrianExample(),
+        AnnotationWrapper.pedestrianExample())
 
 class MockNavigationViewModel(override val navigationUiState: StateFlow<NavigationUiState>) :
     ViewModel(), NavigationViewModel {

@@ -56,7 +56,7 @@ pub fn create_ferrostar_logger() {
 
 #[cfg(feature = "uniffi")]
 mod uniffi_deps {
-    pub use crate::models::Route;
+    pub use crate::models::{Route, Waypoint};
     pub use crate::routing_adapters::{
         error::{InstantiationError, ParsingError},
         osrm::{
@@ -72,6 +72,7 @@ mod uniffi_deps {
     pub use uuid::Uuid;
 }
 #[cfg(feature = "uniffi")]
+#[allow(clippy::wildcard_imports)]
 use uniffi_deps::*;
 
 #[cfg(feature = "uniffi")]
@@ -167,4 +168,20 @@ fn create_route_from_osrm(
     let route: OsrmRoute = serde_json::from_slice(route_data)?;
     let waypoints: Vec<OsrmWaypoint> = serde_json::from_slice(waypoint_data)?;
     Route::from_osrm(&route, &waypoints, polyline_precision)
+}
+
+/// Creates a [`Route`] from OSRM route data and ferrostar waypoints.
+///
+/// This uses the same logic as the [`OsrmResponseParser`] and is designed to be fairly flexible,
+/// supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
+/// which contain richer information like banners and voice instructions for navigation.
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+fn create_route_from_osrm_route(
+    route_data: &[u8],
+    waypoints: &[Waypoint],
+    polyline_precision: u32,
+) -> Result<Route, ParsingError> {
+    let route: OsrmRoute = serde_json::from_slice(route_data)?;
+    Route::from_osrm_with_standard_waypoints(&route, waypoints, polyline_precision)
 }

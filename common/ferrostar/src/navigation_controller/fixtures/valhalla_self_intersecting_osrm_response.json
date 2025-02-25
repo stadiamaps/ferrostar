@@ -1,0 +1,530 @@
+{
+  "routes": [
+    {
+      "weight_name": "auto",
+      "weight": 68.335,
+      "duration": 48.232,
+      "distance": 1072.913,
+      "legs": [
+        {
+          "via_waypoints": [],
+          "admins": [
+            {
+              "iso_3166_1_alpha3": "USA",
+              "iso_3166_1": "US"
+            }
+          ],
+          "weight": 68.335,
+          "duration": 48.232,
+          "steps": [
+            {
+              "intersections": [
+                {
+                  "classes": [
+                    "motorway"
+                  ],
+                  "entry": [
+                    true
+                  ],
+                  "bearings": [
+                    225
+                  ],
+                  "duration": 3.667,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 3.85,
+                  "geometry_index": 0,
+                  "location": [
+                    -122.584167,
+                    45.377106
+                  ]
+                },
+                {
+                  "bearings": [
+                    45,
+                    225
+                  ],
+                  "entry": [
+                    false,
+                    true
+                  ],
+                  "classes": [
+                    "motorway"
+                  ],
+                  "in": 0,
+                  "admin_index": 0,
+                  "out": 1,
+                  "geometry_index": 2,
+                  "location": [
+                    -122.584983,
+                    45.376527
+                  ]
+                }
+              ],
+              "maneuver": {
+                "instruction": "Drive southwest on I 205 South/OR 213 South.",
+                "type": "depart",
+                "bearing_after": 225,
+                "bearing_before": 0,
+                "location": [
+                  -122.584167,
+                  45.377106
+                ]
+              },
+              "name": "",
+              "duration": 10.705,
+              "distance": 264.647,
+              "driving_side": "right",
+              "weight": 11.24,
+              "mode": "driving",
+              "ref": "I 205 South; OR 213 South",
+              "geometry": "cdrpuAle}xhFxM`TjT|\\dc@tq@p`@dn@"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [
+                    false,
+                    true,
+                    true
+                  ],
+                  "classes": [
+                    "motorway"
+                  ],
+                  "in": 0,
+                  "bearings": [
+                    45,
+                    225,
+                    235
+                  ],
+                  "duration": 4.382,
+                  "lanes": [
+                    {
+                      "indications": [
+                        "straight"
+                      ],
+                      "valid": false,
+                      "active": false
+                    },
+                    {
+                      "indications": [
+                        "straight"
+                      ],
+                      "valid": false,
+                      "active": false
+                    },
+                    {
+                      "indications": [
+                        "straight",
+                        "slight right"
+                      ],
+                      "valid_indication": "slight right",
+                      "valid": true,
+                      "active": false
+                    },
+                    {
+                      "indications": [
+                        "slight right"
+                      ],
+                      "valid_indication": "slight right",
+                      "valid": true,
+                      "active": true
+                    }
+                  ],
+                  "turn_duration": 0.014,
+                  "admin_index": 0,
+                  "out": 2,
+                  "weight": 4.587,
+                  "geometry_index": 4,
+                  "location": [
+                    -122.586549,
+                    45.375411
+                  ]
+                },
+                {
+                  "entry": [
+                    false,
+                    true
+                  ],
+                  "classes": [
+                    "motorway"
+                  ],
+                  "in": 0,
+                  "bearings": [
+                    55,
+                    252
+                  ],
+                  "duration": 4.004,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 4.205,
+                  "geometry_index": 5,
+                  "location": [
+                    -122.587677,
+                    45.374846
+                  ]
+                },
+                {
+                  "entry": [
+                    false,
+                    true
+                  ],
+                  "classes": [
+                    "motorway"
+                  ],
+                  "in": 0,
+                  "bearings": [
+                    156,
+                    347
+                  ],
+                  "duration": 0.9,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 0.968,
+                  "geometry_index": 18,
+                  "location": [
+                    -122.588661,
+                    45.375143
+                  ]
+                },
+                {
+                  "bearings": [
+                    28,
+                    167,
+                    201
+                  ],
+                  "entry": [
+                    true,
+                    false,
+                    true
+                  ],
+                  "in": 1,
+                  "turn_duration": 0.1,
+                  "admin_index": 0,
+                  "out": 0,
+                  "geometry_index": 19,
+                  "location": [
+                    -122.588722,
+                    45.375324
+                  ]
+                }
+              ],
+              "exits": "10",
+              "destinations": "OR 213 South: Oregon City, Molalla",
+              "maneuver": {
+                "modifier": "slight right",
+                "instruction": "Take exit 10 onto OR 213 South toward Oregon City/Molalla.",
+                "type": "off ramp",
+                "bearing_after": 235,
+                "bearing_before": 225,
+                "location": [
+                  -122.586549,
+                  45.375411
+                ]
+              },
+              "name": "",
+              "duration": 12.258,
+              "distance": 295,
+              "driving_side": "right",
+              "weight": 12.846,
+              "mode": "driving",
+              "ref": "OR 213 South",
+              "geometry": "eznpuAhzayhFhb@neAjAlFt@fGLfEKvEQpCm@hDiArD}@dCmAxBuBpB{ApAeBz@gCh@iJxBuD{AgCuBwCaEeBoD}AsF{AgK"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [
+                    true,
+                    true,
+                    false
+                  ],
+                  "in": 2,
+                  "bearings": [
+                    75,
+                    115,
+                    248
+                  ],
+                  "duration": 0.974,
+                  "turn_weight": 3.2,
+                  "lanes": [
+                    {
+                      "indications": [
+                        "straight",
+                        "slight right"
+                      ],
+                      "valid_indication": "slight right",
+                      "valid": true,
+                      "active": true
+                    },
+                    {
+                      "indications": [
+                        "slight right"
+                      ],
+                      "valid_indication": "slight right",
+                      "valid": true,
+                      "active": true
+                    }
+                  ],
+                  "turn_duration": 0.159,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 4.075,
+                  "geometry_index": 25,
+                  "location": [
+                    -122.588114,
+                    45.375703
+                  ]
+                },
+                {
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "in": 1,
+                  "bearings": [
+                    119,
+                    295
+                  ],
+                  "duration": 1.457,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 1.53,
+                  "geometry_index": 26,
+                  "location": [
+                    -122.58789,
+                    45.375631
+                  ]
+                },
+                {
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "in": 1,
+                  "bearings": [
+                    142,
+                    306
+                  ],
+                  "duration": 0.89,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 0.934,
+                  "geometry_index": 29,
+                  "location": [
+                    -122.587524,
+                    45.375468
+                  ]
+                },
+                {
+                  "entry": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "in": 1,
+                  "bearings": [
+                    164,
+                    322,
+                    345
+                  ],
+                  "duration": 4.728,
+                  "turn_weight": 12.6,
+                  "turn_duration": 0.028,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 17.535,
+                  "geometry_index": 30,
+                  "location": [
+                    -122.587349,
+                    45.37531
+                  ]
+                },
+                {
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "in": 1,
+                  "bearings": [
+                    164,
+                    344
+                  ],
+                  "duration": 4.9,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 5.145,
+                  "geometry_index": 32,
+                  "location": [
+                    -122.587017,
+                    45.374495
+                  ]
+                },
+                {
+                  "entry": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "in": 2,
+                  "bearings": [
+                    165,
+                    328,
+                    345
+                  ],
+                  "duration": 0.457,
+                  "turn_weight": 2.1,
+                  "turn_duration": 0.007,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 2.572,
+                  "geometry_index": 34,
+                  "location": [
+                    -122.586686,
+                    45.373646
+                  ]
+                },
+                {
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "in": 1,
+                  "bearings": [
+                    164,
+                    345
+                  ],
+                  "duration": 6.4,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 6.72,
+                  "geometry_index": 35,
+                  "location": [
+                    -122.586658,
+                    45.373572
+                  ]
+                },
+                {
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "in": 1,
+                  "bearings": [
+                    166,
+                    347
+                  ],
+                  "duration": 1.75,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 1.838,
+                  "geometry_index": 38,
+                  "location": [
+                    -122.586234,
+                    45.372463
+                  ]
+                },
+                {
+                  "bearings": [
+                    166,
+                    346
+                  ],
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "in": 1,
+                  "admin_index": 0,
+                  "out": 0,
+                  "geometry_index": 39,
+                  "location": [
+                    -122.586125,
+                    45.372156
+                  ]
+                }
+              ],
+              "maneuver": {
+                "modifier": "slight right",
+                "instruction": "Keep right to take OR 213 South/Cascade Highway.",
+                "type": "fork",
+                "bearing_after": 115,
+                "bearing_before": 68,
+                "location": [
+                  -122.588114,
+                  45.375703
+                ]
+              },
+              "name": "Cascade Highway",
+              "duration": 25.269,
+              "distance": 513.266,
+              "driving_side": "right",
+              "weight": 44.249,
+              "mode": "driving",
+              "ref": "OR 213 South",
+              "geometry": "mlopuAb|dyhFnC_MlBaJjCiGjAoBzH}IdRuFv^aLjUkHt]iJrCw@rVoHdTuGnWiGdRyEjRyEbTeF"
+            },
+            {
+              "intersections": [
+                {
+                  "bearings": [
+                    347
+                  ],
+                  "entry": [
+                    true
+                  ],
+                  "in": 0,
+                  "admin_index": 0,
+                  "geometry_index": 41,
+                  "location": [
+                    -122.585901,
+                    45.371508
+                  ]
+                }
+              ],
+              "maneuver": {
+                "instruction": "You have arrived at your destination.",
+                "type": "arrive",
+                "bearing_after": 0,
+                "bearing_before": 167,
+                "location": [
+                  -122.585901,
+                  45.371508
+                ]
+              },
+              "name": "Cascade Highway",
+              "duration": 0,
+              "distance": 0,
+              "driving_side": "right",
+              "weight": 0,
+              "mode": "driving",
+              "ref": "OR 213 South",
+              "geometry": "gfgpuAxq`yhF??"
+            }
+          ],
+          "distance": 1072.913,
+          "summary": "I 205 South, OR 213 South"
+        }
+      ],
+      "geometry": "cdrpuAle}xhFxM`TjT|\\dc@tq@p`@dn@hb@neAjAlFt@fGLfEKvEQpCm@hDiArD}@dCmAxBuBpB{ApAeBz@gCh@iJxBuD{AgCuBwCaEeBoD}AsF{AgKnC_MlBaJjCiGjAoBzH}IdRuFv^aLjUkHt]iJrCw@rVoHdTuGnWiGdRyEjRyEbTeF"
+    }
+  ],
+  "waypoints": [
+    {
+      "distance": 5.288,
+      "name": "I 205 South",
+      "location": [
+        -122.584167,
+        45.377106
+      ]
+    },
+    {
+      "distance": 1.31,
+      "name": "OR 213 South",
+      "location": [
+        -122.585901,
+        45.371508
+      ]
+    }
+  ],
+  "code": "Ok"
+}

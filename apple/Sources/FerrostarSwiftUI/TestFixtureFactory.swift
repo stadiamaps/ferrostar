@@ -30,7 +30,8 @@ struct VisualInstructionContentFactory: TestFixtureFactory {
             maneuverType: .turn,
             maneuverModifier: .left,
             roundaboutExitDegrees: nil,
-            laneInfo: nil
+            laneInfo: nil,
+            exitNumbers: []
         )
     }
 }
