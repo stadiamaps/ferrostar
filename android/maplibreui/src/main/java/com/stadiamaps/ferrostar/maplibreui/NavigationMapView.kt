@@ -29,8 +29,10 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  * @param camera The bi-directional camera state to use for the map. Note: this is a bit
  *   non-standard as far as normal compose patterns go, but we independently came up with this
  *   approach and later verified that Google Maps does the same thing in their compose SDK.
- * @param navigationCamera The default camera settings to use when navigation starts. This will be
- *   re-applied to the camera any time that navigation is started.
+ * @param navigationCamera The default camera state to use for navigation. This is a *template*
+ *   value, which will be applied on initial display and when re-centering. The default value is
+ *   sufficient for most applications. If you set a custom value (e.g.) to change the pitch), you
+ *   must ensure that it is some variation on [MapViewCamera.TrackingUserLocationWithBearing].
  * @param uiState The navigation UI state.
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
