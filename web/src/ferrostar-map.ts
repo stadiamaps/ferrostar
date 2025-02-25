@@ -120,13 +120,14 @@ export class FerrostarMap extends LitElement {
       [hidden] {
         display: none !important;
       }
-      
+
       #container {
         height: 100%;
         width: 100%;
       }
-      
-      #map, ::slotted(:first-child) {
+
+      #map,
+      ::slotted(:first-child) {
         height: 100%;
         width: 100%;
         display: block;
@@ -219,9 +220,10 @@ export class FerrostarMap extends LitElement {
 
   firstUpdated() {
     // Skip initialization of the map if the user has supplied one already via a slot!
-    const slotChildren = this.shadowRoot!.querySelector('slot')?.assignedElements() || [];
+    const slotChildren =
+      this.shadowRoot!.querySelector("slot")?.assignedElements() || [];
     if (slotChildren.length == 0 && this.map === null) {
-      this.initMap()
+      this.initMap();
     }
   }
 
@@ -235,8 +237,8 @@ export class FerrostarMap extends LitElement {
     this.map = new maplibregl.Map({
       container: this.shadowRoot!.getElementById("map")!,
       style: this.styleUrl
-          ? this.styleUrl
-          : "https://demotiles.maplibre.org/style.json",
+        ? this.styleUrl
+        : "https://demotiles.maplibre.org/style.json",
       center: this.center ?? [0, 0],
       pitch: this.pitch,
       bearing: 0,
