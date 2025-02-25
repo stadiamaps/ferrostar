@@ -7,7 +7,6 @@ use alloc::vec::Vec;
 use geo::LineString;
 #[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
-use std::cell::RefCell;
 use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
