@@ -51,9 +51,12 @@ import kotlinx.coroutines.flow.asStateFlow
  * @param modifier The modifier to apply to the view.
  * @param styleUrl The MapLibre style URL to use for the map.
  * @param camera The bi-directional camera state to use for the map.
- * @param navigationCamera The default camera state to use for navigation. This is applied on launch
- *   and when centering.
- * @param viewModel The navigation view model provided by Ferrostar Core.
+ * @param navigationCamera The default camera state to use for navigation. This is a *template*
+ *   value, which will be applied on initial display and when re-centering. The default value is
+ *   sufficient for most applications. If you set a custom value (e.g.) to change the pitch), you
+ *   must ensure that it is some variation on [MapViewCamera.TrackingUserLocationWithBearing].
+ * @param viewModel The navigation view model (see
+ *   [com.stadiamaps.ferrostar.core.DefaultNavigationViewModel] for a common implementation]).
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the

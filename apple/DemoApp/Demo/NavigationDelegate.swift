@@ -24,6 +24,7 @@ class NavigationDelegate: FerrostarCoreDelegate {
                 // Most implementations will probably reuse existing configs (the default implementation does),
                 // but we provide devs with flexibility here.
                 let config = SwiftNavigationControllerConfig(
+                    waypointAdvance: .waypointWithinRange(100.0),
                     stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32,
                                                              specialAdvanceConditions: .minimumDistanceFromCurrentStepLine(
                                                                  10

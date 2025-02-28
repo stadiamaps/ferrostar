@@ -42,11 +42,13 @@ public enum SwiftRouteDeviationTracking {
 
 /// A Swift wrapper around `UniFFI.NavigationControllerConfig`.
 public struct SwiftNavigationControllerConfig {
-    public init(stepAdvance: StepAdvanceMode,
+    public init(waypointAdvance: WaypointAdvanceMode,
+                stepAdvance: StepAdvanceMode,
                 routeDeviationTracking: SwiftRouteDeviationTracking,
                 snappedLocationCourseFiltering: CourseFiltering)
     {
         ffiValue = FerrostarCoreFFI.NavigationControllerConfig(
+            waypointAdvance: waypointAdvance,
             stepAdvance: stepAdvance,
             routeDeviationTracking: routeDeviationTracking.ffiValue,
             snappedLocationCourseFiltering: snappedLocationCourseFiltering

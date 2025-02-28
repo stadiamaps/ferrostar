@@ -231,6 +231,7 @@ private val core =
           foregroundServiceManager = foregroundServiceManager,
           navigationControllerConfig =
               NavigationControllerConfig(
+                  WaypointAdvanceMode.WaypointWithinRange(100.0),
                   StepAdvanceMode.RelativeLineStringDistance(
                       minimumHorizontalAccuracy = 25U,
                       specialAdvanceConditions =

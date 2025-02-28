@@ -54,6 +54,12 @@ impl RouteResponseParser for OsrmResponseParser {
 }
 
 impl Route {
+    /// Create a route from an OSRM route and OSRM waypoints.
+    ///
+    /// # Arguments
+    /// * `route` - The OSRM route.
+    /// * `waypoints` - The OSRM waypoints.
+    /// * `polyline_precision` - The precision of the polyline.
     pub fn from_osrm(
         route: &OsrmRoute,
         waypoints: &[OsrmWaypoint],
@@ -81,6 +87,20 @@ impl Route {
             })
             .collect();
 
+        Self::from_osrm_with_standard_waypoints(route, &waypoints, polyline_precision)
+    }
+
+    /// Create a route from an OSRM route and Ferrostar waypoints.
+    ///
+    /// # Arguments
+    /// * `route` - The OSRM route.
+    /// * `waypoints` - The Ferrostar waypoints.
+    /// * `polyline_precision` - The precision of the polyline.
+    pub fn from_osrm_with_standard_waypoints(
+        route: &OsrmRoute,
+        waypoints: &[Waypoint],
+        polyline_precision: u32,
+    ) -> Result<Self, ParsingError> {
         let linestring = decode_polyline(&route.geometry, polyline_precision).map_err(|error| {
             ParsingError::InvalidGeometry {
                 error: error.to_string(),
@@ -180,7 +200,7 @@ impl Route {
                 geometry,
                 bbox: bbox.into(),
                 distance: route.distance,
-                waypoints: waypoints.clone(),
+                waypoints: waypoints.into(),
                 steps,
             })
         } else {
