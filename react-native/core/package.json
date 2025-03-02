@@ -1,24 +1,17 @@
 {
-  "name": "ferrostar-rn-core",
+  "name": "@stadiamaps/ferrostar-core-react-native",
   "version": "0.27.0",
   "description": "Ferrostar React Native Core",
-  "source": "./src/index.ts",
-  "main": "./lib/commonjs/index.js",
-  "module": "./lib/module/index.js",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./lib/typescript/commonjs/core/src/index.d.ts",
-        "default": "./lib/module/index.js"
-      },
-      "require": {
-        "types": "./lib/typescript/commonjs/core/src/index.d.ts",
-        "default": "./lib/commonjs/index.js"
-      }
-    }
-  },
+  "main": "./lib/index.js",
+  "types": "./src/index.ts",
+  "react-native": "./src/index.ts",
+  "files": [
+    "lib",
+    "src"
+  ],
   "scripts": {
-    "prepare": "bob build"
+    "prepare": "tsup --clean",
+    "clean": "del-cli lib"
   },
   "keywords": [
     "react-native",
@@ -41,37 +34,30 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@react-native-community/cli": "15.0.1",
-    "react-native-builder-bob": "^0.32.0",
+    "@react-native-community/geolocation": "^3.4.0",
+    "@types/react": "^18.3.1",
+    "del-cli": "^5.1.0",
+    "tsup": "^8.4.0",
     "typescript": "^5.2.2"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@react-native-community/geolocation": "^3.4.0",
-    "ferrostar-rn-uniffi": "*"
+    "react": "*",
+    "react-native": "*"
   },
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      [
-        "commonjs",
-        {
-          "esm": true
-        }
-      ],
-      [
-        "module",
-        {
-          "esm": true
-        }
-      ],
-      [
-        "typescript",
-        {
-          "project": "tsconfig.json",
-          "esm": true
-        }
-      ]
+  "dependencies": {
+    "@stadiamaps/ferrostar-uniffi-react-native": "*"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "outDir": "lib",
+    "sourcemap": true,
+    "dts": true,
+    "external": [
+      "react",
+      "react-native"
     ]
   },
   "packageManager": "yarn@3.6.1"

@@ -5,7 +5,7 @@ import {
   TripState,
   UserLocation,
   VisualInstruction,
-} from "ferrostar-rn-uniffi";
+} from '@stadiamaps/ferrostar-uniffi-react-native';
 
 export function getNanoTime(): number {
   const hrTime = process.hrtime();
@@ -14,7 +14,7 @@ export function getNanoTime(): number {
 
 export function ab2json(ab: ArrayBuffer): object {
   return JSON.parse(
-    String.fromCharCode.apply(null, Array.from(new Uint8Array(ab))),
+    String.fromCharCode.apply(null, Array.from(new Uint8Array(ab)))
   );
 }
 
@@ -27,7 +27,7 @@ export function currentRoadName(tripState: TripState): string | undefined {
 }
 
 export function visualInstruction(
-  tripState: TripState,
+  tripState: TripState
 ): VisualInstruction | undefined {
   if (TripState.Navigating.instanceOf(tripState)) {
     return tripState.inner.visualInstruction;
@@ -62,7 +62,7 @@ export function remainingSteps(tripState: TripState): RouteStep[] | undefined {
 
 export function snappedUserLocation(
   tripState: TripState,
-  fallback?: UserLocation,
+  fallback?: UserLocation
 ): UserLocation | undefined {
   if (TripState.Navigating.instanceOf(tripState)) {
     return tripState.inner.snappedUserLocation;

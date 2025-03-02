@@ -3,19 +3,22 @@ import type {
   RouteAdapterInterface,
   Waypoint,
   UserLocation,
-} from "ferrostar-rn-uniffi";
-import { RouteAdapter, RouteRequest } from "ferrostar-rn-uniffi";
-import { ab2json } from "./_utils";
+} from '@stadiamaps/ferrostar-uniffi-react-native';
+import {
+  RouteAdapter,
+  RouteRequest,
+} from '@stadiamaps/ferrostar-uniffi-react-native';
+import { ab2json } from './_utils';
 import {
   InvalidStatusCodeException,
   NoRequestBodyException,
   NoResponseBodyException,
-} from "./FerrostarCoreException";
+} from './FerrostarCoreException';
 
 export type RouteProviderInterface = {
   getRoute(
     userLocation: UserLocation,
-    waypoints: Array<Waypoint>,
+    waypoints: Array<Waypoint>
   ): Promise<Array<Route>>;
 };
 
@@ -25,18 +28,18 @@ export class RouteProvider implements RouteProviderInterface {
   constructor(
     valhallaEndpointURL: string,
     profile: string,
-    options: Record<string, any> = {},
+    options: Record<string, any> = {}
   ) {
     this.adapter = RouteAdapter.newValhallaHttp(
       valhallaEndpointURL,
       profile,
-      JSON.stringify(options),
+      JSON.stringify(options)
     );
   }
 
   async getRoute(
     userLocation: UserLocation,
-    waypoints: Array<Waypoint>,
+    waypoints: Array<Waypoint>
   ): Promise<Array<Route>> {
     const request = this.adapter.generateRequest(userLocation, waypoints);
     if (
@@ -50,7 +53,7 @@ export class RouteProvider implements RouteProviderInterface {
     const body = ab2json(inner.body);
 
     const response = await fetch(inner.url, {
-      method: "POST",
+      method: 'POST',
       ...inner.headers,
       body: JSON.stringify(body),
     });

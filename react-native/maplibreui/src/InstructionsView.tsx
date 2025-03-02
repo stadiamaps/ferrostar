@@ -1,6 +1,9 @@
-import { useMemo, useState } from "react";
-import type { RouteStep, VisualInstruction } from "ferrostar-rn-uniffi";
-import { LocalizedDistanceFormatter, type Formatter } from "./_utils";
+import { useMemo, useState } from 'react';
+import type {
+  RouteStep,
+  VisualInstruction,
+} from '@stadiamaps/ferrostar-uniffi-react-native';
+import { LocalizedDistanceFormatter, type Formatter } from './_utils';
 import {
   FlatList,
   Pressable,
@@ -8,8 +11,8 @@ import {
   Text,
   useWindowDimensions,
   View,
-} from "react-native";
-import ManeuverImage from "./maneuver/ManeuverImage";
+} from 'react-native';
+import ManeuverImage from './maneuver/ManeuverImage';
 
 export type InstructionViewProps = {
   instructions?: VisualInstruction;
@@ -60,7 +63,7 @@ const InstructionsView = ({
           style={defaultStyle.instructionButton}
           onPress={handleExpand}
         >
-          <View style={{ flex: 1, flexDirection: "row" }}>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
             <ManeuverImage content={instructions.primaryContent} />
             <View style={{ flex: 1 }}>
               <Text style={defaultStyle.distanceText}>
@@ -79,7 +82,7 @@ const InstructionsView = ({
           <FlatList
             style={{
               maxHeight: instructionListHeight,
-              backgroundColor: "#fff",
+              backgroundColor: '#fff',
               borderRadius: 10,
             }}
             data={upcomingInstructions}
@@ -91,7 +94,7 @@ const InstructionsView = ({
                   <View>
                     <Text style={defaultStyle.distanceText}>
                       {distanceFormatter.format(
-                        item.triggerDistanceBeforeManeuver,
+                        item.triggerDistanceBeforeManeuver
                       )}
                     </Text>
                     <Text
@@ -113,17 +116,17 @@ const InstructionsView = ({
 
 const defaultStyle = StyleSheet.create({
   container: {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   column: {
     flex: 1,
-    flexDirection: "column",
-    backgroundColor: "#fff",
+    flexDirection: 'column',
+    backgroundColor: '#fff',
     borderRadius: 10,
     marginTop: 10,
     marginRight: 10,
@@ -132,7 +135,7 @@ const defaultStyle = StyleSheet.create({
   },
   instructionList: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
     borderRadius: 10,
     marginTop: 10,
     marginRight: 10,
@@ -140,33 +143,33 @@ const defaultStyle = StyleSheet.create({
   },
   instructionButton: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
     padding: 10,
-    alignItems: "center",
+    alignItems: 'center',
   },
   instructionText: {
     flex: 1,
     fontSize: 18,
-    color: "#000",
+    color: '#000',
   },
   instructionListItem: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     margin: 10,
     paddingVertical: 10,
   },
   distanceText: {
     fontSize: 16,
-    color: "#000",
+    color: '#000',
   },
   pill: {
     flex: 1,
     width: 24,
     maxHeight: 2,
     borderRadius: 12,
-    backgroundColor: "#000",
-    alignSelf: "center",
+    backgroundColor: '#000',
+    alignSelf: 'center',
     marginTop: 10,
   },
 });

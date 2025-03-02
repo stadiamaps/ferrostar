@@ -1,12 +1,12 @@
 import Geolocation, {
   type GeolocationConfiguration,
   type GeolocationOptions,
-} from "@react-native-community/geolocation";
+} from '@react-native-community/geolocation';
 import {
   GeographicCoordinate,
   UserLocation,
   type Heading,
-} from "ferrostar-rn-uniffi";
+} from '@stadiamaps/ferrostar-uniffi-react-native';
 
 export interface LocationProviderInterface {
   lastLocation?: UserLocation;
@@ -30,15 +30,15 @@ export class LocationProvider implements LocationProviderInterface {
   constructor(
     config: GeolocationConfiguration = {
       skipPermissionRequests: false,
-      authorizationLevel: "auto",
-      locationProvider: "auto",
+      authorizationLevel: 'auto',
+      locationProvider: 'auto',
       enableBackgroundLocationUpdates: false,
     },
     options: GeolocationOptions = {
       enableHighAccuracy: true,
       interval: 1000,
       fastestInterval: 0,
-    },
+    }
   ) {
     this.locationUpdateOptions = options;
     Geolocation.setRNConfiguration(config);
@@ -51,9 +51,9 @@ export class LocationProvider implements LocationProviderInterface {
    * permissions are enabled before calling this.
    */
   addListener(listener: LocationUpdateListener): void {
-    console.log("Add location listener");
+    console.log('Add location listener');
     if (this.listeners.has(listener)) {
-      console.log("Already registered; skipping");
+      console.log('Already registered; skipping');
       return;
     }
 
@@ -82,7 +82,7 @@ export class LocationProvider implements LocationProviderInterface {
           listener.onLocationUpdate(userLocation);
         },
         undefined,
-        this.locationUpdateOptions,
+        this.locationUpdateOptions
       );
     }
 
@@ -110,14 +110,14 @@ export class LocationProvider implements LocationProviderInterface {
         listener.onLocationUpdate(userLocation);
       },
       undefined,
-      this.locationUpdateOptions,
+      this.locationUpdateOptions
     );
 
     this.listeners.set(listener, watchId);
   }
 
   removeListener(listener: LocationUpdateListener): void {
-    console.log("Remove location listener");
+    console.log('Remove location listener');
     const watchId = this.listeners.get(listener);
 
     if (watchId === undefined) {

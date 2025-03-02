@@ -1,9 +1,3 @@
 {
-  "extends": "../tsconfig.base",
-  "compilerOptions": {
-    "paths": {
-      "ferrostar-rn-core": ["./src/index"]
-    }
-  },
-  "exclude": ["lib"]
+  "extends": "../tsconfig.base"
 }

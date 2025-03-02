@@ -24,5 +24,6 @@
     "target": "ESNext",
     "verbatimModuleSyntax": true,
     "noCheck": true
-  }
+  },
+  "exclude": ["lib"]
 }

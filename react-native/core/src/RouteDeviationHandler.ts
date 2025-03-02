@@ -1,5 +1,5 @@
-import type { Waypoint } from "ferrostar-rn-uniffi";
-import type { FerrostarCore } from "./FerrostarCore";
+import type { Waypoint } from '@stadiamaps/ferrostar-uniffi-react-native';
+import type { FerrostarCore } from './FerrostarCore';
 
 export enum CorrectiveAction {
   DoNothing,
@@ -10,6 +10,6 @@ export interface RouteDeviationHandler {
   correctiveActionForDeviation(
     core: FerrostarCore,
     deviationInMeters: number,
-    remainingWaypoints: Array<Waypoint>,
+    remainingWaypoints: Array<Waypoint>
   ): CorrectiveAction;
 }

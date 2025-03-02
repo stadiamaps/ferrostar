@@ -4,16 +4,15 @@
   "description": "Ferrostar React Native",
   "private": true,
   "scripts": {
-    "ubrn:ios": "yarn workspace ferrostar-rn-uniffi ubrn:ios",
-    "ubrn:android": "yarn workspace ferrostar-rn-uniffi ubrn:android",
-    "ubrn:checkout": "yarn workspace ferrostar-rn-uniffi ubrn:checkout",
-    "ubrn:clean": "yarn workspace ferrostar-rn-uniffi ubrn:clean",
-    "build:android": "yarn workspace ferrostar-rn-uniffi ubrn:android && yarn workspace ferrostar-rn-core prepare && yarn workspace ferrostar-rn-maplibreui prepare",
-    "example": "yarn workspace ferrostar-rn-example start",
+    "build:android": "./scripts/build-android.sh",
+    "build:ios": "./scripts/build-ios.sh",
+    "example:start": "yarn workspace ferrostar-example-react-native start",
+    "example:android": "yarn workspace ferrostar-example-react-native android",
+    "example:ios": "yarn workspace ferrostar-example-react-native ios",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "del-cli /packages/binding/android/build /packages/example/android/build /packages/example/android/app/build /packages/example/ios/build lib"
+    "clean": "./scripts/clean.sh"
   },
   "keywords": [
     "react-native",

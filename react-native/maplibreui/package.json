@@ -1,24 +1,17 @@
 {
-  "name": "ferrostar-rn-maplibreui",
+  "name": "@stadiamaps/ferrostar-maplibre-react-native",
   "version": "0.27.0",
   "description": "Ferrostar React Native MapLibre UI",
-  "source": "./src/index.ts",
-  "main": "./lib/commonjs/index.js",
-  "module": "./lib/module/index.js",
-  "exports": {
-    ".": {
-      "import": {
-        "types": "./lib/typescript/commonjs/maplibreui/src/index.d.ts",
-        "default": "./lib/module/index.js"
-      },
-      "require": {
-        "types": "./lib/typescript/commonjs/maplibreui/src/index.d.ts",
-        "default": "./lib/commonjs/index.js"
-      }
-    }
-  },
+  "main": "./lib/index.js",
+  "types": "./src/index.ts",
+  "react-native": "./src/index.ts",
+  "files": [
+    "lib",
+    "src"
+  ],
   "scripts": {
-    "prepare": "bob build"
+    "prepare": "tsup --clean",
+    "clean": "del-cli lib"
   },
   "keywords": [
     "react-native",
@@ -41,51 +34,35 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@react-native-community/cli": "15.0.1",
+    "@maplibre/maplibre-react-native": "^10.0.0",
     "@types/jest": "^29.5.5",
-    "@types/react": "^18.2.44",
-    "react": "18.3.1",
-    "react-native": "0.76.5",
-    "react-native-builder-bob": "^0.32.0",
+    "@types/react": "^18.3.1",
+    "del-cli": "^5.1.0",
+    "react-native-svg": "^15.10.1",
+    "tsup": "^8.4.0",
     "typescript": "^5.2.2"
   },
-  "resolutions": {
-    "@types/react": "^18.2.44"
-  },
   "peerDependencies": {
+    "@maplibre/maplibre-react-native": "*",
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-svg": "*"
   },
   "dependencies": {
-    "@maplibre/maplibre-react-native": "^10.0.0",
-    "@turf/bbox": "^7.2.0",
-    "ferrostar-rn-core": "*",
-    "ferrostar-rn-uniffi": "*",
-    "react-native-svg": "^15.10.1"
+    "@stadiamaps/ferrostar-core-react-native": "*",
+    "@stadiamaps/ferrostar-uniffi-react-native": "*",
+    "@turf/bbox": "^7.2.0"
   },
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      [
-        "commonjs",
-        {
-          "esm": true
-        }
-      ],
-      [
-        "module",
-        {
-          "esm": true
-        }
-      ],
-      [
-        "typescript",
-        {
-          "project": "tsconfig.json",
-          "esm": true
-        }
-      ]
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "outDir": "lib",
+    "sourcemap": true,
+    "dts": true,
+    "external": [
+      "react",
+      "react-native"
     ]
   },
   "packageManager": "yarn@3.6.1"
