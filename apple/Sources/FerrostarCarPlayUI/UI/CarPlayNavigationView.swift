@@ -9,8 +9,7 @@ import SwiftUI
 public struct CarPlayNavigationView: View, SpeedLimitViewHost,
     CurrentRoadNameViewHost
 {
-    @EnvironmentObject var ferrostarCore: FerrostarCore
-
+    @ObservedObject var ferrostarCore: FerrostarCore
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -26,11 +25,13 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
     public var minimumSafeAreaInsets: EdgeInsets
 
     public init(
+        ferrostarCore: FerrostarCore,
         styleURL: URL,
-        camera: MapViewCamera = .automotiveNavigation(),
+        camera: MapViewCamera = .automotiveNavigation(zoom: 17.0),
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
+        self.ferrostarCore = ferrostarCore
         self.styleURL = styleURL
         self.camera = camera
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
@@ -44,10 +45,10 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: ferrostarCore.state
-                ) {
+                ) { _ in
                     userLayers
                 }
-                .navigationMapViewContentInset(.landscape(within: geometry))
+                .navigationMapViewContentInset(.landscape(within: geometry, horizontalPct: 0.65))
             }
         }
     }

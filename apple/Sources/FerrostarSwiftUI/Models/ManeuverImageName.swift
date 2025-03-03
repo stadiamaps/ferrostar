@@ -1,3 +1,4 @@
+import FerrostarCoreFFI
 
 /// A maneuver image name def
 public struct ManeuverImageName {
