@@ -54,6 +54,7 @@ export class FerrostarMap extends LitElement {
   @state()
   protected _tripState: TripState | null = null;
 
+  // Configures the control on first load.
   @property({ type: Function, attribute: false })
   configureMap?: (map: Map) => void;
 
@@ -88,7 +89,6 @@ export class FerrostarMap extends LitElement {
   geolocateOnLoad: boolean = true;
 
   routeAdapter: RouteAdapter | null = null;
-
   map: maplibregl.Map | null = null;
   geolocateControl: GeolocateControl | null = null;
   navigationController: NavigationController | null = null;
@@ -106,7 +106,7 @@ export class FerrostarMap extends LitElement {
         height: 100%;
         width: 100%;
       }
-      
+
       instructions-view {
         top: 10px;
         position: absolute;
