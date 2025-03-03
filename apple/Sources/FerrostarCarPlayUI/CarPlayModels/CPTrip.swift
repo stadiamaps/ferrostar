@@ -34,7 +34,6 @@ extension CPTrip {
         let routeChoices: [CPRouteChoice] = routes.enumerated().map { index, route in
             let routeNumber = index + 1
             let distance = distanceFormatter.string(for: route.distance)
-//            let duration = durationFormatter.string(from: route.duration)
             let summary = [distance].compactMap { $0 }.joined(separator: ", ")
 
             return CPRouteChoice(

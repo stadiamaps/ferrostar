@@ -6,19 +6,15 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
     private let ferrostarCore: FerrostarCore
     private let distanceUnits: MKDistanceFormatter.Units
 
-//    private let navigationView: CarPlayNavigationView
     private var ferrostarAdapter: FerrostarCarPlayAdapter?
     private var interfaceController: CPInterfaceController?
 
     public init(
         _ ferrostartCore: FerrostarCore,
-        distanceUnits: MKDistanceFormatter.Units // ,
-//        navigationView: CarPlayNavigationView
+        distanceUnits: MKDistanceFormatter.Units
     ) {
         ferrostarCore = ferrostartCore
         self.distanceUnits = distanceUnits
-
-//        self.navigationView = navigationView
 
         super.init()
     }
