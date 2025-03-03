@@ -40,7 +40,7 @@ struct TestMKDistanceFormatterUnits {
         #expect(longUnit == .miles)
     }
 
-    // MARK: Test Thresolds
+    // MARK: Test Thresholds
 
     @Test("test metric threshold", arguments: [
         Locale(identifier: "fr_FR"),

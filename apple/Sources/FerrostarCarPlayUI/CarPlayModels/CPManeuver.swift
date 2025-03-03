@@ -12,7 +12,7 @@ extension CPManeuver {
             return nil
         }
 
-        var maneuver = CPManeuver()
+        let maneuver = CPManeuver()
 
         // CarPlay take the "initial" estimates and internally tracks the reduction.
         maneuver.initialTravelEstimates = CPTravelEstimates(
@@ -29,7 +29,7 @@ extension CPManeuver {
         ]
         maneuver.instructionVariants = instructions.compactMap { $0 }
 
-        // Display a manevuer image if one could be calculated.
+        // Display a maneuver image if one could be calculated.
         if let maneuverType = instruction.primaryContent.maneuverType {
             let maneuverModifier = instruction.primaryContent.maneuverModifier
             let maneuverImage = ManeuverUIImage(maneuverType: maneuverType, maneuverModifier: maneuverModifier)

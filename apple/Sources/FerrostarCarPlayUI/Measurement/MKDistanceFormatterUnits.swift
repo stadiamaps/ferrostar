@@ -4,10 +4,10 @@ import MapKit
 extension MKDistanceFormatter.Units {
     /// Get the ideal short and long distance units.
     ///
-    /// This mimicks the behavior inside the ``MKDistanceFormatter``, but returns
+    /// This mimics the behavior inside the ``MKDistanceFormatter``, but returns
     /// both as ``UnitLength`` as required by CarPlay's MapTemplate/Session
     ///
-    /// - Parameter locale: The locale to get prefered units for. This is usually `.current`
+    /// - Parameter locale: The locale to get preferred units for. This is usually `.current`
     /// - Returns: A tuple with the short distance and long distance units (e.g. feet and miles in order).
     func getShortAndLong(for locale: Locale) -> (UnitLength, UnitLength) {
         switch self {
@@ -30,9 +30,9 @@ extension MKDistanceFormatter.Units {
         }
     }
 
-    /// Get the thresold for specifying a short or long unit in meters
+    /// Get the threshold for specifying a short or long unit in meters
     ///
-    /// - Parameter locale: The locale to get prefered units for. This is usually `.current`
+    /// - Parameter locale: The locale to get preferred units for. This is usually `.current`
     /// - Returns: The distance below which the short unit is preferred, above which the long distance is preferred.
     func thresholdForLargeUnit(for locale: Locale) -> CLLocationDistance {
         switch self {

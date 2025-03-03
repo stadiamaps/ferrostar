@@ -5,7 +5,7 @@ import FerrostarSwiftUI
 extension CPTrip {
     /// Create a new CarPlay Trip definition from the routes and waypoints supplied to/by
     /// Ferrostar. This object is used to outline the various route option metadata and the associated
-    /// origin and desination to the user.
+    /// origin and destination to the user.
     ///
     /// - Parameters:
     ///   - routes: The route's loaded by ferrostar
