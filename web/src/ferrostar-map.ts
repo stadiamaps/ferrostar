@@ -54,7 +54,15 @@ export class FerrostarMap extends LitElement {
   @state()
   protected _tripState: TripState | null = null;
 
-  // Configures the control on first load.
+  /**
+   * Configures the map on first load.
+   *
+   * Note: This will only be invoked if there is no map set
+   * by the time of the first component update.
+   * If you provide your own map parameter,
+   * configuration is left to the caller.
+   * Be sure to set the DOM parent via the slot as well.
+   */
   @property({ type: Function, attribute: false })
   configureMap?: (map: Map) => void;
 
@@ -86,7 +94,21 @@ export class FerrostarMap extends LitElement {
   geolocateOnLoad: boolean = true;
 
   routeAdapter: RouteAdapter | null = null;
+
+  /**
+   * The MapLibre map instance.
+   *
+   * This will be automatically initialized by default
+   * when the web component does its first update cycle.
+   * However, you can also explicitly set this value
+   * when initializing the web component to provide your own map instance.
+   *
+   * Note: If you set this property, you MUST also pass the map's container attribute
+   * via the slot!
+   */
+  @property({ type: Object, attribute: false })
   map: maplibregl.Map | null = null;
+
   geolocateControl: GeolocateControl | null = null;
   navigationController: NavigationController | null = null;
   simulatedLocationMarker: maplibregl.Marker | null = null;
@@ -99,9 +121,16 @@ export class FerrostarMap extends LitElement {
         display: none !important;
       }
 
-      #map {
+      #container {
         height: 100%;
         width: 100%;
+      }
+
+      #map,
+      ::slotted(:first-child) {
+        height: 100%;
+        width: 100%;
+        display: block;
       }
 
       instructions-view {
@@ -162,7 +191,7 @@ export class FerrostarMap extends LitElement {
     if (changedProperties.has("locationProvider") && this.locationProvider) {
       this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     }
-    if (this.map) {
+    if (this.map && this.map.loaded()) {
       if (changedProperties.has("styleUrl")) {
         this.map.setStyle(this.styleUrl);
       }
@@ -190,6 +219,21 @@ export class FerrostarMap extends LitElement {
   }
 
   firstUpdated() {
+    // Skip initialization of the map if the user has supplied one already via a slot!
+    const slotChildren =
+      this.shadowRoot!.querySelector("slot")?.assignedElements() || [];
+    if (slotChildren.length == 0 && this.map === null) {
+      this.initMap();
+    }
+  }
+
+  /**
+   * Initialize the MapLibre Map control.
+   *
+   * This is run by default on firstUpdated,
+   * but is skipped if the user adds a map of their own.
+   */
+  initMap() {
     this.map = new maplibregl.Map({
       container: this.shadowRoot!.getElementById("map")!,
       style: this.styleUrl
@@ -293,6 +337,7 @@ export class FerrostarMap extends LitElement {
       },
     });
 
+    // TODO: Configuration param where to insert the layer
     this.map?.addLayer({
       id: "route",
       type: "line",
@@ -387,7 +432,8 @@ export class FerrostarMap extends LitElement {
       <style>
         ${this.customStyles}
       </style>
-      <div id="map">
+      <div id="container">
+        <slot id="map"></slot>
         <instructions-view .tripState=${this._tripState}></instructions-view>
         <div id="bottom-component">
           <trip-progress-view
