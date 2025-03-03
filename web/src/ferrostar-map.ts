@@ -437,7 +437,9 @@ export class FerrostarMap extends LitElement {
           <!-- Fix names/ids; currently this is a breaking change -->
           <slot id="map-content"></slot>
           <div id="overlay">
-            <instructions-view .tripState=${this._tripState}></instructions-view>
+            <instructions-view
+              .tripState=${this._tripState}
+            ></instructions-view>
 
             <div id="bottom-component">
               <trip-progress-view
