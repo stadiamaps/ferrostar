@@ -42,7 +42,7 @@ TL;DR?
 |                                      | iOS | Android | Web Components | React Native |
 |--------------------------------------|-----|---------|----------------|--------------|
 | High-level core bindings             | ✅   | ✅       | ✅              | ✅            |
-| Composable UI                        | ✅   | ✅       | ✅              | ✅            |
+| Composable UI                        | ✅   | ✅       | ✅              | 👨‍💻            |
 | Voice guidance (platform-native TTS) | ✅   | ✅       | ✅*             | 👨‍💻           |
 | Published packages                   | ✅   | ✅       | ✅              | 👨‍💻           |
 
