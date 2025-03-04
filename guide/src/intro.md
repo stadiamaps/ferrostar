@@ -42,9 +42,9 @@ TL;DR?
 |                                      | iOS | Android | Web Components | React Native |
 |--------------------------------------|-----|---------|----------------|--------------|
 | High-level core bindings             | ✅   | ✅       | ✅              | ✅            |
-| Composable UI                        | ✅   | ✅       | ✅              | 👨‍💻            |
-| Voice guidance (platform-native TTS) | ✅   | ✅       | ✅*             | 👨‍💻           |
-| Published packages                   | ✅   | ✅       | ✅              | 👨‍💻           |
+| Composable UI                        | ✅   | ✅       | ✅              | 🚧            |
+| Voice guidance (platform-native TTS) | ✅   | ✅       | ✅*             | 🚧           |
+| Published packages                   | ✅   | ✅       | ✅              | ❌           |
 
 - Note that TTS and background functionality are severely limited in PWAs due to inherent limitations of the platform.
 
