@@ -347,10 +347,27 @@ export class FerrostarMap extends LitElement {
         "line-cap": "round",
       },
       paint: {
-        "line-color": "#3700B3",
+        "line-color": "#0099ff",
         "line-width": 8,
       },
     });
+
+    this.map?.addLayer(
+      {
+        id: "route-border",
+        type: "line",
+        source: "route",
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#FFFFFF",
+          "line-width": 13,
+        },
+      },
+      "route",
+    );
 
     this.map?.setCenter(route.geometry[0]);
 
@@ -423,6 +440,7 @@ export class FerrostarMap extends LitElement {
 
   private clearMap() {
     this.map?.getLayer("route") && this.map?.removeLayer("route");
+    this.map?.getLayer("route-border") && this.map?.removeLayer("route-border");
     this.map?.getSource("route") && this.map?.removeSource("route");
     this.simulatedLocationMarker?.remove();
   }
