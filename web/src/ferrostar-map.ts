@@ -320,7 +320,7 @@ export class FerrostarMap extends LitElement {
           speed: null,
         };
 
-    this.tripStateUpdate.bind(this)(
+    this.tripStateUpdate(
       this.navigationController.getInitialState(startingLocation),
     );
 
@@ -373,7 +373,7 @@ export class FerrostarMap extends LitElement {
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
-    this.tripStateUpdate.bind(this)(null);
+    this.tripStateUpdate(null);
     this.clearMap();
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
@@ -393,7 +393,7 @@ export class FerrostarMap extends LitElement {
       this.locationProvider.lastLocation,
       this._tripState,
     );
-    this.tripStateUpdate.bind(this)(newTripState);
+    this.tripStateUpdate(newTripState);
 
     // Update the simulated location marker if needed
     this.simulatedLocationMarker?.setLngLat(
