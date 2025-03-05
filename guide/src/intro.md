@@ -37,28 +37,42 @@ helping you build the navigation experience your users deserve.
 
 ## Can I use Ferrostar today?
 
+TL;DR?
+
+|                                      | iOS | Android | Web Components | React Native |
+|--------------------------------------|-----|---------|----------------|--------------|
+| High-level core bindings             | ✅   | ✅       | ✅              | ✅            |
+| Composable UI                        | ✅   | ✅       | ✅              | 🚧            |
+| Voice guidance (platform-native TTS) | ✅   | ✅       | ✅*             | 🚧           |
+| Published packages                   | ✅   | ✅       | ✅              | ❌           |
+
+- Note that TTS and background functionality are severely limited in PWAs due to inherent limitations of the platform.
+
 ### On iOS and Android
 
-Ferrostar is is currently in **beta** for iOS and Android,
-which means that it’s good to go for most use cases!
-There will be a few rough edges and missing features,
-but we’re here to help (check out the community links below).
-
-The core is fully functional (pun intended for you FP lovers)
-and ready to handle most use cases that we’re aware of!
-If you’re already rolling a custom UI, you’re good to go!
+We consider Ferrostar ready for use in production iOS and Android apps
+(and it's already being used in several!).
 
 iOS and Android have "batteries included" UIs
 which are highly composable in nature thanks to SwiftUI and Jetpack Compose.
 So you can customize most aspects of the UI today.
 
-We know of at least half a dozen native app integrations underway,
-and the core devs are dogfooding in their own apps.
+That said, we're still labeling it **beta**,
+since there are still a few rough edges.
+Additionally, we are not yet making any API stability guarantees,
+but do provide release notes documenting any breaking changes.
+We do not expect breakage in the form of code that compiles but behaves unexpectedly.
+The sorts of changes we push with minor releases leading up to 1.0
+will generally be API breaking that the compiler will catch (and usually often include a quick fix)!
 
 ### Using multiplatform frameworks
 
 Ferrostar can be integrated into multiplatform frameworks
 in a few ways.
+
+First, we have a React Native library in active development.
+This is currently in a **pre-alpha** state.
+We will update this guide with instructions on getting started as it moves to the alpha phase.
 
 Both Flutter and React Native have mechanisms for calling platform/native code,
 which you can use to create and interact with
@@ -85,9 +99,9 @@ We are tracking status via the following issues:
 
 ### On the web
 
-The web platform is the newest addition to the family of supported platforms.
-It is currently **alpha** quality.
-We expect it to have the first beta release this autumn.
+We consider the web platform to be rougher **beta** quality than the native mobile platforms.
+We do our best not to introduce any breaknig changes that are web-specific,
+but web (particularly the UI layer) is not quite as mature as mobile.
 
 ## How to use this guide
   
