@@ -10,7 +10,7 @@ data class VisualNavigationViewConfig(
     var showZoom: Boolean = false,
     
     // Recenter
-    var showRecenter: Boolean = true,
+    var showRecenter: Boolean = false,
 
     // Speed Limit
     var speedLimitStyle: SignageStyle? = null,
