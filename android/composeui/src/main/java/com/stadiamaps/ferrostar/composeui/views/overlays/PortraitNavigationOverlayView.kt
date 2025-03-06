@@ -81,6 +81,7 @@ fun PortraitNavigationOverlayView(
         buttonSize = theme.buttonSize,
         cameraControlState = cameraControlState,
         showZoom = config.showZoom,
+        showRecenter = config.showRecenter,
         onClickZoomIn = { onClickZoomIn?.invoke() },
         onClickZoomOut = { onClickZoomOut?.invoke() },
         bottomCenter = {

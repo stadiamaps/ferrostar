@@ -8,12 +8,15 @@ data class VisualNavigationViewConfig(
 
     // Zoom
     var showZoom: Boolean = false,
+    
+    // Recenter
+    var showRecenter: Boolean = true,
 
     // Speed Limit
     var speedLimitStyle: SignageStyle? = null,
 ) {
   companion object {
-    fun Default() = VisualNavigationViewConfig(showMute = true, showZoom = true)
+    fun Default() = VisualNavigationViewConfig(showMute = true, showZoom = true, showRecenter = true)
   }
 }
 
@@ -25,6 +28,11 @@ fun VisualNavigationViewConfig.useMuteButton(): VisualNavigationViewConfig {
 /** Enables the zoom button in the navigation view. */
 fun VisualNavigationViewConfig.useZoomButton(): VisualNavigationViewConfig {
   return copy(showZoom = true)
+}
+
+/** Enables the recenter button in the navigation view. */
+fun VisualNavigationViewConfig.useRecenterButton(): VisualNavigationViewConfig {
+  return copy(showRecenter = true)
 }
 
 fun VisualNavigationViewConfig.withSpeedLimitStyle(
