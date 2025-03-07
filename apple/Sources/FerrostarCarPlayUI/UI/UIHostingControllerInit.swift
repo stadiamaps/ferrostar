@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-extension UIHostingController where Content: View {
+public extension UIHostingController where Content: View {
     /// Create a SwiftUI view in a UIHosting controller with a closure init.
     ///
     /// - Parameter content: The convent view builder.

@@ -3,8 +3,7 @@ import SwiftUI
 
 /// A resizable image view for a Maneuver type and modifier combination.
 public struct ManeuverImage: View {
-    let maneuverType: ManeuverType
-    let maneuverModifier: ManeuverModifier?
+    let name: ManeuverImageName
 
     /// A maneuver image using `mapbox-directions` icons for common manueuvers.
     ///
@@ -16,23 +15,14 @@ public struct ManeuverImage: View {
     public init(maneuverType: ManeuverType,
                 maneuverModifier: ManeuverModifier?)
     {
-        self.maneuverType = maneuverType
-        self.maneuverModifier = maneuverModifier
+        name = ManeuverImageName(maneuverType: maneuverType,
+                                 maneuverModifier: maneuverModifier)
     }
 
     public var body: some View {
-        Image(maneuverImageName, bundle: .module)
+        Image(name.value, bundle: .module)
             .resizable()
             .aspectRatio(contentMode: .fit)
-    }
-
-    var maneuverImageName: String {
-        [
-            maneuverType.stringValue.replacingOccurrences(of: " ", with: "_"),
-            maneuverModifier?.stringValue.replacingOccurrences(of: " ", with: "_"),
-        ]
-        .compactMap { $0 }
-        .joined(separator: "_")
     }
 }
 

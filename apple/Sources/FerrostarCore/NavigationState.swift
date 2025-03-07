@@ -47,6 +47,10 @@ public struct NavigationState: Hashable {
         return remainingSteps
     }
 
+    public var currentStep: RouteStep? {
+        remainingSteps?.first
+    }
+
     /// The current geometry segment's annotations in a JSON string.
     ///
     /// A segment is the line between two coordinates on the geometry.
