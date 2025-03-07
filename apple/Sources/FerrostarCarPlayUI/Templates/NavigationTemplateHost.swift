@@ -73,10 +73,6 @@ class NavigatingTemplateHost {
         mapTemplate.updateEstimates(estimates, for: currentTrip)
 
         if let currentManeuer = currentSession?.upcomingManeuvers.first {
-            let stepDistance = CarPlayMeasurementLength(
-                units: units, distance: progress.distanceToNextManeuver
-            )
-
             let estimates = CPTravelEstimates.fromFerrostarForStep(
                 progress: progress,
                 units: units,

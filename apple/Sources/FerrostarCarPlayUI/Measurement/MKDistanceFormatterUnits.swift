@@ -12,21 +12,20 @@ extension MKDistanceFormatter.Units {
     func getShortAndLong(for locale: Locale) -> (UnitLength, UnitLength) {
         switch self {
         case .default:
-            if locale.usesMetricSystem {
-                return (.meters, .kilometers)
-            } else {
-                return locale.identifier == "en_GB" ?
-                    (.yards, .miles) :
-                    (.feet, .miles)
+            switch locale.measurementSystem {
+            case .us:
+                (.feet, .miles)
+            case .uk:
+                (.yards, .miles)
+            default:
+                (.meters, .kilometers)
             }
-        case .metric:
-            return (.meters, .kilometers)
         case .imperial:
-            return (.feet, .miles)
+            (.feet, .miles)
         case .imperialWithYards:
-            return (.yards, .miles)
-        @unknown default:
-            return (.meters, .kilometers) // Default to metric
+            (.yards, .miles)
+        default:
+            (.meters, .kilometers) // Default to metric
         }
     }
 
@@ -37,19 +36,20 @@ extension MKDistanceFormatter.Units {
     func thresholdForLargeUnit(for locale: Locale) -> CLLocationDistance {
         switch self {
         case .default:
-            if locale.usesMetricSystem {
-                return 1000
-            } else {
-                return locale.identifier == "en_GB" ? 300 : 289
+            switch locale.measurementSystem {
+            case .us:
+                289
+            case .uk:
+                300
+            default:
+                1000
             }
-        case .metric:
-            return 1000
         case .imperial:
-            return 289
+            289
         case .imperialWithYards:
-            return 300
-        @unknown default:
-            return 1000
+            300
+        default:
+            1000
         }
     }
 }

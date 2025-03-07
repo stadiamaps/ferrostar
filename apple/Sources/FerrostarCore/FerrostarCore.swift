@@ -33,7 +33,7 @@ public enum CorrectiveAction {
 ///
 /// This is the central point responsible for relaying updates back to the application.
 public protocol FerrostarCoreDelegate: AnyObject {
-    // TODO: Docstring
+    /// Called when navigation is started on a specific route.
     func core(_ core: FerrostarCore, didStartWith route: Route)
 
     /// Called when the core detects that the user has deviated from the route.
@@ -293,7 +293,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     // TODO: Ability to pause without totally stopping and clearing state
 
-    /// Stops navigation and stops requesting location updates (to save battery).s
+    /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
         navigationController = nil
         route = nil

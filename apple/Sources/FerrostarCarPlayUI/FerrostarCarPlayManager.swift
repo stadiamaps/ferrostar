@@ -1,19 +1,26 @@
 import CarPlay
 import FerrostarCore
 import Foundation
+import OSLog
 
 public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelegate {
     private let ferrostarCore: FerrostarCore
+    private let logger: Logger
     private let distanceUnits: MKDistanceFormatter.Units
 
     private var ferrostarAdapter: FerrostarCarPlayAdapter?
     private var interfaceController: CPInterfaceController?
 
     public init(
-        _ ferrostartCore: FerrostarCore,
+        _ ferrostarCore: FerrostarCore,
+        logger: Logger = Logger(
+            subsystem: Bundle.main.bundleIdentifier ?? "FerrostarCarPlayUI",
+            category: "FerrostarCarPlayManager"
+        ),
         distanceUnits: MKDistanceFormatter.Units
     ) {
-        ferrostarCore = ferrostartCore
+        self.ferrostarCore = ferrostarCore
+        self.logger = logger
         self.distanceUnits = distanceUnits
 
         super.init()
@@ -37,7 +44,13 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         ferrostarAdapter?.setup(on: mapTemplate)
 
         // Set the root template
-        interfaceController.setRootTemplate(mapTemplate, animated: true)
+        interfaceController.setRootTemplate(mapTemplate, animated: true) { [weak self] success, error in
+            if let error {
+                self?.logger.error("Failed didConnect to CPWindow with error: \(error)")
+            } else {
+                self?.logger.debug("Connected to CPWindow - template presented: \(success)")
+            }
+        }
     }
 
     public func templateApplicationScene(
