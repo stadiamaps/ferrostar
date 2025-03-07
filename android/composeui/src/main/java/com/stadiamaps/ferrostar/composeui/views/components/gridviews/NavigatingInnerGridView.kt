@@ -39,6 +39,7 @@ fun NavigatingInnerGridView(
     buttonSize: DpSize,
     cameraControlState: CameraControlState = CameraControlState.Hidden,
     showZoom: Boolean = true,
+    showRecenter: Boolean = true,
     onClickZoomIn: () -> Unit = {},
     onClickZoomOut: () -> Unit = {},
     topCenter: @Composable () -> Unit = { Spacer(Modifier.width(12.dp)) },
@@ -99,7 +100,7 @@ fun NavigatingInnerGridView(
         }
       },
       bottomStart = {
-        if (cameraControlState is CameraControlState.ShowRecenter) {
+        if (showRecenter && cameraControlState is CameraControlState.ShowRecenter) {
           NavigationUIButton(onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
             Icon(
                 Icons.Filled.Navigation,
