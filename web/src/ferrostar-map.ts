@@ -347,7 +347,7 @@ export class FerrostarMap extends LitElement {
         "line-cap": "round",
       },
       paint: {
-        "line-color": "#0099ff",
+        "line-color": "#3478f6",
         "line-width": 8,
       },
     });
