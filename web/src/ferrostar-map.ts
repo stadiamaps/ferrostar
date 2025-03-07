@@ -72,6 +72,9 @@ export class FerrostarMap extends LitElement {
   @property({ type: Function, attribute: false })
   onNavigationStop?: (map: Map) => void;
 
+  @property({ type: Function, attribute: true })
+  onTripStateChange?: (newState: TripState | null) => void;
+
   /**
    *  Styles to load which will apply inside the component
    *  (ex: for MapLibre plugins)
@@ -317,8 +320,9 @@ export class FerrostarMap extends LitElement {
           speed: null,
         };
 
-    this._tripState =
-      this.navigationController.getInitialState(startingLocation);
+    this.tripStateUpdate(
+      this.navigationController.getInitialState(startingLocation),
+    );
 
     // Update the UI with the initial trip state
     this.clearMap();
@@ -369,10 +373,15 @@ export class FerrostarMap extends LitElement {
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
-    this._tripState = null;
+    this.tripStateUpdate(null);
     this.clearMap();
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
+  }
+
+  private tripStateUpdate(newState: TripState | null) {
+    this._tripState = newState;
+    this.onTripStateChange?.(newState);
   }
 
   private onLocationUpdated() {
@@ -380,10 +389,11 @@ export class FerrostarMap extends LitElement {
       return;
     }
     // Update the trip state with the new location
-    this._tripState = this.navigationController!.updateUserLocation(
+    const newTripState = this.navigationController!.updateUserLocation(
       this.locationProvider.lastLocation,
       this._tripState,
     );
+    this.tripStateUpdate(newTripState);
 
     // Update the simulated location marker if needed
     this.simulatedLocationMarker?.setLngLat(
