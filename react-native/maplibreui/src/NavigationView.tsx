@@ -117,22 +117,19 @@ const NavigationView = (props: NavigationViewProps) => {
 
   useEffect(() => {
     const watchId = core.addStateListener((state) => {
-      setUiState(
-        NavigationUiState.fromFerrostar(
-          state,
-          isMuted,
-          snappedUserLocation(
-            state.tripState,
-            core.locationProvider.lastLocation
-          )
-        )
+      const newState = NavigationUiState.fromFerrostar(
+        state,
+        isMuted,
+        core.locationProvider.lastLocation
       );
+
+      setUiState(newState);
     });
 
     return () => {
       core.removeStateListener(watchId);
     };
-  });
+  }, []);
 
   return (
     <View style={defaultStyle.container}>

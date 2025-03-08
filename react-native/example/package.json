@@ -15,7 +15,7 @@
     "@react-native-community/geolocation": "^3.4.0",
     "@stadiamaps/ferrostar-core-react-native": "*",
     "@stadiamaps/ferrostar-maplibre-react-native": "*",
-    "@stadiamaps/ferrostar-uniffi-react-native": "*",
+    "@stadiamaps/ferrostar-uniffi-react-native": "workspace:^",
     "react": "^19.0.0",
     "react-native": "^0.78.0",
     "react-native-dotenv": "^3.4.11",

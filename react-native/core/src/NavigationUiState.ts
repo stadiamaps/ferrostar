@@ -14,6 +14,7 @@ import {
   progress,
   remainingSteps,
   visualInstruction,
+  snappedUserLocation,
 } from './_utils';
 import type { NavigationState } from './FerrostarCore';
 
@@ -87,15 +88,15 @@ export class NavigationUiState {
     return this;
   }
 
-  static fromFerrostar(
+  public static fromFerrostar(
     coreState: NavigationState,
     isMuted?: boolean,
-    location?: UserLocation,
-    snappedLocation?: UserLocation
+    location?: UserLocation
   ): NavigationUiState {
+    console.log('fromFerrostar');
     return new NavigationUiState(
       location,
-      snappedLocation,
+      snappedUserLocation(coreState.tripState, location),
       undefined,
       coreState.routeGeometry,
       visualInstruction(coreState.tripState),

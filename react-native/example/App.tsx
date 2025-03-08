@@ -1,5 +1,4 @@
 import {Button, StyleSheet, View} from 'react-native';
-import {STADIA_MAPS_API_KEY} from '@env';
 import {
   CourseFiltering,
   RouteDeviationTracking,
@@ -15,7 +14,7 @@ import Geolocation, {
 } from '@react-native-community/geolocation';
 import * as React from 'react';
 
-const apiKey = STADIA_MAPS_API_KEY ?? '';
+const apiKey = process.env.STADIA_MAPS_API_KEY ?? '';
 const styleUrl = `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=${apiKey}`;
 
 export default function App() {
@@ -112,8 +111,10 @@ export default function App() {
     if (!route) {
       return;
     }
+    console.log({route});
 
     core.startNavigation(route);
+    console.log(' Navigation started ');
   };
 
   return (
@@ -122,6 +123,7 @@ export default function App() {
         style={styles.container}
         mapStyle={styleUrl}
         core={core}
+        snapUserLocationToRoute={true}
       />
       <Button title="Start Navigation" onPress={handleNavigationStart} />
     </View>

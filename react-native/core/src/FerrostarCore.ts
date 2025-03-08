@@ -269,6 +269,10 @@ export class FerrostarCore implements LocationUpdateListener {
   }
 
   stopNavigation(stopLocationUpdates: boolean = true) {
+    if (!this._state.isNavigating()) {
+      return;
+    }
+
     if (stopLocationUpdates) {
       this.locationProvider.removeListener(this);
     }

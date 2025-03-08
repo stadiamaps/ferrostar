@@ -3134,7 +3134,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@stadiamaps/ferrostar-uniffi-react-native@*, @stadiamaps/ferrostar-uniffi-react-native@workspace:uniffi":
+"@stadiamaps/ferrostar-uniffi-react-native@*, @stadiamaps/ferrostar-uniffi-react-native@workspace:^, @stadiamaps/ferrostar-uniffi-react-native@workspace:uniffi":
   version: 0.0.0-use.local
   resolution: "@stadiamaps/ferrostar-uniffi-react-native@workspace:uniffi"
   dependencies:
@@ -6676,7 +6676,7 @@ __metadata:
     "@react-native/typescript-config": 0.78.0
     "@stadiamaps/ferrostar-core-react-native": "*"
     "@stadiamaps/ferrostar-maplibre-react-native": "*"
-    "@stadiamaps/ferrostar-uniffi-react-native": "*"
+    "@stadiamaps/ferrostar-uniffi-react-native": "workspace:^"
     "@types/jest": ^29.5.13
     "@types/react": ^19.0.0
     "@types/react-test-renderer": ^19.0.0
