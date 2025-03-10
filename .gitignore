@@ -87,3 +87,4 @@ API-Keys.plist
 
 # Editor temp files
 *~
+react-native/example/.env
