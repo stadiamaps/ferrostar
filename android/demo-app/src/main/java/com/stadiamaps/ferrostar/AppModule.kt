@@ -98,7 +98,7 @@ object AppModule {
                     CourseFiltering.SNAP_TO_ROUTE),
             options =
                 mapOf(
-                    "costingOptions" to
+                    "costing_options" to
                         // Just an example... You can set multiple costing options for any profile
                         // in Valhalla.
                         // If your app uses multiple routing modes, you can have a master settings
