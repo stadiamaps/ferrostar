@@ -461,19 +461,27 @@ export class FerrostarMap extends LitElement {
         ${this.customStyles}
       </style>
       <div id="container">
-        <slot id="map"></slot>
-        <instructions-view .tripState=${this._tripState}></instructions-view>
-        <div id="bottom-component">
-          <trip-progress-view
-            .tripState=${this._tripState}
-          ></trip-progress-view>
-          <button
-            id="stop-button"
-            @click=${this.stopNavigation}
-            ?hidden=${!this._tripState}
-          >
-            <img src=${CloseSvg} alt="Stop navigation" class="icon" />
-          </button>
+        <div id="map">
+          <!-- Fix names/ids; currently this is a breaking change -->
+          <slot id="map-content"></slot>
+          <div id="overlay">
+            <instructions-view
+              .tripState=${this._tripState}
+            ></instructions-view>
+
+            <div id="bottom-component">
+              <trip-progress-view
+                .tripState=${this._tripState}
+              ></trip-progress-view>
+              <button
+                id="stop-button"
+                @click=${this.stopNavigation}
+                ?hidden=${!this._tripState}
+              >
+                <img src=${CloseSvg} alt="Stop navigation" class="icon" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     `;

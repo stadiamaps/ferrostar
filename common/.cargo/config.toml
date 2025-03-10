@@ -1,0 +1,5 @@
+# Our current assumption is that this target is only used to build
+# for targets with JavaScript available.
+# See https://docs.rs/getrandom/latest/getrandom/#opt-in-backends
+[target.wasm32-unknown-unknown]
+rustflags = ['--cfg', 'getrandom_backend="wasm_js"']
