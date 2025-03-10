@@ -11,12 +11,12 @@ const config = getDefaultConfig(projectRoot);
 // If your monorepo tooling can give you the list of monorepo workspaces linked
 // in your app workspace, you can automate this list instead of hardcoding them.
 const monorepoPackages = {
-  '@stadiamap/ferrostar-uniffi-react-native': path.resolve(
+  '@stadiamaps/ferrostar-uniffi-react-native': path.resolve(
     monorepoRoot,
     'uniffi',
   ),
-  '@stadiamap/ferrostar-core-react-native': path.resolve(monorepoRoot, 'core'),
-  '@stadiamap/ferrostar-maplibre-react-native': path.resolve(
+  '@stadiamaps/ferrostar-core-react-native': path.resolve(monorepoRoot, 'core'),
+  '@stadiamaps/ferrostar-maplibre-react-native': path.resolve(
     monorepoRoot,
     'maplibreui',
   ),
