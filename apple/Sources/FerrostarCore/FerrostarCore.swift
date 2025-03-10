@@ -33,6 +33,9 @@ public enum CorrectiveAction {
 ///
 /// This is the central point responsible for relaying updates back to the application.
 public protocol FerrostarCoreDelegate: AnyObject {
+    /// Called when navigation is started on a specific route.
+    func core(_ core: FerrostarCore, didStartWith route: Route)
+
     /// Called when the core detects that the user has deviated from the route.
     ///
     /// This hook enables app developers to take the most appropriate corrective action.
@@ -85,6 +88,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     /// The observable state of the model (for easy binding in SwiftUI views).
     @Published public private(set) var state: NavigationState?
+    @Published public private(set) var route: Route?
 
     public let annotation: (any AnnotationPublishing)?
 
@@ -267,6 +271,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         locationProvider.startUpdating()
 
+        self.route = route
         state = NavigationState(
             tripState: controller.getInitialState(location: location),
             routeGeometry: route.geometry
@@ -291,6 +296,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
         navigationController = nil
+        route = nil
         state = nil
         queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()

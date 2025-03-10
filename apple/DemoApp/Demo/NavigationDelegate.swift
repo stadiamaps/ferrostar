@@ -6,6 +6,10 @@ import FerrostarCoreFFI
 /// In case you do though, this sample implementation shows what you'll need to get started
 /// by re-implementing the default behaviors of the core.
 class NavigationDelegate: FerrostarCoreDelegate {
+    func core(_: FerrostarCore, didStartWith _: Route) {
+        // TODO: Create defaults extension on FerrostarCoreDelegate
+    }
+
     func core(_: FerrostarCore, correctiveActionForDeviation _: Double,
               remainingWaypoints waypoints: [Waypoint]) -> CorrectiveAction
     {

@@ -117,6 +117,16 @@ let package = Package(
         // MARK: Testing
 
         .testTarget(
+            name: "FerrostarCarPlayUITests",
+            dependencies: [
+                "FerrostarCore",
+                "FerrostarSwiftUI",
+                "FerrostarCarPlayUI",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
+            path: "apple/Tests/FerrostarCarPlayUITests"
+        ),
+        .testTarget(
             name: "FerrostarCoreTests",
             dependencies: [
                 "FerrostarCore",
