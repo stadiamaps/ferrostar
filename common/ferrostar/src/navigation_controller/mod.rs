@@ -155,14 +155,14 @@ impl NavigationController {
                             annotation_json,
                         };
 
-                        NavState::new(trip_state, step_advance_condition)
+                        NavState::new(trip_state, todo!())
                     }
-                    StepAdvanceStatus::EndOfRoute => TripState::Complete,
+                    StepAdvanceStatus::EndOfRoute => NavState::completed(),
                 }
             }
             // It's tempting to throw an error here, since the caller should know better, but
             // a mistake like this is technically harmless.
-            TripState::Complete => TripState::Complete,
+            TripState::Complete => NavState::completed(),
         }
     }
 
@@ -172,9 +172,9 @@ impl NavigationController {
     ///
     /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
     /// this function will panic.
-    pub fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
-        match state {
-            TripState::Idle => TripState::Idle,
+    pub fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState {
+        match state.trip_state {
+            TripState::Idle => NavState::idle(),
             TripState::Navigating {
                 ref remaining_steps,
                 ref remaining_waypoints,
@@ -185,7 +185,7 @@ impl NavigationController {
                 ..
             } => {
                 let Some(current_step) = remaining_steps.first() else {
-                    return TripState::Complete;
+                    return NavState::completed();
                 };
 
                 //
@@ -204,7 +204,7 @@ impl NavigationController {
                 );
 
                 // Trim the remaining waypoints if needed.
-                let remaining_waypoints = if self.should_advance_waypoint(state) {
+                let remaining_waypoints = if self.should_advance_waypoint(&state.trip_state) {
                     let mut remaining_waypoints = remaining_waypoints.clone();
                     remaining_waypoints.remove(0);
                     remaining_waypoints
@@ -224,6 +224,13 @@ impl NavigationController {
                     annotation_json: annotation_json.clone(),
                 };
 
+                let next_step = remaining_steps.get(1).cloned();
+                let step_advance_result = state.step_advance_condition.should_advance_step(
+                    &snapped_user_location,
+                    *current_step,
+                    next_step,
+                );
+
                 match if should_advance_to_next_step(
                     &current_step_linestring,
                     remaining_steps.get(1),
@@ -236,7 +243,7 @@ impl NavigationController {
                     // Do not advance
                     intermediate_state
                 } {
-                    TripState::Idle => TripState::Idle,
+                    TripState::Idle => NavState::idle(),
                     TripState::Navigating {
                         snapped_user_location,
                         remaining_steps,
@@ -282,7 +289,7 @@ impl NavigationController {
                         let annotation_json = current_step_geometry_index
                             .and_then(|index| current_step.get_annotation_at_current_index(index));
 
-                        TripState::Navigating {
+                        let trip_state = TripState::Navigating {
                             current_step_geometry_index: updated_current_step_geometry_index,
                             snapped_user_location: updated_snapped_user_location,
                             remaining_steps,
@@ -292,13 +299,15 @@ impl NavigationController {
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
-                        }
+                        };
+
+                        NavState::new(trip_state, todo!())
                     }
-                    TripState::Complete => TripState::Complete,
+                    TripState::Complete => NavState::completed(),
                 }
             }
             // Terminal state
-            TripState::Complete => TripState::Complete,
+            TripState::Complete => NavState::completed(),
         }
     }
 }
