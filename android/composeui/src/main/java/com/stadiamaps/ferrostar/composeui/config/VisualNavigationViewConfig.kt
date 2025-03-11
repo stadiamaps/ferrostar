@@ -8,7 +8,7 @@ data class VisualNavigationViewConfig(
 
     // Zoom
     var showZoom: Boolean = false,
-    
+
     // Recenter
     var showRecenter: Boolean = false,
 
@@ -16,7 +16,8 @@ data class VisualNavigationViewConfig(
     var speedLimitStyle: SignageStyle? = null,
 ) {
   companion object {
-    fun Default() = VisualNavigationViewConfig(showMute = true, showZoom = true, showRecenter = true)
+    fun Default() =
+        VisualNavigationViewConfig(showMute = true, showZoom = true, showRecenter = true)
   }
 }
 
