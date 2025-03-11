@@ -86,8 +86,9 @@ impl StepAdvanceCondition for DistanceToEndOfStep {
 pub struct DistanceFromEndOfStep {
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
-    minimum_horizontal_accuracy: u16,
-    distance: u16,
+    pub minimum_horizontal_accuracy: u16,
+    /// The minimum the distance the user must have travelled from the step's polyline.
+    pub distance: u16,
 }
 
 impl StepAdvanceCondition for DistanceFromEndOfStep {
@@ -136,9 +137,9 @@ impl StepAdvanceCondition for DistanceFromEndOfStep {
 pub struct MinimumDistanceFromCurrentStepLine {
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
-    minimum_horizontal_accuracy: u16,
-    /// The minimum the distance the user must have travelled from the steps polyline.
-    distance: u16,
+    pub minimum_horizontal_accuracy: u16,
+    /// The minimum the distance the user must have travelled from the step's polyline.
+    pub distance: u16,
 }
 
 impl StepAdvanceCondition for MinimumDistanceFromCurrentStepLine {
@@ -269,6 +270,17 @@ impl DistanceEntryAndExitCondition {
             minimum_horizontal_accuracy,
             distance_to_end_of_step,
             distance_after_end_step,
+            has_reached_end_of_current_step: false,
+        }
+    }
+}
+
+impl Default for DistanceEntryAndExitCondition {
+    fn default() -> Self {
+        Self {
+            minimum_horizontal_accuracy: 0,
+            distance_to_end_of_step: 10,
+            distance_after_end_step: 5,
             has_reached_end_of_current_step: false,
         }
     }

@@ -3,11 +3,15 @@ extern crate ferrostar;
 use ferrostar::deviation_detection::RouteDeviationTracking;
 use ferrostar::models::{Route, UserLocation};
 use ferrostar::navigation_controller::models::{
-    CourseFiltering, NavigationControllerConfig, StepAdvanceMode, TripState, WaypointAdvanceMode,
+    CourseFiltering, NavigationControllerConfig, TripState, WaypointAdvanceMode,
+};
+use ferrostar::navigation_controller::step_advance::conditions::{
+    DistanceToEndOfStep, ManualStepAdvance,
 };
 use ferrostar::navigation_controller::NavigationController;
 use ferrostar::routing_adapters::osrm::OsrmResponseParser;
 use ferrostar::routing_adapters::RouteResponseParser;
+use std::sync::Arc;
 
 #[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
@@ -45,19 +49,24 @@ fn same_location_results_in_identical_state() {
         route,
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
-            step_advance: StepAdvanceMode::Manual,
+            step_advance_condition: Arc::new(ManualStepAdvance),
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
     );
 
     let initial_state = controller.get_initial_state(initial_user_location);
-    assert!(matches!(initial_state, TripState::Navigating { .. }));
+    assert!(matches!(
+        initial_state.trip_state(),
+        TripState::Navigating { .. }
+    ));
 
     // Nothing should happen if given the exact same user location update
     assert_eq!(
-        controller.update_user_location(initial_user_location, &initial_state),
-        initial_state
+        controller
+            .update_user_location(initial_user_location, &initial_state)
+            .trip_state(),
+        initial_state.trip_state()
     );
 }
 
@@ -83,7 +92,7 @@ fn simple_route_state_machine_manual_advance() {
         route,
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
-            step_advance: StepAdvanceMode::Manual,
+            step_advance_condition: Arc::new(ManualStepAdvance),
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
@@ -95,7 +104,7 @@ fn simple_route_state_machine_manual_advance() {
         snapped_user_location,
         remaining_steps: initial_remaining_steps,
         ..
-    } = initial_state.clone()
+    } = initial_state.trip_state().clone()
     else {
         panic!("Expected state to be navigating");
     };
@@ -108,7 +117,7 @@ fn simple_route_state_machine_manual_advance() {
     let TripState::Navigating {
         snapped_user_location,
         ..
-    } = intermediate_state.clone()
+    } = intermediate_state.trip_state().clone()
     else {
         panic!("Expected state to be navigating");
     };
@@ -119,7 +128,7 @@ fn simple_route_state_machine_manual_advance() {
     let terminal_state = controller.advance_to_next_step(&intermediate_state);
     let TripState::Navigating {
         remaining_steps, ..
-    } = terminal_state.clone()
+    } = terminal_state.trip_state().clone()
     else {
         panic!("Expected state to be navigating");
     };
@@ -128,7 +137,9 @@ fn simple_route_state_machine_manual_advance() {
 
     // There are only two steps, so advancing to the next step should put us in the "arrived" state
     assert!(matches!(
-        controller.advance_to_next_step(&terminal_state),
+        controller
+            .advance_to_next_step(&terminal_state)
+            .trip_state(),
         TripState::Complete { .. }
     ));
 }
@@ -157,10 +168,10 @@ fn simple_route_state_machine_advances_with_location_change() {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             // NOTE: We will use an exact location to trigger the update;
             // this is not testing the thresholds.
-            step_advance: StepAdvanceMode::DistanceToEndOfStep {
+            step_advance_condition: Arc::new(DistanceToEndOfStep {
                 distance: 0,
                 minimum_horizontal_accuracy: 0,
-            },
+            }),
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
@@ -172,7 +183,7 @@ fn simple_route_state_machine_advances_with_location_change() {
         remaining_steps: initial_remaining_steps,
         remaining_waypoints,
         ..
-    } = initial_state.clone()
+    } = initial_state.trip_state().clone()
     else {
         panic!("Expected state to be navigating");
     };
@@ -184,7 +195,9 @@ fn simple_route_state_machine_advances_with_location_change() {
         remaining_waypoints,
         progress,
         ..
-    } = controller.update_user_location(user_location_end_of_first_step, &initial_state)
+    } = controller
+        .update_user_location(user_location_end_of_first_step, &initial_state)
+        .trip_state()
     else {
         panic!("Expected state to be navigating");
     };

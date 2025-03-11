@@ -11,12 +11,14 @@ use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
+use super::step_advance::conditions::ManualStepAdvance;
 use super::step_advance::StepAdvanceCondition;
 
+#[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct NavState {
-    pub trip_state: TripState,
-    pub step_advance_condition: Option<Arc<dyn StepAdvanceCondition>>,
+    trip_state: TripState,
+    step_advance_condition: Arc<dyn StepAdvanceCondition>,
 }
 
 impl NavState {
@@ -26,22 +28,32 @@ impl NavState {
     ) -> Self {
         Self {
             trip_state,
-            step_advance_condition: Some(step_advance_condition),
+            step_advance_condition,
         }
     }
 
     pub fn idle() -> Self {
         Self {
             trip_state: TripState::Idle,
-            step_advance_condition: None,
+            step_advance_condition: Arc::new(ManualStepAdvance {}), // No op condition.
         }
     }
 
     pub fn completed() -> Self {
         Self {
             trip_state: TripState::Complete,
-            step_advance_condition: None,
+            step_advance_condition: Arc::new(ManualStepAdvance {}), // No op condition.
         }
+    }
+
+    #[inline]
+    pub fn trip_state(&self) -> TripState {
+        self.trip_state.clone()
+    }
+
+    #[inline]
+    pub fn step_advance_condition(&self) -> Arc<dyn StepAdvanceCondition> {
+        self.step_advance_condition.clone()
     }
 }
 

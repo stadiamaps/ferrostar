@@ -105,7 +105,7 @@ impl NavigationController {
     /// This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
     pub fn advance_to_next_step(&self, state: &NavState) -> NavState {
-        match state.trip_state {
+        match state.trip_state() {
             TripState::Idle => NavState::idle(),
             TripState::Navigating {
                 current_step_geometry_index,
@@ -127,7 +127,7 @@ impl NavigationController {
                         remaining_steps.remove(0);
 
                         let progress = calculate_trip_progress(
-                            &(*snapped_user_location).into(),
+                            &snapped_user_location.into(),
                             &linestring,
                             &remaining_steps,
                         );
@@ -142,20 +142,20 @@ impl NavigationController {
                             .and_then(|index| current_step.get_annotation_at_current_index(index));
 
                         let trip_state = TripState::Navigating {
-                            current_step_geometry_index: *current_step_geometry_index,
-                            snapped_user_location: *snapped_user_location,
+                            current_step_geometry_index,
+                            snapped_user_location,
                             remaining_steps,
                             remaining_waypoints: remaining_waypoints.clone(),
                             progress,
                             // NOTE: We *can't* run deviation calculations in this method,
                             // as it requires a non-snapped user location.
-                            deviation: *deviation,
+                            deviation,
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
                         };
 
-                        NavState::new(trip_state, todo!())
+                        NavState::new(trip_state, state.step_advance_condition())
                     }
                     StepAdvanceStatus::EndOfRoute => NavState::completed(),
                 }
@@ -173,7 +173,7 @@ impl NavigationController {
     /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
     /// this function will panic.
     pub fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState {
-        match state.trip_state {
+        match state.trip_state() {
             TripState::Idle => NavState::idle(),
             TripState::Navigating {
                 ref remaining_steps,
@@ -204,7 +204,7 @@ impl NavigationController {
                 );
 
                 // Trim the remaining waypoints if needed.
-                let remaining_waypoints = if self.should_advance_waypoint(&state.trip_state) {
+                let remaining_waypoints = if self.should_advance_waypoint(&state.trip_state()) {
                     let mut remaining_waypoints = remaining_waypoints.clone();
                     remaining_waypoints.remove(0);
                     remaining_waypoints
@@ -212,37 +212,38 @@ impl NavigationController {
                     remaining_waypoints.clone()
                 };
 
-                let intermediate_state = TripState::Navigating {
-                    current_step_geometry_index,
-                    snapped_user_location,
-                    remaining_steps: remaining_steps.clone(),
-                    remaining_waypoints: remaining_waypoints.clone(),
-                    progress,
-                    deviation: *deviation,
-                    visual_instruction: visual_instruction.clone(),
-                    spoken_instruction: spoken_instruction.clone(),
-                    annotation_json: annotation_json.clone(),
-                };
-
+                // Get the step advance condition result.
                 let next_step = remaining_steps.get(1).cloned();
-                let step_advance_result = state.step_advance_condition.should_advance_step(
-                    &snapped_user_location,
-                    *current_step,
+                let step_advance_result = state.step_advance_condition().should_advance_step(
+                    snapped_user_location,
+                    current_step.clone(),
                     next_step,
                 );
 
-                match if should_advance_to_next_step(
-                    &current_step_linestring,
-                    remaining_steps.get(1),
-                    &location,
-                    &self.config.step_advance_condition,
-                ) {
+                let intermediate_state = NavState::new(
+                    TripState::Navigating {
+                        current_step_geometry_index,
+                        snapped_user_location,
+                        remaining_steps: remaining_steps.clone(),
+                        remaining_waypoints,
+                        progress,
+                        deviation,
+                        visual_instruction,
+                        spoken_instruction,
+                        annotation_json,
+                    },
+                    step_advance_result.next_iteration,
+                );
+
+                let new_nav_state = if step_advance_result.should_advance {
                     // Advance to the next step
                     self.advance_to_next_step(&intermediate_state)
                 } else {
                     // Do not advance
                     intermediate_state
-                } {
+                };
+
+                match new_nav_state.trip_state() {
                     TripState::Idle => NavState::idle(),
                     TripState::Navigating {
                         snapped_user_location,
@@ -261,6 +262,7 @@ impl NavigationController {
                         let current_step = remaining_steps
                             .first()
                             .expect("Invalid state: navigating with zero remaining steps.");
+
                         let deviation = self.config.route_deviation_tracking.check_route_deviation(
                             location,
                             &self.route,
@@ -301,7 +303,7 @@ impl NavigationController {
                             annotation_json,
                         };
 
-                        NavState::new(trip_state, todo!())
+                        NavState::new(trip_state, new_nav_state.step_advance_condition())
                     }
                     TripState::Complete => NavState::completed(),
                 }
@@ -420,7 +422,9 @@ mod tests {
     use super::*;
     use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
     use crate::navigation_controller::models::CourseFiltering;
-    use crate::navigation_controller::step_advance::conditions::DistanceToEndOfStep;
+    use crate::navigation_controller::step_advance::conditions::{
+        DistanceEntryAndExitCondition, DistanceToEndOfStep, MinimumDistanceFromCurrentStepLine,
+    };
     use crate::navigation_controller::test_helpers::{
         get_extended_route, get_self_intersecting_route,
     };
@@ -460,7 +464,7 @@ mod tests {
             let new_state =
                 controller.update_user_location(new_simulation_state.current_location, &state);
 
-            match new_state {
+            match new_state.trip_state() {
                 TripState::Idle => {}
                 TripState::Navigating {
                     current_step_geometry_index,
@@ -493,7 +497,7 @@ mod tests {
             states.push(new_state);
         }
 
-        states
+        states.into_iter().map(|state| state.trip_state()).collect()
     }
 
     // Full simulations for several routes with different settings
@@ -509,17 +513,14 @@ mod tests {
         ));
     }
 
-    // TODO: Fixme
-    // #[test]
-    // fn test_extended_relative_linestring() {
-    //     insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-    //         get_extended_route(),
-    //         StepAdvanceMode::RelativeLineStringDistance {
-    //             minimum_horizontal_accuracy: 0,
-    //             special_advance_conditions: None,
-    //         }
-    //     ));
-    // }
+    #[test]
+    fn test_extended_relative_linestring() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_extended_route(),
+            // TODO: This condition should probably be tuned to replace the relative line string distance condition
+            Arc::new(DistanceEntryAndExitCondition::default())
+        ));
+    }
 
     #[test]
     fn test_self_intersecting_exact_distance() {
@@ -532,29 +533,23 @@ mod tests {
         ));
     }
 
-    // TODO: Fixme
-    // #[test]
-    // fn test_self_intersecting_relative_linestring() {
-    //     insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-    //         get_self_intersecting_route(),
-    //         StepAdvanceMode::RelativeLineStringDistance {
-    //             minimum_horizontal_accuracy: 0,
-    //             special_advance_conditions: None,
-    //         }
-    //     ));
-    // }
+    #[test]
+    fn test_self_intersecting_relative_linestring() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_self_intersecting_route(),
+            // TODO: This condition should probably be tuned to replace the relative line string distance condition
+            Arc::new(DistanceEntryAndExitCondition::default())
+        ));
+    }
 
-    // TODO: Fixme
-    // #[test]
-    // fn test_self_intersecting_relative_linestring_min_line_distance() {
-    //     insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-    //         get_self_intersecting_route(),
-    //         StepAdvanceMode::RelativeLineStringDistance {
-    //             minimum_horizontal_accuracy: 0,
-    //             special_advance_conditions: Some(
-    //                 SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
-    //             ),
-    //         }
-    //     ));
-    // }
+    #[test]
+    fn test_self_intersecting_relative_linestring_min_line_distance() {
+        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            get_self_intersecting_route(),
+            Arc::new(MinimumDistanceFromCurrentStepLine {
+                distance: 10,
+                minimum_horizontal_accuracy: 0,
+            })
+        ));
+    }
 }

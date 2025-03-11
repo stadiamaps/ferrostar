@@ -6,14 +6,14 @@ pub mod conditions;
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct StepAdvanceResult {
     /// The step should be advanced.
-    should_advance: bool,
+    pub should_advance: bool,
     /// The next iteration of the step advance condition.
     /// This allows us to copy the condition and it's current state
     /// to the next user location update/next iteraction of the step
     /// advance calculation.
     ///
     /// IMPORTANT! If the condition advances. This must be the clean/default state.
-    next_iteration: Arc<dyn StepAdvanceCondition>,
+    pub next_iteration: Arc<dyn StepAdvanceCondition>,
 }
 
 /// When implementing custom step advance logic, this trait allows you to define
