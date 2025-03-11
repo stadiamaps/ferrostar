@@ -17,8 +17,11 @@ use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
 };
-use models::{NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode};
+use models::{
+    NavState, NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode,
+};
 use std::clone::Clone;
+use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
@@ -44,12 +47,12 @@ impl NavigationController {
     }
 
     /// Returns initial trip state as if the user had just started the route with no progress.
-    pub fn get_initial_state(&self, location: UserLocation) -> TripState {
+    pub fn get_initial_state(&self, location: UserLocation) -> NavState {
         let remaining_steps = self.route.steps.clone();
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return TripState::Complete;
+            return NavState::completed();
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -77,7 +80,7 @@ impl NavigationController {
         let annotation_json = current_step_geometry_index
             .and_then(|index| current_route_step.get_annotation_at_current_index(index));
 
-        TripState::Navigating {
+        let trip_state = TripState::Navigating {
             current_step_geometry_index,
             snapped_user_location,
             remaining_steps,
@@ -88,7 +91,9 @@ impl NavigationController {
             visual_instruction,
             spoken_instruction,
             annotation_json,
-        }
+        };
+        let next_advance = Arc::clone(&self.config.step_advance_condition);
+        return NavState::new(trip_state, next_advance);
     }
 
     /// Advances navigation to the next step.
@@ -99,9 +104,9 @@ impl NavigationController {
     ///
     /// This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-    pub fn advance_to_next_step(&self, state: &TripState) -> TripState {
-        match state {
-            TripState::Idle => TripState::Idle,
+    pub fn advance_to_next_step(&self, state: &NavState) -> NavState {
+        match state.trip_state {
+            TripState::Idle => NavState::idle(),
             TripState::Navigating {
                 current_step_geometry_index,
                 snapped_user_location,
@@ -136,7 +141,7 @@ impl NavigationController {
                         let annotation_json = current_step_geometry_index
                             .and_then(|index| current_step.get_annotation_at_current_index(index));
 
-                        TripState::Navigating {
+                        let trip_state = TripState::Navigating {
                             current_step_geometry_index: *current_step_geometry_index,
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
@@ -148,7 +153,9 @@ impl NavigationController {
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
-                        }
+                        };
+
+                        NavState::new(trip_state, step_advance_condition)
                     }
                     StepAdvanceStatus::EndOfRoute => TripState::Complete,
                 }

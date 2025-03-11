@@ -13,6 +13,38 @@ use tsify::Tsify;
 
 use super::step_advance::StepAdvanceCondition;
 
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+pub struct NavState {
+    pub trip_state: TripState,
+    pub step_advance_condition: Option<Arc<dyn StepAdvanceCondition>>,
+}
+
+impl NavState {
+    pub fn new(
+        trip_state: TripState,
+        step_advance_condition: Arc<dyn StepAdvanceCondition>,
+    ) -> Self {
+        Self {
+            trip_state,
+            step_advance_condition: Some(step_advance_condition),
+        }
+    }
+
+    pub fn idle() -> Self {
+        Self {
+            trip_state: TripState::Idle,
+            step_advance_condition: None,
+        }
+    }
+
+    pub fn completed() -> Self {
+        Self {
+            trip_state: TripState::Complete,
+            step_advance_condition: None,
+        }
+    }
+}
+
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
