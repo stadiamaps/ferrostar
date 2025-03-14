@@ -46,7 +46,6 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
                     camera: $camera,
                     navigationState: ferrostarCore.state
                 ) { _ in
-                    userLayers
                 }
                 .navigationMapViewContentInset(.landscape(within: geometry, horizontalPct: 0.65))
             }
