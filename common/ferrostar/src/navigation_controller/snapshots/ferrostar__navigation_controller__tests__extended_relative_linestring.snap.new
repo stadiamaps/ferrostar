@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-assertion_line: 518
+assertion_line: 524
 expression: "test_full_route_state_snapshot(get_extended_route(),\n    Arc::new(DistanceEntryAndExitCondition::default()))"
 ---
 - Navigating:

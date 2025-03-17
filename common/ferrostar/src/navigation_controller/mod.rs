@@ -17,6 +17,7 @@ use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
 };
+use log::info;
 use models::{
     NavState, NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode,
 };
@@ -218,6 +219,11 @@ impl NavigationController {
                     snapped_user_location,
                     current_step.clone(),
                     next_step,
+                );
+
+                info!(
+                    "StepAdvanceResult: should_advance={}",
+                    step_advance_result.should_advance
                 );
 
                 let intermediate_state = NavState::new(
@@ -425,9 +431,7 @@ mod tests {
     use crate::navigation_controller::step_advance::conditions::{
         DistanceEntryAndExitCondition, DistanceToEndOfStep, MinimumDistanceFromCurrentStepLine,
     };
-    use crate::navigation_controller::test_helpers::{
-        get_extended_route, get_self_intersecting_route,
-    };
+    use crate::navigation_controller::test_helpers::{get_test_route, TestRoute};
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
     };
@@ -505,7 +509,7 @@ mod tests {
     #[test]
     fn test_extended_exact_distance() {
         insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_extended_route(),
+            get_test_route(TestRoute::Extended),
             Arc::new(DistanceToEndOfStep {
                 distance: 0,
                 minimum_horizontal_accuracy: 0,
@@ -516,7 +520,7 @@ mod tests {
     #[test]
     fn test_extended_relative_linestring() {
         insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_extended_route(),
+            get_test_route(TestRoute::Extended),
             // TODO: This condition should probably be tuned to replace the relative line string distance condition
             Arc::new(DistanceEntryAndExitCondition::default())
         ));
@@ -525,7 +529,7 @@ mod tests {
     #[test]
     fn test_self_intersecting_exact_distance() {
         insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
+            get_test_route(TestRoute::SelfIntersecting),
             Arc::new(DistanceToEndOfStep {
                 distance: 0,
                 minimum_horizontal_accuracy: 0,
@@ -536,7 +540,7 @@ mod tests {
     #[test]
     fn test_self_intersecting_relative_linestring() {
         insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
+            get_test_route(TestRoute::SelfIntersecting),
             // TODO: This condition should probably be tuned to replace the relative line string distance condition
             Arc::new(DistanceEntryAndExitCondition::default())
         ));
@@ -545,7 +549,7 @@ mod tests {
     #[test]
     fn test_self_intersecting_relative_linestring_min_line_distance() {
         insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
+            get_test_route(TestRoute::SelfIntersecting),
             Arc::new(MinimumDistanceFromCurrentStepLine {
                 distance: 10,
                 minimum_horizontal_accuracy: 0,

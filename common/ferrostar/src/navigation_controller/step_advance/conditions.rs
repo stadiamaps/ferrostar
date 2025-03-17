@@ -331,3 +331,78 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::time::SystemTime;
+
+    use insta::assert_debug_snapshot;
+
+    use crate::{
+        models::GeographicCoordinate,
+        navigation_controller::test_helpers::{get_test_route, TestRoute},
+    };
+
+    use super::*;
+
+    fn load_route_steps(
+        test_route: TestRoute,
+        step_index: usize,
+    ) -> (RouteStep, Option<RouteStep>) {
+        let route = get_test_route(test_route);
+        let steps = route.steps;
+        (
+            steps[step_index].clone(),
+            steps.get(step_index + 1).cloned(),
+        )
+    }
+
+    fn user_location(lat: f64, lng: f64, horizontal_accuracy: f64) -> UserLocation {
+        UserLocation {
+            coordinates: GeographicCoordinate { lat, lng },
+            horizontal_accuracy,
+            course_over_ground: None,
+            timestamp: SystemTime::now(),
+            speed: None,
+        }
+    }
+
+    fn test_step_advance_condition(
+        condition: Arc<dyn StepAdvanceCondition>,
+        test_route: TestRoute,
+        step_index: usize,
+    ) -> Vec<bool> {
+        let (step, next_step) = load_route_steps(test_route, step_index);
+        step.clone()
+            .geometry
+            .iter()
+            .map(|c| {
+                let user_location = user_location(c.lat, c.lng, 10.0);
+                let result =
+                    condition.should_advance_step(user_location, step.clone(), next_step.clone());
+                result.should_advance
+            })
+            .collect::<Vec<_>>()
+    }
+
+    #[test]
+    fn test_manual_step_advance() {
+        assert_debug_snapshot!(test_step_advance_condition(
+            Arc::new(ManualStepAdvance),
+            TestRoute::Extended,
+            0
+        ))
+    }
+
+    #[test]
+    fn test_distance_to_end_of_step() {
+        assert_debug_snapshot!(test_step_advance_condition(
+            Arc::new(DistanceToEndOfStep {
+                distance: 10,
+                minimum_horizontal_accuracy: 20,
+            }),
+            TestRoute::Extended,
+            0,
+        ))
+    }
+}
