@@ -41,7 +41,7 @@
     "@stadiamaps/maplibre-search-box": "^1.1.0",
     "prettier": "^3.3.3",
     "typescript": "^5.2.2",
-    "vite": "^5.4.1",
+    "vite": "^6.2.2",
     "vite-plugin-top-level-await": "^1.4.4",
     "vite-plugin-wasm": "^3.3.0",
     "vitest": "^2.0.5"
