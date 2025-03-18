@@ -33,18 +33,18 @@
   },
   "dependencies": {
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
-    "lit": "^3.1.4",
+    "lit": "^3.2.1",
     "maplibre-gl": "^4.5.0",
-    "vite-plugin-dts": "^4.0.3"
+    "vite-plugin-dts": "^4.5.3"
   },
   "devDependencies": {
     "@stadiamaps/maplibre-search-box": "^1.1.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.5.3",
     "typescript": "^5.2.2",
     "vite": "^6.2.2",
-    "vite-plugin-top-level-await": "^1.4.4",
+    "vite-plugin-top-level-await": "^1.5.0",
     "vite-plugin-wasm": "^3.3.0",
-    "vitest": "^2.0.5"
+    "vitest": "^3.0.9"
   },
   "keywords": [
     "navigation",
