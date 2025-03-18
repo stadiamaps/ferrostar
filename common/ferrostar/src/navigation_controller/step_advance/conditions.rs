@@ -334,14 +334,12 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
 
 #[cfg(test)]
 mod tests {
-    use std::time::SystemTime;
-
-    use insta::assert_debug_snapshot;
-
     use crate::{
         models::GeographicCoordinate,
         navigation_controller::test_helpers::{get_test_route, TestRoute},
     };
+    use geo::HaversineDistance;
+    use std::time::SystemTime;
 
     use super::*;
 
@@ -367,42 +365,78 @@ mod tests {
         }
     }
 
-    fn test_step_advance_condition(
+    /// Runs through the step geometry and returns a list of booleans
+    /// indicating whether the step should advance at each point.
+    fn calculate_step_advance_along_step(
         condition: Arc<dyn StepAdvanceCondition>,
         test_route: TestRoute,
         step_index: usize,
-    ) -> Vec<bool> {
+    ) -> (Vec<(bool, UserLocation)>, RouteStep, Option<RouteStep>) {
         let (step, next_step) = load_route_steps(test_route, step_index);
-        step.clone()
-            .geometry
+        (
+            step.clone()
+                .geometry
+                .iter()
+                .map(|c| {
+                    let user_location = user_location(c.lat, c.lng, 10.0);
+                    let result = condition.should_advance_step(
+                        user_location,
+                        step.clone(),
+                        next_step.clone(),
+                    );
+                    (result.should_advance, user_location)
+                })
+                .collect::<Vec<_>>(),
+            step,
+            next_step,
+        )
+    }
+
+    fn extract_step_advance_points(
+        states: &[(bool, UserLocation)],
+    ) -> Vec<(usize, &(bool, UserLocation))> {
+        states
             .iter()
-            .map(|c| {
-                let user_location = user_location(c.lat, c.lng, 10.0);
-                let result =
-                    condition.should_advance_step(user_location, step.clone(), next_step.clone());
-                result.should_advance
-            })
-            .collect::<Vec<_>>()
+            .enumerate()
+            .filter(|(_, (should_advance, _))| *should_advance)
+            .collect()
     }
 
     #[test]
     fn test_manual_step_advance() {
-        assert_debug_snapshot!(test_step_advance_condition(
-            Arc::new(ManualStepAdvance),
-            TestRoute::Extended,
-            0
-        ))
+        let (states, _, _) =
+            calculate_step_advance_along_step(Arc::new(ManualStepAdvance), TestRoute::Extended, 0);
+
+        // We should never advance to the next step in manual mode,
+        // so the list should always be empty.
+        assert!(extract_step_advance_points(&states).is_empty());
     }
 
     #[test]
     fn test_distance_to_end_of_step() {
-        assert_debug_snapshot!(test_step_advance_condition(
+        let distance = 10;
+        let (states, current_step, _) = calculate_step_advance_along_step(
             Arc::new(DistanceToEndOfStep {
-                distance: 10,
+                distance,
                 minimum_horizontal_accuracy: 20,
             }),
             TestRoute::Extended,
             0,
-        ))
+        );
+
+        let advance_points = extract_step_advance_points(&states);
+
+        // We should have advanced at some point
+        assert!(!advance_points.is_empty());
+
+        let end_of_step = Point::from(
+            current_step
+                .geometry
+                .last()
+                .expect("Expected a step geometry"),
+        );
+        for (_, (_, location)) in advance_points {
+            assert!(Point::from(location).haversine_distance(&end_of_step) < distance as f64)
+        }
     }
 }

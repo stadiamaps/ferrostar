@@ -8,11 +8,11 @@ pub struct StepAdvanceResult {
     /// The step should be advanced.
     pub should_advance: bool,
     /// The next iteration of the step advance condition.
-    /// This allows us to copy the condition and it's current state
-    /// to the next user location update/next iteraction of the step
+    /// This allows us to copy the condition and its current state
+    /// to the next user location update/next interaction of the step
     /// advance calculation.
     ///
-    /// IMPORTANT! If the condition advances. This must be the clean/default state.
+    /// IMPORTANT! If the condition advances. This **must** be the clean/default state.
     pub next_iteration: Arc<dyn StepAdvanceCondition>,
 }
 
@@ -21,7 +21,7 @@ pub struct StepAdvanceResult {
 #[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait StepAdvanceCondition: Sync + Send {
     /// This callback method is used by a step advance condition to receive step updates.
-    /// The step advance condition can choose based on it's outcome and internal state
+    /// The step advance condition can choose based on its outcome and internal state
     /// whether to advance to the next step or not.
     fn should_advance_step(
         &self,

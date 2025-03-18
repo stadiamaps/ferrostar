@@ -81,8 +81,23 @@ impl From<GeographicCoordinate> for Coord {
     }
 }
 
+impl From<&GeographicCoordinate> for Coord {
+    fn from(value: &GeographicCoordinate) -> Self {
+        Self {
+            x: value.lng,
+            y: value.lat,
+        }
+    }
+}
+
 impl From<GeographicCoordinate> for Point {
     fn from(value: GeographicCoordinate) -> Self {
+        Self(value.into())
+    }
+}
+
+impl From<&GeographicCoordinate> for Point {
+    fn from(value: &GeographicCoordinate) -> Self {
         Self(value.into())
     }
 }
@@ -256,6 +271,12 @@ pub struct UserLocation {
 
 impl From<UserLocation> for Point {
     fn from(val: UserLocation) -> Point {
+        Point::new(val.coordinates.lng, val.coordinates.lat)
+    }
+}
+
+impl From<&UserLocation> for Point {
+    fn from(val: &UserLocation) -> Point {
         Point::new(val.coordinates.lng, val.coordinates.lat)
     }
 }
