@@ -1,0 +1,64 @@
+{
+  "name": "@stadiamaps/ferrostar-core-react-native",
+  "version": "0.27.0",
+  "description": "Ferrostar React Native Core",
+  "main": "./lib/index.js",
+  "types": "./src/index.ts",
+  "react-native": "./src/index.ts",
+  "files": [
+    "lib",
+    "src"
+  ],
+  "scripts": {
+    "prepare": "tsup --clean",
+    "clean": "del-cli lib"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android"
+  ],
+  "repository": "git+https://github.com/stadiamaps/ferrostar.git",
+  "collaborators": [
+    "Benjamin Trounson <btrounson@outlook.co.nz> (https://github.com/bjtrounson)",
+    "Ian Wagner <ian@stadiamaps.com>",
+    "Jacob Fielding <jacob@rallista.app>",
+    "Luke Seelenbinder <luke@stadiamaps.com>"
+  ],
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/stadiamaps/ferrostar/issues"
+  },
+  "homepage": "https://github.com/stadiamaps/ferrostar#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@react-native-community/geolocation": "^3.4.0",
+    "@types/react": "^18.3.1",
+    "del-cli": "^5.1.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.2.2"
+  },
+  "peerDependencies": {
+    "@react-native-community/geolocation": "^3.4.0",
+    "react": "*",
+    "react-native": "*"
+  },
+  "dependencies": {
+    "@stadiamaps/ferrostar-uniffi-react-native": "*"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.ts"
+    ],
+    "outDir": "lib",
+    "sourcemap": true,
+    "dts": true,
+    "external": [
+      "react",
+      "react-native"
+    ]
+  },
+  "packageManager": "yarn@3.6.1"
+}
