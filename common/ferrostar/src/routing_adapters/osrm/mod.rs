@@ -48,7 +48,13 @@ impl RouteResponseParser for OsrmResponseParser {
                 .map(|route| Route::from_osrm(route, &res.waypoints, self.polyline_precision))
                 .collect::<Result<Vec<_>, _>>()
         } else {
-            Err(ParsingError::InvalidStatusCode { code: res.code })
+            let error_description = match res.message {
+                Some(message) => format!("{}: {}", res.code, message),
+                None => res.code,
+            };
+            Err(ParsingError::InvalidStatusCode {
+                code: error_description,
+            })
         }
     }
 }
@@ -447,5 +453,48 @@ mod tests {
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec"
         });
+    }
+
+    #[test]
+    fn test_osrm_parser_with_empty_route_array() {
+        let error_json = r#"{
+            "code": "NoRoute",
+            "message": "No route found between the given coordinates",
+            "routes": []
+        }"#;
+
+        let parser = OsrmResponseParser::new(6);
+        let result = parser.parse_response(error_json.as_bytes().to_vec());
+
+        assert!(result.is_err());
+        if let Err(ParsingError::InvalidStatusCode { code }) = result {
+            assert_eq!(
+                code,
+                "NoRoute: No route found between the given coordinates"
+            );
+        } else {
+            panic!("Expected InvalidStatusCode error with proper message");
+        }
+    }
+
+    #[test]
+    fn test_osrm_parser_with_missing_route_field() {
+        let error_json = r#"{
+            "code": "NoRoute",
+            "message": "No route found between the given coordinates"
+        }"#;
+
+        let parser = OsrmResponseParser::new(6);
+        let result = parser.parse_response(error_json.as_bytes().to_vec());
+
+        assert!(result.is_err());
+        if let Err(ParsingError::InvalidStatusCode { code }) = result {
+            assert_eq!(
+                code,
+                "NoRoute: No route found between the given coordinates"
+            );
+        } else {
+            panic!("Expected InvalidStatusCode error with proper message");
+        }
     }
 }
