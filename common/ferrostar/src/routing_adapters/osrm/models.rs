@@ -40,7 +40,9 @@ pub struct RouteResponse {
     pub code: String,
     #[serde(default)]
     pub message: Option<String>,
+    #[serde(default)]
     pub routes: Vec<Route>,
+    #[serde(default)]
     pub waypoints: Vec<Waypoint>,
 }
 

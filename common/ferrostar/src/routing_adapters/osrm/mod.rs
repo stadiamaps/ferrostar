@@ -454,12 +454,29 @@ mod tests {
     }
 
     #[test]
-    fn test_osrm_parser_with_api_error() {
+    fn test_osrm_parser_with_empty_route_array() {
         let error_json = r#"{
-            "code" : "NoRoute",
-            "message" : "No route found between the given coordinates",
-            "routes": [],
-            "waypoints": []
+            "code": "NoRoute",
+            "message": "No route found between the given coordinates",
+            "routes": []
+        }"#;
+
+        let parser = OsrmResponseParser::new(6);
+        let result = parser.parse_response(error_json.as_bytes().to_vec());
+
+        assert!(result.is_err());
+        if let Err(ParsingError::InvalidStatusCode { code }) = result {
+            assert_eq!(code, "NoRoute: No route found between the given coordinates");
+        } else {
+            panic!("Expected InvalidStatusCode error with proper message");
+        }
+    }
+
+    #[test]
+    fn test_osrm_parser_with_missing_route_field() {
+        let error_json = r#"{
+            "code": "NoRoute",
+            "message": "No route found between the given coordinates"
         }"#;
 
         let parser = OsrmResponseParser::new(6);
