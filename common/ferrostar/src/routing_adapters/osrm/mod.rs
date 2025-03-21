@@ -52,7 +52,9 @@ impl RouteResponseParser for OsrmResponseParser {
                 Some(message) => format!("{}: {}", res.code, message),
                 None => res.code,
             };
-            Err(ParsingError::InvalidStatusCode { code: error_description })
+            Err(ParsingError::InvalidStatusCode {
+                code: error_description,
+            })
         }
     }
 }
@@ -466,7 +468,10 @@ mod tests {
 
         assert!(result.is_err());
         if let Err(ParsingError::InvalidStatusCode { code }) = result {
-            assert_eq!(code, "NoRoute: No route found between the given coordinates");
+            assert_eq!(
+                code,
+                "NoRoute: No route found between the given coordinates"
+            );
         } else {
             panic!("Expected InvalidStatusCode error with proper message");
         }
@@ -484,7 +489,10 @@ mod tests {
 
         assert!(result.is_err());
         if let Err(ParsingError::InvalidStatusCode { code }) = result {
-            assert_eq!(code, "NoRoute: No route found between the given coordinates");
+            assert_eq!(
+                code,
+                "NoRoute: No route found between the given coordinates"
+            );
         } else {
             panic!("Expected InvalidStatusCode error with proper message");
         }
