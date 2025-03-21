@@ -38,6 +38,8 @@ pub struct RouteResponse {
     ///
     /// Ok indicates success. TODO: enumerate others?
     pub code: String,
+    #[serde(default)]
+    pub message: Option<String>,
     pub routes: Vec<Route>,
     pub waypoints: Vec<Waypoint>,
 }
