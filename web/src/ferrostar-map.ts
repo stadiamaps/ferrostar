@@ -26,9 +26,6 @@ export class FerrostarMap extends LitElement {
   valhallaEndpointUrl: string = "";
 
   @property()
-  styleUrl: string = "";
-
-  @property()
   profile: string = "";
 
   @property()
@@ -195,9 +192,6 @@ export class FerrostarMap extends LitElement {
       this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     }
     if (this.map && this.map.loaded()) {
-      if (changedProperties.has("styleUrl")) {
-        this.map.setStyle(this.styleUrl);
-      }
       if (changedProperties.has("center")) {
         if (changedProperties.get("center") === null && this.center !== null) {
           this.map.jumpTo({ center: this.center });
@@ -219,54 +213,6 @@ export class FerrostarMap extends LitElement {
         this.map.setZoom(this.zoom);
       }
     }
-  }
-
-  firstUpdated() {
-    // Skip initialization of the map if the user has supplied one already via a slot!
-    const slotChildren =
-      this.shadowRoot!.querySelector("slot")?.assignedElements() || [];
-    if (slotChildren.length == 0 && this.map === null) {
-      this.initMap();
-    }
-  }
-
-  /**
-   * Initialize the MapLibre Map control.
-   *
-   * This is run by default on firstUpdated,
-   * but is skipped if the user adds a map of their own.
-   */
-  initMap() {
-    this.map = new maplibregl.Map({
-      container: this.shadowRoot!.getElementById("map")!,
-      style: this.styleUrl
-        ? this.styleUrl
-        : "https://demotiles.maplibre.org/style.json",
-      center: this.center ?? [0, 0],
-      pitch: this.pitch,
-      bearing: 0,
-      zoom: this.zoom,
-      attributionControl: { compact: true },
-    });
-
-    this.geolocateControl = new GeolocateControl({
-      positionOptions: {
-        enableHighAccuracy: true,
-      },
-      trackUserLocation: true,
-    });
-
-    this.map.addControl(this.geolocateControl);
-
-    this.map.on("load", (e) => {
-      if (this.geolocateOnLoad) {
-        this.geolocateControl?.trigger();
-      }
-
-      if (this.configureMap !== undefined) {
-        this.configureMap(e.target);
-      }
-    });
   }
 
   // TODO: type
@@ -302,6 +248,7 @@ export class FerrostarMap extends LitElement {
 
   // TODO: types
   startNavigation(route: any, config: any) {
+    console.log('startNavigation', this.map)
     this.locationProvider.start();
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
@@ -463,7 +410,6 @@ export class FerrostarMap extends LitElement {
       <div id="container">
         <div id="map">
           <!-- Fix names/ids; currently this is a breaking change -->
-          <slot id="map-content"></slot>
           <div id="overlay">
             <instructions-view
               .tripState=${this._tripState}
