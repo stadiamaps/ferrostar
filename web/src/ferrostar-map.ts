@@ -248,7 +248,6 @@ export class FerrostarMap extends LitElement {
 
   // TODO: types
   startNavigation(route: any, config: any) {
-    console.log('startNavigation', this.map)
     this.locationProvider.start();
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
