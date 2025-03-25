@@ -48,12 +48,9 @@ impl RouteResponseParser for OsrmResponseParser {
                 .map(|route| Route::from_osrm(route, &res.waypoints, self.polyline_precision))
                 .collect::<Result<Vec<_>, _>>()
         } else {
-            let error_description = match res.message {
-                Some(message) => format!("{}: {}", res.code, message),
-                None => res.code,
-            };
             Err(ParsingError::InvalidStatusCode {
-                code: error_description,
+                code: res.code,
+                description: res.message,
             })
         }
     }
@@ -467,10 +464,11 @@ mod tests {
         let result = parser.parse_response(error_json.as_bytes().to_vec());
 
         assert!(result.is_err());
-        if let Err(ParsingError::InvalidStatusCode { code }) = result {
+        if let Err(ParsingError::InvalidStatusCode { code, description }) = result {
+            assert_eq!(code, "NoRoute");
             assert_eq!(
-                code,
-                "NoRoute: No route found between the given coordinates"
+                description,
+                Some("No route found between the given coordinates".to_string())
             );
         } else {
             panic!("Expected InvalidStatusCode error with proper message");
@@ -488,10 +486,11 @@ mod tests {
         let result = parser.parse_response(error_json.as_bytes().to_vec());
 
         assert!(result.is_err());
-        if let Err(ParsingError::InvalidStatusCode { code }) = result {
+        if let Err(ParsingError::InvalidStatusCode { code, description }) = result {
+            assert_eq!(code, "NoRoute");
             assert_eq!(
-                code,
-                "NoRoute: No route found between the given coordinates"
+                description,
+                Some("No route found between the given coordinates".to_string())
             );
         } else {
             panic!("Expected InvalidStatusCode error with proper message");
