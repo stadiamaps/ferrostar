@@ -4584,7 +4584,7 @@ public enum ParsingError {
     )
     case MalformedAnnotations(error: String
     )
-    case InvalidStatusCode(code: String
+    case InvalidStatusCode(code: String, description: String?
     )
     case UnknownParsingError
 }
@@ -4613,7 +4613,8 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
             error: try FfiConverterString.read(from: &buf)
             )
         case 4: return .InvalidStatusCode(
-            code: try FfiConverterString.read(from: &buf)
+            code: try FfiConverterString.read(from: &buf), 
+            description: try FfiConverterOptionString.read(from: &buf)
             )
         case 5: return .UnknownParsingError
 
@@ -4643,9 +4644,10 @@ public struct FfiConverterTypeParsingError: FfiConverterRustBuffer {
             FfiConverterString.write(error, into: &buf)
             
         
-        case let .InvalidStatusCode(code):
+        case let .InvalidStatusCode(code,description):
             writeInt(&buf, Int32(4))
             FfiConverterString.write(code, into: &buf)
+            FfiConverterOptionString.write(description, into: &buf)
             
         
         case .UnknownParsingError:

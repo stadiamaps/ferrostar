@@ -9,9 +9,7 @@ set -u
 # In release mode, we create a ZIP archive of the xcframework and update Package.swift with the computed checksum.
 # This is only needed when cutting a new release, not for local development.
 release=false
-
-# enable githooks, so swiftformat runs as a pre commit hook
-git config core.hooksPath .githooks
+ffi_only=false
 
 for arg in "$@"
 do
@@ -19,6 +17,10 @@ do
         --release)
             release=true
             shift # Remove --release from processing
+            ;;
+        --ffi-only)
+            ffi_only=true
+            shift # Remove --ffi-only from processing
             ;;
         *)
             shift # Ignore other argument from processing
@@ -69,10 +71,21 @@ build_xcframework() {
 
 basename=ferrostar
 
-cargo build -p $basename --lib --release --target x86_64-apple-ios
-cargo build -p $basename --lib --release --target aarch64-apple-ios-sim
 cargo build -p $basename --lib --release --target aarch64-apple-ios
 
 generate_ffi $basename
+
+if $ffi_only; then
+  echo "FFI-only build completed. Skipping XCFramework generation."
+  exit 0
+fi
+
+# enable githooks, so swiftformat runs as a pre commit hook
+git config core.hooksPath .githooks
+
+cargo build -p $basename --lib --release --target aarch64-apple-ios-sim
+cargo build -p $basename --lib --release --target x86_64-apple-ios
+
+
 create_fat_simulator_lib $basename
 build_xcframework $basename
