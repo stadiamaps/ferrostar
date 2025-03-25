@@ -95,7 +95,7 @@ Further, the "normal" Xcode build flow always assumes `xcframeworks` can't chang
 so it processes them before any other build rules.
 Given these limitations, we opted for a shell script until further notice.
 
-If you do not have access to a Mac, you can run `./build/ios.sh --ffi-only`
+If you do not have access to a Mac, you can run `./build-ios.sh --ffi-only`
 to regenerate the UniFFI bindings without invoking xcodebuild.
 
 </div>
