@@ -84,14 +84,21 @@ cd common
 ./build-ios.sh
 ```
 
+<div class="warning">
+
 **IMPORTANT:** every time you make changes to the common core,
-you will need to run [`build-ios.sh`](common/build-ios.sh) to see your changes on iOS!
+you will need to run [`build-ios.sh`](common/build-ios.sh)!
 We want to integrate this into the Xcode build flow in the future,
 but at the time of this writing,
 it is not possible with the Swift package flow.
 Further, the "normal" Xcode build flow always assumes `xcframeworks` can't change during build,
 so it processes them before any other build rules.
 Given these limitations, we opted for a shell script until further notice.
+
+If you do not have access to a Mac, you can run `./build/ios.sh --ffi-only`
+to regenerate the UniFFI bindings without invoking xcodebuild.
+
+</div>
 
 5. Open the Swift package in Xcode.
    (NOTE: Due to the quirks of how SPM is designed,
