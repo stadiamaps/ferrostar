@@ -300,7 +300,7 @@ export class FerrostarMap extends LitElement {
     try {
       return this.routeAdapter.parseResponse(responseData);
     } catch (e) {
-      console.error("Error parsing route response:", String(e));
+      console.error("Error parsing route response:", e);
       throw e;
     }
   }
