@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.26.0"
+version = "0.30.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
@@ -32,12 +32,12 @@ chrono = { version = "0.4.39", features = ["serde"] }
 geo = "0.29.3"
 polyline = "0.11.0"
 rand = "0.8.5"
-serde = { version = "1.0.217", features = ["derive"] }
-serde_json = { version = "1.0.134", default-features = false }
+serde = { version = "1.0.218", features = ["derive"] }
+serde_json = { version = "1.0.140", default-features = false }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
-thiserror = "2.0.3"
+thiserror = "2.0.11"
 uniffi = { workspace = true, optional = true }
-uuid = { version = "1.11.0", features = ["v4", "serde"] }
+uuid = { version = "1.12.1", features = ["v4", "serde"] }
 getrandom = { version = "0.2.15", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
@@ -53,7 +53,7 @@ uniffi = { workspace = true, features = ["build"] }
 [dev-dependencies]
 assert-json-diff = "2.0.2"
 proptest = { version = "1.6.0", default-features = false }
-insta = { version = "1.41.1", features = ["yaml", "redactions"] }
+insta = { version = "1.42.1", features = ["yaml", "redactions"] }
 rstest = "0.24.0"
 wasm-bindgen-test = "0.3"
 

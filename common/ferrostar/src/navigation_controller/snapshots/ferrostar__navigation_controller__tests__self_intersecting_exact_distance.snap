@@ -1,8 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-assertion_line: 496
-expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStepAdvanceMode::DistanceToEndOfStep\n{ distance: 0, minimum_horizontal_accuracy: 0, })"
-snapshot_kind: text
+expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    StepAdvanceMode::DistanceToEndOfStep {\n        distance: 0,\n        minimum_horizontal_accuracy: 0,\n    })"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -313,7 +311,7 @@ snapshot_kind: text
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 227.5923547378452
+      distanceToNextManeuver: 227.59235473784523
       distanceRemaining: 1035.8583547378453
       durationRemaining: 46.733135559702674
     deviation: NoDeviation
@@ -471,7 +469,7 @@ snapshot_kind: text
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 218.6887779033958
+      distanceToNextManeuver: 218.68877790339582
       distanceRemaining: 1026.9547779033958
       durationRemaining: 46.37298490614234
     deviation: NoDeviation
@@ -945,8 +943,8 @@ snapshot_kind: text
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 192.0518152322816
-      distanceRemaining: 1000.3178152322815
+      distanceToNextManeuver: 192.05181523228163
+      distanceRemaining: 1000.3178152322816
       durationRemaining: 45.29551686231688
     deviation: NoDeviation
     visual_instruction: ~
@@ -1103,7 +1101,7 @@ snapshot_kind: text
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 183.1482383988805
+      distanceToNextManeuver: 183.14823839888052
       distanceRemaining: 991.4142383988805
       durationRemaining: 44.93536620879895
     deviation: NoDeviation
@@ -9985,9 +9983,9 @@ snapshot_kind: text
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 472.5097693776747
-      distanceRemaining: 472.5097693776747
-      durationRemaining: 23.262498124567887
+      distanceToNextManeuver: 472.5097693776746
+      distanceRemaining: 472.5097693776746
+      durationRemaining: 23.262498124567884
     deviation: NoDeviation
     visual_instruction: ~
     spoken_instruction: ~
@@ -13631,11 +13629,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 82.96117352281715
       distanceRemaining: 82.96117352281715
@@ -13714,11 +13708,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 74.14908645333895
       distanceRemaining: 74.14908645333895
@@ -13797,11 +13787,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 65.33239360462073
       distanceRemaining: 65.33239360462073
@@ -13880,11 +13866,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 56.377924515734776
       distanceRemaining: 56.377924515734776
@@ -13963,11 +13945,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 47.5612316665073
       distanceRemaining: 47.5612316665073
@@ -14046,11 +14024,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 38.64260412903741
       distanceRemaining: 38.64260412903741
@@ -14129,11 +14103,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 29.024470298729454
       distanceRemaining: 29.024470298729454
@@ -14212,11 +14182,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 19.3038707696021
       distanceRemaining: 19.3038707696021
@@ -14295,11 +14261,7 @@ snapshot_kind: text
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
+    remaining_waypoints: []
     progress:
       distanceToNextManeuver: 9.720599529127298
       distanceRemaining: 9.720599529127298

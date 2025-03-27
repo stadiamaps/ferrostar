@@ -80,14 +80,16 @@ That’s all you need to get started!
 Here are the most important ones:
 
 - `valhallaEndpointUrl`: The Valhalla routing endpoint to use. You can use any reasonably up-to-date Valhalla server, including your own. See [vendors](./vendor.md#routing) for a list of known compatible vendors.
+- `styleUrl`: The URL of the MapLibre style JSON for the map.
 - `httpClient`: You can set your own fetch-compatible HTTP client to make requests to the routing API (ex: Valhalla).
-- `costingOptions`: You can set the costing options for the route provider (ex: Valhalla JSON options).
+- `options`: You can set the costing options for the route provider (ex: Valhalla JSON options).
 - `locationProvider`: Provides locations to the navigation controller.
   `SimulatedLocationProvider` and `BrowserLocationProvider` are included.
   See the demo app for an example of how to simulate a route.
 - `configureMap`: Configures the map on first load. This lets you customize the UI, add MapLibre map controls, etc. on load.
 - `onNavigationStart`: Callback when navigation starts.
 - `onNavigationStop`: Callback when navigation ends.
+- `onTripStateChange`: Callback when the trip state changes (most state changes, such as a location update, advancing to the next step, etc.).
 - `customStyles`: Custom CSS to load (the component uses a scoped shadow DOM; use this to load external styles).
 - `useVoiceGuidance`: Enable voice guidance (default: `false`).
 - `geolocateOnLoad`: Geolocate the user on load and zoom the map to their location (default: `true`; you probably want this unless you are simulating locations for testing).
@@ -182,6 +184,9 @@ ferrostar.startNavigation(route, {
     },
   },
   snappedLocationCourseFiltering: "Raw",
+  waypointAdvance: {
+    WaypointWithinRange: 100,
+  },
 });
 ```
 

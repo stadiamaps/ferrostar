@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.Style
 import com.maplibre.compose.MapView
 import com.maplibre.compose.StaticLocationEngine
@@ -20,6 +19,7 @@ import com.maplibre.compose.settings.MapControls
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.toAndroidLocation
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
+import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 
 /**
@@ -29,13 +29,17 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  * @param camera The bi-directional camera state to use for the map. Note: this is a bit
  *   non-standard as far as normal compose patterns go, but we independently came up with this
  *   approach and later verified that Google Maps does the same thing in their compose SDK.
- * @param navigationCamera The default camera settings to use when navigation starts. This will be
- *   re-applied to the camera any time that navigation is started.
+ * @param navigationCamera The default camera state to use for navigation. This is a *template*
+ *   value, which will be applied on initial display and when re-centering. The default value is
+ *   sufficient for most applications. If you set a custom value (e.g.) to change the pitch), you
+ *   must ensure that it is some variation on [MapViewCamera.TrackingUserLocationWithBearing].
  * @param uiState The navigation UI state.
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
  * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
  *   route line.
+ * @param routeOverlayBuilder The route overlay builder to use for rendering the route line on the
+ *   MapView.
  * @param onMapReadyCallback A callback that is invoked when the map is ready to be interacted with.
  *   If unspecified, the camera will change to `navigationCamera` if navigation is in progress.
  * @param content Any additional composable map symbol content to render.
@@ -50,6 +54,7 @@ fun NavigationMapView(
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
     snapUserLocationToRoute: Boolean = true,
+    routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     onMapReadyCallback: ((Style) -> Unit)? = null,
     content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
 ) {
@@ -80,9 +85,7 @@ fun NavigationMapView(
       onMapReadyCallback =
           onMapReadyCallback ?: { if (isNavigating) camera.value = navigationCamera },
   ) {
-    val geometry = uiState.routeGeometry
-    if (geometry != null)
-        BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0)
+    routeOverlayBuilder.navigationPath(uiState)
 
     if (content != null) {
       content(uiState)

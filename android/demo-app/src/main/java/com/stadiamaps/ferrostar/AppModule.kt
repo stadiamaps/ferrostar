@@ -23,6 +23,7 @@ import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.SpecialAdvanceConditions
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.WaypointAdvanceMode
 
 /**
  * A basic sample of a dependency injection module for the demo app. This is only used to
@@ -66,7 +67,7 @@ object AppModule {
 
   val routingEndpointURL: URL by lazy {
     if (graphhopperApiKey != null) {
-        // TODO NOW replace with public API once changes are released
+      // TODO NOW replace with public API once changes are released
       URL("http://192.168.178.20:8989/navigate/?key=$graphhopperApiKey")
     } else if (stadiaApiKey != null) {
       URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
@@ -85,7 +86,7 @@ object AppModule {
     SimulatedLocationProvider().apply {
       warpFactor = 2u
       lastLocation =
-          UserLocation(GeographicCoordinate(51.101732,13.677676), 1.0, null, Instant.now(), null)
+          UserLocation(GeographicCoordinate(51.101732, 13.677676), 1.0, null, Instant.now(), null)
     }
   }
   private val httpClient: OkHttpClient by lazy {
@@ -145,6 +146,7 @@ object AppModule {
             foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
                 NavigationControllerConfig(
+                    WaypointAdvanceMode.WaypointWithinRange(100.0),
                     StepAdvanceMode.RelativeLineStringDistance(
                         minimumHorizontalAccuracy = 25U,
                         specialAdvanceConditions =

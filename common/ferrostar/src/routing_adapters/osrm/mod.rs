@@ -48,12 +48,21 @@ impl RouteResponseParser for OsrmResponseParser {
                 .map(|route| Route::from_osrm(route, &res.waypoints, self.polyline_precision))
                 .collect::<Result<Vec<_>, _>>()
         } else {
-            Err(ParsingError::InvalidStatusCode { code: res.code })
+            Err(ParsingError::InvalidStatusCode {
+                code: res.code,
+                description: res.message,
+            })
         }
     }
 }
 
 impl Route {
+    /// Create a route from an OSRM route and OSRM waypoints.
+    ///
+    /// # Arguments
+    /// * `route` - The OSRM route.
+    /// * `waypoints` - The OSRM waypoints.
+    /// * `polyline_precision` - The precision of the polyline.
     pub fn from_osrm(
         route: &OsrmRoute,
         waypoints: &[OsrmWaypoint],
@@ -81,6 +90,20 @@ impl Route {
             })
             .collect();
 
+        Self::from_osrm_with_standard_waypoints(route, &waypoints, polyline_precision)
+    }
+
+    /// Create a route from an OSRM route and Ferrostar waypoints.
+    ///
+    /// # Arguments
+    /// * `route` - The OSRM route.
+    /// * `waypoints` - The Ferrostar waypoints.
+    /// * `polyline_precision` - The precision of the polyline.
+    pub fn from_osrm_with_standard_waypoints(
+        route: &OsrmRoute,
+        waypoints: &[Waypoint],
+        polyline_precision: u32,
+    ) -> Result<Self, ParsingError> {
         let linestring = decode_polyline(&route.geometry, polyline_precision).map_err(|error| {
             ParsingError::InvalidGeometry {
                 error: error.to_string(),
@@ -180,7 +203,7 @@ impl Route {
                 geometry,
                 bbox: bbox.into(),
                 distance: route.distance,
-                waypoints: waypoints.clone(),
+                waypoints: waypoints.into(),
                 steps,
             })
         } else {
@@ -427,5 +450,50 @@ mod tests {
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec"
         });
+    }
+
+    #[test]
+    fn test_osrm_parser_with_empty_route_array() {
+        let error_json = r#"{
+            "code": "NoRoute",
+            "message": "No route found between the given coordinates",
+            "routes": []
+        }"#;
+
+        let parser = OsrmResponseParser::new(6);
+        let result = parser.parse_response(error_json.as_bytes().to_vec());
+
+        assert!(result.is_err());
+        if let Err(ParsingError::InvalidStatusCode { code, description }) = result {
+            assert_eq!(code, "NoRoute");
+            assert_eq!(
+                description,
+                Some("No route found between the given coordinates".to_string())
+            );
+        } else {
+            panic!("Expected InvalidStatusCode error with proper message");
+        }
+    }
+
+    #[test]
+    fn test_osrm_parser_with_missing_route_field() {
+        let error_json = r#"{
+            "code": "NoRoute",
+            "message": "No route found between the given coordinates"
+        }"#;
+
+        let parser = OsrmResponseParser::new(6);
+        let result = parser.parse_response(error_json.as_bytes().to_vec());
+
+        assert!(result.is_err());
+        if let Err(ParsingError::InvalidStatusCode { code, description }) = result {
+            assert_eq!(code, "NoRoute");
+            assert_eq!(
+                description,
+                Some("No route found between the given coordinates".to_string())
+            );
+        } else {
+            panic!("Expected InvalidStatusCode error with proper message");
+        }
     }
 }
