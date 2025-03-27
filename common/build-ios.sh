@@ -37,11 +37,29 @@ fat_simulator_lib_dir="target/ios-simulator-fat/release"
 
 generate_ffi() {
   echo "Generating framework module mapping and FFI bindings"
-  # NOTE: Convention requires the modulemap be named module.modulemap
-  cargo run -p uniffi-bindgen-swift -- target/aarch64-apple-ios/release/lib$1.a target/uniffi-xcframework-staging --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
+  
+  # Use different library path based on build mode
+  if $ffi_only; then
+    echo "Using native library for FFI generation"
+    # Find the appropriate library extension for the current platform
+    lib_ext="so"
+    if [[ "$(uname)" == "Darwin" ]]; then
+      lib_ext="dylib"
+    fi
+    cargo run -p uniffi-bindgen-swift -- target/release/lib$1.$lib_ext target/uniffi-xcframework-staging --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
+  else
+    echo "Using iOS library for FFI generation"
+    # NOTE: Convention requires the modulemap be named module.modulemap
+    cargo run -p uniffi-bindgen-swift -- target/aarch64-apple-ios/release/lib$1.a target/uniffi-xcframework-staging --swift-sources --headers --modulemap --module-name $1FFI --modulemap-filename module.modulemap
+  fi
+  
   mkdir -p ../apple/Sources/UniFFI/
   mv target/uniffi-xcframework-staging/*.swift ../apple/Sources/UniFFI/
-  mv target/uniffi-xcframework-staging/module.modulemap target/uniffi-xcframework-staging/module.modulemap
+  
+  # Only move modulemap if not in ffi-only mode
+  if ! $ffi_only; then
+    mv target/uniffi-xcframework-staging/module.modulemap target/uniffi-xcframework-staging/module.modulemap
+  fi
 }
 
 create_fat_simulator_lib() {
@@ -71,7 +89,14 @@ build_xcframework() {
 
 basename=ferrostar
 
-cargo build -p $basename --lib --release --target aarch64-apple-ios
+# Build appropriate target based on mode
+if $ffi_only; then
+  echo "Building in FFI-only mode for the current platform"
+  cargo build -p $basename --lib --release
+else
+  echo "Building for iOS"
+  cargo build -p $basename --lib --release --target aarch64-apple-ios
+fi
 
 generate_ffi $basename
 
