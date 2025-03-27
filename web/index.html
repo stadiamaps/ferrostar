@@ -5,8 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ferrostar Web Demo</title>
     <link rel="stylesheet" href="./src/index.css" />
-    <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
-    <link href='https://unpkg.com/@stadiamaps/maplibre-search-box/dist/style.css?inline' rel='stylesheet' />
+    <link
+      href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/style.css?inline"
+      rel="stylesheet"
+    />
 
     <style>
       .map-container {
@@ -43,10 +49,10 @@
       -->
     <div class="map-container">
       <ferrostar-map
-              id="ferrostar"
-              valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
-              styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
-              profile="bicycle"
+        id="ferrostar"
+        valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
+        styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
+        profile="bicycle"
       ></ferrostar-map>
       <div class="map-element" id="mapElement"></div>
     </div>
@@ -57,7 +63,7 @@
         SimulatedLocationProvider,
         BrowserLocationProvider,
       } from "@stadiamaps/ferrostar-webcomponents";
-      import mapLibreGL from 'maplibre-gl'
+      import mapLibreGL from "maplibre-gl";
       import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
       import searchBoxStyle from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
 
@@ -85,13 +91,13 @@
 
       async function onload() {
         const mapInstance = new mapLibreGL.Map({
-          container: 'mapElement',
-          style: 'https://tiles.stadiamaps.com/styles/outdoors.json',
-        })
+          container: "mapElement",
+          style: "https://tiles.stadiamaps.com/styles/outdoors.json",
+        });
 
         // Get a reference to the Ferrostar map component
         const ferrostar = document.getElementById("ferrostar");
-        ferrostar.map = mapInstance
+        ferrostar.map = mapInstance;
 
         // Create a search control.
         const searchBox = new MapLibreSearchControl({
