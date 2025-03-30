@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
-    "@maptimy/platform-formatters": "^0.3.0",
+    "@maptimy/platform-formatters": "^0.5.0",
     "lit": "^3.1.4",
     "maplibre-gl": "^4.5.0",
     "vite-plugin-dts": "^4.0.3"
