@@ -1,12 +1,12 @@
 import CarPlay
 import FerrostarCarPlayUI
 import FerrostarCore
+import os
 import SwiftUI
 import UIKit
-import os
 
-extension Logger {
-  fileprivate static let carPlay = Logger(subsystem: "ferrostar", category: "carplaydelegate")
+private extension Logger {
+    static let carPlay = Logger(subsystem: "ferrostar", category: "carplaydelegate")
 }
 
 class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplicationSceneDelegate {
@@ -24,7 +24,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
     ) {
         // NOTE: This can also be used to set up your App's window & CarPlay scene.
         //       This example just uses the car play specific templateApplicationScene(_:didConnect:to)
-      Logger.carPlay.info("\(#function)")
+        Logger.carPlay.info("\(#function)")
     }
 
     func templateApplicationScene(
@@ -32,7 +32,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
-      Logger.carPlay.info("\(#function)")
+        Logger.carPlay.info("\(#function)")
         setupCarPlay(on: window)
         carPlayManager?.templateApplicationScene(
             templateApplicationScene, didConnect: interfaceController, to: window
@@ -44,7 +44,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
-      Logger.carPlay.info("\(#function)")
+        Logger.carPlay.info("\(#function)")
         carPlayManager?.templateApplicationScene(
             templateApplicationScene, didDisconnect: interfaceController, from: window
         )
@@ -81,7 +81,7 @@ extension CarPlaySceneDelegate: CPTemplateApplicationDashboardSceneDelegate {
         didConnect _: CPDashboardController,
         to _: UIWindow
     ) {
-      Logger.carPlay.info("\(#function)")
+        Logger.carPlay.info("\(#function)")
     }
 
     func templateApplicationDashboardScene(
@@ -89,7 +89,7 @@ extension CarPlaySceneDelegate: CPTemplateApplicationDashboardSceneDelegate {
         didDisconnect _: CPDashboardController,
         from _: UIWindow
     ) {
-      Logger.carPlay.info("\(#function)")
+        Logger.carPlay.info("\(#function)")
     }
 }
 
@@ -99,14 +99,14 @@ extension CarPlaySceneDelegate: CPTemplateApplicationInstrumentClusterSceneDeleg
         _: CPTemplateApplicationInstrumentClusterScene,
         didConnect _: CPInstrumentClusterController
     ) {
-      Logger.carPlay.info("\(#function)")
+        Logger.carPlay.info("\(#function)")
     }
 
     func templateApplicationInstrumentClusterScene(
         _: CPTemplateApplicationInstrumentClusterScene,
         didDisconnectInstrumentClusterController _: CPInstrumentClusterController
     ) {
-      Logger.carPlay.info("\(#function)")
+        Logger.carPlay.info("\(#function)")
     }
     // swiftlint:enable identifier_name vertical_parameter_alignment
 }
