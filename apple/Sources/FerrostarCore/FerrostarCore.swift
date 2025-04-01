@@ -253,7 +253,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// - Parameters:
     ///   - route: The route to navigate.
     ///   - userLocation: The user's location. This should be as close to the users location and the start of the route
-    /// as possible. Giving fetch timing, this may not be possible, but the closer the better.
+    /// as possible. If the location is too stale, the user may be almost immediately flagged as off the route,
+    /// triggering a recalculation.
+    /// If this parameter is `nil`, the last location will be obtained from the configured location provider automatically.
+    /// If no location is available, this method will throw an exception.
     ///   - config: Override the configuration for the navigation session. This was provided on init.
     public func startNavigation(
         route: Route,
