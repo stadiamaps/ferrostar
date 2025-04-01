@@ -11,14 +11,14 @@ use crate::{
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
     models::{Route, UserLocation},
-    route_refresh::{RouteRefreshState, RouteRefreshStrategy},
+    route_refresh::RouteRefreshState,
 };
 use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
 };
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode};
-use proptest::strategy::LazyJust;
+
 use std::{clone::Clone, time::SystemTime};
 
 #[cfg(feature = "wasm-bindgen")]
@@ -464,7 +464,7 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                     max_acceptable_deviation: 0.0,
                 },
-                route_refresh_strategy: RouteRefreshStrategy::None,
+                route_refresh_strategy: crate::route_refresh::RouteRefreshStrategy::None,
                 snapped_location_course_filtering: CourseFiltering::Raw,
             },
         );
