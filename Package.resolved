@@ -10,21 +10,12 @@
       }
     },
     {
-      "identity" : "maplibre-swift-macros",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
-      "state" : {
-        "revision" : "9e27e62dff7fd727aebd0a7c8aa74e7635a5583e",
-        "version" : "0.0.5"
-      }
-    },
-    {
       "identity" : "mockable",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "revision" : "e1b311b01c11415099341eee49769185e965ac4c",
-        "version" : "0.2.0"
+        "revision" : "203336d0ccb7ff03a8a03db54a4fa18fc2b0c771",
+        "version" : "0.3.0"
       }
     },
     {
@@ -59,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "ac5f240ec0be8bb5b91793c0efd3c233dad211f2",
-        "version" : "0.7.0"
+        "revision" : "689d0a26077b3c70f490c2b2507cbcdd1eb2f8b2",
+        "version" : "0.9.0"
       }
     },
     {
