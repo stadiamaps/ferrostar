@@ -31,15 +31,6 @@ public enum NavigationMapViewContentInsetMode {
     /// Static edge insets to manually control where the center of the map is.
     case edgeInset(UIEdgeInsets)
 
-    public init(orientation: UIDeviceOrientation, geometry: GeometryProxy) {
-        switch orientation {
-        case .landscapeLeft, .landscapeRight:
-            self = .landscape(within: geometry)
-        default:
-            self = .portrait(within: geometry)
-        }
-    }
-
     var uiEdgeInsets: UIEdgeInsets {
         switch self {
         case let .landscape(geometry, verticalPct, horizontalPct):
@@ -53,6 +44,37 @@ public enum NavigationMapViewContentInsetMode {
             return UIEdgeInsets(top: top, left: 0, bottom: 0, right: 0)
         case let .edgeInset(uIEdgeInsets):
             return uIEdgeInsets
+        }
+    }
+}
+
+/// Bundle of content inset modes for landscape and portrait orientations.
+public struct NavigationMapViewContentInsetBundle {
+    public let landscape: (GeometryProxy) -> NavigationMapViewContentInsetMode
+    public let portrait: (GeometryProxy) -> NavigationMapViewContentInsetMode
+
+    /// Create a content inset bundle that handles the NavigationMapView's content inset modes for landscape and
+    /// portrait
+    ///
+    /// - Parameters:
+    ///   - landscape: A custom content inset mode for landscape orientation or default:
+    /// ``NavigationMapViewContentInsetMode.landscape``.
+    ///   - portrait: A custom content inset mode for portrait orientation or default:
+    /// ``NavigationMapViewContentInsetMode.portrait``.
+    public init(
+        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode = { .landscape(within: $0) },
+        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode = { .portrait(within: $0) }
+    ) {
+        self.landscape = landscape
+        self.portrait = portrait
+    }
+
+    public func dynamic(_ orientation: UIDeviceOrientation) -> (GeometryProxy) -> NavigationMapViewContentInsetMode {
+        switch orientation {
+        case .landscapeLeft, .landscapeRight:
+            landscape
+        default:
+            portrait
         }
     }
 }

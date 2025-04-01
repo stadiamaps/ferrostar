@@ -15,6 +15,7 @@ public struct PortraitNavigationView: View,
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -76,6 +77,7 @@ public struct PortraitNavigationView: View,
 
         _camera = camera
         self.navigationCamera = navigationCamera
+        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -91,7 +93,9 @@ public struct PortraitNavigationView: View,
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(.portrait(within: geometry))
+                .navigationMapViewContentInset(
+                    mapInsets.portrait(geometry)
+                )
 
                 PortraitNavigationOverlayView(
                     navigationState: navigationState,
