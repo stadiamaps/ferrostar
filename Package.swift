@@ -135,13 +135,36 @@ let package = Package(
             path: "apple/Tests/FerrostarCoreTests"
         ),
         .testTarget(
+            name: "FerrostarMapLibreUITests",
+            dependencies: [
+                "FerrostarCore",
+                "FerrostarSwiftUI",
+                "FerrostarMapLibreUI",
+                "TestSupport",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
+            path: "apple/Tests/FerrostarMapLibreUITests"
+        ),
+        .testTarget(
             name: "FerrostarSwiftUITests",
             dependencies: [
                 "FerrostarCore",
                 "FerrostarSwiftUI",
+                "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/FerrostarSwiftUITests"
+        ),
+
+        // MARK: Test Support
+
+        .target(
+            name: "TestSupport",
+            dependencies: [
+                "FerrostarCore",
+                "FerrostarSwiftUI",
+            ],
+            path: "apple/Tests/TestSupport"
         ),
     ]
 )

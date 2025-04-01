@@ -8,15 +8,14 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ``TripProgressView`` on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost,
-    CurrentRoadNameViewHost
+public struct LandscapeNavigationView: View,
+    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
 {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    public var currentRoadNameView: AnyView?
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -24,16 +23,22 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
-    public var topCenter: (() -> AnyView)?
-    public var topTrailing: (() -> AnyView)?
-    public var midLeading: (() -> AnyView)?
-    public var bottomTrailing: (() -> AnyView)?
-
     let isMuted: Bool
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets
+
+    // MARK: Configurable Views
+
+    public var topCenter: (() -> AnyView)?
+    public var topTrailing: (() -> AnyView)?
+    public var midLeading: (() -> AnyView)?
+    public var bottomTrailing: (() -> AnyView)?
+
+    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
+    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     /// Create a landscape navigation view. This view is optimized for display on a landscape screen where the
     /// instructions are on the leading half of the screen
@@ -71,7 +76,6 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         userLayers = makeMapContent()
         _camera = camera
         self.navigationCamera = navigationCamera
-        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
     }
 
     public var body: some View {
@@ -93,6 +97,11 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     navigationState: navigationState,
                     speedLimit: speedLimit,
                     speedLimitStyle: speedLimitStyle,
+                    views: NavigationViewComponentBuilder(
+                        progressView: progressView,
+                        instructionsView: instructionsView,
+                        currentRoadNameView: currentRoadNameView
+                    ),
                     isMuted: isMuted,
                     showMute: true,
                     onMute: onTapMute,
@@ -101,8 +110,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     onZoomOut: { camera.incrementZoom(by: -1) },
                     showCentering: !camera.isTrackingUserLocationWithCourse,
                     onCenter: { camera = navigationCamera },
-                    onTapExit: onTapExit,
-                    currentRoadNameView: currentRoadNameView
+                    onTapExit: onTapExit
                 )
                 .innerGrid {
                     topCenter?()
@@ -112,7 +120,8 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     midLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
-                }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
+                }
+                .complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
         }
     }

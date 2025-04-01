@@ -7,8 +7,8 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost,
-    CurrentRoadNameViewHost
+public struct DynamicallyOrientingNavigationView: View,
+    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
 {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
@@ -17,7 +17,6 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    public var currentRoadNameView: AnyView?
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -25,16 +24,22 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
-    public var topCenter: (() -> AnyView)?
-    public var topTrailing: (() -> AnyView)?
-    public var midLeading: (() -> AnyView)?
-    public var bottomTrailing: (() -> AnyView)?
-
     let isMuted: Bool
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets
+
+    // MARK: Configurable Views
+
+    public var topCenter: (() -> AnyView)?
+    public var topTrailing: (() -> AnyView)?
+    public var midLeading: (() -> AnyView)?
+    public var bottomTrailing: (() -> AnyView)?
+
+    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
+    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portrait
     /// and landscape orientations.
@@ -72,8 +77,6 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
         _camera = camera
         self.navigationCamera = navigationCamera
-
-        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
     }
 
     public var body: some View {
@@ -100,6 +103,11 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         navigationState: navigationState,
                         speedLimit: speedLimit,
                         speedLimitStyle: speedLimitStyle,
+                        views: NavigationViewComponentBuilder(
+                            progressView: progressView,
+                            instructionsView: instructionsView,
+                            currentRoadNameView: currentRoadNameView
+                        ),
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
@@ -108,8 +116,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
-                        onTapExit: onTapExit,
-                        currentRoadNameView: currentRoadNameView
+                        onTapExit: onTapExit
                     )
                     .innerGrid {
                         topCenter?()
@@ -125,6 +132,11 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         navigationState: navigationState,
                         speedLimit: speedLimit,
                         speedLimitStyle: speedLimitStyle,
+                        views: NavigationViewComponentBuilder(
+                            progressView: progressView,
+                            instructionsView: instructionsView,
+                            currentRoadNameView: currentRoadNameView
+                        ),
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
@@ -133,8 +145,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         onZoomOut: { camera.incrementZoom(by: -1) },
                         showCentering: !camera.isTrackingUserLocationWithCourse,
                         onCenter: { camera = navigationCamera },
-                        onTapExit: onTapExit,
-                        currentRoadNameView: currentRoadNameView
+                        onTapExit: onTapExit
                     )
                     .innerGrid {
                         topCenter?()

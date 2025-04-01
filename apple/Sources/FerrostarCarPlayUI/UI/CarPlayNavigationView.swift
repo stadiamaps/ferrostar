@@ -1,4 +1,5 @@
 import FerrostarCore
+import FerrostarCoreFFI
 import FerrostarMapLibreUI
 import FerrostarSwiftUI
 import MapLibre
@@ -6,16 +7,15 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-public struct CarPlayNavigationView: View, SpeedLimitViewHost,
-    CurrentRoadNameViewHost
+public struct CarPlayNavigationView: View,
+    SpeedLimitViewHost, NavigationViewConfigurable
 {
-    @ObservedObject var ferrostarCore: FerrostarCore
+    @StateObject var ferrostarCore: FerrostarCore
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
 
     @State var camera: MapViewCamera
-    public var currentRoadNameView: AnyView?
 
     private let userLayers: [StyleLayerDefinition]
 
@@ -24,6 +24,10 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
 
     public var minimumSafeAreaInsets: EdgeInsets
 
+    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
+    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
+
     public init(
         ferrostarCore: FerrostarCore,
         styleURL: URL,
@@ -31,7 +35,7 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
-        self.ferrostarCore = ferrostarCore
+        _ferrostarCore = StateObject(wrappedValue: ferrostarCore)
         self.styleURL = styleURL
         self.camera = camera
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
@@ -44,8 +48,9 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost,
                 NavigationMapView(
                     styleURL: styleURL,
                     camera: $camera,
-                    navigationState: ferrostarCore.state
-                ) { _ in
+                    navigationState: ferrostarCore.state,
+                    onStyleLoaded: { _ in camera = .automotiveNavigation(zoom: 17.0) }
+                ) {
                     userLayers
                 }
                 .navigationMapViewContentInset(.landscape(within: geometry, horizontalPct: 0.65))

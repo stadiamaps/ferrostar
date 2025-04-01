@@ -12,7 +12,7 @@ public enum NavigationMapViewContentInsetMode {
     /// lower.
     /// - Parameter horizontalPct : How far "right" to inset the MapView overlay content. A higher number positions
     /// content farther right.
-    case landscape(within: GeometryProxy, verticalPct: CGFloat = 0.75, horizontalPct: CGFloat = 0.5)
+    case landscape(within: GeometryProxy, verticalPct: CGFloat = 0.60, horizontalPct: CGFloat = 0.5)
 
     /// Dynamically determined insets suitable for portrait orientation,
     /// where the user location indicator should appear toward the bottom of the screen.
