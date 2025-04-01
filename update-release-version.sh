@@ -20,9 +20,9 @@ sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" web/package.json
 cd web && npm install && cd ..
 
 # React Native
-sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/package.json
-sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/core/package.json
-sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/uniffi/package.json
+jq --arg ver "$version" '.version = $ver' react-native/package.json > tmp.json && mv tmp.json react-native/package.json
+jq --arg ver "$version" '.version = $ver' react-native/core/package.json > tmp.json && mv tmp.json react-native/core/package.json
+jq --arg ver "$version" '.version = $ver' react-native/uniffi/package.json > tmp.json && mv tmp.json react-native/uniffi/package.json
 sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/maplibreui/package.json
 # Install yarn if it isn't already available
 corepack enable yarn
