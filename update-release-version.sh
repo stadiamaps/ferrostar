@@ -24,6 +24,8 @@ sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/package
 sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/core/package.json
 sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/uniffi/package.json
 sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/maplibreui/package.json
+# Install yarn if it isn't already available
+corepack enable yarn
 cd react-native && yarn install && cd ..
 
 git add Package.swift android/build.gradle common/Cargo.lock common/ferrostar/Cargo.toml web/package.json web/package-lock.json react-native/package.json react-native/yarn.lock react-native/core/package.json react-native/uniffi/package.json react-native/maplibreui/package.json
