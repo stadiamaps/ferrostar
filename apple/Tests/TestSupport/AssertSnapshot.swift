@@ -3,7 +3,7 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-extension XCTestCase {
+public extension XCTestCase {
     func assertView(
         named name: String? = nil,
         record: Bool = false,

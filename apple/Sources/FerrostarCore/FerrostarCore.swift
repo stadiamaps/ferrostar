@@ -252,12 +252,18 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// - Parameters:
     ///   - route: The route to navigate.
+    ///   - userLocation: The user's location. This should be as close to the users location and the start of the route
+    /// as possible. Giving fetch timing, this may not be possible, but the closer the better.
     ///   - config: Override the configuration for the navigation session. This was provided on init.
-    public func startNavigation(route: Route, config: SwiftNavigationControllerConfig? = nil) throws {
+    public func startNavigation(
+        route: Route,
+        userLocation: UserLocation? = nil,
+        config: SwiftNavigationControllerConfig? = nil
+    ) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
-        guard let location = locationProvider.lastLocation else {
+        guard let location = userLocation ?? locationProvider.lastLocation else {
             throw FerrostarCoreError.userLocationUnknown
         }
         // TODO: We should be able to circumvent this and simply start updating, wait and start nav.

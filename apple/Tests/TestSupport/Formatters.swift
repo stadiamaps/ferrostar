@@ -2,7 +2,7 @@ import FerrostarSwiftUI
 import Foundation
 import MapKit
 
-var americanDistanceFormatter: Formatter = {
+public var americanDistanceFormatter: Formatter = {
     let formatter = MKDistanceFormatter()
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
@@ -10,7 +10,7 @@ var americanDistanceFormatter: Formatter = {
     return formatter
 }()
 
-var germanDistanceFormatter: Formatter = {
+public var germanDistanceFormatter: Formatter = {
     let formatter = MKDistanceFormatter()
     formatter.locale = Locale(identifier: "de-DE")
     formatter.units = .metric
@@ -18,14 +18,14 @@ var germanDistanceFormatter: Formatter = {
     return formatter
 }()
 
-var longDurationFormatter: DateComponentsFormatter = {
+public var longDurationFormatter: DateComponentsFormatter = {
     let formatter = DateComponentsFormatter()
     formatter.unitsStyle = .full
 
     return formatter
 }()
 
-var germanArrivalFormatter: Date.FormatStyle = {
+public var germanArrivalFormatter: Date.FormatStyle = {
     var formatter = DefaultFormatters.estimatedArrivalFormat
         .locale(.init(identifier: "de_DE"))
 
