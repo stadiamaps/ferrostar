@@ -3,7 +3,7 @@ import TestSupport
 import XCTest
 @testable import FerrostarMapLibreUI
 
-final class PotraitNavigationViewTests: XCTestCase {
+final class PortraitNavigationViewTests: XCTestCase {
     func testDefault() {
         assertView(frame: CGSize(width: 350, height: 700)) {
             PortraitNavigationView(
