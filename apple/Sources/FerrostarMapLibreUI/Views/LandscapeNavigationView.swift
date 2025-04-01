@@ -16,6 +16,7 @@ public struct LandscapeNavigationView: View,
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -76,6 +77,7 @@ public struct LandscapeNavigationView: View,
         userLayers = makeMapContent()
         _camera = camera
         self.navigationCamera = navigationCamera
+        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -91,7 +93,9 @@ public struct LandscapeNavigationView: View,
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(.landscape(within: geometry))
+                .navigationMapViewContentInset(
+                    mapInsets.landscape(geometry)
+                )
 
                 LandscapeNavigationOverlayView(
                     navigationState: navigationState,

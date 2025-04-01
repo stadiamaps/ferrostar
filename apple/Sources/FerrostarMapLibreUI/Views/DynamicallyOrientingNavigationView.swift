@@ -17,6 +17,7 @@ public struct DynamicallyOrientingNavigationView: View,
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -77,6 +78,7 @@ public struct DynamicallyOrientingNavigationView: View,
 
         _camera = camera
         self.navigationCamera = navigationCamera
+        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -92,10 +94,9 @@ public struct DynamicallyOrientingNavigationView: View,
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(NavigationMapViewContentInsetMode(
-                    orientation: orientation,
-                    geometry: geometry
-                ))
+                .navigationMapViewContentInset(
+                    mapInsets.dynamic(orientation)(geometry)
+                )
 
                 switch orientation {
                 case .landscapeLeft, .landscapeRight:

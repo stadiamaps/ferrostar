@@ -4,6 +4,41 @@ import FerrostarSwiftUI
 import SwiftUI
 
 public protocol NavigationViewConfigurable where Self: View {
+    // MARK: MapView Config
+
+    var mapInsets: NavigationMapViewContentInsetBundle { get set }
+
+    /// Customize both the landscape NavigationMapView content insets.
+    ///
+    /// - Parameters:
+    ///   - landscape: Generate the content inset for landscape mode with a given geometry proxy.
+    /// - Returns: The modified view.
+    func navigationViewMapContentInset(
+        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
+    ) -> Self
+
+    /// Customize both the portrait NavigationMapView content insets.
+    ///
+    /// - Parameters:
+    ///   - portrait: Generate the content inset for portrait mode with a given geometry proxy.
+    /// - Returns: The modified view.
+    func navigationViewMapContentInset(
+        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
+    ) -> Self
+
+    /// Customize both the landscape and portrait NavigationMapView content insets.
+    ///
+    /// - Parameters:
+    ///   - landscape: Generate the content inset for landscape mode with a given geometry proxy.
+    ///   - portrait: Generate the content inset for portrait mode with a given geometry proxy.
+    /// - Returns: The modified view.
+    func navigationViewMapContentInset(
+        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode,
+        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
+    ) -> Self
+
+    // MARK: Navigation Views
+
     var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)? { get set }
     var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)? { get set }
     var currentRoadNameView: ((NavigationState?) -> AnyView)? { get set }
@@ -39,6 +74,31 @@ public protocol NavigationViewConfigurable where Self: View {
 }
 
 public extension NavigationViewConfigurable {
+    func navigationViewMapContentInset(
+        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
+    ) -> Self {
+        var mutableSelf = self
+        mutableSelf.mapInsets = NavigationMapViewContentInsetBundle(landscape: landscape)
+        return mutableSelf
+    }
+
+    func navigationViewMapContentInset(
+        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
+    ) -> Self {
+        var mutableSelf = self
+        mutableSelf.mapInsets = NavigationMapViewContentInsetBundle(portrait: portrait)
+        return mutableSelf
+    }
+
+    func navigationViewMapContentInset(
+        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode,
+        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
+    ) -> Self {
+        var mutableSelf = self
+        mutableSelf.mapInsets = NavigationMapViewContentInsetBundle(landscape: landscape, portrait: portrait)
+        return mutableSelf
+    }
+
     func navigationViewInstructionView(
         @ViewBuilder _ instructionsView: @escaping (NavigationState?, Binding<Bool>, Binding<CGSize>) -> some View
     ) -> Self {

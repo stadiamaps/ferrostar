@@ -16,6 +16,7 @@ public struct CarPlayNavigationView: View,
     let styleURL: URL
 
     @State var camera: MapViewCamera
+    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private let userLayers: [StyleLayerDefinition]
 
@@ -38,6 +39,7 @@ public struct CarPlayNavigationView: View,
         _ferrostarCore = StateObject(wrappedValue: ferrostarCore)
         self.styleURL = styleURL
         self.camera = camera
+        mapInsets = NavigationMapViewContentInsetBundle()
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
         userLayers = makeMapContent()
     }
@@ -53,7 +55,7 @@ public struct CarPlayNavigationView: View,
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(.landscape(within: geometry, horizontalPct: 0.65))
+                .navigationMapViewContentInset(mapInsets.landscape(geometry))
             }
         }
     }
