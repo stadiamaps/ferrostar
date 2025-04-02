@@ -1,5 +1,5 @@
 {
-  "originHash" : "744a0ae659b64807871ea942d6e59965bff2d0e86920ea6d1ba0dc9587578660",
+  "originHash" : "2de37ddd210ec3a7ac1bb31b310d6cec67f2fc16d8665c70ac79a0a5df2a8d43",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
@@ -8,15 +8,6 @@
       "state" : {
         "revision" : "0f0359865882095c57a555a002bb90b677388874",
         "version" : "6.11.0"
-      }
-    },
-    {
-      "identity" : "maplibre-swift-macros",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
-      "state" : {
-        "revision" : "9e27e62dff7fd727aebd0a7c8aa74e7635a5583e",
-        "version" : "0.0.5"
       }
     },
     {
@@ -42,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "ac5f240ec0be8bb5b91793c0efd3c233dad211f2",
-        "version" : "0.7.0"
+        "revision" : "689d0a26077b3c70f490c2b2507cbcdd1eb2f8b2",
+        "version" : "0.9.0"
       }
     },
     {
