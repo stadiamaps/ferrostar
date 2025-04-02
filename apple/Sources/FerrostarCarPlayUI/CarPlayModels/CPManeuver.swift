@@ -16,15 +16,15 @@ extension CPManeuver {
 
         // CarPlay take the "initial" estimates and internally tracks the reduction.
         maneuver.initialTravelEstimates =
-      if #available(iOS 17.4, *) {
-        CPTravelEstimates(
-          distanceRemaining: stepDistance,
-          distanceRemainingToDisplay: stepDistance,
-          timeRemaining: stepDuration
-        )
-      } else {
-    CPTravelEstimates(distanceRemaining: stepDistance, timeRemaining: stepDuration)
-  }
+            if #available(iOS 17.4, *) {
+                CPTravelEstimates(
+                    distanceRemaining: stepDistance,
+                    distanceRemainingToDisplay: stepDistance,
+                    timeRemaining: stepDuration
+                )
+            } else {
+                CPTravelEstimates(distanceRemaining: stepDistance, timeRemaining: stepDuration)
+            }
 
         // The instructions. CPManeuver lists them from
         // highest (idx-0) to lowest priority.
