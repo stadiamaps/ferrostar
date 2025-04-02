@@ -14,11 +14,17 @@ class NavigatingTemplateHost {
     init(
         mapTemplate: CPMapTemplate,
         formatters: FormatterCollection,
-        units: MKDistanceFormatter.Units
+        units: MKDistanceFormatter.Units,
+        showCentering: Bool, // TODO: Dynamically handle this - it may need to move ot a camera listener
+        onCenter: @escaping () -> Void
     ) {
         self.mapTemplate = mapTemplate
         self.formatters = formatters
         self.units = units
+        
+        self.mapTemplate.mapButtons = [
+            CarPlayButtons.recenterButton { onCenter() }
+        ]
     }
 
     @available(*, unavailable)

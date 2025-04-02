@@ -36,11 +36,17 @@ class FerrostarCarPlayAdapter: NSObject {
         setupIdleTemplate()
     }
 
-    func setup(on mapTemplate: CPMapTemplate) {
+    func setup(
+        on mapTemplate: CPMapTemplate,
+        showCentering: Bool,
+        onCenter: @escaping () -> Void
+    ) {
         navigatingTemplate = NavigatingTemplateHost(
             mapTemplate: mapTemplate,
             formatters: formatterCollection,
-            units: distanceUnits
+            units: distanceUnits,
+            showCentering: showCentering, // TODO: Make this dynamic based on the camera state
+            onCenter: onCenter
         )
 
         setupObservers()
@@ -83,10 +89,12 @@ class FerrostarCarPlayAdapter: NSObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] navState in
                 guard let self else { return }
-
+                
                 if let navState {
                     navigatingTemplate?.update(navigationState: navState)
-                } else {}
+                } else {
+                    
+                }
             }
             .store(in: &cancellables)
 

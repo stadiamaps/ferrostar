@@ -15,7 +15,7 @@ public struct CarPlayNavigationView: View,
 
     let styleURL: URL
 
-    @State var camera: MapViewCamera
+    @Binding public var camera: MapViewCamera
     public var mapInsets: NavigationMapViewContentInsetBundle
 
     private let userLayers: [StyleLayerDefinition]
@@ -32,13 +32,13 @@ public struct CarPlayNavigationView: View,
     public init(
         ferrostarCore: FerrostarCore,
         styleURL: URL,
-        camera: MapViewCamera = .automotiveNavigation(zoom: 17.0),
+        camera: Binding<MapViewCamera>,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         _ferrostarCore = StateObject(wrappedValue: ferrostarCore)
         self.styleURL = styleURL
-        self.camera = camera
+        self._camera = camera
         mapInsets = NavigationMapViewContentInsetBundle()
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
         userLayers = makeMapContent()
@@ -51,7 +51,9 @@ public struct CarPlayNavigationView: View,
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: ferrostarCore.state,
-                    onStyleLoaded: { _ in camera = .automotiveNavigation(zoom: 17.0) }
+                    onStyleLoaded: { _ in
+                        // camera = .automotiveNavigation(zoom: 17.0)
+                    }
                 ) {
                     userLayers
                 }
