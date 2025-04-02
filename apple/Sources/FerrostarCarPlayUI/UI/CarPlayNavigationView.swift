@@ -38,7 +38,7 @@ public struct CarPlayNavigationView: View,
     ) {
         _ferrostarCore = StateObject(wrappedValue: ferrostarCore)
         self.styleURL = styleURL
-        self._camera = camera
+        _camera = camera
         mapInsets = NavigationMapViewContentInsetBundle()
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
         userLayers = makeMapContent()

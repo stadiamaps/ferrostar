@@ -15,15 +15,15 @@ class NavigatingTemplateHost {
         mapTemplate: CPMapTemplate,
         formatters: FormatterCollection,
         units: MKDistanceFormatter.Units,
-        showCentering: Bool, // TODO: Dynamically handle this - it may need to move ot a camera listener
+        showCentering _: Bool, // TODO: Dynamically handle this - it may need to move to a camera listener
         onCenter: @escaping () -> Void
     ) {
         self.mapTemplate = mapTemplate
         self.formatters = formatters
         self.units = units
-        
+
         self.mapTemplate.mapButtons = [
-            CarPlayButtons.recenterButton { onCenter() }
+            CarPlayButtons.recenterButton { onCenter() },
         ]
     }
 

@@ -89,12 +89,10 @@ class FerrostarCarPlayAdapter: NSObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] navState in
                 guard let self else { return }
-                
+
                 if let navState {
                     navigatingTemplate?.update(navigationState: navState)
-                } else {
-                    
-                }
+                } else {}
             }
             .store(in: &cancellables)
 

@@ -1,14 +1,14 @@
-import SwiftUI
 import CarPlay
 import FerrostarCore
-import MapLibreSwiftUI
 import Foundation
+import MapLibreSwiftUI
 import OSLog
+import SwiftUI
 
 public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelegate {
     private let ferrostarCore: FerrostarCore
     @Binding var camera: MapViewCamera
-    
+
     private let logger: Logger
     private let distanceUnits: MKDistanceFormatter.Units
 
@@ -25,7 +25,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         distanceUnits: MKDistanceFormatter.Units
     ) {
         self.ferrostarCore = ferrostarCore
-        self._camera = camera
+        _camera = camera
         self.logger = logger
         self.distanceUnits = distanceUnits
 
@@ -47,7 +47,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         // Create the navigation adapter
         ferrostarAdapter = FerrostarCarPlayAdapter(ferrostarCore: ferrostarCore,
                                                    distanceUnits: distanceUnits)
-        
+
         ferrostarAdapter?.setup(
             on: mapTemplate,
             showCentering: !camera.isTrackingUserLocationWithCourse,

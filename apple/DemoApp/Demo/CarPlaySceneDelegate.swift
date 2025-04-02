@@ -2,12 +2,12 @@ import CarPlay
 import FerrostarCarPlayUI
 import FerrostarCore
 import MapLibreSwiftUI
+import os
 import SwiftUI
 import UIKit
-import os
 
-extension Logger {
-    fileprivate static let carPlay = Logger(subsystem: "ferrostar", category: "carplaydelegate")
+private extension Logger {
+    static let carPlay = Logger(subsystem: "ferrostar", category: "carplaydelegate")
 }
 
 class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplicationSceneDelegate {
@@ -19,9 +19,10 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
 
     private var carPlayManager: FerrostarCarPlayManager?
 
-    // In your implementation, you would like want to init with a cached camera from your normal MapView/NavigationMapView.
+    // In your implementation, you would like want to init with a cached camera from your normal
+    // MapView/NavigationMapView.
     let sharedCamera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
-    
+
     func scene(
         _: UIScene, willConnectTo _: UISceneSession,
         options _: UIScene.ConnectionOptions
@@ -59,7 +60,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
 
         // IMPORTANT: This is your app's shared FerrostarCore
         ferrostarCore = appDelegate.appEnvironment.ferrostarCore
-        
+
         let view = CarPlayNavigationView(
             ferrostarCore: ferrostarCore!,
             styleURL: AppDefaults.mapStyleURL,
@@ -78,8 +79,8 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
                 set: { self.sharedCamera.camera = $0 }
             ),
             distanceUnits: .default
-                // TODO: We may need to hold the view or viewController here, but it seems
-                //       to work for now.
+            // TODO: We may need to hold the view or viewController here, but it seems
+            //       to work for now.
         )
 
         window.rootViewController = carPlayViewController
