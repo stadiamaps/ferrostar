@@ -33,6 +33,9 @@ public enum CorrectiveAction {
 ///
 /// This is the central point responsible for relaying updates back to the application.
 public protocol FerrostarCoreDelegate: AnyObject {
+    /// Called when navigation is started on a specific route.
+    func core(_ core: FerrostarCore, didStartWith route: Route)
+
     /// Called when the core detects that the user has deviated from the route.
     ///
     /// This hook enables app developers to take the most appropriate corrective action.
@@ -85,6 +88,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     /// The observable state of the model (for easy binding in SwiftUI views).
     @Published public private(set) var state: NavigationState?
+    @Published public private(set) var route: Route?
 
     public let annotation: (any AnnotationPublishing)?
 
@@ -248,12 +252,22 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// - Parameters:
     ///   - route: The route to navigate.
+    ///   - userLocation: The user's location. This should be as close to the users location and the start of the route
+    /// as possible. If the location is too stale, the user may be almost immediately flagged as off the route,
+    /// triggering a recalculation.
+    /// If this parameter is `nil`, the last location will be obtained from the configured location provider
+    /// automatically.
+    /// If no location is available, this method will throw an exception.
     ///   - config: Override the configuration for the navigation session. This was provided on init.
-    public func startNavigation(route: Route, config: SwiftNavigationControllerConfig? = nil) throws {
+    public func startNavigation(
+        route: Route,
+        userLocation: UserLocation? = nil,
+        config: SwiftNavigationControllerConfig? = nil
+    ) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
         // and then somehow this property go nil again.
-        guard let location = locationProvider.lastLocation else {
+        guard let location = userLocation ?? locationProvider.lastLocation else {
             throw FerrostarCoreError.userLocationUnknown
         }
         // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
@@ -267,6 +281,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         locationProvider.startUpdating()
 
+        self.route = route
         state = NavigationState(
             tripState: controller.getInitialState(location: location),
             routeGeometry: route.geometry
@@ -291,6 +306,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
         navigationController = nil
+        route = nil
         state = nil
         queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()

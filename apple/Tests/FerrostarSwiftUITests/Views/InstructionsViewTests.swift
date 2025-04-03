@@ -1,3 +1,4 @@
+import TestSupport
 import XCTest
 @testable import FerrostarCore
 @testable import FerrostarCoreFFI

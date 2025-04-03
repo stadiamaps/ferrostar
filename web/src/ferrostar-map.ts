@@ -72,6 +72,9 @@ export class FerrostarMap extends LitElement {
   @property({ type: Function, attribute: false })
   onNavigationStop?: (map: Map) => void;
 
+  @property({ type: Function, attribute: true })
+  onTripStateChange?: (newState: TripState | null) => void;
+
   /**
    *  Styles to load which will apply inside the component
    *  (ex: for MapLibre plugins)
@@ -294,7 +297,12 @@ export class FerrostarMap extends LitElement {
     });
 
     const responseData = new Uint8Array(await response.arrayBuffer());
-    return this.routeAdapter.parseResponse(responseData);
+    try {
+      return this.routeAdapter.parseResponse(responseData);
+    } catch (e) {
+      console.error("Error parsing route response:", e);
+      throw e;
+    }
   }
 
   // TODO: types
@@ -317,8 +325,9 @@ export class FerrostarMap extends LitElement {
           speed: null,
         };
 
-    this._tripState =
-      this.navigationController.getInitialState(startingLocation);
+    this.tripStateUpdate(
+      this.navigationController.getInitialState(startingLocation),
+    );
 
     // Update the UI with the initial trip state
     this.clearMap();
@@ -347,10 +356,27 @@ export class FerrostarMap extends LitElement {
         "line-cap": "round",
       },
       paint: {
-        "line-color": "#3700B3",
+        "line-color": "#3478f6",
         "line-width": 8,
       },
     });
+
+    this.map?.addLayer(
+      {
+        id: "route-border",
+        type: "line",
+        source: "route",
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#FFFFFF",
+          "line-width": 13,
+        },
+      },
+      "route",
+    );
 
     this.map?.setCenter(route.geometry[0]);
 
@@ -369,10 +395,15 @@ export class FerrostarMap extends LitElement {
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
-    this._tripState = null;
+    this.tripStateUpdate(null);
     this.clearMap();
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
+  }
+
+  private tripStateUpdate(newState: TripState | null) {
+    this._tripState = newState;
+    this.onTripStateChange?.(newState);
   }
 
   private onLocationUpdated() {
@@ -380,10 +411,11 @@ export class FerrostarMap extends LitElement {
       return;
     }
     // Update the trip state with the new location
-    this._tripState = this.navigationController!.updateUserLocation(
+    const newTripState = this.navigationController!.updateUserLocation(
       this.locationProvider.lastLocation,
       this._tripState,
     );
+    this.tripStateUpdate(newTripState);
 
     // Update the simulated location marker if needed
     this.simulatedLocationMarker?.setLngLat(
@@ -423,6 +455,7 @@ export class FerrostarMap extends LitElement {
 
   private clearMap() {
     this.map?.getLayer("route") && this.map?.removeLayer("route");
+    this.map?.getLayer("route-border") && this.map?.removeLayer("route-border");
     this.map?.getSource("route") && this.map?.removeSource("route");
     this.simulatedLocationMarker?.remove();
   }
@@ -433,19 +466,27 @@ export class FerrostarMap extends LitElement {
         ${this.customStyles}
       </style>
       <div id="container">
-        <slot id="map"></slot>
-        <instructions-view .tripState=${this._tripState}></instructions-view>
-        <div id="bottom-component">
-          <trip-progress-view
-            .tripState=${this._tripState}
-          ></trip-progress-view>
-          <button
-            id="stop-button"
-            @click=${this.stopNavigation}
-            ?hidden=${!this._tripState}
-          >
-            <img src=${CloseSvg} alt="Stop navigation" class="icon" />
-          </button>
+        <div id="map">
+          <!-- Fix names/ids; currently this is a breaking change -->
+          <slot id="map-content"></slot>
+          <div id="overlay">
+            <instructions-view
+              .tripState=${this._tripState}
+            ></instructions-view>
+
+            <div id="bottom-component">
+              <trip-progress-view
+                .tripState=${this._tripState}
+              ></trip-progress-view>
+              <button
+                id="stop-button"
+                @click=${this.stopNavigation}
+                ?hidden=${!this._tripState}
+              >
+                <img src=${CloseSvg} alt="Stop navigation" class="icon" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     `;
