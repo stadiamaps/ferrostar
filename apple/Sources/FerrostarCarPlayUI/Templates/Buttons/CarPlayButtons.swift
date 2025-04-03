@@ -1,19 +1,34 @@
 import CarPlay
 
-enum CarPlayButtons {
+enum CarPlayMapButtons {
     static func recenterButton(
         isHidden: Bool = false,
         isEnabled: Bool = true,
         _ action: @escaping () -> Void
     ) -> CPMapButton {
-        var recenterButton = CPMapButton { _ in
+        var button = CPMapButton { _ in
             action()
         }
 
-        recenterButton.image = UIImage(systemName: "location.north.fill")
-        recenterButton.isHidden = isHidden
-        recenterButton.isEnabled = isEnabled
+        button.image = UIImage(systemName: "location.north.fill")
+        button.isHidden = isHidden
+        button.isEnabled = isEnabled
+        return button
+    }
+}
 
-        return recenterButton
+enum CarPlayBarButtons {
+    static func startNavigationButton(_ action: @escaping () -> Void) -> CPBarButton {
+        let button = CPBarButton(title: String(localized: "start_nav")) { _ in
+            action()
+        }
+        return button
+    }
+    
+    static func cancelNavigationButton(_ action: @escaping () -> Void) -> CPBarButton {
+        let button = CPBarButton(title: String(localized: "cancel")) { _ in
+            action()
+        }
+        return button
     }
 }

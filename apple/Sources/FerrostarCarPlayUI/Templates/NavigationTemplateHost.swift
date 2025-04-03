@@ -16,14 +16,25 @@ class NavigatingTemplateHost {
         formatters: FormatterCollection,
         units: MKDistanceFormatter.Units,
         showCentering _: Bool, // TODO: Dynamically handle this - it may need to move to a camera listener
-        onCenter: @escaping () -> Void
+        onCenter: @escaping () -> Void,
+        onStartTrip: @escaping () -> Void,
+        onCancelTrip: @escaping () -> Void
     ) {
         self.mapTemplate = mapTemplate
         self.formatters = formatters
         self.units = units
-
+        
+        // Top Bar
+        self.mapTemplate.automaticallyHidesNavigationBar = false
+        self.mapTemplate.trailingNavigationBarButtons = [
+            // TODO: Dynamically handle start stop.
+            CarPlayBarButtons.startNavigationButton { onStartTrip() },
+            CarPlayBarButtons.cancelNavigationButton { onCancelTrip() },
+        ]
+        
+        // Map Buttons
         self.mapTemplate.mapButtons = [
-            CarPlayButtons.recenterButton { onCenter() },
+            CarPlayMapButtons.recenterButton { onCenter() },
         ]
     }
 
@@ -63,7 +74,19 @@ class NavigatingTemplateHost {
 
         currentSession?.upcomingManeuvers = maneuvers
     }
-
+    
+    func cancelTrip() {
+        currentSession?.cancelTrip()
+        currentSession = nil
+        currentTrip = nil
+    }
+    
+    func completeTrip() {
+        currentSession?.finishTrip()
+        currentSession = nil
+        currentTrip = nil
+    }
+    
     private func updateArrival(_ progress: TripProgress?) {
         guard let currentTrip, let progress else {
             // TODO: Remove Progress?

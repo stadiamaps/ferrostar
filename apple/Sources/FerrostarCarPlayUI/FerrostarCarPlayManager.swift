@@ -52,7 +52,13 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
             on: mapTemplate,
             showCentering: !camera.isTrackingUserLocationWithCourse,
             onCenter: { [weak self] in
-                self?.camera = .automotiveNavigation()
+                self?.camera = .automotiveNavigation(pitch: 25)
+            },
+            onStartTrip: {
+                // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
+            },
+            onCancelTrip: { [weak self] in
+                self?.ferrostarCore.stopNavigation()
             }
         )
 
