@@ -307,16 +307,30 @@ export class FerrostarMap extends LitElement {
 
   // TODO: types
   startNavigation(route: any, config: any) {
-    this.locationProvider.start();
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
-    // Initialize the navigation controller
-    this.navigationController = new NavigationController(route, config);
-    this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
+    const navigationConfig = {
+      waypointAdvance: config.waypointAdvance,
+      stepAdvance: config.stepAdvance,
+      routeDeviationTracking: config.routeDeviationTracking,
+      routeRefreshStrategy: config.routeRefreshStrategy || "None",
+      snappedLocationCourseFiltering: config.snappedLocationCourseFiltering,
+    };
 
-    // Initialize the trip state
+    this.navigationController = new NavigationController(route, navigationConfig);
+
     const startingLocation = this.locationProvider.lastLocation
-      ? this.locationProvider.lastLocation
+      ? {
+          coordinates: this.locationProvider.lastLocation.coordinates,
+          horizontalAccuracy: Number(this.locationProvider.lastLocation.horizontalAccuracy) || 0.0,
+          courseOverGround: this.locationProvider.lastLocation.courseOverGround
+            ? { degrees: this.locationProvider.lastLocation.courseOverGround.degrees || 0 }
+            : null,
+          timestamp: Date.now(),
+          speed: this.locationProvider.lastLocation.speed
+            ? { value: this.locationProvider.lastLocation.speed }
+            : null,
+        }
       : {
           coordinates: route.geometry[0],
           horizontalAccuracy: 0.0,
@@ -325,9 +339,15 @@ export class FerrostarMap extends LitElement {
           speed: null,
         };
 
-    this.tripStateUpdate(
-      this.navigationController.getInitialState(startingLocation),
-    );
+    try {
+      const initialState = this.navigationController.getInitialState(startingLocation);
+      this.tripStateUpdate(initialState);
+
+      this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
+      this.locationProvider.start();
+    } catch (e) {
+      console.error("Error getting initial state:", e);
+    }
 
     // Update the UI with the initial trip state
     this.clearMap();
@@ -407,49 +427,68 @@ export class FerrostarMap extends LitElement {
   }
 
   private onLocationUpdated() {
-    if (!this.navigationController) {
+    if (!this.navigationController || !this._tripState) {
       return;
     }
-    // Update the trip state with the new location
-    const newTripState = this.navigationController!.updateUserLocation(
-      this.locationProvider.lastLocation,
-      this._tripState,
-    );
-    this.tripStateUpdate(newTripState);
 
-    // Update the simulated location marker if needed
-    this.simulatedLocationMarker?.setLngLat(
-      this.locationProvider.lastLocation.coordinates,
-    );
+    try {
+      const formattedLocation = {
+        coordinates: this.locationProvider.lastLocation.coordinates,
+        horizontalAccuracy: Number(this.locationProvider.lastLocation.horizontalAccuracy) || 0.0,
+        courseOverGround: this.locationProvider.lastLocation.courseOverGround
+          ? { degrees: this.locationProvider.lastLocation.courseOverGround.degrees || 0 }
+          : null,
+        timestamp: Date.now(),
+        speed: this.locationProvider.lastLocation.speed
+          ? { value: this.locationProvider.lastLocation.speed }
+          : null,
+      };
 
-    // Center the map on the user's location
-    this.map?.easeTo({
-      center: this.locationProvider.lastLocation.coordinates,
-      bearing: this.locationProvider.lastLocation.courseOverGround.degrees || 0,
-    });
+      const tripStateCopy = JSON.parse(JSON.stringify(this._tripState));
 
-    // Speak the next instruction if voice guidance is enabled
-    const tripState = this._tripState;
-    if (
-      this.useVoiceGuidance &&
-      tripState != null &&
-      typeof tripState === "object"
-    ) {
+      const newTripState = this.navigationController.updateUserLocation(
+        formattedLocation,
+        tripStateCopy,
+      );
+
+      this.tripStateUpdate(newTripState);
+
+      // Update the simulated location marker if needed
+      this.simulatedLocationMarker?.setLngLat(
+        this.locationProvider.lastLocation.coordinates,
+      );
+
+      // Center the map on the user's location
+      this.map?.easeTo({
+        center: this.locationProvider.lastLocation.coordinates,
+        bearing: this.locationProvider.lastLocation.courseOverGround.degrees || 0,
+      });
+
+      // Speak the next instruction if voice guidance is enabled
+      const tripState = this._tripState;
       if (
-        "Navigating" in tripState &&
-        tripState.Navigating?.spokenInstruction &&
-        tripState.Navigating?.spokenInstruction.utteranceId !==
-          this.lastSpokenUtteranceId
+        this.useVoiceGuidance &&
+        tripState != null &&
+        typeof tripState === "object"
       ) {
-        this.lastSpokenUtteranceId =
-          tripState.Navigating?.spokenInstruction.utteranceId;
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(
-          new SpeechSynthesisUtterance(
-            tripState.Navigating?.spokenInstruction.text,
-          ),
-        );
+        if (
+          "Navigating" in tripState &&
+          tripState.Navigating?.spokenInstruction &&
+          tripState.Navigating?.spokenInstruction.utteranceId !==
+            this.lastSpokenUtteranceId
+        ) {
+          this.lastSpokenUtteranceId =
+            tripState.Navigating?.spokenInstruction.utteranceId;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(
+            new SpeechSynthesisUtterance(
+              tripState.Navigating?.spokenInstruction.text,
+            ),
+          );
+        }
       }
+    } catch (e) {
+      console.error("Error updating location:", e);
     }
   }
 

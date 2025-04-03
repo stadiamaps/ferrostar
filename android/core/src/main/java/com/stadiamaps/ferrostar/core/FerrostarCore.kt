@@ -22,6 +22,7 @@ import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteDeviation
+import uniffi.ferrostar.RouteRefreshState
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
@@ -98,6 +99,8 @@ class FerrostarCore(
    * automatically proceed according to the first route.
    */
   var deviationHandler: RouteDeviationHandler? = null
+
+  var refreshHandler: RouteRefreshHandler? = null
 
   /**
    * Handles alternative routes as they are loaded.
@@ -380,6 +383,43 @@ class FerrostarCore(
                   _lastAutomaticRecalculation = System.nanoTime()
                   isCalculatingNewRoute = false
                 }
+              }
+            }
+          }
+        }
+      }
+
+      if (newState.routeRefreshState == RouteRefreshState.REFRESH_NEEDED && !_routeRequestInFlight) {
+        val action = refreshHandler?.onRefreshNeeded(this, newState)
+          ?: CorrectiveAction.GetNewRoutes(newState.remainingWaypoints)
+
+        when (action) {
+          is CorrectiveAction.DoNothing -> {
+            // do nothing
+          }
+
+          is CorrectiveAction.GetNewRoutes -> {
+            isCalculatingNewRoute = true
+            _scope.launch {
+              try {
+                val routes = getRoutes(location, action.waypoints)
+                val config = _config
+                val processor = alternativeRouteProcessor
+                val state = _state.value
+
+                // make sure we are still navigating and refresh is still needed
+                if (state.tripState is TripState.Navigating && state.tripState.routeRefreshState == RouteRefreshState.REFRESH_NEEDED) {
+                  if (processor != null) {
+                    processor.loadedAlternativeRoutes(this@FerrostarCore, routes)
+                  } else if (routes.isNotEmpty()) {
+                    // default behaviour: accept the first route
+                    replaceRoute(routes.first(), config)
+                  }
+                }
+              } catch (e: Throwable) {
+                android.util.Log.e(TAG, "Failed to refresh route: $e")
+              } finally {
+                isCalculatingNewRoute = false
               }
             }
           }

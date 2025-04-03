@@ -9,6 +9,8 @@ import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
+import com.stadiamaps.ferrostar.core.RouteRefreshHandler
+import com.stadiamaps.ferrostar.core.extensions.remainingWaypoints
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
@@ -18,8 +20,11 @@ import okhttp3.OkHttpClient
 import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
+import uniffi.ferrostar.RouteRefreshDetector
+import uniffi.ferrostar.RouteRefreshStrategy
 import uniffi.ferrostar.SpecialAdvanceConditions
 import uniffi.ferrostar.StepAdvanceMode
+import uniffi.ferrostar.TripState
 import uniffi.ferrostar.WaypointAdvanceMode
 
 /**
@@ -95,6 +100,7 @@ object AppModule {
                             // testing
                             SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
+                    RouteRefreshStrategy.Interval(intervalSeconds = 300UL), // 5 minutes interval
                     CourseFiltering.SNAP_TO_ROUTE),
             options =
                 mapOf(
@@ -117,6 +123,17 @@ object AppModule {
     // (this basically re-implements the default behaviors).
     core.deviationHandler = RouteDeviationHandler { _, _, remainingWaypoints ->
       CorrectiveAction.GetNewRoutes(remainingWaypoints)
+    }
+
+    core.refreshHandler = RouteRefreshHandler { core, tripState ->
+        Log.i(TAG, "Route refresh needed - getting new routes")
+
+        // get remaining waypoints from tripstate
+        if (tripState is TripState.Navigating) {
+          CorrectiveAction.GetNewRoutes(tripState.remainingWaypoints)
+        } else {
+          CorrectiveAction.DoNothing
+        }
     }
 
     core.alternativeRouteProcessor = AlternativeRouteProcessor { it, routes ->
