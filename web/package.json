@@ -6,7 +6,7 @@
     "CatMe0w <CatMe0w@live.cn> (https://github.com/CatMe0w)",
     "Luke Seelenbinder <luke@stadiamaps.com>"
   ],
-  "version": "0.31.0",
+  "version": "0.31.1",
   "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/ferrostar-webcomponents.js",
