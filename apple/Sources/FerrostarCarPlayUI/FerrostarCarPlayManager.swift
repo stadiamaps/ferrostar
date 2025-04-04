@@ -1,10 +1,14 @@
 import CarPlay
 import FerrostarCore
 import Foundation
+import MapLibreSwiftUI
 import OSLog
+import SwiftUI
 
 public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelegate {
     private let ferrostarCore: FerrostarCore
+    @Binding var camera: MapViewCamera
+
     private let logger: Logger
     private let distanceUnits: MKDistanceFormatter.Units
 
@@ -13,6 +17,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
 
     public init(
         _ ferrostarCore: FerrostarCore,
+        camera: Binding<MapViewCamera>,
         logger: Logger = Logger(
             subsystem: Bundle.main.bundleIdentifier ?? "FerrostarCarPlayUI",
             category: "FerrostarCarPlayManager"
@@ -20,6 +25,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         distanceUnits: MKDistanceFormatter.Units
     ) {
         self.ferrostarCore = ferrostarCore
+        _camera = camera
         self.logger = logger
         self.distanceUnits = distanceUnits
 
@@ -41,7 +47,20 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         // Create the navigation adapter
         ferrostarAdapter = FerrostarCarPlayAdapter(ferrostarCore: ferrostarCore,
                                                    distanceUnits: distanceUnits)
-        ferrostarAdapter?.setup(on: mapTemplate)
+
+        ferrostarAdapter?.setup(
+            on: mapTemplate,
+            showCentering: !camera.isTrackingUserLocationWithCourse,
+            onCenter: { [weak self] in
+                self?.camera = .automotiveNavigation(pitch: 25)
+            },
+            onStartTrip: {
+                // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
+            },
+            onCancelTrip: { [weak self] in
+                self?.ferrostarCore.stopNavigation()
+            }
+        )
 
         // Set the root template
         interfaceController.setRootTemplate(mapTemplate, animated: true) { [weak self] success, error in

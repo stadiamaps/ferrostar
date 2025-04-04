@@ -1,6 +1,7 @@
 import CarPlay
 import FerrostarCarPlayUI
 import FerrostarCore
+import MapLibreSwiftUI
 import os
 import SwiftUI
 import UIKit
@@ -17,6 +18,10 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
     private var carPlayViewController: UIViewController?
 
     private var carPlayManager: FerrostarCarPlayManager?
+
+    // In your implementation, you would like want to init with a cached camera from your normal
+    // MapView/NavigationMapView.
+    let sharedCamera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
 
     func scene(
         _: UIScene, willConnectTo _: UISceneSession,
@@ -58,13 +63,21 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
 
         let view = CarPlayNavigationView(
             ferrostarCore: ferrostarCore!,
-            styleURL: AppDefaults.mapStyleURL
+            styleURL: AppDefaults.mapStyleURL,
+            camera: Binding(
+                get: { self.sharedCamera.camera },
+                set: { self.sharedCamera.camera = $0 }
+            )
         )
 
         carPlayViewController = UIHostingController(rootView: view)
 
         carPlayManager = FerrostarCarPlayManager(
             ferrostarCore!,
+            camera: Binding(
+                get: { self.sharedCamera.camera },
+                set: { self.sharedCamera.camera = $0 }
+            ),
             distanceUnits: .default
             // TODO: We may need to hold the view or viewController here, but it seems
             //       to work for now.
