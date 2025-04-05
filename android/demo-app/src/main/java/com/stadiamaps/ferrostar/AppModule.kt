@@ -12,6 +12,7 @@ import com.stadiamaps.ferrostar.core.RouteDeviationHandler
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
+import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import java.net.URL
 import java.time.Duration
 import java.time.Instant
@@ -81,12 +82,12 @@ object AppModule {
 
   val locationProvider: LocationProvider by lazy {
     // TODO: Make this configurable?
-    // FusedLocationProvider(appContext)
-    SimulatedLocationProvider().apply {
-      warpFactor = 2u
-      lastLocation =
-          UserLocation(GeographicCoordinate(51.101732, 13.677676), 1.0, null, Instant.now(), null)
-    }
+    FusedLocationProvider(appContext)
+    // SimulatedLocationProvider().apply {
+    //  warpFactor = 2u
+    //  lastLocation =
+    //      UserLocation(GeographicCoordinate(51.049315, 13.73552), 1.0, null, Instant.now(), null)
+    // }
   }
   private val httpClient: OkHttpClient by lazy {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
