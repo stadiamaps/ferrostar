@@ -67,8 +67,7 @@ object AppModule {
 
   val routingEndpointURL: URL by lazy {
     if (graphhopperApiKey != null) {
-      // TODO NOW replace with public API once changes are released
-      URL("http://192.168.178.20:8989/navigate/?key=$graphhopperApiKey")
+      URL("https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey")
     } else if (stadiaApiKey != null) {
       URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
     } else {
@@ -126,6 +125,7 @@ object AppModule {
         options = mapOf()
       } else {
         // documentation for custom models: https://docs.graphhopper.com/openapi/custom-model
+        // arbitrary example:
         options =
             mapOf(
                 "ch.disable" to true,
