@@ -1,0 +1,65 @@
+{
+  "configurations" : [
+    {
+      "id" : "C66DA830-1A33-4ECE-8B16-5EE2FD104257",
+      "name" : "MaplibreUITests Config",
+      "options" : {
+        "targetForVariableExpansion" : {
+          "containerPath" : "container:",
+          "identifier" : "FerrostarMapLibreUITests",
+          "name" : "FerrostarMapLibreUITests"
+        }
+      }
+    },
+    {
+      "id" : "67C856ED-919A-4A99-81BC-48B1A0773181",
+      "name" : "SwiftUITests Config",
+      "options" : {
+        "targetForVariableExpansion" : {
+          "containerPath" : "container:",
+          "identifier" : "FerrostarSwiftUITests",
+          "name" : "FerrostarSwiftUITests"
+        }
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "SNAPSHOT_ARTIFACTS",
+        "value" : ".\/__Snapshots__"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "FerrostarCarPlayUITests",
+        "name" : "FerrostarCarPlayUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "FerrostarCoreTests",
+        "name" : "FerrostarCoreTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "FerrostarMapLibreUITests",
+        "name" : "FerrostarMapLibreUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "FerrostarSwiftUITests",
+        "name" : "FerrostarSwiftUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

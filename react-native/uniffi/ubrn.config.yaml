@@ -1,0 +1,4 @@
+---
+rust:
+  directory: ../../
+  manifestPath: common/ferrostar/Cargo.toml

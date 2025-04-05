@@ -13,11 +13,6 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
 
     @State private var isInstructionViewExpanded: Bool = false
 
-    var topCenter: (() -> AnyView)?
-    var topTrailing: (() -> AnyView)?
-    var midLeading: (() -> AnyView)?
-    var bottomTrailing: (() -> AnyView)?
-
     var speedLimit: Measurement<UnitSpeed>?
     var speedLimitStyle: SpeedLimitView.SignageStyle?
 
@@ -29,17 +24,28 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var onCenter: () -> Void
 
     var onTapExit: (() -> Void)?
-    let currentRoadNameView: AnyView?
 
     let showMute: Bool
     let isMuted: Bool
     let onMute: () -> Void
+
+    // MARK: Configurable Views
+
+    var topCenter: (() -> AnyView)?
+    var topTrailing: (() -> AnyView)?
+    var midLeading: (() -> AnyView)?
+    var bottomTrailing: (() -> AnyView)?
+
+    var progressView: (NavigationState?, (() -> Void)?) -> AnyView
+    var instructionsView: (NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView
+    var currentRoadNameView: (NavigationState?) -> AnyView
 
     // NOTE: These don't really follow our usual coding style as they are internal.
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
         speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
+        views: NavigationViewComponentBuilder,
         isMuted: Bool,
         showMute: Bool = true,
         onMute: @escaping () -> Void,
@@ -48,8 +54,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        onTapExit: (() -> Void)? = nil,
-        currentRoadNameView: AnyView?
+        onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
@@ -63,7 +68,10 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.showCentering = showCentering
         self.onCenter = onCenter
         self.onTapExit = onTapExit
-        self.currentRoadNameView = currentRoadNameView
+
+        progressView = views.progressView
+        instructionsView = views.instructionsView
+        currentRoadNameView = views.currentRoadNameView
     }
 
     var body: some View {
@@ -71,63 +79,54 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
             ZStack(alignment: .top) {
                 VStack {
                     Spacer()
-                    if case .navigating = navigationState?.tripState,
-                       let progress = navigationState?.currentProgress
-                    {
-                        HStack {
-                            TripProgressView(
-                                progress: progress,
-                                onTapExit: onTapExit
-                            )
 
-                            // TODO: Landscape view (this doesn't quite work since it's half width
-//                            if !showCentering {
-//                                currentRoadNameView
-//                            }
-                        }
+                    HStack {
+                        progressView(navigationState, onTapExit)
                     }
                 }
-                if case .navigating = navigationState?.tripState,
-                   let visualInstruction = navigationState?.currentVisualInstruction,
-                   let progress = navigationState?.currentProgress,
-                   let remainingSteps = navigationState?.remainingSteps
-                {
-                    InstructionsView(
-                        visualInstruction: visualInstruction,
-                        distanceFormatter: formatterCollection.distanceFormatter,
-                        distanceToNextManeuver: progress.distanceToNextManeuver,
-                        remainingSteps: remainingSteps,
-                        isExpanded: $isInstructionViewExpanded
-                    )
-                }
+
+                instructionsView(navigationState, $isInstructionViewExpanded, .constant(.zero))
             }
 
             Spacer().frame(width: 16)
 
-            // The inner content is displayed vertically full screen
-            // when both the visualInstructions and progress are nil.
-            // It will automatically reduce height if and when either
-            // view appears
-            NavigatingInnerGridView(
-                speedLimit: speedLimit,
-                speedLimitStyle: speedLimitStyle,
-                isMuted: isMuted,
-                showMute: showMute,
-                onMute: onMute,
-                showZoom: showZoom,
-                onZoomIn: onZoomIn,
-                onZoomOut: onZoomOut,
-                showCentering: showCentering,
-                onCenter: onCenter
-            )
-            .innerGrid {
-                topCenter?()
-            } topTrailing: {
-                topTrailing?()
-            } midLeading: {
-                midLeading?()
-            } bottomTrailing: {
-                bottomTrailing?()
+            ZStack(alignment: .bottom) {
+                // Centering will push up the grid. Allowing for the road name
+                if !showCentering {
+                    HStack {
+                        Spacer(minLength: 64)
+
+                        currentRoadNameView(navigationState)
+
+                        Spacer(minLength: 64)
+                    }
+                }
+
+                // The inner content is displayed vertically full screen
+                // when both the visualInstructions and progress are nil.
+                // It will automatically reduce height if and when either
+                // view appears
+                NavigatingInnerGridView(
+                    speedLimit: speedLimit,
+                    speedLimitStyle: speedLimitStyle,
+                    isMuted: isMuted,
+                    showMute: showMute,
+                    onMute: onMute,
+                    showZoom: showZoom,
+                    onZoomIn: onZoomIn,
+                    onZoomOut: onZoomOut,
+                    showCentering: showCentering,
+                    onCenter: onCenter
+                )
+                .innerGrid {
+                    topCenter?()
+                } topTrailing: {
+                    topTrailing?()
+                } midLeading: {
+                    midLeading?()
+                } bottomTrailing: {
+                    bottomTrailing?()
+                }
             }
         }
     }
