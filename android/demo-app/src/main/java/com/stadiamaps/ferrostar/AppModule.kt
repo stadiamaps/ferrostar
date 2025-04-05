@@ -152,7 +152,7 @@ object AppModule {
                         specialAdvanceConditions =
                             // NOTE: We have not yet put this threshold through extensive real-world
                             // testing
-                            SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(0U)),
+                            SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),
             options = options)
