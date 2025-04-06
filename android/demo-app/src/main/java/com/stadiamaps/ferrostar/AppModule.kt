@@ -129,8 +129,8 @@ object AppModule {
     /**
      * Example implementation of a custom route refresh handler
      *
-     * This demonstrates how to respond when a route refresh is needed according to
-     * the configured strategy. In this example, we log the event and request new routes.
+     * This demonstrates how to respond when a route refresh is needed according to the configured
+     * strategy. In this example, we log the event and request new routes.
      */
     core.refreshHandler = RouteRefreshHandler { core, tripState ->
       if (tripState is uniffi.ferrostar.TripState.Navigating) {

@@ -16,7 +16,6 @@ import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.RouteRefreshState
-import uniffi.ferrostar.RouteRefreshStrategy
 import uniffi.ferrostar.Speed
 import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState

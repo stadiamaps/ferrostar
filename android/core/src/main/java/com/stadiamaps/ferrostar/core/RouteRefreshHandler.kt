@@ -2,9 +2,7 @@ package com.stadiamaps.ferrostar.core
 
 import uniffi.ferrostar.TripState
 
-/**
- * Handler for route refresh events.
- */
+/** Handler for route refresh events. */
 fun interface RouteRefreshHandler {
   /**
    * Called when a route refresh is needed
@@ -13,8 +11,5 @@ fun interface RouteRefreshHandler {
    * @param tripState The current trip state
    * @return The corrective action to take
    */
-    fun onRefreshNeeded(
-        core: FerrostarCore,
-        tripState: TripState
-    ): CorrectiveAction
+  fun onRefreshNeeded(core: FerrostarCore, tripState: TripState): CorrectiveAction
 }

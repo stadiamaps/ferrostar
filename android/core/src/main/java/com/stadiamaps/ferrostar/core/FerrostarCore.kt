@@ -104,8 +104,8 @@ class FerrostarCore(
   /**
    * Controls what happens when a route refresh is needed based on the configured strategy.
    *
-   * The default behavior (when this property is 'null') is to fetch new routes automatically.
-   * These will be passed to the [alternativeRouteProcessor] or, if none specified, navigation will
+   * The default behavior (when this property is 'null') is to fetch new routes automatically. These
+   * will be passed to the [alternativeRouteProcessor] or, if none specified, navigation will
    * automatically proceed with the first route.
    */
   var refreshHandler: RouteRefreshHandler? = null
@@ -397,9 +397,11 @@ class FerrostarCore(
         }
       }
 
-      if (newState.routeRefreshState == RouteRefreshState.REFRESH_NEEDED && !_routeRequestInFlight) {
-        val action = refreshHandler?.onRefreshNeeded(this, newState)
-          ?: CorrectiveAction.GetNewRoutes(newState.remainingWaypoints)
+      if (newState.routeRefreshState == RouteRefreshState.REFRESH_NEEDED &&
+          !_routeRequestInFlight) {
+        val action =
+            refreshHandler?.onRefreshNeeded(this, newState)
+                ?: CorrectiveAction.GetNewRoutes(newState.remainingWaypoints)
 
         when (action) {
           is CorrectiveAction.DoNothing -> {
@@ -416,7 +418,8 @@ class FerrostarCore(
                 val state = _state.value
 
                 // make sure we are still navigating and refresh is still needed
-                if (state.tripState is TripState.Navigating && state.tripState.routeRefreshState == RouteRefreshState.REFRESH_NEEDED) {
+                if (state.tripState is TripState.Navigating &&
+                    state.tripState.routeRefreshState == RouteRefreshState.REFRESH_NEEDED) {
                   if (processor != null) {
                     processor.loadedAlternativeRoutes(this@FerrostarCore, routes)
                   } else if (routes.isNotEmpty()) {
