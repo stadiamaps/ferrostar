@@ -86,6 +86,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This ensures that, while the user remains off the route, we don't keep triggering useless recalculations.
     public var minimumMovementBeforeRecaluclation = CLLocationDistance(50)
 
+    public var refreshHandler: RouteRefreshHandler?
+
     /// The observable state of the model (for easy binding in SwiftUI views).
     @Published public private(set) var state: NavigationState?
     @Published public private(set) var route: Route?
@@ -329,6 +331,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 remainingWaypoints: remainingWaypoints,
                 progress: _,
                 deviation: deviation,
+                last_check_time: last_check_time,
+                route_refresh_state: route_refresh_state,
                 visualInstruction: _,
                 spokenInstruction: spokenInstruction,
                 annotationJson: _
@@ -382,6 +386,54 @@ public protocol FerrostarCoreDelegate: AnyObject {
                                 self.lastAutomaticRecalculation = Date()
                                 self.state?.isCalculatingNewRoute = false
                             }
+                        }
+                    }
+                }
+
+                if case .refreshNeeded = route_refresh_state, !self.routeRequestInFlight {
+                    NSLog("Route refresh needed")
+
+                    let action: CorrectiveAction = if let refreshHandler = self.refreshHandler {
+                        refreshHandler.onRouteRefresh(core: self, tripState: newState)
+                    } else {
+                        .getNewRoutes(waypoints: remainingWaypoints)
+                    }
+
+                    switch action {
+                    case .doNothing:
+                        // do nothing
+                        break
+
+                    case let .getNewRoutes(waypoints):
+                        self.routeRequestInFlight = true
+
+                        Task {
+                            do {
+                                guard let currentLocation = self.locationProvider.lastLocation else {
+                                    self.routeRequestInFlight = false
+                                    return
+                                }
+
+                                let routes = try await self.getRoutes(
+                                    initialLocation: currentLocation,
+                                    waypoints: waypoints
+                                )
+
+                                if case let .navigating(_, _, _, _, _, _, _, _, _, _, annotationJson: _) = self.state?
+                                    .tripState,
+                                    case .refreshNeeded = route_refresh_state
+                                {
+                                    if let processor = self.alternativeRouteProcessor {
+                                        processor.loadedAlternateRoutes(core: self, routes: routes)
+                                    } else if !routes.isEmpty {
+                                        self.replaceRoute(routes[0])
+                                    }
+                                }
+                            } catch {
+                                NSLog("Error refreshing route: \(error)")
+                            }
+
+                            self.routeRequestInFlight = false
                         }
                     }
                 }

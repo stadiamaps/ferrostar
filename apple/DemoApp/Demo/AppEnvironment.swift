@@ -23,6 +23,18 @@ class AppEnvironment: ObservableObject {
 
     let navigationDelegate = NavigationDelegate()
 
+    class DemoRefreshHandler: RouteRefreshHandler {
+        func onRouteRefresh(core _: FerrostarCore, tripState: TripState) -> CorrectiveAction {
+            print("DemoApp: Route refresh needed - Getting new routes")
+
+            if case let .navigating(_, _, _, remainingWaypoints, _, _, _, _, _, _, _) = tripState {
+                return .getNewRoutes(waypoints: remainingWaypoints)
+            }
+
+            return .doNothing
+        }
+    }
+
     init(initialLocation: CLLocation = AppDefaults.initialLocation) {
         let simulated = SimulatedLocationProvider(location: initialLocation)
         simulated.warpFactor = 2
@@ -40,7 +52,7 @@ class AppEnvironment: ObservableObject {
                 specialAdvanceConditions: .minimumDistanceFromCurrentStepLine(10)
             ),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
-            routeRefreshStrategy: .none,
+            routeRefreshStrategy: .interval(intervalSeconds: 5),
             snappedLocationCourseFiltering: .snapToRoute
         )
 
@@ -68,6 +80,8 @@ class AppEnvironment: ObservableObject {
         // You can customize the instance it further as needed,
         // or replace with your own.
         ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
+
+        ferrostarCore.refreshHandler = DemoRefreshHandler()
     }
 
     func getRoutes() async throws -> [Route] {
