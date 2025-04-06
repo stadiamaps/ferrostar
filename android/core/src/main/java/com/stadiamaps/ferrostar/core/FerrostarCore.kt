@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.core
 
+import android.util.Log
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
@@ -100,6 +101,13 @@ class FerrostarCore(
    */
   var deviationHandler: RouteDeviationHandler? = null
 
+  /**
+   * Controls what happens when a route refresh is needed based on the configured strategy.
+   *
+   * The default behavior (when this property is 'null') is to fetch new routes automatically.
+   * These will be passed to the [alternativeRouteProcessor] or, if none specified, navigation will
+   * automatically proceed with the first route.
+   */
   var refreshHandler: RouteRefreshHandler? = null
 
   /**
@@ -417,7 +425,7 @@ class FerrostarCore(
                   }
                 }
               } catch (e: Throwable) {
-                android.util.Log.e(TAG, "Failed to refresh route: $e")
+                Log.e(TAG, "Failed to refresh route: $e")
               } finally {
                 isCalculatingNewRoute = false
               }

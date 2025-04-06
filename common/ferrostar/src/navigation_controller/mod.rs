@@ -11,7 +11,7 @@ use crate::{
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
     models::{Route, UserLocation},
-    route_refresh::RouteRefreshState,
+    route_refresh::{RouteRefreshState, RouteRefreshStrategy},
 };
 use geo::{
     algorithm::{Distance, Haversine},
@@ -276,9 +276,11 @@ impl NavigationController {
                             .route_refresh_strategy
                             .check_refresh(*last_check_time);
 
-                        let updated_last_check_time = match route_refresh_state {
-                            RouteRefreshState::NoRefreshNeeded => *last_check_time,
-                            RouteRefreshState::RefreshNeeded => SystemTime::now(),
+                        let updated_last_check_time = match (self.config.route_refresh_strategy.clone(), route_refresh_state) {
+                            (RouteRefreshStrategy::Interval { .. }, RouteRefreshState::RefreshNeeded) => {
+                                SystemTime::now()
+                            }
+                            _ => *last_check_time,
                         };
 
                         // we need to update the geometry index, since the step has changed
@@ -464,7 +466,7 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                     max_acceptable_deviation: 0.0,
                 },
-                route_refresh_strategy: crate::route_refresh::RouteRefreshStrategy::None,
+                route_refresh_strategy: RouteRefreshStrategy::None,
                 snapped_location_course_filtering: CourseFiltering::Raw,
             },
         );
