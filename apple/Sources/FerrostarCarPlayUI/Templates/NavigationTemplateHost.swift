@@ -23,7 +23,7 @@ class NavigatingTemplateHost {
         self.mapTemplate = mapTemplate
         self.formatters = formatters
         self.units = units
-        
+
         // Top Bar
         self.mapTemplate.automaticallyHidesNavigationBar = false
         self.mapTemplate.trailingNavigationBarButtons = [
@@ -31,7 +31,7 @@ class NavigatingTemplateHost {
             CarPlayBarButtons.startNavigationButton { onStartTrip() },
             CarPlayBarButtons.cancelNavigationButton { onCancelTrip() },
         ]
-        
+
         // Map Buttons
         self.mapTemplate.mapButtons = [
             CarPlayMapButtons.recenterButton { onCenter() },
@@ -74,19 +74,19 @@ class NavigatingTemplateHost {
 
         currentSession?.upcomingManeuvers = maneuvers
     }
-    
+
     func cancelTrip() {
         currentSession?.cancelTrip()
         currentSession = nil
         currentTrip = nil
     }
-    
+
     func completeTrip() {
         currentSession?.finishTrip()
         currentSession = nil
         currentTrip = nil
     }
-    
+
     private func updateArrival(_ progress: TripProgress?) {
         guard let currentTrip, let progress else {
             // TODO: Remove Progress?

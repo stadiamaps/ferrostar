@@ -24,7 +24,7 @@ enum CarPlayBarButtons {
         }
         return button
     }
-    
+
     static func cancelNavigationButton(_ action: @escaping () -> Void) -> CPBarButton {
         let button = CPBarButton(title: String(localized: "cancel")) { _ in
             action()

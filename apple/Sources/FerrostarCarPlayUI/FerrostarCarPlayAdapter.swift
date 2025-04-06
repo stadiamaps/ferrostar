@@ -6,11 +6,10 @@ import FerrostarSwiftUI
 
 @MainActor
 class FerrostarCarPlayAdapter: NSObject {
-    
     // TODO: This should be customizable. For now we're just ignore it.
     @Published var uiState: CarPlayUIState = .idle(nil)
     @Published var currentRoute: CPTrip?
-    
+
     private let ferrostarCore: FerrostarCore
     private let formatterCollection: FormatterCollection
     private let distanceUnits: MKDistanceFormatter.Units
@@ -83,29 +82,28 @@ class FerrostarCarPlayAdapter: NSObject {
             ferrostarCore.$route,
             ferrostarCore.$state
         )
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] (route, navState) in
-                guard let self, let navState else { return }
-                
-                switch navState.tripState {
-                    
-                case .navigating:
-                    if let route, uiState != .navigating {
-                        uiState = .navigating
-                        do {
-                            try navigatingTemplate?.start(routes: [route], waypoints: route.waypoints)
-                            print("CarPlay - started")
-                        } catch {
-                            print("CarPlay - startup error: \(error)")
-                        }
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] route, navState in
+            guard let self, let navState else { return }
+
+            switch navState.tripState {
+            case .navigating:
+                if let route, uiState != .navigating {
+                    uiState = .navigating
+                    do {
+                        try navigatingTemplate?.start(routes: [route], waypoints: route.waypoints)
+                        print("CarPlay - started")
+                    } catch {
+                        print("CarPlay - startup error: \(error)")
                     }
-                case .complete:
-                    navigatingTemplate?.completeTrip()
-                case .idle:
-                    break
                 }
+            case .complete:
+                navigatingTemplate?.completeTrip()
+            case .idle:
+                break
             }
-            .store(in: &cancellables)
+        }
+        .store(in: &cancellables)
 
         ferrostarCore.$state
             .receive(on: DispatchQueue.main)
