@@ -276,10 +276,14 @@ impl NavigationController {
                             .route_refresh_strategy
                             .check_refresh(*last_check_time);
 
-                        let updated_last_check_time = match (self.config.route_refresh_strategy.clone(), route_refresh_state) {
-                            (RouteRefreshStrategy::Interval { .. }, RouteRefreshState::RefreshNeeded) => {
-                                SystemTime::now()
-                            }
+                        let updated_last_check_time = match (
+                            self.config.route_refresh_strategy.clone(),
+                            route_refresh_state,
+                        ) {
+                            (
+                                RouteRefreshStrategy::Interval { .. },
+                                RouteRefreshState::RefreshNeeded,
+                            ) => SystemTime::now(),
                             _ => *last_check_time,
                         };
 
@@ -443,6 +447,18 @@ mod tests {
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
     };
+    use insta::Settings;
+
+    // Add a helper function for redacting timestamps
+    fn with_redacted_timestamps<F, R>(test_fn: F) -> R
+    where
+        F: FnOnce() -> R,
+    {
+        let mut settings = Settings::new();
+        settings.add_redaction(".**.last_check_time.secs_since_epoch", 1577836800);
+        settings.add_redaction(".**.last_check_time.nanos_since_epoch", 0);
+        settings.bind(test_fn)
+    }
 
     fn test_full_route_state_snapshot(
         route: Route,
@@ -518,58 +534,68 @@ mod tests {
 
     #[test]
     fn test_extended_exact_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_extended_route(),
-            StepAdvanceMode::DistanceToEndOfStep {
-                distance: 0,
-                minimum_horizontal_accuracy: 0,
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_extended_route(),
+                StepAdvanceMode::DistanceToEndOfStep {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_extended_relative_linestring() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_extended_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: None,
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_extended_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: None,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_exact_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::DistanceToEndOfStep {
-                distance: 0,
-                minimum_horizontal_accuracy: 0,
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::DistanceToEndOfStep {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_relative_linestring() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: None,
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: None,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_relative_linestring_min_line_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: Some(
-                    SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
-                ),
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: Some(
+                        SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
+                    ),
+                }
+            ));
+        });
     }
 }

@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvanceMode::RelativeLineStringDistance {\n        minimum_horizontal_accuracy: 0,\n        special_advance_conditions: None,\n    })"
+expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{ minimum_horizontal_accuracy: 0, special_advance_conditions: None, })"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -471,6 +471,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1717.6147901250579
       durationRemaining: 182.1430097720114
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: John F. Kennedy Boulevard
@@ -953,6 +957,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1672.183717805577
       durationRemaining: 165.7203820079352
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: John F. Kennedy Boulevard
@@ -1435,6 +1443,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1666.9303813597428
       durationRemaining: 163.8213823901693
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: John F. Kennedy Boulevard
@@ -1917,6 +1929,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1661.579653550692
       durationRemaining: 161.88717730566262
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: John F. Kennedy Boulevard
@@ -2371,6 +2387,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1654.9443981323511
       durationRemaining: 159.2681997839586
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -2825,6 +2845,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1648.6732268140304
       durationRemaining: 158.5894954515428
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -3279,6 +3303,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1642.2135061533559
       durationRemaining: 157.8903851616058
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -3733,6 +3761,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1632.8019109226634
       durationRemaining: 156.8718050377693
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -4187,6 +4219,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1626.5376259971292
       durationRemaining: 156.19384599269802
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -4641,6 +4677,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1620.2795951226037
       durationRemaining: 155.51656379909502
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -5095,6 +5135,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1613.6357517168774
       durationRemaining: 154.79752662494136
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -5549,6 +5593,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1607.539253899803
       durationRemaining: 154.13772652206043
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -6003,6 +6051,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1599.5390720133826
       durationRemaining: 153.2718981415527
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -6457,6 +6509,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1591.4551209584986
       durationRemaining: 152.39700375173456
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -6911,6 +6967,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1583.920704493682
       durationRemaining: 151.58158334024668
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -7365,6 +7425,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1576.3021492451678
       durationRemaining: 150.7570569174379
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -7819,6 +7883,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1566.528611349486
       durationRemaining: 149.69930515526698
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -8273,6 +8341,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1557.3493506517061
       durationRemaining: 148.7058696887925
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -8727,6 +8799,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1548.2532606989764
       durationRemaining: 147.721435466604
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Take the ramp on the left.
@@ -9139,6 +9215,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1539.3685633385908
       durationRemaining: 146.75461429690156
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -9551,6 +9631,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1531.2099540901188
       durationRemaining: 146.01747012315084
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -9963,6 +10047,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1523.0513448428246
       durationRemaining: 145.28032594950656
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -10375,6 +10463,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1517.8257746971365
       durationRemaining: 144.8081868299451
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -10787,6 +10879,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1512.5707103210545
       durationRemaining: 144.3333828566773
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -11199,6 +11295,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1505.9951149389262
       durationRemaining: 143.7392666688251
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -11611,6 +11711,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1499.8891854136575
       durationRemaining: 143.18758558718397
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -12023,6 +12127,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1494.39964379418
       durationRemaining: 142.69159619755635
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -12435,6 +12543,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1489.161950335298
       durationRemaining: 142.21836171609982
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -12847,6 +12959,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1482.8137663878397
       durationRemaining: 141.64479253681316
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -13259,6 +13375,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1476.4269435228612
       durationRemaining: 141.06773226583886
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -13671,6 +13791,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1471.117377480198
       durationRemaining: 140.58800397461974
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -14083,6 +14207,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1465.8870706417201
       durationRemaining: 140.11543688683642
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -14495,6 +14623,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1459.8171111968463
       durationRemaining: 139.56700576292522
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -14907,6 +15039,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1453.7471517530666
       durationRemaining: 139.01857463911287
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -15319,6 +15455,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1448.6087672428882
       durationRemaining: 138.55431288949197
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -15731,6 +15871,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1443.4812633770377
       durationRemaining: 138.09103422452785
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -16143,6 +16287,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1433.5106152292337
       durationRemaining: 137.1901692649701
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -16555,6 +16703,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1424.3764165435164
       durationRemaining: 136.36487893202286
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -16967,6 +17119,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1415.2423243909925
       durationRemaining: 135.5395982245302
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -17379,6 +17535,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1406.1081257047786
       durationRemaining: 134.71430789153808
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -17791,6 +17951,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1396.974033552751
       durationRemaining: 133.8890271840903
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -18203,6 +18367,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1387.8398348665373
       durationRemaining: 133.06373685109818
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -18615,6 +18783,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1378.7754157488935
       durationRemaining: 132.24475122039684
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -19027,6 +19199,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1369.5715440287909
       durationRemaining: 131.413165810703
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -19439,6 +19615,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1360.5071249101557
       durationRemaining: 130.59418017991206
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -19851,6 +20031,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1351.3032531905496
       durationRemaining: 129.7625947702631
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -20263,6 +20447,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1342.2388340719142
       durationRemaining: 128.94360913947216
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -20675,6 +20863,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1337.893335840415
       durationRemaining: 128.55098600900493
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -21087,6 +21279,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1331.8438659295048
       durationRemaining: 128.00440614921538
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -21499,6 +21695,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1325.5264382128335
       durationRemaining: 127.43361584750953
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -21911,6 +22111,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1320.840756619266
       durationRemaining: 127.01025657369748
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -22323,6 +22527,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1312.3607832666648
       durationRemaining: 126.24407660845378
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: "NJ 495 West, NJTP West"
@@ -22675,6 +22883,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1301.6645230613174
       durationRemaining: 125.34323560913143
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -23033,6 +23245,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1292.4085206042214
       durationRemaining: 124.93763028282154
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -23391,6 +23607,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1283.2699100884975
       durationRemaining: 124.53716916394971
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -23749,6 +23969,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1274.0139076314015
       durationRemaining: 124.13156383763985
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -24107,6 +24331,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1264.7936831339741
       durationRemaining: 123.72752632973464
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -24465,6 +24693,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1255.6192946571675
       durationRemaining: 123.32549739239617
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -24823,6 +25055,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1246.3990701599944
       durationRemaining: 122.92145988450213
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -25181,6 +25417,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1237.7404170852665
       durationRemaining: 122.54203087915579
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -25539,6 +25779,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1229.0817640116982
       durationRemaining: 122.1626018738603
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -25897,6 +26141,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1222.5679663894
       durationRemaining: 121.87716212572332
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -26255,6 +26503,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1215.9721777449865
       durationRemaining: 121.58812946634482
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -26613,6 +26865,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1209.2631248370637
       durationRemaining: 121.29413347762703
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -26971,6 +27227,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1202.5874619580816
       durationRemaining: 121.00160066630647
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -27329,6 +27589,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1195.7850365960394
       durationRemaining: 120.70351302302214
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -27687,6 +27951,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1188.9315078704683
       durationRemaining: 120.40318599005141
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -28045,6 +28313,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1181.1478307453635
       durationRemaining: 120.06209912076277
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -28403,6 +28675,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1173.39445576505
       durationRemaining: 119.72234011535305
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -28761,6 +29037,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1165.5771615931585
       durationRemaining: 119.37978012056615
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -29119,6 +29399,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1157.6772766040833
       durationRemaining: 119.03360093104489
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -29477,6 +29761,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1150.4176865759207
       durationRemaining: 118.71547997160289
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -29835,6 +30123,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1143.187223878344
       durationRemaining: 118.39863539475496
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -30216,6 +30508,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1136.6487628831196
       durationRemaining: 118.11211487816854
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -30597,6 +30893,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1130.137715594857
       durationRemaining: 117.8267956518377
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -30978,6 +31278,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1122.4536116339173
       durationRemaining: 117.49007215711926
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -31359,6 +31663,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1114.7695076727882
       durationRemaining: 117.15334866239252
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -31740,6 +32048,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1107.0854037116594
       durationRemaining: 116.81662516766576
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -32121,6 +32433,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1099.401299751898
       durationRemaining: 116.47990167299895
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -32502,6 +32818,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1090.6506959509707
       durationRemaining: 116.0964433143246
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -32883,6 +33203,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1081.9000921498464
       durationRemaining: 115.71298495564166
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -33264,6 +33588,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1073.0943491782532
       durationRemaining: 115.32711035502983
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -33645,6 +33973,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1064.3437453773256
       durationRemaining: 114.9436519963555
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -34026,6 +34358,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1055.5931415762016
       durationRemaining: 114.56019363767254
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -34407,6 +34743,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1048.7002604468946
       durationRemaining: 114.25814215133954
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -34788,6 +35128,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1041.8906747873043
       durationRemaining: 113.95974073817055
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -35169,6 +35513,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1034.9977936579976
       durationRemaining: 113.65768925183755
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -35550,6 +35898,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1025.2724846289923
       durationRemaining: 113.23151854148408
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -35931,6 +36283,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1015.652559222762
       durationRemaining: 112.80996582457881
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -36312,6 +36668,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 1005.9272501924154
       durationRemaining: 112.38379511416656
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -36693,6 +37053,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 996.2019411634101
       durationRemaining: 111.95762440381309
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -37074,6 +37438,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 986.4766321332199
       durationRemaining: 111.5314536934077
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -37455,6 +37823,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 976.8567067269896
       durationRemaining: 111.10990097650242
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -37836,6 +38208,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 967.1313976979843
       durationRemaining: 110.68373026614896
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -38217,6 +38593,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 959.5024783510731
       durationRemaining: 110.34942500473197
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -38598,6 +38978,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 951.8131627841497
       durationRemaining: 110.01247313332979
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -38979,6 +39363,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 944.1992590247257
       durationRemaining: 109.67882586679676
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -39360,6 +39748,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 936.5738265336208
       durationRemaining: 109.3446734021507
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -39741,6 +40133,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 928.8759277296936
       durationRemaining: 109.00734540653488
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -40122,6 +40518,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 921.2620239701878
       durationRemaining: 108.67369813999827
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -40503,6 +40903,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 914.43364726897
       durationRemaining: 108.37447328856784
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -40884,6 +41288,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 907.5524940993798
       durationRemaining: 108.07293573067749
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -41265,6 +41673,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 899.5263037440081
       durationRemaining: 107.72122174040948
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -41646,6 +42058,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 891.4700575394475
       durationRemaining: 107.36819067913005
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -42027,6 +42443,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 883.4438671840758
       durationRemaining: 107.01647668886204
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -42408,6 +42828,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 873.5629325541524
       durationRemaining: 106.58348634196082
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -42789,6 +43213,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 863.6521713753074
       durationRemaining: 106.1491889721667
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -43170,6 +43598,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 853.7712367463449
       durationRemaining: 105.71619862530757
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -43551,6 +43983,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 843.8903021164216
       durationRemaining: 105.28320827840635
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -43932,6 +44368,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 834.0093674862864
       durationRemaining: 104.85021793149583
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -44313,6 +44753,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 824.0986063076532
       durationRemaining: 104.41592056171099
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -44694,6 +45138,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 814.3001955053851
       durationRemaining: 103.98654647401017
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -45075,6 +45523,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 804.4192608766346
       durationRemaining: 103.55355612716033
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -45456,6 +45908,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 794.5084996977894
       durationRemaining: 103.11925875736621
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -45837,6 +46293,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 784.6275650676542
       durationRemaining: 102.6862684104557
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -46218,6 +46678,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 774.7466304377309
       durationRemaining: 102.25327806355448
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -46599,6 +47063,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 764.8656958075957
       durationRemaining: 101.82028771664396
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -46980,6 +47448,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 754.9549346287506
       durationRemaining: 101.38599034684984
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Tonnelle Avenue
@@ -47258,6 +47730,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 744.3538186576952
       durationRemaining: 100.87814953968406
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -47507,6 +47983,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 735.853220383771
       durationRemaining: 99.99465859596167
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -47756,6 +48236,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 727.352622109138
       durationRemaining: 99.1111676521656
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -48005,6 +48489,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 718.8520238352139
       durationRemaining: 98.22767670844321
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -48254,6 +48742,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 710.3514255616738
       durationRemaining: 97.34418576476074
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -48503,6 +48995,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 701.6516908729348
       durationRemaining: 96.43999801672118
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -48752,6 +49248,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 694.9148006359508
       durationRemaining: 95.73981418007463
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -49001,6 +49501,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 688.9676129788572
       durationRemaining: 95.12170634032677
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -49250,6 +49754,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 684.4173221884239
       durationRemaining: 94.64878189723396
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -49499,6 +50007,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 679.596780262003
       durationRemaining: 94.14776949803715
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -49748,6 +50260,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 674.6030305160286
       durationRemaining: 93.62875512591725
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -49997,6 +50513,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 669.7423900925282
       durationRemaining: 93.12357517781564
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -50246,6 +50766,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 665.4166483243545
       durationRemaining: 92.67398874237773
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -50495,6 +51019,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 661.3818691745371
       durationRemaining: 92.25464286530948
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -50744,6 +51272,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 657.4891305527541
       durationRemaining: 91.8500596574224
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -50993,6 +51525,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 652.4676708741231
       durationRemaining: 91.32816531453284
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -51242,6 +51778,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 648.442568521094
       durationRemaining: 90.90982517400823
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -51491,6 +52031,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 644.4217077650137
       durationRemaining: 90.4919258745127
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -51740,6 +52284,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 639.9326814384021
       durationRemaining: 90.0253688184219
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -51989,6 +52537,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 635.1483161742285
       durationRemaining: 89.52811636087151
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -52238,6 +52790,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 630.7795424408528
       durationRemaining: 89.07405749298573
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -52487,6 +53043,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 625.5792489447563
       durationRemaining: 88.53357645148148
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -52736,6 +53296,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 620.7334145619732
       durationRemaining: 88.02993533658487
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -52985,6 +53549,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 615.693443400613
       durationRemaining: 87.50611704354273
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -53234,6 +53802,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 610.3219042873253
       durationRemaining: 86.94783796629264
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -53483,6 +54055,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 605.8199745231893
       durationRemaining: 86.47993981986579
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -53732,6 +54308,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 600.8043749773639
       durationRemaining: 85.95865453696189
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -53981,6 +54561,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 595.5263583237588
       durationRemaining: 85.41009551040722
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -54230,6 +54814,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 590.10932348402
       durationRemaining: 84.8470879351147
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -54479,6 +55067,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 585.1451809407507
       durationRemaining: 84.33115072234474
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -54728,6 +55320,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 580.1573186574777
       durationRemaining: 83.81274825068296
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -54977,6 +55573,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 574.767163954757
       durationRemaining: 83.2525344031795
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -55226,6 +55826,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 570.5511322209386
       durationRemaining: 82.81435043832836
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -55475,6 +56079,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 565.2354767251006
       durationRemaining: 82.26187950167356
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -55724,6 +56332,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 559.9488808290771
       durationRemaining: 81.71242881046939
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -55973,6 +56585,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 555.9624356637455
       durationRemaining: 81.298106419536
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -56222,6 +56838,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 550.299799431713
       durationRemaining: 80.70957280491484
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -56471,6 +57091,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 545.2617567590333
       durationRemaining: 80.18595494509276
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -56720,6 +57344,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 540.6938880231075
       durationRemaining: 79.71120357698229
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -56969,6 +57597,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 535.6333751124066
       durationRemaining: 79.18525032250263
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -57218,6 +57850,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 531.1259548725322
       durationRemaining: 78.71678153558257
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -57467,6 +58103,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 526.6112735280994
       durationRemaining: 78.24755808176589
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -57716,6 +58356,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 521.5057304099913
       durationRemaining: 77.7169247119395
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -57965,6 +58609,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 516.6478322602209
       durationRemaining: 77.21202977601322
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -58214,6 +58862,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 513.1369686026449
       durationRemaining: 76.8471359007636
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -58463,6 +59115,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 508.6643380961832
       durationRemaining: 76.38228290809874
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -58712,6 +59368,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 504.8995274498028
       durationRemaining: 75.99099561234335
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -58961,6 +59621,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 501.5256333961277
       durationRemaining: 75.64033737095292
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -59210,6 +59874,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 498.0744745336217
       durationRemaining: 75.28164878197154
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -59459,6 +60127,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 494.1744570646795
       durationRemaining: 74.87630906314975
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -59708,6 +60380,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 489.8956845502263
       durationRemaining: 74.4316042735629
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -59957,6 +60633,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 486.1967531470065
       durationRemaining: 74.04716399172773
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -60206,6 +60886,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 481.2757598617312
       durationRemaining: 73.53571140197343
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -60455,6 +61139,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 476.01134623258616
       durationRemaining: 72.98856617578086
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -60704,6 +61392,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 470.6570044699358
       durationRemaining: 72.4320744672611
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -60953,6 +61645,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 461.3115545361185
       durationRemaining: 71.46077572857513
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -61202,6 +61898,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 452.06506403039657
       durationRemaining: 70.49976211991189
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -61451,6 +62151,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 442.76163455655
       durationRemaining: 69.53283068510724
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -61700,6 +62404,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 433.5151440508281
       durationRemaining: 68.571817076444
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -61949,6 +62657,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 424.16969411701075
       durationRemaining: 67.60051833775803
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -62198,6 +62910,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 415.66327045449384
       durationRemaining: 66.71642194511317
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -62447,6 +63163,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 407.12827072143136
       durationRemaining: 65.8293555615664
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -62696,6 +63416,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 398.62184705891445
       durationRemaining: 64.94525916892154
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -62945,6 +63669,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 390.1154233955794
       durationRemaining: 64.06116277619164
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -63194,6 +63922,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 381.5804236625169
       durationRemaining: 63.17409639264488
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: 29th Street
@@ -63317,6 +64049,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 373.2741634226668
       durationRemaining: 62.314341301935016
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -63440,6 +64176,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 366.57998903371237
       durationRemaining: 61.50028188070681
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -63563,6 +64303,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 359.8858146449335
       durationRemaining: 60.68622245949995
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -63686,6 +64430,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 355.11449234638445
       durationRemaining: 60.10599558712283
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -63809,6 +64557,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 350.3351916670527
       durationRemaining: 59.52479848665409
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -63932,6 +64684,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 344.861852791376
       durationRemaining: 58.85920138409412
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -64055,6 +64811,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 338.60240798828204
       durationRemaining: 58.098008185717866
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -64178,6 +64938,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 332.4534355806163
       durationRemaining: 57.350249219714236
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -64301,6 +65065,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 326.2392126448632
       durationRemaining: 56.59455532341997
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -64424,6 +65192,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 322.8499103541698
       durationRemaining: 56.18239195556958
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -64547,6 +65319,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 314.45495315583173
       durationRemaining: 55.161505196271676
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -64670,6 +65446,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 305.9462088861391
       durationRemaining: 54.126781116332275
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -64793,6 +65573,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 297.55125168663153
       durationRemaining: 53.10589435689216
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Dell Avenue
@@ -64878,6 +65662,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 288.6979726529003
       durationRemaining: 52.00726086019422
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -64963,6 +65751,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 281.09143890027246
       durationRemaining: 50.63698804019624
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65048,6 +65840,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 273.5706523851376
       durationRemaining: 49.28216208637249
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65133,6 +65929,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 265.9641186316862
       durationRemaining: 47.91188926622615
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65218,6 +66018,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 256.57559557114314
       durationRemaining: 46.22060143550537
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65303,6 +66107,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 247.15913047775243
       durationRemaining: 44.52428001006302
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65388,6 +66196,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 237.77060741781918
       durationRemaining: 42.83299217945209
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65473,6 +66285,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 228.3820843572761
       durationRemaining: 41.14170434873131
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65558,6 +66374,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 218.99356129673305
       durationRemaining: 39.45041651801052
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65643,6 +66463,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 209.57709620334236
       durationRemaining: 37.75409509256818
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65728,6 +66552,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 200.18857314340912
       durationRemaining: 36.062807261957246
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65813,6 +66641,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 190.80005008286605
       durationRemaining: 34.371519431236464
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65898,6 +66730,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 187.67326023375335
       durationRemaining: 33.808246423658666
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -65983,6 +66819,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 178.1996831049874
       durationRemaining: 32.101636597176565
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66068,6 +66908,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 168.72610597622142
       durationRemaining: 30.39502677069446
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66153,6 +66997,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 159.3383240767224
       durationRemaining: 28.70387245582556
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66238,6 +67086,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 149.8647469479564
       durationRemaining: 26.997262629343453
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66323,6 +67175,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 140.3332651186621
       durationRemaining: 25.280221607803984
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66408,6 +67264,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 130.85968798989614
       durationRemaining: 23.573611781321883
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66493,6 +67353,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 121.47190608978747
       durationRemaining: 21.88245746634316
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66578,6 +67442,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 111.99832896102151
       durationRemaining: 20.175847639861058
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66663,6 +67531,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 103.26875971319035
       durationRemaining: 18.603266506376873
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66748,6 +67620,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 94.3954850643295
       durationRemaining: 17.004797680611052
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66829,6 +67705,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 85.66591581649834
       durationRemaining: 15.432216547126863
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66910,6 +67790,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 76.85045894609027
       durationRemaining: 13.84416325791199
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -66991,6 +67875,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 68.06307191980636
       durationRemaining: 12.261166587876863
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67072,6 +67960,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 59.33350267279684
       durationRemaining: 10.688585454540691
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67153,6 +68045,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 50.460228023936
       durationRemaining: 9.09011662877487
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67234,6 +68130,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 41.73065877610483
       durationRemaining: 7.517535495290684
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67315,6 +68215,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 33.83685913763435
       durationRemaining: 6.095513396543129
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67396,6 +68300,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 25.91526920319194
       durationRemaining: 4.668485037589753
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67477,6 +68385,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 18.02146956389788
       durationRemaining: 3.2464629386938366
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67558,6 +68470,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 10.127669926036617
       durationRemaining: 1.82444084005603
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67639,6 +68555,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 5.050100380126253
       durationRemaining: 0.9097462147930102
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction:
       primary_content:
         text: Your destination is on the left.
@@ -67684,6 +68604,10 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
       distanceRemaining: 0
       durationRemaining: 0
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
