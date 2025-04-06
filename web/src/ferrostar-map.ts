@@ -317,14 +317,23 @@ export class FerrostarMap extends LitElement {
       snappedLocationCourseFiltering: config.snappedLocationCourseFiltering,
     };
 
-    this.navigationController = new NavigationController(route, navigationConfig);
+    this.navigationController = new NavigationController(
+      route,
+      navigationConfig,
+    );
 
     const startingLocation = this.locationProvider.lastLocation
       ? {
           coordinates: this.locationProvider.lastLocation.coordinates,
-          horizontalAccuracy: Number(this.locationProvider.lastLocation.horizontalAccuracy) || 0.0,
+          horizontalAccuracy:
+            Number(this.locationProvider.lastLocation.horizontalAccuracy) ||
+            0.0,
           courseOverGround: this.locationProvider.lastLocation.courseOverGround
-            ? { degrees: this.locationProvider.lastLocation.courseOverGround.degrees || 0 }
+            ? {
+                degrees:
+                  this.locationProvider.lastLocation.courseOverGround.degrees ||
+                  0,
+              }
             : null,
           timestamp: Date.now(),
           speed: this.locationProvider.lastLocation.speed
@@ -340,7 +349,8 @@ export class FerrostarMap extends LitElement {
         };
 
     try {
-      const initialState = this.navigationController.getInitialState(startingLocation);
+      const initialState =
+        this.navigationController.getInitialState(startingLocation);
       this.tripStateUpdate(initialState);
 
       this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
@@ -434,9 +444,14 @@ export class FerrostarMap extends LitElement {
     try {
       const formattedLocation = {
         coordinates: this.locationProvider.lastLocation.coordinates,
-        horizontalAccuracy: Number(this.locationProvider.lastLocation.horizontalAccuracy) || 0.0,
+        horizontalAccuracy:
+          Number(this.locationProvider.lastLocation.horizontalAccuracy) || 0.0,
         courseOverGround: this.locationProvider.lastLocation.courseOverGround
-          ? { degrees: this.locationProvider.lastLocation.courseOverGround.degrees || 0 }
+          ? {
+              degrees:
+                this.locationProvider.lastLocation.courseOverGround.degrees ||
+                0,
+            }
           : null,
         timestamp: Date.now(),
         speed: this.locationProvider.lastLocation.speed
@@ -461,7 +476,8 @@ export class FerrostarMap extends LitElement {
       // Center the map on the user's location
       this.map?.easeTo({
         center: this.locationProvider.lastLocation.coordinates,
-        bearing: this.locationProvider.lastLocation.courseOverGround.degrees || 0,
+        bearing:
+          this.locationProvider.lastLocation.courseOverGround.degrees || 0,
       });
 
       // Speak the next instruction if voice guidance is enabled

@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    StepAdvanceMode::RelativeLineStringDistance {\n        minimum_horizontal_accuracy: 0,\n        special_advance_conditions: Some(SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)),\n    })"
+expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{\n    minimum_horizontal_accuracy: 0, special_advance_conditions:\n    Some(SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)),\n})"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -157,6 +157,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 1073.1055987781197
       durationRemaining: 48.239790641570735
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -311,10 +315,14 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 227.59235473784523
+      distanceToNextManeuver: 227.5923547378452
       distanceRemaining: 1035.8583547378453
       durationRemaining: 46.733135559702674
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -469,10 +477,14 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 218.68877790339582
+      distanceToNextManeuver: 218.6887779033958
       distanceRemaining: 1026.9547779033958
       durationRemaining: 46.37298490614234
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -631,6 +643,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 1018.0512010699947
       durationRemaining: 46.012834252624415
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -789,6 +805,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 1009.1476242362194
       durationRemaining: 45.65268359909135
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -943,10 +963,14 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 192.05181523228163
-      distanceRemaining: 1000.3178152322816
+      distanceToNextManeuver: 192.0518152322816
+      distanceRemaining: 1000.3178152322815
       durationRemaining: 45.29551686231688
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -1101,10 +1125,14 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 183.14823839888052
+      distanceToNextManeuver: 183.1482383988805
       distanceRemaining: 991.4142383988805
       durationRemaining: 44.93536620879895
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -1263,6 +1291,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 982.5106615654794
       durationRemaining: 44.57521555528103
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -1421,6 +1453,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 973.4807284418143
       durationRemaining: 44.20995377604743
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -1579,6 +1615,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 964.4507953191978
       durationRemaining: 43.84469199685624
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -1737,6 +1777,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 955.420862195907
       durationRemaining: 43.47943021763778
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -1895,6 +1939,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 946.3909290732904
       durationRemaining: 43.11416843844659
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -2053,6 +2101,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 937.3398930873956
       durationRemaining: 42.748053046135304
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -2211,6 +2263,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 928.309959964779
       durationRemaining: 42.38279126694412
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -2369,6 +2425,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 919.2800268425365
       durationRemaining: 42.01752948776806
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -2527,6 +2587,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 910.2500937188715
       durationRemaining: 41.65226770853447
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -2685,6 +2749,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 901.2201605962549
       durationRemaining: 41.28700592934327
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -2843,6 +2911,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 892.1902274729641
       durationRemaining: 40.921744150124816
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -3001,6 +3073,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 882.8396109558554
       durationRemaining: 40.54351069266772
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -3159,6 +3235,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 873.5414963308135
       durationRemaining: 40.16740094246812
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -3317,6 +3397,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 864.1908798122827
       durationRemaining: 39.789167484953495
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -3475,6 +3559,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 854.840263294125
       durationRemaining: 39.41093402745396
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -3633,6 +3721,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 845.6159641798882
       durationRemaining: 39.03781012271329
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -3791,6 +3883,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 836.2653476617304
       durationRemaining: 38.659576665213756
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -3949,6 +4045,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 826.9147311431996
       durationRemaining: 38.28134320769913
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -4107,6 +4207,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 817.6166165181578
       durationRemaining: 37.905233457499534
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -4265,6 +4369,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 808.266
       durationRemaining: 37.527
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -4423,6 +4531,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 808.266
       durationRemaining: 37.527
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -4561,6 +4673,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 807.8823828522293
       durationRemaining: 37.51105973221229
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -4699,6 +4815,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 778.3452830216688
       durationRemaining: 36.283718139930905
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -4837,6 +4957,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 768.5635161945961
       durationRemaining: 35.87726085936732
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -4975,6 +5099,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 758.6666425610543
       durationRemaining: 35.46602059835052
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -5113,6 +5241,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 748.8848757339816
       durationRemaining: 35.05956331778694
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -5251,6 +5383,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 738.9880021012567
       durationRemaining: 34.64832305680409
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -5389,6 +5525,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 729.2062352741841
       durationRemaining: 34.2418657762405
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -5527,6 +5667,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 719.3477759023313
       durationRemaining: 33.83222172546026
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -5665,6 +5809,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 709.5275948132967
       durationRemaining: 33.424168234648775
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -5803,6 +5951,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 699.6691354425337
       durationRemaining: 33.01452418391382
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -5941,6 +6093,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 694.5249504177114
       durationRemaining: 32.80077021769595
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -6079,6 +6235,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 689.4586282806647
       durationRemaining: 32.59025165242166
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -6217,6 +6377,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 684.0971970842716
       durationRemaining: 32.36747055545424
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -6355,6 +6519,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 678.7197934017332
       durationRemaining: 32.144025761079476
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -6493,6 +6661,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 670.8700264656763
       durationRemaining: 31.81784798785173
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -6631,6 +6803,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 662.4077178594209
       durationRemaining: 31.466217550917904
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -6769,6 +6945,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 656.618475656828
       durationRemaining: 31.225659818987786
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -6907,6 +7087,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 649.5035204955561
       durationRemaining: 30.930015343167884
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -7045,6 +7229,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 641.3581403846052
       durationRemaining: 30.591554090964372
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -7183,6 +7371,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 635.0914999425781
       durationRemaining: 30.331159248461432
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -7321,6 +7513,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 628.6487516980291
       durationRemaining: 30.063446679031998
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -7459,6 +7655,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 620.7201144948417
       durationRemaining: 29.733991645687354
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -7597,6 +7797,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 614.6852857419647
       durationRemaining: 29.48322916822035
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -7735,6 +7939,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 608.5492626244417
       durationRemaining: 29.228261807628495
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -7873,6 +8081,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 600.8121199658334
       durationRemaining: 28.90676385946165
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -8011,6 +8223,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 593.9636443334151
       durationRemaining: 28.62219228555594
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -8149,6 +8365,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 586.9779724167468
       durationRemaining: 28.331919857235533
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -8287,6 +8507,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 580.129496783837
       durationRemaining: 28.047348283309404
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -8425,6 +8649,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 574.7136317227197
       durationRemaining: 27.822305320871518
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -8563,6 +8791,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 569.3917490642236
       durationRemaining: 27.601167566200857
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -8701,6 +8933,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 560.5367588296612
       durationRemaining: 27.23322020926775
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -8839,6 +9075,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 554.8980194180133
       durationRemaining: 26.998916250935615
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -8977,6 +9217,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 549.1867776558308
       durationRemaining: 26.76159963561076
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -9115,6 +9359,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 540.2757298481828
       durationRemaining: 26.39132294399669
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -9253,6 +9501,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 534.8265944619916
       durationRemaining: 26.16489751496642
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -9391,6 +9643,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 529.4073434832617
       durationRemaining: 25.939713859043465
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -9529,6 +9785,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 521.3366717410111
       durationRemaining: 25.60435692949598
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -9667,6 +9927,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 513.266
       durationRemaining: 25.269
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -9805,6 +10069,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 513.266
       durationRemaining: 25.269
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -9888,6 +10156,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 513.3974531370221
       durationRemaining: 25.275471672231188
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -9971,6 +10243,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 486.5705159819815
       durationRemaining: 23.95473374107907
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10054,6 +10330,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 479.0385209740119
       durationRemaining: 23.583920202180362
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10133,10 +10413,14 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 472.5097693776746
-      distanceRemaining: 472.5097693776746
-      durationRemaining: 23.262498124567884
+      distanceToNextManeuver: 472.5097693776747
+      distanceRemaining: 472.5097693776747
+      durationRemaining: 23.262498124567887
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10220,6 +10504,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 466.0574480208518
       durationRemaining: 22.94483884387219
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10303,6 +10591,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 459.9757288255423
       durationRemaining: 22.64542496813081
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10386,6 +10678,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 452.5579668041081
       durationRemaining: 22.280235322762483
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10469,6 +10765,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 445.1333972916261
       durationRemaining: 21.914710532476533
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10552,6 +10852,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 437.7156352701919
       durationRemaining: 21.549520887108205
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10635,6 +10939,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 428.8150022276332
       durationRemaining: 21.111326858373754
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10718,6 +11026,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 420.0139063536855
       durationRemaining: 20.678033221860165
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10801,6 +11113,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 411.15315302269863
       durationRemaining: 20.241802542406027
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10884,6 +11200,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 402.25251998070667
       durationRemaining: 19.80360851369948
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -10967,6 +11287,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 392.41292875279555
       durationRemaining: 19.319187899947377
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11050,6 +11374,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 382.6723277675237
       durationRemaining: 18.839640752275734
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11133,6 +11461,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 372.8327365396126
       durationRemaining: 18.35522013852363
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11216,6 +11548,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 363.0338716125529
       durationRemaining: 17.872804553150996
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11299,6 +11635,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 353.29327062785984
       durationRemaining: 17.393257405507846
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11382,6 +11722,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 343.45367939994867
       durationRemaining: 16.908836791755743
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11465,6 +11809,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 335.1149726230692
       durationRemaining: 16.49830739463034
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11548,6 +11896,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 326.87486728156154
       durationRemaining: 16.092632321910624
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11631,6 +11983,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 318.5361605052691
       durationRemaining: 15.68210292481412
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11714,6 +12070,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 310.2960551631744
       durationRemaining: 15.276427852065506
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11797,6 +12157,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 301.957348386882
       durationRemaining: 14.865898454969006
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11880,6 +12244,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 292.54709214409564
       durationRemaining: 14.402614767760095
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -11963,6 +12331,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 283.13683590077954
       durationRemaining: 13.939331080525106
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12046,6 +12418,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 273.7904240821373
       durationRemaining: 13.47919056810996
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12129,6 +12505,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 264.380167839351
       durationRemaining: 13.015906880901053
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12212,6 +12592,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 254.96991159603488
       durationRemaining: 12.552623193666063
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12295,6 +12679,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 245.5596553532485
       durationRemaining: 12.089339506457152
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12378,6 +12766,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 237.04550396231116
       durationRemaining: 11.670172658277853
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12461,6 +12853,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 228.28641260072413
       durationRemaining: 11.23894697877455
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12544,6 +12940,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 219.5867887536728
       durationRemaining: 10.810648991003802
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12627,6 +13027,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 210.82769739208572
       durationRemaining: 10.379423311500497
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12710,6 +13114,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 202.12807354503445
       durationRemaining: 9.951125323729753
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12793,6 +13201,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 193.36898218344737
       durationRemaining: 9.519899644226447
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12876,6 +13288,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 183.52713398890927
       durationRemaining: 9.035367915984594
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -12959,6 +13375,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 173.7843471521383
       durationRemaining: 8.555713154947695
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13042,6 +13462,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 163.98311703645032
       durationRemaining: 8.073181127123291
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13125,6 +13549,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 154.14126884133498
       durationRemaining: 7.588649398853018
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13208,6 +13636,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 145.20646619032948
       durationRemaining: 7.148773139392509
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13291,6 +13723,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 136.20393403723745
       durationRemaining: 6.705562435826556
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13374,6 +13810,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 127.26913138573775
       durationRemaining: 6.265686176341716
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13457,6 +13897,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 118.26659923264566
       durationRemaining: 5.822475472775761
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13540,6 +13984,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 109.33179658236855
       durationRemaining: 5.38259921335111
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13623,6 +14071,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 100.51970951289036
       durationRemaining: 4.948764460691389
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13706,6 +14158,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 91.77326059157224
       durationRemaining: 4.5181611910557855
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13785,6 +14241,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 82.96117352281715
       durationRemaining: 4.084326438431664
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13864,6 +14324,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 74.14908645333895
       durationRemaining: 3.650491685771943
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -13943,6 +14407,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 65.33239360462073
       durationRemaining: 3.216430182391121
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -14022,6 +14490,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 56.377924515734776
       durationRemaining: 2.775585709141268
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -14101,6 +14573,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 47.5612316665073
       durationRemaining: 2.341524205735375
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -14180,6 +14656,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 38.64260412903741
       durationRemaining: 1.902444275943948
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -14259,6 +14739,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 29.024470298729454
       durationRemaining: 1.4289264045905916
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -14338,6 +14822,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 19.3038707696021
       durationRemaining: 0.9503639642545492
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -14417,6 +14905,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 9.720599529127298
       durationRemaining: 0.4785624403360396
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
@@ -14452,6 +14944,10 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
       distanceRemaining: 0
       durationRemaining: 0
     deviation: NoDeviation
+    last_check_time:
+      secs_since_epoch: 1577836800
+      nanos_since_epoch: 0
+    route_refresh_state: NoRefreshNeeded
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
