@@ -1232,6 +1232,181 @@ public func FfiConverterTypeRouteDeviationDetector_lower(_ value: RouteDeviation
 
 
 
+public protocol RouteRefreshDetector : AnyObject {
+    
+    /**
+     * Check if a route refresh is needed.
+     */
+    func checkRefresh(lastTimeCheck: Date)  -> RouteRefreshState
+    
+}
+
+open class RouteRefreshDetectorImpl:
+    RouteRefreshDetector {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_routerefreshdetector(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_routerefreshdetector(pointer, $0) }
+    }
+
+    
+
+    
+    /**
+     * Check if a route refresh is needed.
+     */
+open func checkRefresh(lastTimeCheck: Date) -> RouteRefreshState {
+    return try!  FfiConverterTypeRouteRefreshState.lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_routerefreshdetector_check_refresh(self.uniffiClonePointer(),
+        FfiConverterTimestamp.lower(lastTimeCheck),$0
+    )
+})
+}
+    
+
+}
+
+
+// Put the implementation in a struct so we don't pollute the top-level namespace
+fileprivate struct UniffiCallbackInterfaceRouteRefreshDetector {
+
+    // Create the VTable using a series of closures.
+    // Swift automatically converts these into C callback functions.
+    static var vtable: UniffiVTableCallbackInterfaceRouteRefreshDetector = UniffiVTableCallbackInterfaceRouteRefreshDetector(
+        checkRefresh: { (
+            uniffiHandle: UInt64,
+            lastTimeCheck: RustBuffer,
+            uniffiOutReturn: UnsafeMutablePointer<RustBuffer>,
+            uniffiCallStatus: UnsafeMutablePointer<RustCallStatus>
+        ) in
+            let makeCall = {
+                () throws -> RouteRefreshState in
+                guard let uniffiObj = try? FfiConverterTypeRouteRefreshDetector.handleMap.get(handle: uniffiHandle) else {
+                    throw UniffiInternalError.unexpectedStaleHandle
+                }
+                return uniffiObj.checkRefresh(
+                     lastTimeCheck: try FfiConverterTimestamp.lift(lastTimeCheck)
+                )
+            }
+
+            
+            let writeReturn = { uniffiOutReturn.pointee = FfiConverterTypeRouteRefreshState.lower($0) }
+            uniffiTraitInterfaceCall(
+                callStatus: uniffiCallStatus,
+                makeCall: makeCall,
+                writeReturn: writeReturn
+            )
+        },
+        uniffiFree: { (uniffiHandle: UInt64) -> () in
+            let result = try? FfiConverterTypeRouteRefreshDetector.handleMap.remove(handle: uniffiHandle)
+            if result == nil {
+                print("Uniffi callback interface RouteRefreshDetector: handle missing in uniffiFree")
+            }
+        }
+    )
+}
+
+private func uniffiCallbackInitRouteRefreshDetector() {
+    uniffi_ferrostar_fn_init_callback_vtable_routerefreshdetector(&UniffiCallbackInterfaceRouteRefreshDetector.vtable)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeRouteRefreshDetector: FfiConverter {
+    fileprivate static var handleMap = UniffiHandleMap<RouteRefreshDetector>()
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = RouteRefreshDetector
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteRefreshDetector {
+        return RouteRefreshDetectorImpl(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: RouteRefreshDetector) -> UnsafeMutableRawPointer {
+        guard let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: handleMap.insert(obj: value))) else {
+            fatalError("Cast to UnsafeMutableRawPointer failed")
+        }
+        return ptr
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteRefreshDetector {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: RouteRefreshDetector, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRouteRefreshDetector_lift(_ pointer: UnsafeMutableRawPointer) throws -> RouteRefreshDetector {
+    return try FfiConverterTypeRouteRefreshDetector.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRouteRefreshDetector_lower(_ value: RouteRefreshDetector) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeRouteRefreshDetector.lower(value)
+}
+
+
+
+
 /**
  * A trait describing any object capable of generating [`RouteRequest`]s.
  *
@@ -2541,6 +2716,10 @@ public struct NavigationControllerConfig {
      */
     public var routeDeviationTracking: RouteDeviationTracking
     /**
+     * Configures how the route refresh is performed.
+     */
+    public var routeRefreshStrategy: RouteRefreshStrategy
+    /**
      * Configures how the heading component of the snapped location is reported in [`TripState`].
      */
     public var snappedLocationCourseFiltering: CourseFiltering
@@ -2561,11 +2740,15 @@ public struct NavigationControllerConfig {
          * It is only the determination that the user has deviated from the expected route.
          */routeDeviationTracking: RouteDeviationTracking, 
         /**
+         * Configures how the route refresh is performed.
+         */routeRefreshStrategy: RouteRefreshStrategy, 
+        /**
          * Configures how the heading component of the snapped location is reported in [`TripState`].
          */snappedLocationCourseFiltering: CourseFiltering) {
         self.waypointAdvance = waypointAdvance
         self.stepAdvance = stepAdvance
         self.routeDeviationTracking = routeDeviationTracking
+        self.routeRefreshStrategy = routeRefreshStrategy
         self.snappedLocationCourseFiltering = snappedLocationCourseFiltering
     }
 }
@@ -2582,6 +2765,7 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
                 waypointAdvance: FfiConverterTypeWaypointAdvanceMode.read(from: &buf), 
                 stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf), 
                 routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf), 
+                routeRefreshStrategy: FfiConverterTypeRouteRefreshStrategy.read(from: &buf), 
                 snappedLocationCourseFiltering: FfiConverterTypeCourseFiltering.read(from: &buf)
         )
     }
@@ -2590,6 +2774,7 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
         FfiConverterTypeWaypointAdvanceMode.write(value.waypointAdvance, into: &buf)
         FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
         FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
+        FfiConverterTypeRouteRefreshStrategy.write(value.routeRefreshStrategy, into: &buf)
         FfiConverterTypeCourseFiltering.write(value.snappedLocationCourseFiltering, into: &buf)
     }
 }
@@ -4848,6 +5033,162 @@ public func FfiConverterTypeRouteDeviationTracking_lower(_ value: RouteDeviation
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum RouteRefreshState {
+    
+    /**
+     * No route refresh needed.
+     */
+    case noRefreshNeeded
+    /**
+     * Route refresh needed.
+     */
+    case refreshNeeded
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeRouteRefreshState: FfiConverterRustBuffer {
+    typealias SwiftType = RouteRefreshState
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteRefreshState {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .noRefreshNeeded
+        
+        case 2: return .refreshNeeded
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: RouteRefreshState, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .noRefreshNeeded:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .refreshNeeded:
+            writeInt(&buf, Int32(2))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRouteRefreshState_lift(_ buf: RustBuffer) throws -> RouteRefreshState {
+    return try FfiConverterTypeRouteRefreshState.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRouteRefreshState_lower(_ value: RouteRefreshState) -> RustBuffer {
+    return FfiConverterTypeRouteRefreshState.lower(value)
+}
+
+
+
+extension RouteRefreshState: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum RouteRefreshStrategy {
+    
+    /**
+     * Never check for better routes.
+     */
+    case none
+    /**
+     * Check for better route at fixed time intervals.
+     */
+    case interval(
+        /**
+         * The interval at which to check for better routes.
+         */intervalSeconds: UInt64
+    )
+    /**
+     * Use a custom strategy to determine when to check for better routes.
+     */
+    case custom(detector: RouteRefreshDetector
+    )
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeRouteRefreshStrategy: FfiConverterRustBuffer {
+    typealias SwiftType = RouteRefreshStrategy
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RouteRefreshStrategy {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .none
+        
+        case 2: return .interval(intervalSeconds: try FfiConverterUInt64.read(from: &buf)
+        )
+        
+        case 3: return .custom(detector: try FfiConverterTypeRouteRefreshDetector.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: RouteRefreshStrategy, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .none:
+            writeInt(&buf, Int32(1))
+        
+        
+        case let .interval(intervalSeconds):
+            writeInt(&buf, Int32(2))
+            FfiConverterUInt64.write(intervalSeconds, into: &buf)
+            
+        
+        case let .custom(detector):
+            writeInt(&buf, Int32(3))
+            FfiConverterTypeRouteRefreshDetector.write(detector, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRouteRefreshStrategy_lift(_ buf: RustBuffer) throws -> RouteRefreshStrategy {
+    return try FfiConverterTypeRouteRefreshStrategy.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRouteRefreshStrategy_lower(_ value: RouteRefreshStrategy) -> RustBuffer {
+    return FfiConverterTypeRouteRefreshStrategy.lower(value)
+}
+
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * A route request generated by a [`RouteRequestGenerator`].
  */
@@ -5307,6 +5648,12 @@ public enum TripState {
          * The route deviation status: is the user following the route or not?
          */deviation: RouteDeviation, 
         /**
+         * The time of the last route refresh check.
+         */lastCheckTime: Date, 
+        /**
+         * The route refresh state: is the route refresh needed or not?
+         */routeRefreshState: RouteRefreshState, 
+        /**
          * The visual instruction that should be displayed in the user interface.
          */visualInstruction: VisualInstruction?, 
         /**
@@ -5338,7 +5685,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         
         case 1: return .idle
         
-        case 2: return .navigating(currentStepGeometryIndex: try FfiConverterOptionUInt64.read(from: &buf), snappedUserLocation: try FfiConverterTypeUserLocation.read(from: &buf), remainingSteps: try FfiConverterSequenceTypeRouteStep.read(from: &buf), remainingWaypoints: try FfiConverterSequenceTypeWaypoint.read(from: &buf), progress: try FfiConverterTypeTripProgress.read(from: &buf), deviation: try FfiConverterTypeRouteDeviation.read(from: &buf), visualInstruction: try FfiConverterOptionTypeVisualInstruction.read(from: &buf), spokenInstruction: try FfiConverterOptionTypeSpokenInstruction.read(from: &buf), annotationJson: try FfiConverterOptionString.read(from: &buf)
+        case 2: return .navigating(currentStepGeometryIndex: try FfiConverterOptionUInt64.read(from: &buf), snappedUserLocation: try FfiConverterTypeUserLocation.read(from: &buf), remainingSteps: try FfiConverterSequenceTypeRouteStep.read(from: &buf), remainingWaypoints: try FfiConverterSequenceTypeWaypoint.read(from: &buf), progress: try FfiConverterTypeTripProgress.read(from: &buf), deviation: try FfiConverterTypeRouteDeviation.read(from: &buf), lastCheckTime: try FfiConverterTimestamp.read(from: &buf), routeRefreshState: try FfiConverterTypeRouteRefreshState.read(from: &buf), visualInstruction: try FfiConverterOptionTypeVisualInstruction.read(from: &buf), spokenInstruction: try FfiConverterOptionTypeSpokenInstruction.read(from: &buf), annotationJson: try FfiConverterOptionString.read(from: &buf)
         )
         
         case 3: return .complete
@@ -5355,7 +5702,7 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
         
         
-        case let .navigating(currentStepGeometryIndex,snappedUserLocation,remainingSteps,remainingWaypoints,progress,deviation,visualInstruction,spokenInstruction,annotationJson):
+        case let .navigating(currentStepGeometryIndex,snappedUserLocation,remainingSteps,remainingWaypoints,progress,deviation,lastCheckTime,routeRefreshState,visualInstruction,spokenInstruction,annotationJson):
             writeInt(&buf, Int32(2))
             FfiConverterOptionUInt64.write(currentStepGeometryIndex, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
@@ -5363,6 +5710,8 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
             FfiConverterTypeTripProgress.write(progress, into: &buf)
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
+            FfiConverterTimestamp.write(lastCheckTime, into: &buf)
+            FfiConverterTypeRouteRefreshState.write(routeRefreshState, into: &buf)
             FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
             FfiConverterOptionString.write(annotationJson, into: &buf)
@@ -6589,6 +6938,9 @@ private var initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 50476) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_ferrostar_checksum_method_routerefreshdetector_check_refresh() != 45502) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 63458) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -6606,6 +6958,7 @@ private var initializationResult: InitializationResult = {
     }
 
     uniffiCallbackInitRouteDeviationDetector()
+    uniffiCallbackInitRouteRefreshDetector()
     uniffiCallbackInitRouteRequestGenerator()
     uniffiCallbackInitRouteResponseParser()
     return InitializationResult.ok

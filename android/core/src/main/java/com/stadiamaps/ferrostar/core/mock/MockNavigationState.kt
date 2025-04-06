@@ -15,6 +15,7 @@ import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.RouteDeviation
+import uniffi.ferrostar.RouteRefreshState
 import uniffi.ferrostar.Speed
 import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
@@ -57,6 +58,8 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
                       distanceRemaining = 0.0,
                       durationRemaining = 0.0),
               deviation = RouteDeviation.NoDeviation,
+              routeRefreshState = RouteRefreshState.NO_REFRESH_NEEDED,
+              lastCheckTime = Instant.now(),
               visualInstruction =
                   VisualInstruction(
                       primaryContent =

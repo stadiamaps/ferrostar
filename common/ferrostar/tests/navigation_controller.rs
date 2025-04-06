@@ -6,6 +6,7 @@ use ferrostar::navigation_controller::models::{
     CourseFiltering, NavigationControllerConfig, StepAdvanceMode, TripState, WaypointAdvanceMode,
 };
 use ferrostar::navigation_controller::NavigationController;
+use ferrostar::route_refresh::RouteRefreshStrategy;
 use ferrostar::routing_adapters::osrm::OsrmResponseParser;
 use ferrostar::routing_adapters::RouteResponseParser;
 
@@ -47,6 +48,7 @@ fn same_location_results_in_identical_state() {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             step_advance: StepAdvanceMode::Manual,
             route_deviation_tracking: RouteDeviationTracking::None,
+            route_refresh_strategy: RouteRefreshStrategy::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
     );
@@ -85,6 +87,7 @@ fn simple_route_state_machine_manual_advance() {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             step_advance: StepAdvanceMode::Manual,
             route_deviation_tracking: RouteDeviationTracking::None,
+            route_refresh_strategy: RouteRefreshStrategy::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
     );
@@ -162,6 +165,7 @@ fn simple_route_state_machine_advances_with_location_change() {
                 minimum_horizontal_accuracy: 0,
             },
             route_deviation_tracking: RouteDeviationTracking::None,
+            route_refresh_strategy: RouteRefreshStrategy::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
     );

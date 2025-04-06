@@ -30,6 +30,7 @@ pub mod algorithms;
 pub mod deviation_detection;
 pub mod models;
 pub mod navigation_controller;
+pub mod route_refresh;
 pub mod routing_adapters;
 pub mod simulation;
 
