@@ -93,6 +93,7 @@ let package = Package(
             name: "FerrostarMapLibreUI",
             dependencies: [
                 .target(name: "FerrostarCore"),
+                .target(name: "FerrostarSwiftUI"),
                 .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
                 .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
             ],
