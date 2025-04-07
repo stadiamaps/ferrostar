@@ -331,8 +331,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 remainingWaypoints: remainingWaypoints,
                 progress: _,
                 deviation: deviation,
-                last_check_time: last_check_time,
-                route_refresh_state: route_refresh_state,
+                lastCheckTime: lastTimeCheck,
+                routeRefreshState: routeRefreshState,
                 visualInstruction: _,
                 spokenInstruction: spokenInstruction,
                 annotationJson: _
@@ -390,7 +390,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     }
                 }
 
-                if case .refreshNeeded = route_refresh_state, !self.routeRequestInFlight {
+                if case .refreshNeeded = routeRefreshState, !self.routeRequestInFlight {
                     NSLog("Route refresh needed")
 
                     let action: CorrectiveAction = if let refreshHandler = self.refreshHandler {
@@ -419,9 +419,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
                                     waypoints: waypoints
                                 )
 
-                                if case let .navigating(_, _, _, _, _, _, _, _, _, _, annotationJson: _) = self.state?
+                                if case let .navigating(_, _, _, _, _, _, _, routeRefreshState, _, _, _) = self.state?
                                     .tripState,
-                                    case .refreshNeeded = route_refresh_state
+                                    case .refreshNeeded = routeRefreshState
                                 {
                                     if let processor = self.alternativeRouteProcessor {
                                         processor.loadedAlternateRoutes(core: self, routes: routes)
