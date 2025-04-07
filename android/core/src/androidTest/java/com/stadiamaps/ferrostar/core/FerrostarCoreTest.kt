@@ -27,6 +27,7 @@ import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.RouteDeviationDetector
 import uniffi.ferrostar.RouteDeviationTracking
+import uniffi.ferrostar.RouteRefreshStrategy
 import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.RouteRequestGenerator
 import uniffi.ferrostar.RouteResponseParser
@@ -152,6 +153,7 @@ class FerrostarCoreTest {
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
                     StepAdvanceMode.Manual,
                     RouteDeviationTracking.None,
+                    RouteRefreshStrategy.None,
                     CourseFiltering.RAW))
 
     try {
@@ -203,6 +205,7 @@ class FerrostarCoreTest {
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
                     StepAdvanceMode.Manual,
                     RouteDeviationTracking.None,
+                    RouteRefreshStrategy.None,
                     CourseFiltering.RAW))
     val routes =
         core.getRoutes(
@@ -249,6 +252,7 @@ class FerrostarCoreTest {
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
                     StepAdvanceMode.Manual,
                     RouteDeviationTracking.None,
+                    RouteRefreshStrategy.None,
                     CourseFiltering.RAW))
     val routes =
         core.getRoutes(
@@ -303,6 +307,7 @@ class FerrostarCoreTest {
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
                     StepAdvanceMode.Manual,
                     RouteDeviationTracking.None,
+                    RouteRefreshStrategy.None,
                     CourseFiltering.RAW))
     val routes =
         core.getRoutes(
@@ -377,6 +382,7 @@ class FerrostarCoreTest {
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
                     StepAdvanceMode.Manual,
                     RouteDeviationTracking.None,
+                    RouteRefreshStrategy.None,
                     CourseFiltering.RAW))
 
     val deviationHandler = DeviationHandler()
@@ -432,6 +438,7 @@ class FerrostarCoreTest {
                             return RouteDeviation.OffRoute(42.0)
                           }
                         }),
+            RouteRefreshStrategy.None,
             CourseFiltering.RAW))
 
     assert(foregroundServiceManager.startCalled)
