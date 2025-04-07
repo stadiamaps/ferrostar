@@ -23,7 +23,7 @@ public struct NavigationState: Hashable {
 
     public var currentProgress: TripProgress? {
         guard case let .navigating(_, _, _, _, progress, _, _,
-                                   _, _) = tripState
+                                   _, _, _, _) = tripState
         else {
             return nil
         }
@@ -32,7 +32,7 @@ public struct NavigationState: Hashable {
     }
 
     public var currentVisualInstruction: VisualInstruction? {
-        guard case let .navigating(_, _, _, _, _, _, visualInstruction, _, _) = tripState else {
+        guard case let .navigating(_, _, _, _, _, _, _, _, visualInstruction, _, _) = tripState else {
             return nil
         }
 
@@ -40,7 +40,7 @@ public struct NavigationState: Hashable {
     }
 
     public var remainingSteps: [RouteStep]? {
-        guard case let .navigating(_, _, remainingSteps, _, _, _, _, _, _) = tripState else {
+        guard case let .navigating(_, _, remainingSteps, _, _, _, _, _, _, _, _) = tripState else {
             return nil
         }
 
@@ -55,7 +55,7 @@ public struct NavigationState: Hashable {
     ///
     /// A segment is the line between two coordinates on the geometry.
     public var currentAnnotationJSON: String? {
-        guard case let .navigating(_, _, _, _, _, _, _, _, annotationJson) = tripState else {
+        guard case let .navigating(_, _, _, _, _, _, _, _, _, _, annotationJson) = tripState else {
             return nil
         }
 
@@ -72,11 +72,11 @@ public struct NavigationState: Hashable {
     }
 
     public var currentRoadName: String? {
-        guard case let .navigating(_, _, remainingSteps, _, _, _, _, _, _) = tripState else {
+        guard case let .navigating(_, _, remainingSteps, _, _, _, _, _, _, _, _) = tripState else {
             return nil
         }
 
-        let roadName = remainingSteps.first?.roadName?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let roadName = remainingSteps.first?.roadName?.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 
         if roadName?.isEmpty == true {
             return nil

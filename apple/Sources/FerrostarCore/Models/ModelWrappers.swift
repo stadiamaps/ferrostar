@@ -51,6 +51,7 @@ public struct SwiftNavigationControllerConfig {
             waypointAdvance: waypointAdvance,
             stepAdvance: stepAdvance,
             routeDeviationTracking: routeDeviationTracking.ffiValue,
+            RouteRefreshStrategy: .routeRefreshStrategy.none,
             snappedLocationCourseFiltering: snappedLocationCourseFiltering
         )
     }
