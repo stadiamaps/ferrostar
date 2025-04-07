@@ -746,6 +746,7 @@ dependencies = [
  "pest",
  "pest_derive",
  "pin-project",
+ "regex",
  "serde",
  "similar",
 ]
