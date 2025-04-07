@@ -153,9 +153,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 264.83959877811964
-      distanceRemaining: 1073.1055987781197
-      durationRemaining: 48.239790641570735
+      distanceToNextManeuver: 264.839598
+      distanceRemaining: 1073.105598
+      durationRemaining: 48.239790
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -315,9 +315,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 227.5923547378452
-      distanceRemaining: 1035.8583547378453
-      durationRemaining: 46.733135559702674
+      distanceToNextManeuver: 227.592354
+      distanceRemaining: 1035.858354
+      durationRemaining: 46.733135
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -477,9 +477,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 218.6887779033958
-      distanceRemaining: 1026.9547779033958
-      durationRemaining: 46.37298490614234
+      distanceToNextManeuver: 218.688777
+      distanceRemaining: 1026.954777
+      durationRemaining: 46.372984
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -639,9 +639,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 209.78520106999468
-      distanceRemaining: 1018.0512010699947
-      durationRemaining: 46.012834252624415
+      distanceToNextManeuver: 209.785201
+      distanceRemaining: 1018.051201
+      durationRemaining: 46.012834
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -801,9 +801,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 200.88162423621935
-      distanceRemaining: 1009.1476242362194
-      durationRemaining: 45.65268359909135
+      distanceToNextManeuver: 200.881624
+      distanceRemaining: 1009.147624
+      durationRemaining: 45.652683
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -963,9 +963,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 192.0518152322816
-      distanceRemaining: 1000.3178152322815
-      durationRemaining: 45.29551686231688
+      distanceToNextManeuver: 192.051815
+      distanceRemaining: 1000.317815
+      durationRemaining: 45.295516
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -1125,9 +1125,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 183.1482383988805
-      distanceRemaining: 991.4142383988805
-      durationRemaining: 44.93536620879895
+      distanceToNextManeuver: 183.148238
+      distanceRemaining: 991.414238
+      durationRemaining: 44.935366
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -1287,9 +1287,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 174.2446615654794
-      distanceRemaining: 982.5106615654794
-      durationRemaining: 44.57521555528103
+      distanceToNextManeuver: 174.244661
+      distanceRemaining: 982.510661
+      durationRemaining: 44.575215
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -1449,9 +1449,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 165.21472844181443
-      distanceRemaining: 973.4807284418143
-      durationRemaining: 44.20995377604743
+      distanceToNextManeuver: 165.214728
+      distanceRemaining: 973.480728
+      durationRemaining: 44.209953
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -1611,9 +1611,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 156.1847953191978
-      distanceRemaining: 964.4507953191978
-      durationRemaining: 43.84469199685624
+      distanceToNextManeuver: 156.184795
+      distanceRemaining: 964.450795
+      durationRemaining: 43.844691
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -1773,9 +1773,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 147.15486219590707
-      distanceRemaining: 955.420862195907
-      durationRemaining: 43.47943021763778
+      distanceToNextManeuver: 147.154862
+      distanceRemaining: 955.420862
+      durationRemaining: 43.479430
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -1935,9 +1935,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 138.12492907329042
-      distanceRemaining: 946.3909290732904
-      durationRemaining: 43.11416843844659
+      distanceToNextManeuver: 138.124929
+      distanceRemaining: 946.390929
+      durationRemaining: 43.114168
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -2097,9 +2097,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 129.0738930873956
-      distanceRemaining: 937.3398930873956
-      durationRemaining: 42.748053046135304
+      distanceToNextManeuver: 129.073893
+      distanceRemaining: 937.339893
+      durationRemaining: 42.748053
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -2259,9 +2259,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 120.04395996477896
-      distanceRemaining: 928.309959964779
-      durationRemaining: 42.38279126694412
+      distanceToNextManeuver: 120.043959
+      distanceRemaining: 928.309959
+      durationRemaining: 42.382791
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -2421,9 +2421,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 111.01402684253654
-      distanceRemaining: 919.2800268425365
-      durationRemaining: 42.01752948776806
+      distanceToNextManeuver: 111.014026
+      distanceRemaining: 919.280026
+      durationRemaining: 42.017529
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -2583,9 +2583,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 101.98409371887158
-      distanceRemaining: 910.2500937188715
-      durationRemaining: 41.65226770853447
+      distanceToNextManeuver: 101.984093
+      distanceRemaining: 910.250093
+      durationRemaining: 41.652267
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -2745,9 +2745,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 92.95416059625495
-      distanceRemaining: 901.2201605962549
-      durationRemaining: 41.28700592934327
+      distanceToNextManeuver: 92.954160
+      distanceRemaining: 901.220160
+      durationRemaining: 41.287005
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -2907,9 +2907,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 83.92422747296422
-      distanceRemaining: 892.1902274729641
-      durationRemaining: 40.921744150124816
+      distanceToNextManeuver: 83.924227
+      distanceRemaining: 892.190227
+      durationRemaining: 40.921744
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -3069,9 +3069,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 74.5736109558554
-      distanceRemaining: 882.8396109558554
-      durationRemaining: 40.54351069266772
+      distanceToNextManeuver: 74.573610
+      distanceRemaining: 882.839610
+      durationRemaining: 40.543510
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -3231,9 +3231,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 65.27549633081358
-      distanceRemaining: 873.5414963308135
-      durationRemaining: 40.16740094246812
+      distanceToNextManeuver: 65.275496
+      distanceRemaining: 873.541496
+      durationRemaining: 40.167400
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -3393,9 +3393,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 55.92487981228274
-      distanceRemaining: 864.1908798122827
-      durationRemaining: 39.789167484953495
+      distanceToNextManeuver: 55.924879
+      distanceRemaining: 864.190879
+      durationRemaining: 39.789167
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -3555,9 +3555,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 46.57426329412493
-      distanceRemaining: 854.840263294125
-      durationRemaining: 39.41093402745396
+      distanceToNextManeuver: 46.574263
+      distanceRemaining: 854.840263
+      durationRemaining: 39.410934
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -3717,9 +3717,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 37.34996417988825
-      distanceRemaining: 845.6159641798882
-      durationRemaining: 39.03781012271329
+      distanceToNextManeuver: 37.349964
+      distanceRemaining: 845.615964
+      durationRemaining: 39.037810
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -3879,9 +3879,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 27.99934766173044
-      distanceRemaining: 836.2653476617304
-      durationRemaining: 38.659576665213756
+      distanceToNextManeuver: 27.999347
+      distanceRemaining: 836.265347
+      durationRemaining: 38.659576
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -4041,9 +4041,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 18.648731143199598
-      distanceRemaining: 826.9147311431996
-      durationRemaining: 38.28134320769913
+      distanceToNextManeuver: 18.648731
+      distanceRemaining: 826.914731
+      durationRemaining: 38.281343
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -4203,9 +4203,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 9.350616518157779
-      distanceRemaining: 817.6166165181578
-      durationRemaining: 37.905233457499534
+      distanceToNextManeuver: 9.350616
+      distanceRemaining: 817.616616
+      durationRemaining: 37.905233
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -4345,9 +4345,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 294.6163828522293
-      distanceRemaining: 807.8823828522293
-      durationRemaining: 37.51105973221229
+      distanceToNextManeuver: 294.616382
+      distanceRemaining: 807.882382
+      durationRemaining: 37.511059
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -4487,9 +4487,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 284.75792348146643
-      distanceRemaining: 798.0239234814665
-      durationRemaining: 37.101415681477334
+      distanceToNextManeuver: 284.757923
+      distanceRemaining: 798.023923
+      durationRemaining: 37.101415
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -4629,9 +4629,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 274.93774239243174
-      distanceRemaining: 788.2037423924316
-      durationRemaining: 36.69336219066586
+      distanceToNextManeuver: 274.937742
+      distanceRemaining: 788.203742
+      durationRemaining: 36.693362
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -4771,9 +4771,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 265.07928302166886
-      distanceRemaining: 778.3452830216688
-      durationRemaining: 36.283718139930905
+      distanceToNextManeuver: 265.079283
+      distanceRemaining: 778.345283
+      durationRemaining: 36.283718
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -4913,9 +4913,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 255.2975161945962
-      distanceRemaining: 768.5635161945961
-      durationRemaining: 35.87726085936732
+      distanceToNextManeuver: 255.297516
+      distanceRemaining: 768.563516
+      durationRemaining: 35.877260
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -5055,9 +5055,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 245.40064256105435
-      distanceRemaining: 758.6666425610543
-      durationRemaining: 35.46602059835052
+      distanceToNextManeuver: 245.400642
+      distanceRemaining: 758.666642
+      durationRemaining: 35.466020
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -5197,9 +5197,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 235.61887573398167
-      distanceRemaining: 748.8848757339816
-      durationRemaining: 35.05956331778694
+      distanceToNextManeuver: 235.618875
+      distanceRemaining: 748.884875
+      durationRemaining: 35.059563
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -5339,9 +5339,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 225.72200210125678
-      distanceRemaining: 738.9880021012567
-      durationRemaining: 34.64832305680409
+      distanceToNextManeuver: 225.722002
+      distanceRemaining: 738.988002
+      durationRemaining: 34.648323
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -5481,9 +5481,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 215.9402352741841
-      distanceRemaining: 729.2062352741841
-      durationRemaining: 34.2418657762405
+      distanceToNextManeuver: 215.940235
+      distanceRemaining: 729.206235
+      durationRemaining: 34.241865
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -5623,9 +5623,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 206.08177590233134
-      distanceRemaining: 719.3477759023313
-      durationRemaining: 33.83222172546026
+      distanceToNextManeuver: 206.081775
+      distanceRemaining: 719.347775
+      durationRemaining: 33.832221
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -5765,9 +5765,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 196.26159481329665
-      distanceRemaining: 709.5275948132967
-      durationRemaining: 33.424168234648775
+      distanceToNextManeuver: 196.261594
+      distanceRemaining: 709.527594
+      durationRemaining: 33.424168
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -5907,9 +5907,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 186.40313544253377
-      distanceRemaining: 699.6691354425337
-      durationRemaining: 33.01452418391382
+      distanceToNextManeuver: 186.403135
+      distanceRemaining: 699.669135
+      durationRemaining: 33.014524
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -6049,9 +6049,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 181.25895041771133
-      distanceRemaining: 694.5249504177114
-      durationRemaining: 32.80077021769595
+      distanceToNextManeuver: 181.258950
+      distanceRemaining: 694.524950
+      durationRemaining: 32.800770
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -6191,9 +6191,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 176.1926282806648
-      distanceRemaining: 689.4586282806647
-      durationRemaining: 32.59025165242166
+      distanceToNextManeuver: 176.192628
+      distanceRemaining: 689.458628
+      durationRemaining: 32.590251
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -6333,9 +6333,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 170.83119708427165
-      distanceRemaining: 684.0971970842716
-      durationRemaining: 32.36747055545424
+      distanceToNextManeuver: 170.831197
+      distanceRemaining: 684.097197
+      durationRemaining: 32.367470
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -6475,9 +6475,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 165.45379340173326
-      distanceRemaining: 678.7197934017332
-      durationRemaining: 32.144025761079476
+      distanceToNextManeuver: 165.453793
+      distanceRemaining: 678.719793
+      durationRemaining: 32.144025
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -6617,9 +6617,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 157.6040264656764
-      distanceRemaining: 670.8700264656763
-      durationRemaining: 31.81784798785173
+      distanceToNextManeuver: 157.604026
+      distanceRemaining: 670.870026
+      durationRemaining: 31.817847
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -6759,9 +6759,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 149.14171785942094
-      distanceRemaining: 662.4077178594209
-      durationRemaining: 31.466217550917904
+      distanceToNextManeuver: 149.141717
+      distanceRemaining: 662.407717
+      durationRemaining: 31.466217
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -6901,9 +6901,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 143.35247565682803
-      distanceRemaining: 656.618475656828
-      durationRemaining: 31.225659818987786
+      distanceToNextManeuver: 143.352475
+      distanceRemaining: 656.618475
+      durationRemaining: 31.225659
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -7043,9 +7043,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 136.2375204955561
-      distanceRemaining: 649.5035204955561
-      durationRemaining: 30.930015343167884
+      distanceToNextManeuver: 136.237520
+      distanceRemaining: 649.503520
+      durationRemaining: 30.930015
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -7185,9 +7185,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 128.09214038460524
-      distanceRemaining: 641.3581403846052
-      durationRemaining: 30.591554090964372
+      distanceToNextManeuver: 128.092140
+      distanceRemaining: 641.358140
+      durationRemaining: 30.591554
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -7327,9 +7327,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 121.8254999425782
-      distanceRemaining: 635.0914999425781
-      durationRemaining: 30.331159248461432
+      distanceToNextManeuver: 121.825499
+      distanceRemaining: 635.091499
+      durationRemaining: 30.331159
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -7469,9 +7469,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 115.38275169802907
-      distanceRemaining: 628.6487516980291
-      durationRemaining: 30.063446679031998
+      distanceToNextManeuver: 115.382751
+      distanceRemaining: 628.648751
+      durationRemaining: 30.063446
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -7611,9 +7611,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 107.45411449484172
-      distanceRemaining: 620.7201144948417
-      durationRemaining: 29.733991645687354
+      distanceToNextManeuver: 107.454114
+      distanceRemaining: 620.720114
+      durationRemaining: 29.733991
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -7753,9 +7753,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 101.41928574196476
-      distanceRemaining: 614.6852857419647
-      durationRemaining: 29.48322916822035
+      distanceToNextManeuver: 101.419285
+      distanceRemaining: 614.685285
+      durationRemaining: 29.483229
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -7895,9 +7895,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 95.2832626244417
-      distanceRemaining: 608.5492626244417
-      durationRemaining: 29.228261807628495
+      distanceToNextManeuver: 95.283262
+      distanceRemaining: 608.549262
+      durationRemaining: 29.228261
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -8037,9 +8037,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 87.54611996583347
-      distanceRemaining: 600.8121199658334
-      durationRemaining: 28.90676385946165
+      distanceToNextManeuver: 87.546119
+      distanceRemaining: 600.812119
+      durationRemaining: 28.906763
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -8179,9 +8179,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 80.69764433341516
-      distanceRemaining: 593.9636443334151
-      durationRemaining: 28.62219228555594
+      distanceToNextManeuver: 80.697644
+      distanceRemaining: 593.963644
+      durationRemaining: 28.622192
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -8321,9 +8321,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 73.71197241674682
-      distanceRemaining: 586.9779724167468
-      durationRemaining: 28.331919857235533
+      distanceToNextManeuver: 73.711972
+      distanceRemaining: 586.977972
+      durationRemaining: 28.331919
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -8463,9 +8463,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 66.86349678383706
-      distanceRemaining: 580.129496783837
-      durationRemaining: 28.047348283309404
+      distanceToNextManeuver: 66.863496
+      distanceRemaining: 580.129496
+      durationRemaining: 28.047348
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -8605,9 +8605,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 61.447631722719706
-      distanceRemaining: 574.7136317227197
-      durationRemaining: 27.822305320871518
+      distanceToNextManeuver: 61.447631
+      distanceRemaining: 574.713631
+      durationRemaining: 27.822305
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -8747,9 +8747,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 56.12574906422367
-      distanceRemaining: 569.3917490642236
-      durationRemaining: 27.601167566200857
+      distanceToNextManeuver: 56.125749
+      distanceRemaining: 569.391749
+      durationRemaining: 27.601167
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -8889,9 +8889,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 47.27075882966116
-      distanceRemaining: 560.5367588296612
-      durationRemaining: 27.23322020926775
+      distanceToNextManeuver: 47.270758
+      distanceRemaining: 560.536758
+      durationRemaining: 27.233220
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -9031,9 +9031,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 41.63201941801327
-      distanceRemaining: 554.8980194180133
-      durationRemaining: 26.998916250935615
+      distanceToNextManeuver: 41.632019
+      distanceRemaining: 554.898019
+      durationRemaining: 26.998916
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -9173,9 +9173,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 35.920777655830875
-      distanceRemaining: 549.1867776558308
-      durationRemaining: 26.76159963561076
+      distanceToNextManeuver: 35.920777
+      distanceRemaining: 549.186777
+      durationRemaining: 26.761599
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -9315,9 +9315,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 27.009729848182815
-      distanceRemaining: 540.2757298481828
-      durationRemaining: 26.39132294399669
+      distanceToNextManeuver: 27.009729
+      distanceRemaining: 540.275729
+      durationRemaining: 26.391322
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -9457,9 +9457,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 21.560594461991684
-      distanceRemaining: 534.8265944619916
-      durationRemaining: 26.16489751496642
+      distanceToNextManeuver: 21.560594
+      distanceRemaining: 534.826594
+      durationRemaining: 26.164897
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -9599,9 +9599,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 16.14134348326172
-      distanceRemaining: 529.4073434832617
-      durationRemaining: 25.939713859043465
+      distanceToNextManeuver: 16.141343
+      distanceRemaining: 529.407343
+      durationRemaining: 25.939713
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -9741,9 +9741,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 8.070671741011154
-      distanceRemaining: 521.3366717410111
-      durationRemaining: 25.60435692949598
+      distanceToNextManeuver: 8.070671
+      distanceRemaining: 521.336671
+      durationRemaining: 25.604356
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -9828,9 +9828,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 513.3974531370221
-      distanceRemaining: 513.3974531370221
-      durationRemaining: 25.275471672231188
+      distanceToNextManeuver: 513.397453
+      distanceRemaining: 513.397453
+      durationRemaining: 25.275471
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -9915,9 +9915,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 503.776825466902
-      distanceRemaining: 503.776825466902
-      durationRemaining: 24.80183102469898
+      distanceToNextManeuver: 503.776825
+      distanceRemaining: 503.776825
+      durationRemaining: 24.801831
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10002,9 +10002,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 494.15619779678184
-      distanceRemaining: 494.15619779678184
-      durationRemaining: 24.328190377166774
+      distanceToNextManeuver: 494.156197
+      distanceRemaining: 494.156197
+      durationRemaining: 24.328190
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10089,9 +10089,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 486.5705159819815
-      distanceRemaining: 486.5705159819815
-      durationRemaining: 23.95473374107907
+      distanceToNextManeuver: 486.570515
+      distanceRemaining: 486.570515
+      durationRemaining: 23.954733
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10176,9 +10176,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 479.0385209740119
-      distanceRemaining: 479.0385209740119
-      durationRemaining: 23.583920202180362
+      distanceToNextManeuver: 479.038520
+      distanceRemaining: 479.038520
+      durationRemaining: 23.583920
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10263,9 +10263,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 472.5097693776747
-      distanceRemaining: 472.5097693776747
-      durationRemaining: 23.262498124567887
+      distanceToNextManeuver: 472.509769
+      distanceRemaining: 472.509769
+      durationRemaining: 23.262498
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10350,9 +10350,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 466.0574480208518
-      distanceRemaining: 466.0574480208518
-      durationRemaining: 22.94483884387219
+      distanceToNextManeuver: 466.057448
+      distanceRemaining: 466.057448
+      durationRemaining: 22.944838
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10437,9 +10437,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 459.9757288255423
-      distanceRemaining: 459.9757288255423
-      durationRemaining: 22.64542496813081
+      distanceToNextManeuver: 459.975728
+      distanceRemaining: 459.975728
+      durationRemaining: 22.645424
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10524,9 +10524,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 452.5579668041081
-      distanceRemaining: 452.5579668041081
-      durationRemaining: 22.280235322762483
+      distanceToNextManeuver: 452.557966
+      distanceRemaining: 452.557966
+      durationRemaining: 22.280235
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10611,9 +10611,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 445.1333972916261
-      distanceRemaining: 445.1333972916261
-      durationRemaining: 21.914710532476533
+      distanceToNextManeuver: 445.133397
+      distanceRemaining: 445.133397
+      durationRemaining: 21.914710
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10698,9 +10698,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 437.7156352701919
-      distanceRemaining: 437.7156352701919
-      durationRemaining: 21.549520887108205
+      distanceToNextManeuver: 437.715635
+      distanceRemaining: 437.715635
+      durationRemaining: 21.549520
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10785,9 +10785,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 428.8150022276332
-      distanceRemaining: 428.8150022276332
-      durationRemaining: 21.111326858373754
+      distanceToNextManeuver: 428.815002
+      distanceRemaining: 428.815002
+      durationRemaining: 21.111326
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10872,9 +10872,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 420.0139063536855
-      distanceRemaining: 420.0139063536855
-      durationRemaining: 20.678033221860165
+      distanceToNextManeuver: 420.013906
+      distanceRemaining: 420.013906
+      durationRemaining: 20.678033
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -10959,9 +10959,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 411.15315302269863
-      distanceRemaining: 411.15315302269863
-      durationRemaining: 20.241802542406027
+      distanceToNextManeuver: 411.153153
+      distanceRemaining: 411.153153
+      durationRemaining: 20.241802
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11046,9 +11046,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 402.25251998070667
-      distanceRemaining: 402.25251998070667
-      durationRemaining: 19.80360851369948
+      distanceToNextManeuver: 402.252519
+      distanceRemaining: 402.252519
+      durationRemaining: 19.803608
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11133,9 +11133,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 392.41292875279555
-      distanceRemaining: 392.41292875279555
-      durationRemaining: 19.319187899947377
+      distanceToNextManeuver: 392.412928
+      distanceRemaining: 392.412928
+      durationRemaining: 19.319187
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11220,9 +11220,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 382.6723277675237
-      distanceRemaining: 382.6723277675237
-      durationRemaining: 18.839640752275734
+      distanceToNextManeuver: 382.672327
+      distanceRemaining: 382.672327
+      durationRemaining: 18.839640
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11307,9 +11307,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 372.8327365396126
-      distanceRemaining: 372.8327365396126
-      durationRemaining: 18.35522013852363
+      distanceToNextManeuver: 372.832736
+      distanceRemaining: 372.832736
+      durationRemaining: 18.355220
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11394,9 +11394,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 363.0338716125529
-      distanceRemaining: 363.0338716125529
-      durationRemaining: 17.872804553150996
+      distanceToNextManeuver: 363.033871
+      distanceRemaining: 363.033871
+      durationRemaining: 17.872804
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11481,9 +11481,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 353.29327062785984
-      distanceRemaining: 353.29327062785984
-      durationRemaining: 17.393257405507846
+      distanceToNextManeuver: 353.293270
+      distanceRemaining: 353.293270
+      durationRemaining: 17.393257
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11568,9 +11568,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 343.45367939994867
-      distanceRemaining: 343.45367939994867
-      durationRemaining: 16.908836791755743
+      distanceToNextManeuver: 343.453679
+      distanceRemaining: 343.453679
+      durationRemaining: 16.908836
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11655,9 +11655,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 335.1149726230692
-      distanceRemaining: 335.1149726230692
-      durationRemaining: 16.49830739463034
+      distanceToNextManeuver: 335.114972
+      distanceRemaining: 335.114972
+      durationRemaining: 16.498307
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11742,9 +11742,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 326.87486728156154
-      distanceRemaining: 326.87486728156154
-      durationRemaining: 16.092632321910624
+      distanceToNextManeuver: 326.874867
+      distanceRemaining: 326.874867
+      durationRemaining: 16.092632
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11829,9 +11829,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 318.5361605052691
-      distanceRemaining: 318.5361605052691
-      durationRemaining: 15.68210292481412
+      distanceToNextManeuver: 318.536160
+      distanceRemaining: 318.536160
+      durationRemaining: 15.682102
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -11916,9 +11916,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 310.2960551631744
-      distanceRemaining: 310.2960551631744
-      durationRemaining: 15.276427852065506
+      distanceToNextManeuver: 310.296055
+      distanceRemaining: 310.296055
+      durationRemaining: 15.276427
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12003,9 +12003,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 301.957348386882
-      distanceRemaining: 301.957348386882
-      durationRemaining: 14.865898454969006
+      distanceToNextManeuver: 301.957348
+      distanceRemaining: 301.957348
+      durationRemaining: 14.865898
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12090,9 +12090,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 292.54709214409564
-      distanceRemaining: 292.54709214409564
-      durationRemaining: 14.402614767760095
+      distanceToNextManeuver: 292.547092
+      distanceRemaining: 292.547092
+      durationRemaining: 14.402614
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12177,9 +12177,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 283.13683590077954
-      distanceRemaining: 283.13683590077954
-      durationRemaining: 13.939331080525106
+      distanceToNextManeuver: 283.136835
+      distanceRemaining: 283.136835
+      durationRemaining: 13.939331
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12264,9 +12264,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 273.7904240821373
-      distanceRemaining: 273.7904240821373
-      durationRemaining: 13.47919056810996
+      distanceToNextManeuver: 273.790424
+      distanceRemaining: 273.790424
+      durationRemaining: 13.479190
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12351,9 +12351,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 264.380167839351
-      distanceRemaining: 264.380167839351
-      durationRemaining: 13.015906880901053
+      distanceToNextManeuver: 264.380167
+      distanceRemaining: 264.380167
+      durationRemaining: 13.015906
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12438,9 +12438,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 254.96991159603488
-      distanceRemaining: 254.96991159603488
-      durationRemaining: 12.552623193666063
+      distanceToNextManeuver: 254.969911
+      distanceRemaining: 254.969911
+      durationRemaining: 12.552623
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12525,9 +12525,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 245.5596553532485
-      distanceRemaining: 245.5596553532485
-      durationRemaining: 12.089339506457152
+      distanceToNextManeuver: 245.559655
+      distanceRemaining: 245.559655
+      durationRemaining: 12.089339
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12612,9 +12612,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 237.04550396231116
-      distanceRemaining: 237.04550396231116
-      durationRemaining: 11.670172658277853
+      distanceToNextManeuver: 237.045503
+      distanceRemaining: 237.045503
+      durationRemaining: 11.670172
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12699,9 +12699,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 228.28641260072413
-      distanceRemaining: 228.28641260072413
-      durationRemaining: 11.23894697877455
+      distanceToNextManeuver: 228.286412
+      distanceRemaining: 228.286412
+      durationRemaining: 11.238946
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12786,9 +12786,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 219.5867887536728
-      distanceRemaining: 219.5867887536728
-      durationRemaining: 10.810648991003802
+      distanceToNextManeuver: 219.586788
+      distanceRemaining: 219.586788
+      durationRemaining: 10.810648
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12873,9 +12873,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 210.82769739208572
-      distanceRemaining: 210.82769739208572
-      durationRemaining: 10.379423311500497
+      distanceToNextManeuver: 210.827697
+      distanceRemaining: 210.827697
+      durationRemaining: 10.379423
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -12960,9 +12960,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 202.12807354503445
-      distanceRemaining: 202.12807354503445
-      durationRemaining: 9.951125323729753
+      distanceToNextManeuver: 202.128073
+      distanceRemaining: 202.128073
+      durationRemaining: 9.951125
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13047,9 +13047,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 193.36898218344737
-      distanceRemaining: 193.36898218344737
-      durationRemaining: 9.519899644226447
+      distanceToNextManeuver: 193.368982
+      distanceRemaining: 193.368982
+      durationRemaining: 9.519899
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13134,9 +13134,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 183.52713398890927
-      distanceRemaining: 183.52713398890927
-      durationRemaining: 9.035367915984594
+      distanceToNextManeuver: 183.527133
+      distanceRemaining: 183.527133
+      durationRemaining: 9.035367
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13221,9 +13221,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 173.7843471521383
-      distanceRemaining: 173.7843471521383
-      durationRemaining: 8.555713154947695
+      distanceToNextManeuver: 173.784347
+      distanceRemaining: 173.784347
+      durationRemaining: 8.555713
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13308,9 +13308,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 163.98311703645032
-      distanceRemaining: 163.98311703645032
-      durationRemaining: 8.073181127123291
+      distanceToNextManeuver: 163.983117
+      distanceRemaining: 163.983117
+      durationRemaining: 8.073181
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13395,9 +13395,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 154.14126884133498
-      distanceRemaining: 154.14126884133498
-      durationRemaining: 7.588649398853018
+      distanceToNextManeuver: 154.141268
+      distanceRemaining: 154.141268
+      durationRemaining: 7.588649
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13482,9 +13482,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 145.20646619032948
-      distanceRemaining: 145.20646619032948
-      durationRemaining: 7.148773139392509
+      distanceToNextManeuver: 145.206466
+      distanceRemaining: 145.206466
+      durationRemaining: 7.148773
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13569,9 +13569,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 136.20393403723745
-      distanceRemaining: 136.20393403723745
-      durationRemaining: 6.705562435826556
+      distanceToNextManeuver: 136.203934
+      distanceRemaining: 136.203934
+      durationRemaining: 6.705562
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13656,9 +13656,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 127.26913138573775
-      distanceRemaining: 127.26913138573775
-      durationRemaining: 6.265686176341716
+      distanceToNextManeuver: 127.269131
+      distanceRemaining: 127.269131
+      durationRemaining: 6.265686
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13743,9 +13743,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 118.26659923264566
-      distanceRemaining: 118.26659923264566
-      durationRemaining: 5.822475472775761
+      distanceToNextManeuver: 118.266599
+      distanceRemaining: 118.266599
+      durationRemaining: 5.822475
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13830,9 +13830,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 109.33179658236855
-      distanceRemaining: 109.33179658236855
-      durationRemaining: 5.38259921335111
+      distanceToNextManeuver: 109.331796
+      distanceRemaining: 109.331796
+      durationRemaining: 5.382599
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -13917,9 +13917,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 100.51970951289036
-      distanceRemaining: 100.51970951289036
-      durationRemaining: 4.948764460691389
+      distanceToNextManeuver: 100.519709
+      distanceRemaining: 100.519709
+      durationRemaining: 4.948764
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14004,9 +14004,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 91.77326059157224
-      distanceRemaining: 91.77326059157224
-      durationRemaining: 4.5181611910557855
+      distanceToNextManeuver: 91.773260
+      distanceRemaining: 91.773260
+      durationRemaining: 4.518161
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14087,9 +14087,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 82.96117352281715
-      distanceRemaining: 82.96117352281715
-      durationRemaining: 4.084326438431664
+      distanceToNextManeuver: 82.961173
+      distanceRemaining: 82.961173
+      durationRemaining: 4.084326
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14170,9 +14170,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 74.14908645333895
-      distanceRemaining: 74.14908645333895
-      durationRemaining: 3.650491685771943
+      distanceToNextManeuver: 74.149086
+      distanceRemaining: 74.149086
+      durationRemaining: 3.650491
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14253,9 +14253,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 65.33239360462073
-      distanceRemaining: 65.33239360462073
-      durationRemaining: 3.216430182391121
+      distanceToNextManeuver: 65.332393
+      distanceRemaining: 65.332393
+      durationRemaining: 3.216430
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14336,9 +14336,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 56.377924515734776
-      distanceRemaining: 56.377924515734776
-      durationRemaining: 2.775585709141268
+      distanceToNextManeuver: 56.377924
+      distanceRemaining: 56.377924
+      durationRemaining: 2.775585
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14419,9 +14419,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 47.5612316665073
-      distanceRemaining: 47.5612316665073
-      durationRemaining: 2.341524205735375
+      distanceToNextManeuver: 47.561231
+      distanceRemaining: 47.561231
+      durationRemaining: 2.341524
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14502,9 +14502,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 38.64260412903741
-      distanceRemaining: 38.64260412903741
-      durationRemaining: 1.902444275943948
+      distanceToNextManeuver: 38.642604
+      distanceRemaining: 38.642604
+      durationRemaining: 1.902444
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14585,9 +14585,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 29.024470298729454
-      distanceRemaining: 29.024470298729454
-      durationRemaining: 1.4289264045905916
+      distanceToNextManeuver: 29.024470
+      distanceRemaining: 29.024470
+      durationRemaining: 1.428926
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14668,9 +14668,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 19.3038707696021
-      distanceRemaining: 19.3038707696021
-      durationRemaining: 0.9503639642545492
+      distanceToNextManeuver: 19.303870
+      distanceRemaining: 19.303870
+      durationRemaining: 0.950363
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800
@@ -14751,9 +14751,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         incidents: []
     remaining_waypoints: []
     progress:
-      distanceToNextManeuver: 9.720599529127298
-      distanceRemaining: 9.720599529127298
-      durationRemaining: 0.4785624403360396
+      distanceToNextManeuver: 9.720599
+      distanceRemaining: 9.720599
+      durationRemaining: 0.478562
     deviation: NoDeviation
     last_check_time:
       secs_since_epoch: 1577836800

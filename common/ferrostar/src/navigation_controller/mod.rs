@@ -457,6 +457,9 @@ mod tests {
         let mut settings = Settings::new();
         settings.add_redaction(".**.last_check_time.secs_since_epoch", 1577836800);
         settings.add_redaction(".**.last_check_time.nanos_since_epoch", 0);
+
+        settings.add_filter(r"(\d+\.\d{6})\d+", "$1");
+
         settings.bind(test_fn)
     }
 
