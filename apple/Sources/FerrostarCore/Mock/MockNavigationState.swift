@@ -25,7 +25,7 @@ public extension NavigationState {
             ),
             deviation: .noDeviation,
             lastCheckTime: Date(),
-            routeRefreshSate: .noRefreshNeeded,
+            routeRefreshState: .noRefreshNeeded,
             visualInstruction: nil,
             spokenInstruction: nil,
             annotationJson: nil
@@ -84,7 +84,7 @@ public extension NavigationState {
                 ),
                 deviation: .noDeviation,
                 lastCheckTime: Date(),
-                routeRefreshSate: .noRefreshNeeded,
+                routeRefreshState: .noRefreshNeeded,
                 visualInstruction: nil,
                 spokenInstruction: nil,
                 annotationJson: nil
