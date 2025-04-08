@@ -116,6 +116,8 @@ final class AnnotationPublisherTests: XCTestCase {
                     durationRemaining: 3.0
                 ),
                 deviation: .noDeviation,
+                routeRefreshState: .noRefreshNeeded,
+                lastCheckTime: Date(),
                 visualInstruction: nil,
                 spokenInstruction: nil,
                 annotationJson: annotation
