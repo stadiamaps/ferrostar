@@ -402,6 +402,7 @@ final class FerrostarCoreTests: XCTestCase {
                 // Pretend that the user is always off route
                 .offRoute(deviationFromRouteLine: 42)
             }),
+            routeRefreshStrategy: .none, // 300 seconds
             snappedLocationCourseFiltering: .raw
         )
 

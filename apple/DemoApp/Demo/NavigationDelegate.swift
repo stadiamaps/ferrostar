@@ -34,6 +34,7 @@ class NavigationDelegate: FerrostarCoreDelegate {
                                                                  10
                                                              )),
                     routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
+                    routeRefreshStrategy: .interval(intervalSeconds: 300),
                     snappedLocationCourseFiltering: .snapToRoute
                 )
                 try core.startNavigation(
