@@ -45,13 +45,14 @@ public struct SwiftNavigationControllerConfig {
     public init(waypointAdvance: WaypointAdvanceMode,
                 stepAdvance: StepAdvanceMode,
                 routeDeviationTracking: SwiftRouteDeviationTracking,
+                routeRefreshStrategy: RouteRefreshStrategy = .none,
                 snappedLocationCourseFiltering: CourseFiltering)
     {
         ffiValue = FerrostarCoreFFI.NavigationControllerConfig(
             waypointAdvance: waypointAdvance,
             stepAdvance: stepAdvance,
             routeDeviationTracking: routeDeviationTracking.ffiValue,
-            RouteRefreshStrategy: .routeRefreshStrategy.none,
+            routeRefreshStrategy: routeRefreshStrategy,
             snappedLocationCourseFiltering: snappedLocationCourseFiltering
         )
     }
