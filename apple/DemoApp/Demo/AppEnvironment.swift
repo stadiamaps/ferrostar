@@ -52,7 +52,7 @@ class AppEnvironment: ObservableObject {
                 specialAdvanceConditions: .minimumDistanceFromCurrentStepLine(10)
             ),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
-            routeRefreshStrategy: .interval(intervalSeconds: 5),
+            routeRefreshStrategy: .interval(intervalSeconds: 300),
             snappedLocationCourseFiltering: .snapToRoute
         )
 
