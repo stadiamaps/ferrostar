@@ -1,6 +1,6 @@
 {
   "name": "@stadiamaps/ferrostar-core-react-native",
-  "version": "0.31.0",
+  "version": "0.31.1",
   "description": "Ferrostar React Native Core",
   "main": "./lib/index.js",
   "types": "./src/index.ts",

@@ -16,8 +16,8 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.31.0"
-    let releaseChecksum = "f04357c22d5444c1ce700867ce65bdb205ca5963ca3258b5b3bb5dbc142cf831"
+    let releaseTag = "0.31.1"
+    let releaseChecksum = "fc4ae731e68208e628b85866394cfaa77588c9392923462422e73d0cbd41e9cc"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url:
@@ -31,7 +31,7 @@ if useLocalMapLibreSwiftUIDSL {
 } else {
     maplibreSwiftUIDSLPackage = .package(
         url: "https://github.com/maplibre/swiftui-dsl",
-        from: "0.7.0"
+        from: "0.9.1"
     )
 }
 
@@ -93,6 +93,7 @@ let package = Package(
             name: "FerrostarMapLibreUI",
             dependencies: [
                 .target(name: "FerrostarCore"),
+                .target(name: "FerrostarSwiftUI"),
                 .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
                 .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
             ],
