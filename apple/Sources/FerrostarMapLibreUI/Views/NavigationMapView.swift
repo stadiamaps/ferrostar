@@ -83,11 +83,12 @@ public struct NavigationMapView: View {
     }
 
     private func updateCameraIfNeeded() {
-        if case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = navigationState?.tripState,
-           // There is no reason to push an update if the coordinate and heading are the same.
-           // That's all that gets displayed, so it's all that MapLibre should care about.
-           locationManager.lastLocation.coordinate != userLocation.coordinates
-           .clLocationCoordinate2D || locationManager.lastLocation.course != userLocation.clLocation.course
+        if case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _, _, _) = navigationState?
+            .tripState,
+            // There is no reason to push an update if the coordinate and heading are the same.
+            // That's all that gets displayed, so it's all that MapLibre should care about.
+            locationManager.lastLocation.coordinate != userLocation.coordinates
+            .clLocationCoordinate2D || locationManager.lastLocation.course != userLocation.clLocation.course
         {
             locationManager.lastLocation = userLocation.clLocation
         }
@@ -98,7 +99,7 @@ public struct NavigationMapView: View {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
 
-    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
 
