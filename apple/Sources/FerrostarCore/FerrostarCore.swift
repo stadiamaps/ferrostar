@@ -329,6 +329,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 remainingWaypoints: remainingWaypoints,
                 progress: _,
                 deviation: deviation,
+                lastCheckTime: lastTimeCheck,
+                routeRefreshState: routeRefreshState,
                 visualInstruction: _,
                 spokenInstruction: spokenInstruction,
                 annotationJson: _
@@ -382,6 +384,28 @@ public protocol FerrostarCoreDelegate: AnyObject {
                                 self.lastAutomaticRecalculation = Date()
                                 self.state?.isCalculatingNewRoute = false
                             }
+                        }
+                    }
+                }
+
+                if case .refreshNeeded = routeRefreshState, !self.routeRequestInFlight {
+                    self.state?.isCalculatingNewRoute = true
+                    self.recalculationTask = Task {
+                        do {
+                            let routes = try await self.getRoutes(
+                                initialLocation: location,
+                                waypoints: remainingWaypoints
+                            )
+
+                            if let route = routes.first {
+                                try self.startNavigation(route: route, config: self.config)
+                            }
+                        } catch {
+                            // Do nothing; this exists to enable us to run what amounts to an "async defer"
+                        }
+
+                        await MainActor.run {
+                            self.state?.isCalculatingNewRoute = false
                         }
                     }
                 }

@@ -27,6 +27,7 @@ import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
+import uniffi.ferrostar.RouteRefreshStrategy
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
@@ -258,6 +259,7 @@ class ValhallaCoreTest {
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
                     StepAdvanceMode.Manual,
                     RouteDeviationTracking.None,
+                    RouteRefreshStrategy.None,
                     CourseFiltering.RAW))
 
     return runTest {
@@ -309,6 +311,7 @@ class ValhallaCoreTest {
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
                     StepAdvanceMode.Manual,
                     RouteDeviationTracking.None,
+                    RouteRefreshStrategy.None,
                     CourseFiltering.RAW),
             options = mapOf("costing_options" to mapOf("auto" to mapOf("useTolls" to 0))))
 

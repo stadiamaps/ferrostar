@@ -11,13 +11,15 @@ use crate::{
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
     models::{Route, UserLocation},
+    route_refresh::{RouteRefreshState, RouteRefreshStrategy},
 };
 use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
 };
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode};
-use std::clone::Clone;
+
+use std::{clone::Clone, time::SystemTime};
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
@@ -66,6 +68,12 @@ impl NavigationController {
             &self.route,
             current_route_step,
         );
+        // Initially we don't have a last time check, so we use the current time.
+        let last_check_time = SystemTime::now();
+        let route_refresh_state = self
+            .config
+            .route_refresh_strategy
+            .check_refresh(last_check_time);
         let visual_instruction = current_route_step
             .get_active_visual_instruction(progress.distance_to_next_maneuver)
             .cloned();
@@ -84,6 +92,8 @@ impl NavigationController {
             remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
             progress,
             deviation,
+            last_check_time,
+            route_refresh_state,
             visual_instruction,
             spoken_instruction,
             annotation_json,
@@ -107,6 +117,8 @@ impl NavigationController {
                 ref remaining_steps,
                 ref remaining_waypoints,
                 deviation,
+                last_check_time,
+                route_refresh_state,
                 ..
             } => {
                 // FIXME: This logic is mostly duplicated below
@@ -144,6 +156,8 @@ impl NavigationController {
                             // NOTE: We *can't* run deviation calculations in this method,
                             // as it requires a non-snapped user location.
                             deviation: *deviation,
+                            last_check_time: *last_check_time,
+                            route_refresh_state: *route_refresh_state,
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
@@ -171,6 +185,8 @@ impl NavigationController {
                 ref remaining_steps,
                 ref remaining_waypoints,
                 deviation,
+                last_check_time,
+                route_refresh_state,
                 visual_instruction,
                 spoken_instruction,
                 annotation_json,
@@ -211,6 +227,8 @@ impl NavigationController {
                     remaining_waypoints: remaining_waypoints.clone(),
                     progress,
                     deviation: *deviation,
+                    last_check_time: *last_check_time,
+                    route_refresh_state: *route_refresh_state,
                     visual_instruction: visual_instruction.clone(),
                     spoken_instruction: spoken_instruction.clone(),
                     annotation_json: annotation_json.clone(),
@@ -237,6 +255,8 @@ impl NavigationController {
                         // Explicitly recalculated
                         current_step_geometry_index: _,
                         deviation: _,
+                        last_check_time: _,
+                        route_refresh_state: _,
                         visual_instruction: _,
                         spoken_instruction: _,
                         annotation_json: _,
@@ -251,6 +271,21 @@ impl NavigationController {
                             &self.route,
                             current_step,
                         );
+                        let route_refresh_state = self
+                            .config
+                            .route_refresh_strategy
+                            .check_refresh(*last_check_time);
+
+                        let updated_last_check_time = match (
+                            self.config.route_refresh_strategy.clone(),
+                            route_refresh_state,
+                        ) {
+                            (
+                                RouteRefreshStrategy::Interval { .. },
+                                RouteRefreshState::RefreshNeeded,
+                            ) => SystemTime::now(),
+                            _ => *last_check_time,
+                        };
 
                         // we need to update the geometry index, since the step has changed
                         let (updated_current_step_geometry_index, updated_snapped_user_location) =
@@ -281,6 +316,8 @@ impl NavigationController {
                             remaining_waypoints,
                             progress,
                             deviation,
+                            last_check_time: updated_last_check_time,
+                            route_refresh_state,
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
@@ -410,6 +447,21 @@ mod tests {
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
     };
+    use insta::Settings;
+
+    // Add a helper function for redacting timestamps
+    fn with_redacted_timestamps<F, R>(test_fn: F) -> R
+    where
+        F: FnOnce() -> R,
+    {
+        let mut settings = Settings::new();
+        settings.add_redaction(".**.last_check_time.secs_since_epoch", 1577836800);
+        settings.add_redaction(".**.last_check_time.nanos_since_epoch", 0);
+
+        settings.add_filter(r"(\d+\.\d{6})\d+", "$1");
+
+        settings.bind(test_fn)
+    }
 
     fn test_full_route_state_snapshot(
         route: Route,
@@ -433,6 +485,7 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                     max_acceptable_deviation: 0.0,
                 },
+                route_refresh_strategy: RouteRefreshStrategy::None,
                 snapped_location_course_filtering: CourseFiltering::Raw,
             },
         );
@@ -484,58 +537,68 @@ mod tests {
 
     #[test]
     fn test_extended_exact_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_extended_route(),
-            StepAdvanceMode::DistanceToEndOfStep {
-                distance: 0,
-                minimum_horizontal_accuracy: 0,
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_extended_route(),
+                StepAdvanceMode::DistanceToEndOfStep {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_extended_relative_linestring() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_extended_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: None,
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_extended_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: None,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_exact_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::DistanceToEndOfStep {
-                distance: 0,
-                minimum_horizontal_accuracy: 0,
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::DistanceToEndOfStep {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_relative_linestring() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: None,
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: None,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_relative_linestring_min_line_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: Some(
-                    SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
-                ),
-            }
-        ));
+        with_redacted_timestamps(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: Some(
+                        SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
+                    ),
+                }
+            ));
+        });
     }
 }
