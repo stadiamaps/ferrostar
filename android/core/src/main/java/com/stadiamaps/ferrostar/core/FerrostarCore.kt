@@ -148,7 +148,8 @@ class FerrostarCore(
   var state: StateFlow<NavigationState> = _state.asStateFlow()
 
   constructor(
-      valhallaEndpointURL: URL,
+      routingEndpointURL: URL,
+      routingEngine: String,
       profile: String,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
@@ -157,8 +158,12 @@ class FerrostarCore(
       options: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
-          RouteAdapter.newValhallaHttp(
-              valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(options))),
+          if (routingEngine == "graphhopper")
+              RouteAdapter.newGraphhopperHttp(
+                  routingEndpointURL.toString(), profile, jsonAdapter.toJson(options))
+          else
+              RouteAdapter.newValhallaHttp(
+                  routingEndpointURL.toString(), profile, jsonAdapter.toJson(options))),
       httpClient,
       locationProvider,
       foregroundServiceManager,

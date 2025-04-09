@@ -9,17 +9,21 @@ import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
+import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import java.net.URL
 import java.time.Duration
+import java.time.Instant
 import okhttp3.OkHttpClient
 import uniffi.ferrostar.CourseFiltering
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.SpecialAdvanceConditions
 import uniffi.ferrostar.StepAdvanceMode
+import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.WaypointAdvanceMode
 
 /**
@@ -40,11 +44,20 @@ object AppModule {
   //
   // NOTE: Don't set this directly in source code. Add a line to your local.properties file:
   // stadiaApiKey=YOUR-API-KEY
+  // and if you want to use the GraphHopper API for routing add additionally:
+  // graphhopperApiKey=YOUR-API-KEY
   val stadiaApiKey =
       if (BuildConfig.stadiaApiKey.isBlank() || BuildConfig.stadiaApiKey == "null") {
         null
       } else {
         BuildConfig.stadiaApiKey
+      }
+
+  val graphhopperApiKey =
+      if (BuildConfig.graphhopperApiKey.isBlank() || BuildConfig.graphhopperApiKey == "null") {
+        null
+      } else {
+        BuildConfig.graphhopperApiKey
       }
 
   val mapStyleUrl: String by lazy {
@@ -53,8 +66,10 @@ object AppModule {
     else "https://demotiles.maplibre.org/style.json"
   }
 
-  val valhallaEndpointUrl: URL by lazy {
-    if (stadiaApiKey != null) {
+  val routingEndpointURL: URL by lazy {
+    if (graphhopperApiKey != null) {
+      URL("https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey")
+    } else if (stadiaApiKey != null) {
       URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
     } else {
       URL("https://valhalla1.openstreeetmap.de/route")
@@ -68,6 +83,11 @@ object AppModule {
   val locationProvider: LocationProvider by lazy {
     // TODO: Make this configurable?
     FusedLocationProvider(appContext)
+    // SimulatedLocationProvider().apply {
+    //  warpFactor = 2u
+    //  lastLocation =
+    //      UserLocation(GeographicCoordinate(51.049315, 13.73552), 1.0, null, Instant.now(), null)
+    // }
   }
   private val httpClient: OkHttpClient by lazy {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
@@ -78,10 +98,50 @@ object AppModule {
   }
 
   val ferrostarCore: FerrostarCore by lazy {
+    var options =
+        mapOf(
+            "costingOptions" to
+                // Just an example... You can set multiple costing options for any profile
+                // in Valhalla.
+                // If your app uses multiple routing modes, you can have a master settings
+                // map, or construct a new one each time.
+                mapOf(
+                    "low_speed_vehicle" to
+                        mapOf(
+                            "vehicle_type" to "golf_cart", "top_speed" to 32 // 24kph ~= 15mph
+                            )),
+            "units" to "miles")
+
+    var routingEngine = "valhalla"
+    var routingEngineProfile = "auto"
+
+    // GraphHopper API is used instead of valhalla if graphhopperApiKey is specified in
+    // local.properties
+    if (graphhopperApiKey != null) {
+      routingEngine = "graphhopper"
+      routingEngineProfile = "car"
+
+      if (true) {
+        // use default profile (no custom models)
+        options = mapOf()
+      } else {
+        // documentation for custom models: https://docs.graphhopper.com/openapi/custom-model
+        // arbitrary example:
+        options =
+            mapOf(
+                "ch.disable" to true,
+                "custom_model" to
+                    mapOf(
+                        "distance_influence" to 15,
+                        "speed" to
+                            listOf(mapOf("if" to "road_class == MOTORWAY", "limit_to" to "100"))))
+      }
+    }
     val core =
         FerrostarCore(
-            valhallaEndpointURL = valhallaEndpointUrl,
-            profile = "auto",
+            routingEndpointURL = routingEndpointURL,
+            routingEngine = routingEngine,
+            profile = routingEngineProfile,
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
@@ -96,20 +156,7 @@ object AppModule {
                             SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),
-            options =
-                mapOf(
-                    "costing_options" to
-                        // Just an example... You can set multiple costing options for any profile
-                        // in Valhalla.
-                        // If your app uses multiple routing modes, you can have a master settings
-                        // map, or construct a new one each time.
-                        mapOf(
-                            "low_speed_vehicle" to
-                                mapOf(
-                                    "vehicle_type" to "golf_cart",
-                                    "top_speed" to 32 // 24kph ~= 15mph
-                                    )),
-                    "units" to "miles"))
+            options = options)
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!
