@@ -1,4 +1,4 @@
-import { css, html, LitElement, PropertyValues, unsafeCSS } from "lit";
+import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import maplibregl, {
   GeolocateControl,
@@ -6,7 +6,6 @@ import maplibregl, {
   LngLatLike,
   Map,
 } from "maplibre-gl";
-import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
 import {
   NavigationController,
   RouteAdapter,
@@ -51,18 +50,6 @@ export class FerrostarMap extends LitElement {
   @state()
   protected _tripState: TripState | null = null;
 
-  /**
-   * Configures the map on first load.
-   *
-   * Note: This will only be invoked if there is no map set
-   * by the time of the first component update.
-   * If you provide your own map parameter,
-   * configuration is left to the caller.
-   * Be sure to set the DOM parent via the slot as well.
-   */
-  @property({ type: Function, attribute: false })
-  configureMap?: (map: Map) => void;
-
   @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
 
@@ -98,16 +85,12 @@ export class FerrostarMap extends LitElement {
   /**
    * The MapLibre map instance.
    *
-   * This will be automatically initialized by default
-   * when the web component does its first update cycle.
-   * However, you can also explicitly set this value
-   * when initializing the web component to provide your own map instance.
+   * You have to explicitly set this value when initializing
+   * the web component to provide your own map instance.
    *
-   * Note: If you set this property, you MUST also pass the map's container attribute
-   * via the slot!
    */
-  @property({ type: Object, attribute: false })
-  map: maplibregl.Map | null = null;
+  @property({ type: Object })
+  map!: maplibregl.Map;
 
   geolocateControl: GeolocateControl | null = null;
   navigationController: NavigationController | null = null;
@@ -115,7 +98,6 @@ export class FerrostarMap extends LitElement {
   lastSpokenUtteranceId: string | null = null;
 
   static styles = [
-    unsafeCSS(maplibreglStyles),
     css`
       [hidden] {
         display: none !important;
@@ -213,6 +195,23 @@ export class FerrostarMap extends LitElement {
         this.map.setZoom(this.zoom);
       }
     }
+  }
+
+  firstUpdated() {
+    this.geolocateControl = new GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true,
+      },
+      trackUserLocation: true,
+    });
+
+    this.map.addControl(this.geolocateControl);
+
+    this.map.on("load", () => {
+      if (this.geolocateOnLoad) {
+        this.geolocateControl?.trigger();
+      }
+    });
   }
 
   // TODO: type
