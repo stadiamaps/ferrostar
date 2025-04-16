@@ -50,6 +50,18 @@ export class FerrostarMap extends LitElement {
   @state()
   protected _tripState: TripState | null = null;
 
+  /**
+   * Configures the map on first load.
+   *
+   * Note: This will only be invoked if there is no map set
+   * by the time of the first component update.
+   * If you provide your own map parameter,
+   * configuration is left to the caller.
+   * Be sure to set the DOM parent via the slot as well.
+   */
+  @property({ type: Function, attribute: false })
+  configureMap?: (map: Map) => void;
+
   @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
 
@@ -207,9 +219,13 @@ export class FerrostarMap extends LitElement {
 
     this.map.addControl(this.geolocateControl);
 
-    this.map.on("load", () => {
+    this.map.on("load", (e) => {
       if (this.geolocateOnLoad) {
         this.geolocateControl?.trigger();
+      }
+
+      if (this.configureMap !== undefined) {
+        this.configureMap(e.target);
       }
     });
   }
