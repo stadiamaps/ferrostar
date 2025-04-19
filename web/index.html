@@ -65,7 +65,6 @@
       } from "@stadiamaps/ferrostar-webcomponents";
       import mapLibreGL from "maplibre-gl";
       import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
-      import searchBoxStyle from "@stadiamaps/maplibre-search-box/dist/style.css?inline";
 
       // TODO: type + use TypeScript enum
       const config = {
@@ -90,9 +89,14 @@
       };
 
       async function onload() {
+        // Set up and customize your map instance as desired
         const mapInstance = new mapLibreGL.Map({
           container: "mapElement",
           style: "https://tiles.stadiamaps.com/styles/outdoors.json",
+          center: { lng: -122.42, lat: 37.81 },
+          zoom: 16,
+          pitch: 45,
+          attributionControl: { compact: true },
         });
 
         // Get a reference to the Ferrostar map component
@@ -133,20 +137,21 @@
           },
         });
 
-        ferrostar.center = { lng: -122.42, lat: 37.81 };
-        ferrostar.zoom = 18;
         ferrostar.options = {
           costing_options: { bicycle: { use_roads: 0.2 } },
         };
         ferrostar.geolocateOnLoad = false;
 
-        ferrostar.configureMap = (map) => {
-          map.addControl(searchBox, "top-left");
-        };
+        mapInstance.on("load", (_) => {
+          // Post-first-load configuration
+          mapInstance.addControl(searchBox, "top-left");
+        });
         ferrostar.onNavigationStart = (map) => {
+          // Remove our search box when navigation starts
           map.removeControl(searchBox);
         };
         ferrostar.onNavigationStop = (map) => {
+          // Put the search box back when we stop
           map.addControl(searchBox, "top-left");
         };
 

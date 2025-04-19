@@ -2,8 +2,6 @@ import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import maplibregl, {
   GeolocateControl,
-  LngLat,
-  LngLatLike,
   Map,
 } from "maplibre-gl";
 import {
@@ -27,15 +25,6 @@ export class FerrostarMap extends LitElement {
   @property()
   profile: string = "";
 
-  @property()
-  center: LngLatLike | null = null;
-
-  @property()
-  pitch: number = 60;
-
-  @property()
-  zoom: number = 6;
-
   @property({ attribute: false })
   httpClient?: Function = fetch;
 
@@ -50,18 +39,6 @@ export class FerrostarMap extends LitElement {
   @state()
   protected _tripState: TripState | null = null;
 
-  /**
-   * Configures the map on first load.
-   *
-   * Note: This will only be invoked if there is no map set
-   * by the time of the first component update.
-   * If you provide your own map parameter,
-   * configuration is left to the caller.
-   * Be sure to set the DOM parent via the slot as well.
-   */
-  @property({ type: Function, attribute: false })
-  configureMap?: (map: Map) => void;
-
   @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
 
@@ -73,7 +50,6 @@ export class FerrostarMap extends LitElement {
 
   /**
    *  Styles to load which will apply inside the component
-   *  (ex: for MapLibre plugins)
    */
   @property({ type: Object, attribute: false })
   customStyles?: object | null;
@@ -185,28 +161,6 @@ export class FerrostarMap extends LitElement {
     if (changedProperties.has("locationProvider") && this.locationProvider) {
       this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     }
-    if (this.map && this.map.loaded()) {
-      if (changedProperties.has("center")) {
-        if (changedProperties.get("center") === null && this.center !== null) {
-          this.map.jumpTo({ center: this.center });
-        } else if (this.center !== null) {
-          if (
-            this.map.getCenter().distanceTo(LngLat.convert(this.center)) >
-            500_000
-          ) {
-            this.map.jumpTo({ center: this.center });
-          } else {
-            this.map.flyTo({ center: this.center });
-          }
-        }
-      }
-      if (changedProperties.has("pitch")) {
-        this.map.setPitch(this.pitch);
-      }
-      if (changedProperties.has("zoom")) {
-        this.map.setZoom(this.zoom);
-      }
-    }
   }
 
   firstUpdated() {
@@ -219,13 +173,9 @@ export class FerrostarMap extends LitElement {
 
     this.map.addControl(this.geolocateControl);
 
-    this.map.on("load", (e) => {
+    this.map.on("load", (_) => {
       if (this.geolocateOnLoad) {
         this.geolocateControl?.trigger();
-      }
-
-      if (this.configureMap !== undefined) {
-        this.configureMap(e.target);
       }
     });
   }
@@ -334,7 +284,9 @@ export class FerrostarMap extends LitElement {
       "route",
     );
 
-    this.map?.setCenter(route.geometry[0]);
+    this.map?.flyTo({
+      center: route.geometry[0]
+    });
 
     if (this.locationProvider instanceof SimulatedLocationProvider) {
       this.simulatedLocationMarker = new maplibregl.Marker({
