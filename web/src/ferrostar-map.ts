@@ -1,9 +1,6 @@
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import maplibregl, {
-  GeolocateControl,
-  Map,
-} from "maplibre-gl";
+import maplibregl, { GeolocateControl, Map } from "maplibre-gl";
 import {
   NavigationController,
   RouteAdapter,
@@ -290,7 +287,7 @@ export class FerrostarMap extends LitElement {
     );
 
     this.map?.flyTo({
-      center: route.geometry[0]
+      center: route.geometry[0],
     });
 
     if (this.locationProvider instanceof SimulatedLocationProvider) {
