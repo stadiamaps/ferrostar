@@ -1,5 +1,6 @@
 import MapKit
 import SwiftUI
+import TestSupport
 import XCTest
 @testable import FerrostarCoreFFI
 @testable import FerrostarSwiftUI

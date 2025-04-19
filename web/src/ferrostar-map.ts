@@ -208,7 +208,12 @@ export class FerrostarMap extends LitElement {
     });
 
     const responseData = new Uint8Array(await response.arrayBuffer());
-    return this.routeAdapter.parseResponse(responseData);
+    try {
+      return this.routeAdapter.parseResponse(responseData);
+    } catch (e) {
+      console.error("Error parsing route response:", e);
+      throw e;
+    }
   }
 
   // TODO: types

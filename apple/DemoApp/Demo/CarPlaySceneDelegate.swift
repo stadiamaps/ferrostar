@@ -1,8 +1,14 @@
 import CarPlay
 import FerrostarCarPlayUI
 import FerrostarCore
+import MapLibreSwiftUI
+import os
 import SwiftUI
 import UIKit
+
+private extension Logger {
+    static let carPlay = Logger(subsystem: "ferrostar", category: "carplaydelegate")
+}
 
 class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplicationSceneDelegate {
     // Get the AppDelegate associated with the SwiftUI App/@main as the type you defined it as.
@@ -13,12 +19,17 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
 
     private var carPlayManager: FerrostarCarPlayManager?
 
+    // In your implementation, you would like want to init with a cached camera from your normal
+    // MapView/NavigationMapView.
+    let sharedCamera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
+
     func scene(
         _: UIScene, willConnectTo _: UISceneSession,
         options _: UIScene.ConnectionOptions
     ) {
         // NOTE: This can also be used to set up your App's window & CarPlay scene.
         //       This example just uses the car play specific templateApplicationScene(_:didConnect:to)
+        Logger.carPlay.info("\(#function)")
     }
 
     func templateApplicationScene(
@@ -26,6 +37,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
+        Logger.carPlay.info("\(#function)")
         setupCarPlay(on: window)
         carPlayManager?.templateApplicationScene(
             templateApplicationScene, didConnect: interfaceController, to: window
@@ -37,6 +49,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
+        Logger.carPlay.info("\(#function)")
         carPlayManager?.templateApplicationScene(
             templateApplicationScene, didDisconnect: interfaceController, from: window
         )
@@ -50,13 +63,21 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
 
         let view = CarPlayNavigationView(
             ferrostarCore: ferrostarCore!,
-            styleURL: AppDefaults.mapStyleURL
+            styleURL: AppDefaults.mapStyleURL,
+            camera: Binding(
+                get: { self.sharedCamera.camera },
+                set: { self.sharedCamera.camera = $0 }
+            )
         )
 
         carPlayViewController = UIHostingController(rootView: view)
 
         carPlayManager = FerrostarCarPlayManager(
             ferrostarCore!,
+            camera: Binding(
+                get: { self.sharedCamera.camera },
+                set: { self.sharedCamera.camera = $0 }
+            ),
             distanceUnits: .default
             // TODO: We may need to hold the view or viewController here, but it seems
             //       to work for now.
@@ -72,13 +93,17 @@ extension CarPlaySceneDelegate: CPTemplateApplicationDashboardSceneDelegate {
         _: CPTemplateApplicationDashboardScene,
         didConnect _: CPDashboardController,
         to _: UIWindow
-    ) {}
+    ) {
+        Logger.carPlay.info("\(#function)")
+    }
 
     func templateApplicationDashboardScene(
         _: CPTemplateApplicationDashboardScene,
         didDisconnect _: CPDashboardController,
         from _: UIWindow
-    ) {}
+    ) {
+        Logger.carPlay.info("\(#function)")
+    }
 }
 
 extension CarPlaySceneDelegate: CPTemplateApplicationInstrumentClusterSceneDelegate {
@@ -86,11 +111,15 @@ extension CarPlaySceneDelegate: CPTemplateApplicationInstrumentClusterSceneDeleg
     func templateApplicationInstrumentClusterScene(
         _: CPTemplateApplicationInstrumentClusterScene,
         didConnect _: CPInstrumentClusterController
-    ) {}
+    ) {
+        Logger.carPlay.info("\(#function)")
+    }
 
     func templateApplicationInstrumentClusterScene(
         _: CPTemplateApplicationInstrumentClusterScene,
         didDisconnectInstrumentClusterController _: CPInstrumentClusterController
-    ) {}
+    ) {
+        Logger.carPlay.info("\(#function)")
+    }
     // swiftlint:enable identifier_name vertical_parameter_alignment
 }

@@ -6,20 +6,13 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableObject>: View,
-    CustomizableNavigatingInnerGridView
-{
+struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     private let navigationState: NavigationState?
 
     @State private var isInstructionViewExpanded: Bool = false
     @State private var instructionsViewSizeWhenNotExpanded: CGSize = .zero
-
-    var topCenter: (() -> AnyView)?
-    var topTrailing: (() -> AnyView)?
-    var midLeading: (() -> AnyView)?
-    var bottomTrailing: (() -> AnyView)?
 
     var speedLimit: Measurement<UnitSpeed>?
     var speedLimitStyle: SpeedLimitView.SignageStyle?
@@ -32,16 +25,27 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
     var onCenter: () -> Void
 
     var onTapExit: (() -> Void)?
-    let currentRoadNameView: AnyView?
 
     let showMute: Bool
     let isMuted: Bool
     let onMute: () -> Void
 
+    // MARK: Configurable Views
+
+    var topCenter: (() -> AnyView)?
+    var topTrailing: (() -> AnyView)?
+    var midLeading: (() -> AnyView)?
+    var bottomTrailing: (() -> AnyView)?
+
+    var progressView: (NavigationState?, (() -> Void)?) -> AnyView
+    var instructionsView: (NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView
+    var currentRoadNameView: (NavigationState?) -> AnyView
+
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
         speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
+        views: NavigationViewComponentBuilder,
         isMuted: Bool,
         showMute: Bool = true,
         onMute: @escaping () -> Void,
@@ -50,8 +54,7 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         onZoomOut: @escaping () -> Void = {},
         showCentering: Bool = false,
         onCenter: @escaping () -> Void = {},
-        onTapExit: (() -> Void)? = nil,
-        currentRoadNameView: AnyView?
+        onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
         self.speedLimit = speedLimit
@@ -65,7 +68,10 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
         self.showCentering = showCentering
         self.onCenter = onCenter
         self.onTapExit = onTapExit
-        self.currentRoadNameView = currentRoadNameView
+
+        progressView = views.progressView
+        instructionsView = views.instructionsView
+        currentRoadNameView = views.currentRoadNameView
     }
 
     var body: some View {
@@ -99,37 +105,19 @@ struct PortraitNavigationOverlayView<T: SpokenInstructionObserver & ObservableOb
                     bottomTrailing?()
                 }
 
-                if case .navigating = navigationState?.tripState,
-                   let progress = navigationState?.currentProgress
-                {
+                if case .navigating = navigationState?.tripState {
                     VStack {
                         if !showCentering {
-                            currentRoadNameView
+                            currentRoadNameView(navigationState)
                         }
 
-                        TripProgressView(
-                            progress: progress,
-                            onTapExit: onTapExit
-                        )
+                        progressView(navigationState, onTapExit)
                     }
                 }
             }
             .padding(.top, instructionsViewSizeWhenNotExpanded.height + 16)
 
-            if case .navigating = navigationState?.tripState,
-               let visualInstruction = navigationState?.currentVisualInstruction,
-               let progress = navigationState?.currentProgress,
-               let remainingSteps = navigationState?.remainingSteps
-            {
-                InstructionsView(
-                    visualInstruction: visualInstruction,
-                    distanceFormatter: formatterCollection.distanceFormatter,
-                    distanceToNextManeuver: progress.distanceToNextManeuver,
-                    remainingSteps: remainingSteps,
-                    isExpanded: $isInstructionViewExpanded,
-                    sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
-                )
-            }
+            instructionsView(navigationState, $isInstructionViewExpanded, $instructionsViewSizeWhenNotExpanded)
         }
     }
 }
