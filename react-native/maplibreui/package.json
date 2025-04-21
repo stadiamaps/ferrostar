@@ -1,6 +1,6 @@
 {
   "name": "@stadiamaps/ferrostar-maplibre-react-native",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "description": "Ferrostar React Native MapLibre UI",
   "main": "./lib/index.js",
   "types": "./src/index.ts",
