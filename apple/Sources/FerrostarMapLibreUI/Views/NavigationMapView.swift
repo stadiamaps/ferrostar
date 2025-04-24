@@ -17,6 +17,7 @@ public struct NavigationMapView: View {
     var mapViewContentInset: UIEdgeInsets = .zero
     var onStyleLoaded: (MLNStyle) -> Void
     let userLayers: [StyleLayerDefinition]
+    let activity: MapActivity
 
     // TODO: Configurable camera and user "puck" rotation modes
 
@@ -40,6 +41,7 @@ public struct NavigationMapView: View {
         styleURL: URL,
         camera: Binding<MapViewCamera>,
         navigationState: NavigationState?,
+        activity: MapActivity = .standard,
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
@@ -48,13 +50,15 @@ public struct NavigationMapView: View {
         self.navigationState = navigationState
         self.onStyleLoaded = onStyleLoaded
         userLayers = makeMapContent()
+        self.activity = activity
     }
 
     public var body: some View {
         MapView(
             styleURL: styleURL,
             camera: $camera,
-            locationManager: locationManager
+            locationManager: locationManager,
+            activity: activity
         ) {
             // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
 
