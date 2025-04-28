@@ -142,6 +142,17 @@ export class FerrostarMap extends LitElement {
       #stop-button:hover {
         background-color: #e0e0e0;
       }
+
+      @media (max-width: 600px) {
+        #stop-button {
+          padding: 14px;
+        }
+
+        #stop-button .icon {
+          width: 10px;
+          height: 10px;
+        }
+      }
     `,
   ];
 
