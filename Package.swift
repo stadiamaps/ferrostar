@@ -31,7 +31,7 @@ if useLocalMapLibreSwiftUIDSL {
 } else {
     maplibreSwiftUIDSLPackage = .package(
         url: "https://github.com/maplibre/swiftui-dsl",
-        revision: "651a638ea39593014af16c0235affb0cfb5b8eb7"
+        from: "0.10.0"
     )
 }
 
