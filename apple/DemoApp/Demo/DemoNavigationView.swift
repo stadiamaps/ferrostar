@@ -23,8 +23,6 @@ struct DemoNavigationView: View {
         }
     }
 
-    @State private var camera: MapViewCamera = .center(AppDefaults.initialLocation.coordinate, zoom: 14)
-
     var body: some View {
         let locationServicesEnabled = appEnvironment.locationProvider.authorizationStatus == .authorizedAlways
             || appEnvironment.locationProvider.authorizationStatus == .authorizedWhenInUse
@@ -32,7 +30,7 @@ struct DemoNavigationView: View {
         NavigationStack {
             DynamicallyOrientingNavigationView(
                 styleURL: AppDefaults.mapStyleURL,
-                camera: $camera,
+                camera: $appEnvironment.camera.camera,
                 navigationState: appEnvironment.ferrostarCore.state,
                 isMuted: appEnvironment.spokenInstructionObserver.isMuted,
                 onTapMute: appEnvironment.spokenInstructionObserver.toggleMute,
@@ -130,13 +128,13 @@ struct DemoNavigationView: View {
         }
 
         try appEnvironment.startNavigation(route: route)
-        camera = .automotiveNavigation()
+        appEnvironment.camera.camera = .automotiveNavigation()
         preventAutoLock()
     }
 
     func stopNavigation() {
         appEnvironment.stopNavigation()
-        camera = .center(AppDefaults.initialLocation.coordinate, zoom: 14)
+        appEnvironment.camera.camera = .center(AppDefaults.initialLocation.coordinate, zoom: 14)
         allowAutoLock()
     }
 
