@@ -51,6 +51,7 @@ public struct CarPlayNavigationView: View,
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: ferrostarCore.state,
+                    activity: .carplay,
                     onStyleLoaded: { _ in
                         // camera = .automotiveNavigation(zoom: 17.0)
                     }

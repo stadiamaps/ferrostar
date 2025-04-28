@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "13e4808c2a0d204d20ef37d8e6baee1a30b1d7e9",
-        "version" : "0.9.1"
+        "revision" : "26eced8a6544f60d9979d35c99217599a97c80d6",
+        "version" : "0.10.0"
       }
     },
     {
