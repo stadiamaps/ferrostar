@@ -1,8 +1,6 @@
 use crate::models::{UserLocation, Waypoint};
 
-use crate::routing_adapters::error::{
-    InstantiationError, RoutingRequestGenerationError,
-};
+use crate::routing_adapters::error::{InstantiationError, RoutingRequestGenerationError};
 use crate::routing_adapters::{RouteRequest, RouteRequestGenerator};
 
 use serde_json::{json, Map, Value as JsonValue};
