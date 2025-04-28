@@ -937,6 +937,16 @@ public convenience init(requestGenerator: RouteRequestGenerator, responseParser:
     }
 
     
+public static func newGraphhopperHttp(endpointUrl: String, profile: String, optionsJson: String?)throws  -> RouteAdapter {
+    return try  FfiConverterTypeRouteAdapter.lift(try rustCallWithError(FfiConverterTypeInstantiationError.lift) {
+    uniffi_ferrostar_fn_constructor_routeadapter_new_graphhopper_http(
+        FfiConverterString.lower(endpointUrl),
+        FfiConverterString.lower(profile),
+        FfiConverterOptionString.lower(optionsJson),$0
+    )
+})
+}
+    
 public static func newValhallaHttp(endpointUrl: String, profile: String, optionsJson: String?)throws  -> RouteAdapter {
     return try  FfiConverterTypeRouteAdapter.lift(try rustCallWithError(FfiConverterTypeInstantiationError.lift) {
     uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
@@ -3020,7 +3030,7 @@ public struct SpokenInstruction {
      */
     public var ssml: String?
     /**
-     * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+     * How far (in meters) from the upcoming maneuver the instruction should start being spoken.
      */
     public var triggerDistanceBeforeManeuver: Double
     /**
@@ -3045,7 +3055,7 @@ public struct SpokenInstruction {
          * Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
          */ssml: String?, 
         /**
-         * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+         * How far (in meters) from the upcoming maneuver the instruction should start being spoken.
          */triggerDistanceBeforeManeuver: Double, 
         /**
          * A unique identifier for this instruction.
@@ -6599,6 +6609,9 @@ private var initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 32290) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_new_graphhopper_http() != 29115) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 3524) {
