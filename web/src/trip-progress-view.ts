@@ -31,6 +31,15 @@ export class TripProgressView extends LitElement {
         margin: 0 15px;
         white-space: nowrap;
       }
+      @media (max-width: 600px) {
+        .progress-view-card {
+          padding: 10px;
+        }
+
+        .arrival-text {
+          margin: 0 5px;
+        }
+      }
     `,
   ];
 
