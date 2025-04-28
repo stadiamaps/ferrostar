@@ -18,7 +18,7 @@ Set your API key in `local.properties` to run the demo app
 (it is functional with demo tiles and routing, but only for limited testing):
 
 ```properties
-stadiaApiKey=YOUR-API-KEY
+stadiaApiKey=
 ```
 
 ## Testing locally in a separate project

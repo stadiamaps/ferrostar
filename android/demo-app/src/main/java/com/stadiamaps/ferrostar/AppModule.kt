@@ -9,6 +9,7 @@ import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
+import com.stadiamaps.ferrostar.core.RouteRefreshHandler
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
@@ -18,6 +19,8 @@ import okhttp3.OkHttpClient
 import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
+import uniffi.ferrostar.RouteRefreshState
+import uniffi.ferrostar.RouteRefreshStrategy
 import uniffi.ferrostar.SpecialAdvanceConditions
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.WaypointAdvanceMode
@@ -95,6 +98,10 @@ object AppModule {
                             // testing
                             SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
+                    // Configure how often routes are refreshed during navigation
+                    // - None: Never refresh routes
+                    // - Interval: Check at regular intervals (value in seconds)
+                    RouteRefreshStrategy.Interval(intervalSeconds = 300UL), // 5 minutes interval
                     CourseFiltering.SNAP_TO_ROUTE),
             options =
                 mapOf(
@@ -117,6 +124,26 @@ object AppModule {
     // (this basically re-implements the default behaviors).
     core.deviationHandler = RouteDeviationHandler { _, _, remainingWaypoints ->
       CorrectiveAction.GetNewRoutes(remainingWaypoints)
+    }
+
+    /**
+     * Example implementation of a custom route refresh handler
+     *
+     * This demonstrates how to respond when a route refresh is needed according to the configured
+     * strategy. In this example, we log the event and request new routes.
+     */
+    core.refreshHandler = RouteRefreshHandler { core, tripState ->
+      if (tripState is uniffi.ferrostar.TripState.Navigating) {
+        if (tripState.routeRefreshState == RouteRefreshState.REFRESH_NEEDED) {
+          Log.d(TAG, "Route refresh needed - Getting new route")
+          CorrectiveAction.GetNewRoutes(tripState.remainingWaypoints)
+        } else {
+          Log.d(TAG, "No refresh needed")
+          CorrectiveAction.DoNothing
+        }
+      } else {
+        CorrectiveAction.DoNothing
+      }
     }
 
     core.alternativeRouteProcessor = AlternativeRouteProcessor { it, routes ->
