@@ -1,6 +1,6 @@
 {
   "name": "@stadiamaps/ferrostar-uniffi-react-native",
-  "version": "0.32.0",
+  "version": "0.32.1",
   "description": "Ferrostar React Native Binding",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
