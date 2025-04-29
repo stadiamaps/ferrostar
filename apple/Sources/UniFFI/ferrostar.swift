@@ -937,6 +937,18 @@ public convenience init(requestGenerator: RouteRequestGenerator, responseParser:
     }
 
     
+public static func newGraphhopperHttp(endpointUrl: String, profile: String, locale: String, voiceUnits: VoiceUnits, optionsJson: String?)throws  -> RouteAdapter {
+    return try  FfiConverterTypeRouteAdapter.lift(try rustCallWithError(FfiConverterTypeInstantiationError.lift) {
+    uniffi_ferrostar_fn_constructor_routeadapter_new_graphhopper_http(
+        FfiConverterString.lower(endpointUrl),
+        FfiConverterString.lower(profile),
+        FfiConverterString.lower(locale),
+        FfiConverterTypeVoiceUnits.lower(voiceUnits),
+        FfiConverterOptionString.lower(optionsJson),$0
+    )
+})
+}
+    
 public static func newValhallaHttp(endpointUrl: String, profile: String, optionsJson: String?)throws  -> RouteAdapter {
     return try  FfiConverterTypeRouteAdapter.lift(try rustCallWithError(FfiConverterTypeInstantiationError.lift) {
     uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
@@ -3020,7 +3032,7 @@ public struct SpokenInstruction {
      */
     public var ssml: String?
     /**
-     * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+     * How far (in meters) from the upcoming maneuver the instruction should start being spoken.
      */
     public var triggerDistanceBeforeManeuver: Double
     /**
@@ -3045,7 +3057,7 @@ public struct SpokenInstruction {
          * Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
          */ssml: String?, 
         /**
-         * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+         * How far (in meters) from the upcoming maneuver the instruction should start being spoken.
          */triggerDistanceBeforeManeuver: Double, 
         /**
          * A unique identifier for this instruction.
@@ -5398,6 +5410,70 @@ extension TripState: Equatable, Hashable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum VoiceUnits {
+    
+    case metric
+    case imperial
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeVoiceUnits: FfiConverterRustBuffer {
+    typealias SwiftType = VoiceUnits
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> VoiceUnits {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .metric
+        
+        case 2: return .imperial
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: VoiceUnits, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .metric:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .imperial:
+            writeInt(&buf, Int32(2))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeVoiceUnits_lift(_ buf: RustBuffer) throws -> VoiceUnits {
+    return try FfiConverterTypeVoiceUnits.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeVoiceUnits_lower(_ value: VoiceUnits) -> RustBuffer {
+    return FfiConverterTypeVoiceUnits.lower(value)
+}
+
+
+
+extension VoiceUnits: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Controls when a waypoint should be marked as complete.
  *
@@ -6599,6 +6675,9 @@ private var initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 32290) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_new_graphhopper_http() != 87) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 3524) {

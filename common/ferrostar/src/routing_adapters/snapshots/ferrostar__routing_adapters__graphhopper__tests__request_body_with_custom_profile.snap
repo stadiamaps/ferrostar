@@ -1,0 +1,34 @@
+---
+source: ferrostar/src/routing_adapters/graphhopper.rs
+expression: "generate_body(USER_LOCATION, WAYPOINTS.to_vec(),\nSome(r#\"{\n            \"ch.disable\": true,\n            \"custom_model\": {\n                \"distance_influence\": 15,\n                \"speed\": [\n                    {\n                        \"if\": \"road_class == MOTORWAY\",\n                        \"limit_to\": \"100\"\n                    }\n                ]\n            }\n        }\"#))"
+---
+{
+  "ch.disable": true,
+  "custom_model": {
+    "distance_influence": 15,
+    "speed": [
+      {
+        "if": "road_class == MOTORWAY",
+        "limit_to": "100"
+      }
+    ]
+  },
+  "locale": "en",
+  "points": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0
+    ],
+    [
+      3.0,
+      2.0
+    ]
+  ],
+  "profile": "car",
+  "type": "mapbox",
+  "voice_units": "metric"
+}

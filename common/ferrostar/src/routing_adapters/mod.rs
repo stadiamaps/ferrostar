@@ -50,10 +50,14 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 #[cfg(feature = "alloc")]
 use alloc::{string::String, sync::Arc, vec::Vec};
 
-use crate::routing_adapters::osrm::OsrmResponseParser;
-use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
+use crate::routing_adapters::graphhopper::VoiceUnits;
+use crate::routing_adapters::{
+    graphhopper::GraphHopperHttpRequestGenerator, osrm::OsrmResponseParser,
+    valhalla::ValhallaHttpRequestGenerator,
+};
 
 pub mod error;
+pub mod graphhopper;
 pub mod osrm;
 pub mod utilities;
 pub mod valhalla;
@@ -158,6 +162,25 @@ impl RouteAdapter {
         let request_generator = Arc::new(ValhallaHttpRequestGenerator::with_options_json(
             endpoint_url,
             profile,
+            options_json.as_deref(),
+        )?);
+        let response_parser = Arc::new(OsrmResponseParser::new(6));
+        Ok(Self::new(request_generator, response_parser))
+    }
+
+    #[cfg_attr(feature = "uniffi", uniffi::constructor)]
+    pub fn new_graphhopper_http(
+        endpoint_url: String,
+        profile: String,
+        locale: String,
+        voice_units: VoiceUnits,
+        options_json: Option<String>,
+    ) -> Result<Self, InstantiationError> {
+        let request_generator = Arc::new(GraphHopperHttpRequestGenerator::with_options_json(
+            endpoint_url,
+            profile,
+            locale,
+            voice_units,
             options_json.as_deref(),
         )?);
         let response_parser = Arc::new(OsrmResponseParser::new(6));
