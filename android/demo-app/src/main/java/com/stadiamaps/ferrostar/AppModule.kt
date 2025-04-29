@@ -81,13 +81,14 @@ object AppModule {
   }
 
   val locationProvider: LocationProvider by lazy {
-    // TODO: Make this configurable?
+    // TODO: Make this configurable. For now, comment out the simulated location provider if you
+    // want to use the "real" one.
     FusedLocationProvider(appContext)
-    // SimulatedLocationProvider().apply {
-    //  warpFactor = 2u
-    //  lastLocation =
-    //      UserLocation(GeographicCoordinate(51.049315, 13.73552), 1.0, null, Instant.now(), null)
-    // }
+    SimulatedLocationProvider().apply {
+      warpFactor = 2u
+      lastLocation =
+          UserLocation(GeographicCoordinate(51.049315, 13.73552), 1.0, null, Instant.now(), null)
+    }
   }
   private val httpClient: OkHttpClient by lazy {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
