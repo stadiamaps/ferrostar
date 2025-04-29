@@ -25,6 +25,7 @@ wasm_js = [
     "serde-wasm-bindgen",
     "wasm-bindgen",
     "web-time",
+    "uuid/js"
 ]
 
 [dependencies]
