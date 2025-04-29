@@ -54,6 +54,7 @@ use crate::routing_adapters::{
     graphhopper::GraphHopperHttpRequestGenerator, osrm::OsrmResponseParser,
     valhalla::ValhallaHttpRequestGenerator,
 };
+use crate::routing_adapters::graphhopper::VoiceUnits;
 
 pub mod error;
 pub mod graphhopper;
@@ -171,11 +172,15 @@ impl RouteAdapter {
     pub fn new_graphhopper_http(
         endpoint_url: String,
         profile: String,
+        locale: String,
+        voice_units: VoiceUnits,
         options_json: Option<String>,
     ) -> Result<Self, InstantiationError> {
         let request_generator = Arc::new(GraphHopperHttpRequestGenerator::with_options_json(
             endpoint_url,
             profile,
+            locale,
+            voice_units,
             options_json.as_deref(),
         )?);
         let response_parser = Arc::new(OsrmResponseParser::new(6));
