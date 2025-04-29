@@ -1,6 +1,6 @@
 import CarPlay
 
-enum CarPlayUIState {
+enum CarPlayUIState: Equatable {
     /// The idle map template should display the map before use.
     ///
     /// It accepts an optional template since it typically will require customization
