@@ -211,7 +211,7 @@ impl RouteRequestGenerator for GraphHopperHttpRequestGenerator {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::models::{CourseOverGround, GeographicCoordinate, WaypointKind};
+    use crate::models::{GeographicCoordinate, WaypointKind};
     use serde_json::from_slice;
     use std::time::SystemTime;
 
@@ -224,16 +224,6 @@ mod tests {
         coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
         horizontal_accuracy: 6.0,
         course_over_ground: None,
-        timestamp: SystemTime::UNIX_EPOCH,
-        speed: None,
-    };
-    const USER_LOCATION_WITH_COURSE: UserLocation = UserLocation {
-        coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
-        horizontal_accuracy: 6.0,
-        course_over_ground: Some(CourseOverGround {
-            degrees: 42,
-            accuracy: Some(12),
-        }),
         timestamp: SystemTime::UNIX_EPOCH,
         speed: None,
     };
@@ -298,25 +288,31 @@ mod tests {
             }
         }
     }
-    
+
     #[test]
     fn request_body_without_options() {
         insta::assert_json_snapshot!(generate_body(USER_LOCATION, WAYPOINTS.to_vec(), None))
     }
-    
+
     #[test]
     fn request_body_with_custom_profile() {
-        insta::assert_json_snapshot!(generate_body(USER_LOCATION, WAYPOINTS.to_vec(), Some(r#"{
-            "ch.disable": true,
-            "custom_model": {
-                "distance_influence": 15,
-                "speed": [
-                    {
-                        "if": "road_class == MOTORWAY",
-                        "limit_to": "100"
+        insta::assert_json_snapshot!(generate_body(
+            USER_LOCATION,
+            WAYPOINTS.to_vec(),
+            Some(
+                r#"{
+                    "ch.disable": true,
+                    "custom_model": {
+                        "distance_influence": 15,
+                        "speed": [
+                            {
+                                "if": "road_class == MOTORWAY",
+                                "limit_to": "100"
+                            }
+                        ]
                     }
-                ]
-            }
-        }"#)))
+                }"#
+            )
+        ))
     }
 }

@@ -50,11 +50,11 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 #[cfg(feature = "alloc")]
 use alloc::{string::String, sync::Arc, vec::Vec};
 
+use crate::routing_adapters::graphhopper::VoiceUnits;
 use crate::routing_adapters::{
     graphhopper::GraphHopperHttpRequestGenerator, osrm::OsrmResponseParser,
     valhalla::ValhallaHttpRequestGenerator,
 };
-use crate::routing_adapters::graphhopper::VoiceUnits;
 
 pub mod error;
 pub mod graphhopper;

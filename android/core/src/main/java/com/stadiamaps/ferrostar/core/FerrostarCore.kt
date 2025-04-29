@@ -25,6 +25,7 @@ import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
+import uniffi.ferrostar.VoiceUnits
 import uniffi.ferrostar.Waypoint
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
@@ -160,7 +161,11 @@ class FerrostarCore(
       RouteProvider.RouteAdapter(
           if (routingEngine == "graphhopper")
               RouteAdapter.newGraphhopperHttp(
-                  routingEndpointURL.toString(), profile, jsonAdapter.toJson(options))
+                  routingEndpointURL.toString(),
+                  profile,
+                  "en",
+                  VoiceUnits.METRIC,
+                  jsonAdapter.toJson(options))
           else
               RouteAdapter.newValhallaHttp(
                   routingEndpointURL.toString(), profile, jsonAdapter.toJson(options))),
