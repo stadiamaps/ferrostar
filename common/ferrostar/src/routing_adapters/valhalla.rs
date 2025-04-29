@@ -232,6 +232,7 @@ mod tests {
 
     #[cfg(feature = "web-time")]
     use web_time::SystemTime;
+
     const ENDPOINT_URL: &str = "https://api.stadiamaps.com/route/v1";
     const COSTING: &str = "bicycle";
     const USER_LOCATION: UserLocation = UserLocation {

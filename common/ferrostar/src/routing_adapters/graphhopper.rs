@@ -213,7 +213,12 @@ mod tests {
     use super::*;
     use crate::models::{GeographicCoordinate, WaypointKind};
     use serde_json::from_slice;
+
+    #[cfg(all(feature = "std", not(feature = "web-time")))]
     use std::time::SystemTime;
+
+    #[cfg(feature = "web-time")]
+    use web_time::SystemTime;
 
     const ENDPOINT_URL: &str = "https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY";
     const COSTING: &str = "car";
