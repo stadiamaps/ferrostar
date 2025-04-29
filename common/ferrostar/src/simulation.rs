@@ -159,7 +159,7 @@ pub fn location_simulation_from_coordinates(
                     })
                     .collect();
                 let linestring: LineString = coords.into();
-                let densified_linestring = linestring.densify::<Haversine>(distance);
+                let densified_linestring = Haversine.densify(&linestring, distance);
                 densified_linestring
                     .points()
                     .map(|point| GeographicCoordinate {
@@ -230,7 +230,7 @@ fn add_lateral_offset(
 ) -> (GeographicCoordinate, f64) {
     let current_point = Point::from(current);
     let next_point = Point::from(next);
-    let bearing = Geodesic::bearing(current_point, next_point);
+    let bearing = Geodesic.bearing(current_point, next_point);
 
     match bias {
         LocationBias::None => (current, bearing),
@@ -445,7 +445,7 @@ mod tests {
             // The distance between each point in the simulation should be <= max_distance
             let current_point: Point = state.current_location.into();
             let next_point: Point = new_state.current_location.into();
-            let distance = Haversine::distance(current_point, next_point);
+            let distance = Haversine.distance(current_point, next_point);
             // I'm actually not 100% sure why this extra fudge is needed, but it's not a concern for today.
             assert!(
                 distance <= max_distance + 7.0,
@@ -455,7 +455,7 @@ mod tests {
             let snapped =
                 snap_user_location_to_line(new_state.current_location, &original_linestring);
             let snapped_point: Point = snapped.coordinates.into();
-            let distance = Haversine::distance(next_point, snapped_point);
+            let distance = Haversine.distance(next_point, snapped_point);
             assert!(
                 distance <= max_distance,
                 "Expected snapped point to be on the line; was {distance}m away"
@@ -510,7 +510,7 @@ mod tests {
 
         let original_point: Point = coordinates[0].into();
         let offset_point: Point = state.current_location.coordinates.into();
-        let distance = Haversine::distance(original_point, offset_point);
+        let distance = Haversine.distance(original_point, offset_point);
 
         assert!(
             (distance - expected_meters).abs() < 0.1,
@@ -542,7 +542,7 @@ mod tests {
 
         let first_point: Point = state.current_location.coordinates.into();
         let first_original: Point = coordinates[0].into();
-        let initial_distance = Haversine::distance(first_point, first_original);
+        let initial_distance = Haversine.distance(first_point, first_original);
 
         while let Some((next, _)) = state.remaining_locations.split_first() {
             let new_state = advance_location_simulation(&state);
@@ -552,7 +552,7 @@ mod tests {
 
             let current_point: Point = new_state.current_location.coordinates.into();
             let original_point: Point = (*next).into();
-            let distance = Haversine::distance(current_point, original_point);
+            let distance = Haversine.distance(current_point, original_point);
 
             assert!(
                 (distance - initial_distance).abs() < 0.1,

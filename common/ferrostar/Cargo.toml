@@ -29,7 +29,7 @@ wasm_js = [
 
 [dependencies]
 chrono = { version = "0.4.39", features = ["serde"] }
-geo = "0.29.3"
+geo = "0.30.0"
 polyline = "0.11.0"
 rand = "0.8.5"
 serde = { version = "1.0.218", features = ["derive"] }
