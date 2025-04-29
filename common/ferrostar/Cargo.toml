@@ -21,7 +21,7 @@ std = ["alloc", "serde_json/std", "proptest/std"]
 default = ["std", "uniffi"]
 wasm_js = [
     "std",
-    "getrandom/js",
+    "getrandom/wasm_js",
     "serde-wasm-bindgen",
     "wasm-bindgen",
     "web-time",
@@ -39,7 +39,7 @@ serde-wasm-bindgen = { version = "0.6.5", optional = true }
 thiserror = "2.0.11"
 uniffi = { workspace = true, optional = true }
 uuid = { version = "1.16.0", features = ["v4", "serde"] }
-getrandom = { version = "0.2.15", optional = true }
+getrandom = { version = "0.3.2", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
 tsify = { version = "0.4.5", default-features = false, features = ["js"] }
