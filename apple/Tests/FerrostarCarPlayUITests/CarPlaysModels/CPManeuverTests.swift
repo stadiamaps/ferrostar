@@ -36,7 +36,9 @@ struct CPManeuverTests {
         #expect(maneuver?.instructionVariants.first == "Maneuver instruction.")
 
         #expect(maneuver?.initialTravelEstimates?.distanceRemaining == meters)
-        #expect(maneuver?.initialTravelEstimates?.distanceRemainingToDisplay == meters)
+        if #available(iOS 17.4, *) {
+            #expect(maneuver?.initialTravelEstimates?.distanceRemainingToDisplay == meters)
+        }
         #expect(maneuver?.initialTravelEstimates?.timeRemaining == 10.0)
     }
 }
