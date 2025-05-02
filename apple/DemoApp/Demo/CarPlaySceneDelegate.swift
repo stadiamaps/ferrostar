@@ -19,10 +19,6 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
 
     private var carPlayManager: FerrostarCarPlayManager?
 
-    // In your implementation, you would like want to init with a cached camera from your normal
-    // MapView/NavigationMapView.
-    let sharedCamera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
-
     func scene(
         _: UIScene, willConnectTo _: UISceneSession,
         options _: UIScene.ConnectionOptions
@@ -65,8 +61,8 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
             ferrostarCore: ferrostarCore!,
             styleURL: AppDefaults.mapStyleURL,
             camera: Binding(
-                get: { self.sharedCamera.camera },
-                set: { self.sharedCamera.camera = $0 }
+                get: { self.appDelegate.appEnvironment.camera.camera },
+                set: { self.appDelegate.appEnvironment.camera.camera = $0 }
             )
         )
 
@@ -75,8 +71,8 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         carPlayManager = FerrostarCarPlayManager(
             ferrostarCore!,
             camera: Binding(
-                get: { self.sharedCamera.camera },
-                set: { self.sharedCamera.camera = $0 }
+                get: { self.appDelegate.appEnvironment.camera.camera },
+                set: { self.appDelegate.appEnvironment.camera.camera = $0 }
             ),
             distanceUnits: .default
             // TODO: We may need to hold the view or viewController here, but it seems
