@@ -62,11 +62,12 @@ fun NavigatingInnerGridView(
               // Nothing to draw here :)
             }
             is CameraControlState.ShowRecenter -> {
-              NavigationUIButton(onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
-                Icon(
-                  Icons.Filled.Navigation,
-                  contentDescription = stringResource(id = R.string.recenter))
-              }
+              NavigationUIButton(
+                  onClick = cameraControlState.updateCamera, buttonSize = buttonSize) {
+                    Icon(
+                        Icons.Filled.Navigation,
+                        contentDescription = stringResource(id = R.string.recenter))
+                  }
             }
             is CameraControlState.ShowRouteOverview -> {
               NavigationUIButton(
