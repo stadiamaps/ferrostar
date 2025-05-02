@@ -7,7 +7,6 @@ import OSLog
 import SwiftUI
 
 private extension Logger {
-    static let cpTemplateApplicationSceneDelegate = Logger(category: "CPTemplateApplicationSceneDelegate")
     static let cpMapTemplateDelegate = Logger(category: "CPMapTemplateDelegate")
 }
 
@@ -45,7 +44,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         didConnect interfaceController: CPInterfaceController,
         to _: CPWindow
     ) {
-        Logger.cpTemplateApplicationSceneDelegate.debug("\(#function)")
+        logger.debug("\(#function)")
         self.interfaceController = interfaceController
 
         // Create the map template
@@ -84,7 +83,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         didDisconnect _: CPInterfaceController,
         from _: CPWindow
     ) {
-        Logger.cpTemplateApplicationSceneDelegate.debug("\(#function)")
+        logger.debug("\(#function)")
         interfaceController = nil
         ferrostarAdapter = nil
     }
