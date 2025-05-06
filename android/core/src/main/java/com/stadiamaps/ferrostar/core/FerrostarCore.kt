@@ -38,6 +38,13 @@ data class NavigationState(
   companion object
 }
 
+fun NavigationState.isNavigating(): Boolean =
+    when (tripState) {
+      TripState.Complete,
+      TripState.Idle -> false
+      is TripState.Navigating -> true
+    }
+
 private val moshi: Moshi = Moshi.Builder().build()
 @OptIn(ExperimentalStdlibApi::class)
 private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<String, Any>>()
@@ -73,6 +80,15 @@ class FerrostarCore(
    * seconds).
    */
   var minimumTimeBeforeRecalculaton: Long = 5
+
+  /**
+   * The minimum distance (in meters) the user must move before performing another route
+   * recalculation.
+   *
+   * This ensures that, while the user remains off the route, we don't keep triggering useless
+   * recalculations.
+   */
+  var minimumMovementBeforeRecalculation = 50.0
 
   /**
    * Controls what happens when the user deviates from the route.
@@ -119,6 +135,8 @@ class FerrostarCore(
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
   private var _lastLocation: UserLocation? = null
+  // The last location from which we triggered a recalculation
+  private var _lastRecalculationLocation: UserLocation? = null
 
   private var _config: NavigationControllerConfig = navigationControllerConfig
 
@@ -213,15 +231,10 @@ class FerrostarCore(
    * @param route the route to navigate.
    * @param config change the configuration in the core before staring navigation. This was
    *   originally provided on init, but you can set a new value for future sessions.
-   * @return a view model tied to the navigation session. This can be ignored if you're injecting
-   *   the [NavigationViewModel]/[DefaultNavigationViewModel].
    * @throws UserLocationUnknown if the location provider has no last known location.
    */
   @Throws(UserLocationUnknown::class)
-  fun startNavigation(
-      route: Route,
-      config: NavigationControllerConfig? = null
-  ): DefaultNavigationViewModel {
+  fun startNavigation(route: Route, config: NavigationControllerConfig? = null) {
     stopNavigation()
 
     // Start the foreground notification service
@@ -247,8 +260,6 @@ class FerrostarCore(
     _state.value = newState
 
     locationProvider.addListener(this, _executor)
-
-    return DefaultNavigationViewModel(this, spokenInstructionObserver, locationProvider)
   }
 
   /**
@@ -273,6 +284,9 @@ class FerrostarCore(
     val startingLocation =
         locationProvider.lastLocation
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
+
+    _queuedUtteranceIds.clear()
+    spokenInstructionObserver?.stopAndClearQueue()
 
     _navigationController = controller
     _state.update {
@@ -299,14 +313,17 @@ class FerrostarCore(
     }
   }
 
-  fun stopNavigation() {
+  fun stopNavigation(stopLocationUpdates: Boolean = true) {
     foregroundServiceManager?.stopService()
-    locationProvider.removeListener(this)
+    if (stopLocationUpdates) {
+      locationProvider.removeListener(this)
+    }
     _navigationController?.destroy()
     _navigationController = null
     _state.value = NavigationState()
     _queuedUtteranceIds.clear()
     spokenInstructionObserver?.stopAndClearQueue()
+    _lastRecalculationLocation = null
   }
 
   /**
@@ -318,9 +335,15 @@ class FerrostarCore(
   private fun handleStateUpdate(newState: TripState, location: UserLocation) {
     if (newState is TripState.Navigating) {
       if (newState.deviation is RouteDeviation.OffRoute) {
-        if (!_routeRequestInFlight &&
+        if (!_routeRequestInFlight && // We can't have a request in flight already
             _lastAutomaticRecalculation?.let {
+              // Ensure a minimum cool down before a new route fetch
               System.nanoTime() - it > minimumTimeBeforeRecalculaton
+            } != false &&
+            _lastRecalculationLocation?.let {
+              // Don't recalculate again if the user hasn't moved much
+              it.toAndroidLocation().distanceTo(location.toAndroidLocation()) >
+                  minimumMovementBeforeRecalculation
             } != false) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
@@ -332,6 +355,7 @@ class FerrostarCore(
             }
             is CorrectiveAction.GetNewRoutes -> {
               isCalculatingNewRoute = true
+              _lastRecalculationLocation = location
               _scope.launch {
                 try {
                   val routes = getRoutes(location, action.waypoints)

@@ -68,7 +68,10 @@ pub enum ParsingError {
         feature = "std",
         error("Routing adapter returned an unexpected status code: {code}.")
     )]
-    InvalidStatusCode { code: String },
+    InvalidStatusCode {
+        code: String,
+        description: Option<String>,
+    },
     #[cfg_attr(
         feature = "std",
         error("An unknown error parsing a response was raised in foreign code.")

@@ -20,6 +20,7 @@
         - annotations: Optional<Array<String>>.none
         - distance: 1.0
         - duration: 0.0
+        - exits: 0 elements
         ▿ geometry: 2 elements
           ▿ GeographicCoordinate
             - lat: 0.0
@@ -27,6 +28,7 @@
           ▿ GeographicCoordinate
             - lat: 1.0
             - lng: 1.0
+        - incidents: 0 elements
         - instruction: "Sail straight"
         ▿ roadName: Optional<String>
           - some: "foo road"
@@ -34,6 +36,7 @@
         ▿ visualInstructions: 1 element
           ▿ VisualInstruction
             ▿ primaryContent: VisualInstructionContent
+              - exitNumbers: 0 elements
               - laneInfo: Optional<Array<LaneInfo>>.none
               ▿ maneuverModifier: Optional<ManeuverModifier>
                 - some: ManeuverModifier.straight

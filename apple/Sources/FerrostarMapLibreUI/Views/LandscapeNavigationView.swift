@@ -8,15 +8,15 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ``TripProgressView`` on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost,
-    CurrentRoadNameViewHost
+public struct LandscapeNavigationView: View,
+    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
 {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    public var currentRoadNameView: AnyView?
+    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -24,17 +24,22 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
-    public var topCenter: (() -> AnyView)?
-    public var topTrailing: (() -> AnyView)?
-    public var midLeading: (() -> AnyView)?
-    public var bottomLeading: (() -> AnyView)?
-    public var bottomTrailing: (() -> AnyView)?
-
     let isMuted: Bool
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets
+
+    // MARK: Configurable Views
+
+    public var topCenter: (() -> AnyView)?
+    public var topTrailing: (() -> AnyView)?
+    public var midLeading: (() -> AnyView)?
+    public var bottomTrailing: (() -> AnyView)?
+
+    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
+    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     /// Create a landscape navigation view. This view is optimized for display on a landscape screen where the
     /// instructions are on the leading half of the screen
@@ -72,7 +77,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
         userLayers = makeMapContent()
         _camera = camera
         self.navigationCamera = navigationCamera
-        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
+        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -88,12 +93,19 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(.landscape(within: geometry))
+                .navigationMapViewContentInset(
+                    calculatedMapViewInsets(for: geometry)
+                )
 
                 LandscapeNavigationOverlayView(
                     navigationState: navigationState,
                     speedLimit: speedLimit,
                     speedLimitStyle: speedLimitStyle,
+                    views: NavigationViewComponentBuilder(
+                        progressView: progressView,
+                        instructionsView: instructionsView,
+                        currentRoadNameView: currentRoadNameView
+                    ),
                     isMuted: isMuted,
                     showMute: true,
                     onMute: onTapMute,
@@ -105,8 +117,7 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     } : .showRecenter {
                         camera = navigationCamera
                     },
-                    onTapExit: onTapExit,
-                    currentRoadNameView: currentRoadNameView
+                    onTapExit: onTapExit
                 )
                 .innerGrid {
                     topCenter?()
@@ -114,12 +125,19 @@ public struct LandscapeNavigationView: View, CustomizableNavigatingInnerGridView
                     topTrailing?()
                 } midLeading: {
                     midLeading?()
-                } bottomLeading: {
-                    bottomLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
-                }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
+                }
+                .complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
+        }
+    }
+
+    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
+        if case .rect = camera.state {
+            .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+        } else {
+            mapInsets.landscape(geometry)
         }
     }
 }

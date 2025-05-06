@@ -1,21 +1,9 @@
 import SwiftUI
 
-public protocol CurrentRoadNameViewHost {
-    var currentRoadNameView: AnyView? { get set }
-}
-
-public extension CurrentRoadNameViewHost where Self: View {
-    func navigationCurrentRoadView(@ViewBuilder currentRoadNameViewBuilder: () -> some View) -> Self {
-        var newSelf = self
-        newSelf.currentRoadNameView = AnyView(currentRoadNameViewBuilder())
-        return newSelf
-    }
-}
-
 public struct CurrentRoadNameView: View {
     let currentRoadName: String?
     var theme: any RoadNameViewTheme = DefaultRoadNameViewTheme()
-    var padding: EdgeInsets = .init(top: 12, leading: 12, bottom: 12, trailing: 12)
+    var padding: EdgeInsets = .init(top: 6, leading: 12, bottom: 6, trailing: 12)
     var shape: AnyShape = .init(RoundedRectangle(cornerRadius: 48))
     var borderWidth: CGFloat = 2
 

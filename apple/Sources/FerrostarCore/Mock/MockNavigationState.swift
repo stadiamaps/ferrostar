@@ -52,6 +52,7 @@ public extension NavigationState {
                         distance: 100,
                         duration: 99,
                         roadName: "Jefferson St.",
+                        exits: [],
                         instruction: "Walk west on Jefferson St.",
                         visualInstructions: [
                             VisualInstruction(
@@ -60,7 +61,8 @@ public extension NavigationState {
                                     maneuverType: .turn,
                                     maneuverModifier: .left,
                                     roundaboutExitDegrees: nil,
-                                    laneInfo: nil
+                                    laneInfo: nil,
+                                    exitNumbers: []
                                 ),
                                 secondaryContent: nil,
                                 subContent: nil,
@@ -68,7 +70,8 @@ public extension NavigationState {
                             ),
                         ],
                         spokenInstructions: [],
-                        annotations: nil
+                        annotations: nil,
+                        incidents: []
                     ),
                 ],
                 remainingWaypoints: [],

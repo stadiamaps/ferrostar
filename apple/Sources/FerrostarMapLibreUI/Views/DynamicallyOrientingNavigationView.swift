@@ -7,8 +7,8 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost,
-    CurrentRoadNameViewHost
+public struct DynamicallyOrientingNavigationView: View,
+    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
 {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
@@ -17,7 +17,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    public var currentRoadNameView: AnyView?
+    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -25,17 +25,22 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
-    public var topCenter: (() -> AnyView)?
-    public var topTrailing: (() -> AnyView)?
-    public var midLeading: (() -> AnyView)?
-    public var bottomLeading: (() -> AnyView)?
-    public var bottomTrailing: (() -> AnyView)?
-
     let isMuted: Bool
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets
+
+    // MARK: Configurable Views
+
+    public var topCenter: (() -> AnyView)?
+    public var topTrailing: (() -> AnyView)?
+    public var midLeading: (() -> AnyView)?
+    public var bottomTrailing: (() -> AnyView)?
+
+    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
+    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portrait
     /// and landscape orientations.
@@ -73,8 +78,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
 
         _camera = camera
         self.navigationCamera = navigationCamera
-
-        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
+        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -90,10 +94,9 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(NavigationMapViewContentInsetMode(
-                    orientation: orientation,
-                    geometry: geometry
-                ))
+                .navigationMapViewContentInset(
+                    calculatedMapViewInsets(for: geometry)
+                )
 
                 switch orientation {
                 case .landscapeLeft, .landscapeRight:
@@ -101,6 +104,11 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         navigationState: navigationState,
                         speedLimit: speedLimit,
                         speedLimitStyle: speedLimitStyle,
+                        views: NavigationViewComponentBuilder(
+                            progressView: progressView,
+                            instructionsView: instructionsView,
+                            currentRoadNameView: currentRoadNameView
+                        ),
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
@@ -114,8 +122,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         } : .showRecenter { // TODO: Third case when not navigating!
                             camera = navigationCamera
                         },
-                        onTapExit: onTapExit,
-                        currentRoadNameView: currentRoadNameView
+                        onTapExit: onTapExit
                     )
                     .innerGrid {
                         topCenter?()
@@ -123,8 +130,6 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         topTrailing?()
                     } midLeading: {
                         midLeading?()
-                    } bottomLeading: {
-                        bottomLeading?()
                     } bottomTrailing: {
                         bottomTrailing?()
                     }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
@@ -133,6 +138,11 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         navigationState: navigationState,
                         speedLimit: speedLimit,
                         speedLimitStyle: speedLimitStyle,
+                        views: NavigationViewComponentBuilder(
+                            progressView: progressView,
+                            instructionsView: instructionsView,
+                            currentRoadNameView: currentRoadNameView
+                        ),
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
@@ -146,8 +156,7 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
                         } : .showRecenter { // TODO: Third case when not navigating!
                             camera = navigationCamera
                         },
-                        onTapExit: onTapExit,
-                        currentRoadNameView: currentRoadNameView
+                        onTapExit: onTapExit
                     )
                     .innerGrid {
                         topCenter?()
@@ -165,6 +174,14 @@ public struct DynamicallyOrientingNavigationView: View, CustomizableNavigatingIn
             NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
         ) { _ in
             orientation = UIDevice.current.orientation
+        }
+    }
+
+    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
+        if case .rect = camera.state {
+            .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+        } else {
+            mapInsets.dynamic(orientation)(geometry)
         }
     }
 }

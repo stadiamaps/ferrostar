@@ -195,6 +195,8 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
     }
 
     private func updateLocation() async throws {
+        var pendingCompletion = false
+
         while isUpdating {
             // Exit if the task has been cancelled.
             try Task.checkCancellation()
@@ -213,8 +215,12 @@ public class SimulatedLocationProvider: LocationProviding, ObservableObject {
 
             // Stop if the route has been fully simulated (no state change).
             if initialState == updatedState {
-                stopUpdating()
-                return
+                if pendingCompletion {
+                    stopUpdating()
+                    return
+                } else {
+                    pendingCompletion = true
+                }
             }
 
             // Bump the last location.

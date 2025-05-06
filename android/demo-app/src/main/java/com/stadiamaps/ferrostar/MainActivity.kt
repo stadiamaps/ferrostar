@@ -7,11 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import com.stadiamaps.ferrostar.core.AndroidTtsStatusListener
 import com.stadiamaps.ferrostar.ui.theme.FerrostarTheme
 import java.util.Locale
+import uniffi.ferrostar.createFerrostarLogger
 
 class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
   companion object {
@@ -23,6 +22,13 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
 
     // Don't forget to clean up!
     AppModule.ttsObserver.shutdown()
+  }
+
+  override fun onStart() {
+    super.onStart()
+
+    // Start the TTS engine. This ensures that after onDestroy, a new instance is created.
+    AppModule.ttsObserver.start()
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +52,9 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
     //    AppModule.locationProvider.lastLocation = initialSimulatedLocation
     //    AppModule.locationProvider.warpFactor = 2u
 
+    // Setup the global Ferrostar logger
+    createFerrostarLogger()
+
     // Edge to edge (this will be default in Android 15)
     // See https://developer.android.com/codelabs/edge-to-edge#0
     // How to: https://developer.android.com/develop/ui/compose/layouts/insets#insets-setup
@@ -68,7 +77,7 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
   override fun onTtsInitialized(tts: TextToSpeech?, status: Int) {
     // Set this up as appropriate for your app
     if (tts != null) {
-      tts.setLanguage(Locale.US)
+      tts.language = Locale.US
       android.util.Log.i(TAG, "setLanguage status: $status")
     } else {
       android.util.Log.e(TAG, "TTS setup failed! $status")
@@ -78,5 +87,10 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
   override fun onTtsSpeakError(utteranceId: String, status: Int) {
     android.util.Log.e(
         TAG, "Something went wrong synthesizing utterance $utteranceId. Status code: $status.")
+  }
+
+  override fun onTtsShutdownAndRelease() {
+    android.util.Log.i(
+        TAG, "TTS shutdown and release. After this point you must call start() again.")
   }
 }

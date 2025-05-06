@@ -8,7 +8,7 @@ on:
 
 jobs:
   format-lint:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-swiftformat
       cancel-in-progress: true
@@ -24,7 +24,7 @@ jobs:
       run: swiftformat . --lint
       
   build-ferrostar:
-    runs-on: macos-14
+    runs-on: macos-15
     permissions:
       contents: write  # To auto-commit Package.swift and binding changes
     
@@ -37,7 +37,11 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
-      run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
+      run: |
+        if grep -q 'let useLocalFramework = true' Package.swift || grep -q 'let useLocalMapLibreSwiftUIDSL = true' Package.swift; then
+          echo "Error: Package.swift is configured for local development. Please set the flags to false."
+          exit 1
+        fi
 
     - name: Commit changed files (it is easy to forget useLocalFramework in Package.swift)
       uses: stefanzweifel/git-auto-commit-action@v5
@@ -55,10 +59,12 @@ jobs:
     - name: Ensure that Package.swift is NOT configured for local development at this stage (easy to forget)
       run: sed -i '' 's/let useLocalFramework = true/let useLocalFramework = false/' Package.swift
 
-    - name: Commit changed files (it is easy to forget about ferrostar.swift)
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        file_pattern: 'apple/Sources/UniFFI/*'
+    - name: Detect changed files (it is easy to forget about ferrostar.swift)
+      run: |
+        if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
+          echo "Dirty files detected"
+          exit 1
+        fi
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
@@ -68,7 +74,7 @@ jobs:
         retention-days: 5
 
   build-demo:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-build-demo
       cancel-in-progress: true
@@ -119,7 +125,7 @@ jobs:
         retention-days: 5
 
   test:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-test
       cancel-in-progress: true
@@ -131,7 +137,7 @@ jobs:
         ]
         destination: [
           # TODO: Add more destinations
-          'platform=iOS Simulator,name=iPhone 15,OS=17.2'
+          'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.1'
         ]
 
     steps:

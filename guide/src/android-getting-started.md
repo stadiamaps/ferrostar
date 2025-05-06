@@ -7,12 +7,14 @@ We'll cover the "batteries included" approach, but flag areas for customization 
 
 ### Add dependencies
 
+Let’s get started with Gradle setup.
+Replace `X.Y.Z` with the latest [release version](https://central.sonatype.com/namespace/com.stadiamaps.ferrostar).
+
 #### `build.gradle` with explicit version strings
 
 If you’re using the classic `build.gradle`
 with `implementation` strings using hard-coded versions,
 here’s how to set things up.
-Replace `X.Y.Z` with the latest [release version](https://github.com/orgs/stadiamaps/packages?repo_name=ferrostar).
 
 ```groovy
 dependencies {
@@ -22,6 +24,7 @@ dependencies {
     def ferrostarVersion = 'X.Y.Z'
     implementation "com.stadiamaps.ferrostar:core:${ferrostarVersion}"
     implementation "com.stadiamaps.ferrostar:maplibreui:${ferrostarVersion}"
+    implementation "com.stadiamaps.ferrostar:composeui:${ferrostarVersion}"
 
     // Optional - if using Google Play Service's FusedLocation
     implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"
@@ -87,7 +90,7 @@ the `registerForActivityResult` has what you need.
 
 In either case, you’ll want to review [Google’s documentation](https://developer.android.com/develop/sensors-and-location/location/permissions#kotlin).
 
-### Ensuring updates when the app loses focus
+<div class="warning">
 
 Note that Ferrostar does *not* require “background” location access!
 This may be confusing if you’re new to mobile development.
@@ -95,6 +98,8 @@ On Android, we can use something called a *foreground service*
 which lets us keep getting location updates even when the app isn’t front and center.
 This is such a detailed topic that it gets its own page!
 Learn about [Foreground Service](./android-foreground-service.md) configuration here.
+
+</div>
 
 ### Location providers
 
@@ -108,50 +113,50 @@ and (if simulating a route) set the location manually or enter a simulated route
 Similar to the Android location APIs you may already know,
 you can add or remove listeners which will receive updates.
 
+
+#### Google Play Fused Location Client
+
+If your app uses Google Play Services,
+you can use the `FusedLocationProvider`
+This normally offers better device positioning than the default Android location provider
+on supported devices.
+To make use of it,
+you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`
+in your Gradle dependencies block.
+
+You can initialize the provider like so.
+In an `Activity`, the context is simply `this`.
+In other cases, get a context using an appropriate method.
+
+```kotlin
+locationProvider = FusedLocationProvider(context = this)
+```
+
 #### `AndroidSystemLocationProvider`
 
 The `AndroidSystemLocationProvider` uses the location provider
 from the Android open-source project.
-This is not as good as the proprietary Google fused location client,
-but it is the most compatible option
-as it will run even on “un-Googled” phones
-and can be used in apps distributed on F-Droid.
 
-Initializing this provider requires an Android `Context`,
-so you probably need to declare it as a `lateinit var` instance variable.
+<div class="warning">
 
-```kotlin
-private lateinit var locationProvider: AndroidSystemLocationProvider
-```
+This is not as good as the proprietary Google fused location client.
+You can generally expect significantly worse raw positioning,
+but you may need this in a couple scenarios:
 
-You can initialize it like so.
+1. You need to run on *any* Android phone, including ones without Google Play Services.
+2. You want to distribute your app on F-Droid, which requires all apps use open-source software.
+3. You’re doing something really low level and need the raw positioning info from specific sensors.
+
+Otherwise, you’re probably better off using the Fused Location Client from Google.
+
+</div>
+
+You can initialize the provider like so.
 In an `Activity`, the context is simply `this`.
 In other cases, get a context using an appropriate method.
 
 ```kotlin
 locationProvider = AndroidSystemLocationProvider(context = this)
-```
-
-#### Google Play Fused Location Client
-
-Alternatively, you can use the `FusedLocationProvider`
-if your app uses Google Play Services.
-This normally offers better device positioning than the default Android location provider
-on supported devices.
-To make use of it, 
-you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`
-in your Gradle dependencies block.
-
-Just as with the `AndroidSystemLocationProvider`,
-you probably need to declare it as a `lateinit var` instance variable first,
-and then initialize later once the `Context` is available.
-
-```kotlin
-// Instance variable definition
-private lateinit var locationProvider: FusedLocationProvider
-
-// Later when the activity loads and a context is available
-locationProvider = FusedLocationProvider(context = this)
 ```
 
 #### `SimulatedLocationProvider`
@@ -202,6 +207,14 @@ private val httpClient = OkHttpClient.Builder()
     .build()
 ```
 
+### (Optional) Configure annotation parsing
+
+Want to get speed limit information?
+Or have your own live traffic layers?
+Annotations provide a way to bring this information into your routes.
+We support some standard ones out of the box.
+Check out the chapter on [annotations](annotations.md) for details.
+
 ## Configure the `FerrostarCore` instance
 
 We now have all the pieces we need to set up a `FerrostarCore` instance!
@@ -215,24 +228,58 @@ private val core =
           profile = "bicycle",
           httpClient = httpClient,
           locationProvider = locationProvider,
-          foregroundServiceManager = foregroundServiceManager
+          foregroundServiceManager = foregroundServiceManager,
+          navigationControllerConfig =
+              NavigationControllerConfig(
+                  WaypointAdvanceMode.WaypointWithinRange(100.0),
+                  StepAdvanceMode.RelativeLineStringDistance(
+                      minimumHorizontalAccuracy = 25U,
+                      specialAdvanceConditions =
+                          // NOTE: We have not yet put this threshold through extensive real-world
+                          // testing
+                          SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
+                  RouteDeviationTracking.StaticThreshold(15U, 50.0),
+                  CourseFiltering.SNAP_TO_ROUTE)
       )
 ```
 
 `FerrostarCore` exposes a number of convenience constructors for common cases,
-such as using a Valhalla [Route Provider](./route-providers.md#bundled-support).
+such as using a Valhalla [Route Provider](./route-providers.md#bundled-support),
+and automatically subscribes to location updates from the `LocationProvider`.
 
-`FerrostarCore` automatically subscribes to location updates from the `LocationProvider`.
+There are a LOT of options, but don’t worry; everything is documented.
+Check out the [Navigation Behavior](configuring-the-navigation-controller.md)
+customization chapter for details.
 
 ## Set up voice guidance
 
-Ferrostar is able to process spoken instructions generated from some routing engines.
-The `com.stadiamaps.ferrostar.core.SpokenInstructionObserver` interface
-specifies how to create your own observer.
-A reference implementation is provided in the `AndroidTtsObserver` class,
+If your routes include spoken instructions,
+Ferrostar can trigger the speech synthesis at the right time.
+Ferrostar includes the `AndroidTtsObserver` class,
 which uses the text-to-speech engine built into Android.
-PRs welcome for other popular services (ex: Amazon Polly;
-note that some APIs also provide SSML instructions which work great with this!).
+
+The `AndroidTtsObserver` follows lifecycle recommendations from the Android documentation,
+[TextToSpeech shutdown behavior](https://developer.android.com/reference/android/speech/tts/TextToSpeech#shutdown()).
+This design means your activity should call `shutdown` on the observer in the `onDestroy` method and start it again
+in `onStart` if you want to continue using it. If the instance is shut down and not started again, you will not have spoken instructions.
+
+```kotlin
+override fun onStart() {
+    super.onStart()
+    ttsObserver.start()
+}
+
+override fun onDestroy() {
+    super.onDestroy()
+    ttsObserver.shutdown()
+}
+```
+
+You can also use your own implementation,
+such as a local AI model or cloud service like Amazon Polly.
+The `com.stadiamaps.ferrostar.core.SpokenInstructionObserver` interface
+specifies the required API.
+PRs welcome to add other publicly accessible speech API implementations.
 
 **TODO documentation:**
 
@@ -280,15 +327,10 @@ var navigationViewModel by remember { mutableStateOf<NavigationViewModel?>(null)
 And then use it to store the result of your `startNavigation` invocation:
 
 ```kotlin
-navigationViewModel =
-    core.startNavigation(
-        route = route,
-        config =
-        NavigationControllerConfig(
-            StepAdvanceMode.RelativeLineStringDistance(
-                minimumHorizontalAccuracy = 25U, automaticAdvanceDistance = 10U),
-            RouteDeviationTracking.StaticThreshold(25U, 10.0)),
-    )
+core.startNavigation(
+    route = route
+    // NOTE: You can also change your config here with an optional config parameter!
+)
 ```
 
 Finally, If you’re simulating route progress
@@ -301,30 +343,24 @@ locationProvider.setSimulatedRoute(route)
 
 ## Using the `DynamicallyOrientingNavigationView`
 
-We’re finally ready to turn that view model into a beautiful navigation map!
-It’s really as simple as creating a `DynamicallyOrientingNavigationView` with the view model.
+We’re finally ready to put this together into a beautiful navigation map!
+`FerrostarCore` exposes a state flow,
+which you can incorporate into your own view model,
+which must implement the `NavigationViewModel` interface.
+See the `DemoNavigationViewModel` for an example of what a view model might look like.
+
 Here’s an example:
 
 ```kotlin
- val viewModel = navigationViewModel
- if (viewModel != null) {
-     // You can get a free Stadia Maps API key at https://client.stadiamaps.com.
-     // See https://stadiamaps.github.io/ferrostar/vendors.html for additional vendors
-     DynamicallyOrientingNavigationView(
-         styleUrl =
-         "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey",
-         viewModel = viewModel) { uiState ->
-         // You can add your own overlays here!
-         // See https://github.com/Rallista/maplibre-compose-playground
-     }
- } else {
-     // Loading indicator
-     Column(
-         verticalArrangement = Arrangement.Center,
-         horizontalAlignment = Alignment.CenterHorizontally) {
-         Text(text = "Calculating route...")
-         CircularProgressIndicator(modifier = Modifier.width(64.dp))
-     }
+ // You can get a free Stadia Maps API key at https://client.stadiamaps.com.
+ // See https://stadiamaps.github.io/ferrostar/vendors.html for additional vendors
+ DynamicallyOrientingNavigationView(
+     styleUrl =
+     "https://tiles.stadiamaps.com/styles/outdoors.json?api_key=$stadiaApiKey",
+     viewModel = viewModel) { uiState ->
+     // You can add your own overlays here!
+     // See the DemoNavigationScene or https://github.com/Rallista/maplibre-compose-playground
+     // for some examples.
  }
 ```
 
@@ -334,7 +370,8 @@ Here’s an example:
 
 ## Demo app
 
-We've put together a minimal [demo app](https://github.com/stadiamaps/ferrostar/tree/main/android/demo-app) with an example integration.
+We've put together a minimal [demo app](https://github.com/stadiamaps/ferrostar/tree/main/android/demo-app)
+to show how to integrate Ferrostar into your Android app.
 
 ## Going deeper
 

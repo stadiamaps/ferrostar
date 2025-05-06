@@ -1,7 +1,42 @@
 use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoint, WaypointKind};
+use crate::routing_adapters::{osrm::OsrmResponseParser, RouteResponseParser};
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
-use geo::{line_string, BoundingRect, Haversine, Length, LineString, Point};
+use geo::{point, BoundingRect, Distance, Haversine, LineString, Point};
+
+// A longer + more complex route
+const VALHALLA_EXTENDED_OSRM_RESPONSE: &str =
+    include_str!("fixtures/valhalla_extended_osrm_response.json");
+
+// A self-intersecting route
+const VALHALLA_SELF_INTERSECTING_OSRM_RESPONSE: &str =
+    include_str!("fixtures/valhalla_self_intersecting_osrm_response.json");
+
+/// Gets a longer + more complex route.
+///
+/// The accuracy of each parser is tested separately in the routing_adapters module;
+/// this function simply returns a route for an extended test of the state machine.
+pub fn get_extended_route() -> Route {
+    let parser = OsrmResponseParser::new(6);
+    parser
+        .parse_response(VALHALLA_EXTENDED_OSRM_RESPONSE.into())
+        .expect("Unable to parse OSRM response")
+        .pop()
+        .expect("Expected at least one route")
+}
+
+/// Gets a self-intersecting route.
+///
+/// The accuracy of each parser is tested separately in the routing_adapters module;
+/// this function simply returns a route for an extended test of the state machine.
+pub fn get_self_intersecting_route() -> Route {
+    let parser = OsrmResponseParser::new(6);
+    parser
+        .parse_response(VALHALLA_SELF_INTERSECTING_OSRM_RESPONSE.into())
+        .expect("Unable to parse OSRM response")
+        .pop()
+        .expect("Expected at least one route")
+}
 
 pub fn gen_dummy_route_step(
     start_lng: f64,
@@ -20,17 +55,18 @@ pub fn gen_dummy_route_step(
                 lat: end_lat,
             },
         ],
-        distance: line_string![
-            (x: start_lng, y: start_lat),
-            (x: end_lng, y: end_lat)
-        ]
-        .length::<Haversine>(),
+        distance: Haversine.distance(
+            point!(x: start_lng, y: start_lat),
+            point!(x: end_lng, y: end_lat),
+        ),
         duration: 0.0,
         road_name: None,
+        exits: vec![],
         instruction: "".to_string(),
         visual_instructions: vec![],
         spoken_instructions: vec![],
         annotations: None,
+        incidents: vec![],
     }
 }
 

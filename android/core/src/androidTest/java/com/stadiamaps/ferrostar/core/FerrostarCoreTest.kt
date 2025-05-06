@@ -31,11 +31,13 @@ import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.RouteRequestGenerator
 import uniffi.ferrostar.RouteResponseParser
 import uniffi.ferrostar.RouteStep
+import uniffi.ferrostar.SpecialAdvanceConditions
 import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 import uniffi.ferrostar.VisualInstructionContent
 import uniffi.ferrostar.Waypoint
+import uniffi.ferrostar.WaypointAdvanceMode
 import uniffi.ferrostar.WaypointKind
 
 private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
@@ -99,7 +101,8 @@ class FerrostarCoreTest {
           maneuverType = ManeuverType.DEPART,
           maneuverModifier = ManeuverModifier.STRAIGHT,
           roundaboutExitDegrees = null,
-          laneInfo = null)
+          laneInfo = null,
+          exitNumbers = emptyList())
   private val mockRoute =
       Route(
           geometry = mockGeom,
@@ -112,6 +115,7 @@ class FerrostarCoreTest {
                       geometry = mockGeom,
                       distance = 1.0,
                       roadName = "foo road",
+                      exits = listOf(),
                       instruction = "Sail straight",
                       visualInstructions =
                           listOf(
@@ -122,7 +126,8 @@ class FerrostarCoreTest {
                                   triggerDistanceBeforeManeuver = 42.0)),
                       spokenInstructions = listOf(),
                       duration = 0.0,
-                      annotations = null)))
+                      annotations = null,
+                      incidents = listOf())))
 
   @Test
   fun test401UnauthorizedRouteResponse() = runTest {
@@ -144,7 +149,10 @@ class FerrostarCoreTest {
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(
-                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
+                    WaypointAdvanceMode.WaypointWithinRange(100.0),
+                    StepAdvanceMode.Manual,
+                    RouteDeviationTracking.None,
+                    CourseFiltering.RAW))
 
     try {
       // Tests that the core generates a request and attempts to process it, but throws due to the
@@ -192,7 +200,10 @@ class FerrostarCoreTest {
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(
-                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
+                    WaypointAdvanceMode.WaypointWithinRange(100.0),
+                    StepAdvanceMode.Manual,
+                    RouteDeviationTracking.None,
+                    CourseFiltering.RAW))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -235,7 +246,10 @@ class FerrostarCoreTest {
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(
-                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
+                    WaypointAdvanceMode.WaypointWithinRange(100.0),
+                    StepAdvanceMode.Manual,
+                    RouteDeviationTracking.None,
+                    CourseFiltering.RAW))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -286,7 +300,10 @@ class FerrostarCoreTest {
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(
-                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
+                    WaypointAdvanceMode.WaypointWithinRange(100.0),
+                    StepAdvanceMode.Manual,
+                    RouteDeviationTracking.None,
+                    CourseFiltering.RAW))
     val routes =
         core.getRoutes(
             initialLocation =
@@ -357,7 +374,10 @@ class FerrostarCoreTest {
             foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =
                 NavigationControllerConfig(
-                    StepAdvanceMode.Manual, RouteDeviationTracking.None, CourseFiltering.RAW))
+                    WaypointAdvanceMode.WaypointWithinRange(100.0),
+                    StepAdvanceMode.Manual,
+                    RouteDeviationTracking.None,
+                    CourseFiltering.RAW))
 
     val deviationHandler = DeviationHandler()
     core.deviationHandler = deviationHandler
@@ -394,7 +414,12 @@ class FerrostarCoreTest {
     core.startNavigation(
         routes.first(),
         NavigationControllerConfig(
-            stepAdvance = StepAdvanceMode.RelativeLineStringDistance(16U, 16U),
+            WaypointAdvanceMode.WaypointWithinRange(100.0),
+            stepAdvance =
+                StepAdvanceMode.RelativeLineStringDistance(
+                    16U,
+                    specialAdvanceConditions =
+                        SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(16U)),
             routeDeviationTracking =
                 RouteDeviationTracking.Custom(
                     detector =

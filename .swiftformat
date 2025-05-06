@@ -2,6 +2,7 @@
 
 --exclude apple/.build
 --exclude apple/DemoApp/.build
+--exclude apple/Sources/UniFFI/ferrostar.swift
 
 # format options
 

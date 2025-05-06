@@ -87,7 +87,7 @@ public struct InstructionsView: View {
                 maneuverType: visualInstruction.primaryContent.maneuverType,
                 maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
                 distanceFormatter: distanceFormatter,
-                distanceToNextManeuver: step.distance == 0 ? nil : step.distance,
+                distanceToNextManeuver: step.distance,
                 theme: primaryRowTheme
             )
             .font(.title2.bold())
@@ -106,7 +106,7 @@ public struct InstructionsView: View {
                         maneuverType: visualInstruction.primaryContent.maneuverType,
                         maneuverModifier: visualInstruction.primaryContent.maneuverModifier,
                         distanceFormatter: distanceFormatter,
-                        distanceToNextManeuver: distanceToNextManeuver == 0 ? nil : distanceToNextManeuver,
+                        distanceToNextManeuver: distanceToNextManeuver,
                         theme: primaryRowTheme
                     )
                     .font(.title2.bold())
@@ -157,14 +157,16 @@ public struct InstructionsView: View {
                     maneuverType: .turn,
                     maneuverModifier: .right,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 secondaryContent: VisualInstructionContent(
                     text: "Merge onto Hwy 123",
                     maneuverType: .merge,
                     maneuverModifier: .right,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 subContent: nil,
                 triggerDistanceBeforeManeuver: 123
@@ -178,7 +180,8 @@ public struct InstructionsView: View {
                     maneuverType: .rotary,
                     maneuverModifier: .slightRight,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 secondaryContent: nil,
                 subContent: nil,
@@ -193,7 +196,8 @@ public struct InstructionsView: View {
                     maneuverType: .merge,
                     maneuverModifier: .slightLeft,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 secondaryContent: nil,
                 subContent: nil,
@@ -210,14 +214,16 @@ public struct InstructionsView: View {
                     maneuverType: .turn,
                     maneuverModifier: .right,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 secondaryContent: VisualInstructionContent(
                     text: "Merge onto Hwy 123",
                     maneuverType: .merge,
                     maneuverModifier: .right,
                     roundaboutExitDegrees: nil,
-                    laneInfo: nil
+                    laneInfo: nil,
+                    exitNumbers: []
                 ),
                 subContent: nil,
                 triggerDistanceBeforeManeuver: 123

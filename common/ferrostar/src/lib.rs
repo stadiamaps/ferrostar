@@ -23,6 +23,9 @@
 #[cfg(feature = "alloc")]
 extern crate alloc;
 
+#[cfg(target_os = "android")]
+use android_logger::{Config, FilterBuilder};
+
 pub mod algorithms;
 pub mod deviation_detection;
 pub mod models;
@@ -30,22 +33,47 @@ pub mod navigation_controller;
 pub mod routing_adapters;
 pub mod simulation;
 
+#[cfg(target_os = "android")]
+fn init_logger() {
+    android_logger::init_once(
+        Config::default()
+            .with_max_level(log::LevelFilter::Trace)
+            .with_tag("ferrostar.core"),
+    );
+    log::info!("Ferrostar android logger initialized");
+}
+
+#[cfg(not(target_os = "android"))]
+fn init_logger() {
+    // Add fallback logging initialization for non-Android platforms
+}
+
 #[cfg(feature = "uniffi")]
-use models::Route;
+#[uniffi::export]
+pub fn create_ferrostar_logger() {
+    init_logger();
+}
+
 #[cfg(feature = "uniffi")]
-use routing_adapters::{
-    error::{InstantiationError, ParsingError},
-    osrm::{
-        models::{Route as OsrmRoute, Waypoint as OsrmWaypoint},
-        OsrmResponseParser,
-    },
-    valhalla::ValhallaHttpRequestGenerator,
-    RouteRequestGenerator, RouteResponseParser,
-};
+mod uniffi_deps {
+    pub use crate::models::{Route, Waypoint};
+    pub use crate::routing_adapters::{
+        error::{InstantiationError, ParsingError},
+        osrm::{
+            models::{Route as OsrmRoute, Waypoint as OsrmWaypoint},
+            OsrmResponseParser,
+        },
+        valhalla::ValhallaHttpRequestGenerator,
+        RouteRequestGenerator, RouteResponseParser,
+    };
+    pub use chrono::{DateTime, Utc};
+    pub use std::{str::FromStr, sync::Arc};
+    pub use uniffi::deps::anyhow::anyhow;
+    pub use uuid::Uuid;
+}
 #[cfg(feature = "uniffi")]
-use std::{str::FromStr, sync::Arc};
-#[cfg(feature = "uniffi")]
-use uuid::Uuid;
+#[allow(clippy::wildcard_imports)]
+use uniffi_deps::*;
 
 #[cfg(feature = "uniffi")]
 uniffi::setup_scaffolding!();
@@ -63,6 +91,26 @@ impl UniffiCustomTypeConverter for Uuid {
 
     fn from_custom(obj: Self) -> Self::Builtin {
         obj.to_string()
+    }
+}
+
+// Silliness to keep the macro happy; TODO: open a ticket
+#[cfg(feature = "uniffi")]
+type UtcDateTime = DateTime<Utc>;
+
+#[cfg(feature = "uniffi")]
+uniffi::custom_type!(UtcDateTime, i64);
+
+#[cfg(feature = "uniffi")]
+impl UniffiCustomTypeConverter for DateTime<Utc> {
+    type Builtin = i64;
+
+    fn into_custom(val: Self::Builtin) -> uniffi::Result<Self> {
+        Self::from_timestamp_millis(val).ok_or(anyhow!("Timestamp {val} out of range"))
+    }
+
+    fn from_custom(obj: Self) -> Self::Builtin {
+        obj.timestamp_millis()
     }
 }
 
@@ -120,4 +168,20 @@ fn create_route_from_osrm(
     let route: OsrmRoute = serde_json::from_slice(route_data)?;
     let waypoints: Vec<OsrmWaypoint> = serde_json::from_slice(waypoint_data)?;
     Route::from_osrm(&route, &waypoints, polyline_precision)
+}
+
+/// Creates a [`Route`] from OSRM route data and ferrostar waypoints.
+///
+/// This uses the same logic as the [`OsrmResponseParser`] and is designed to be fairly flexible,
+/// supporting both vanilla OSRM and enhanced Valhalla (ex: from Stadia Maps and Mapbox) outputs
+/// which contain richer information like banners and voice instructions for navigation.
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+fn create_route_from_osrm_route(
+    route_data: &[u8],
+    waypoints: &[Waypoint],
+    polyline_precision: u32,
+) -> Result<Route, ParsingError> {
+    let route: OsrmRoute = serde_json::from_slice(route_data)?;
+    Route::from_osrm_with_standard_waypoints(&route, waypoints, polyline_precision)
 }

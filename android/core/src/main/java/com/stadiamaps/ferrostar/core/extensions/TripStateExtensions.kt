@@ -60,3 +60,40 @@ fun TripState.currentRoadName() =
       is TripState.Complete,
       TripState.Idle -> null
     }
+
+/**
+ * Get the current step geometry index - closest coordinate to the user's snapped location This
+ * index is relative to the *current* [`RouteStep`]'s geometry.
+ *
+ * @return The current step geometry index (if available and navigating).
+ */
+fun TripState.currentStepGeometryIndex() =
+    when (this) {
+      is TripState.Navigating -> this.currentStepGeometryIndex?.toInt()
+      is TripState.Complete,
+      TripState.Idle -> null
+    }
+
+/**
+ * Get the remaining steps (including the current) in the current trip.
+ *
+ * @return The list of remaining steps (if any).
+ */
+fun TripState.remainingSteps() =
+    when (this) {
+      is TripState.Navigating -> this.remainingSteps
+      is TripState.Complete,
+      TripState.Idle -> null
+    }
+
+/**
+ * Get the remaining waypoints (starting at the *next* waypoint "goal") in the current trip.
+ *
+ * @return The list of remaining waypoints (if any).
+ */
+fun TripState.remainingWaypoints() =
+    when (this) {
+      is TripState.Navigating -> this.remainingWaypoints
+      is TripState.Complete,
+      TripState.Idle -> null
+    }

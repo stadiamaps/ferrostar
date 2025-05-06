@@ -12,7 +12,7 @@ env:
 
 jobs:
   msrv:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-rust-msrv
       cancel-in-progress: true
@@ -27,7 +27,7 @@ jobs:
         working-directory: common
 
   semver-checks:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-rust-semver
       cancel-in-progress: true
@@ -41,7 +41,7 @@ jobs:
           feature-group: default-features
 
   rustfmt:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-rust-rustfmt
       cancel-in-progress: true
@@ -53,7 +53,7 @@ jobs:
         working-directory: common
 
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-rust-build
       cancel-in-progress: true

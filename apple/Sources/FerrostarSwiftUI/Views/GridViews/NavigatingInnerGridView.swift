@@ -120,8 +120,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
                 }
 
                 if showMute {
-                    MuteUIButton(isMuted: isMuted, action: onMute)
-                        .shadow(radius: 8)
+                    NavigationUIMuteButton(isMuted: isMuted, action: onMute)
                 }
             },
             midLeading: { midLeading?() },
@@ -132,7 +131,6 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             midTrailing: {
                 if showZoom {
                     NavigationUIZoomButton(onZoomIn: onZoomIn, onZoomOut: onZoomOut)
-                        .shadow(radius: 8)
                 } else {
                     Spacer()
                 }

@@ -12,7 +12,7 @@ env:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-wasm-build
       cancel-in-progress: true
@@ -33,6 +33,9 @@ jobs:
         working-directory: web
 
       - run: npm run build
+        working-directory: web
+
+      - run: npm run build:site
         working-directory: web
 
       - name: WASM unit tests

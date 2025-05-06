@@ -54,9 +54,13 @@ It will automatically request permissions for you as part of initialization.
 @StateObject private var locationProvider = CoreLocationProvider(activityType: .otherNavigation, allowBackgroundLocationUpdates: true)
 ```
 
-NOTE: If you want to access the user’s location while the app is in the background,
+<div class="warning">
+
+If you want to access the user’s location while the app is in the background,
 you need to declare the location updates background mode in your `Info.plist`.
 You can find more details [in the Apple documentation](https://developer.apple.com/documentation/corelocation/handling-location-updates-in-the-background).
+
+</div>
 
 #### `SimulatedLocationProvider`
 
@@ -99,6 +103,43 @@ For limited testing, FOSSGIS maintains a public server with the URL `https://val
 For production use, you’ll need another solution like a [commercial vendor](./vendors.md)
 or self-hosting.
 
+### Set up Voice Guidance
+
+If your routes include spoken instructions,
+Ferrostar can trigger the speech synthesis at the right time.
+Ferrostar includes the `SpokenInstructionObserver` class, 
+which can use `AVSpeechSynthesizer` or your own speech synthesis.
+
+The `SpeechSynthesizer` protocol
+specifies the required interface,
+and you can build your own implementation on this,
+such as a local AI model or cloud service like Amazon Polly.
+PRs welcome to add other publicly accessible speech API implementations.
+
+Your navigation view can store the spoken instruction observer as an instance variable:
+
+```swift
+@State private var spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer()
+```
+
+Then, you'll need to configure `FerrostarCore` to use it.
+
+```swift
+ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
+```
+
+Finally, you can use this to drive state on navigation view.
+`DynamicallyOrientingNavigationView` has constructor arguments to configure the mute button UI.
+See the demo app for an example.
+
+### (Optional) Configure annotation parsing
+
+Want to get speed limit information?
+Or have your own live traffic layers?
+Annotations provide a way to bring this information into your routes.
+We support some standard ones out of the box.
+Check out the chapter on [annotations](annotations.md) for details.
+
 ## Getting a route
 
 Before getting routes, you’ll need the user’s current location.
@@ -128,7 +169,8 @@ Task {
 Once you or the user has selected a route, it’s time to start navigating!
 
 ```swift
-try ferrostarCore.startNavigation(route: route, config: SwiftNavigationControllerConfig(stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 32, automaticAdvanceDistance: 10), routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 25)))
+// NOTE: You can also change your config here with an optional config parameter!
+try ferrostarCore.startNavigation(route: route)
 ```
 
 From this point, `FerrostarCore` automatically starts the `LocationProvider` updates,

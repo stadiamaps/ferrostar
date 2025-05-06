@@ -12,8 +12,6 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-build
       cancel-in-progress: true
-    permissions:
-      contents: write  # To auto-commit ktfmtFormat changes
 
     steps:
     - uses: actions/checkout@v4
@@ -39,20 +37,14 @@ jobs:
       working-directory: android
 
     - name: Run ktfmtFormat
-      run: ./gradlew ktfmtFormat
+      run: ./gradlew ktfmtCheck
       working-directory: android
-
-    - name: Commit changed Kotlin source (it is easy to forget ktfmtFormat)
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        file_pattern: 'android/**/*.kt'
       
     - name: Build with Gradle
       run: ./gradlew build
       working-directory: android
 
   test:
-
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-android-test

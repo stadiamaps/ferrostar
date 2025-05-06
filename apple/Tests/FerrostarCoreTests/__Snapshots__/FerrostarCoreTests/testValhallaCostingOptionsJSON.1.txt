@@ -44,6 +44,7 @@
         - annotations: Optional<Array<String>>.none
         - distance: 284.0
         - duration: 11.488
+        - exits: 0 elements
         ▿ geometry: 10 elements
           ▿ GeographicCoordinate
             - lat: 60.534716
@@ -75,6 +76,7 @@
           ▿ GeographicCoordinate
             - lat: 60.534991
             - lng: -149.548581
+        - incidents: 0 elements
         - instruction: "Drive west on AK 1/Seward Highway."
         ▿ roadName: Optional<String>
           - some: "Seward Highway"
@@ -84,6 +86,7 @@
         - annotations: Optional<Array<String>>.none
         - distance: 0.0
         - duration: 0.0
+        - exits: 0 elements
         ▿ geometry: 2 elements
           ▿ GeographicCoordinate
             - lat: 60.534991
@@ -91,6 +94,7 @@
           ▿ GeographicCoordinate
             - lat: 60.534991
             - lng: -149.548581
+        - incidents: 0 elements
         - instruction: "You have arrived at your destination."
         ▿ roadName: Optional<String>
           - some: "Seward Highway"

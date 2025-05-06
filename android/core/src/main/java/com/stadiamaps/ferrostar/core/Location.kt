@@ -179,6 +179,8 @@ class SimulatedLocationProvider : LocationProvider {
   }
 
   private suspend fun startSimulation() {
+    var pendingCompletion = false
+
     while (true) {
       delay((1.0 / warpFactor.toFloat()).toDuration(DurationUnit.SECONDS))
       val initialState = simulationState ?: return
@@ -186,7 +188,11 @@ class SimulatedLocationProvider : LocationProvider {
 
       // Stop if the route has been fully simulated (no state change).
       if (updatedState == initialState) {
-        return
+        if (pendingCompletion) {
+          return
+        } else {
+          pendingCompletion = true
+        }
       }
 
       simulationState = updatedState

@@ -23,7 +23,8 @@ let instructionContent = VisualInstructionContent(
     maneuverType: .depart,
     maneuverModifier: .straight,
     roundaboutExitDegrees: nil,
-    laneInfo: nil
+    laneInfo: nil,
+    exitNumbers: []
 )
 let mockRoute = Route(
     geometry: mockGeom,
@@ -35,6 +36,7 @@ let mockRoute = Route(
         distance: 1,
         duration: 0,
         roadName: "foo road",
+        exits: [],
         instruction: "Sail straight", // 🏴‍☠️⛵️
         visualInstructions: [VisualInstruction(
             primaryContent: instructionContent,
@@ -43,7 +45,8 @@ let mockRoute = Route(
             triggerDistanceBeforeManeuver: 42
         )],
         spokenInstructions: [],
-        annotations: nil
+        annotations: nil,
+        incidents: []
     )]
 )
 
@@ -120,6 +123,7 @@ final class FerrostarCoreTests: XCTestCase {
             routeAdapter: routeAdapter,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -163,6 +167,7 @@ final class FerrostarCoreTests: XCTestCase {
             routeAdapter: mockPOSTRouteAdapter,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -198,6 +203,7 @@ final class FerrostarCoreTests: XCTestCase {
             routeAdapter: mockGETRouteAdapter,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -236,6 +242,7 @@ final class FerrostarCoreTests: XCTestCase {
             profile: "low_speed_vehicle",
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -282,6 +289,7 @@ final class FerrostarCoreTests: XCTestCase {
             customRouteProvider: mockCustomRouteProvider,
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -328,6 +336,7 @@ final class FerrostarCoreTests: XCTestCase {
             routeAdapter: mockPOSTRouteAdapter,
             locationProvider: locationProvider,
             navigationControllerConfig: .init(
+                waypointAdvance: .waypointWithinRange(100.0),
                 stepAdvance: .manual,
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
@@ -343,6 +352,8 @@ final class FerrostarCoreTests: XCTestCase {
                 self.routeDeviationCallbackExp = routeDeviationCallbackExp
                 self.loadedAltRoutesExp = loadedAltRoutesExp
             }
+
+            func core(_: FerrostarCore, didStartWith _: FerrostarCoreFFI.Route) {}
 
             func core(
                 _: FerrostarCore,
@@ -382,7 +393,11 @@ final class FerrostarCoreTests: XCTestCase {
 
         locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0).userLocation
         let config = SwiftNavigationControllerConfig(
-            stepAdvance: .relativeLineStringDistance(minimumHorizontalAccuracy: 16, automaticAdvanceDistance: 16),
+            waypointAdvance: .waypointWithinRange(100.0),
+            stepAdvance: .relativeLineStringDistance(
+                minimumHorizontalAccuracy: 16,
+                specialAdvanceConditions: .advanceAtDistanceFromEnd(16)
+            ),
             routeDeviationTracking: .custom(detector: { _, _, _ in
                 // Pretend that the user is always off route
                 .offRoute(deviationFromRouteLine: 42)
@@ -394,6 +409,11 @@ final class FerrostarCoreTests: XCTestCase {
 
         await fulfillment(of: [routeDeviationCallbackExp], timeout: 1.0)
         await fulfillment(of: [loadedAltRoutesExp], timeout: 1.0)
+
+        // At this point, there is a brief window where the delegate call loading alternate routes has completed,
+        // but the state is still updating. This is a quick hack to fix the tests
+        // in the absence of something more reliable.
+        try? await Task.sleep(nanoseconds: NSEC_PER_SEC / 10)
 
         XCTAssert(core.state?.isCalculatingNewRoute == false, "Expected to no longer be calculating a new route")
     }

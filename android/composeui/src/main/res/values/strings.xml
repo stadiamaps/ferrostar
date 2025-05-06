@@ -14,7 +14,16 @@
     <string name="maneuver_instruction_image">Maneuver instruction image</string>
     <string name="dot">•</string>
     <string name="instruction_image">Instruction image</string>
-    <string name="preparing">Preparing...</string>
+    <string name="preparing">Preparing…</string>
     <string name="arrived_title">Arrived</string>
     <string name="arrived_description">You have arrived at your destination.</string>
+    <string name="route_overview">Route Overview</string>
+
+    <string name="speed">Speed</string>
+    <string name="limit">Limit</string>
+
+    <string name="unit_short_mps">m/s</string>
+    <string name="unit_short_kph">km/h</string>
+    <string name="unit_short_mph">mph</string>
+    <string name="unit_short_knot">kn</string>
 </resources>

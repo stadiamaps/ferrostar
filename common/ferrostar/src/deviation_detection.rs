@@ -18,7 +18,7 @@ use crate::models::{Route, RouteStep, UserLocation};
 use alloc::sync::Arc;
 use geo::Point;
 
-#[cfg(feature = "wasm-bindgen")]
+#[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
@@ -114,7 +114,8 @@ impl RouteDeviationTracking {
 /// For example, we could conceivably add a "wrong way" status in the future.
 #[derive(Debug, Copy, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub enum RouteDeviation {
     /// The user is proceeding on course within the expected tolerances; everything is normal.

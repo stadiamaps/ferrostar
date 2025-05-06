@@ -1,7 +1,9 @@
 package com.stadiamaps.ferrostar.views
 
-import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridViewLandscapePreview
-import com.stadiamaps.ferrostar.composeui.views.gridviews.NavigatingInnerGridViewPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewLandscapeNonTrackingPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewLandscapeTrackingPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewNonTrackingPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewTrackingPreview
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import org.junit.Rule
@@ -12,12 +14,26 @@ class NavigatingInnerGridViewTest {
   @get:Rule val paparazzi = paparazziDefault()
 
   @Test
-  fun testNavigatingInnerGridView() {
-    paparazzi.snapshot { withSnapshotBackground { NavigatingInnerGridViewPreview() } }
+  fun testNavigatingInnerGridViewTracking() {
+    paparazzi.snapshot { withSnapshotBackground { NavigatingInnerGridViewTrackingPreview() } }
   }
 
   @Test
-  fun testNavigatingInnerGridViewLandscape() {
-    paparazzi.snapshot { withSnapshotBackground { NavigatingInnerGridViewLandscapePreview() } }
+  fun testNavigatingInnerGridViewNonTracking() {
+    paparazzi.snapshot { withSnapshotBackground { NavigatingInnerGridViewNonTrackingPreview() } }
+  }
+
+  @Test
+  fun testNavigatingInnerGridViewTrackingLandscape() {
+    paparazzi.snapshot {
+      withSnapshotBackground { NavigatingInnerGridViewLandscapeTrackingPreview() }
+    }
+  }
+
+  @Test
+  fun testNavigatingInnerGridViewNonTrackingLandscape() {
+    paparazzi.snapshot {
+      withSnapshotBackground { NavigatingInnerGridViewLandscapeNonTrackingPreview() }
+    }
   }
 }

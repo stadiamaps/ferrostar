@@ -4,7 +4,7 @@ import android.icu.util.ULocale
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
 import app.cash.paparazzi.Paparazzi
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
-import com.stadiamaps.ferrostar.composeui.views.InstructionsView
+import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +30,8 @@ class RTLInstructionViewTests {
                     maneuverType = ManeuverType.TURN,
                     maneuverModifier = ManeuverModifier.LEFT,
                     roundaboutExitDegrees = null,
-                    laneInfo = null),
+                    laneInfo = null,
+                    exitNumbers = emptyList()),
             secondaryContent = null,
             subContent = null,
             triggerDistanceBeforeManeuver = 42.0)

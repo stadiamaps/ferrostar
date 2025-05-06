@@ -1,7 +1,7 @@
 package com.stadiamaps.ferrostar.views
 
-import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridViewPreview
-import com.stadiamaps.ferrostar.composeui.views.gridviews.InnerGridViewSampleLayoutPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.InnerGridViewPreview
+import com.stadiamaps.ferrostar.composeui.views.components.gridviews.InnerGridViewSampleLayoutPreview
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import org.junit.Rule

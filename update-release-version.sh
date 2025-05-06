@@ -19,4 +19,13 @@ cd common && cargo check && cd ..
 sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" web/package.json
 cd web && npm install && cd ..
 
-git add Package.swift android/build.gradle common/Cargo.lock common/ferrostar/Cargo.toml web/package.json web/package-lock.json
+# React Native
+jq --arg ver "$version" '.version = $ver' react-native/package.json > tmp.json && mv tmp.json react-native/package.json
+jq --arg ver "$version" '.version = $ver' react-native/core/package.json > tmp.json && mv tmp.json react-native/core/package.json
+jq --arg ver "$version" '.version = $ver' react-native/uniffi/package.json > tmp.json && mv tmp.json react-native/uniffi/package.json
+sed -i "" -E "s/(\"version\": \")[^\"]+(\")/\1$version\2/g" react-native/maplibreui/package.json
+# Install yarn if it isn't already available
+corepack enable yarn
+cd react-native && yarn install && cd ..
+
+git add Package.swift android/build.gradle common/Cargo.lock common/ferrostar/Cargo.toml web/package.json web/package-lock.json react-native/package.json react-native/yarn.lock react-native/core/package.json react-native/uniffi/package.json react-native/maplibreui/package.json

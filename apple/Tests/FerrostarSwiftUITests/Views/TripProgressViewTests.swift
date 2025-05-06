@@ -1,3 +1,4 @@
+import TestSupport
 import XCTest
 @testable import FerrostarCoreFFI
 @testable import FerrostarSwiftUI

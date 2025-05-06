@@ -5,7 +5,7 @@ use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstructio
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use geo::LineString;
-#[cfg(feature = "wasm-bindgen")]
+#[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
@@ -13,8 +13,9 @@ use tsify::Tsify;
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct TripProgress {
     /// The distance to the next maneuver, in meters.
@@ -34,8 +35,10 @@ pub struct TripProgress {
 /// and [`update_user_location`](super::NavigationController::update_user_location).
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[allow(clippy::large_enum_variant)]
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.
     Idle,
@@ -81,6 +84,7 @@ pub enum TripState {
     Complete,
 }
 
+#[allow(clippy::large_enum_variant)]
 pub enum StepAdvanceStatus {
     /// Navigation has advanced, and the information on the next step is embedded.
     Advanced {
@@ -128,16 +132,67 @@ pub enum StepAdvanceMode {
         minimum_horizontal_accuracy: u16,
     },
     /// Automatically advances when the user's distance to the *next* step's linestring  is less
-    /// than the distance to the current step's linestring.
+    /// than the distance to the current step's linestring, subject to certain conditions.
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     RelativeLineStringDistance {
         /// The minimum required horizontal accuracy of the user location, in meters.
-        /// Values larger than this cannot trigger a step advance.
+        /// Values larger than this cannot ever trigger a step advance.
         minimum_horizontal_accuracy: u16,
-        /// At this (optional) distance, navigation should advance to the next step regardless
-        /// of which `LineString` appears closer.
-        automatic_advance_distance: Option<u16>,
+        /// Optional extra conditions which refine the step advance logic.
+        ///
+        /// See the enum variant documentation for details.
+        special_advance_conditions: Option<SpecialAdvanceConditions>,
     },
+}
+
+/// Special conditions which alter the normal step advance logic,
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
+pub enum SpecialAdvanceConditions {
+    /// Allows navigation to advance to the next step as soon as the user
+    /// comes within this distance (in meters) of the end of the current step.
+    ///
+    /// This results in *early* advance when the user is near the goal.
+    AdvanceAtDistanceFromEnd(u16),
+    /// Requires that the user be at least this far (distance in meters)
+    /// from the current route step.
+    ///
+    /// This results in *delayed* advance,
+    /// but is more robust to spurious / unwanted step changes in scenarios including
+    /// self-intersecting routes (sudden jump to the next step)
+    /// and pauses at intersections (advancing too soon before the maneuver is complete).
+    ///
+    /// Note that this could be theoretically less robust to things like U-turns,
+    /// but we need a bit more real-world testing to confirm if it's an issue.
+    MinimumDistanceFromCurrentStepLine(u16),
+}
+
+/// Controls when a waypoint should be marked as complete.
+///
+/// While a route may consist of thousands of points, waypoints are special.
+/// A simple trip will have only one waypoint: the final destination.
+/// A more complex trip may have several intermediate stops.
+/// Just as the navigation state keeps track of which steps remain in the route,
+/// it also tracks which waypoints are still remaining.
+///
+/// Tracking waypoints enables Ferrostar to reroute users when they stray off the route line.
+/// The waypoint advance mode specifies how the framework decides
+/// that a waypoint has been visited (and is removed from the list).
+///
+/// NOTE: Advancing to the next *step* and advancing to the next *waypoint*
+/// are separate processes.
+/// This will not normally cause any issues, but keep in mind that
+/// manually advancing to the next step does not *necessarily* imply
+/// that the waypoint will be marked as complete!
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
+pub enum WaypointAdvanceMode {
+    /// Advance when the waypoint is within a certain range of meters from the user's location.
+    WaypointWithinRange(f64),
 }
 
 #[derive(Clone)]
@@ -146,6 +201,8 @@ pub enum StepAdvanceMode {
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
+    /// Configures when navigation advances to next waypoint in the route.
+    pub waypoint_advance: WaypointAdvanceMode,
     /// Configures when navigation advances to the next step in the route.
     pub step_advance: StepAdvanceMode,
     /// Configures when the user is deemed to be off course.

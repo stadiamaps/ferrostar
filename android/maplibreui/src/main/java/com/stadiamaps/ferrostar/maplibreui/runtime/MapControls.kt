@@ -11,9 +11,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.maplibre.compose.runtime.localLayoutDirection
 import com.maplibre.compose.settings.AttributionSettings
 import com.maplibre.compose.settings.CompassSettings
 import com.maplibre.compose.settings.LogoSettings
@@ -41,7 +41,7 @@ internal fun rememberMapControlsForProgressViewHeight(
     horizontalPadding: Dp = 16.dp,
     verticalPadding: Dp = 8.dp
 ): State<MapControls> {
-  val layoutDirection = localLayoutDirection()
+  val layoutDirection = LocalLayoutDirection.current
   val density = LocalDensity.current
   val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 

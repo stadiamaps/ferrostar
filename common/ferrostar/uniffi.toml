@@ -10,3 +10,13 @@ from_custom = "{}.uuidString"
 type_name = "java.util.UUID"
 into_custom = "java.util.UUID.fromString({})"
 from_custom = "{}.toString()"
+
+[bindings.swift.custom_types.UtcDateTime]
+type_name = "Date"
+into_custom = "Date(timeIntervalSince1970: Double({}) / 1000.0)"
+from_custom = "Int64({}.timeIntervalSince1970 * 1000)"
+
+[bindings.kotlin.custom_types.UtcDateTime]
+type_name = "java.util.Date"
+into_custom = "java.util.Date({})"
+from_custom = "{}.time"

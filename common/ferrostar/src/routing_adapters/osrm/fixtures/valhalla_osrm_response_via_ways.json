@@ -1,0 +1,1235 @@
+{
+  "code": "Ok",
+  "routes": [
+    {
+      "distance": 2089.442,
+      "duration": 301.262,
+      "geometry": "oop|u@ntan{Cn@gArJ{HvKuCpVsHxC_AhEiBpCkA|AN|Bn@fC}@dI_IjGmHfH_EpBwBxI{PfIsOzGgMpGyQnDmIvDmHf@gCT{AdByTtByKVoCJwBBqA`@oPe@uQe@eNMaTK{Lu@aO}EoWsDgL{KaTiDwHoC{K_AkAu@_BcC{DsHgKuDoGcE_KwB}JsAqPIeJ`@}IvAeKd@mEd@wCDmBGkLAoGv@qHKaGYqFw@kI{@}NToI~@yIjBaJtAkF`D{JxGkQ~J}O`KuJtSmOjKgLtJ}IhB}EvBcIfAiJ`CgJb@gHp@iLnAmQzBcNnCkLhGaUpFmMzHiMdKqMhIoLjJcQjEgKzAgFtAqGvAgNjC}NbAkGTeMp@aG`CiKzCwJdI}QvKcOfG{MtEmPdBsP",
+      "legs": [
+        {
+          "admins": [
+            {
+              "iso_3166_1": "US",
+              "iso_3166_1_alpha3": "USA"
+            }
+          ],
+          "annotation": {
+            "distance": [
+              4.4,
+              25.8,
+              23.9,
+              44.6,
+              9.1,
+              12.4,
+              8.9,
+              5.3,
+              7.4,
+              8.2,
+              23.9,
+              21,
+              19,
+              8.6,
+              33.9,
+              31.7,
+              27.3,
+              33.1,
+              19,
+              17.9,
+              7,
+              4.7,
+              34.5,
+              21,
+              7.2,
+              5.9,
+              4,
+              27.4,
+              29.2,
+              23.8,
+              32.9,
+              21.7,
+              25.3,
+              40.2,
+              23,
+              40.1,
+              17.9,
+              21.6,
+              5.1,
+              5.6,
+              11.8,
+              25.7,
+              16.7,
+              21.7,
+              19.8,
+              27.8,
+              17.5,
+              17.2,
+              19.6,
+              10.3,
+              7.7,
+              5.4,
+              20.9,
+              13.3,
+              15.2,
+              12.6,
+              11.9,
+              16.5,
+              25.1,
+              16.4,
+              17.2,
+              18.3,
+              12.5,
+              20.6,
+              32.7,
+              34,
+              28.2,
+              44.9,
+              30.2,
+              26.9,
+              12.3,
+              17.2,
+              18.1,
+              19,
+              14.6,
+              21,
+              29.1,
+              24.6,
+              22.4,
+              37.5,
+              26.3,
+              28.4,
+              31.4,
+              28,
+              34.8,
+              22.2,
+              12.4,
+              14.2,
+              24.3,
+              26.1,
+              13.6,
+              22.2,
+              12.9,
+              20.5,
+              20.3,
+              34.7,
+              33.9,
+              27.5,
+              29.7,
+              28.1
+            ],
+            "duration": [
+              0.635,
+              3.717,
+              3.436,
+              6.419,
+              1.314,
+              1.782,
+              1.286,
+              0.762,
+              1.065,
+              1.174,
+              3.447,
+              3.019,
+              2.729,
+              1.243,
+              4.882,
+              4.569,
+              3.929,
+              4.765,
+              2.738,
+              2.584,
+              1.008,
+              0.67,
+              4.971,
+              3.031,
+              1.03,
+              0.848,
+              0.577,
+              3.943,
+              4.211,
+              3.427,
+              4.736,
+              3.12,
+              3.636,
+              5.787,
+              3.309,
+              5.772,
+              2.581,
+              3.116,
+              0.74,
+              0.801,
+              1.692,
+              3.698,
+              2.404,
+              3.121,
+              2.85,
+              4.005,
+              2.516,
+              2.473,
+              2.829,
+              1.479,
+              1.11,
+              0.774,
+              3.007,
+              1.911,
+              2.196,
+              1.815,
+              1.713,
+              2.375,
+              3.614,
+              2.367,
+              2.484,
+              2.633,
+              1.795,
+              2.968,
+              4.708,
+              4.896,
+              4.059,
+              6.466,
+              4.352,
+              3.877,
+              1.776,
+              2.471,
+              2.607,
+              2.735,
+              2.099,
+              3.019,
+              4.194,
+              3.542,
+              3.22,
+              5.398,
+              3.781,
+              4.094,
+              4.526,
+              4.025,
+              5.011,
+              3.202,
+              1.789,
+              2.044,
+              3.5,
+              3.754,
+              1.96,
+              3.194,
+              1.856,
+              2.957,
+              2.922,
+              4.995,
+              4.882,
+              3.957,
+              4.278,
+              4.048
+            ],
+            "maxspeed": [
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              },
+              {
+                "unknown": true
+              }
+            ],
+            "speed": [
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9,
+              6.9
+            ]
+          },
+          "distance": 2089.442,
+          "duration": 301.262,
+          "steps": [
+            {
+              "bannerInstructions": [
+                {
+                  "distanceAlongGeometry": 2089.442,
+                  "primary": {
+                    "components": [
+                      {
+                        "text": "You have arrived at your destination.",
+                        "type": "text"
+                      }
+                    ],
+                    "text": "You have arrived at your destination.",
+                    "type": "arrive"
+                  }
+                }
+              ],
+              "distance": 2089.442,
+              "driving_side": "right",
+              "duration": 301.262,
+              "geometry": "oop|u@ntan{Cn@gArJ{HvKuCpVsHxC_AhEiBpCkA|AN|Bn@fC}@dI_IjGmHfH_EpBwBxI{PfIsOzGgMpGyQnDmIvDmHf@gCT{AdByTtByKVoCJwBBqA`@oPe@uQe@eNMaTK{Lu@aO}EoWsDgL{KaTiDwHoC{K_AkAu@_BcC{DsHgKuDoGcE_KwB}JsAqPIeJ`@}IvAeKd@mEd@wCDmBGkLAoGv@qHKaGYqFw@kI{@}NToI~@yIjBaJtAkF`D{JxGkQ~J}O`KuJtSmOjKgLtJ}IhB}EvBcIfAiJ`CgJb@gHp@iLnAmQzBcNnCkLhGaUpFmMzHiMdKqMhIoLjJcQjEgKzAgFtAqGvAgNjC}NbAkGTeMp@aG`CiKzCwJdI}QvKcOfG{MtEmPdBsP",
+              "intersections": [
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    134
+                  ],
+                  "duration": 4.352,
+                  "entry": [
+                    true
+                  ],
+                  "geometry_index": 0,
+                  "location": [
+                    -82.036056,
+                    28.795656
+                  ],
+                  "out": 0,
+                  "weight": 8.922
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    160,
+                    162,
+                    323
+                  ],
+                  "duration": 9.823,
+                  "entry": [
+                    false,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 2,
+                  "in": 2,
+                  "location": [
+                    -82.035862,
+                    28.795446
+                  ],
+                  "out": 1,
+                  "weight": 20.138
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    160,
+                    340
+                  ],
+                  "duration": 3.024,
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "geometry_index": 4,
+                  "in": 1,
+                  "location": [
+                    -82.035633,
+                    28.794865
+                  ],
+                  "out": 0,
+                  "turn_weight": 1.5,
+                  "weight": 7.699
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    155,
+                    335
+                  ],
+                  "duration": 4.32,
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "geometry_index": 6,
+                  "in": 1,
+                  "location": [
+                    -82.035548,
+                    28.794687
+                  ],
+                  "out": 0,
+                  "turn_weight": 1.5,
+                  "weight": 10.356
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    59,
+                    139,
+                    239,
+                    338
+                  ],
+                  "duration": 10.445,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 10,
+                  "in": 3,
+                  "location": [
+                    -82.035511,
+                    28.794436
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.077,
+                  "turn_weight": 6,
+                  "weight": 27.254
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    52,
+                    125,
+                    239,
+                    317
+                  ],
+                  "duration": 24.525,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 14,
+                  "in": 3,
+                  "location": [
+                    -82.035044,
+                    28.793934
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.045,
+                  "turn_weight": 6,
+                  "weight": 56.184
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    18,
+                    103,
+                    199,
+                    290
+                  ],
+                  "duration": 10.542,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 21,
+                  "in": 3,
+                  "location": [
+                    -82.033577,
+                    28.793118
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.03,
+                  "turn_weight": 6,
+                  "weight": 27.55
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    7,
+                    94,
+                    184,
+                    277
+                  ],
+                  "duration": 45.814,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 26,
+                  "in": 3,
+                  "location": [
+                    -82.032845,
+                    28.792979
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.022,
+                  "turn_weight": 6,
+                  "weight": 99.874
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    51,
+                    148,
+                    234,
+                    324
+                  ],
+                  "duration": 28.246,
+                  "entry": [
+                    true,
+                    true,
+                    false,
+                    true
+                  ],
+                  "geometry_index": 40,
+                  "in": 2,
+                  "location": [
+                    -82.029777,
+                    28.793661
+                  ],
+                  "out": 0,
+                  "turn_duration": 0.022,
+                  "turn_weight": 6,
+                  "weight": 63.859
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    8,
+                    92,
+                    186,
+                    286
+                  ],
+                  "duration": 9.7,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 51,
+                  "in": 3,
+                  "location": [
+                    -82.027959,
+                    28.794078
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.052,
+                  "turn_weight": 6.6,
+                  "weight": 26.378
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    83,
+                    182,
+                    267,
+                    356
+                  ],
+                  "duration": 17.016,
+                  "entry": [
+                    true,
+                    true,
+                    false,
+                    true
+                  ],
+                  "geometry_index": 56,
+                  "in": 2,
+                  "location": [
+                    -82.027272,
+                    28.794058
+                  ],
+                  "out": 0,
+                  "turn_duration": 0.024,
+                  "turn_weight": 6.6,
+                  "weight": 41.434
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    116,
+                    293
+                  ],
+                  "duration": 33.12,
+                  "entry": [
+                    true,
+                    false
+                  ],
+                  "geometry_index": 63,
+                  "in": 1,
+                  "location": [
+                    -82.026094,
+                    28.793989
+                  ],
+                  "out": 0,
+                  "turn_weight": 1.65,
+                  "weight": 69.546
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    30,
+                    113,
+                    208,
+                    299
+                  ],
+                  "duration": 9.962,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 71,
+                  "in": 3,
+                  "location": [
+                    -82.024391,
+                    28.792613
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.026,
+                  "turn_weight": 6.6,
+                  "weight": 26.969
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    13,
+                    98,
+                    191,
+                    278
+                  ],
+                  "duration": 10.808,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 75,
+                  "in": 3,
+                  "location": [
+                    -82.02372,
+                    28.792434
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.008,
+                  "turn_weight": 6.6,
+                  "weight": 28.74
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    18,
+                    111,
+                    199,
+                    286
+                  ],
+                  "duration": 35.002,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 78,
+                  "in": 3,
+                  "location": [
+                    -82.02297,
+                    28.792307
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.01,
+                  "turn_weight": 6.6,
+                  "weight": 78.334
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    25,
+                    110,
+                    191,
+                    294
+                  ],
+                  "duration": 9.384,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 87,
+                  "in": 3,
+                  "location": [
+                    -82.020892,
+                    28.791133
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.024,
+                  "turn_weight": 8.8,
+                  "weight": 27.988
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    106,
+                    204,
+                    287
+                  ],
+                  "duration": 5.203,
+                  "entry": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "geometry_index": 90,
+                  "in": 2,
+                  "location": [
+                    -82.020256,
+                    28.790976
+                  ],
+                  "out": 0,
+                  "turn_duration": 0.019,
+                  "turn_weight": 1.65,
+                  "weight": 12.277
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    7,
+                    102,
+                    184,
+                    273
+                  ],
+                  "duration": 7.788,
+                  "entry": [
+                    true,
+                    true,
+                    true,
+                    false
+                  ],
+                  "geometry_index": 92,
+                  "in": 3,
+                  "location": [
+                    -82.019895,
+                    28.790931
+                  ],
+                  "out": 1,
+                  "turn_duration": 0.012,
+                  "turn_weight": 6.6,
+                  "weight": 22.541
+                },
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    122,
+                    213,
+                    295
+                  ],
+                  "entry": [
+                    true,
+                    false,
+                    false
+                  ],
+                  "geometry_index": 95,
+                  "in": 2,
+                  "location": [
+                    -82.019381,
+                    28.790763
+                  ],
+                  "out": 0,
+                  "turn_duration": 0.01,
+                  "turn_weight": 1.65
+                }
+              ],
+              "maneuver": {
+                "bearing_after": 134,
+                "bearing_before": 0,
+                "instruction": "Drive southeast.",
+                "location": [
+                  -82.036056,
+                  28.795656
+                ],
+                "type": "depart"
+              },
+              "mode": "driving",
+              "name": "",
+              "speedLimitSign": "mutcd",
+              "speedLimitUnit": "mph",
+              "voiceInstructions": [
+                {
+                  "announcement": "Drive southeast.",
+                  "distanceAlongGeometry": 2089.442,
+                  "ssmlAnnouncement": "<speak>Drive southeast.</speak>"
+                },
+                {
+                  "announcement": "In 200 feet, You have arrived at your destination.",
+                  "distanceAlongGeometry": 60,
+                  "ssmlAnnouncement": "<speak>In 200 feet, You have arrived at your destination.</speak>"
+                }
+              ],
+              "weight": 703.153
+            },
+            {
+              "bannerInstructions": [
+                {
+                  "distanceAlongGeometry": 0,
+                  "primary": {
+                    "components": [
+                      {
+                        "text": "You have arrived at your destination.",
+                        "type": "text"
+                      }
+                    ],
+                    "text": "You have arrived at your destination.",
+                    "type": "arrive"
+                  }
+                }
+              ],
+              "distance": 0,
+              "driving_side": "right",
+              "duration": 0,
+              "geometry": "ste|u@hm~l{C??",
+              "intersections": [
+                {
+                  "admin_index": 0,
+                  "bearings": [
+                    282
+                  ],
+                  "entry": [
+                    true
+                  ],
+                  "geometry_index": 100,
+                  "in": 0,
+                  "location": [
+                    -82.018021,
+                    28.790106
+                  ]
+                }
+              ],
+              "maneuver": {
+                "bearing_after": 0,
+                "bearing_before": 102,
+                "instruction": "You have arrived at your destination.",
+                "location": [
+                  -82.018021,
+                  28.790106
+                ],
+                "type": "arrive"
+              },
+              "mode": "driving",
+              "name": "",
+              "speedLimitSign": "mutcd",
+              "speedLimitUnit": "mph",
+              "voiceInstructions": [],
+              "weight": 0
+            }
+          ],
+          "summary": "",
+          "via_waypoints": [
+            {
+              "distance_from_start": 30.223,
+              "geometry_index": 2,
+              "waypoint_index": 1
+            }
+          ],
+          "weight": 703.153
+        }
+      ],
+      "weight": 703.153,
+      "weight_name": "golf_cart"
+    }
+  ],
+  "waypoints": [
+    {
+      "distance": 0.095,
+      "location": [
+        -82.036056,
+        28.795656
+      ],
+      "name": ""
+    },
+    {
+      "distance": 0,
+      "location": [
+        -82.035862,
+        28.795446
+      ],
+      "name": ""
+    },
+    {
+      "distance": 4.898,
+      "location": [
+        -82.018021,
+        28.790106
+      ],
+      "name": ""
+    }
+  ]
+}

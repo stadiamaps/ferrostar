@@ -1,0 +1,85 @@
+{
+  "name": "react-native-ferrostar",
+  "version": "0.33.0",
+  "description": "Ferrostar React Native",
+  "private": true,
+  "scripts": {
+    "build:android": "./scripts/build-android.sh",
+    "build:ios": "./scripts/build-ios.sh",
+    "example:start": "yarn workspace ferrostar-example-react-native start",
+    "example:android": "yarn workspace ferrostar-example-react-native android",
+    "example:ios": "yarn workspace ferrostar-example-react-native ios",
+    "test": "jest",
+    "typecheck": "tsc",
+    "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "clean": "./scripts/clean.sh"
+  },
+  "keywords": [
+    "react-native",
+    "ios",
+    "android"
+  ],
+  "repository": "git+https://github.com/stadiamaps/ferrostar.git",
+  "collaborators": [
+    "Benjamin Trounson <btrounson@outlook.co.nz> (https://github.com/bjtrounson)",
+    "Ian Wagner <ian@stadiamaps.com>",
+    "Jacob Fielding <jacob@rallista.app>",
+    "Luke Seelenbinder <luke@stadiamaps.com>"
+  ],
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/stadiamaps/ferrostar/issues"
+  },
+  "homepage": "https://github.com/stadiamaps/ferrostar#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@react-native/eslint-config": "^0.73.1",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "globals": "^15.15.0",
+    "prettier": "^3.0.3",
+    "typescript-eslint": "^8.22.0"
+  },
+  "workspaces": [
+    "uniffi",
+    "core",
+    "example",
+    "maplibreui"
+  ],
+  "packageManager": "yarn@3.6.1",
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@react-native",
+      "prettier"
+    ],
+    "rules": {
+      "react/react-in-jsx-scope": "off",
+      "prettier/prettier": [
+        "error",
+        {
+          "quoteProps": "consistent",
+          "singleQuote": true,
+          "tabWidth": 2,
+          "trailingComma": "es5",
+          "useTabs": false
+        }
+      ]
+    }
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ],
+  "prettier": {
+    "quoteProps": "consistent",
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "es5",
+    "useTabs": false
+  }
+}

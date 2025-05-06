@@ -7,13 +7,15 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A portrait orientation navigation view that includes the InstructionsView at the top.
-public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView, SpeedLimitViewHost,
-    CurrentRoadNameViewHost
+public struct PortraitNavigationView: View,
+    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
 {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
-    // TODO: Configurable camera and user "puck" rotation modes
+    @Binding var camera: MapViewCamera
+    let navigationCamera: MapViewCamera
+    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private var navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -21,21 +23,23 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
+    let isMuted: Bool
+    let onTapMute: () -> Void
+    var onTapExit: (() -> Void)?
+
+    public var minimumSafeAreaInsets: EdgeInsets
+
+    // MARK: Configurable Views
+
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
     public var bottomLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
-    public var minimumSafeAreaInsets: EdgeInsets
-
-    @Binding var camera: MapViewCamera
-    let navigationCamera: MapViewCamera
-    public var currentRoadNameView: AnyView?
-
-    let isMuted: Bool
-    let onTapMute: () -> Void
-    var onTapExit: (() -> Void)?
+    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
+    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     /// Create a portrait navigation view. This view is optimized for display on a portrait screen where the
     /// instructions and trip progress view are on the top and bottom of the screen.
@@ -74,7 +78,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
 
         _camera = camera
         self.navigationCamera = navigationCamera
-        currentRoadNameView = AnyView(CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName))
+        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -90,12 +94,19 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(.portrait(within: geometry))
+                .navigationMapViewContentInset(
+                    calculatedMapViewInsets(for: geometry)
+                )
 
                 PortraitNavigationOverlayView(
                     navigationState: navigationState,
                     speedLimit: speedLimit,
                     speedLimitStyle: speedLimitStyle,
+                    views: NavigationViewComponentBuilder(
+                        progressView: progressView,
+                        instructionsView: instructionsView,
+                        currentRoadNameView: currentRoadNameView
+                    ),
                     isMuted: isMuted,
                     showMute: true,
                     onMute: onTapMute,
@@ -107,8 +118,7 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
                     } : .showRecenter { // TODO: Third case when not navigating!
                         camera = navigationCamera
                     },
-                    onTapExit: onTapExit,
-                    currentRoadNameView: currentRoadNameView
+                    onTapExit: onTapExit
                 )
                 .innerGrid {
                     topCenter?()
@@ -116,12 +126,18 @@ public struct PortraitNavigationView: View, CustomizableNavigatingInnerGridView,
                     topTrailing?()
                 } midLeading: {
                     midLeading?()
-                } bottomLeading: {
-                    bottomLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
                 }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
+        }
+    }
+
+    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
+        if case .rect = camera.state {
+            .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+        } else {
+            mapInsets.portrait(geometry)
         }
     }
 }

@@ -433,6 +433,7 @@ expression: routes
       distance: 2089.442
       duration: 301.262
       road_name: ""
+      exits: []
       instruction: Drive southeast.
       visual_instructions:
         - primary_content:
@@ -441,6 +442,7 @@ expression: routes
             maneuver_modifier: ~
             roundabout_exit_degrees: ~
             lane_info: ~
+            exit_numbers: []
           secondary_content: ~
           sub_content: ~
           trigger_distance_before_maneuver: 2089.442
@@ -452,6 +454,7 @@ expression: routes
           ssml: "<speak>In 200 feet, You have arrived at your destination.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      incidents: []
     - geometry:
         - lat: 28.790106
           lng: -82.018021
@@ -460,6 +463,7 @@ expression: routes
       distance: 0
       duration: 0
       road_name: ""
+      exits: []
       instruction: You have arrived at your destination.
       visual_instructions:
         - primary_content:
@@ -468,8 +472,10 @@ expression: routes
             maneuver_modifier: ~
             roundabout_exit_degrees: ~
             lane_info: ~
+            exit_numbers: []
           secondary_content: ~
           sub_content: ~
           trigger_distance_before_maneuver: 0
       spoken_instructions: []
       annotations: redacted annotations json strings vec
+      incidents: []
