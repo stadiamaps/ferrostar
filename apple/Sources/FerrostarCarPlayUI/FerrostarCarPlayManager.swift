@@ -2,8 +2,13 @@ import CarPlay
 import FerrostarCore
 import Foundation
 import MapLibreSwiftUI
+import os
 import OSLog
 import SwiftUI
+
+private extension Logger {
+    static let cpMapTemplateDelegate = Logger(category: "CPMapTemplateDelegate")
+}
 
 public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelegate {
     private let ferrostarCore: FerrostarCore
@@ -39,6 +44,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         didConnect interfaceController: CPInterfaceController,
         to _: CPWindow
     ) {
+        logger.debug("\(#function)")
         self.interfaceController = interfaceController
 
         // Create the map template
@@ -77,6 +83,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         didDisconnect _: CPInterfaceController,
         from _: CPWindow
     ) {
+        logger.debug("\(#function)")
         interfaceController = nil
         ferrostarAdapter = nil
     }
@@ -84,10 +91,12 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
 
 extension FerrostarCarPlayManager: CPMapTemplateDelegate {
     public func mapTemplate(_: CPMapTemplate, selectedPreviewFor _: CPTrip, using _: CPRouteChoice) {
+        Logger.cpMapTemplateDelegate.debug("\(#function)")
         // TODO: What is this for?
     }
 
     public func mapTemplate(_: CPMapTemplate, startedTrip _: CPTrip, using _: CPRouteChoice) {
+        Logger.cpMapTemplateDelegate.debug("\(#function)")
         // TODO: What is this for?
     }
 }

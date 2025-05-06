@@ -97,6 +97,7 @@ class FerrostarCarPlayAdapter: NSObject {
                         print("CarPlay - startup error: \(error)")
                     }
                 }
+                navigatingTemplate?.update(navigationState: navState)
             case .complete:
                 navigatingTemplate?.completeTrip()
             case .idle:

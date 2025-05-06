@@ -1,4 +1,5 @@
 import CoreLocation
+import FerrostarCarPlayUI
 import FerrostarCore
 import FerrostarCoreFFI
 import SwiftUI
@@ -20,6 +21,7 @@ class AppEnvironment: ObservableObject {
     var locationProvider: LocationProviding
     @Published var ferrostarCore: FerrostarCore
     @Published var spokenInstructionObserver: SpokenInstructionObserver
+    @Published var camera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
 
     let navigationDelegate = NavigationDelegate()
 
