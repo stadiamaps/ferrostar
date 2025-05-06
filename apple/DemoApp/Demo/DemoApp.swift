@@ -2,7 +2,7 @@ import SwiftUI
 
 // This AppDelegate setup is an easy way to share your environment with CarPlay
 class DemoAppDelegate: NSObject, UIApplicationDelegate {
-    let appEnvironment = AppEnvironment()
+    let appEnvironment = try! AppEnvironment()
 }
 
 @main
