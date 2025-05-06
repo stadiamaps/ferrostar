@@ -84,7 +84,13 @@ class FerrostarCarPlayAdapter: NSObject {
         )
         .receive(on: DispatchQueue.main)
         .sink { [weak self] route, navState in
-            guard let self, let navState else { return }
+            guard let self else { return }
+            guard let navState else {
+                if case let .navigating = self.uiState {
+                    navigatingTemplate?.cancelTrip()
+                }
+                return
+            }
 
             switch navState.tripState {
             case .navigating:
