@@ -1,12 +1,6 @@
-import { css, html, LitElement, PropertyValues, unsafeCSS } from "lit";
+import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import maplibregl, {
-  GeolocateControl,
-  LngLat,
-  LngLatLike,
-  Map,
-} from "maplibre-gl";
-import maplibreglStyles from "maplibre-gl/dist/maplibre-gl.css?inline";
+import maplibregl, { GeolocateControl, Map } from "maplibre-gl";
 import {
   NavigationController,
   RouteAdapter,
@@ -26,19 +20,7 @@ export class FerrostarMap extends LitElement {
   valhallaEndpointUrl: string = "";
 
   @property()
-  styleUrl: string = "";
-
-  @property()
   profile: string = "";
-
-  @property()
-  center: LngLatLike | null = null;
-
-  @property()
-  pitch: number = 60;
-
-  @property()
-  zoom: number = 6;
 
   @property({ attribute: false })
   httpClient?: Function = fetch;
@@ -54,18 +36,6 @@ export class FerrostarMap extends LitElement {
   @state()
   protected _tripState: TripState | null = null;
 
-  /**
-   * Configures the map on first load.
-   *
-   * Note: This will only be invoked if there is no map set
-   * by the time of the first component update.
-   * If you provide your own map parameter,
-   * configuration is left to the caller.
-   * Be sure to set the DOM parent via the slot as well.
-   */
-  @property({ type: Function, attribute: false })
-  configureMap?: (map: Map) => void;
-
   @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
 
@@ -77,7 +47,6 @@ export class FerrostarMap extends LitElement {
 
   /**
    *  Styles to load which will apply inside the component
-   *  (ex: for MapLibre plugins)
    */
   @property({ type: Object, attribute: false })
   customStyles?: object | null;
@@ -101,16 +70,12 @@ export class FerrostarMap extends LitElement {
   /**
    * The MapLibre map instance.
    *
-   * This will be automatically initialized by default
-   * when the web component does its first update cycle.
-   * However, you can also explicitly set this value
-   * when initializing the web component to provide your own map instance.
+   * You have to explicitly set this value when initializing
+   * the web component to provide your own map instance.
    *
-   * Note: If you set this property, you MUST also pass the map's container attribute
-   * via the slot!
    */
-  @property({ type: Object, attribute: false })
-  map: maplibregl.Map | null = null;
+  @property({ type: Object })
+  map!: maplibregl.Map;
 
   geolocateControl: GeolocateControl | null = null;
   navigationController: NavigationController | null = null;
@@ -118,7 +83,6 @@ export class FerrostarMap extends LitElement {
   lastSpokenUtteranceId: string | null = null;
 
   static styles = [
-    unsafeCSS(maplibreglStyles),
     css`
       [hidden] {
         display: none !important;
@@ -178,6 +142,17 @@ export class FerrostarMap extends LitElement {
       #stop-button:hover {
         background-color: #e0e0e0;
       }
+
+      @media (max-width: 600px) {
+        #stop-button {
+          padding: 14px;
+        }
+
+        #stop-button .icon {
+          width: 10px;
+          height: 10px;
+        }
+      }
     `,
   ];
 
@@ -194,61 +169,9 @@ export class FerrostarMap extends LitElement {
     if (changedProperties.has("locationProvider") && this.locationProvider) {
       this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
     }
-    if (this.map && this.map.loaded()) {
-      if (changedProperties.has("styleUrl")) {
-        this.map.setStyle(this.styleUrl);
-      }
-      if (changedProperties.has("center")) {
-        if (changedProperties.get("center") === null && this.center !== null) {
-          this.map.jumpTo({ center: this.center });
-        } else if (this.center !== null) {
-          if (
-            this.map.getCenter().distanceTo(LngLat.convert(this.center)) >
-            500_000
-          ) {
-            this.map.jumpTo({ center: this.center });
-          } else {
-            this.map.flyTo({ center: this.center });
-          }
-        }
-      }
-      if (changedProperties.has("pitch")) {
-        this.map.setPitch(this.pitch);
-      }
-      if (changedProperties.has("zoom")) {
-        this.map.setZoom(this.zoom);
-      }
-    }
   }
 
   firstUpdated() {
-    // Skip initialization of the map if the user has supplied one already via a slot!
-    const slotChildren =
-      this.shadowRoot!.querySelector("slot")?.assignedElements() || [];
-    if (slotChildren.length == 0 && this.map === null) {
-      this.initMap();
-    }
-  }
-
-  /**
-   * Initialize the MapLibre Map control.
-   *
-   * This is run by default on firstUpdated,
-   * but is skipped if the user adds a map of their own.
-   */
-  initMap() {
-    this.map = new maplibregl.Map({
-      container: this.shadowRoot!.getElementById("map")!,
-      style: this.styleUrl
-        ? this.styleUrl
-        : "https://demotiles.maplibre.org/style.json",
-      center: this.center ?? [0, 0],
-      pitch: this.pitch,
-      bearing: 0,
-      zoom: this.zoom,
-      attributionControl: { compact: true },
-    });
-
     this.geolocateControl = new GeolocateControl({
       positionOptions: {
         enableHighAccuracy: true,
@@ -258,13 +181,9 @@ export class FerrostarMap extends LitElement {
 
     this.map.addControl(this.geolocateControl);
 
-    this.map.on("load", (e) => {
+    this.map.on("load", (_) => {
       if (this.geolocateOnLoad) {
         this.geolocateControl?.trigger();
-      }
-
-      if (this.configureMap !== undefined) {
-        this.configureMap(e.target);
       }
     });
   }
@@ -297,7 +216,12 @@ export class FerrostarMap extends LitElement {
     });
 
     const responseData = new Uint8Array(await response.arrayBuffer());
-    return this.routeAdapter.parseResponse(responseData);
+    try {
+      return this.routeAdapter.parseResponse(responseData);
+    } catch (e) {
+      console.error("Error parsing route response:", e);
+      throw e;
+    }
   }
 
   // TODO: types
@@ -373,7 +297,9 @@ export class FerrostarMap extends LitElement {
       "route",
     );
 
-    this.map?.setCenter(route.geometry[0]);
+    this.map?.flyTo({
+      center: route.geometry[0],
+    });
 
     if (this.locationProvider instanceof SimulatedLocationProvider) {
       this.simulatedLocationMarker = new maplibregl.Marker({
@@ -461,19 +387,26 @@ export class FerrostarMap extends LitElement {
         ${this.customStyles}
       </style>
       <div id="container">
-        <slot id="map"></slot>
-        <instructions-view .tripState=${this._tripState}></instructions-view>
-        <div id="bottom-component">
-          <trip-progress-view
-            .tripState=${this._tripState}
-          ></trip-progress-view>
-          <button
-            id="stop-button"
-            @click=${this.stopNavigation}
-            ?hidden=${!this._tripState}
-          >
-            <img src=${CloseSvg} alt="Stop navigation" class="icon" />
-          </button>
+        <div id="map">
+          <!-- Fix names/ids; currently this is a breaking change -->
+          <div id="overlay">
+            <instructions-view
+              .tripState=${this._tripState}
+            ></instructions-view>
+
+            <div id="bottom-component">
+              <trip-progress-view
+                .tripState=${this._tripState}
+              ></trip-progress-view>
+              <button
+                id="stop-button"
+                @click=${this.stopNavigation}
+                ?hidden=${!this._tripState}
+              >
+                <img src=${CloseSvg} alt="Stop navigation" class="icon" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     `;

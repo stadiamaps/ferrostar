@@ -130,6 +130,7 @@ struct DemoNavigationView: View {
         }
 
         try appEnvironment.startNavigation(route: route)
+        camera = .automotiveNavigation()
         preventAutoLock()
     }
 

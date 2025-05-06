@@ -5,17 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "3615e3cc81b09b78b58b183660815b0f36107b3b",
-        "version" : "6.10.0"
-      }
-    },
-    {
-      "identity" : "maplibre-swift-macros",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
-      "state" : {
-        "revision" : "9e27e62dff7fd727aebd0a7c8aa74e7635a5583e",
-        "version" : "0.0.5"
+        "revision" : "f09b5424a7cf41b411e239e03c06078e37fd39e9",
+        "version" : "6.12.2"
       }
     },
     {
@@ -23,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "revision" : "e1b311b01c11415099341eee49769185e965ac4c",
-        "version" : "0.2.0"
+        "revision" : "68f3ed6c4b62afab27a84425494cb61421a61ac1",
+        "version" : "0.3.1"
       }
     },
     {
@@ -41,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
       "state" : {
-        "revision" : "b2d4cb30735f4fbc3a01963a9c658336dd21e9ba",
-        "version" : "1.18.1"
+        "revision" : "1be8144023c367c5de701a6313ed29a3a10bf59b",
+        "version" : "1.18.3"
       }
     },
     {
@@ -50,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "2bc86522d115234d1f588efe2bcb4ce4be8f8b82",
-        "version" : "510.0.3"
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
       }
     },
     {
@@ -59,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "ac5f240ec0be8bb5b91793c0efd3c233dad211f2",
-        "version" : "0.7.0"
+        "revision" : "26eced8a6544f60d9979d35c99217599a97c80d6",
+        "version" : "0.10.0"
       }
     },
     {
@@ -68,8 +59,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "a3f634d1a409c7979cabc0a71b3f26ffa9fc8af1",
-        "version" : "1.4.3"
+        "revision" : "39de59b2d47f7ef3ca88a039dff3084688fe27f4",
+        "version" : "1.5.2"
       }
     }
   ],

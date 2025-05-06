@@ -2,7 +2,7 @@ use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoin
 use crate::routing_adapters::{osrm::OsrmResponseParser, RouteResponseParser};
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
-use geo::{line_string, BoundingRect, Haversine, Length, LineString, Point};
+use geo::{point, BoundingRect, Distance, Haversine, LineString, Point};
 
 pub enum TestRoute {
     /// Gets a longer + more complex route.
@@ -50,11 +50,10 @@ pub fn gen_dummy_route_step(
                 lat: end_lat,
             },
         ],
-        distance: line_string![
-            (x: start_lng, y: start_lat),
-            (x: end_lng, y: end_lat)
-        ]
-        .length::<Haversine>(),
+        distance: Haversine.distance(
+            point!(x: start_lng, y: start_lat),
+            point!(x: end_lng, y: end_lat),
+        ),
         duration: 0.0,
         road_name: None,
         exits: vec![],

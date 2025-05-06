@@ -353,6 +353,8 @@ final class FerrostarCoreTests: XCTestCase {
                 self.loadedAltRoutesExp = loadedAltRoutesExp
             }
 
+            func core(_: FerrostarCore, didStartWith _: FerrostarCoreFFI.Route) {}
+
             func core(
                 _: FerrostarCore,
                 correctiveActionForDeviation deviationInMeters: Double,

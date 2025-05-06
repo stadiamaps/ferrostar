@@ -1,6 +1,9 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { LocalizedDistanceFormatter } from "@maptimy/platform-formatters";
 import "./maneuver-image";
+
+const DistanceFormatter = LocalizedDistanceFormatter();
 
 @customElement("instructions-view")
 export class InstructionsView extends LitElement {
@@ -16,6 +19,7 @@ export class InstructionsView extends LitElement {
         background-color: white;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: sans-serif;
       }
 
       maneuver-image {
@@ -45,10 +49,6 @@ export class InstructionsView extends LitElement {
     `,
   ];
 
-  private roundToNearestTen(meters: number) {
-    return Math.round(meters / 10) * 10;
-  }
-
   render() {
     // Note - lane information is currently not displayed, even if it is
     // available.
@@ -63,9 +63,9 @@ export class InstructionsView extends LitElement {
               ${this.tripState.Navigating.visualInstruction.primaryContent.text}
             </p>
             <p class="instruction-text">
-              ${this.roundToNearestTen(
+              ${DistanceFormatter.format(
                 this.tripState.Navigating.progress.distanceToNextManeuver,
-              )}m
+              )}
             </p>
           </div>
         </div>

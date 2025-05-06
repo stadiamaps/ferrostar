@@ -16,8 +16,8 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.28.0"
-    let releaseChecksum = "01537291cc7bb05e5abecc41f0085874e1f18f3222b4fe69986176bac5619cc6"
+    let releaseTag = "0.32.1"
+    let releaseChecksum = "ff3e2a4ad60d7294433f33c12e05250bb06650a4fab1361ece6d17275c5ef48f"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url:
@@ -31,7 +31,7 @@ if useLocalMapLibreSwiftUIDSL {
 } else {
     maplibreSwiftUIDSLPackage = .package(
         url: "https://github.com/maplibre/swiftui-dsl",
-        from: "0.7.0"
+        from: "0.10.0"
     )
 }
 
@@ -93,6 +93,7 @@ let package = Package(
             name: "FerrostarMapLibreUI",
             dependencies: [
                 .target(name: "FerrostarCore"),
+                .target(name: "FerrostarSwiftUI"),
                 .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
                 .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
             ],
@@ -117,6 +118,16 @@ let package = Package(
         // MARK: Testing
 
         .testTarget(
+            name: "FerrostarCarPlayUITests",
+            dependencies: [
+                "FerrostarCore",
+                "FerrostarSwiftUI",
+                "FerrostarCarPlayUI",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
+            path: "apple/Tests/FerrostarCarPlayUITests"
+        ),
+        .testTarget(
             name: "FerrostarCoreTests",
             dependencies: [
                 "FerrostarCore",
@@ -125,13 +136,36 @@ let package = Package(
             path: "apple/Tests/FerrostarCoreTests"
         ),
         .testTarget(
+            name: "FerrostarMapLibreUITests",
+            dependencies: [
+                "FerrostarCore",
+                "FerrostarSwiftUI",
+                "FerrostarMapLibreUI",
+                "TestSupport",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
+            path: "apple/Tests/FerrostarMapLibreUITests"
+        ),
+        .testTarget(
             name: "FerrostarSwiftUITests",
             dependencies: [
                 "FerrostarCore",
                 "FerrostarSwiftUI",
+                "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/FerrostarSwiftUITests"
+        ),
+
+        // MARK: Test Support
+
+        .target(
+            name: "TestSupport",
+            dependencies: [
+                "FerrostarCore",
+                "FerrostarSwiftUI",
+            ],
+            path: "apple/Tests/TestSupport"
         ),
     ]
 )

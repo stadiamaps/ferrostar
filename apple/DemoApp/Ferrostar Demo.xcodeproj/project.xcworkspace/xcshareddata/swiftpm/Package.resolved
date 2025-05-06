@@ -6,17 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "0f0359865882095c57a555a002bb90b677388874",
-        "version" : "6.11.0"
-      }
-    },
-    {
-      "identity" : "maplibre-swift-macros",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stadiamaps/maplibre-swift-macros.git",
-      "state" : {
-        "revision" : "9e27e62dff7fd727aebd0a7c8aa74e7635a5583e",
-        "version" : "0.0.5"
+        "revision" : "82fd2565148fafa3478a2951bb709414950bda6f",
+        "version" : "6.12.3"
       }
     },
     {
@@ -24,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "revision" : "203336d0ccb7ff03a8a03db54a4fa18fc2b0c771",
-        "version" : "0.3.0"
+        "revision" : "68f3ed6c4b62afab27a84425494cb61421a61ac1",
+        "version" : "0.3.1"
       }
     },
     {
@@ -33,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "2bc86522d115234d1f588efe2bcb4ce4be8f8b82",
-        "version" : "510.0.3"
+        "revision" : "0687f71944021d616d34d922343dcef086855920",
+        "version" : "600.0.1"
       }
     },
     {
@@ -42,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "ac5f240ec0be8bb5b91793c0efd3c233dad211f2",
-        "version" : "0.7.0"
+        "revision" : "26eced8a6544f60d9979d35c99217599a97c80d6",
+        "version" : "0.10.0"
       }
     },
     {
@@ -51,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "b444594f79844b0d6d76d70fbfb3f7f71728f938",
-        "version" : "1.5.1"
+        "revision" : "39de59b2d47f7ef3ca88a039dff3084688fe27f4",
+        "version" : "1.5.2"
       }
     }
   ],

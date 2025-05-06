@@ -1,100 +1,93 @@
 import CarPlay
 import FerrostarCore
-import FerrostarMapLibreUI
 import Foundation
 import MapLibreSwiftUI
+import OSLog
 import SwiftUI
-import UIKit
 
-@MainActor
-public class FerrostarCarPlayManager: NSObject, CPInterfaceControllerDelegate, CPSessionConfigurationDelegate {
-    // MARK: CarPlay Controller & Windows
-
-    private var sessionConfiguration: CPSessionConfiguration!
-
-    private var interfaceController: CPInterfaceController?
-    private var carWindow: CPWindow?
-
-    private var mapTemplate: CPMapTemplate?
-
-//    private var instrumentClusterWindow: UIWindow?
-//    var currentTravelEstimates: CPTravelEstimates?
-//    var navigationSession: CPNavigationSession?
-//    var displayLink: CADisplayLink?
-//    var activeManeuver: CPManeuver?
-//    var activeEstimates: CPTravelEstimates?
-//    var lastCompletedManeuverFrame: CGRect?
-
+public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelegate {
     private let ferrostarCore: FerrostarCore
-    private let styleURL: URL
+    @Binding var camera: MapViewCamera
 
-    private var viewController: UIHostingController<AnyView>!
+    private let logger: Logger
+    private let distanceUnits: MKDistanceFormatter.Units
+
+    private var ferrostarAdapter: FerrostarCarPlayAdapter?
+    private var interfaceController: CPInterfaceController?
 
     public init(
-        ferrostarCore: FerrostarCore,
-        styleURL: URL
+        _ ferrostarCore: FerrostarCore,
+        camera: Binding<MapViewCamera>,
+        logger: Logger = Logger(
+            subsystem: Bundle.main.bundleIdentifier ?? "FerrostarCarPlayUI",
+            category: "FerrostarCarPlayManager"
+        ),
+        distanceUnits: MKDistanceFormatter.Units
     ) {
         self.ferrostarCore = ferrostarCore
-        self.styleURL = styleURL
+        _camera = camera
+        self.logger = logger
+        self.distanceUnits = distanceUnits
 
         super.init()
-
-//        sessionConfiguration = CPSessionConfiguration(delegate: self)
     }
+
+    // MARK: CPApplicationDelegate
 
     public func templateApplicationScene(
         _: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
-        to window: CPWindow
+        to _: CPWindow
     ) {
-        // Retain references to the interface controller and window for
-        // the entire duration of the CarPlay session.
         self.interfaceController = interfaceController
-        carWindow = window
 
-        // Assign the window's root view controller to the view controller
-        // that draws your map content.
-        window.rootViewController = UIHostingController {
-            CarPlayNavigationView(styleURL: styleURL)
-                .environmentObject(ferrostarCore)
-        }
-
-        // Create a map template and set it as the root.
-        let mapTemplate = makeMapTemplate()
-        interfaceController.setRootTemplate(mapTemplate, animated: true,
-                                            completion: nil)
-    }
-
-    func makeMapTemplate() -> CPMapTemplate {
+        // Create the map template
         let mapTemplate = CPMapTemplate()
-        return mapTemplate
+
+        // Create the navigation adapter
+        ferrostarAdapter = FerrostarCarPlayAdapter(ferrostarCore: ferrostarCore,
+                                                   distanceUnits: distanceUnits)
+
+        ferrostarAdapter?.setup(
+            on: mapTemplate,
+            showCentering: !camera.isTrackingUserLocationWithCourse,
+            onCenter: { [weak self] in
+                self?.camera = .automotiveNavigation(pitch: 25)
+            },
+            onStartTrip: {
+                // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
+            },
+            onCancelTrip: { [weak self] in
+                self?.ferrostarCore.stopNavigation()
+            }
+        )
+
+        // Set the root template
+        interfaceController.setRootTemplate(mapTemplate, animated: true) { [weak self] success, error in
+            if let error {
+                self?.logger.error("Failed didConnect to CPWindow with error: \(error)")
+            } else {
+                self?.logger.debug("Connected to CPWindow - template presented: \(success)")
+            }
+        }
+    }
+
+    public func templateApplicationScene(
+        _: CPTemplateApplicationScene,
+        didDisconnect _: CPInterfaceController,
+        from _: CPWindow
+    ) {
+        interfaceController = nil
+        ferrostarAdapter = nil
     }
 }
 
-@MainActor
-extension FerrostarCarPlayManager: CPTemplateApplicationDashboardSceneDelegate {
-    public func templateApplicationDashboardScene(
-        _: CPTemplateApplicationDashboardScene,
-        didConnect _: CPDashboardController,
-        to _: UIWindow
-    ) {}
+extension FerrostarCarPlayManager: CPMapTemplateDelegate {
+    public func mapTemplate(_: CPMapTemplate, selectedPreviewFor _: CPTrip, using _: CPRouteChoice) {
+        // TODO: What is this for?
+    }
 
-    public func templateApplicationDashboardScene(
-        _: CPTemplateApplicationDashboardScene,
-        didDisconnect _: CPDashboardController,
-        from _: UIWindow
-    ) {}
-}
-
-@MainActor
-extension FerrostarCarPlayManager: CPTemplateApplicationInstrumentClusterSceneDelegate {
-    public func templateApplicationInstrumentClusterScene(
-        _: CPTemplateApplicationInstrumentClusterScene,
-        didConnect _: CPInstrumentClusterController
-    ) {}
-
-    public func templateApplicationInstrumentClusterScene(
-        _: CPTemplateApplicationInstrumentClusterScene,
-        didDisconnectInstrumentClusterController _: CPInstrumentClusterController
-    ) {}
+    public func mapTemplate(_: CPMapTemplate, startedTrip _: CPTrip, using _: CPRouteChoice) {
+        // TODO: What is this for?
+    }
 }

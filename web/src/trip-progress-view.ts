@@ -1,9 +1,12 @@
+import {
+  LocalizedDurationFormatter,
+  LocalizedDistanceFormatter,
+} from "@maptimy/platform-formatters";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-function roundToNearest(value: number, unit: number): number {
-  return Math.round(value / unit) * unit;
-}
+const DurationFormatter = LocalizedDurationFormatter();
+const DistanceFormatter = LocalizedDistanceFormatter();
 
 @customElement("trip-progress-view")
 export class TripProgressView extends LitElement {
@@ -20,6 +23,7 @@ export class TripProgressView extends LitElement {
         background-color: white;
         border-radius: 50px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: sans-serif;
       }
 
       .arrival-text {
@@ -27,47 +31,20 @@ export class TripProgressView extends LitElement {
         margin: 0 15px;
         white-space: nowrap;
       }
+      @media (max-width: 600px) {
+        .progress-view-card {
+          padding: 10px;
+        }
+
+        .arrival-text {
+          margin: 0 5px;
+        }
+      }
     `,
   ];
 
-  getArrivalTime(seconds: number) {
-    const now = new Date();
-    const minutesToAdd = Math.round(seconds / 60);
-    const arrivalTime = new Date(now.getTime() + minutesToAdd * 60 * 1000);
-    const hours = arrivalTime.getHours();
-    const minutes = arrivalTime.getMinutes();
-    return `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
-  }
-
-  getDistanceRemaining(meters: number) {
-    // TODO: Consider extracting this to Rust; Kotlin has the same logic
-    if (meters > 1_000) {
-      let value = meters / 1_000;
-
-      if (value > 10_000) {
-        value = roundToNearest(value, 1);
-      } else {
-        value = roundToNearest(value, 0.1);
-      }
-
-      return `${value.toLocaleString()}km`;
-    } else {
-      let value;
-      if (meters > 100) {
-        value = roundToNearest(meters, 100);
-      } else if (meters > 10) {
-        value = roundToNearest(meters, 10);
-      } else {
-        value = roundToNearest(meters, 5);
-      }
-
-      return `${value.toLocaleString()}m`;
-    }
-  }
-
-  getDurationRemaining(seconds: number) {
-    const minutes = Math.floor(seconds / 60);
-    return `${minutes}m`;
+  getEstimatedArrival(durationRemaining: number) {
+    return new Date(new Date().getTime() + durationRemaining * 1000);
   }
 
   render() {
@@ -75,17 +52,20 @@ export class TripProgressView extends LitElement {
       return html`
         <div class="progress-view-card">
           <p class="arrival-text">
-            ${this.getArrivalTime(
+            ${this.getEstimatedArrival(
+              this.tripState.Navigating.progress.durationRemaining,
+            ).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+          <p class="arrival-text">
+            ${DurationFormatter.format(
               this.tripState.Navigating.progress.durationRemaining,
             )}
           </p>
           <p class="arrival-text">
-            ${this.getDurationRemaining(
-              this.tripState.Navigating.progress.durationRemaining,
-            )}
-          </p>
-          <p class="arrival-text">
-            ${this.getDistanceRemaining(
+            ${DistanceFormatter.format(
               this.tripState.Navigating.progress.distanceRemaining,
             )}
           </p>

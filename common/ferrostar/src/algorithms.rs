@@ -49,8 +49,8 @@ pub fn index_of_closest_segment_origin(location: UserLocation, line: &LineString
             // In case you're tempted to say that this looks like cross track distance,
             // note that the Line type here is actually a line *segment*,
             // and we actually want to find the closest segment, not the closest mathematical line.
-            let dist1 = Euclidean::distance(line_segment_1, &point);
-            let dist2 = Euclidean::distance(line_segment_2, &point);
+            let dist1 = Euclidean.distance(line_segment_1, &point);
+            let dist2 = Euclidean.distance(line_segment_2, &point);
             dist1.total_cmp(&dist2)
         })
         .map(|(index, _)| index as u64)
@@ -68,7 +68,7 @@ fn get_bearing_to_next_point(
     let current = points.next()?;
     let next = points.next()?;
 
-    let degrees = Geodesic::bearing(current, next);
+    let degrees = Geodesic.bearing(current, next);
     Some(CourseOverGround::new(degrees, None))
 }
 
@@ -139,7 +139,7 @@ pub(crate) fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Poi
     // Bail early when we have two essentially identical points.
     // This can cause some issues with edge cases (captured in proptest regressions)
     // with the underlying libraries.
-    if Euclidean::distance(line, point) < 0.000_001 {
+    if Euclidean.distance(line, point) < 0.000_001 {
         return Some(*point);
     }
 
@@ -204,7 +204,7 @@ pub(crate) fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Poi
 /// ```
 pub fn deviation_from_line(point: &Point, line: &LineString) -> Option<f64> {
     snap_point_to_line(point, line).and_then(|snapped| {
-        let distance = Haversine::distance(snapped, *point);
+        let distance = Haversine.distance(snapped, *point);
 
         if distance.is_nan() || distance.is_infinite() {
             None
@@ -224,7 +224,7 @@ pub(crate) fn is_within_threshold_to_end_of_linestring(
         .last()
         .map_or(false, |end_coord| {
             let end_point = Point::from(*end_coord);
-            let distance_to_end = Haversine::distance(end_point, *current_position);
+            let distance_to_end = Haversine.distance(end_point, *current_position);
 
             distance_to_end <= threshold
         })
@@ -253,7 +253,7 @@ pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
 /// The result is given in meters.
 /// The result may be [`None`] in case of invalid input such as infinite floats.
 fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
-    let total_length = linestring.length::<Haversine>();
+    let total_length = Haversine.length(linestring);
     if total_length == 0.0 {
         return Some(0.0);
     }
@@ -266,9 +266,9 @@ fn distance_along(point: &Point, linestring: &LineString) -> Option<f64> {
 
             // Compute distance to the line (sadly Euclidean only; no haversine_distance in GeoRust
             // but this is probably OK for now)
-            let segment_distance_to_point = Euclidean::distance(&segment, point);
+            let segment_distance_to_point = Euclidean.distance(&segment, point);
             // Compute total segment length in meters
-            let segment_length = segment_linestring.length::<Haversine>();
+            let segment_length = Haversine.length(&segment_linestring);
 
             if segment_distance_to_point < closest_dist_to_point {
                 let segment_fraction = segment.line_locate_point(point)?;
@@ -298,7 +298,7 @@ fn travel_distance_to_end_of_step(
     snapped_location: &Point,
     current_step_linestring: &LineString,
 ) -> Option<f64> {
-    let step_length = current_step_linestring.length::<Haversine>();
+    let step_length = Haversine.length(current_step_linestring);
     distance_along(snapped_location, current_step_linestring)
         .map(|traversed| step_length - traversed)
 }
@@ -424,7 +424,7 @@ proptest! {
             prop_assert!(is_valid_float(x) || (!is_valid_float(x1) && x == x1));
             prop_assert!(is_valid_float(y) || (!is_valid_float(y1) && y == y1));
 
-            prop_assert!(Euclidean::distance(&line, &snapped) < 0.000001);
+            prop_assert!(Euclidean.distance(&line, &snapped) < 0.000001);
         } else {
             // Edge case 1: extremely small differences in values
             let is_miniscule_difference = (x1 - x2).abs() < 0.00000001 || (y1 - y2).abs() < 0.00000001;
