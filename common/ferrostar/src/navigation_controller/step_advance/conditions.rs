@@ -439,4 +439,25 @@ mod tests {
             assert!(Point::from(location).haversine_distance(&end_of_step) < distance as f64)
         }
     }
+
+    #[test]
+    fn test_distance_from_end_of_step() {
+        let end_of_step =
+
+
+    }
+
+    #[test]
+    fn test_minimum_distance_from_current_step() {}
+
+    // Combination Rules
+
+    #[test]
+    fn test_or_condition() {}
+
+    #[test]
+    fn test_and_condition() {}
+
+    #[test]
+    fn test_entry_and_exit_condition() {}
 }
