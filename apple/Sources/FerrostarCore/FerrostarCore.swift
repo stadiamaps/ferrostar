@@ -72,7 +72,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public weak var delegate: FerrostarCoreDelegate?
 
     /// The spoken instruction observer; responsible for text-to-speech announcements.
-    public var spokenInstructionObserver: SpokenInstructionObserver?
+    public let spokenInstructionObserver: SpokenInstructionObserver
 
     /// The minimum time to wait before initiating another route recalculation.
     ///
@@ -124,13 +124,16 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
         networkSession: URLRequestLoading,
-        annotation: (any AnnotationPublishing)? = nil
+        annotation: (any AnnotationPublishing)? = nil,
+        spokenInstructionObserver: SpokenInstructionObserver =
+            .initAVSpeechSynthesizer() // Set up the a standard Apple AV Speech Synth.
     ) {
         self.routeProvider = routeProvider
         self.locationProvider = locationProvider
         config = navigationControllerConfig
         self.networkSession = networkSession
         self.annotation = annotation
+        self.spokenInstructionObserver = spokenInstructionObserver
 
         super.init()
 
@@ -310,7 +313,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         state = nil
         queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()
-        spokenInstructionObserver?.stopAndClearQueue()
+        spokenInstructionObserver.stopAndClearQueue()
         lastRecalculationLocation = nil
     }
 
@@ -393,7 +396,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     // we'll probably remove the need for this eventually
                     // by making FerrostarCore its own actor
                     DispatchQueue.global(qos: .default).async {
-                        self.spokenInstructionObserver?.spokenInstructionTriggered(spokenInstruction)
+                        self.spokenInstructionObserver.spokenInstructionTriggered(spokenInstruction)
                     }
                 }
             default:

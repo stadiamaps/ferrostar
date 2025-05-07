@@ -32,8 +32,8 @@ struct DemoNavigationView: View {
                 styleURL: AppDefaults.mapStyleURL,
                 camera: $appEnvironment.camera.camera,
                 navigationState: appEnvironment.ferrostarCore.state,
-                isMuted: appEnvironment.spokenInstructionObserver.isMuted,
-                onTapMute: appEnvironment.spokenInstructionObserver.toggleMute,
+                isMuted: appEnvironment.ferrostarCore.spokenInstructionObserver.isMuted,
+                onTapMute: appEnvironment.ferrostarCore.spokenInstructionObserver.toggleMute,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
                     let source = ShapeSource(identifier: "userLocation") {

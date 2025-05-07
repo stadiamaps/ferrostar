@@ -20,7 +20,6 @@ enum DemoAppError: Error {
 class AppEnvironment: ObservableObject {
     var locationProvider: LocationProviding
     @Published var ferrostarCore: FerrostarCore
-    @Published var spokenInstructionObserver: SpokenInstructionObserver
     @Published var camera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
 
     let navigationDelegate = NavigationDelegate()
@@ -29,9 +28,6 @@ class AppEnvironment: ObservableObject {
         let simulated = SimulatedLocationProvider(location: initialLocation)
         simulated.warpFactor = 2
         locationProvider = simulated
-
-        // Set up the a standard Apple AV Speech Synth.
-        spokenInstructionObserver = .initAVSpeechSynthesizer()
 
         // Configure the navigation session.
         // You have a lot of flexibility here based on your use case.
@@ -61,14 +57,6 @@ class AppEnvironment: ObservableObject {
 
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
-
-        // Initialize text-to-speech; note that this is NOT automatic.
-        // You must set a spokenInstructionObserver.
-        // Fortunately, this is pretty easy with the provided class
-        // backed by AVSpeechSynthesizer.
-        // You can customize the instance it further as needed,
-        // or replace with your own.
-        ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
     }
 
     func getRoutes() async throws -> [Route] {
