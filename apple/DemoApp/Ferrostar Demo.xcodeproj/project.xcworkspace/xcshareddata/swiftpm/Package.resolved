@@ -1,5 +1,5 @@
 {
-  "originHash" : "744a0ae659b64807871ea942d6e59965bff2d0e86920ea6d1ba0dc9587578660",
+  "originHash" : "2de37ddd210ec3a7ac1bb31b310d6cec67f2fc16d8665c70ac79a0a5df2a8d43",
   "pins" : [
     {
       "identity" : "maplibre-gl-native-distribution",
@@ -26,15 +26,6 @@
       "state" : {
         "revision" : "0687f71944021d616d34d922343dcef086855920",
         "version" : "600.0.1"
-      }
-    },
-    {
-      "identity" : "swiftui-dsl",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/maplibre/swiftui-dsl",
-      "state" : {
-        "revision" : "579c378d79effb93e43392f57bac625edb18565a",
-        "version" : "0.11.0"
       }
     },
     {
