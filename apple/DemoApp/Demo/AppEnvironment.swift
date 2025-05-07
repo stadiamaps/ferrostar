@@ -16,19 +16,8 @@ enum DemoAppError: Error {
     case other(Error)
 }
 
-/// This is a shared core where ferrostar lives
-class AppEnvironment: ObservableObject {
-    var locationProvider: LocationProviding
-    @Published var ferrostarCore: FerrostarCore
-    @Published var camera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
-
-    let navigationDelegate = NavigationDelegate()
-
-    init(initialLocation: CLLocation = AppDefaults.initialLocation) {
-        let simulated = SimulatedLocationProvider(location: initialLocation)
-        simulated.warpFactor = 2
-        locationProvider = simulated
-
+extension FerrostarCore {
+    convenience init(locationProvider: LocationProviding) throws {
         // Configure the navigation session.
         // You have a lot of flexibility here based on your use case.
         let config = SwiftNavigationControllerConfig(
@@ -41,7 +30,7 @@ class AppEnvironment: ObservableObject {
             snappedLocationCourseFiltering: .snapToRoute
         )
 
-        ferrostarCore = try! FerrostarCore(
+        try self.init(
             valhallaEndpointUrl: URL(
                 string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)"
             )!,
@@ -54,6 +43,29 @@ class AppEnvironment: ObservableObject {
             // but this is fully extendable!
             annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
         )
+    }
+}
+
+extension CLLocation {
+    var simulatedLocationProvider: LocationProviding {
+        let simulated = SimulatedLocationProvider(location: self)
+        simulated.warpFactor = 2
+        return simulated
+    }
+}
+
+/// This is a shared core where ferrostar lives
+class AppEnvironment: ObservableObject {
+    var locationProvider: LocationProviding
+    @Published var ferrostarCore: FerrostarCore
+    @Published var camera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
+
+    let navigationDelegate = NavigationDelegate()
+
+    init(initialLocation: CLLocation = AppDefaults.initialLocation) throws {
+        locationProvider = initialLocation.simulatedLocationProvider
+
+        ferrostarCore = try FerrostarCore(locationProvider: locationProvider)
 
         // NOTE: Not all applications will need a delegate. Read the NavigationDelegate documentation for details.
         ferrostarCore.delegate = navigationDelegate
