@@ -79,50 +79,6 @@ impl StepAdvanceCondition for DistanceToEndOfStep {
     }
 }
 
-/// Allows navigation to advance to the next step as soon as the user
-/// comes within this distance (in meters) of the end of the current step.
-///
-/// This results in *early* advance when the user is near the goal.
-pub struct DistanceFromEndOfStep {
-    /// The minimum required horizontal accuracy of the user location, in meters.
-    /// Values larger than this cannot ever trigger a step advance.
-    pub minimum_horizontal_accuracy: u16,
-    /// The minimum the distance the user must have travelled from the step's polyline.
-    pub distance: u16,
-}
-
-impl StepAdvanceCondition for DistanceFromEndOfStep {
-    #[allow(unused_variables)]
-    fn should_advance_step(
-        &self,
-        user_location: UserLocation,
-        current_step: RouteStep,
-        next_step: Option<RouteStep>,
-    ) -> StepAdvanceResult {
-        // Exit early if the user location is not accurate enough.
-        let should_advance =
-            if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
-                false
-            } else if is_within_threshold_to_end_of_linestring(
-                &user_location.into(),
-                &current_step.get_linestring(),
-                f64::from(self.distance),
-            ) {
-                true
-            } else {
-                false
-            };
-
-        StepAdvanceResult {
-            should_advance,
-            next_iteration: Arc::new(DistanceFromEndOfStep {
-                minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-                distance: self.distance,
-            }),
-        }
-    }
-}
-
 /// Requires that the user be at least this far (distance in meters)
 /// from the current route step.
 ///
@@ -134,7 +90,7 @@ impl StepAdvanceCondition for DistanceFromEndOfStep {
 /// NOTE! This may be less robust to things like short steps, out and backs and U-turns,
 /// where this may eagerly exit a current step before the user has traversed it if the start
 /// the step within range of the end.
-pub struct MinimumDistanceFromCurrentStepLine {
+pub struct DistanceFromStep {
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
     pub minimum_horizontal_accuracy: u16,
@@ -142,7 +98,7 @@ pub struct MinimumDistanceFromCurrentStepLine {
     pub distance: u16,
 }
 
-impl StepAdvanceCondition for MinimumDistanceFromCurrentStepLine {
+impl StepAdvanceCondition for DistanceFromStep {
     #[allow(unused_variables)]
     fn should_advance_step(
         &self,
@@ -165,7 +121,7 @@ impl StepAdvanceCondition for MinimumDistanceFromCurrentStepLine {
 
         StepAdvanceResult {
             should_advance,
-            next_iteration: Arc::new(MinimumDistanceFromCurrentStepLine {
+            next_iteration: Arc::new(DistanceFromStep {
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                 distance: self.distance,
             }),
@@ -295,7 +251,7 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
         next_step: Option<RouteStep>,
     ) -> StepAdvanceResult {
         if self.has_reached_end_of_current_step {
-            let distance_from_end = DistanceFromEndOfStep {
+            let distance_from_end = DistanceFromStep {
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                 distance: self.distance_after_end_step,
             };
@@ -334,26 +290,10 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
 
 #[cfg(test)]
 mod tests {
-    use crate::{
-        models::GeographicCoordinate,
-        navigation_controller::test_helpers::{get_test_route, TestRoute},
-    };
-    use geo::HaversineDistance;
+    use crate::models::GeographicCoordinate;
     use std::time::SystemTime;
 
     use super::*;
-
-    fn load_route_steps(
-        test_route: TestRoute,
-        step_index: usize,
-    ) -> (RouteStep, Option<RouteStep>) {
-        let route = get_test_route(test_route);
-        let steps = route.steps;
-        (
-            steps[step_index].clone(),
-            steps.get(step_index + 1).cloned(),
-        )
-    }
 
     fn user_location(lat: f64, lng: f64, horizontal_accuracy: f64) -> UserLocation {
         UserLocation {
@@ -365,99 +305,372 @@ mod tests {
         }
     }
 
-    /// Runs through the step geometry and returns a list of booleans
-    /// indicating whether the step should advance at each point.
-    fn calculate_step_advance_along_step(
-        condition: Arc<dyn StepAdvanceCondition>,
-        test_route: TestRoute,
-        step_index: usize,
-    ) -> (Vec<(bool, UserLocation)>, RouteStep, Option<RouteStep>) {
-        let (step, next_step) = load_route_steps(test_route, step_index);
-        (
-            step.clone()
-                .geometry
-                .iter()
-                .map(|c| {
-                    let user_location = user_location(c.lat, c.lng, 10.0);
-                    let result = condition.should_advance_step(
-                        user_location,
-                        step.clone(),
-                        next_step.clone(),
-                    );
-                    (result.should_advance, user_location)
-                })
-                .collect::<Vec<_>>(),
-            step,
-            next_step,
-        )
-    }
-
-    fn extract_step_advance_points(
-        states: &[(bool, UserLocation)],
-    ) -> Vec<(usize, &(bool, UserLocation))> {
-        states
-            .iter()
-            .enumerate()
-            .filter(|(_, (should_advance, _))| *should_advance)
-            .collect()
-    }
-
     #[test]
     fn test_manual_step_advance() {
-        let (states, _, _) =
-            calculate_step_advance_along_step(Arc::new(ManualStepAdvance), TestRoute::Extended, 0);
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a location that's far from the end of the step
+        // This point is near the beginning of the step, not the end
+        let user_location = user_location(0.0, 0.0001, 5.0);
+
+        let condition = ManualStepAdvance;
+
+        // Test the condition - we should NOT advance since we're far from the end
+        let result = condition.should_advance_step(user_location, route_step, None);
 
         // We should never advance to the next step in manual mode,
         // so the list should always be empty.
-        assert!(extract_step_advance_points(&states).is_empty());
-    }
-
-    #[test]
-    fn test_distance_to_end_of_step() {
-        let distance = 10;
-        let (states, current_step, _) = calculate_step_advance_along_step(
-            Arc::new(DistanceToEndOfStep {
-                distance,
-                minimum_horizontal_accuracy: 20,
-            }),
-            TestRoute::Extended,
-            0,
+        assert!(
+            !result.should_advance,
+            "Should not advance with the manual condition"
         );
+    }
 
-        let advance_points = extract_step_advance_points(&states);
+    #[test]
+    fn test_distance_to_end_of_step_doesnt_advance() {
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
 
-        // We should have advanced at some point
-        assert!(!advance_points.is_empty());
+        // Create a location that's far from the end of the step
+        // This point is near the beginning of the step, not the end
+        let user_location = user_location(0.0, 0.0001, 5.0);
 
-        let end_of_step = Point::from(
-            current_step
-                .geometry
-                .last()
-                .expect("Expected a step geometry"),
+        // Set up the condition with a distance threshold of 20 meters
+        let condition = DistanceToEndOfStep {
+            minimum_horizontal_accuracy: 10,
+            distance: 20, // Must be within 20 meters of the end to advance
+        };
+
+        // Test the condition - we should NOT advance since we're far from the end
+        let result = condition.should_advance_step(user_location, route_step, None);
+
+        assert!(
+            !result.should_advance,
+            "Should not advance when far from the end of the step"
         );
-        for (_, (_, location)) in advance_points {
-            assert!(Point::from(location).haversine_distance(&end_of_step) < distance as f64)
-        }
     }
 
     #[test]
-    fn test_distance_from_end_of_step() {
-        let end_of_step =
+    fn test_distance_to_end_of_step_advance() {
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
 
+        // Create a location that's very close to the end point of the step
+        let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
 
+        // Set up the condition with a distance threshold of 20 meters
+        let condition = DistanceToEndOfStep {
+            minimum_horizontal_accuracy: 10,
+            distance: 20, // Must be within 20 meters of the end to advance
+        };
+
+        // Test the condition - we SHOULD advance since we're close to the end
+        let result = condition.should_advance_step(user_location, route_step, None);
+
+        assert!(
+            result.should_advance,
+            "Should advance when close to the end of the step"
+        );
     }
 
     #[test]
-    fn test_minimum_distance_from_current_step() {}
+    fn test_distance_from_step_doesnt_advance() {
+        // Create a straight line route step running east to west
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a location that's on the line (so deviation = 0)
+        let user_location = user_location(0.0, 0.0005, 5.0); // Point directly on the line
+
+        // Set up the condition with a minimum deviation of 100 meters to advance
+        let condition = DistanceFromStep {
+            minimum_horizontal_accuracy: 10,
+            distance: 100, // Must be at least 100 meters from route to advance
+        };
+
+        // Test the condition - we should NOT advance since we're right on the route
+        let result = condition.should_advance_step(user_location, route_step, None);
+
+        assert!(
+            !result.should_advance,
+            "Should not advance when on the route"
+        );
+    }
+
+    #[test]
+    fn test_distance_from_step_advance() {
+        // Create a straight line route step running east to west
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a location that's far from the route (500+ meters north)
+        // At the equator, 0.005° latitude is approximately 555 meters
+        let user_location = user_location(0.005, 0.0005, 5.0);
+
+        // Set up the condition with a minimum deviation of 100 meters to advance
+        let condition = DistanceFromStep {
+            minimum_horizontal_accuracy: 10,
+            distance: 100, // Must be at least 100 meters from route to advance
+        };
+
+        // Test the condition - we SHOULD advance since we're far from the route
+        let result = condition.should_advance_step(user_location, route_step, None);
+
+        assert!(
+            result.should_advance,
+            "Should advance when far from the route"
+        );
+    }
 
     // Combination Rules
 
     #[test]
-    fn test_or_condition() {}
+    fn test_or_condition_doesnt_advance() {
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a location for testing
+        let user_location = user_location(0.0, 0.0001, 5.0);
+
+        // Create two false conditions - both manual step advance
+        let manual_condition1 = ManualStepAdvance;
+        let manual_condition2 = ManualStepAdvance;
+
+        // Create an OR condition - should only advance when at least one condition is true
+        let or_condition = OrAdvanceConditions {
+            conditions: vec![Arc::new(manual_condition1), Arc::new(manual_condition2)],
+        };
+
+        // Test the condition - we should NOT advance since both conditions are false
+        let result = or_condition.should_advance_step(user_location, route_step, None);
+
+        assert!(
+            !result.should_advance,
+            "Should not advance when all OR conditions are false"
+        );
+    }
 
     #[test]
-    fn test_and_condition() {}
+    fn test_or_condition_advance() {
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a location that's very close to the end point of the step
+        let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
+
+        // Create a false condition
+        let manual_condition = ManualStepAdvance;
+
+        // Create a true condition - distance to end of step
+        let distance_condition = DistanceToEndOfStep {
+            minimum_horizontal_accuracy: 10,
+            distance: 20, // Must be within 20 meters of the end to advance
+        };
+
+        // Create an OR condition - should advance when any condition is true
+        let or_condition = OrAdvanceConditions {
+            conditions: vec![Arc::new(manual_condition), Arc::new(distance_condition)],
+        };
+
+        // Test the condition - we SHOULD advance since one condition is true
+        let result = or_condition.should_advance_step(user_location, route_step, None);
+
+        assert!(
+            result.should_advance,
+            "Should advance when at least one OR condition is true"
+        );
+    }
 
     #[test]
-    fn test_entry_and_exit_condition() {}
+    fn test_and_condition_doesnt_advance() {
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a location that's very close to the end point of the step
+        let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
+
+        // Create a false condition
+        let manual_condition = ManualStepAdvance;
+
+        // Create a true condition - distance to end of step
+        let distance_condition = DistanceToEndOfStep {
+            minimum_horizontal_accuracy: 10,
+            distance: 20, // Must be within 20 meters of the end to advance
+        };
+
+        // Create an AND condition - should only advance when all conditions are true
+        let and_condition = AndAdvanceConditions {
+            conditions: vec![
+                Arc::new(manual_condition),   // This will always be false
+                Arc::new(distance_condition), // This will be true
+            ],
+        };
+
+        // Test the condition - we should NOT advance since one condition is false
+        let result = and_condition.should_advance_step(user_location, route_step, None);
+
+        assert!(
+            !result.should_advance,
+            "Should not advance when at least one AND condition is false"
+        );
+    }
+
+    #[test]
+    fn test_and_condition_advance() {
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a location that's very close to the end point of the step
+        let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
+
+        // Create two true conditions - both distance to end of step but with different thresholds
+        let distance_condition1 = DistanceToEndOfStep {
+            minimum_horizontal_accuracy: 10,
+            distance: 30, // Must be within 30 meters of the end to advance
+        };
+
+        let distance_condition2 = DistanceToEndOfStep {
+            minimum_horizontal_accuracy: 10,
+            distance: 20, // Must be within 20 meters of the end to advance
+        };
+
+        // Create an AND condition - should only advance when all conditions are true
+        let and_condition = AndAdvanceConditions {
+            conditions: vec![Arc::new(distance_condition1), Arc::new(distance_condition2)],
+        };
+
+        // Test the condition - we SHOULD advance since both conditions are true
+        let result = and_condition.should_advance_step(user_location, route_step, None);
+
+        assert!(
+            result.should_advance,
+            "Should advance when all AND conditions are true"
+        );
+    }
+
+    // Stateful Conditions
+
+    #[test]
+    fn test_entry_and_exit_condition_doesnt_advance() {
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a condition that requires proximity to end followed by distance from step
+        let condition = DistanceEntryAndExitCondition::new(
+            10, // minimum horizontal accuracy
+            20, // distance to end of step (20 meters)
+            5,  // distance after end step (5 meters)
+        );
+
+        // First update: User is close to the end of the step
+        let user_location_near_end = user_location(0.0, 0.00099, 5.0); // Almost at the end point
+
+        // Should not advance yet, but should update internal state
+        let result1 =
+            condition.should_advance_step(user_location_near_end, route_step.clone(), None);
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update even when near end of step"
+        );
+
+        // Second update: User has moved but is still too close to the route
+        // This is only 2 meters from the end point, not the required 5 meters
+        let user_location_still_close = user_location(0.00002, 0.001, 5.0);
+
+        // Get the next iteration from the first result
+        let next_condition = result1.next_iteration;
+
+        // Should still not advance because we haven't moved far enough away
+        let result2 =
+            next_condition.should_advance_step(user_location_still_close, route_step, None);
+
+        assert!(
+            !result2.should_advance,
+            "Should not advance when user hasn't moved far enough from the route"
+        );
+    }
+
+    #[test]
+    fn test_entry_and_exit_condition_advance() {
+        // Create a straight line route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
+                (0.0, 0.0),   // Origin
+                (0.001, 0.0), // 111 meters east at the equator
+            ]);
+
+        // Create a condition that requires proximity to end followed by distance from step
+        let condition = DistanceEntryAndExitCondition::new(
+            10, // minimum horizontal accuracy
+            20, // distance to end of step (20 meters)
+            5,  // distance after end step (5 meters)
+        );
+
+        // First update: User is close to the end of the step
+        let user_location_near_end = user_location(0.0, 0.00099, 5.0); // Almost at the end point
+
+        // Should not advance yet, but should update internal state
+        let result1 =
+            condition.should_advance_step(user_location_near_end, route_step.clone(), None);
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update even when near end of step"
+        );
+
+        // Get the next iteration with updated internal state
+        let next_condition = result1.next_iteration;
+
+        // Second update: User has moved far enough from the route (> 5 meters)
+        // ~55 meters north of the route (0.0005 degrees latitude)
+        let user_location_far = user_location(0.0005, 0.001, 5.0);
+
+        // Now should advance because we've satisfied both conditions sequentially
+        let result2 = next_condition.should_advance_step(user_location_far, route_step, None);
+
+        assert!(
+            result2.should_advance,
+            "Should advance when user has first reached end of step and then moved away"
+        );
+    }
 }

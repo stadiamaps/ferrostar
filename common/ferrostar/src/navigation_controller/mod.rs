@@ -429,7 +429,7 @@ mod tests {
     use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
     use crate::navigation_controller::models::CourseFiltering;
     use crate::navigation_controller::step_advance::conditions::{
-        DistanceEntryAndExitCondition, DistanceToEndOfStep, MinimumDistanceFromCurrentStepLine,
+        DistanceEntryAndExitCondition, DistanceToEndOfStep,
     };
     use crate::navigation_controller::test_helpers::{get_test_route, TestRoute};
     use crate::simulation::{
@@ -521,8 +521,7 @@ mod tests {
     fn test_extended_relative_linestring() {
         insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
             get_test_route(TestRoute::Extended),
-            // TODO: This condition should probably be tuned to replace the relative line string distance condition
-            Arc::new(DistanceEntryAndExitCondition::default())
+            Arc::new(DistanceEntryAndExitCondition::new(0, 0, 0))
         ));
     }
 
@@ -541,8 +540,7 @@ mod tests {
     fn test_self_intersecting_relative_linestring() {
         insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
             get_test_route(TestRoute::SelfIntersecting),
-            // TODO: This condition should probably be tuned to replace the relative line string distance condition
-            Arc::new(DistanceEntryAndExitCondition::default())
+            Arc::new(DistanceEntryAndExitCondition::new(0, 0, 0))
         ));
     }
 
@@ -550,8 +548,8 @@ mod tests {
     fn test_self_intersecting_relative_linestring_min_line_distance() {
         insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
             get_test_route(TestRoute::SelfIntersecting),
-            Arc::new(MinimumDistanceFromCurrentStepLine {
-                distance: 10,
+            Arc::new(DistanceToEndOfStep {
+                distance: 0,
                 minimum_horizontal_accuracy: 0,
             })
         ));

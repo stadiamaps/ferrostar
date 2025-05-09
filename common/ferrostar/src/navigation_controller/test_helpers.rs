@@ -65,6 +65,49 @@ pub fn gen_dummy_route_step(
     }
 }
 
+/// Creates a RouteStep with a list of coordinates.
+///
+/// This is useful for testing specific scenarios where you need more control over the
+/// route geometry.
+///
+/// # Arguments
+///
+/// * `coordinates` - A vector of (longitude, latitude) pairs that will be converted to `GeographicCoordinate`s
+pub fn gen_route_step_with_coords(coordinates: Vec<(f64, f64)>) -> RouteStep {
+    if coordinates.len() < 2 {
+        panic!("A route step requires at least 2 coordinates");
+    }
+
+    let geo_coordinates: Vec<GeographicCoordinate> = coordinates
+        .into_iter()
+        .map(|(lng, lat)| GeographicCoordinate { lng, lat })
+        .collect();
+
+    // Calculate the total distance along the route
+    let points: Vec<Point> = geo_coordinates
+        .iter()
+        .map(|coord| point!(x: coord.lng, y: coord.lat))
+        .collect();
+
+    let mut total_distance = 0.0;
+    for i in 0..points.len() - 1 {
+        total_distance += Haversine.distance(points[i], points[i + 1]);
+    }
+
+    RouteStep {
+        geometry: geo_coordinates,
+        distance: total_distance,
+        duration: 0.0,
+        road_name: None,
+        exits: vec![],
+        instruction: "".to_string(),
+        visual_instructions: vec![],
+        spoken_instructions: vec![],
+        annotations: None,
+        incidents: vec![],
+    }
+}
+
 pub fn gen_route_from_steps(steps: Vec<RouteStep>) -> Route {
     let geometry: Vec<_> = steps
         .iter()
