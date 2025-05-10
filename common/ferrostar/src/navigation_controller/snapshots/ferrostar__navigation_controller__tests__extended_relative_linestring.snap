@@ -1,9 +1,18 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvanceMode::RelativeLineStringDistance {\n        minimum_horizontal_accuracy: 0,\n        special_advance_conditions: None,\n    })"
+expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{ minimum_horizontal_accuracy: 0, special_advance_conditions: None, })"
 ---
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775707
+        lng: -74.031614
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 151
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775707
@@ -486,6 +495,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775349
+        lng: -74.031354
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 174
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775349
@@ -968,6 +986,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.775302
+        lng: -74.031348
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 175
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775302
@@ -1450,6 +1477,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.775254
+        lng: -74.031343
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 159
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775254
@@ -1932,6 +1968,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775191
+        lng: -74.031311
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 246
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775191
@@ -2386,6 +2431,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775168
+        lng: -74.031379
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 248
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775168
@@ -2840,6 +2894,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.775146
+        lng: -74.03145
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 260
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775146
@@ -3294,6 +3357,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 40.775131
+        lng: -74.03156
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 276
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775131
@@ -3748,6 +3820,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.775137
+        lng: -74.031634
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 275
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775137
@@ -4202,6 +4283,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.775142
+        lng: -74.031708
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 279
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775142
@@ -4656,6 +4746,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.775151
+        lng: -74.031786
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 285
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775151
@@ -5110,6 +5209,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.775165
+        lng: -74.031856
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 284
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775165
@@ -5564,6 +5672,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 40.775183
+        lng: -74.031948
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 284
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775183
@@ -6018,6 +6135,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 40.775201
+        lng: -74.032041
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 276
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775201
@@ -6472,6 +6598,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.775208
+        lng: -74.03213
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 276
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775208
@@ -6926,6 +7061,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.775215
+        lng: -74.03222
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 272
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775215
@@ -7380,6 +7524,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 40.775218
+        lng: -74.032336
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 269
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775218
@@ -7834,6 +7987,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.775217
+        lng: -74.032445
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 269
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775217
@@ -8288,6 +8450,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.775215
+        lng: -74.032553
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 269
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775215
@@ -8742,6 +8913,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775214
+        lng: -74.032662
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 247
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775214
@@ -9154,6 +9334,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775185
+        lng: -74.032751
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 247
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775185
@@ -9566,6 +9755,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775156
+        lng: -74.03284
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 255
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775156
@@ -9978,6 +10176,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.775144
+        lng: -74.0329
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 254
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775144
@@ -10390,6 +10597,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 40.775131
+        lng: -74.03296
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 249
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775131
@@ -10802,6 +11018,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.77511
+        lng: -74.033033
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 248
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77511
@@ -11214,6 +11439,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.775089
+        lng: -74.0331
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 245
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775089
@@ -11626,6 +11860,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.775068
+        lng: -74.033159
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 242
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775068
@@ -12038,6 +12281,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 40.775046
+        lng: -74.033214
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 238
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775046
@@ -12450,6 +12702,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.775016
+        lng: -74.033278
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 237
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775016
@@ -12862,6 +13123,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.774985
+        lng: -74.033342
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 233
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774985
@@ -13274,6 +13544,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 40.774956
+        lng: -74.033392
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 232
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774956
@@ -13686,6 +13965,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 40.774927
+        lng: -74.033441
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 227
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774927
@@ -14098,6 +14386,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.77489
+        lng: -74.033494
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 227
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77489
@@ -14510,6 +14807,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.774853
+        lng: -74.033547
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 223
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774853
@@ -14922,6 +15228,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 40.774819
+        lng: -74.033588
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 221
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774819
@@ -15334,6 +15649,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 40.774784
+        lng: -74.033628
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 219
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774784
@@ -15746,6 +16070,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 40.774714
+        lng: -74.033702
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 218
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774714
@@ -16158,6 +16491,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774649
+        lng: -74.033768
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 217
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774649
@@ -16570,6 +16912,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774583
+        lng: -74.033833
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 218
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774583
@@ -16982,6 +17333,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774518
+        lng: -74.033899
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 217
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774518
@@ -17394,6 +17754,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774452
+        lng: -74.033964
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 218
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774452
@@ -17806,6 +18175,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774387
+        lng: -74.03403
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 217
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774387
@@ -18218,6 +18596,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774322
+        lng: -74.034095
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 217
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774322
@@ -18630,6 +19017,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774256
+        lng: -74.034161
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 217
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774256
@@ -19042,6 +19438,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774191
+        lng: -74.034226
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 217
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774191
@@ -19454,6 +19859,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.774125
+        lng: -74.034292
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 217
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774125
@@ -19866,6 +20280,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.77406
+        lng: -74.034357
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 224
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77406
@@ -20278,6 +20701,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 40.774032
+        lng: -74.034393
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 230
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774032
@@ -20690,6 +21122,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 40.773997
+        lng: -74.034448
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 245
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.773997
@@ -21102,6 +21543,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 40.773973
+        lng: -74.034516
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 249
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.773973
@@ -21514,6 +21964,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 16
+    user_location:
+      coordinates:
+        lat: 40.773958
+        lng: -74.034568
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 263
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.773958
@@ -21926,6 +22385,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.773949
+        lng: -74.034668
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 266
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.773949
@@ -22338,6 +22806,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.773943
+        lng: -74.034778
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.773943
@@ -22696,6 +23173,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.773985
+        lng: -74.034873
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.773985
@@ -23054,6 +23540,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.774026
+        lng: -74.034967
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774026
@@ -23412,6 +23907,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.774068
+        lng: -74.035062
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774068
@@ -23770,6 +24274,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.774109
+        lng: -74.035157
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774109
@@ -24128,6 +24641,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.774151
+        lng: -74.035251
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774151
@@ -24486,6 +25008,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.774192
+        lng: -74.035346
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774192
@@ -24844,6 +25375,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.774231
+        lng: -74.035435
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774231
@@ -25202,6 +25742,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.77427
+        lng: -74.035524
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 298
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77427
@@ -25560,6 +26109,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 40.774298
+        lng: -74.035592
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 298
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774298
@@ -25918,6 +26476,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 40.774326
+        lng: -74.035661
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 299
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774326
@@ -26276,6 +26843,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.774355
+        lng: -74.035731
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 298
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774355
@@ -26634,6 +27210,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.774383
+        lng: -74.035801
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 297
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774383
@@ -26992,6 +27577,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.774411
+        lng: -74.035873
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774411
@@ -27350,6 +27944,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.774438
+        lng: -74.035946
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774438
@@ -27708,6 +28311,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.774469
+        lng: -74.036029
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774469
@@ -28066,6 +28678,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.774499
+        lng: -74.036112
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774499
@@ -28424,6 +29045,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 40.774529
+        lng: -74.036196
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774529
@@ -28782,6 +29412,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 40.774559
+        lng: -74.036281
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774559
@@ -29140,6 +29779,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.774587
+        lng: -74.036359
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 294
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774587
@@ -29498,6 +30146,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.774614
+        lng: -74.036437
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 294
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774614
@@ -29879,6 +30536,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 40.774638
+        lng: -74.036508
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 293
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774638
@@ -30260,6 +30926,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 40.774661
+        lng: -74.036579
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 293
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774661
@@ -30641,6 +31316,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.774688
+        lng: -74.036663
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 293
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774688
@@ -31022,6 +31706,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.774715
+        lng: -74.036747
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 293
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774715
@@ -31403,6 +32096,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.774742
+        lng: -74.036831
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 293
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774742
@@ -31784,6 +32486,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.774769
+        lng: -74.036915
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 294
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774769
@@ -32165,6 +32876,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 40.774801
+        lng: -74.03701
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 294
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774801
@@ -32546,6 +33266,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 40.774833
+        lng: -74.037105
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 293
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774833
@@ -32927,6 +33656,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 40.774864
+        lng: -74.037201
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 294
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774864
@@ -33308,6 +34046,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 40.774896
+        lng: -74.037296
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 294
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774896
@@ -33689,6 +34436,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 40.774928
+        lng: -74.037391
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 290
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774928
@@ -34070,6 +34826,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 40.774949
+        lng: -74.037468
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 290
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774949
@@ -34451,6 +35216,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 40.77497
+        lng: -74.037544
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 290
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77497
@@ -34832,6 +35606,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 40.774991
+        lng: -74.037621
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 289
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.774991
@@ -35213,6 +35996,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.77502
+        lng: -74.03773
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 289
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77502
@@ -35594,6 +36386,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.775048
+        lng: -74.037838
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 289
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775048
@@ -35975,6 +36776,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.775077
+        lng: -74.037947
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 289
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775077
@@ -36356,6 +37166,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.775106
+        lng: -74.038056
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 289
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775106
@@ -36737,6 +37556,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.775135
+        lng: -74.038165
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 289
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775135
@@ -37118,6 +37946,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.775163
+        lng: -74.038273
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 289
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775163
@@ -37499,6 +38336,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.775192
+        lng: -74.038382
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 290
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775192
@@ -37880,6 +38726,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 40.775216
+        lng: -74.038467
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 289
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775216
@@ -38261,6 +39116,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 40.775239
+        lng: -74.038553
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 280
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775239
@@ -38642,6 +39506,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 40.775251
+        lng: -74.038642
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 281
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775251
@@ -39023,6 +39896,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 40.775264
+        lng: -74.038731
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 280
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775264
@@ -39404,6 +40286,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 40.775276
+        lng: -74.038821
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 280
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775276
@@ -39785,6 +40676,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 40.775288
+        lng: -74.03891
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775288
@@ -40166,6 +41066,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 40.775315
+        lng: -74.038983
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775315
@@ -40547,6 +41456,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 40.775341
+        lng: -74.039057
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775341
@@ -40928,6 +41846,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 16
+    user_location:
+      coordinates:
+        lat: 40.775372
+        lng: -74.039143
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775372
@@ -41309,6 +42236,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 16
+    user_location:
+      coordinates:
+        lat: 40.775404
+        lng: -74.039229
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775404
@@ -41690,6 +42626,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 16
+    user_location:
+      coordinates:
+        lat: 40.775435
+        lng: -74.039315
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775435
@@ -42071,6 +43016,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775473
+        lng: -74.039421
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775473
@@ -42452,6 +43406,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775512
+        lng: -74.039527
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775512
@@ -42833,6 +43796,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.77555
+        lng: -74.039633
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77555
@@ -43214,6 +44186,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775588
+        lng: -74.039739
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775588
@@ -43595,6 +44576,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775626
+        lng: -74.039845
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775626
@@ -43976,6 +44966,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775665
+        lng: -74.039951
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775665
@@ -44357,6 +45356,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775703
+        lng: -74.040056
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775703
@@ -44738,6 +45746,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775741
+        lng: -74.040162
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775741
@@ -45119,6 +46136,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.77578
+        lng: -74.040268
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77578
@@ -45500,6 +46526,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775818
+        lng: -74.040374
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775818
@@ -45881,6 +46916,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775856
+        lng: -74.04048
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775856
@@ -46262,6 +47306,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775894
+        lng: -74.040586
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775894
@@ -46643,6 +47696,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.775933
+        lng: -74.040692
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 295
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775933
@@ -47024,6 +48086,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775971
+        lng: -74.040798
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 313
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775971
@@ -47273,6 +48344,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.776023
+        lng: -74.040872
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 313
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776023
@@ -47522,6 +48602,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.776075
+        lng: -74.040946
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 313
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776075
@@ -47771,6 +48860,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.776127
+        lng: -74.04102
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 313
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776127
@@ -48020,6 +49118,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.776179
+        lng: -74.041094
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 313
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776179
@@ -48269,6 +49376,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.776232
+        lng: -74.04117
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 316
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776232
@@ -48518,6 +49634,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 40.776276
+        lng: -74.041225
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 323
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776276
@@ -48767,6 +49892,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.776319
+        lng: -74.041267
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 329
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776319
@@ -49016,6 +50150,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.776354
+        lng: -74.041295
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 334
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776354
@@ -49265,6 +50408,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.776393
+        lng: -74.04132
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 339
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776393
@@ -49514,6 +50666,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 40.776435
+        lng: -74.041341
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 344
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776435
@@ -49763,6 +50924,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.776477
+        lng: -74.041357
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 348
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776477
@@ -50012,6 +51182,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 40.776515
+        lng: -74.041368
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 353
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776515
@@ -50261,6 +51440,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 40.776551
+        lng: -74.041374
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 1
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776551
@@ -50510,6 +51698,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 40.776586
+        lng: -74.041373
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 5
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776586
@@ -50759,6 +51956,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 40.776631
+        lng: -74.041368
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 6
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776631
@@ -51008,6 +52214,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 40.776667
+        lng: -74.041363
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 15
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776667
@@ -51257,6 +52472,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 40.776702
+        lng: -74.041351
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 20
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776702
@@ -51506,6 +52730,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 40.77674
+        lng: -74.041333
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 25
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77674
@@ -51755,6 +52988,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 40.776779
+        lng: -74.041309
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 30
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776779
@@ -52004,6 +53246,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 16
+    user_location:
+      coordinates:
+        lat: 40.776813
+        lng: -74.041283
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 36
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776813
@@ -52253,6 +53504,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 40.776851
+        lng: -74.041247
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 39
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776851
@@ -52502,6 +53762,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 18
+    user_location:
+      coordinates:
+        lat: 40.776885
+        lng: -74.041211
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 50
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776885
@@ -52751,6 +54020,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 19
+    user_location:
+      coordinates:
+        lat: 40.776914
+        lng: -74.041165
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 52
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776914
@@ -53000,6 +54278,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 20
+    user_location:
+      coordinates:
+        lat: 40.776944
+        lng: -74.041115
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 55
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776944
@@ -53249,6 +54536,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 21
+    user_location:
+      coordinates:
+        lat: 40.776967
+        lng: -74.041071
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 61
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776967
@@ -53498,6 +54794,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 22
+    user_location:
+      coordinates:
+        lat: 40.776989
+        lng: -74.041019
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 68
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776989
@@ -53747,6 +55052,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 23
+    user_location:
+      coordinates:
+        lat: 40.777007
+        lng: -74.040961
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 75
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777007
@@ -53996,6 +55310,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 24
+    user_location:
+      coordinates:
+        lat: 40.77702
+        lng: -74.040899
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 80
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77702
@@ -54245,6 +55568,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 25
+    user_location:
+      coordinates:
+        lat: 40.777028
+        lng: -74.040841
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 85
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777028
@@ -54494,6 +55826,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 26
+    user_location:
+      coordinates:
+        lat: 40.777032
+        lng: -74.040782
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 89
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777032
@@ -54743,6 +56084,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 27
+    user_location:
+      coordinates:
+        lat: 40.777033
+        lng: -74.040718
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 93
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777033
@@ -54992,6 +56342,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 28
+    user_location:
+      coordinates:
+        lat: 40.777031
+        lng: -74.040668
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 101
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777031
@@ -55241,6 +56600,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 29
+    user_location:
+      coordinates:
+        lat: 40.777022
+        lng: -74.040606
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 107
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777022
@@ -55490,6 +56858,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 30
+    user_location:
+      coordinates:
+        lat: 40.777008
+        lng: -74.040546
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 115
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777008
@@ -55739,6 +57116,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 31
+    user_location:
+      coordinates:
+        lat: 40.776993
+        lng: -74.040503
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 117
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776993
@@ -55988,6 +57374,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 32
+    user_location:
+      coordinates:
+        lat: 40.77697
+        lng: -74.040443
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 125
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77697
@@ -56237,6 +57632,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 33
+    user_location:
+      coordinates:
+        lat: 40.776944
+        lng: -74.040394
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 129
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776944
@@ -56486,6 +57890,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 34
+    user_location:
+      coordinates:
+        lat: 40.776918
+        lng: -74.040352
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 133
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776918
@@ -56735,6 +58148,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 35
+    user_location:
+      coordinates:
+        lat: 40.776887
+        lng: -74.040308
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 138
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776887
@@ -56984,6 +58406,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 36
+    user_location:
+      coordinates:
+        lat: 40.776857
+        lng: -74.040272
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 142
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776857
@@ -57233,6 +58664,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 37
+    user_location:
+      coordinates:
+        lat: 40.776825
+        lng: -74.040239
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 148
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776825
@@ -57482,6 +58922,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 38
+    user_location:
+      coordinates:
+        lat: 40.776786
+        lng: -74.040207
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 153
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776786
@@ -57731,6 +59180,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 39
+    user_location:
+      coordinates:
+        lat: 40.776747
+        lng: -74.040181
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 162
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776747
@@ -57980,6 +59438,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 40
+    user_location:
+      coordinates:
+        lat: 40.776717
+        lng: -74.040168
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776717
@@ -58229,6 +59696,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 41
+    user_location:
+      coordinates:
+        lat: 40.776678
+        lng: -74.040155
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 167
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776678
@@ -58478,6 +59954,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 42
+    user_location:
+      coordinates:
+        lat: 40.776645
+        lng: -74.040145
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 171
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776645
@@ -58727,6 +60212,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 43
+    user_location:
+      coordinates:
+        lat: 40.776615
+        lng: -74.040139
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 177
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776615
@@ -58976,6 +60470,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 44
+    user_location:
+      coordinates:
+        lat: 40.776584
+        lng: -74.040137
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 184
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776584
@@ -59225,6 +60728,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 45
+    user_location:
+      coordinates:
+        lat: 40.776549
+        lng: -74.04014
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 189
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776549
@@ -59474,6 +60986,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 46
+    user_location:
+      coordinates:
+        lat: 40.776511
+        lng: -74.040148
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 196
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776511
@@ -59723,6 +61244,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 47
+    user_location:
+      coordinates:
+        lat: 40.776479
+        lng: -74.04016
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 202
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776479
@@ -59972,6 +61502,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 48
+    user_location:
+      coordinates:
+        lat: 40.776438
+        lng: -74.040182
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 205
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776438
@@ -60221,6 +61760,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 49
+    user_location:
+      coordinates:
+        lat: 40.776395
+        lng: -74.040208
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 204
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776395
@@ -60470,6 +62018,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 49
+    user_location:
+      coordinates:
+        lat: 40.776351
+        lng: -74.040234
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 198
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776351
@@ -60719,6 +62276,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 50
+    user_location:
+      coordinates:
+        lat: 40.776271
+        lng: -74.040268
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 198
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776271
@@ -60968,6 +62534,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 50
+    user_location:
+      coordinates:
+        lat: 40.776192
+        lng: -74.040302
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 197
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776192
@@ -61217,6 +62792,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 50
+    user_location:
+      coordinates:
+        lat: 40.776112
+        lng: -74.040335
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 198
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776112
@@ -61466,6 +63050,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 50
+    user_location:
+      coordinates:
+        lat: 40.776033
+        lng: -74.040369
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 198
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776033
@@ -61715,6 +63308,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 50
+    user_location:
+      coordinates:
+        lat: 40.775953
+        lng: -74.040403
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 207
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775953
@@ -61964,6 +63566,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 51
+    user_location:
+      coordinates:
+        lat: 40.775885
+        lng: -74.040449
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 206
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775885
@@ -62213,6 +63824,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 51
+    user_location:
+      coordinates:
+        lat: 40.775816
+        lng: -74.040494
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 207
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775816
@@ -62462,6 +64082,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 51
+    user_location:
+      coordinates:
+        lat: 40.775748
+        lng: -74.04054
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 207
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775748
@@ -62711,6 +64340,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 51
+    user_location:
+      coordinates:
+        lat: 40.77568
+        lng: -74.040586
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 206
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77568
@@ -62960,6 +64598,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 51
+    user_location:
+      coordinates:
+        lat: 40.775611
+        lng: -74.040631
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 207
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775611
@@ -63209,6 +64856,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775543
+        lng: -74.040677
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 249
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775543
@@ -63332,6 +64988,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775521
+        lng: -74.040751
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 249
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775521
@@ -63455,6 +65120,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775499
+        lng: -74.040825
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 252
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775499
@@ -63578,6 +65252,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.775486
+        lng: -74.040879
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 261
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775486
@@ -63701,6 +65384,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 40.775479
+        lng: -74.040935
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 270
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775479
@@ -63824,6 +65516,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.775479
+        lng: -74.041
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 284
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775479
@@ -63947,6 +65648,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.775493
+        lng: -74.041072
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 287
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775493
@@ -64070,6 +65780,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.775509
+        lng: -74.041142
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 286
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775509
@@ -64193,6 +65912,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.775524
+        lng: -74.041213
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 293
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775524
@@ -64316,6 +66044,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 40.775536
+        lng: -74.04125
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 297
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775536
@@ -64439,6 +66176,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.77557
+        lng: -74.041339
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 297
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77557
@@ -64562,6 +66308,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.775605
+        lng: -74.041429
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 297
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775605
@@ -64685,6 +66440,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 40.775639
+        lng: -74.041518
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 296
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775639
@@ -64808,6 +66572,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775673
+        lng: -74.041608
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775673
@@ -64893,6 +66666,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775734
+        lng: -74.041567
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775734
@@ -64978,6 +66760,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775794
+        lng: -74.041526
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775794
@@ -65063,6 +66854,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.775855
+        lng: -74.041485
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.775855
@@ -65148,6 +66948,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.77593
+        lng: -74.041434
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77593
@@ -65233,6 +67042,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.776006
+        lng: -74.041384
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776006
@@ -65318,6 +67136,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.776081
+        lng: -74.041333
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776081
@@ -65403,6 +67230,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.776156
+        lng: -74.041282
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776156
@@ -65488,6 +67324,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.776231
+        lng: -74.041231
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776231
@@ -65573,6 +67418,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.776307
+        lng: -74.041181
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776307
@@ -65658,6 +67512,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.776382
+        lng: -74.04113
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776382
@@ -65743,6 +67606,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 40.776457
+        lng: -74.041079
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776457
@@ -65828,6 +67700,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 40.776482
+        lng: -74.041062
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776482
@@ -65913,6 +67794,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.776558
+        lng: -74.041011
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776558
@@ -65998,6 +67888,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.776634
+        lng: -74.04096
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776634
@@ -66083,6 +67982,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.776709
+        lng: -74.040909
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776709
@@ -66168,6 +68076,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.776785
+        lng: -74.040858
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776785
@@ -66253,6 +68170,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.776861
+        lng: -74.040806
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776861
@@ -66338,6 +68264,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.776937
+        lng: -74.040755
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.776937
@@ -66423,6 +68358,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.777012
+        lng: -74.040704
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777012
@@ -66508,6 +68452,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 40.777088
+        lng: -74.040653
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777088
@@ -66593,6 +68546,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.777158
+        lng: -74.040606
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777158
@@ -66678,6 +68640,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.777229
+        lng: -74.040558
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777229
@@ -66763,6 +68734,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.777299
+        lng: -74.040511
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777299
@@ -66844,6 +68824,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.77737
+        lng: -74.040464
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 28
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77737
@@ -66925,6 +68914,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.77744
+        lng: -74.040416
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77744
@@ -67006,6 +69004,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.77751
+        lng: -74.040369
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.77751
@@ -67087,6 +69094,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.777581
+        lng: -74.040321
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777581
@@ -67168,6 +69184,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 40.777651
+        lng: -74.040274
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777651
@@ -67249,6 +69274,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.777714
+        lng: -74.040231
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777714
@@ -67330,6 +69364,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.777778
+        lng: -74.040189
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777778
@@ -67411,6 +69454,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.777841
+        lng: -74.040146
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777841
@@ -67492,6 +69544,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 40.777904
+        lng: -74.040103
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 27
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777904
@@ -67573,6 +69634,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 40.777945
+        lng: -74.040076
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 28
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777945
@@ -67654,6 +69724,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 40.777985
+        lng: -74.040048
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 180
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 40.777985
@@ -67687,4 +69766,13 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\n    StepAdvan
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
-- Complete
+- Complete:
+    user_location:
+      coordinates:
+        lat: 40.777985
+        lng: -74.040048
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 180
+        accuracy: 5
+      speed: ~

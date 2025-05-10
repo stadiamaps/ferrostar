@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -57,6 +58,7 @@ fun DemoNavigationScene(
       }
 
   val navigationUiState by viewModel.navigationUiState.collectAsState(scope.coroutineContext)
+  val location by viewModel.location.collectAsState()
 
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -92,16 +94,13 @@ fun DemoNavigationScene(
       styleUrl = AppModule.mapStyleUrl,
       camera = camera,
       viewModel = viewModel,
-      // Snapping works well for most motor vehicle navigation.
-      // Other travel modes though, such as walking, may not want snapping.
-      snapUserLocationToRoute = false,
       // Configure speed limit signage based on user preference or location
       config = VisualNavigationViewConfig.Default().withSpeedLimitStyle(SignageStyle.MUTCD),
       views =
           NavigationViewComponentBuilder.Default()
               .withCustomOverlayView(
                   customOverlayView = { modifier ->
-                    navigationUiState.location?.let { loc ->
+                    location?.let { loc ->
                       AutocompleteOverlay(
                           modifier = modifier,
                           scope = scope,

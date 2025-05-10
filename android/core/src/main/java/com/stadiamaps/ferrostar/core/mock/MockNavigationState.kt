@@ -48,6 +48,7 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
       tripState =
           TripState.Navigating(
               currentStepGeometryIndex = 0u,
+              userLocation = UserLocation.pedestrianExample(),
               snappedUserLocation = UserLocation.pedestrianExample(),
               remainingSteps = listOf(),
               remainingWaypoints = listOf(),
@@ -81,8 +82,6 @@ fun NavigationUiState.Companion.pedestrianExample(): NavigationUiState =
     fromFerrostar(
         NavigationState.pedestrianExample(),
         false,
-        UserLocation.pedestrianExample(),
-        UserLocation.pedestrianExample(),
         AnnotationWrapper.pedestrianExample())
 
 class MockNavigationViewModel(override val navigationUiState: StateFlow<NavigationUiState>) :

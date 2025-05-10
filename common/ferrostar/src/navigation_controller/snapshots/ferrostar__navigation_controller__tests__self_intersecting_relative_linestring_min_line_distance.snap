@@ -1,9 +1,18 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    StepAdvanceMode::RelativeLineStringDistance {\n        minimum_horizontal_accuracy: 0,\n        special_advance_conditions: Some(SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)),\n    })"
+expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{\n    minimum_horizontal_accuracy: 0, special_advance_conditions:\n    Some(SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)),\n})"
 ---
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.377106
+        lng: -122.584167
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.377106
@@ -162,6 +171,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.376869
+        lng: -122.584504
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376869
@@ -320,6 +338,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.376812
+        lng: -122.584584
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376812
@@ -478,6 +505,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.376755
+        lng: -122.584664
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376755
@@ -636,6 +672,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.376698
+        lng: -122.584744
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 224
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376698
@@ -794,6 +839,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.376641
+        lng: -122.584823
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376641
@@ -952,6 +1006,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.376584
+        lng: -122.584903
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376584
@@ -1110,6 +1173,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.376527
+        lng: -122.584983
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376527
@@ -1268,6 +1340,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.376469
+        lng: -122.585064
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376469
@@ -1426,6 +1507,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.376411
+        lng: -122.585145
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376411
@@ -1584,6 +1674,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.376353
+        lng: -122.585226
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376353
@@ -1742,6 +1841,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.376295
+        lng: -122.585307
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376295
@@ -1900,6 +2008,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.376238
+        lng: -122.585389
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376238
@@ -2058,6 +2175,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.37618
+        lng: -122.58547
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37618
@@ -2216,6 +2342,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.376122
+        lng: -122.585551
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376122
@@ -2374,6 +2509,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.376064
+        lng: -122.585632
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376064
@@ -2532,6 +2676,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.376006
+        lng: -122.585713
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.376006
@@ -2690,6 +2843,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.375948
+        lng: -122.585794
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375948
@@ -2848,6 +3010,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.375888
+        lng: -122.585878
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375888
@@ -3006,6 +3177,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.375829
+        lng: -122.585962
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375829
@@ -3164,6 +3344,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.375769
+        lng: -122.586046
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375769
@@ -3322,6 +3511,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.375709
+        lng: -122.58613
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375709
@@ -3480,6 +3678,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.37565
+        lng: -122.586213
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37565
@@ -3638,6 +3845,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.37559
+        lng: -122.586297
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37559
@@ -3796,6 +4012,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.37553
+        lng: -122.586381
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37553
@@ -3954,6 +4179,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.375471
+        lng: -122.586465
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 225
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375471
@@ -4112,6 +4346,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.375411
+        lng: -122.586549
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375411
@@ -4270,6 +4513,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.37536
+        lng: -122.586652
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 234
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375411
@@ -4428,6 +4680,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375308
+        lng: -122.586754
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375411
@@ -4566,6 +4827,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375257
+        lng: -122.586857
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375257
@@ -4704,6 +4974,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375206
+        lng: -122.586959
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 234
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375206
@@ -4842,6 +5121,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375154
+        lng: -122.587062
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375154
@@ -4980,6 +5268,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375103
+        lng: -122.587164
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 234
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375103
@@ -5118,6 +5415,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375051
+        lng: -122.587267
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375051
@@ -5256,6 +5562,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375
+        lng: -122.587369
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375
@@ -5394,6 +5709,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.374949
+        lng: -122.587472
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 234
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374949
@@ -5532,6 +5856,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.374897
+        lng: -122.587574
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374897
@@ -5670,6 +6003,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.374846
+        lng: -122.587677
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 246
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374846
@@ -5808,6 +6150,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.374827
+        lng: -122.587737
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 245
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374827
@@ -5946,6 +6297,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.374808
+        lng: -122.587796
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 254
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374808
@@ -6084,6 +6444,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.374795
+        lng: -122.587862
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 253
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374795
@@ -6222,6 +6591,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.374781
+        lng: -122.587928
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 264
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374781
@@ -6360,6 +6738,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.374774
+        lng: -122.588028
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 275
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374774
@@ -6498,6 +6885,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 45.37478
+        lng: -122.588136
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 280
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37478
@@ -6636,6 +7032,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 45.374789
+        lng: -122.588209
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 291
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374789
@@ -6774,6 +7179,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 45.374812
+        lng: -122.588294
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 300
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374812
@@ -6912,6 +7326,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 45.374849
+        lng: -122.588384
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 303
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374849
@@ -7050,6 +7473,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 45.37488
+        lng: -122.588451
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 312
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37488
@@ -7188,6 +7620,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 45.374919
+        lng: -122.588512
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 326
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374919
@@ -7326,6 +7767,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 45.374978
+        lng: -122.588569
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 328
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374978
@@ -7464,6 +7914,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 45.375024
+        lng: -122.58861
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 337
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375024
@@ -7602,6 +8061,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 45.375075
+        lng: -122.58864
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 348
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375075
@@ -7740,6 +8208,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 45.375143
+        lng: -122.588661
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 347
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375143
@@ -7878,6 +8355,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 45.375203
+        lng: -122.588681
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 346
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375203
@@ -8016,6 +8502,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 45.375264
+        lng: -122.588702
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 347
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375264
@@ -8154,6 +8649,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 45.375324
+        lng: -122.588722
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 19
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375324
@@ -8292,6 +8796,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 45.37537
+        lng: -122.588699
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 20
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37537
@@ -8430,6 +8943,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 45.375415
+        lng: -122.588676
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 31
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375415
@@ -8568,6 +9090,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 16
+    user_location:
+      coordinates:
+        lat: 45.375483
+        lng: -122.588617
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 42
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375483
@@ -8706,6 +9237,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 45.375521
+        lng: -122.588569
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 42
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375521
@@ -8844,6 +9384,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 17
+    user_location:
+      coordinates:
+        lat: 45.375559
+        lng: -122.58852
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 51
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375559
@@ -8982,6 +9531,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 18
+    user_location:
+      coordinates:
+        lat: 45.37561
+        lng: -122.588432
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 61
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37561
@@ -9120,6 +9678,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 19
+    user_location:
+      coordinates:
+        lat: 45.375634
+        lng: -122.588371
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 62
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375634
@@ -9258,6 +9825,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 19
+    user_location:
+      coordinates:
+        lat: 45.375657
+        lng: -122.58831
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 72
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375657
@@ -9396,6 +9972,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 20
+    user_location:
+      coordinates:
+        lat: 45.37568
+        lng: -122.588212
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 72
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37568
@@ -9534,6 +10119,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 20
+    user_location:
+      coordinates:
+        lat: 45.375703
+        lng: -122.588114
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 115
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375703
@@ -9672,6 +10266,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 20
+    user_location:
+      coordinates:
+        lat: 45.375667
+        lng: -122.588002
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 115
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375703
@@ -9810,6 +10413,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375631
+        lng: -122.58789
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 113
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375703
@@ -9893,6 +10505,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.375604
+        lng: -122.587801
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 114
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375604
@@ -9976,6 +10597,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 1
+    user_location:
+      coordinates:
+        lat: 45.375576
+        lng: -122.587713
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 127
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375576
@@ -10059,6 +10689,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.375541
+        lng: -122.587646
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 127
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375541
@@ -10142,6 +10781,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 2
+    user_location:
+      coordinates:
+        lat: 45.375506
+        lng: -122.58758
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 134
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375506
@@ -10225,6 +10873,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 3
+    user_location:
+      coordinates:
+        lat: 45.375468
+        lng: -122.587524
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 142
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375468
@@ -10308,6 +10965,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 45.375415
+        lng: -122.587466
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 141
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375415
@@ -10391,6 +11057,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 45.375363
+        lng: -122.587407
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 142
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375363
@@ -10474,6 +11149,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 4
+    user_location:
+      coordinates:
+        lat: 45.37531
+        lng: -122.587349
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37531
@@ -10557,6 +11241,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 45.375233
+        lng: -122.587318
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375233
@@ -10640,6 +11333,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 45.375157
+        lng: -122.587287
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 165
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375157
@@ -10723,6 +11425,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 45.37508
+        lng: -122.587257
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37508
@@ -10806,6 +11517,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 5
+    user_location:
+      coordinates:
+        lat: 45.375003
+        lng: -122.587226
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.375003
@@ -10889,6 +11609,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 45.374918
+        lng: -122.587191
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374918
@@ -10972,6 +11701,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 45.374834
+        lng: -122.587156
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374834
@@ -11055,6 +11793,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 45.374749
+        lng: -122.587121
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374749
@@ -11138,6 +11885,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 45.374664
+        lng: -122.587087
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374664
@@ -11221,6 +11977,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 45.37458
+        lng: -122.587052
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37458
@@ -11304,6 +12069,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 6
+    user_location:
+      coordinates:
+        lat: 45.374495
+        lng: -122.587017
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374495
@@ -11387,6 +12161,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 45.374423
+        lng: -122.586987
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 163
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374423
@@ -11470,6 +12253,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 45.374352
+        lng: -122.586957
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374352
@@ -11553,6 +12345,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 45.37428
+        lng: -122.586927
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 163
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37428
@@ -11636,6 +12437,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 45.374209
+        lng: -122.586897
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374209
@@ -11719,6 +12529,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 7
+    user_location:
+      coordinates:
+        lat: 45.374137
+        lng: -122.586867
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374137
@@ -11802,6 +12621,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 45.374055
+        lng: -122.586837
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.374055
@@ -11885,6 +12713,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 45.373973
+        lng: -122.586807
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 165
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373973
@@ -11968,6 +12805,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 45.373892
+        lng: -122.586776
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373892
@@ -12051,6 +12897,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 45.37381
+        lng: -122.586746
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37381
@@ -12134,6 +12989,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 45.373728
+        lng: -122.586716
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373728
@@ -12217,6 +13081,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 8
+    user_location:
+      coordinates:
+        lat: 45.373646
+        lng: -122.586686
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 165
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373646
@@ -12300,6 +13173,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 9
+    user_location:
+      coordinates:
+        lat: 45.373572
+        lng: -122.586658
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373572
@@ -12383,6 +13265,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 45.373496
+        lng: -122.586628
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373496
@@ -12466,6 +13357,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 45.373421
+        lng: -122.586597
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373421
@@ -12549,6 +13449,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 45.373345
+        lng: -122.586567
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373345
@@ -12632,6 +13541,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 45.37327
+        lng: -122.586536
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37327
@@ -12715,6 +13633,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 10
+    user_location:
+      coordinates:
+        lat: 45.373194
+        lng: -122.586506
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373194
@@ -12798,6 +13725,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 45.373109
+        lng: -122.586471
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373109
@@ -12881,6 +13817,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 45.373025
+        lng: -122.586436
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.373025
@@ -12964,6 +13909,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 45.37294
+        lng: -122.586402
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 164
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37294
@@ -13047,6 +14001,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 11
+    user_location:
+      coordinates:
+        lat: 45.372855
+        lng: -122.586367
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372855
@@ -13130,6 +14093,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 45.372777
+        lng: -122.58634
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 167
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372777
@@ -13213,6 +14185,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 45.372698
+        lng: -122.586314
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372698
@@ -13296,6 +14277,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 45.37262
+        lng: -122.586287
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 167
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37262
@@ -13379,6 +14369,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 45.372541
+        lng: -122.586261
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372541
@@ -13462,6 +14461,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 12
+    user_location:
+      coordinates:
+        lat: 45.372463
+        lng: -122.586234
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372463
@@ -13545,6 +14553,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 45.372386
+        lng: -122.586207
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 165
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372386
@@ -13628,6 +14645,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 45.37231
+        lng: -122.586179
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.37231
@@ -13711,6 +14737,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 45.372233
+        lng: -122.586152
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372233
@@ -13790,6 +14825,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 13
+    user_location:
+      coordinates:
+        lat: 45.372156
+        lng: -122.586125
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372156
@@ -13869,6 +14913,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 45.372079
+        lng: -122.586098
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372079
@@ -13948,6 +15001,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 45.372001
+        lng: -122.58607
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.372001
@@ -14027,6 +15089,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 45.371924
+        lng: -122.586043
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.371924
@@ -14106,6 +15177,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 14
+    user_location:
+      coordinates:
+        lat: 45.371846
+        lng: -122.586016
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.371846
@@ -14185,6 +15265,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 45.371762
+        lng: -122.585987
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.371762
@@ -14264,6 +15353,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 45.371677
+        lng: -122.585958
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 167
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.371677
@@ -14343,6 +15441,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 15
+    user_location:
+      coordinates:
+        lat: 45.371593
+        lng: -122.58593
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 166
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.371593
@@ -14422,6 +15529,15 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     annotation_json: ~
 - Navigating:
     current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.371508
+        lng: -122.585901
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 180
+        accuracy: 5
+      speed: ~
     snapped_user_location:
       coordinates:
         lat: 45.371508
@@ -14455,4 +15571,13 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\n    
     visual_instruction: ~
     spoken_instruction: ~
     annotation_json: ~
-- Complete
+- Complete:
+    user_location:
+      coordinates:
+        lat: 45.371508
+        lng: -122.585901
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 180
+        accuracy: 5
+      speed: ~

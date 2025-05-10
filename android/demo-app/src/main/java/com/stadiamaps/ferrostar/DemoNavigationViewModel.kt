@@ -14,6 +14,7 @@ import java.util.concurrent.Executors
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -28,6 +29,7 @@ class DemoNavigationViewModel(
     annotationPublisher: AnnotationPublisher<*> = valhallaExtendedOSRMAnnotationPublisher()
 ) : DefaultNavigationViewModel(ferrostarCore, annotationPublisher), LocationUpdateListener {
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)
+  val location = locationStateFlow.asStateFlow()
   private val executor = Executors.newSingleThreadScheduledExecutor()
 
   fun startLocationUpdates() {
@@ -55,7 +57,6 @@ class DemoNavigationViewModel(
               started = SharingStarted.WhileSubscribed(),
               initialValue =
                   NavigationUiState(
-                      null,
                       null,
                       null,
                       null,
