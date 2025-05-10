@@ -79,10 +79,7 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
 }
 
 fun NavigationUiState.Companion.pedestrianExample(): NavigationUiState =
-    fromFerrostar(
-        NavigationState.pedestrianExample(),
-        false,
-        AnnotationWrapper.pedestrianExample())
+    fromFerrostar(NavigationState.pedestrianExample(), false, AnnotationWrapper.pedestrianExample())
 
 class MockNavigationViewModel(override val navigationUiState: StateFlow<NavigationUiState>) :
     ViewModel(), NavigationViewModel {

@@ -102,8 +102,9 @@ fun TripState.remainingWaypoints() =
 /**
  * Get the UI's preferred representation of User's location from the trip state.
  *
- * This will return the snapped user location if there is no deviation from the route. If the user has deviated,
- * it will return the user's actual raw location, allowing the puck to deviate from the route line.
+ * This will return the snapped user location if there is no deviation from the route. If the user
+ * has deviated, it will return the user's actual raw location, allowing the puck to deviate from
+ * the route line.
  *
  * @return The user location (if available and navigating).
  */

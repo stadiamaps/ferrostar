@@ -24,7 +24,6 @@ import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.RouteStep
 import uniffi.ferrostar.SpokenInstruction
 import uniffi.ferrostar.TripProgress
-import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 
@@ -159,6 +158,5 @@ open class DefaultNavigationViewModel(
       coreState: NavigationState,
       isMuted: Boolean?,
       annotationWrapper: AnnotationWrapper<*>?
-  ) =
-      NavigationUiState.fromFerrostar(coreState, isMuted, annotationWrapper)
+  ) = NavigationUiState.fromFerrostar(coreState, isMuted, annotationWrapper)
 }

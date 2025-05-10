@@ -91,13 +91,15 @@ public struct NavigationState: Hashable {
     /// raw location.
     public var preferredUserLocation: UserLocation? {
         switch tripState {
-        case let .idle(userLocation), let .complete(userLocation):
+        case let .idle(userLocation):
+            userLocation
+        case let .complete(userLocation):
             userLocation
         case let .navigating(_, userLocation, snappedUserLocation, _, _, _, deviation, _, _, _):
             switch deviation {
             case .noDeviation:
                 snappedUserLocation
-            case let .offRoute(deviationFromRouteLine: deviationFromRouteLine):
+            case .offRoute:
                 userLocation
             }
         }
