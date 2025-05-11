@@ -165,11 +165,19 @@ jobs:
       run: brew install xcbeautify
 
     - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
-      run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
+      run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' -resultBundlePath ${{ matrix.scheme }}.xcresult | xcbeautify && exit ${PIPESTATUS[0]}
 
-    - name: 'Upload Artifact'
+    - name: 'Upload Package.swift Artifact'
       uses: actions/upload-artifact@v4
       with:
         name: Library-Package.swift
         path: Package.swift
+        retention-days: 5
+        
+    - name: 'Upload Test Results Artifact'
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ${{ matrix.scheme }}-test-results
+        path: ${{ matrix.scheme }}.xcresult
         retention-days: 5
