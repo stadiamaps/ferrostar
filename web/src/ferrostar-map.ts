@@ -65,6 +65,13 @@ export class FerrostarMap extends LitElement {
   @property({ type: Boolean })
   geolocateOnLoad: boolean = true;
 
+  /**
+   * Set if show geolocate control or no.
+   * Defaults to true.
+   */
+  @property({ type: Boolean })
+  showGeolocateControl: boolean = true;
+
   routeAdapter: RouteAdapter | null = null;
 
   /**
@@ -172,20 +179,22 @@ export class FerrostarMap extends LitElement {
   }
 
   firstUpdated() {
-    this.geolocateControl = new GeolocateControl({
-      positionOptions: {
-        enableHighAccuracy: true,
-      },
-      trackUserLocation: true,
-    });
+    if (this.showGeolocateControl) {
+      this.geolocateControl = new GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+      });
 
-    this.map.addControl(this.geolocateControl);
+      this.map.addControl(this.geolocateControl);
 
-    this.map.on("load", (_) => {
-      if (this.geolocateOnLoad) {
-        this.geolocateControl?.trigger();
-      }
-    });
+      this.map.on("load", (_) => {
+        if (this.geolocateOnLoad) {
+          this.geolocateControl?.trigger();
+        }
+      });
+    }
   }
 
   // TODO: type
