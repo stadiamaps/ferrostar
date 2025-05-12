@@ -110,7 +110,6 @@ fun PortraitNavigationView(
         uiState,
         mapControls,
         locationRequestProperties,
-        snapUserLocationToRoute,
         routeOverlayBuilder,
         onMapReadyCallback = { camera.value = navigationCamera },
         mapContent)

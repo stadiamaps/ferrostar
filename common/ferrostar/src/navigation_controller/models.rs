@@ -41,7 +41,7 @@ pub struct TripProgress {
 #[allow(clippy::large_enum_variant)]
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.
-    Idle,
+    Idle { user_location: Option<UserLocation> },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     /// The navigation controller is actively navigating a trip.
     Navigating {
@@ -49,7 +49,20 @@ pub enum TripState {
         ///
         /// This index is relative to the *current* [`RouteStep`]'s geometry.
         current_step_geometry_index: Option<u64>,
-        /// A location on the line string that
+        /// The user's raw location.
+        ///
+        /// This is more useful than the snapped location when the user is off route,
+        /// or in special situations like pedestrian navigation.
+        user_location: UserLocation,
+        /// The user's location as if they were exactly on the route.
+        ///
+        /// This is derived by snapping the latitude and longitude to the closest point on the route line,
+        /// regardless of where they actually are.
+        /// This is desirable as it makes the navigation experience better for vehicular navigation,
+        /// removing GPS noise as long as the user is deemed to be on the route.
+        ///
+        /// All other properties from the [`UserLocation`], including speed and course,
+        /// are not affected by snapping.
         snapped_user_location: UserLocation,
         /// The ordered list of steps that remain in the trip.
         ///
@@ -81,7 +94,7 @@ pub enum TripState {
         annotation_json: Option<String>,
     },
     /// The navigation controller has reached the end of the trip.
-    Complete,
+    Complete { user_location: UserLocation },
 }
 
 #[allow(clippy::large_enum_variant)]

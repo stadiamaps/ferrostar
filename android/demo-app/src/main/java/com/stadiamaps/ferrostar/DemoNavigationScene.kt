@@ -57,6 +57,7 @@ fun DemoNavigationScene(
       }
 
   val navigationUiState by viewModel.navigationUiState.collectAsState(scope.coroutineContext)
+  val location by viewModel.location.collectAsState()
 
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -92,16 +93,13 @@ fun DemoNavigationScene(
       styleUrl = AppModule.mapStyleUrl,
       camera = camera,
       viewModel = viewModel,
-      // Snapping works well for most motor vehicle navigation.
-      // Other travel modes though, such as walking, may not want snapping.
-      snapUserLocationToRoute = false,
       // Configure speed limit signage based on user preference or location
       config = VisualNavigationViewConfig.Default().withSpeedLimitStyle(SignageStyle.MUTCD),
       views =
           NavigationViewComponentBuilder.Default()
               .withCustomOverlayView(
                   customOverlayView = { modifier ->
-                    navigationUiState.location?.let { loc ->
+                    location?.let { loc ->
                       AutocompleteOverlay(
                           modifier = modifier,
                           scope = scope,

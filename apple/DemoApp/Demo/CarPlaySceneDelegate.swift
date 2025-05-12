@@ -11,9 +11,6 @@ private extension Logger {
 }
 
 class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplicationSceneDelegate {
-    // Get the AppDelegate associated with the SwiftUI App/@main as the type you defined it as.
-    @UIApplicationDelegateAdaptor(DemoAppDelegate.self) var appDelegate
-
     private weak var ferrostarCore: FerrostarCore?
     private var carPlayViewController: UIViewController?
 
@@ -55,14 +52,14 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         guard carPlayManager == nil else { return }
 
         // IMPORTANT: This is your app's shared FerrostarCore
-        ferrostarCore = appDelegate.appEnvironment.ferrostarCore
+        ferrostarCore = appEnvironment.ferrostarCore
 
         let view = CarPlayNavigationView(
             ferrostarCore: ferrostarCore!,
             styleURL: AppDefaults.mapStyleURL,
             camera: Binding(
-                get: { self.appDelegate.appEnvironment.camera.camera },
-                set: { self.appDelegate.appEnvironment.camera.camera = $0 }
+                get: { appEnvironment.camera.camera },
+                set: { appEnvironment.camera.camera = $0 }
             )
         )
 
@@ -71,8 +68,8 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         carPlayManager = FerrostarCarPlayManager(
             ferrostarCore!,
             camera: Binding(
-                get: { self.appDelegate.appEnvironment.camera.camera },
-                set: { self.appDelegate.appEnvironment.camera.camera = $0 }
+                get: { appEnvironment.camera.camera },
+                set: { appEnvironment.camera.camera = $0 }
             ),
             distanceUnits: .default
             // TODO: We may need to hold the view or viewController here, but it seems

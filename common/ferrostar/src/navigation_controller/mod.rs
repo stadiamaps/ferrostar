@@ -48,7 +48,9 @@ impl NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return TripState::Complete;
+            return TripState::Complete {
+                user_location: location,
+            };
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -78,6 +80,7 @@ impl NavigationController {
 
         TripState::Navigating {
             current_step_geometry_index,
+            user_location: location,
             snapped_user_location,
             remaining_steps,
             // Skip the first waypoint, as it is the current one
@@ -100,9 +103,12 @@ impl NavigationController {
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
     pub fn advance_to_next_step(&self, state: &TripState) -> TripState {
         match state {
-            TripState::Idle => TripState::Idle,
+            TripState::Idle { user_location } => TripState::Idle {
+                user_location: *user_location,
+            },
             TripState::Navigating {
                 current_step_geometry_index,
+                user_location,
                 snapped_user_location,
                 ref remaining_steps,
                 ref remaining_waypoints,
@@ -137,6 +143,7 @@ impl NavigationController {
 
                         TripState::Navigating {
                             current_step_geometry_index: *current_step_geometry_index,
+                            user_location: *user_location,
                             snapped_user_location: *snapped_user_location,
                             remaining_steps,
                             remaining_waypoints: remaining_waypoints.clone(),
@@ -149,12 +156,14 @@ impl NavigationController {
                             annotation_json,
                         }
                     }
-                    StepAdvanceStatus::EndOfRoute => TripState::Complete,
+                    StepAdvanceStatus::EndOfRoute => TripState::Complete {
+                        user_location: *user_location,
+                    },
                 }
             }
-            // It's tempting to throw an error here, since the caller should know better, but
-            // a mistake like this is technically harmless.
-            TripState::Complete => TripState::Complete,
+            TripState::Complete { user_location } => TripState::Complete {
+                user_location: *user_location,
+            },
         }
     }
 
@@ -166,7 +175,9 @@ impl NavigationController {
     /// this function will panic.
     pub fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
         match state {
-            TripState::Idle => TripState::Idle,
+            TripState::Idle { .. } => TripState::Idle {
+                user_location: Some(location),
+            },
             TripState::Navigating {
                 ref remaining_steps,
                 ref remaining_waypoints,
@@ -177,7 +188,9 @@ impl NavigationController {
                 ..
             } => {
                 let Some(current_step) = remaining_steps.first() else {
-                    return TripState::Complete;
+                    return TripState::Complete {
+                        user_location: location,
+                    };
                 };
 
                 //
@@ -206,6 +219,7 @@ impl NavigationController {
 
                 let intermediate_state = TripState::Navigating {
                     current_step_geometry_index,
+                    user_location: location,
                     snapped_user_location,
                     remaining_steps: remaining_steps.clone(),
                     remaining_waypoints: remaining_waypoints.clone(),
@@ -228,8 +242,9 @@ impl NavigationController {
                     // Do not advance
                     intermediate_state
                 } {
-                    TripState::Idle => TripState::Idle,
+                    TripState::Idle { user_location } => TripState::Idle { user_location },
                     TripState::Navigating {
+                        user_location: location,
                         snapped_user_location,
                         remaining_steps,
                         remaining_waypoints,
@@ -276,6 +291,7 @@ impl NavigationController {
 
                         TripState::Navigating {
                             current_step_geometry_index: updated_current_step_geometry_index,
+                            user_location: location,
                             snapped_user_location: updated_snapped_user_location,
                             remaining_steps,
                             remaining_waypoints,
@@ -286,11 +302,13 @@ impl NavigationController {
                             annotation_json,
                         }
                     }
-                    TripState::Complete => TripState::Complete,
+                    TripState::Complete { user_location } => TripState::Complete { user_location },
                 }
             }
             // Terminal state
-            TripState::Complete => TripState::Complete,
+            TripState::Complete { user_location } => TripState::Complete {
+                user_location: *user_location,
+            },
         }
     }
 }
@@ -445,7 +463,7 @@ mod tests {
                 controller.update_user_location(new_simulation_state.current_location, &state);
 
             match new_state {
-                TripState::Idle => {}
+                TripState::Idle { .. } => {}
                 TripState::Navigating {
                     current_step_geometry_index,
                     ref remaining_steps,
@@ -466,7 +484,7 @@ mod tests {
                     // routes, for example.
                     assert_eq!(deviation, &RouteDeviation::NoDeviation);
                 }
-                TripState::Complete => {
+                TripState::Complete { .. } => {
                     states.push(new_state);
                     break;
                 }

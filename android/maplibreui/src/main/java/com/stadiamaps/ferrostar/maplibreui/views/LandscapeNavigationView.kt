@@ -76,7 +76,6 @@ fun LandscapeNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    snapUserLocationToRoute: Boolean = true,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
@@ -100,7 +99,6 @@ fun LandscapeNavigationView(
         uiState,
         mapControls,
         locationRequestProperties,
-        snapUserLocationToRoute,
         routeOverlayBuilder,
         onMapReadyCallback = { camera.value = navigationCamera },
         mapContent)

@@ -36,8 +36,6 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
  * @param uiState The navigation UI state.
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
- * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
- *   route line.
  * @param routeOverlayBuilder The route overlay builder to use for rendering the route line on the
  *   MapView.
  * @param onMapReadyCallback A callback that is invoked when the map is ready to be interacted with.
@@ -53,7 +51,6 @@ fun NavigationMapView(
     mapControls: State<MapControls>,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    snapUserLocationToRoute: Boolean = true,
     routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     onMapReadyCallback: ((Style) -> Unit)? = null,
     content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
@@ -68,12 +65,7 @@ fun NavigationMapView(
   }
 
   val locationEngine = remember { StaticLocationEngine() }
-  locationEngine.lastLocation =
-      if (snapUserLocationToRoute && isNavigating) {
-        uiState.snappedLocation?.toAndroidLocation()
-      } else {
-        uiState.location?.toAndroidLocation()
-      }
+  locationEngine.lastLocation = uiState.location?.toAndroidLocation()
 
   MapView(
       modifier = Modifier.fillMaxSize(),

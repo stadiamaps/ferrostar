@@ -30,7 +30,7 @@ import uniffi.ferrostar.Waypoint
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
 data class NavigationState(
     /** The raw trip state from the core. */
-    val tripState: TripState = TripState.Idle,
+    val tripState: TripState = TripState.Idle(null),
     val routeGeometry: List<GeographicCoordinate> = emptyList(),
     /** Indicates when the core is calculating a new route (ex: due to the user being off route). */
     val isCalculatingNewRoute: Boolean = false
@@ -40,8 +40,8 @@ data class NavigationState(
 
 fun NavigationState.isNavigating(): Boolean =
     when (tripState) {
-      TripState.Complete,
-      TripState.Idle -> false
+      is TripState.Complete,
+      is TripState.Idle -> false
       is TripState.Navigating -> true
     }
 
