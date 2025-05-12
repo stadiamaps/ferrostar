@@ -105,6 +105,9 @@ final class AnnotationPublisherTests: XCTestCase {
         NavigationState(
             tripState: .navigating(
                 currentStepGeometryIndex: 1,
+                userLocation: UserLocation(
+                    clCoordinateLocation2D: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+                ),
                 snappedUserLocation: UserLocation(
                     clCoordinateLocation2D: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
                 ),

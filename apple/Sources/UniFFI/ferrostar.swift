@@ -5270,7 +5270,8 @@ public enum TripState {
     /**
      * The navigation controller is idle and there is no active trip.
      */
-    case idle
+    case idle(userLocation: UserLocation?
+    )
     /**
      * The navigation controller is actively navigating a trip.
      */
@@ -5281,7 +5282,21 @@ public enum TripState {
          * This index is relative to the *current* [`RouteStep`]'s geometry.
          */currentStepGeometryIndex: UInt64?, 
         /**
-         * A location on the line string that
+         * The user's raw location.
+         *
+         * This is more useful than the snapped location when the user is off route,
+         * or in special situations like pedestrian navigation.
+         */userLocation: UserLocation, 
+        /**
+         * The user's location as if they were exactly on the route.
+         *
+         * This is derived by snapping the latitude and longitude to the closest point on the route line,
+         * regardless of where they actually are.
+         * This is desirable as it makes the navigation experience better for vehicular navigation,
+         * removing GPS noise as long as the user is deemed to be on the route.
+         *
+         * All other properties from the [`UserLocation`], including speed and course,
+         * are not affected by snapping.
          */snappedUserLocation: UserLocation, 
         /**
          * The ordered list of steps that remain in the trip.
@@ -5322,7 +5337,8 @@ public enum TripState {
     /**
      * The navigation controller has reached the end of the trip.
      */
-    case complete
+    case complete(userLocation: UserLocation
+    )
 }
 
 
@@ -5336,12 +5352,14 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         let variant: Int32 = try readInt(&buf)
         switch variant {
         
-        case 1: return .idle
-        
-        case 2: return .navigating(currentStepGeometryIndex: try FfiConverterOptionUInt64.read(from: &buf), snappedUserLocation: try FfiConverterTypeUserLocation.read(from: &buf), remainingSteps: try FfiConverterSequenceTypeRouteStep.read(from: &buf), remainingWaypoints: try FfiConverterSequenceTypeWaypoint.read(from: &buf), progress: try FfiConverterTypeTripProgress.read(from: &buf), deviation: try FfiConverterTypeRouteDeviation.read(from: &buf), visualInstruction: try FfiConverterOptionTypeVisualInstruction.read(from: &buf), spokenInstruction: try FfiConverterOptionTypeSpokenInstruction.read(from: &buf), annotationJson: try FfiConverterOptionString.read(from: &buf)
+        case 1: return .idle(userLocation: try FfiConverterOptionTypeUserLocation.read(from: &buf)
         )
         
-        case 3: return .complete
+        case 2: return .navigating(currentStepGeometryIndex: try FfiConverterOptionUInt64.read(from: &buf), userLocation: try FfiConverterTypeUserLocation.read(from: &buf), snappedUserLocation: try FfiConverterTypeUserLocation.read(from: &buf), remainingSteps: try FfiConverterSequenceTypeRouteStep.read(from: &buf), remainingWaypoints: try FfiConverterSequenceTypeWaypoint.read(from: &buf), progress: try FfiConverterTypeTripProgress.read(from: &buf), deviation: try FfiConverterTypeRouteDeviation.read(from: &buf), visualInstruction: try FfiConverterOptionTypeVisualInstruction.read(from: &buf), spokenInstruction: try FfiConverterOptionTypeSpokenInstruction.read(from: &buf), annotationJson: try FfiConverterOptionString.read(from: &buf)
+        )
+        
+        case 3: return .complete(userLocation: try FfiConverterTypeUserLocation.read(from: &buf)
+        )
         
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -5351,13 +5369,15 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         switch value {
         
         
-        case .idle:
+        case let .idle(userLocation):
             writeInt(&buf, Int32(1))
+            FfiConverterOptionTypeUserLocation.write(userLocation, into: &buf)
+            
         
-        
-        case let .navigating(currentStepGeometryIndex,snappedUserLocation,remainingSteps,remainingWaypoints,progress,deviation,visualInstruction,spokenInstruction,annotationJson):
+        case let .navigating(currentStepGeometryIndex,userLocation,snappedUserLocation,remainingSteps,remainingWaypoints,progress,deviation,visualInstruction,spokenInstruction,annotationJson):
             writeInt(&buf, Int32(2))
             FfiConverterOptionUInt64.write(currentStepGeometryIndex, into: &buf)
+            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
@@ -5368,9 +5388,10 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
             FfiConverterOptionString.write(annotationJson, into: &buf)
             
         
-        case .complete:
+        case let .complete(userLocation):
             writeInt(&buf, Int32(3))
-        
+            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
+            
         }
     }
 }
@@ -5788,6 +5809,30 @@ fileprivate struct FfiConverterOptionTypeSpokenInstruction: FfiConverterRustBuff
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeSpokenInstruction.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeUserLocation: FfiConverterRustBuffer {
+    typealias SwiftType = UserLocation?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeUserLocation.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeUserLocation.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
