@@ -161,8 +161,6 @@ impl NavigationController {
                     },
                 }
             }
-            // It's tempting to throw an error here, since the caller should know better, but
-            // a mistake like this is technically harmless.
             TripState::Complete { user_location } => TripState::Complete {
                 user_location: *user_location,
             },
