@@ -24,7 +24,7 @@
 extern crate alloc;
 
 #[cfg(target_os = "android")]
-use android_logger::{Config, FilterBuilder};
+use android_logger::Config;
 
 pub mod algorithms;
 pub mod deviation_detection;
