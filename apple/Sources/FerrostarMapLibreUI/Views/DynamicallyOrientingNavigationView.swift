@@ -19,7 +19,7 @@ public struct DynamicallyOrientingNavigationView: View,
     let navigationCamera: MapViewCamera
     public var mapInsets: NavigationMapViewContentInsetBundle
 
-    private var navigationState: NavigationState?
+    private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
     public var speedLimit: Measurement<UnitSpeed>?
