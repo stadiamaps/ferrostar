@@ -7,41 +7,41 @@ import prettier from "eslint-config-prettier";
 import globals from "globals";
 
 export default [
-    js.configs.recommended,
-    {
-        files: ["**/*.{js,ts,html}"],
-        ignores: ["dist/**", "node_modules/**"],
-        languageOptions: {
-            parser: tsParser,
-            parserOptions: {
-                ecmaVersion: 2022,
-                sourceType: "module",
-                project: "./tsconfig.json",
-            },
-            ecmaVersion: 2022,
-            globals: {
-                ...globals.browser,
-                ...globals.worker
-            }
-        },
-        plugins: {
-            "@typescript-eslint": tseslint,
-            "lit": litPlugin,
-            "wc": wcPlugin,
-        },
-        rules: {
-            ...tseslint.configs.recommended.rules,
-            ...litPlugin.configs.recommended.rules,
-            ...wcPlugin.configs.recommended.rules,
-            "wc/no-constructor-params": "off",
-            "lit/no-template-arrow": "off",
-            '@typescript-eslint/no-explicit-any': 'warn',
-            '@typescript-eslint/no-unused-expressions': 'warn',
-            '@typescript-eslint/no-unsafe-function-type': 'warn',
-            'no-undef': 'off',
-            '@typescript-eslint/no-unused-vars': 'warn',
-            '@typescript-eslint/ban-ts-comment': 'warn',
-        }
+  js.configs.recommended,
+  {
+    files: ["**/*.{js,ts,html}"],
+    ignores: ["dist/**", "node_modules/**"],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: "module",
+        project: "./tsconfig.json",
+      },
+      ecmaVersion: 2022,
+      globals: {
+        ...globals.browser,
+        ...globals.worker,
+      },
     },
-    prettier
+    plugins: {
+      "@typescript-eslint": tseslint,
+      "lit": litPlugin,
+      "wc": wcPlugin,
+    },
+    rules: {
+      ...tseslint.configs.recommended.rules,
+      ...litPlugin.configs.recommended.rules,
+      ...wcPlugin.configs.recommended.rules,
+      "wc/no-constructor-params": "off",
+      "lit/no-template-arrow": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-expressions": "warn",
+      "@typescript-eslint/no-unsafe-function-type": "warn",
+      "no-undef": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/ban-ts-comment": "warn",
+    },
+  },
+  prettier,
 ];
