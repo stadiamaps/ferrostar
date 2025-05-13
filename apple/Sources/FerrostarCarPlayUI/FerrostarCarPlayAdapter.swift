@@ -76,6 +76,17 @@ class FerrostarCarPlayAdapter: NSObject {
         }
     }
 
+    private func terminateTrip(cancelled: Bool = false) {
+        if let navigatingTemplate {
+            if cancelled {
+                navigatingTemplate.cancelTrip()
+            } else {
+                navigatingTemplate.completeTrip()
+            }
+        }
+        uiState = .idle(nil)
+    }
+
     private func setupObservers() {
         // Handle Navigation Start/Stop
         Publishers.CombineLatest(
@@ -87,7 +98,7 @@ class FerrostarCarPlayAdapter: NSObject {
             guard let self else { return }
             guard let navState else {
                 if case let .navigating = self.uiState {
-                    navigatingTemplate?.cancelTrip()
+                    terminateTrip(cancelled: true)
                 }
                 return
             }
@@ -105,7 +116,7 @@ class FerrostarCarPlayAdapter: NSObject {
                 }
                 navigatingTemplate?.update(navigationState: navState)
             case .complete:
-                navigatingTemplate?.completeTrip()
+                terminateTrip()
             case .idle:
                 break
             }
