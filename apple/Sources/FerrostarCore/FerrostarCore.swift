@@ -164,7 +164,9 @@ public protocol FerrostarCoreDelegate: AnyObject {
         navigationControllerConfig: SwiftNavigationControllerConfig,
         options: [String: Any] = [:],
         networkSession: URLRequestLoading = URLSession.shared,
-        annotation: (any AnnotationPublishing)? = nil
+        annotation: (any AnnotationPublishing)? = nil,
+        spokenInstructionObserver: SpokenInstructionObserver =
+            .initAVSpeechSynthesizer()
     ) throws {
         guard let jsonOptions = try String(
             data: JSONSerialization.data(withJSONObject: options),
@@ -183,7 +185,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             locationProvider: locationProvider,
             navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession,
-            annotation: annotation
+            annotation: annotation,
+            spokenInstructionObserver: spokenInstructionObserver
         )
     }
 
@@ -192,14 +195,17 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
         networkSession: URLRequestLoading = URLSession.shared,
-        annotation: (any AnnotationPublishing)? = nil
+        annotation: (any AnnotationPublishing)? = nil,
+        spokenInstructionObserver: SpokenInstructionObserver =
+            .initAVSpeechSynthesizer()
     ) {
         self.init(
             routeProvider: .routeAdapter(routeAdapter),
             locationProvider: locationProvider,
             navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession,
-            annotation: annotation
+            annotation: annotation,
+            spokenInstructionObserver: spokenInstructionObserver
         )
     }
 
@@ -208,14 +214,17 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
         networkSession: URLRequestLoading = URLSession.shared,
-        annotation: (any AnnotationPublishing)? = nil
+        annotation: (any AnnotationPublishing)? = nil,
+        spokenInstructionObserver: SpokenInstructionObserver =
+            .initAVSpeechSynthesizer()
     ) {
         self.init(
             routeProvider: .customProvider(customRouteProvider),
             locationProvider: locationProvider,
             navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession,
-            annotation: annotation
+            annotation: annotation,
+            spokenInstructionObserver: spokenInstructionObserver
         )
     }
 
