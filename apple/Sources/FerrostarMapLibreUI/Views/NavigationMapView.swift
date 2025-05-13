@@ -21,7 +21,7 @@ public struct NavigationMapView: View {
 
     // TODO: Configurable camera and user "puck" rotation modes
 
-    private var navigationState: NavigationState?
+    private let navigationState: NavigationState?
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
 
