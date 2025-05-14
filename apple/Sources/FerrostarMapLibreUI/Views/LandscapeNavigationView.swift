@@ -94,7 +94,7 @@ public struct LandscapeNavigationView: View,
                     userLayers
                 }
                 .navigationMapViewContentInset(
-                    mapInsets.landscape(geometry)
+                    calculatedMapViewInsets(for: geometry)
                 )
 
                 LandscapeNavigationOverlayView(
@@ -112,8 +112,11 @@ public struct LandscapeNavigationView: View,
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
-                    showCentering: !camera.isTrackingUserLocationWithCourse,
-                    onCenter: { camera = navigationCamera },
+                    cameraControlState: camera.isTrackingUserLocationWithCourse ? CameraControlState.showRecenter {
+                        // TODO:
+                    } : .showRecenter {
+                        camera = navigationCamera
+                    },
                     onTapExit: onTapExit
                 )
                 .innerGrid {
@@ -127,6 +130,14 @@ public struct LandscapeNavigationView: View,
                 }
                 .complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
+        }
+    }
+
+    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
+        if case .rect = camera.state {
+            .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+        } else {
+            mapInsets.landscape(geometry)
         }
     }
 }
