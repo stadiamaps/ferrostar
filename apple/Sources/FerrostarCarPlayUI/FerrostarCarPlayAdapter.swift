@@ -4,23 +4,17 @@ import FerrostarCore
 import FerrostarCoreFFI
 import FerrostarSwiftUI
 
-@MainActor
 class FerrostarCarPlayAdapter: NSObject {
     // TODO: This should be customizable. For now we're just ignore it.
-    @Published var uiState: CarPlayUIState = .idle(nil)
-    @Published var currentRoute: CPTrip?
+    private var uiState: CarPlayUIState = .idle(nil)
 
     private let ferrostarCore: FerrostarCore
     private let formatterCollection: FormatterCollection
     private let distanceUnits: MKDistanceFormatter.Units
 
     /// The MapTemplate hosts both the idle and navigating templates.
-    private var mapTemplate: CPMapTemplate?
     private var idleTemplate: IdleMapTemplate?
     private var navigatingTemplate: NavigatingTemplateHost?
-
-    var currentSession: CPNavigationSession?
-    var currentTrip: CPTrip?
 
     private var cancellables = Set<AnyCancellable>()
 
