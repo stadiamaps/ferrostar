@@ -10,7 +10,7 @@ import SwiftUI
 public struct CarPlayNavigationView: View,
     SpeedLimitViewHost, NavigationViewConfigurable
 {
-    @StateObject var ferrostarCore: FerrostarCore
+    private let navigationState: NavigationState?
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -30,13 +30,13 @@ public struct CarPlayNavigationView: View,
     public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     public init(
-        ferrostarCore: FerrostarCore,
+        navigationState: NavigationState?,
         styleURL: URL,
         camera: Binding<MapViewCamera>,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
-        _ferrostarCore = StateObject(wrappedValue: ferrostarCore)
+        self.navigationState = navigationState
         self.styleURL = styleURL
         _camera = camera
         mapInsets = NavigationMapViewContentInsetBundle()
@@ -50,7 +50,7 @@ public struct CarPlayNavigationView: View,
                 NavigationMapView(
                     styleURL: styleURL,
                     camera: $camera,
-                    navigationState: ferrostarCore.state,
+                    navigationState: navigationState,
                     activity: .carplay,
                     onStyleLoaded: { _ in
                         // camera = .automotiveNavigation(zoom: 17.0)
