@@ -11,7 +11,6 @@ private extension Logger {
 }
 
 class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplicationSceneDelegate {
-    private weak var ferrostarCore: FerrostarCore?
     private var carPlayViewController: UIViewController?
 
     private var carPlayManager: FerrostarCarPlayManager?
@@ -51,11 +50,8 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
     func setupCarPlay(on window: UIWindow) {
         guard carPlayManager == nil else { return }
 
-        // IMPORTANT: This is your app's shared FerrostarCore
-        ferrostarCore = appEnvironment.ferrostarCore
-
         let view = CarPlayNavigationView(
-            ferrostarCore: ferrostarCore!,
+            ferrostarCore: appEnvironment.ferrostarCore,
             styleURL: AppDefaults.mapStyleURL,
             camera: Binding(
                 get: { appEnvironment.camera.camera },
@@ -66,7 +62,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         carPlayViewController = UIHostingController(rootView: view)
 
         carPlayManager = FerrostarCarPlayManager(
-            ferrostarCore!,
+            appEnvironment.ferrostarCore,
             camera: Binding(
                 get: { appEnvironment.camera.camera },
                 set: { appEnvironment.camera.camera = $0 }
