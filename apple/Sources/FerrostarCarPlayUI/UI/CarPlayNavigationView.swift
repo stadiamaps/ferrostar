@@ -11,7 +11,6 @@ public struct CarPlayNavigationView: View,
     SpeedLimitViewHost, NavigationViewConfigurable
 {
     private let navigationState: NavigationState?
-    @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
 
@@ -23,8 +22,6 @@ public struct CarPlayNavigationView: View,
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
-    public var minimumSafeAreaInsets: EdgeInsets
-
     public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
     public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
     public var currentRoadNameView: ((NavigationState?) -> AnyView)?
@@ -33,14 +30,12 @@ public struct CarPlayNavigationView: View,
         navigationState: NavigationState?,
         styleURL: URL,
         camera: Binding<MapViewCamera>,
-        minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.navigationState = navigationState
         self.styleURL = styleURL
         _camera = camera
         mapInsets = NavigationMapViewContentInsetBundle()
-        self.minimumSafeAreaInsets = minimumSafeAreaInsets
         userLayers = makeMapContent()
     }
 
