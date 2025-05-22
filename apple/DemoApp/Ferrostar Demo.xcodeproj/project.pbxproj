@@ -24,6 +24,7 @@
 		E90D97912B8AF507005E43F8 /* NavigationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */; };
 		E9505FCA2AD449B30016BF0A /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FC92AD449B30016BF0A /* FerrostarCore */; };
 		E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */; };
+		FE0AFFBC2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		E9505FB72AD449700016BF0A /* Ferrostar Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ferrostar Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9DD18E42B18EE7A00CAF29A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E9DD18E52B18F4BD00CAF29A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayNavigationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +72,7 @@
 				1611A5542B2E6E98006B131D /* Preview Content */,
 				1663679B2B2F6F79008BFF1F /* Helpers */,
 				1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */,
+				FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */,
 				16C8F1722CEEBE530014DE3D /* AppEnvironment.swift */,
 				E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */,
 				1611A5562B2E6E98006B131D /* DemoNavigationView.swift */,
@@ -213,6 +216,7 @@
 				1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */,
 				16C8F1732CEEBE570014DE3D /* AppEnvironment.swift in Sources */,
 				1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */,
+				FE0AFFBC2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift in Sources */,
 				E90D97912B8AF507005E43F8 /* NavigationDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

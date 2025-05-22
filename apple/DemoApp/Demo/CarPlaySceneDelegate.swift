@@ -50,7 +50,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
     func setupCarPlay(on window: UIWindow) {
         guard carPlayManager == nil else { return }
 
-        let view = CarPlayNavigationView(
+        let view = DemoCarPlayNavigationView(
             ferrostarCore: appEnvironment.ferrostarCore,
             styleURL: AppDefaults.mapStyleURL,
             camera: Binding(
