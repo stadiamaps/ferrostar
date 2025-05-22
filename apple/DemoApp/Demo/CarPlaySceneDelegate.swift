@@ -11,8 +11,6 @@ private extension Logger {
 }
 
 class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplicationSceneDelegate {
-    private var carPlayViewController: UIViewController?
-
     private var carPlayManager: FerrostarCarPlayManager?
 
     func scene(
@@ -59,7 +57,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
             )
         )
 
-        carPlayViewController = UIHostingController(rootView: view)
+        let carPlayViewController = UIHostingController(rootView: view)
 
         carPlayManager = FerrostarCarPlayManager(
             appEnvironment.ferrostarCore,
