@@ -10,10 +10,23 @@ private extension Logger {
     static let carPlay = Logger(subsystem: "ferrostar", category: "carplaydelegate")
 }
 
+private let CarPlaySceneDelegateKey = "ferrostar"
+
+private extension UISceneSession {
+    var carPlayManager: FerrostarCarPlayManager? {
+        get {
+            userInfo?[CarPlaySceneDelegateKey] as? FerrostarCarPlayManager
+        }
+        set {
+            var info = userInfo ?? [:]
+            info[CarPlaySceneDelegateKey] = newValue
+            userInfo = info
+        }
+    }
+}
+
 class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplicationSceneDelegate {
     private var carPlayViewController: UIViewController?
-
-    private var carPlayManager: FerrostarCarPlayManager?
 
     func scene(
         _: UIScene, willConnectTo _: UISceneSession,
@@ -29,11 +42,19 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
-        Logger.carPlay.info("\(#function)")
-        setupCarPlay(on: window)
-        carPlayManager?.templateApplicationScene(
+        Logger.carPlay.debug("\(#function)")
+
+        guard templateApplicationScene.session.carPlayManager == nil else {
+            Logger.carPlay.error("CarPlay already connected?")
+            return
+        }
+
+        let manager = setupCarPlay(on: window)
+        manager.templateApplicationScene(
             templateApplicationScene, didConnect: interfaceController, to: window
         )
+
+        templateApplicationScene.session.carPlayManager = manager
     }
 
     public func templateApplicationScene(
@@ -41,15 +62,21 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
-        Logger.carPlay.info("\(#function)")
-        carPlayManager?.templateApplicationScene(
+        Logger.carPlay.debug("\(#function)")
+
+        guard let manager = templateApplicationScene.session.carPlayManager else {
+            Logger.carPlay.error("CarPlay not connected?")
+            return
+        }
+
+        manager.templateApplicationScene(
             templateApplicationScene, didDisconnect: interfaceController, from: window
         )
+
+        templateApplicationScene.session.carPlayManager = nil
     }
 
-    func setupCarPlay(on window: UIWindow) {
-        guard carPlayManager == nil else { return }
-
+    private func setupCarPlay(on window: UIWindow) -> FerrostarCarPlayManager {
         let view = DemoCarPlayNavigationView(
             ferrostarCore: appEnvironment.ferrostarCore,
             styleURL: AppDefaults.mapStyleURL,
@@ -61,7 +88,7 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
 
         carPlayViewController = UIHostingController(rootView: view)
 
-        carPlayManager = FerrostarCarPlayManager(
+        let carPlayManager = FerrostarCarPlayManager(
             appEnvironment.ferrostarCore,
             camera: Binding(
                 get: { appEnvironment.camera.camera },
@@ -74,6 +101,8 @@ class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplic
 
         window.rootViewController = carPlayViewController
         window.makeKeyAndVisible()
+
+        return carPlayManager
     }
 }
 
