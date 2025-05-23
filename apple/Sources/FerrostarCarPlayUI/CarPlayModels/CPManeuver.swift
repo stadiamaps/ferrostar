@@ -3,15 +3,8 @@ import FerrostarCore
 import FerrostarCoreFFI
 import FerrostarSwiftUI
 
-extension CPManeuver {
-    static func fromFerrostar(_ instruction: VisualInstruction?,
-                              stepDuration: TimeInterval,
-                              stepDistance: Measurement<UnitLength>) -> CPManeuver?
-    {
-        guard let instruction else {
-            return nil
-        }
-
+extension VisualInstruction {
+    func maneuver(stepDuration: TimeInterval, stepDistance: Measurement<UnitLength>) -> CPManeuver {
         let maneuver = CPManeuver()
 
         // CarPlay take the "initial" estimates and internally tracks the reduction.
@@ -29,14 +22,14 @@ extension CPManeuver {
         // The instructions. CPManeuver lists them from
         // highest (idx-0) to lowest priority.
         let instructions = [
-            instruction.primaryContent.text,
-            instruction.secondaryContent?.text,
+            primaryContent.text,
+            secondaryContent?.text,
         ]
         maneuver.instructionVariants = instructions.compactMap { $0 }
 
         // Display a maneuver image if one could be calculated.
-        if let maneuverType = instruction.primaryContent.maneuverType {
-            let maneuverModifier = instruction.primaryContent.maneuverModifier
+        if let maneuverType = primaryContent.maneuverType {
+            let maneuverModifier = primaryContent.maneuverModifier
             let maneuverImage = ManeuverUIImage(maneuverType: maneuverType, maneuverModifier: maneuverModifier)
             maneuver.symbolImage = maneuverImage.uiImage
         }

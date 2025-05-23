@@ -60,15 +60,10 @@ class NavigatingTemplateHost {
     func update(_ instruction: VisualInstruction, currentStep: RouteStep) {
         let stepDistance = CarPlayMeasurementLength(units: units, distance: currentStep.distance)
 
-        let maneuvers = [
-            CPManeuver.fromFerrostar(
-                instruction,
-                stepDuration: currentStep.duration,
-                stepDistance: stepDistance.rounded()
-            ),
-        ].compactMap { $0 }
-
-        currentSession?.upcomingManeuvers = maneuvers
+        currentSession?.upcomingManeuvers = [instruction.maneuver(
+            stepDuration: currentStep.duration,
+            stepDistance: stepDistance.rounded()
+        )]
     }
 
     func cancelTrip() {
