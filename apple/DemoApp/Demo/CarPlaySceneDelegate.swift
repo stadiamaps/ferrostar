@@ -10,17 +10,8 @@ private extension Logger {
     static let carPlay = Logger(subsystem: "ferrostar", category: "carplaydelegate")
 }
 
-class CarPlaySceneDelegate: UIResponder, UIWindowSceneDelegate, CPTemplateApplicationSceneDelegate {
+class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
     private var carPlayManager: FerrostarCarPlayManager?
-
-    func scene(
-        _: UIScene, willConnectTo _: UISceneSession,
-        options _: UIScene.ConnectionOptions
-    ) {
-        // NOTE: This can also be used to set up your App's window & CarPlay scene.
-        //       This example just uses the car play specific templateApplicationScene(_:didConnect:to)
-        Logger.carPlay.info("\(#function)")
-    }
 
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
