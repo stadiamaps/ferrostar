@@ -1,6 +1,8 @@
 import CarPlay
 
 // TODO: This has yet to be tested/used, but it's here as a starting point for the default idle.
+// TODO: Review https://developer.apple.com/carplay/documentation/CarPlay-App-Programming-Guide.pdf
+//       Page 37 of 65 - we probably want the default idle template to be a trip preview w/ start nav.
 public class IdleMapTemplate: CPMapTemplate {
     private var searchButton: CPBarButton?
     private var recenterButton: CPMapButton?
