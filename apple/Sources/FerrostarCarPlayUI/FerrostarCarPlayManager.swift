@@ -10,7 +10,7 @@ private extension Logger {
     static let cpMapTemplateDelegate = Logger(category: "CPMapTemplateDelegate")
 }
 
-public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelegate {
+public class FerrostarCarPlayManager: NSObject {
     private let ferrostarCore: FerrostarCore
     @Binding var camera: MapViewCamera
 
@@ -18,7 +18,6 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
     private let distanceUnits: MKDistanceFormatter.Units
 
     private var ferrostarAdapter: FerrostarCarPlayAdapter?
-    private var interfaceController: CPInterfaceController?
 
     public init(
         _ ferrostarCore: FerrostarCore,
@@ -37,15 +36,8 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         super.init()
     }
 
-    // MARK: CPApplicationDelegate
-
-    public func templateApplicationScene(
-        _: CPTemplateApplicationScene,
-        didConnect interfaceController: CPInterfaceController,
-        to _: CPWindow
-    ) {
+    public var mapTemplate: CPMapTemplate {
         logger.debug("\(#function)")
-        self.interfaceController = interfaceController
 
         // Create the map template
         let mapTemplate = CPMapTemplate()
@@ -65,23 +57,11 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
                                                        self?.ferrostarCore.stopNavigation()
                                                    })
 
-        // Set the root template
-        interfaceController.setRootTemplate(mapTemplate, animated: true) { [weak self] success, error in
-            if let error {
-                self?.logger.error("Failed didConnect to CPWindow with error: \(error)")
-            } else {
-                self?.logger.debug("Connected to CPWindow - template presented: \(success)")
-            }
-        }
+        return mapTemplate
     }
 
-    public func templateApplicationScene(
-        _: CPTemplateApplicationScene,
-        didDisconnect _: CPInterfaceController,
-        from _: CPWindow
-    ) {
+    public func disconnect() {
         logger.debug("\(#function)")
-        interfaceController = nil
         ferrostarAdapter = nil
     }
 }

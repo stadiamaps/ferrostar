@@ -39,17 +39,24 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
         }
 
         let manager = setupCarPlay(on: window)
-        manager.templateApplicationScene(
-            templateApplicationScene, didConnect: interfaceController, to: window
-        )
+        let mapTemplate = manager.mapTemplate
+
+        // Set the root template
+        interfaceController.setRootTemplate(mapTemplate, animated: true) { success, error in
+            if let error {
+                Logger.carPlay.error("Failed setRootTemplet: \(error)")
+            } else {
+                Logger.carPlay.debug("Template presented: \(success)")
+            }
+        }
 
         templateApplicationScene.session.carPlayManager = manager
     }
 
     public func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
-        didDisconnect interfaceController: CPInterfaceController,
-        from window: CPWindow
+        didDisconnect _: CPInterfaceController,
+        from _: CPWindow
     ) {
         Logger.carPlay.debug("\(#function)")
 
@@ -58,9 +65,7 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
             return
         }
 
-        manager.templateApplicationScene(
-            templateApplicationScene, didDisconnect: interfaceController, from: window
-        )
+        manager.disconnect()
 
         templateApplicationScene.session.carPlayManager = nil
     }
