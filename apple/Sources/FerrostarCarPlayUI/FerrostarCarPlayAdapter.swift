@@ -12,29 +12,23 @@ class FerrostarCarPlayAdapter: NSObject {
     private let formatterCollection: FormatterCollection
     private let distanceUnits: MKDistanceFormatter.Units
 
-    private var navigatingTemplate: NavigatingTemplateHost?
+    private var navigatingTemplate: NavigatingTemplateHost
 
     private var cancellables = Set<AnyCancellable>()
 
     init(
         ferrostarCore: FerrostarCore,
         formatterCollection: FormatterCollection = FoundationFormatterCollection(),
-        distanceUnits: MKDistanceFormatter.Units = .default
-    ) {
-        self.ferrostarCore = ferrostarCore
-        self.formatterCollection = formatterCollection
-        self.distanceUnits = distanceUnits
-
-        super.init()
-    }
-
-    func setup(
-        on mapTemplate: CPMapTemplate,
+        distanceUnits: MKDistanceFormatter.Units = .default,
+        mapTemplate: CPMapTemplate,
         showCentering: Bool,
         onCenter: @escaping () -> Void,
         onStartTrip: @escaping () -> Void,
         onCancelTrip: @escaping () -> Void
     ) {
+        self.ferrostarCore = ferrostarCore
+        self.formatterCollection = formatterCollection
+        self.distanceUnits = distanceUnits
         navigatingTemplate = NavigatingTemplateHost(
             mapTemplate: mapTemplate,
             formatters: formatterCollection,
@@ -45,16 +39,15 @@ class FerrostarCarPlayAdapter: NSObject {
             onCancelTrip: onCancelTrip
         )
 
+        super.init()
         setupObservers()
     }
 
     private func terminateTrip(cancelled: Bool = false) {
-        if let navigatingTemplate {
-            if cancelled {
-                navigatingTemplate.cancelTrip()
-            } else {
-                navigatingTemplate.completeTrip()
-            }
+        if cancelled {
+            navigatingTemplate.cancelTrip()
+        } else {
+            navigatingTemplate.completeTrip()
         }
         uiState = .idle(nil)
     }
@@ -80,13 +73,13 @@ class FerrostarCarPlayAdapter: NSObject {
                 if let route, uiState != .navigating {
                     uiState = .navigating
                     do {
-                        try navigatingTemplate?.start(routes: [route], waypoints: route.waypoints)
+                        try navigatingTemplate.start(routes: [route], waypoints: route.waypoints)
                         print("CarPlay - started")
                     } catch {
                         print("CarPlay - startup error: \(error)")
                     }
                 }
-                navigatingTemplate?.update(navigationState: navState)
+                navigatingTemplate.update(navigationState: navState)
             case .complete:
                 terminateTrip()
             case .idle:
@@ -110,7 +103,7 @@ class FerrostarCarPlayAdapter: NSObject {
             .sink { [weak self] instruction, step in
                 guard let self else { return }
 
-                navigatingTemplate?.update(instruction, currentStep: step)
+                navigatingTemplate.update(instruction, currentStep: step)
             }
             .store(in: &cancellables)
     }

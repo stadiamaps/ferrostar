@@ -52,21 +52,18 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
 
         // Create the navigation adapter
         ferrostarAdapter = FerrostarCarPlayAdapter(ferrostarCore: ferrostarCore,
-                                                   distanceUnits: distanceUnits)
-
-        ferrostarAdapter?.setup(
-            on: mapTemplate,
-            showCentering: !camera.isTrackingUserLocationWithCourse,
-            onCenter: { [weak self] in
-                self?.camera = .automotiveNavigation(pitch: 25)
-            },
-            onStartTrip: {
-                // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
-            },
-            onCancelTrip: { [weak self] in
-                self?.ferrostarCore.stopNavigation()
-            }
-        )
+                                                   distanceUnits: distanceUnits,
+                                                   mapTemplate: mapTemplate,
+                                                   showCentering: !camera.isTrackingUserLocationWithCourse,
+                                                   onCenter: { [weak self] in
+                                                       self?.camera = .automotiveNavigation(pitch: 25)
+                                                   },
+                                                   onStartTrip: {
+                                                       // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
+                                                   },
+                                                   onCancelTrip: { [weak self] in
+                                                       self?.ferrostarCore.stopNavigation()
+                                                   })
 
         // Set the root template
         interfaceController.setRootTemplate(mapTemplate, animated: true) { [weak self] success, error in
