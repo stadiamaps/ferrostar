@@ -12,7 +12,7 @@ class FerrostarCarPlayAdapter: NSObject {
     private let formatterCollection: FormatterCollection
     private let distanceUnits: MKDistanceFormatter.Units
 
-    private var navigatingTemplate: NavigatingTemplateHost?
+    private var navigatingTemplate: NavigatingTemplateHost
 
     private var cancellables = Set<AnyCancellable>()
 
