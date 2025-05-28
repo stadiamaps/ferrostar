@@ -26,8 +26,6 @@ private extension UISceneSession {
 }
 
 class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
-    private var carPlayViewController: UIViewController?
-
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
@@ -77,7 +75,7 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
             )
         )
 
-        carPlayViewController = UIHostingController(rootView: view)
+        let carPlayViewController = UIHostingController(rootView: view)
 
         let carPlayManager = FerrostarCarPlayManager(
             appEnvironment.ferrostarCore,

@@ -12,8 +12,6 @@ class FerrostarCarPlayAdapter: NSObject {
     private let formatterCollection: FormatterCollection
     private let distanceUnits: MKDistanceFormatter.Units
 
-    /// The MapTemplate hosts both the idle and navigating templates.
-    private var idleTemplate: IdleMapTemplate?
     private var navigatingTemplate: NavigatingTemplateHost?
 
     private var cancellables = Set<AnyCancellable>()
@@ -28,7 +26,6 @@ class FerrostarCarPlayAdapter: NSObject {
         self.distanceUnits = distanceUnits
 
         super.init()
-        setupIdleTemplate()
     }
 
     func setup(
@@ -49,25 +46,6 @@ class FerrostarCarPlayAdapter: NSObject {
         )
 
         setupObservers()
-    }
-
-    // Add this function to initialize the idle template
-    func setupIdleTemplate() {
-        // TODO: Review https://developer.apple.com/carplay/documentation/CarPlay-App-Programming-Guide.pdf
-        //       Page 37 of 65 - we probably want the default idle template to be a trip preview w/ start nav.
-        idleTemplate = IdleMapTemplate()
-
-        idleTemplate?.onSearchButtonTapped = { [weak self] in
-            // Handle search
-        }
-
-        idleTemplate?.onRecenterButtonTapped = { [weak self] in
-            // Handle recenter
-        }
-
-        idleTemplate?.onStartNavigationButtonTapped = { [weak self] in
-            // Handle start navigation
-        }
     }
 
     private func terminateTrip(cancelled: Bool = false) {
