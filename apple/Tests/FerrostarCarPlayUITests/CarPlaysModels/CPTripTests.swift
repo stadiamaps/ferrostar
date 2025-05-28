@@ -8,7 +8,7 @@ import Testing
 
 struct CPTripTests {
     @Test("CPTrip creation")
-    func testCPTripCreation() async throws {
+    func cPTripCreation() async throws {
         let route = Route(
             geometry: [],
             bbox: .init(sw: .init(lat: 0, lng: 0), ne: .init(lat: 1, lng: 1)),
