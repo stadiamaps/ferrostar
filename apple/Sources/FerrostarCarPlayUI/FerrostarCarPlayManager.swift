@@ -10,13 +10,12 @@ private extension Logger {
     static let cpMapTemplateDelegate = Logger(category: "CPMapTemplateDelegate")
 }
 
-public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelegate {
+public class FerrostarCarPlayManager: NSObject {
     private let logger: Logger
 
     private var ferrostarAdapter: FerrostarCarPlayAdapter
-    private var interfaceController: CPInterfaceController?
 
-    private var mapTemplate: CPMapTemplate = .init()
+    public var mapTemplate: CPMapTemplate = .init()
 
     public init(
         _ ferrostarCore: FerrostarCore,
@@ -44,32 +43,7 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         super.init()
     }
 
-    // MARK: CPApplicationDelegate
-
-    public func templateApplicationScene(
-        _: CPTemplateApplicationScene,
-        didConnect interfaceController: CPInterfaceController,
-        to _: CPWindow
-    ) {
+    public func disconnect() {
         logger.debug("\(#function)")
-        self.interfaceController = interfaceController
-
-        // Set the root template
-        interfaceController.setRootTemplate(mapTemplate, animated: true) { [weak self] success, error in
-            if let error {
-                self?.logger.error("Failed didConnect to CPWindow with error: \(error)")
-            } else {
-                self?.logger.debug("Connected to CPWindow - template presented: \(success)")
-            }
-        }
-    }
-
-    public func templateApplicationScene(
-        _: CPTemplateApplicationScene,
-        didDisconnect _: CPInterfaceController,
-        from _: CPWindow
-    ) {
-        logger.debug("\(#function)")
-        interfaceController = nil
     }
 }
