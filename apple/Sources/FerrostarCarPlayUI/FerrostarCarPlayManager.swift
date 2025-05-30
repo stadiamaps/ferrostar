@@ -73,15 +73,3 @@ public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelega
         interfaceController = nil
     }
 }
-
-extension FerrostarCarPlayManager: CPMapTemplateDelegate {
-    public func mapTemplate(_: CPMapTemplate, selectedPreviewFor _: CPTrip, using _: CPRouteChoice) {
-        Logger.cpMapTemplateDelegate.debug("\(#function)")
-        // TODO: What is this for?
-    }
-
-    public func mapTemplate(_: CPMapTemplate, startedTrip _: CPTrip, using _: CPRouteChoice) {
-        Logger.cpMapTemplateDelegate.debug("\(#function)")
-        // TODO: What is this for?
-    }
-}
