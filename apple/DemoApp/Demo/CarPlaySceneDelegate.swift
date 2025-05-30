@@ -84,13 +84,18 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
 
         let carPlayManager = FerrostarCarPlayManager(
             appEnvironment.ferrostarCore,
-            camera: Binding(
-                get: { appEnvironment.camera.camera },
-                set: { appEnvironment.camera.camera = $0 }
-            ),
-            distanceUnits: .default
+            distanceUnits: .default,
             // TODO: We may need to hold the view or viewController here, but it seems
             //       to work for now.
+            showCentering: !appEnvironment.camera.camera.isTrackingUserLocationWithCourse,
+            onCenter: { appEnvironment.camera.camera = .automotiveNavigation(pitch: 25)
+            },
+            onStartTrip: {
+                // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
+            },
+            onCancelTrip: {
+                appEnvironment.ferrostarCore.stopNavigation()
+            }
         )
 
         window.rootViewController = carPlayViewController

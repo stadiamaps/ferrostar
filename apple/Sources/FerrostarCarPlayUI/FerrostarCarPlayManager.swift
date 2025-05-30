@@ -11,69 +11,39 @@ private extension Logger {
 }
 
 public class FerrostarCarPlayManager: NSObject {
-    private let ferrostarCore: FerrostarCore
-    @Binding var camera: MapViewCamera
-
     private let logger: Logger
-    private let distanceUnits: MKDistanceFormatter.Units
 
-    private var ferrostarAdapter: FerrostarCarPlayAdapter?
+    private var ferrostarAdapter: FerrostarCarPlayAdapter
+
+    public var mapTemplate: CPMapTemplate = .init()
 
     public init(
         _ ferrostarCore: FerrostarCore,
-        camera: Binding<MapViewCamera>,
         logger: Logger = Logger(
             subsystem: Bundle.main.bundleIdentifier ?? "FerrostarCarPlayUI",
             category: "FerrostarCarPlayManager"
         ),
-        distanceUnits: MKDistanceFormatter.Units
+        distanceUnits: MKDistanceFormatter.Units,
+        showCentering: Bool,
+        onCenter: @escaping () -> Void,
+        onStartTrip: @escaping () -> Void,
+        onCancelTrip: @escaping () -> Void
     ) {
-        self.ferrostarCore = ferrostarCore
-        _camera = camera
         self.logger = logger
-        self.distanceUnits = distanceUnits
-
-        super.init()
-    }
-
-    public var mapTemplate: CPMapTemplate {
-        logger.debug("\(#function)")
-
-        // Create the map template
-        let mapTemplate = CPMapTemplate()
 
         // Create the navigation adapter
         ferrostarAdapter = FerrostarCarPlayAdapter(ferrostarCore: ferrostarCore,
                                                    distanceUnits: distanceUnits,
                                                    mapTemplate: mapTemplate,
-                                                   showCentering: !camera.isTrackingUserLocationWithCourse,
-                                                   onCenter: { [weak self] in
-                                                       self?.camera = .automotiveNavigation(pitch: 25)
-                                                   },
-                                                   onStartTrip: {
-                                                       // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
-                                                   },
-                                                   onCancelTrip: { [weak self] in
-                                                       self?.ferrostarCore.stopNavigation()
-                                                   })
+                                                   showCentering: showCentering,
+                                                   onCenter: onCenter,
+                                                   onStartTrip: onStartTrip,
+                                                   onCancelTrip: onCancelTrip)
 
-        return mapTemplate
+        super.init()
     }
 
     public func disconnect() {
         logger.debug("\(#function)")
-        ferrostarAdapter = nil
-    }
-}
-
-extension FerrostarCarPlayManager: CPMapTemplateDelegate {
-    public func mapTemplate(_: CPMapTemplate, selectedPreviewFor _: CPTrip, using _: CPRouteChoice) {
-        Logger.cpMapTemplateDelegate.debug("\(#function)")
-        // TODO: What is this for?
-    }
-
-    public func mapTemplate(_: CPMapTemplate, startedTrip _: CPTrip, using _: CPRouteChoice) {
-        Logger.cpMapTemplateDelegate.debug("\(#function)")
-        // TODO: What is this for?
     }
 }
