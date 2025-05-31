@@ -75,9 +75,13 @@ struct DemoNavigationView: View {
                             .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
 
                         if locationServicesEnabled {
-                            if ferrostarCore.state == nil, let route {
+                            if ferrostarCore.state == nil {
                                 NavigationUIButton {
                                     Task {
+                                        guard let route else {
+                                            errorMessage = "No Route"
+                                            return
+                                        }
                                         do {
                                             isFetchingRoutes = true
                                             try startNavigation(route)
@@ -93,6 +97,7 @@ struct DemoNavigationView: View {
                                         .minimumScaleFactor(0.5)
                                         .font(.body.bold())
                                 }
+                                .disabled(route == nil)
                             }
                         } else {
                             NavigationUIButton {
