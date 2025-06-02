@@ -4,7 +4,6 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
-import java.net.URL
 import java.time.Instant
 import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
@@ -149,9 +148,7 @@ class FerrostarCore(
   var state: StateFlow<NavigationState> = _state.asStateFlow()
 
   constructor(
-      routingEndpointURL: URL,
-      routingEngine: String,
-      profile: String,
+      routingEngine: RoutingEngine,
       httpClient: OkHttpClient,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
@@ -159,20 +156,25 @@ class FerrostarCore(
       options: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
-          if (routingEngine == "graphhopper")
-              RouteAdapter.newGraphhopperHttp(
-                  routingEndpointURL.toString(),
-                  profile,
+          when (routingEngine) {
+              is RoutingEngine.GraphHopper -> RouteAdapter.newGraphhopperHttp(
+                  routingEngine.endpoint,
+                  routingEngine.profile,
                   "en",
                   VoiceUnits.METRIC,
-                  jsonAdapter.toJson(options))
-          else
-              RouteAdapter.newValhallaHttp(
-                  routingEndpointURL.toString(), profile, jsonAdapter.toJson(options))),
+                  jsonAdapter.toJson(options)
+              )
+
+              is RoutingEngine.Valhalla -> RouteAdapter.newValhallaHttp(
+                  routingEngine.endpoint, routingEngine.profile, jsonAdapter.toJson(options)
+              )
+          }
+      ),
       httpClient,
       locationProvider,
       foregroundServiceManager,
-      navigationControllerConfig)
+      navigationControllerConfig
+  )
 
   constructor(
       routeAdapter: RouteAdapter,

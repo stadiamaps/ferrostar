@@ -13,7 +13,7 @@ import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
-import java.net.URL
+import com.stadiamaps.ferrostar.core.RoutingEngine
 import java.time.Duration
 import java.time.Instant
 import okhttp3.OkHttpClient
@@ -66,16 +66,6 @@ object AppModule {
     else "https://demotiles.maplibre.org/style.json"
   }
 
-  val routingEndpointURL: URL by lazy {
-    if (graphhopperApiKey != null) {
-      URL("https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey")
-    } else if (stadiaApiKey != null) {
-      URL("https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey")
-    } else {
-      URL("https://valhalla1.openstreeetmap.de/route")
-    }
-  }
-
   fun init(context: Context) {
     appContext = context
   }
@@ -122,14 +112,19 @@ object AppModule {
                             )),
             "units" to "miles")
 
-    var routingEngine = "valhalla"
-    var routingEngineProfile = "auto"
+    val valhallaEndpoint: String by lazy {
+      if (stadiaApiKey != null) {
+          "https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey"
+      } else {
+          "https://valhalla1.openstreeetmap.de/route"
+      }
+    }
+    var engine: RoutingEngine = RoutingEngine.Valhalla(valhallaEndpoint, "auto")
 
     // GraphHopper API is used instead of valhalla if graphhopperApiKey is specified in
     // local.properties
     if (graphhopperApiKey != null) {
-      routingEngine = "graphhopper"
-      routingEngineProfile = "car"
+      engine = RoutingEngine.GraphHopper("https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey", "car")
 
       if (true) {
         // use default profile (no custom models)
@@ -149,9 +144,7 @@ object AppModule {
     }
     val core =
         FerrostarCore(
-            routingEndpointURL = routingEndpointURL,
-            routingEngine = routingEngine,
-            profile = routingEngineProfile,
+            engine,
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
