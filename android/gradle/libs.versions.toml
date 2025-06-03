@@ -9,6 +9,7 @@ desugar_jdk_libs = "2.1.5"
 ktx = "1.15.0"
 kotlinx-coroutines = "1.10.1"
 kotlinx-datetime = "0.6.1"
+kotlinx-serialization = "1.8.1"
 androidx-appcompat = "1.7.0"
 androidx-activity-compose = "1.10.1"
 compose = "2025.04.01"
@@ -58,6 +59,7 @@ okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp-mock = { group = "com.github.gmazzo", name = "okhttp-mock", version.ref = "okhttp-mock" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 # MapLibre
 maplibre-compose = { group = "io.github.rallista", name = "maplibre-compose", version.ref = "maplibre-compose" }
 # Google Play Services (for Google module)
