@@ -2,15 +2,11 @@ package com.stadiamaps.ferrostar.core
 
 import kotlin.math.max
 import kotlin.math.min
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Route
-import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.getRoutePolyline
 
 @Throws fun Route.getPolyline(precision: UInt): String = getRoutePolyline(this, precision)
-
 
 /** A neutral bounding box type, which is not dependent on any particular map library. */
 data class BoundingBox(
