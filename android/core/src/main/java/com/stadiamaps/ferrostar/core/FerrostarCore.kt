@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.core
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
+import com.stadiamaps.ferrostar.core.http.OkHttpClient.Companion.toOkhttp3Request
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Instant
