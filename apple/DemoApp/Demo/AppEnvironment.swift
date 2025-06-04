@@ -71,7 +71,7 @@ class AppEnvironment: ObservableObject {
         ferrostarCore.delegate = navigationDelegate
     }
 
-    func getRoutes() async throws -> [Route] {
+    func getRoute() async throws -> Route {
         guard let userLocation = locationProvider.lastLocation else {
             throw DemoAppError.noUserLocation
         }
@@ -88,18 +88,14 @@ class AppEnvironment: ObservableObject {
             throw DemoAppError.noRoutes
         }
 
-        print("DemoApp: successfully fetched routes")
-
         if let simulated = locationProvider as? SimulatedLocationProvider {
             // This configures the simulator to the desired route.
             // The ferrostarCore.startNavigation will still start the location
             // provider/simulator.
-            simulated
-                .lastLocation = UserLocation(clCoordinateLocation2D: route.geometry.first!.clLocationCoordinate2D)
-            print("DemoApp: setting initial location")
+            simulated.lastLocation = UserLocation(clCoordinateLocation2D: route.geometry.first!.clLocationCoordinate2D)
         }
 
-        return routes
+        return route
     }
 
     func startNavigation(route: Route) throws {
