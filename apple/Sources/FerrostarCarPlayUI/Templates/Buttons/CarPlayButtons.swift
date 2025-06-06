@@ -1,7 +1,7 @@
 import CarPlay
 
-enum CarPlayMapButtons {
-    static func recenterButton(
+public enum CarPlayMapButtons {
+    public static func recenterButton(
         isHidden: Bool = false,
         isEnabled: Bool = true,
         _ action: @escaping () -> Void

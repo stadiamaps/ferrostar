@@ -4,11 +4,23 @@ import MapLibreSwiftUI
 import SwiftUI
 
 struct DemoCarPlayNavigationView: View {
-    var model: DemoModel
-    let styleURL: URL
+    @State var model: DemoCarPlayModel
 
     var body: some View {
-        @Bindable var bindableModel = model
-        CarPlayNavigationView(navigationState: model.coreState, styleURL: styleURL, camera: $bindableModel.camera)
+        ZStack {
+            if let errorMessage = model.errorMessage {
+                ContentUnavailableView(
+                    errorMessage, systemImage: "network.slash",
+                    description: Text("error navigating.")
+                )
+            } else {
+                @Bindable var bindableModel = model
+                CarPlayNavigationView(
+                    navigationState: model.coreState,
+                    styleURL: AppDefaults.mapStyleURL,
+                    camera: $bindableModel.camera
+                )
+            }
+        }
     }
 }
