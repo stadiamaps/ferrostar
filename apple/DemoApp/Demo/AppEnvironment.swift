@@ -71,6 +71,9 @@ class AppEnvironment: ObservableObject {
         ferrostarCore.delegate = navigationDelegate
     }
 
+    /// This is an example function which gets a single route (or throws).
+    /// NOTE: While the demo app only shows single route auto-selection,
+    /// some vendors support alternate/multiple routes in a single request
     func getRoute() async throws -> Route {
         guard let userLocation = locationProvider.lastLocation else {
             throw DemoAppError.noUserLocation
