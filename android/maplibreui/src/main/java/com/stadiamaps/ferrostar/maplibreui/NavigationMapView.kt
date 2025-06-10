@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-
 import com.maplibre.compose.MapView
 import com.maplibre.compose.StaticLocationEngine
 import com.maplibre.compose.camera.MapViewCamera
@@ -45,16 +44,16 @@ import org.maplibre.android.maps.Style
  */
 @Composable
 fun NavigationMapView(
-  styleUrl: String,
-  camera: MutableState<MapViewCamera>,
-  navigationCamera: MapViewCamera = navigationMapViewCamera(),
-  uiState: NavigationUiState,
-  mapControls: State<MapControls>,
-  locationRequestProperties: LocationRequestProperties =
+    styleUrl: String,
+    camera: MutableState<MapViewCamera>,
+    navigationCamera: MapViewCamera = navigationMapViewCamera(),
+    uiState: NavigationUiState,
+    mapControls: State<MapControls>,
+    locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-  routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
-  onMapReadyCallback: ((Style) -> Unit)? = null,
-  content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
+    routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
+    onMapReadyCallback: ((Style) -> Unit)? = null,
+    content: @Composable @MapLibreComposable ((NavigationUiState) -> Unit)? = null
 ) {
   var isNavigating by remember { mutableStateOf(uiState.isNavigating()) }
   if (uiState.isNavigating() != isNavigating) {
