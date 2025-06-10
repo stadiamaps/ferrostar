@@ -1,5 +1,5 @@
 [versions]
-agp = "8.9.3"
+agp = "8.10.1"
 kotlin = "2.1.21"
 cargo-ndk = "0.3.4"
 ktfmt = "0.22.0"
