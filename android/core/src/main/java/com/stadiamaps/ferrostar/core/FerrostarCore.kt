@@ -3,7 +3,7 @@ package com.stadiamaps.ferrostar.core
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
-import com.stadiamaps.ferrostar.core.http.IHttpClient
+import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Instant
@@ -65,7 +65,7 @@ private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<Strin
  */
 class FerrostarCore(
     val routeProvider: RouteProvider,
-    val httpClient: IHttpClient,
+    val httpClient: HttpClientProvider,
     val locationProvider: LocationProvider,
     val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
@@ -153,7 +153,7 @@ class FerrostarCore(
   constructor(
       valhallaEndpointURL: URL,
       profile: String,
-      httpClient: IHttpClient,
+      httpClient: HttpClientProvider,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
@@ -169,7 +169,7 @@ class FerrostarCore(
 
   constructor(
       routeAdapter: RouteAdapter,
-      httpClient: IHttpClient,
+      httpClient: HttpClientProvider,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
@@ -182,7 +182,7 @@ class FerrostarCore(
 
   constructor(
       customRouteProvider: CustomRouteProvider,
-      httpClient: IHttpClient,
+      httpClient: HttpClientProvider,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
