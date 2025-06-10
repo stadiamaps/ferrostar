@@ -146,10 +146,7 @@ class FerrostarCoreTest {
                     requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf())),
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toOkHttpClientProvider(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -201,10 +198,7 @@ class FerrostarCoreTest {
                     requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toOkHttpClientProvider(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -251,10 +245,7 @@ class FerrostarCoreTest {
                     requestGenerator = MockGetRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toOkHttpClientProvider(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -309,10 +300,7 @@ class FerrostarCoreTest {
         FerrostarCore(
             customRouteProvider = routeProvider,
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toOkHttpClientProvider(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -387,10 +375,7 @@ class FerrostarCoreTest {
                     requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toOkHttpClientProvider(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =

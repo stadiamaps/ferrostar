@@ -252,10 +252,7 @@ class ValhallaCoreTest {
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toOkHttpClientProvider(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -307,10 +304,7 @@ class ValhallaCoreTest {
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toOkHttpClientProvider(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
