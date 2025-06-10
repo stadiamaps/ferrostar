@@ -8,6 +8,7 @@
  */
 package com.stadiamaps.ferrostar.core
 
+import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import java.net.URL
 import java.time.Instant
 import kotlinx.coroutines.test.TestResult
@@ -250,7 +251,8 @@ class ValhallaCoreTest {
         FerrostarCore(
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
-            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -301,7 +303,8 @@ class ValhallaCoreTest {
         FerrostarCore(
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
-            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
