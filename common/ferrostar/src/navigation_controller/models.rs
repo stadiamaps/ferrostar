@@ -226,3 +226,60 @@ pub struct NavigationControllerConfig {
     /// Configures how the heading component of the snapped location is reported in [`TripState`].
     pub snapped_location_course_filtering: CourseFiltering,
 }
+
+pub struct NavigationRecording {
+    /// Configuration of the navigation session.
+    pub route_config: NavigationControllerConfig,
+    /// The initial state of the navigation session.
+    pub initial_state: InitialNavigationState,
+    /// Collection of events that occurred during the navigation session.
+    pub events: Vec<NavigationRecordingEvent>,
+}
+
+pub struct InitialNavigationState {
+    /// The user location at the start of the navigation session.
+    pub user_location: UserLocation,
+    /// The trip state at the start of the navigation session.
+    pub trip_state: TripState,
+    /// The route that the user is navigating.
+    pub route: Vec<RouteStep>,
+}
+
+pub struct NavigationRecordingEvent {
+    /// The timestamp of the event.
+    pub timestamp: u64,
+    /// Data associated with the event.
+    pub event_data: NavigationRecordingEventData,
+}
+
+pub enum NavigationRecordingEventData {
+    LocationUpdate {
+        /// Updated user location.
+        user_location: UserLocation,
+    },
+    TripStateUpdate {
+        /// Updated trip state.
+        trip_state: TripState,
+    },
+    UserInteraction {
+        /// User interaction data.
+        interaction_data: UserInteractionData,
+    },
+    RouteUpdate {
+        /// Updated route steps.
+        route_steps: Vec<RouteStep>,
+    },
+    Error {
+        /// Error message.
+        error_message: String,
+    },
+}
+
+pub enum UserInteractionData {
+    /// User has requested to advance to the next step.
+    AdvanceToNextStep,
+    /// User has requested to stop the navigation session.
+    StopNavigation,
+    /// User has requested to toggle the mute state of the navigation instructions.
+    ToggleMute,
+}
