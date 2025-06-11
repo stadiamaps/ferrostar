@@ -42,7 +42,7 @@ uuid = { version = "1.17.0", features = ["v4", "serde"] }
 getrandom = { version = "0.2.15", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
-tsify = { version = "0.4.5", default-features = false, features = ["js"] }
+tsify = { version = "0.5.5", default-features = false, features = ["js"] }
 log = "0.4.27"
 
 [target.'cfg(target_os = "android")'.dependencies]
