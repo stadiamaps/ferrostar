@@ -1,11 +1,10 @@
 import AVFoundation
-import Combine
 import FerrostarCoreFFI
 import Foundation
 
 /// An Spoken instruction provider that takes a speech synthesizer.
-public class SpokenInstructionObserver: ObservableObject {
-    @Published public private(set) var isMuted: Bool
+public class SpokenInstructionObserver {
+    public private(set) var isMuted: Bool
 
     let synthesizer: SpeechSynthesizer
     private let queue = DispatchQueue(label: "ferrostar-spoken-instruction-observer", qos: .default)
