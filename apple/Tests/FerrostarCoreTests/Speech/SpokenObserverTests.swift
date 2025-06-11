@@ -20,21 +20,11 @@ final class MockSpeechSynthesizer: SpeechSynthesizer {
 }
 
 final class SpokenObserverTests: XCTestCase {
-    var cancellables = Set<AnyCancellable>()
-
     func test_mute() {
         let mockSpeechSynthesizer = MockSpeechSynthesizer()
         let spokenObserver = SpokenInstructionObserver(synthesizer: mockSpeechSynthesizer, isMuted: false)
 
-        let muteExp = expectation(description: "isMuted is set to true")
-        spokenObserver.$isMuted
-            .sink { newIsMuted in
-                guard newIsMuted else {
-                    return
-                }
-                muteExp.fulfill()
-            }
-            .store(in: &cancellables)
+        XCTAssertFalse(spokenObserver.isMuted)
 
         let exp = expectation(description: "stop speaking is called")
         mockSpeechSynthesizer.onStopSpeaking = { boundary in
@@ -44,7 +34,9 @@ final class SpokenObserverTests: XCTestCase {
 
         spokenObserver.toggleMute()
 
-        wait(for: [muteExp, exp], timeout: 3.0)
+        wait(for: [exp], timeout: 3.0)
+
+        XCTAssertTrue(spokenObserver.isMuted)
     }
 
     func test_speakWhileMuted() {
