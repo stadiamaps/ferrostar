@@ -10,7 +10,11 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
-    models::{Route, UserLocation}, navigation_controller::models::{InitialNavigationState, NavigationRecording},
+    models::{Route, RouteStep, UserLocation},
+    navigation_controller::models::{
+        InitialNavigationState, NavigationRecording, NavigationRecordingEvent,
+        NavigationRecordingEventData,
+    },
 };
 use chrono::Utc;
 use geo::{
@@ -377,10 +381,34 @@ impl NavigationRecording {
         Self {
             version: env!("CARGO_PKG_VERSION").to_string(),
             initial_timestamp: Utc::now().timestamp(),
-            route_config: route_config,
-            initial_state: initial_state,
+            route_config,
+            initial_state,
             events: Vec::new(),
         }
+    }
+
+    fn add_event(&mut self, event_data: NavigationRecordingEventData) {
+        let event = NavigationRecordingEvent {
+            timestamp: Utc::now().timestamp(),
+            event_data,
+        };
+        self.events.push(event);
+    }
+
+    pub fn record_location_update(&mut self, user_location: UserLocation) {
+        self.add_event(NavigationRecordingEventData::LocationUpdate { user_location });
+    }
+
+    pub fn record_trip_state_update(&mut self, trip_state: TripState) {
+        self.add_event(NavigationRecordingEventData::TripStateUpdate { trip_state });
+    }
+
+    pub fn record_route_update(&mut self, route_steps: Vec<RouteStep>) {
+        self.add_event(NavigationRecordingEventData::RouteUpdate { route_steps });
+    }
+
+    pub fn record_navigation_error(&mut self, error_message: String) {
+        self.add_event(NavigationRecordingEventData::Error { error_message });
     }
 }
 
