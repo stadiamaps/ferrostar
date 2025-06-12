@@ -231,7 +231,7 @@ pub struct NavigationRecording {
     /// Version of Ferrostar that created this recording.
     pub version: String,
     /// The timestamp when the navigation session started.
-    pub initial_timestamp: u64,
+    pub initial_timestamp: i64,
     /// Configuration of the navigation session.
     pub route_config: NavigationControllerConfig,
     /// The initial state of the navigation session.
@@ -251,7 +251,7 @@ pub struct InitialNavigationState {
 
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event.
-    pub timestamp: u64,
+    pub timestamp: i64,
     /// Data associated with the event.
     pub event_data: NavigationRecordingEventData,
 }
