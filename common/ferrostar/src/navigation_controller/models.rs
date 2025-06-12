@@ -228,7 +228,7 @@ pub struct NavigationControllerConfig {
 }
 
 pub struct NavigationRecording {
-    /// Version of ferrostar that created this recording.
+    /// Version of Ferrostar that created this recording.
     pub version: String,
     /// The timestamp when the navigation session started.
     pub initial_timestamp: u64,
