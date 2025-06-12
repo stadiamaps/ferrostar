@@ -1,7 +1,9 @@
 //! State and configuration data models.
 
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
+use crate::models::{
+    Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint,
+};
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use geo::LineString;
