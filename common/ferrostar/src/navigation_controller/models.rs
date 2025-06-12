@@ -265,10 +265,6 @@ pub enum NavigationRecordingEventData {
         /// Updated trip state.
         trip_state: TripState,
     },
-    UserInteraction {
-        /// User interaction data.
-        interaction_data: UserInteractionData,
-    },
     RouteUpdate {
         /// Updated route steps.
         route_steps: Vec<RouteStep>,
@@ -277,13 +273,4 @@ pub enum NavigationRecordingEventData {
         /// Error message.
         error_message: String,
     },
-}
-
-pub enum UserInteractionData {
-    /// User has requested to advance to the next step.
-    AdvanceToNextStep,
-    /// User has requested to stop the navigation session.
-    StopNavigation,
-    /// User has requested to toggle the mute state of the navigation instructions.
-    ToggleMute,
 }
