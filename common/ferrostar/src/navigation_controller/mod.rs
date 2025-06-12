@@ -10,8 +10,9 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
-    models::{Route, UserLocation},
+    models::{Route, UserLocation}, navigation_controller::models::{InitialNavigationState, NavigationRecording},
 };
+use chrono::Utc;
 use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
@@ -364,6 +365,21 @@ impl NavigationController {
                 })
             }
             _ => false,
+        }
+    }
+}
+
+impl NavigationRecording {
+    pub fn new(
+        route_config: NavigationControllerConfig,
+        initial_state: InitialNavigationState,
+    ) -> Self {
+        Self {
+            version: env!("CARGO_PKG_VERSION").to_string(),
+            initial_timestamp: Utc::now().timestamp(),
+            route_config: route_config,
+            initial_state: initial_state,
+            events: Vec::new(),
         }
     }
 }
