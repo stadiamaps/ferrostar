@@ -1,7 +1,7 @@
 //! State and configuration data models.
 
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
+use crate::models::{Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use geo::LineString;
@@ -246,7 +246,7 @@ pub struct InitialNavigationState {
     /// The trip state at the start of the navigation session.
     pub trip_state: TripState,
     /// The route that the user is navigating.
-    pub route: Vec<RouteStep>,
+    pub route: Route,
 }
 
 pub struct NavigationRecordingEvent {
@@ -267,7 +267,7 @@ pub enum NavigationRecordingEventData {
     },
     RouteUpdate {
         /// Updated route steps.
-        route_steps: Vec<RouteStep>,
+        route: Route,
     },
     Error {
         /// Error message.
