@@ -403,8 +403,8 @@ impl NavigationRecording {
         self.add_event(NavigationRecordingEventData::TripStateUpdate { trip_state });
     }
 
-    pub fn record_route_update(&mut self, route_steps: Vec<RouteStep>) {
-        self.add_event(NavigationRecordingEventData::RouteUpdate { route_steps });
+    pub fn record_route_update(&mut self, route: Route) {
+        self.add_event(NavigationRecordingEventData::RouteUpdate { route });
     }
 
     pub fn record_navigation_error(&mut self, error_message: String) {
