@@ -10,7 +10,7 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
-    models::{Route, RouteStep, UserLocation},
+    models::{Route, UserLocation},
     navigation_controller::models::{
         InitialNavigationState, NavigationRecording, NavigationRecordingEvent,
         NavigationRecordingEventData,
