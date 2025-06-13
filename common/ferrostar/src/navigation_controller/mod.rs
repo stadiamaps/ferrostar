@@ -11,17 +11,17 @@ use crate::{
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
     models::{Route, UserLocation},
-    navigation_controller::models::{
-        InitialNavigationState, NavigationRecording, NavigationRecordingEvent,
-        NavigationRecordingEventData,
-    },
 };
 use chrono::Utc;
 use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
 };
-use models::{NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode};
+use models::{
+    InitialNavigationState, NavigationControllerConfig, NavigationRecording,
+    NavigationRecordingEvent, NavigationRecordingEventData, StepAdvanceStatus, TripState,
+    WaypointAdvanceMode,
+};
 use std::clone::Clone;
 
 #[cfg(feature = "wasm-bindgen")]
