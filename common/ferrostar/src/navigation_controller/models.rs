@@ -1,7 +1,9 @@
 //! State and configuration data models.
 
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
+use crate::models::{
+    Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint,
+};
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use geo::LineString;
@@ -225,4 +227,52 @@ pub struct NavigationControllerConfig {
     pub route_deviation_tracking: RouteDeviationTracking,
     /// Configures how the heading component of the snapped location is reported in [`TripState`].
     pub snapped_location_course_filtering: CourseFiltering,
+}
+
+pub struct NavigationRecording {
+    /// Version of Ferrostar that created this recording.
+    pub version: String,
+    /// The timestamp when the navigation session started.
+    pub initial_timestamp: i64,
+    /// Configuration of the navigation session.
+    pub route_config: NavigationControllerConfig,
+    /// The initial state of the navigation session.
+    pub initial_state: InitialNavigationState,
+    /// Collection of events that occurred during the navigation session.
+    pub events: Vec<NavigationRecordingEvent>,
+}
+
+pub struct InitialNavigationState {
+    /// The user location at the start of the navigation session.
+    pub user_location: UserLocation,
+    /// The trip state at the start of the navigation session.
+    pub trip_state: TripState,
+    /// The route that the user is navigating.
+    pub route: Route,
+}
+
+pub struct NavigationRecordingEvent {
+    /// The timestamp of the event.
+    pub timestamp: i64,
+    /// Data associated with the event.
+    pub event_data: NavigationRecordingEventData,
+}
+
+pub enum NavigationRecordingEventData {
+    LocationUpdate {
+        /// Updated user location.
+        user_location: UserLocation,
+    },
+    TripStateUpdate {
+        /// Updated trip state.
+        trip_state: TripState,
+    },
+    RouteUpdate {
+        /// Updated route steps.
+        route: Route,
+    },
+    Error {
+        /// Error message.
+        error_message: String,
+    },
 }
