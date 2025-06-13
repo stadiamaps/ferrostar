@@ -12,11 +12,16 @@ use crate::{
     },
     models::{Route, UserLocation},
 };
+use chrono::Utc;
 use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
 };
-use models::{NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode};
+use models::{
+    InitialNavigationState, NavigationControllerConfig, NavigationRecording,
+    NavigationRecordingEvent, NavigationRecordingEventData, StepAdvanceStatus, TripState,
+    WaypointAdvanceMode,
+};
 use std::clone::Clone;
 
 #[cfg(feature = "wasm-bindgen")]
@@ -365,6 +370,55 @@ impl NavigationController {
             }
             _ => false,
         }
+    }
+}
+
+/// Functionality for the navigation controller that is exported. (or will be exported)
+impl NavigationRecording {
+    /// Creates a new navigation recorder with route configuration and initial state.
+    pub fn new(
+        route_config: NavigationControllerConfig,
+        initial_state: InitialNavigationState,
+    ) -> Self {
+        Self {
+            version: env!("CARGO_PKG_VERSION").to_string(),
+            initial_timestamp: Utc::now().timestamp(),
+            route_config,
+            initial_state,
+            events: Vec::new(),
+        }
+    }
+
+    /// Records a location update from the user during navigation.
+    pub fn record_location_update(&mut self, user_location: UserLocation) {
+        self.add_event(NavigationRecordingEventData::LocationUpdate { user_location });
+    }
+
+    /// Records a trip state update during navigation.
+    pub fn record_trip_state_update(&mut self, trip_state: TripState) {
+        self.add_event(NavigationRecordingEventData::TripStateUpdate { trip_state });
+    }
+
+    /// Records a route update during navigation.
+    pub fn record_route_update(&mut self, route: Route) {
+        self.add_event(NavigationRecordingEventData::RouteUpdate { route });
+    }
+
+    /// Records an error that occurred during navigation.
+    pub fn record_navigation_error(&mut self, error_message: String) {
+        self.add_event(NavigationRecordingEventData::Error { error_message });
+    }
+}
+
+/// Shared functionality for the navigation controller that is not exported.
+impl NavigationRecording {
+    /// Adds an event to the navigation recording.
+    fn add_event(&mut self, event_data: NavigationRecordingEventData) {
+        let event = NavigationRecordingEvent {
+            timestamp: Utc::now().timestamp(),
+            event_data,
+        };
+        self.events.push(event);
     }
 }
 
