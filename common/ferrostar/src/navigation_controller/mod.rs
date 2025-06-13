@@ -375,7 +375,7 @@ impl NavigationController {
 
 /// Functionality for the navigation controller that is exported. (or will be exported)
 impl NavigationRecording {
-    /// Creates a new navigation recorder with route congifuration and initial state.
+    /// Creates a new navigation recorder with route configuration and initial state.
     pub fn new(
         route_config: NavigationControllerConfig,
         initial_state: InitialNavigationState,
