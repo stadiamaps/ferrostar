@@ -6,6 +6,7 @@ use crate::models::{
 };
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
+use chrono::{DateTime, Utc};
 use geo::LineString;
 #[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
@@ -28,6 +29,27 @@ pub struct TripProgress {
     pub distance_remaining: f64,
     /// The total duration remaining in the trip, in seconds.
     pub duration_remaining: f64,
+}
+
+/// Information pertaining to the user's full navigation trip. This includes
+/// simple stats like total duration and distance.
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct TripSummary {
+    /// The total raw distance traveled in the trip, in meters.
+    pub distance_traveled: u32,
+    /// The total snapped distance traveled in the trip, in meters.
+    pub snapped_distance_traveled: u32,
+    /// When the trip was started.
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date"))]
+    pub started_at: DateTime<Utc>,
+    /// When the trip was completed or canceled.
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
+    pub ended_at: Option<DateTime<Utc>>,
 }
 
 /// The state of a navigation session.
@@ -83,6 +105,9 @@ pub enum TripState {
         /// The trip progress includes information that is useful for showing the
         /// user's progress along the full navigation trip, the route and its components.
         progress: TripProgress,
+        /// Information pertaining to the user's full navigation trip. This includes
+        /// simple stats like total duration, and distance.
+        summary: TripSummary,
         /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
         /// The visual instruction that should be displayed in the user interface.
@@ -96,7 +121,12 @@ pub enum TripState {
         annotation_json: Option<String>,
     },
     /// The navigation controller has reached the end of the trip.
-    Complete { user_location: UserLocation },
+    Complete {
+        user_location: UserLocation,
+        /// Information pertaining to the user's full navigation trip. This includes
+        /// simple stats like total duration, and distance.
+        summary: TripSummary,
+    },
 }
 
 #[allow(clippy::large_enum_variant)]

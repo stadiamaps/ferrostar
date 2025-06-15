@@ -13,7 +13,7 @@ In both the Demo App and Maplibre UI build.gradle, replace libs.maplibre.compose
 
 ```groovy
 //    api libs.maplibre.compose
-    api 'org.maplibre.gl:android-sdk:10.3.0'
-    api 'org.maplibre.gl:android-plugin-annotation-v9:2.0.2'
+    api 'org.maplibre.gl:android-sdk:11.9.0'
+    api 'org.maplibre.gl:android-plugin-annotation-v9:3.0.2'
     implementation files('/{path}/{to}/maplibre-compose-playground/compose/build/outputs/aar/compose-release.aar')
 ```
