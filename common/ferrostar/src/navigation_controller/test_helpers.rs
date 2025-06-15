@@ -2,7 +2,9 @@ use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoin
 use crate::routing_adapters::{osrm::OsrmResponseParser, RouteResponseParser};
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
+use chrono::{DateTime, Utc};
 use geo::{point, BoundingRect, Distance, Haversine, LineString, Point};
+use insta::{dynamic_redaction, Settings};
 
 // A longer + more complex route
 const VALHALLA_EXTENDED_OSRM_RESPONSE: &str =
@@ -100,4 +102,36 @@ pub fn gen_route_from_steps(steps: Vec<RouteStep>) -> Route {
         ],
         steps,
     }
+}
+
+fn create_timestamp_redaction(
+) -> impl Fn(insta::internals::Content, insta::internals::ContentPath<'_>) -> &'static str
+       + Send
+       + Sync
+       + 'static {
+    |value, _path| {
+        if value.is_nil() {
+            "[none]"
+        } else if let Some(timestamp_str) = value.as_str() {
+            match timestamp_str.parse::<DateTime<Utc>>() {
+                Ok(_) => "[timestamp]",
+                Err(_) => "[invalid-timestamp]",
+            }
+        } else {
+            "[unexpected-value]"
+        }
+    }
+}
+
+pub(crate) fn nav_controller_insta_settings() -> Settings {
+    let mut settings = Settings::new();
+    settings.add_redaction(
+        ".**.startedAt",
+        dynamic_redaction(create_timestamp_redaction()),
+    );
+    settings.add_redaction(
+        ".**.endedAt",
+        dynamic_redaction(create_timestamp_redaction()),
+    );
+    return settings;
 }
