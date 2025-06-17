@@ -282,19 +282,6 @@ pub struct NavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
-pub struct NavigationRecording {
-    /// Version of Ferrostar that created this recording.
-    pub version: String,
-    /// The timestamp when the navigation session started.
-    pub initial_timestamp: i64,
-    /// Configuration of the navigation session.
-    pub route_config: NavigationControllerConfig,
-    /// The initial state of the navigation session.
-    pub initial_state: InitialNavigationState,
-    /// Collection of events that occurred during the navigation session.
-    pub events: Vec<NavigationRecordingEvent>,
-}
-
 pub struct InitialNavigationState {
     /// The user location at the start of the navigation session.
     pub user_location: UserLocation,

@@ -1,6 +1,7 @@
 //! The navigation state machine.
 
 pub mod models;
+pub mod recording;
 
 #[cfg(test)]
 pub(crate) mod test_helpers;
