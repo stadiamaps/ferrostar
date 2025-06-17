@@ -61,8 +61,8 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
                       durationRemaining = 0.0),
               summary =
                   TripSummary(
-                      distanceTraveled = 0u,
-                      snappedDistanceTraveled = 0u,
+                      distanceTraveled = 0.0,
+                      snappedDistanceTraveled = 0.0,
                       startedAt = Date(),
                       endedAt = null),
               deviation = RouteDeviation.NoDeviation,

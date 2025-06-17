@@ -3237,11 +3237,11 @@ public struct TripSummary {
     /**
      * The total raw distance traveled in the trip, in meters.
      */
-    public var distanceTraveled: UInt32
+    public var distanceTraveled: Double
     /**
      * The total snapped distance traveled in the trip, in meters.
      */
-    public var snappedDistanceTraveled: UInt32
+    public var snappedDistanceTraveled: Double
     /**
      * When the trip was started.
      */
@@ -3256,10 +3256,10 @@ public struct TripSummary {
     public init(
         /**
          * The total raw distance traveled in the trip, in meters.
-         */distanceTraveled: UInt32, 
+         */distanceTraveled: Double, 
         /**
          * The total snapped distance traveled in the trip, in meters.
-         */snappedDistanceTraveled: UInt32, 
+         */snappedDistanceTraveled: Double, 
         /**
          * When the trip was started.
          */startedAt: UtcDateTime, 
@@ -3308,16 +3308,16 @@ public struct FfiConverterTypeTripSummary: FfiConverterRustBuffer {
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TripSummary {
         return
             try TripSummary(
-                distanceTraveled: FfiConverterUInt32.read(from: &buf), 
-                snappedDistanceTraveled: FfiConverterUInt32.read(from: &buf), 
+                distanceTraveled: FfiConverterDouble.read(from: &buf), 
+                snappedDistanceTraveled: FfiConverterDouble.read(from: &buf), 
                 startedAt: FfiConverterTypeUtcDateTime.read(from: &buf), 
                 endedAt: FfiConverterOptionTypeUtcDateTime.read(from: &buf)
         )
     }
 
     public static func write(_ value: TripSummary, into buf: inout [UInt8]) {
-        FfiConverterUInt32.write(value.distanceTraveled, into: &buf)
-        FfiConverterUInt32.write(value.snappedDistanceTraveled, into: &buf)
+        FfiConverterDouble.write(value.distanceTraveled, into: &buf)
+        FfiConverterDouble.write(value.snappedDistanceTraveled, into: &buf)
         FfiConverterTypeUtcDateTime.write(value.startedAt, into: &buf)
         FfiConverterOptionTypeUtcDateTime.write(value.endedAt, into: &buf)
     }

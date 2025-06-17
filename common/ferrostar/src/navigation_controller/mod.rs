@@ -7,7 +7,7 @@ pub(crate) mod test_helpers;
 
 use crate::{
     algorithms::{
-        advance_step, apply_snapped_course, calculate_trip_progress, distance_between_locations,
+        advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
     models::{Route, UserLocation},
@@ -49,8 +49,8 @@ impl NavigationController {
         let remaining_steps = self.route.steps.clone();
 
         let initial_summary = TripSummary {
-            distance_traveled: 0,
-            snapped_distance_traveled: 0,
+            distance_traveled: 0.0,
+            snapped_distance_traveled: 0.0,
             started_at: Utc::now(),
             ended_at: None,
         };
@@ -214,19 +214,12 @@ impl NavigationController {
                 let (current_step_geometry_index, snapped_user_location) =
                     self.snap_user_to_line(location, &current_step_linestring);
 
-                // Calculate distance increment between the user locations.
-                let distance_increment =
-                    distance_between_locations(&previous_user_location, &location) as u32;
-                let snapped_distance_increment = distance_between_locations(
+                // Update trip summary with accumulated distance
+                let updated_summary = summary.update(
+                    &previous_user_location,
+                    &location,
                     &previous_snapped_user_location,
                     &snapped_user_location,
-                ) as u32;
-
-                // Update trip summary with accumulated distance
-                let updated_summary = self.update_trip_summary(
-                    summary,
-                    distance_increment,
-                    snapped_distance_increment,
                 );
 
                 let progress = calculate_trip_progress(
@@ -398,22 +391,6 @@ impl NavigationController {
                 })
             }
             _ => false,
-        }
-    }
-
-    /// Updates the trip summary with accumulated distance and duration.
-    fn update_trip_summary(
-        &self,
-        current_summary: &TripSummary,
-        distance_increment: u32,
-        snapped_distance_increment: u32,
-    ) -> TripSummary {
-        TripSummary {
-            distance_traveled: current_summary.distance_traveled + distance_increment,
-            snapped_distance_traveled: current_summary.snapped_distance_traveled
-                + snapped_distance_increment,
-            started_at: current_summary.started_at,
-            ended_at: current_summary.ended_at,
         }
     }
 

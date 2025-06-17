@@ -1,5 +1,6 @@
 //! State and configuration data models.
 
+use crate::algorithms::distance_between_locations;
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{
     Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint,
@@ -41,15 +42,37 @@ pub struct TripProgress {
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct TripSummary {
     /// The total raw distance traveled in the trip, in meters.
-    pub distance_traveled: u32,
+    pub distance_traveled: f64,
     /// The total snapped distance traveled in the trip, in meters.
-    pub snapped_distance_traveled: u32,
+    pub snapped_distance_traveled: f64,
     /// When the trip was started.
     #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date"))]
     pub started_at: DateTime<Utc>,
     /// When the trip was completed or canceled.
     #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
     pub ended_at: Option<DateTime<Utc>>,
+}
+
+impl TripSummary {
+    pub(crate) fn update(
+        &self,
+        previous_location: &UserLocation,
+        current_location: &UserLocation,
+        previous_snapped_location: &UserLocation,
+        current_snapped_location: &UserLocation,
+    ) -> Self {
+        // Calculate distance increment between the user locations.
+        let distance_increment = distance_between_locations(previous_location, current_location);
+        let snapped_distance_increment =
+            distance_between_locations(previous_snapped_location, current_snapped_location);
+
+        TripSummary {
+            distance_traveled: self.distance_traveled + distance_increment,
+            snapped_distance_traveled: self.snapped_distance_traveled + snapped_distance_increment,
+            started_at: self.started_at,
+            ended_at: self.ended_at,
+        }
+    }
 }
 
 /// The state of a navigation session.
