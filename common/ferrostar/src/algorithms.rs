@@ -426,7 +426,7 @@ fn travel_distance_to_end_of_step(
         .map(|traversed| step_length - traversed)
 }
 
-/// Calculates the distance increment between two user locations.
+/// Calculates the distance (in meters) between two user locations.
 pub(crate) fn distance_between_locations(
     previous_location: &UserLocation,
     current_location: &UserLocation,
