@@ -118,6 +118,12 @@ final class AnnotationPublisherTests: XCTestCase {
                     distanceRemaining: 2.0,
                     durationRemaining: 3.0
                 ),
+                summary: TripSummary(
+                    distanceTraveled: 4,
+                    snappedDistanceTraveled: 5,
+                    startedAt: Date(),
+                    endedAt: nil
+                ),
                 deviation: .noDeviation,
                 visualInstruction: nil,
                 spokenInstruction: nil,
