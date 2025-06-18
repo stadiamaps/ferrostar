@@ -62,9 +62,9 @@ public class CoreLocationProvider: NSObject {
         locationManager.activityType = activityType
     }
 
-    public private(set) var lastLocation: UserLocation?
+    @Published public private(set) var lastLocation: UserLocation?
 
-    public private(set) var lastHeading: Heading?
+    @Published public private(set) var lastHeading: Heading?
 }
 
 extension CoreLocationProvider: LocationProviding {
@@ -123,13 +123,13 @@ public class SimulatedLocationProvider: LocationProviding {
     /// A factor by which simulated route playback speed is multiplied.
     public var warpFactor: UInt64 = 1
 
-    public var lastLocation: UserLocation? {
+    @Published public var lastLocation: UserLocation? {
         didSet {
             notifyDelegateOfLocation()
         }
     }
 
-    public var lastHeading: Heading? {
+    @Published public var lastHeading: Heading? {
         didSet {
             notifyDelegateOfHeading()
         }
