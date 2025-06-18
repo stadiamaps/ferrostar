@@ -3,6 +3,30 @@ import FerrostarCore
 import FerrostarCoreFFI
 import FerrostarSwiftUI
 
+private let InstructionKey = "com.stadiamaps.ferrostar.instruction"
+
+extension CPManeuver {
+    private var userDictionary: [String: Any]? {
+        get {
+            userInfo as? [String: Any] ?? [:]
+        }
+        set {
+            userInfo = newValue
+        }
+    }
+
+    public var visualInstruction: VisualInstruction? {
+        get {
+            userDictionary?[InstructionKey] as? VisualInstruction
+        }
+        set {
+            var info = userDictionary ?? [:]
+            info[InstructionKey] = newValue
+            userDictionary = info
+        }
+    }
+}
+
 extension VisualInstruction {
     func maneuver(stepDuration: TimeInterval, stepDistance: Measurement<UnitLength>) -> CPManeuver {
         let maneuver = CPManeuver()
@@ -33,6 +57,8 @@ extension VisualInstruction {
             let maneuverImage = ManeuverUIImage(maneuverType: maneuverType, maneuverModifier: maneuverModifier)
             maneuver.symbolImage = maneuverImage.uiImage
         }
+
+        maneuver.visualInstruction = self
 
         return maneuver
     }
