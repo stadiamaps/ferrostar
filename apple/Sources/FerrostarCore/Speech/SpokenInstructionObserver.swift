@@ -4,7 +4,7 @@ import FerrostarCoreFFI
 import Foundation
 
 /// An Spoken instruction provider that takes a speech synthesizer.
-public class SpokenInstructionObserver: ObservableObject {
+public class SpokenInstructionObserver {
     @Published public private(set) var isMuted: Bool
 
     let synthesizer: SpeechSynthesizer
