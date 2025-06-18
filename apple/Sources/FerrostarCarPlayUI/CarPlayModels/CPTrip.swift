@@ -2,6 +2,30 @@ import CarPlay
 import FerrostarCoreFFI
 import FerrostarSwiftUI
 
+private let RouteKey = "com.stadiamaps.ferrostar.route"
+
+extension CPRouteChoice {
+    private var userDictionary: [String: Any]? {
+        get {
+            userInfo as? [String: Any] ?? [:]
+        }
+        set {
+            userInfo = newValue
+        }
+    }
+
+    public var route: Route? {
+        get {
+            userDictionary?[RouteKey] as? Route
+        }
+        set {
+            var info = userDictionary ?? [:]
+            info[RouteKey] = newValue
+            userDictionary = info
+        }
+    }
+}
+
 extension CPTrip {
     /// Create a new CarPlay Trip definition from the routes and waypoints supplied to/by
     /// Ferrostar. This object is used to outline the various route option metadata and the associated
@@ -36,11 +60,13 @@ extension CPTrip {
             let distance = distanceFormatter.string(for: route.distance)
             let summary = [distance].compactMap { $0 }.joined(separator: ", ")
 
-            return CPRouteChoice(
+            let routeChoice = CPRouteChoice(
                 summaryVariants: ["Route \(routeNumber)"],
                 additionalInformationVariants: [summary],
                 selectionSummaryVariants: ["Selected Route \(routeNumber)"]
             )
+            routeChoice.route = route
+            return routeChoice
         }
 
         return CPTrip(
