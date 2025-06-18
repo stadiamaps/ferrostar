@@ -9,6 +9,7 @@ import com.stadiamaps.ferrostar.core.annotation.Speed as SpeedLimit
 import com.stadiamaps.ferrostar.core.annotation.SpeedUnit
 import com.stadiamaps.ferrostar.core.annotation.valhalla.ValhallaOSRMExtendedAnnotation
 import java.time.Instant
+import java.util.Date
 import kotlinx.coroutines.flow.StateFlow
 import uniffi.ferrostar.CourseOverGround
 import uniffi.ferrostar.GeographicCoordinate
@@ -18,6 +19,7 @@ import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.Speed
 import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
+import uniffi.ferrostar.TripSummary
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 import uniffi.ferrostar.VisualInstructionContent
@@ -57,6 +59,12 @@ fun NavigationState.Companion.pedestrianExample(): NavigationState {
                       distanceToNextManeuver = 0.0,
                       distanceRemaining = 0.0,
                       durationRemaining = 0.0),
+              summary =
+                  TripSummary(
+                      distanceTraveled = 0.0,
+                      snappedDistanceTraveled = 0.0,
+                      startedAt = Date(),
+                      endedAt = null),
               deviation = RouteDeviation.NoDeviation,
               visualInstruction =
                   VisualInstruction(

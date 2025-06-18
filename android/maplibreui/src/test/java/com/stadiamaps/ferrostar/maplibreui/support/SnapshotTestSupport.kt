@@ -23,7 +23,7 @@ fun paparazziDefault(orientation: ScreenOrientation = ScreenOrientation.PORTRAIT
  * contrasting and consistent background for snapshot tests.
  */
 @Composable
-fun withSnapshotBackground(content: @Composable () -> Unit) {
+fun WithSnapshotBackground(content: @Composable () -> Unit) {
   val greenBackground = Color(130, 203, 114)
   Box(modifier = Modifier.background(greenBackground).padding(16.dp)) { content() }
 }

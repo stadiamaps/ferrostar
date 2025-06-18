@@ -341,6 +341,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 remainingSteps: _,
                 remainingWaypoints: remainingWaypoints,
                 progress: _,
+                summary: _,
                 deviation: deviation,
                 visualInstruction: _,
                 spokenInstruction: spokenInstruction,

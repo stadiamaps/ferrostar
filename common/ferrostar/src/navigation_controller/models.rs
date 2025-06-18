@@ -1,9 +1,13 @@
 //! State and configuration data models.
 
+use crate::algorithms::distance_between_locations;
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
+use crate::models::{
+    Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint,
+};
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
+use chrono::{DateTime, Utc};
 use geo::LineString;
 #[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
@@ -26,6 +30,49 @@ pub struct TripProgress {
     pub distance_remaining: f64,
     /// The total duration remaining in the trip, in seconds.
     pub duration_remaining: f64,
+}
+
+/// Information pertaining to the user's full navigation trip. This includes
+/// simple stats like total duration and distance.
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct TripSummary {
+    /// The total raw distance traveled in the trip, in meters.
+    pub distance_traveled: f64,
+    /// The total snapped distance traveled in the trip, in meters.
+    pub snapped_distance_traveled: f64,
+    /// When the trip was started.
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date"))]
+    pub started_at: DateTime<Utc>,
+    /// When the trip was completed or canceled.
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
+    pub ended_at: Option<DateTime<Utc>>,
+}
+
+impl TripSummary {
+    pub(crate) fn update(
+        &self,
+        previous_location: &UserLocation,
+        current_location: &UserLocation,
+        previous_snapped_location: &UserLocation,
+        current_snapped_location: &UserLocation,
+    ) -> Self {
+        // Calculate distance increment between the user locations.
+        let distance_increment = distance_between_locations(previous_location, current_location);
+        let snapped_distance_increment =
+            distance_between_locations(previous_snapped_location, current_snapped_location);
+
+        TripSummary {
+            distance_traveled: self.distance_traveled + distance_increment,
+            snapped_distance_traveled: self.snapped_distance_traveled + snapped_distance_increment,
+            started_at: self.started_at,
+            ended_at: self.ended_at,
+        }
+    }
 }
 
 /// The state of a navigation session.
@@ -81,6 +128,9 @@ pub enum TripState {
         /// The trip progress includes information that is useful for showing the
         /// user's progress along the full navigation trip, the route and its components.
         progress: TripProgress,
+        /// Information pertaining to the user's full navigation trip. This includes
+        /// simple stats like total duration, and distance.
+        summary: TripSummary,
         /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
         /// The visual instruction that should be displayed in the user interface.
@@ -94,7 +144,12 @@ pub enum TripState {
         annotation_json: Option<String>,
     },
     /// The navigation controller has reached the end of the trip.
-    Complete { user_location: UserLocation },
+    Complete {
+        user_location: UserLocation,
+        /// Information pertaining to the user's full navigation trip. This includes
+        /// simple stats like total duration, and distance.
+        summary: TripSummary,
+    },
 }
 
 #[allow(clippy::large_enum_variant)]
@@ -225,4 +280,39 @@ pub struct NavigationControllerConfig {
     pub route_deviation_tracking: RouteDeviationTracking,
     /// Configures how the heading component of the snapped location is reported in [`TripState`].
     pub snapped_location_course_filtering: CourseFiltering,
+}
+
+pub struct InitialNavigationState {
+    /// The user location at the start of the navigation session.
+    pub user_location: UserLocation,
+    /// The trip state at the start of the navigation session.
+    pub trip_state: TripState,
+    /// The route that the user is navigating.
+    pub route: Route,
+}
+
+pub struct NavigationRecordingEvent {
+    /// The timestamp of the event.
+    pub timestamp: i64,
+    /// Data associated with the event.
+    pub event_data: NavigationRecordingEventData,
+}
+
+pub enum NavigationRecordingEventData {
+    LocationUpdate {
+        /// Updated user location.
+        user_location: UserLocation,
+    },
+    TripStateUpdate {
+        /// Updated trip state.
+        trip_state: TripState,
+    },
+    RouteUpdate {
+        /// Updated route steps.
+        route: Route,
+    },
+    Error {
+        /// Error message.
+        error_message: String,
+    },
 }

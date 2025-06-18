@@ -9,7 +9,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.mapbox.mapboxsdk.maps.Style
 import com.maplibre.compose.MapView
 import com.maplibre.compose.StaticLocationEngine
 import com.maplibre.compose.camera.MapViewCamera
@@ -21,6 +20,7 @@ import com.stadiamaps.ferrostar.core.toAndroidLocation
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
+import org.maplibre.android.maps.Style
 
 /**
  * The base MapLibre MapView configured for navigation with a polyline representing the route.
