@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
-import uniffi.ferrostar.NavigationController
 import uniffi.ferrostar.NavigationControllerConfig
+import uniffi.ferrostar.Navigator
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteDeviation
@@ -26,6 +26,7 @@ import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
 import uniffi.ferrostar.Waypoint
+import uniffi.ferrostar.createNavigationController
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
 data class NavigationState(
@@ -132,7 +133,7 @@ class FerrostarCore(
 
   private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
-  private var _navigationController: NavigationController? = null
+  private var _navigationController: Navigator? = null
   private var _state: MutableStateFlow<NavigationState> = MutableStateFlow(NavigationState())
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
@@ -246,10 +247,11 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
-    val controller =
-        NavigationController(
+    val controller: Navigator =
+        createNavigationController(
             route,
             _config,
+            false,
         )
     val startingLocation =
         locationProvider.lastLocation
@@ -279,10 +281,11 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
-    val controller =
-        NavigationController(
+    val controller: Navigator =
+        createNavigationController(
             route,
             _config,
+            false,
         )
     val startingLocation =
         locationProvider.lastLocation

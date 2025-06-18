@@ -21,7 +21,7 @@ use geo::{
 };
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode};
 use std::clone::Clone;
-
+use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -35,6 +35,39 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 pub struct NavigationController {
     route: Route,
     config: NavigationControllerConfig,
+}
+
+/// Core interface for navigation functionalities.
+///
+/// This trait defines the essential operations for any navigation implementation
+/// allowing different navigation strategies (standard, recording)
+/// to be used interchangeably
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub trait Navigator: Send + Sync {
+    fn get_initial_state(&self, location: UserLocation) -> TripState;
+    fn advance_to_next_step(&self, state: &TripState) -> TripState;
+    fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState;
+}
+
+/// Creates a new navigation controller for the given route and configuration.
+///
+/// It returns an Arc-wrapped trait object implementing `Navigator`.
+/// If `should_record` is true, it creates a controller that can record navigation events.
+/// Else it creates a regular controller without recording capabilities.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub fn create_navigation_controller(
+    route: Route,
+    config: NavigationControllerConfig,
+    should_record: bool,
+) -> Arc<dyn Navigator> {
+    if should_record {
+        // Creates a navigation controller with recording capabilities.
+        // For now, it just returns the regular controller
+        Arc::new(NavigationController { route, config })
+    } else {
+        // Creates a navigation controller without recording capabilities.
+        Arc::new(NavigationController { route, config })
+    }
 }
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
@@ -402,6 +435,20 @@ impl NavigationController {
             user_location,
             summary,
         }
+    }
+}
+
+impl Navigator for NavigationController {
+    fn get_initial_state(&self, location: UserLocation) -> TripState {
+        self.get_initial_state(location)
+    }
+
+    fn advance_to_next_step(&self, state: &TripState) -> TripState {
+        self.advance_to_next_step(state)
+    }
+
+    fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
+        self.update_user_location(location, state)
     }
 }
 
