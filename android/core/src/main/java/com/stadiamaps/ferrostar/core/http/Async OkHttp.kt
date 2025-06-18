@@ -1,4 +1,4 @@
-package com.stadiamaps.ferrostar.core
+package com.stadiamaps.ferrostar.core.http
 
 import java.io.IOException
 import kotlin.coroutines.resumeWithException

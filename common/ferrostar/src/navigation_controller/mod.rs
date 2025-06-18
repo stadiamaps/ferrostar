@@ -1,6 +1,7 @@
 //! The navigation state machine.
 
 pub mod models;
+pub mod recording;
 
 #[cfg(test)]
 pub(crate) mod test_helpers;
@@ -11,7 +12,9 @@ use crate::{
         index_of_closest_segment_origin, should_advance_to_next_step, snap_user_location_to_line,
     },
     models::{Route, UserLocation},
+    navigation_controller::models::TripSummary,
 };
+use chrono::Utc;
 use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
@@ -46,11 +49,16 @@ impl NavigationController {
     pub fn get_initial_state(&self, location: UserLocation) -> TripState {
         let remaining_steps = self.route.steps.clone();
 
+        let initial_summary = TripSummary {
+            distance_traveled: 0.0,
+            snapped_distance_traveled: 0.0,
+            started_at: Utc::now(),
+            ended_at: None,
+        };
+
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return TripState::Complete {
-                user_location: location,
-            };
+            return Self::completed_trip_state(location, initial_summary);
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -86,6 +94,7 @@ impl NavigationController {
             // Skip the first waypoint, as it is the current one
             remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
             progress,
+            summary: initial_summary,
             deviation,
             visual_instruction,
             spoken_instruction,
@@ -113,6 +122,7 @@ impl NavigationController {
                 ref remaining_steps,
                 ref remaining_waypoints,
                 deviation,
+                summary,
                 ..
             } => {
                 // FIXME: This logic is mostly duplicated below
@@ -148,6 +158,7 @@ impl NavigationController {
                             remaining_steps,
                             remaining_waypoints: remaining_waypoints.clone(),
                             progress,
+                            summary: summary.clone(),
                             // NOTE: We *can't* run deviation calculations in this method,
                             // as it requires a non-snapped user location.
                             deviation: *deviation,
@@ -156,14 +167,15 @@ impl NavigationController {
                             annotation_json,
                         }
                     }
-                    StepAdvanceStatus::EndOfRoute => TripState::Complete {
-                        user_location: *user_location,
-                    },
+                    StepAdvanceStatus::EndOfRoute => {
+                        Self::completed_trip_state(*user_location, summary.clone())
+                    }
                 }
             }
-            TripState::Complete { user_location } => TripState::Complete {
-                user_location: *user_location,
-            },
+            TripState::Complete {
+                user_location,
+                summary,
+            } => Self::completed_trip_state(*user_location, summary.clone()),
         }
     }
 
@@ -185,12 +197,13 @@ impl NavigationController {
                 visual_instruction,
                 spoken_instruction,
                 annotation_json,
+                summary,
+                user_location: previous_user_location,
+                snapped_user_location: previous_snapped_user_location,
                 ..
             } => {
                 let Some(current_step) = remaining_steps.first() else {
-                    return TripState::Complete {
-                        user_location: location,
-                    };
+                    return Self::completed_trip_state(*previous_user_location, summary.clone());
                 };
 
                 //
@@ -201,6 +214,14 @@ impl NavigationController {
                 let current_step_linestring = current_step.get_linestring();
                 let (current_step_geometry_index, snapped_user_location) =
                     self.snap_user_to_line(location, &current_step_linestring);
+
+                // Update trip summary with accumulated distance
+                let updated_summary = summary.update(
+                    &previous_user_location,
+                    &location,
+                    &previous_snapped_user_location,
+                    &snapped_user_location,
+                );
 
                 let progress = calculate_trip_progress(
                     &snapped_user_location.into(),
@@ -224,6 +245,7 @@ impl NavigationController {
                     remaining_steps: remaining_steps.clone(),
                     remaining_waypoints: remaining_waypoints.clone(),
                     progress,
+                    summary: updated_summary,
                     deviation: *deviation,
                     visual_instruction: visual_instruction.clone(),
                     spoken_instruction: spoken_instruction.clone(),
@@ -249,6 +271,7 @@ impl NavigationController {
                         remaining_steps,
                         remaining_waypoints,
                         progress,
+                        summary,
                         // Explicitly recalculated
                         current_step_geometry_index: _,
                         deviation: _,
@@ -296,19 +319,24 @@ impl NavigationController {
                             remaining_steps,
                             remaining_waypoints,
                             progress,
+                            summary: summary.clone(),
                             deviation,
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
                         }
                     }
-                    TripState::Complete { user_location } => TripState::Complete { user_location },
+                    TripState::Complete {
+                        user_location,
+                        summary,
+                    } => Self::completed_trip_state(user_location, summary.clone()),
                 }
             }
             // Terminal state
-            TripState::Complete { user_location } => TripState::Complete {
-                user_location: *user_location,
-            },
+            TripState::Complete {
+                user_location,
+                summary,
+            } => Self::completed_trip_state(*user_location, summary.clone()),
         }
     }
 }
@@ -364,6 +392,15 @@ impl NavigationController {
                 })
             }
             _ => false,
+        }
+    }
+
+    /// Helper function to create a Complete state with the ended_at timestamp set
+    fn completed_trip_state(user_location: UserLocation, mut summary: TripSummary) -> TripState {
+        summary.ended_at = Some(Utc::now());
+        TripState::Complete {
+            user_location,
+            summary,
         }
     }
 }
@@ -423,7 +460,7 @@ mod tests {
         CourseFiltering, SpecialAdvanceConditions, StepAdvanceMode,
     };
     use crate::navigation_controller::test_helpers::{
-        get_extended_route, get_self_intersecting_route,
+        get_extended_route, get_self_intersecting_route, nav_controller_insta_settings,
     };
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
@@ -502,58 +539,68 @@ mod tests {
 
     #[test]
     fn test_extended_exact_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_extended_route(),
-            StepAdvanceMode::DistanceToEndOfStep {
-                distance: 0,
-                minimum_horizontal_accuracy: 0,
-            }
-        ));
+        nav_controller_insta_settings().bind(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_extended_route(),
+                StepAdvanceMode::DistanceToEndOfStep {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_extended_relative_linestring() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_extended_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: None,
-            }
-        ));
+        nav_controller_insta_settings().bind(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_extended_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: None,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_exact_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::DistanceToEndOfStep {
-                distance: 0,
-                minimum_horizontal_accuracy: 0,
-            }
-        ));
+        nav_controller_insta_settings().bind(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::DistanceToEndOfStep {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_relative_linestring() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: None,
-            }
-        ));
+        nav_controller_insta_settings().bind(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: None,
+                }
+            ));
+        });
     }
 
     #[test]
     fn test_self_intersecting_relative_linestring_min_line_distance() {
-        insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
-            get_self_intersecting_route(),
-            StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy: 0,
-                special_advance_conditions: Some(
-                    SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
-                ),
-            }
-        ));
+        nav_controller_insta_settings().bind(|| {
+            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+                get_self_intersecting_route(),
+                StepAdvanceMode::RelativeLineStringDistance {
+                    minimum_horizontal_accuracy: 0,
+                    special_advance_conditions: Some(
+                        SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)
+                    ),
+                }
+            ));
+        });
     }
 }

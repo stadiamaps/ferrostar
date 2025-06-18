@@ -197,7 +197,7 @@ which will trigger updates.
 
 Before we configure the Ferrostar core, we need to set up an HTTP client.
 This is typically stored as an instance variable in one of your classes (ex: activity).
-We use the popular OkHttp library for this.
+We use the popular OkHttp library for this, but the Core is configured to allow alternatives through the HttpClientProvider interface.
 Here we’ve set up a client with a global timeout of 15 seconds.
 Refer to the [OkHttp documentation](https://square.github.io/okhttp/) for further details on configuration.
 
@@ -205,6 +205,7 @@ Refer to the [OkHttp documentation](https://square.github.io/okhttp/) for furthe
 private val httpClient = OkHttpClient.Builder()
     .callTimeout(Duration.ofSeconds(15))
     .build()
+    .toOkHttpClientProvider()
 ```
 
 ### (Optional) Configure annotation parsing

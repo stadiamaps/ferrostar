@@ -27,6 +27,12 @@ public extension NavigationState {
                     distanceRemaining: 0,
                     durationRemaining: 0
                 ),
+                summary: TripSummary(
+                    distanceTraveled: 0,
+                    snappedDistanceTraveled: 0,
+                    startedAt: Date(),
+                    endedAt: nil
+                ),
                 deviation: .noDeviation,
                 visualInstruction: nil,
                 spokenInstruction: nil,
@@ -87,6 +93,12 @@ public extension NavigationState {
                     distanceToNextManeuver: 5,
                     distanceRemaining: 100,
                     durationRemaining: 99
+                ),
+                summary: TripSummary(
+                    distanceTraveled: 0,
+                    snappedDistanceTraveled: 0,
+                    startedAt: Date(),
+                    endedAt: nil
                 ),
                 deviation: .noDeviation,
                 visualInstruction: nil,

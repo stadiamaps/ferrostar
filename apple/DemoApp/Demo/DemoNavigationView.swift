@@ -13,7 +13,7 @@ struct DemoNavigationView: View {
     @EnvironmentObject private var ferrostarCore: FerrostarCore
 
     @State private var isFetchingRoutes = false
-    @State private var routes: [Route]?
+    @State private var route: Route?
     @State private var errorMessage: String? {
         didSet {
             Task {
@@ -78,13 +78,17 @@ struct DemoNavigationView: View {
                             if ferrostarCore.state == nil {
                                 NavigationUIButton {
                                     Task {
+                                        guard let route else {
+                                            errorMessage = "No Route"
+                                            return
+                                        }
                                         do {
                                             isFetchingRoutes = true
-                                            try startNavigation()
+                                            try startNavigation(route)
                                             isFetchingRoutes = false
                                         } catch {
                                             isFetchingRoutes = false
-                                            errorMessage = "\(error.localizedDescription)"
+                                            errorMessage = error.localizedDescription
                                         }
                                     }
                                 } label: {
@@ -93,7 +97,7 @@ struct DemoNavigationView: View {
                                         .minimumScaleFactor(0.5)
                                         .font(.body.bold())
                                 }
-                                .disabled(routes?.isEmpty == true)
+                                .disabled(route == nil)
                             }
                         } else {
                             NavigationUIButton {
@@ -106,27 +110,22 @@ struct DemoNavigationView: View {
                 }
             )
             .task {
-                await getRoutes()
+                do {
+                    try await getRoute()
+                } catch {
+                    errorMessage = error.localizedDescription
+                }
             }
         }
     }
 
     // MARK: Conveniences
 
-    func getRoutes() async {
-        do {
-            routes = try await appEnvironment.getRoutes()
-        } catch {
-            print("DemoApp: error getting routes: \(error)")
-        }
+    private func getRoute() async throws {
+        route = try await appEnvironment.getRoute()
     }
 
-    func startNavigation() throws {
-        guard let route = routes?.first else {
-            print("DemoApp: No route")
-            return
-        }
-
+    private func startNavigation(_ route: Route) throws {
         try appEnvironment.startNavigation(route: route)
         appEnvironment.camera.camera = .automotiveNavigation()
         preventAutoLock()

@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.34.1"
+version = "0.37.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
@@ -38,15 +38,15 @@ serde_json = { version = "1.0.140", default-features = false }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
 thiserror = "2.0.12"
 uniffi = { workspace = true, optional = true }
-uuid = { version = "1.16.0", features = ["v4", "serde"] }
+uuid = { version = "1.17.0", features = ["v4", "serde"] }
 getrandom = { version = "0.2.15", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
-tsify = { version = "0.4.5", default-features = false, features = ["js"] }
+tsify = { version = "0.5.5", default-features = false, features = ["js"] }
 log = "0.4.27"
 
 [target.'cfg(target_os = "android")'.dependencies]
-android_logger = { version = "0.14.1" }
+android_logger = { version = "0.15.0" }
 
 [build-dependencies]
 uniffi = { workspace = true, features = ["build"] }
@@ -55,7 +55,7 @@ uniffi = { workspace = true, features = ["build"] }
 assert-json-diff = "2.0.2"
 proptest = { version = "1.6.0", default-features = false }
 insta = { version = "1.43.1", features = ["yaml", "redactions"] }
-rstest = "0.24.0"
+rstest = "0.25.0"
 wasm-bindgen-test = "0.3"
 
 [lib]
