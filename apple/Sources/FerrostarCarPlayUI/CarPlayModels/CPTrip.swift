@@ -5,23 +5,15 @@ import FerrostarSwiftUI
 private let RouteKey = "com.stadiamaps.ferrostar.route"
 
 extension CPRouteChoice {
-    private var userDictionary: [String: Any]? {
-        get {
-            userInfo as? [String: Any] ?? [:]
-        }
-        set {
-            userInfo = newValue
-        }
-    }
+  convenience init(summaryVariants: [String], additionalInformationVariants: [String], selectionSummaryVariants: [String], route: Route) {
+    self.init(summaryVariants: summaryVariants, additionalInformationVariants: additionalInformationVariants, selectionSummaryVariants: selectionSummaryVariants)
+    self.userInfo = [RouteKey : route]
+  }
 
     public var route: Route? {
         get {
-            userDictionary?[RouteKey] as? Route
-        }
-        set {
-            var info = userDictionary ?? [:]
-            info[RouteKey] = newValue
-            userDictionary = info
+          guard let info = userInfo as? [String: Any] else { return nil }
+          return info[RouteKey] as? Route
         }
     }
 }
@@ -60,13 +52,12 @@ extension CPTrip {
             let distance = distanceFormatter.string(for: route.distance)
             let summary = [distance].compactMap { $0 }.joined(separator: ", ")
 
-            let routeChoice = CPRouteChoice(
+            return CPRouteChoice(
                 summaryVariants: ["Route \(routeNumber)"],
                 additionalInformationVariants: [summary],
-                selectionSummaryVariants: ["Selected Route \(routeNumber)"]
+                selectionSummaryVariants: ["Selected Route \(routeNumber)"],
+                route: route
             )
-            routeChoice.route = route
-            return routeChoice
         }
 
         return CPTrip(
