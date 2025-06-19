@@ -5,16 +5,23 @@ import FerrostarSwiftUI
 private let RouteKey = "com.stadiamaps.ferrostar.route"
 
 extension CPRouteChoice {
-  convenience init(summaryVariants: [String], additionalInformationVariants: [String], selectionSummaryVariants: [String], route: Route) {
-    self.init(summaryVariants: summaryVariants, additionalInformationVariants: additionalInformationVariants, selectionSummaryVariants: selectionSummaryVariants)
-    self.userInfo = [RouteKey : route]
-  }
+    convenience init(
+        summaryVariants: [String],
+        additionalInformationVariants: [String],
+        selectionSummaryVariants: [String],
+        route: Route
+    ) {
+        self.init(
+            summaryVariants: summaryVariants,
+            additionalInformationVariants: additionalInformationVariants,
+            selectionSummaryVariants: selectionSummaryVariants
+        )
+        userInfo = [RouteKey: route]
+    }
 
     public var route: Route? {
-        get {
-          guard let info = userInfo as? [String: Any] else { return nil }
-          return info[RouteKey] as? Route
-        }
+        guard let info = userInfo as? [String: Any] else { return nil }
+        return info[RouteKey] as? Route
     }
 }
 
