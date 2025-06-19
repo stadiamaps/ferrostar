@@ -9,12 +9,13 @@ extension CPManeuver {
     convenience init(
         initialTravelEstimates: CPTravelEstimates,
         instructionVariants: [String],
-        symbolImage _: UIImage?,
+        symbolImage: UIImage?,
         visualInstruction: VisualInstruction
     ) {
         self.init()
         self.initialTravelEstimates = initialTravelEstimates
         self.instructionVariants = instructionVariants
+        self.symbolImage = symbolImage
         userInfo = [InstructionKey: visualInstruction]
     }
 
