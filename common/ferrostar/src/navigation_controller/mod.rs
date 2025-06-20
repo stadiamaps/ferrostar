@@ -55,7 +55,7 @@ pub trait Navigator: Send + Sync {
 /// If `should_record` is true, it creates a controller that can record navigation events.
 /// Else it creates a regular controller without recording capabilities.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
-pub fn create_navigation_controller(
+pub fn create_navigator(
     route: Route,
     config: NavigationControllerConfig,
     should_record: bool,

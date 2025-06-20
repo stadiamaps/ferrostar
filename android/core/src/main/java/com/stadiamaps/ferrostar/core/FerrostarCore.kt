@@ -26,7 +26,7 @@ import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
 import uniffi.ferrostar.Waypoint
-import uniffi.ferrostar.createNavigationController
+import uniffi.ferrostar.createNavigator
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
 data class NavigationState(
@@ -248,7 +248,7 @@ class FerrostarCore(
     _config = config ?: _config
 
     val controller: Navigator =
-        createNavigationController(
+        createNavigator(
             route,
             _config,
             false,
@@ -282,7 +282,7 @@ class FerrostarCore(
     _config = config ?: _config
 
     val controller: Navigator =
-        createNavigationController(
+        createNavigator(
             route,
             _config,
             false,

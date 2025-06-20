@@ -6736,9 +6736,9 @@ public func createFerrostarLogger() {try! rustCall() {
  * If `should_record` is true, it creates a controller that can record navigation events.
  * Else it creates a regular controller without recording capabilities.
  */
-public func createNavigationController(route: Route, config: NavigationControllerConfig, shouldRecord: Bool) -> Navigator {
+public func createNavigator(route: Route, config: NavigationControllerConfig, shouldRecord: Bool) -> Navigator {
     return try!  FfiConverterTypeNavigator.lift(try! rustCall() {
-    uniffi_ferrostar_fn_func_create_navigation_controller(
+    uniffi_ferrostar_fn_func_create_navigator(
         FfiConverterTypeRoute.lower(route),
         FfiConverterTypeNavigationControllerConfig.lower(config),
         FfiConverterBool.lower(shouldRecord),$0
@@ -6884,7 +6884,7 @@ private var initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 18551) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_navigation_controller() != 58840) {
+    if (uniffi_ferrostar_checksum_func_create_navigator() != 7391) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 16550) {
