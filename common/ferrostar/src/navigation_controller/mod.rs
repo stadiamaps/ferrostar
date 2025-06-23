@@ -52,8 +52,7 @@ pub trait Navigator: Send + Sync {
 /// Creates a new navigation controller for the given route and configuration.
 ///
 /// It returns an Arc-wrapped trait object implementing `Navigator`.
-/// If `should_record` is true, it creates a controller that can record navigation events.
-/// Else it creates a regular controller without recording capabilities.
+/// If `should_record` is true, it creates a controller with event recording enabled.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub fn create_navigator(
     route: Route,
