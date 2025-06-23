@@ -626,33 +626,6 @@ fileprivate struct FfiConverterTimestamp: FfiConverterRustBuffer {
  */
 public protocol NavigationControllerProtocol : AnyObject {
     
-    /**
-     * Advances navigation to the next step.
-     *
-     * Depending on the advancement strategy, this may be automatic.
-     * For other cases, it is desirable to advance to the next step manually (ex: walking in an
-     * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
-     *
-     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
-     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-     */
-    func advanceToNextStep(state: TripState)  -> TripState
-    
-    /**
-     * Returns initial trip state as if the user had just started the route with no progress.
-     */
-    func getInitialState(location: UserLocation)  -> TripState
-    
-    /**
-     * Updates the user's current location and updates the navigation state accordingly.
-     *
-     * # Panics
-     *
-     * If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
-     * this function will panic.
-     */
-    func updateUserLocation(location: UserLocation, state: TripState)  -> TripState
-    
 }
 
 /**
@@ -725,52 +698,6 @@ public convenience init(route: Route, config: NavigationControllerConfig) {
     
 
     
-    /**
-     * Advances navigation to the next step.
-     *
-     * Depending on the advancement strategy, this may be automatic.
-     * For other cases, it is desirable to advance to the next step manually (ex: walking in an
-     * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
-     *
-     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
-     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-     */
-open func advanceToNextStep(state: TripState) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
-    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.uniffiClonePointer(),
-        FfiConverterTypeTripState.lower(state),$0
-    )
-})
-}
-    
-    /**
-     * Returns initial trip state as if the user had just started the route with no progress.
-     */
-open func getInitialState(location: UserLocation) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
-    uniffi_ferrostar_fn_method_navigationcontroller_get_initial_state(self.uniffiClonePointer(),
-        FfiConverterTypeUserLocation.lower(location),$0
-    )
-})
-}
-    
-    /**
-     * Updates the user's current location and updates the navigation state accordingly.
-     *
-     * # Panics
-     *
-     * If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
-     * this function will panic.
-     */
-open func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
-    uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.uniffiClonePointer(),
-        FfiConverterTypeUserLocation.lower(location),
-        FfiConverterTypeTripState.lower(state),$0
-    )
-})
-}
-    
 
 }
 
@@ -831,9 +758,9 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 /**
  * Core interface for navigation functionalities.
  *
- * This trait defines the essential operations for any navigation implementation
- * allowing different navigation strategies (standard, recording)
- * to be used interchangeably
+ * This trait defines the essential operations for a navigation state manager.
+ * This lets us build additional layers (e.g. event logging)
+ * around [`NavigationController`] a composable manner.
  */
 public protocol NavigatorProtocol : AnyObject {
     
@@ -848,9 +775,9 @@ public protocol NavigatorProtocol : AnyObject {
 /**
  * Core interface for navigation functionalities.
  *
- * This trait defines the essential operations for any navigation implementation
- * allowing different navigation strategies (standard, recording)
- * to be used interchangeably
+ * This trait defines the essential operations for a navigation state manager.
+ * This lets us build additional layers (e.g. event logging)
+ * around [`NavigationController`] a composable manner.
  */
 open class Navigator:
     NavigatorProtocol {
@@ -6733,8 +6660,7 @@ public func createFerrostarLogger() {try! rustCall() {
  * Creates a new navigation controller for the given route and configuration.
  *
  * It returns an Arc-wrapped trait object implementing `Navigator`.
- * If `should_record` is true, it creates a controller that can record navigation events.
- * Else it creates a regular controller without recording capabilities.
+ * If `should_record` is true, it creates a controller with event recording enabled.
  */
 public func createNavigator(route: Route, config: NavigationControllerConfig, shouldRecord: Bool) -> Navigator {
     return try!  FfiConverterTypeNavigator.lift(try! rustCall() {
@@ -6884,7 +6810,7 @@ private var initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 18551) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_navigator() != 7391) {
+    if (uniffi_ferrostar_checksum_func_create_navigator() != 1507) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 16550) {
@@ -6909,15 +6835,6 @@ private var initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 3820) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 63862) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 3165) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 29800) {

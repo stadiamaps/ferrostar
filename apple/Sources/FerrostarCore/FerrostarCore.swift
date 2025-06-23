@@ -95,7 +95,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private let networkSession: URLRequestLoading
     private let routeProvider: RouteProvider
     private let locationProvider: LocationProviding
-    private var navigationController: NavigationControllerProtocol?
+    private var navigationController: NavigatorProtocol?
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date? = nil
     private var lastLocation: UserLocation? = nil
@@ -288,7 +288,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         self.config = config ?? self.config
 
         // Configure the navigation controller. This is required to build the initial state.
-        let controller = NavigationController(route: route, config: self.config.ffiValue)
+        let controller = createNavigator(route: route, config: self.config.ffiValue)
         navigationController = controller
 
         locationProvider.startUpdating()
