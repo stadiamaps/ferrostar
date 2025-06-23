@@ -64,7 +64,7 @@ pub fn create_navigator(
         // For now, it just returns the regular controller
         Arc::new(NavigationController { route, config })
     } else {
-        // Creates a navigation controller without recording capabilities.
+        // Creates a normal navigation controller.
         Arc::new(NavigationController { route, config })
     }
 }
