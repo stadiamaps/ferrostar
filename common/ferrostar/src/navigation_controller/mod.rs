@@ -78,7 +78,7 @@ impl NavigationController {
     }
 }
 
-/// Shared functionality for the navigation controller that is not exported by uniFFI.
+/// Shared functionality for the navigation controller that is not exported by UniFFI.
 impl NavigationController {
     /// Snaps the user's location to the route line and updates the user's course if necessary.
     ///
