@@ -60,8 +60,8 @@ pub fn create_navigator(
     should_record: bool,
 ) -> Arc<dyn Navigator> {
     if should_record {
-        // Creates a navigation controller with recording capabilities.
-        // For now, it just returns the regular controller
+        // Creates a navigation controller with a wrapper that records events.
+        // TODO: Currently just returns the regular controller
         Arc::new(NavigationController { route, config })
     } else {
         // Creates a normal navigation controller.
