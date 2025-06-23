@@ -288,7 +288,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         self.config = config ?? self.config
 
         // Configure the navigation controller. This is required to build the initial state.
-        let controller = createNavigator(route: route, config: self.config.ffiValue)
+        let controller = createNavigator(route: route, config: self.config.ffiValue, shouldRecord: false)
         navigationController = controller
 
         locationProvider.startUpdating()

@@ -49,7 +49,7 @@ fn same_location_results_in_identical_state() {
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
-        false
+        false,
     );
 
     let initial_state = controller.get_initial_state(initial_user_location);
@@ -165,7 +165,7 @@ fn simple_route_state_machine_advances_with_location_change() {
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
-        false
+        false,
     );
 
     // The first update is meaningless in this test, except to get the state
