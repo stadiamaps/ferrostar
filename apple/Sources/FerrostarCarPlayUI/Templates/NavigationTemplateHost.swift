@@ -82,22 +82,6 @@ class NavigatingTemplateHost {
             return
         }
 
-        let estimates = CPTravelEstimates.fromFerrostarForTrip(
-            progress: progress,
-            units: units,
-            locale: .current
-        )
-
-        mapTemplate.updateEstimates(estimates, for: currentSession.trip)
-
-        if let currentManeuer = currentSession.upcomingManeuvers.first {
-            let estimates = CPTravelEstimates.fromFerrostarForStep(
-                progress: progress,
-                units: units,
-                locale: .current
-            )
-
-            currentSession.updateEstimates(estimates, for: currentManeuer)
-        }
+        progress.updateUpcomingEstimates(session: currentSession, mapTemplate: mapTemplate, units: units)
     }
 }
