@@ -1,10 +1,17 @@
 package com.stadiamaps.ferrostar.core
 
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import android.os.Build
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
+import android.speech.tts.UtteranceProgressListener
 import androidx.annotation.VisibleForTesting
 import java.lang.ref.WeakReference
+import java.util.Timer
+import java.util.TimerTask
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -150,7 +157,7 @@ class AndroidTtsObserver(
     }
     val tts = tts ?: return
 
-    if (isInitializedSuccessfully && !isMuted) {
+    if (isInitializedSuccessfully && !isMuted && requestAudioFocus()) {
       // In the future, someone may wish to parse SSML to get more natural utterances into TtsSpans.
       // Amazon Polly is generally the intended target for SSML on Android though.
       val status =
@@ -171,6 +178,8 @@ class AndroidTtsObserver(
     if (status != TextToSpeech.SUCCESS) {
       tts = null
       android.util.Log.e(TAG, "Unable to initialize TTS engine: code $status")
+    } else {
+      tts?.setOnUtteranceProgressListener(utteranceProgressListener)
     }
 
     statusObserver?.onTtsInitialized(tts, status)
@@ -190,5 +199,94 @@ class AndroidTtsObserver(
     tts?.shutdown()
     tts = null
     statusObserver?.onTtsShutdownAndRelease()
+  }
+
+  // Audio session ducking
+  private var releaseTimer: Timer? = null
+
+  // Create the listener as a property
+  private val utteranceProgressListener =
+      object : UtteranceProgressListener() {
+        override fun onStart(utteranceId: String?) {
+          releaseTimer?.cancel()
+          releaseTimer = null
+        }
+
+        override fun onDone(utteranceId: String?) {
+          scheduleAudioFocusRelease()
+        }
+
+        override fun onError(utteranceId: String?) {
+          releaseAudioFocus()
+        }
+      }
+
+  private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+  private var audioFocusRequest: AudioFocusRequest? = null
+  private val RELEASE_DELAY_MS = 500L // 500ms after last utterance
+
+  private val audioFocusChangeListener =
+      AudioManager.OnAudioFocusChangeListener { focusChange ->
+        when (focusChange) {
+          AudioManager.AUDIOFOCUS_LOSS,
+          AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+            // Handle focus loss if needed (pause TTS)
+            stopAndClearQueue()
+          }
+          AudioManager.AUDIOFOCUS_GAIN -> {
+            // Audio focus regained; no action needed
+          }
+        }
+      }
+
+  private fun requestAudioFocus(): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      // "Modern" approach (Android 8.0/API 26+)
+      val audioAttributes =
+          AudioAttributes.Builder()
+              .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+              .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+              .build()
+
+      val req =
+          AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+              .setAudioAttributes(audioAttributes)
+              .setOnAudioFocusChangeListener(audioFocusChangeListener)
+              .build()
+      audioFocusRequest = req
+
+      audioManager.requestAudioFocus(req) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+    } else {
+      // Legacy approach for older Android versions
+      // Drop this when we drop support for API level 25.
+      audioManager.requestAudioFocus(
+          audioFocusChangeListener,
+          // Pretty sure this is correct, but don't have an old enough device to verify
+          AudioManager.STREAM_MUSIC,
+          AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK) ==
+          AudioManager.AUDIOFOCUS_REQUEST_GRANTED
+    }
+  }
+
+  private fun scheduleAudioFocusRelease() {
+    releaseTimer?.cancel()
+    releaseTimer =
+        Timer().apply {
+          schedule(
+              object : TimerTask() {
+                override fun run() {
+                  releaseAudioFocus()
+                }
+              },
+              RELEASE_DELAY_MS)
+        }
+  }
+
+  private fun releaseAudioFocus() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      audioFocusRequest?.let { request -> audioManager.abandonAudioFocusRequest(request) }
+    } else {
+      audioManager.abandonAudioFocus(audioFocusChangeListener)
+    }
   }
 }
