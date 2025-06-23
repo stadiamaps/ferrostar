@@ -39,9 +39,9 @@ pub struct NavigationController {
 
 /// Core interface for navigation functionalities.
 ///
-/// This trait defines the essential operations for any navigation implementation
-/// allowing different navigation strategies (standard, recording)
-/// to be used interchangeably
+/// This trait defines the essential operations for a navigation state manager.
+/// This lets us build additional layers (e.g. event logging)
+/// around [`NavigationController`] a composable manner.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait Navigator: Send + Sync {
     fn get_initial_state(&self, location: UserLocation) -> TripState;
