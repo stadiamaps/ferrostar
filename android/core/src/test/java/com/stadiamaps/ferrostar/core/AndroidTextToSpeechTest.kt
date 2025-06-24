@@ -31,6 +31,7 @@ class AndroidTextToSpeechTest {
   fun setUp() {
     mockkStatic(Log::class)
     every { Log.e(any(), any()) } returns 0
+    every { Log.w(any<String>(), any<String>()) } returns 0
 
     context = mockk(relaxed = true)
     val audioManager = mockk<AudioManager>(relaxed = true)
