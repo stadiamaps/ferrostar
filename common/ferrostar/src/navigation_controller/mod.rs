@@ -12,7 +12,7 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
-    models::{Route, UserLocation},
+    models::{Route, RouteStep, UserLocation},
     navigation_controller::models::TripSummary,
 };
 use chrono::Utc;
@@ -246,7 +246,7 @@ impl NavigationController {
                 // Get the step advance condition result.
                 let next_step = remaining_steps.get(1).cloned();
                 let step_advance_result = state.step_advance_condition().should_advance_step(
-                    snapped_user_location,
+                    location,
                     current_step.clone(),
                     next_step,
                 );
@@ -264,13 +264,13 @@ impl NavigationController {
                     annotation_json: annotation_json.clone(),
                 };
 
-                info!(
-                    "StepAdvanceResult: should_advance={}",
-                    step_advance_result.should_advance
-                );
-
                 let intermediate_nav_state =
                     NavState::new(intermediate_state, step_advance_result.next_iteration);
+
+                // Exit early if the user is snapped to the last coordinate in the route.
+                if Self::is_at_end_of_route(&remaining_steps, current_step_geometry_index) {
+                    return NavState::apply_complete(location, summary);
+                }
 
                 let new_nav_state = if step_advance_result.should_advance {
                     // Advance to the next step
@@ -416,6 +416,29 @@ impl NavigationController {
             _ => false,
         }
     }
+
+    /// Checks if the user is at the end of the route based on their snapped position.
+    ///
+    /// Returns `true` if the user is snapped to the last coordinate of the second-to-last step,
+    /// indicating they have effectively completed the route. We can't check the last step, because
+    /// it is an arrival step. Which is essentially single point step that copies of last point
+    /// of the 2nd to last step.
+    fn is_at_end_of_route(
+        remaining_steps: &[RouteStep],
+        current_step_geometry_index: Option<u64>,
+    ) -> bool {
+        // Check if we're on the second-to-last step and have a valid geometry index
+        let [current_step, _] = remaining_steps else {
+            return false;
+        };
+
+        let Some(geometry_index) = current_step_geometry_index else {
+            return false;
+        };
+        let last_coordinate_index = current_step.geometry.len().saturating_sub(1) as u64;
+
+        geometry_index >= last_coordinate_index
+    }
 }
 
 /// JavaScript wrapper for `NavigationController`.
@@ -551,6 +574,13 @@ mod tests {
             simulation_state = new_simulation_state;
             state = new_state.clone();
             states.push(new_state);
+
+            // Exit if there are no more locations.
+            // TODO: This test simulation doesn't let us complete the actual route for
+            // step_advance_conditions that require the user to exit the step (e.g. DistanceEntryAndExitCondition)
+            if simulation_state.remaining_locations.is_empty() {
+                break;
+            }
         }
 
         states.into_iter().map(|state| state.trip_state()).collect()

@@ -118,7 +118,7 @@ pub enum LocationBias {
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct LocationSimulationState {
     pub current_location: UserLocation,
-    remaining_locations: Vec<GeographicCoordinate>,
+    pub(crate) remaining_locations: Vec<GeographicCoordinate>,
     bias: LocationBias,
 }
 

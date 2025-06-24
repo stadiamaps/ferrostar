@@ -260,13 +260,22 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 .should_advance_step(user_location, current_step, next_step)
                 .should_advance;
 
-            StepAdvanceResult {
-                should_advance: should_advance.clone(),
-                next_iteration: Arc::new(DistanceEntryAndExitCondition::new(
-                    self.minimum_horizontal_accuracy,
-                    self.distance_to_end_of_step,
-                    self.distance_after_end_step,
-                )),
+            if should_advance {
+                StepAdvanceResult {
+                    should_advance: true,
+                    next_iteration: Arc::new(DistanceEntryAndExitCondition::new(
+                        self.minimum_horizontal_accuracy,
+                        self.distance_to_end_of_step,
+                        self.distance_after_end_step,
+                    )),
+                }
+            } else {
+                // The condition was not advanced. So we return the last iteration
+                // where has_reached_end_of_current_step is still true to re-trigger this part 2 logic.
+                StepAdvanceResult {
+                    should_advance: false,
+                    next_iteration: Arc::new(self.clone()),
+                }
             }
         } else {
             let distance_to_end = DistanceToEndOfStep {
