@@ -171,7 +171,8 @@ class AndroidTtsObserver(
     val tts = tts ?: return
 
     if (!audioFocusManager.requestAudioFocus()) {
-      android.util.Log.w(TAG, "Unable to request audio focus; TTS will mix with audio from other apps.")
+      android.util.Log.w(
+          TAG, "Unable to request audio focus; TTS will mix with audio from other apps.")
     }
 
     if (!isMuted) {
