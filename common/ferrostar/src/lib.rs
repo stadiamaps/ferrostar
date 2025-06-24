@@ -80,6 +80,7 @@ uniffi::setup_scaffolding!();
 
 #[cfg(feature = "uniffi")]
 uniffi::custom_type!(Uuid, String, {
+    remote,
     try_lift: |val| {
         Ok(Uuid::from_str(&val)?)
     },
@@ -94,6 +95,7 @@ type UtcDateTime = DateTime<Utc>;
 
 #[cfg(feature = "uniffi")]
 uniffi::custom_type!(UtcDateTime, i64, {
+    remote,
     try_lift: |val| {
         DateTime::<Utc>::from_timestamp_millis(val).ok_or(anyhow!("Timestamp {val} out of range"))
     },
