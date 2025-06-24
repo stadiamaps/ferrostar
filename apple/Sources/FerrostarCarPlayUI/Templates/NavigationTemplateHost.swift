@@ -58,12 +58,7 @@ class NavigatingTemplateHost {
     }
 
     func update(_ instruction: VisualInstruction, currentStep: RouteStep) {
-        let stepDistance = CarPlayMeasurementLength(units: units, distance: currentStep.distance)
-
-        currentSession?.upcomingManeuvers = [instruction.maneuver(
-            stepDuration: currentStep.duration,
-            stepDistance: stepDistance.rounded()
-        )]
+        currentSession?.updateEstimates(instruction: instruction, step: currentStep, units: units)
     }
 
     func cancelTrip() {

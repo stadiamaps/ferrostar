@@ -21,7 +21,7 @@ use geo::{
 };
 use models::{NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode};
 use std::clone::Clone;
-
+use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -37,6 +37,38 @@ pub struct NavigationController {
     config: NavigationControllerConfig,
 }
 
+/// Core interface for navigation functionalities.
+///
+/// This trait defines the essential operations for a navigation state manager.
+/// This lets us build additional layers (e.g. event logging)
+/// around [`NavigationController`] a composable manner.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub trait Navigator: Send + Sync {
+    fn get_initial_state(&self, location: UserLocation) -> TripState;
+    fn advance_to_next_step(&self, state: &TripState) -> TripState;
+    fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState;
+}
+
+/// Creates a new navigation controller for the given route and configuration.
+///
+/// It returns an Arc-wrapped trait object implementing `Navigator`.
+/// If `should_record` is true, it creates a controller with event recording enabled.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub fn create_navigator(
+    route: Route,
+    config: NavigationControllerConfig,
+    should_record: bool,
+) -> Arc<dyn Navigator> {
+    if should_record {
+        // Creates a navigation controller with a wrapper that records events.
+        // TODO: Currently just returns the regular controller
+        Arc::new(NavigationController { route, config })
+    } else {
+        // Creates a normal navigation controller.
+        Arc::new(NavigationController { route, config })
+    }
+}
+
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationController {
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
@@ -44,9 +76,75 @@ impl NavigationController {
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
         Self { route, config }
     }
+}
 
+/// Shared functionality for the navigation controller that is not exported by UniFFI.
+impl NavigationController {
+    /// Snaps the user's location to the route line and updates the user's course if necessary.
+    ///
+    /// This bundles all work related to snapping the user's location to the route line and is not intended to be exported.
+    ///
+    /// Returns the index of the closest segment origin to the snapped user location as well as the snapped user location.
+    fn snap_user_to_line(
+        &self,
+        location: UserLocation,
+        line: &LineString,
+    ) -> (Option<u64>, UserLocation) {
+        // Snap the user's latitude and longitude to the line.
+        let snapped_user_location = snap_user_location_to_line(location, line);
+
+        // Get the index of the closest segment origin to the snapped user location.
+        let current_step_geometry_index =
+            index_of_closest_segment_origin(snapped_user_location, line);
+
+        // Snap the user's course to the line if the configuration specifies it.
+        let snapped_with_course: UserLocation = match &self.config.snapped_location_course_filtering
+        {
+            models::CourseFiltering::SnapToRoute => {
+                apply_snapped_course(snapped_user_location, current_step_geometry_index, line)
+            }
+            models::CourseFiltering::Raw => snapped_user_location,
+        };
+
+        (current_step_geometry_index, snapped_with_course)
+    }
+
+    /// Determines if the navigation controller should advance to the next waypoint.
+    fn should_advance_waypoint(&self, state: &TripState) -> bool {
+        match state {
+            TripState::Navigating {
+                snapped_user_location,
+                ref remaining_waypoints,
+                ..
+            } => {
+                // Update remaining waypoints
+                remaining_waypoints.first().is_some_and(|waypoint| {
+                    let current_location: Point = snapped_user_location.coordinates.into();
+                    let next_waypoint: Point = waypoint.coordinate.into();
+                    match self.config.waypoint_advance {
+                        WaypointAdvanceMode::WaypointWithinRange(range) => {
+                            Haversine.distance(current_location, next_waypoint) < range
+                        }
+                    }
+                })
+            }
+            _ => false,
+        }
+    }
+
+    /// Helper function to create a Complete state with the ended_at timestamp set
+    fn completed_trip_state(user_location: UserLocation, mut summary: TripSummary) -> TripState {
+        summary.ended_at = Some(Utc::now());
+        TripState::Complete {
+            user_location,
+            summary,
+        }
+    }
+}
+
+impl Navigator for NavigationController {
     /// Returns initial trip state as if the user had just started the route with no progress.
-    pub fn get_initial_state(&self, location: UserLocation) -> TripState {
+    fn get_initial_state(&self, location: UserLocation) -> TripState {
         let remaining_steps = self.route.steps.clone();
 
         let initial_summary = TripSummary {
@@ -110,7 +208,7 @@ impl NavigationController {
     ///
     /// This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-    pub fn advance_to_next_step(&self, state: &TripState) -> TripState {
+    fn advance_to_next_step(&self, state: &TripState) -> TripState {
         match state {
             TripState::Idle { user_location } => TripState::Idle {
                 user_location: *user_location,
@@ -185,7 +283,7 @@ impl NavigationController {
     ///
     /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
     /// this function will panic.
-    pub fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
+    fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
         match state {
             TripState::Idle { .. } => TripState::Idle {
                 user_location: Some(location),
@@ -337,70 +435,6 @@ impl NavigationController {
                 user_location,
                 summary,
             } => Self::completed_trip_state(*user_location, summary.clone()),
-        }
-    }
-}
-
-/// Shared functionality for the navigation controller that is not exported by uniFFI.
-impl NavigationController {
-    /// Snaps the user's location to the route line and updates the user's course if necessary.
-    ///
-    /// This bundles all work related to snapping the user's location to the route line and is not intended to be exported.
-    ///
-    /// Returns the index of the closest segment origin to the snapped user location as well as the snapped user location.
-    fn snap_user_to_line(
-        &self,
-        location: UserLocation,
-        line: &LineString,
-    ) -> (Option<u64>, UserLocation) {
-        // Snap the user's latitude and longitude to the line.
-        let snapped_user_location = snap_user_location_to_line(location, line);
-
-        // Get the index of the closest segment origin to the snapped user location.
-        let current_step_geometry_index =
-            index_of_closest_segment_origin(snapped_user_location, line);
-
-        // Snap the user's course to the line if the configuration specifies it.
-        let snapped_with_course: UserLocation = match &self.config.snapped_location_course_filtering
-        {
-            models::CourseFiltering::SnapToRoute => {
-                apply_snapped_course(snapped_user_location, current_step_geometry_index, line)
-            }
-            models::CourseFiltering::Raw => snapped_user_location,
-        };
-
-        (current_step_geometry_index, snapped_with_course)
-    }
-
-    /// Determines if the navigation controller should advance to the next waypoint.
-    fn should_advance_waypoint(&self, state: &TripState) -> bool {
-        match state {
-            TripState::Navigating {
-                snapped_user_location,
-                ref remaining_waypoints,
-                ..
-            } => {
-                // Update remaining waypoints
-                remaining_waypoints.first().is_some_and(|waypoint| {
-                    let current_location: Point = snapped_user_location.coordinates.into();
-                    let next_waypoint: Point = waypoint.coordinate.into();
-                    match self.config.waypoint_advance {
-                        WaypointAdvanceMode::WaypointWithinRange(range) => {
-                            Haversine.distance(current_location, next_waypoint) < range
-                        }
-                    }
-                })
-            }
-            _ => false,
-        }
-    }
-
-    /// Helper function to create a Complete state with the ended_at timestamp set
-    fn completed_trip_state(user_location: UserLocation, mut summary: TripSummary) -> TripState {
-        summary.ended_at = Some(Utc::now());
-        TripState::Complete {
-            user_location,
-            summary,
         }
     }
 }
