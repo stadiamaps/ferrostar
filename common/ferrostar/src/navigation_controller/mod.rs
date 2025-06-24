@@ -435,7 +435,7 @@ impl NavigationController {
         let Some(geometry_index) = current_step_geometry_index else {
             return false;
         };
-        let last_coordinate_index = current_step.geometry.len().saturating_sub(1) as u64;
+        let last_coordinate_index = current_step.geometry.len() as u64;
 
         geometry_index >= last_coordinate_index
     }

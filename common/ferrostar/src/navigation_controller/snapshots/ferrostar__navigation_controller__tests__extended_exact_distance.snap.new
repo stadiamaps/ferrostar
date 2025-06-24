@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-assertion_line: 600
+assertion_line: 594
 expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),\nArc::new(DistanceToEndOfStep\n{ distance: 0, minimum_horizontal_accuracy: 0, }))"
 ---
 - Navigating:
