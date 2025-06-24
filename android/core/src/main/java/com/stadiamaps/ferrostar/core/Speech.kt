@@ -1,10 +1,7 @@
 package com.stadiamaps.ferrostar.core
 
 import android.content.Context
-import android.media.AudioAttributes
-import android.media.AudioFocusRequest
 import android.media.AudioManager
-import android.os.Build
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
 import android.speech.tts.UtteranceProgressListener
@@ -95,6 +92,22 @@ class AndroidTtsObserver(
   private val context: Context?
     get() = weakContext.get()
 
+  private val audioFocusManager =
+      AudioFocusManager(
+          context,
+          AudioManager.OnAudioFocusChangeListener { focusChange ->
+            when (focusChange) {
+              AudioManager.AUDIOFOCUS_LOSS,
+              AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                // Handle focus loss if needed (pause TTS)
+                stopAndClearQueue()
+              }
+              AudioManager.AUDIOFOCUS_GAIN -> {
+                // Audio focus regained; no action needed
+              }
+            }
+          })
+
   override fun setMuted(isMuted: Boolean) {
     _muteState.update { _ ->
       if (isMuted && tts?.isSpeaking == true) {
@@ -157,8 +170,8 @@ class AndroidTtsObserver(
     }
     val tts = tts ?: return
 
-    if (!requestAudioFocus()) {
-      android.util.Log.e(TAG, "Unable to request audio focus; TTS will mix with other audio.")
+    if (!audioFocusManager.requestAudioFocus()) {
+      android.util.Log.w(TAG, "Unable to request audio focus; TTS will mix with audio from other apps.")
     }
 
     if (!isMuted) {
@@ -191,6 +204,7 @@ class AndroidTtsObserver(
 
   override fun stopAndClearQueue() {
     tts?.stop()
+    audioFocusManager.releaseAudioFocus()
   }
 
   /**
@@ -203,6 +217,7 @@ class AndroidTtsObserver(
     tts?.shutdown()
     tts = null
     statusObserver?.onTtsShutdownAndRelease()
+    audioFocusManager.releaseAudioFocus()
   }
 
   // Audio session ducking
@@ -221,56 +236,11 @@ class AndroidTtsObserver(
         }
 
         override fun onError(utteranceId: String?) {
-          releaseAudioFocus()
+          audioFocusManager.releaseAudioFocus()
         }
       }
 
-  private val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-  private var audioFocusRequest: AudioFocusRequest? = null
   private val RELEASE_DELAY_MS = 500L // 500ms after last utterance
-
-  private val audioFocusChangeListener =
-      AudioManager.OnAudioFocusChangeListener { focusChange ->
-        when (focusChange) {
-          AudioManager.AUDIOFOCUS_LOSS,
-          AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
-            // Handle focus loss if needed (pause TTS)
-            stopAndClearQueue()
-          }
-          AudioManager.AUDIOFOCUS_GAIN -> {
-            // Audio focus regained; no action needed
-          }
-        }
-      }
-
-  private fun requestAudioFocus(): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      // "Modern" approach (Android 8.0/API 26+)
-      val audioAttributes =
-          AudioAttributes.Builder()
-              .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
-              .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-              .build()
-
-      val req =
-          AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
-              .setAudioAttributes(audioAttributes)
-              .setOnAudioFocusChangeListener(audioFocusChangeListener)
-              .build()
-      audioFocusRequest = req
-
-      audioManager.requestAudioFocus(req) == AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-    } else {
-      // Legacy approach for older Android versions
-      // Drop this when we drop support for API level 25.
-      audioManager.requestAudioFocus(
-          audioFocusChangeListener,
-          // Pretty sure this is correct, but don't have an old enough device to verify
-          AudioManager.STREAM_MUSIC,
-          AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK) ==
-          AudioManager.AUDIOFOCUS_REQUEST_GRANTED
-    }
-  }
 
   private fun scheduleAudioFocusRelease() {
     releaseTimer?.cancel()
@@ -279,18 +249,10 @@ class AndroidTtsObserver(
           schedule(
               object : TimerTask() {
                 override fun run() {
-                  releaseAudioFocus()
+                  audioFocusManager.releaseAudioFocus()
                 }
               },
               RELEASE_DELAY_MS)
         }
-  }
-
-  private fun releaseAudioFocus() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-      audioFocusRequest?.let { request -> audioManager.abandonAudioFocusRequest(request) }
-    } else {
-      audioManager.abandonAudioFocus(audioFocusChangeListener)
-    }
   }
 }
