@@ -16,8 +16,8 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.33.0"
-    let releaseChecksum = "26e398a8150bd62cdf1782d289fa9b544b0c346eeafb55220259c128f8f9b18b"
+    let releaseTag = "0.36.0"
+    let releaseChecksum = "9b251cbc0509e69b6ca0d8da1d7f89f6964ca314785c8a2699a83c9c9e940686"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url:
@@ -31,7 +31,7 @@ if useLocalMapLibreSwiftUIDSL {
 } else {
     maplibreSwiftUIDSLPackage = .package(
         url: "https://github.com/maplibre/swiftui-dsl",
-        from: "0.11.0"
+        from: "0.12.0"
     )
 }
 
@@ -123,6 +123,7 @@ let package = Package(
                 "FerrostarCore",
                 "FerrostarSwiftUI",
                 "FerrostarCarPlayUI",
+                "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/FerrostarCarPlayUITests"

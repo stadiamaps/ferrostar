@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.core
 
+import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
@@ -144,7 +145,8 @@ class FerrostarCoreTest {
                 RouteAdapter(
                     requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf())),
-            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -195,7 +197,8 @@ class FerrostarCoreTest {
                 RouteAdapter(
                     requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
-            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -241,7 +244,8 @@ class FerrostarCoreTest {
                 RouteAdapter(
                     requestGenerator = MockGetRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
-            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -295,7 +299,8 @@ class FerrostarCoreTest {
     val core =
         FerrostarCore(
             customRouteProvider = routeProvider,
-            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
@@ -369,7 +374,8 @@ class FerrostarCoreTest {
                 RouteAdapter(
                     requestGenerator = MockPostRouteRequestGenerator(),
                     responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
-            httpClient = OkHttpClient.Builder().addInterceptor(interceptor).build(),
+            httpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
             navigationControllerConfig =

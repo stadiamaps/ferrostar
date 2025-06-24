@@ -18,7 +18,7 @@ public protocol LocationManagingDelegate: AnyObject {
 }
 
 /// A location provider that uses Apple's CoreLocation framework.
-public class CoreLocationProvider: NSObject, ObservableObject {
+public class CoreLocationProvider: NSObject {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
@@ -112,7 +112,7 @@ extension CoreLocationProvider: CLLocationManagerDelegate {
 /// Location provider for testing without relying on simulator location spoofing.
 ///
 /// This allows for more granular unit tests as well as route simulation use cases.
-public class SimulatedLocationProvider: LocationProviding, ObservableObject {
+public class SimulatedLocationProvider: LocationProviding {
     public var delegate: LocationManagingDelegate?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
 

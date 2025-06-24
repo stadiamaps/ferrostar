@@ -6,7 +6,7 @@
     "CatMe0w <CatMe0w@live.cn> (https://github.com/CatMe0w)",
     "Luke Seelenbinder <luke@stadiamaps.com>"
   ],
-  "version": "0.33.0",
+  "version": "0.36.0",
   "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/ferrostar-webcomponents.js",
@@ -29,16 +29,26 @@
     "build:site": "npm run build && vite build --config vite.config.site.ts",
     "pack:core": "wasm-pack pack ../common/ferrostar/pkg",
     "pack:all": "npm run pack:core && npm pack",
-    "publish:core": "wasm-pack publish --access public ../common/ferrostar/pkg"
+    "publish:core": "wasm-pack publish --access public ../common/ferrostar/pkg",
+    "lint": "eslint --cache --ext .js,.ts,.html src",
+    "lint:fix": "eslint --cache --ext .js,.ts,.html src --fix"
   },
   "dependencies": {
+    "@maptimy/platform-formatters": "^0.6.0",
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
-    "@maptimy/platform-formatters": "^0.5.0",
     "lit": "^3.2.1",
     "maplibre-gl": "^4.5.0 || ^5"
   },
   "devDependencies": {
     "@stadiamaps/maplibre-search-box": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-html": "^8.1.2",
+    "eslint-plugin-lit": "^2.1.1",
+    "eslint-plugin-wc": "^3.0.1",
+    "globals": "^16.1.0",
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
     "vite": "^6.2.5",

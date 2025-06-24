@@ -60,10 +60,21 @@ export class FerrostarMap extends LitElement {
 
   /**
    * Automatically geolocates the user on map load.
+   *
    * Defaults to true.
+   * Has no effect if `addGeolocateControl` is false.
    */
   @property({ type: Boolean })
   geolocateOnLoad: boolean = true;
+
+  /**
+   * Optionally adds a geolocate control to the map.
+   *
+   * Defaults to true.
+   * Set this to false if you want to disable the geolocation control or bring your own.
+   */
+  @property({ type: Boolean })
+  addGeolocateControl: boolean = true;
 
   routeAdapter: RouteAdapter | null = null;
 
@@ -172,20 +183,22 @@ export class FerrostarMap extends LitElement {
   }
 
   firstUpdated() {
-    this.geolocateControl = new GeolocateControl({
-      positionOptions: {
-        enableHighAccuracy: true,
-      },
-      trackUserLocation: true,
-    });
+    if (this.addGeolocateControl) {
+      this.geolocateControl = new GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+      });
 
-    this.map.addControl(this.geolocateControl);
+      this.map.addControl(this.geolocateControl);
 
-    this.map.on("load", (_) => {
-      if (this.geolocateOnLoad) {
-        this.geolocateControl?.trigger();
-      }
-    });
+      this.map.on("load", (_) => {
+        if (this.geolocateOnLoad) {
+          this.geolocateControl?.trigger();
+        }
+      });
+    }
   }
 
   // TODO: type

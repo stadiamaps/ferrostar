@@ -303,6 +303,16 @@ fn travel_distance_to_end_of_step(
         .map(|traversed| step_length - traversed)
 }
 
+/// Calculates the distance (in meters) between two user locations.
+pub(crate) fn distance_between_locations(
+    previous_location: &UserLocation,
+    current_location: &UserLocation,
+) -> f64 {
+    let prev_point: Point = previous_location.coordinates.into();
+    let current_point: Point = current_location.coordinates.into();
+    Haversine.distance(prev_point, current_point)
+}
+
 /// Computes the user's progress along the current trip (distance to destination, ETA, etc.).
 ///
 /// NOTE to callers: `remaining_steps` includes the current step!

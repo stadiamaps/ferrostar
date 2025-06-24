@@ -3230,6 +3230,116 @@ public func FfiConverterTypeTripProgress_lower(_ value: TripProgress) -> RustBuf
 
 
 /**
+ * Information pertaining to the user's full navigation trip. This includes
+ * simple stats like total duration and distance.
+ */
+public struct TripSummary {
+    /**
+     * The total raw distance traveled in the trip, in meters.
+     */
+    public var distanceTraveled: Double
+    /**
+     * The total snapped distance traveled in the trip, in meters.
+     */
+    public var snappedDistanceTraveled: Double
+    /**
+     * When the trip was started.
+     */
+    public var startedAt: UtcDateTime
+    /**
+     * When the trip was completed or canceled.
+     */
+    public var endedAt: UtcDateTime?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The total raw distance traveled in the trip, in meters.
+         */distanceTraveled: Double, 
+        /**
+         * The total snapped distance traveled in the trip, in meters.
+         */snappedDistanceTraveled: Double, 
+        /**
+         * When the trip was started.
+         */startedAt: UtcDateTime, 
+        /**
+         * When the trip was completed or canceled.
+         */endedAt: UtcDateTime?) {
+        self.distanceTraveled = distanceTraveled
+        self.snappedDistanceTraveled = snappedDistanceTraveled
+        self.startedAt = startedAt
+        self.endedAt = endedAt
+    }
+}
+
+
+
+extension TripSummary: Equatable, Hashable {
+    public static func ==(lhs: TripSummary, rhs: TripSummary) -> Bool {
+        if lhs.distanceTraveled != rhs.distanceTraveled {
+            return false
+        }
+        if lhs.snappedDistanceTraveled != rhs.snappedDistanceTraveled {
+            return false
+        }
+        if lhs.startedAt != rhs.startedAt {
+            return false
+        }
+        if lhs.endedAt != rhs.endedAt {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(distanceTraveled)
+        hasher.combine(snappedDistanceTraveled)
+        hasher.combine(startedAt)
+        hasher.combine(endedAt)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeTripSummary: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TripSummary {
+        return
+            try TripSummary(
+                distanceTraveled: FfiConverterDouble.read(from: &buf), 
+                snappedDistanceTraveled: FfiConverterDouble.read(from: &buf), 
+                startedAt: FfiConverterTypeUtcDateTime.read(from: &buf), 
+                endedAt: FfiConverterOptionTypeUtcDateTime.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: TripSummary, into buf: inout [UInt8]) {
+        FfiConverterDouble.write(value.distanceTraveled, into: &buf)
+        FfiConverterDouble.write(value.snappedDistanceTraveled, into: &buf)
+        FfiConverterTypeUtcDateTime.write(value.startedAt, into: &buf)
+        FfiConverterOptionTypeUtcDateTime.write(value.endedAt, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTripSummary_lift(_ buf: RustBuffer) throws -> TripSummary {
+    return try FfiConverterTypeTripSummary.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTripSummary_lower(_ value: TripSummary) -> RustBuffer {
+    return FfiConverterTypeTripSummary.lower(value)
+}
+
+
+/**
  * The location of the user that is navigating.
  *
  * In addition to coordinates, this includes estimated accuracy and course information,
@@ -5270,7 +5380,8 @@ public enum TripState {
     /**
      * The navigation controller is idle and there is no active trip.
      */
-    case idle
+    case idle(userLocation: UserLocation?
+    )
     /**
      * The navigation controller is actively navigating a trip.
      */
@@ -5281,7 +5392,21 @@ public enum TripState {
          * This index is relative to the *current* [`RouteStep`]'s geometry.
          */currentStepGeometryIndex: UInt64?, 
         /**
-         * A location on the line string that
+         * The user's raw location.
+         *
+         * This is more useful than the snapped location when the user is off route,
+         * or in special situations like pedestrian navigation.
+         */userLocation: UserLocation, 
+        /**
+         * The user's location as if they were exactly on the route.
+         *
+         * This is derived by snapping the latitude and longitude to the closest point on the route line,
+         * regardless of where they actually are.
+         * This is desirable as it makes the navigation experience better for vehicular navigation,
+         * removing GPS noise as long as the user is deemed to be on the route.
+         *
+         * All other properties from the [`UserLocation`], including speed and course,
+         * are not affected by snapping.
          */snappedUserLocation: UserLocation, 
         /**
          * The ordered list of steps that remain in the trip.
@@ -5304,6 +5429,10 @@ public enum TripState {
          * user's progress along the full navigation trip, the route and its components.
          */progress: TripProgress, 
         /**
+         * Information pertaining to the user's full navigation trip. This includes
+         * simple stats like total duration, and distance.
+         */summary: TripSummary, 
+        /**
          * The route deviation status: is the user following the route or not?
          */deviation: RouteDeviation, 
         /**
@@ -5322,7 +5451,12 @@ public enum TripState {
     /**
      * The navigation controller has reached the end of the trip.
      */
-    case complete
+    case complete(userLocation: UserLocation, 
+        /**
+         * Information pertaining to the user's full navigation trip. This includes
+         * simple stats like total duration, and distance.
+         */summary: TripSummary
+    )
 }
 
 
@@ -5336,12 +5470,14 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         let variant: Int32 = try readInt(&buf)
         switch variant {
         
-        case 1: return .idle
-        
-        case 2: return .navigating(currentStepGeometryIndex: try FfiConverterOptionUInt64.read(from: &buf), snappedUserLocation: try FfiConverterTypeUserLocation.read(from: &buf), remainingSteps: try FfiConverterSequenceTypeRouteStep.read(from: &buf), remainingWaypoints: try FfiConverterSequenceTypeWaypoint.read(from: &buf), progress: try FfiConverterTypeTripProgress.read(from: &buf), deviation: try FfiConverterTypeRouteDeviation.read(from: &buf), visualInstruction: try FfiConverterOptionTypeVisualInstruction.read(from: &buf), spokenInstruction: try FfiConverterOptionTypeSpokenInstruction.read(from: &buf), annotationJson: try FfiConverterOptionString.read(from: &buf)
+        case 1: return .idle(userLocation: try FfiConverterOptionTypeUserLocation.read(from: &buf)
         )
         
-        case 3: return .complete
+        case 2: return .navigating(currentStepGeometryIndex: try FfiConverterOptionUInt64.read(from: &buf), userLocation: try FfiConverterTypeUserLocation.read(from: &buf), snappedUserLocation: try FfiConverterTypeUserLocation.read(from: &buf), remainingSteps: try FfiConverterSequenceTypeRouteStep.read(from: &buf), remainingWaypoints: try FfiConverterSequenceTypeWaypoint.read(from: &buf), progress: try FfiConverterTypeTripProgress.read(from: &buf), summary: try FfiConverterTypeTripSummary.read(from: &buf), deviation: try FfiConverterTypeRouteDeviation.read(from: &buf), visualInstruction: try FfiConverterOptionTypeVisualInstruction.read(from: &buf), spokenInstruction: try FfiConverterOptionTypeSpokenInstruction.read(from: &buf), annotationJson: try FfiConverterOptionString.read(from: &buf)
+        )
+        
+        case 3: return .complete(userLocation: try FfiConverterTypeUserLocation.read(from: &buf), summary: try FfiConverterTypeTripSummary.read(from: &buf)
+        )
         
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -5351,26 +5487,31 @@ public struct FfiConverterTypeTripState: FfiConverterRustBuffer {
         switch value {
         
         
-        case .idle:
+        case let .idle(userLocation):
             writeInt(&buf, Int32(1))
+            FfiConverterOptionTypeUserLocation.write(userLocation, into: &buf)
+            
         
-        
-        case let .navigating(currentStepGeometryIndex,snappedUserLocation,remainingSteps,remainingWaypoints,progress,deviation,visualInstruction,spokenInstruction,annotationJson):
+        case let .navigating(currentStepGeometryIndex,userLocation,snappedUserLocation,remainingSteps,remainingWaypoints,progress,summary,deviation,visualInstruction,spokenInstruction,annotationJson):
             writeInt(&buf, Int32(2))
             FfiConverterOptionUInt64.write(currentStepGeometryIndex, into: &buf)
+            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
             FfiConverterTypeUserLocation.write(snappedUserLocation, into: &buf)
             FfiConverterSequenceTypeRouteStep.write(remainingSteps, into: &buf)
             FfiConverterSequenceTypeWaypoint.write(remainingWaypoints, into: &buf)
             FfiConverterTypeTripProgress.write(progress, into: &buf)
+            FfiConverterTypeTripSummary.write(summary, into: &buf)
             FfiConverterTypeRouteDeviation.write(deviation, into: &buf)
             FfiConverterOptionTypeVisualInstruction.write(visualInstruction, into: &buf)
             FfiConverterOptionTypeSpokenInstruction.write(spokenInstruction, into: &buf)
             FfiConverterOptionString.write(annotationJson, into: &buf)
             
         
-        case .complete:
+        case let .complete(userLocation,summary):
             writeInt(&buf, Int32(3))
-        
+            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
+            FfiConverterTypeTripSummary.write(summary, into: &buf)
+            
         }
     }
 }
@@ -5788,6 +5929,30 @@ fileprivate struct FfiConverterOptionTypeSpokenInstruction: FfiConverterRustBuff
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeSpokenInstruction.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeUserLocation: FfiConverterRustBuffer {
+    typealias SwiftType = UserLocation?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeUserLocation.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeUserLocation.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }

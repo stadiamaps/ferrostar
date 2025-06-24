@@ -21,7 +21,7 @@ public struct NavigationMapView: View {
 
     // TODO: Configurable camera and user "puck" rotation modes
 
-    private var navigationState: NavigationState?
+    private let navigationState: NavigationState?
 
     @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
 
@@ -87,7 +87,7 @@ public struct NavigationMapView: View {
     }
 
     private func updateCameraIfNeeded() {
-        if case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = navigationState?.tripState,
+        if let userLocation = navigationState?.preferredUserLocation,
            // There is no reason to push an update if the coordinate and heading are the same.
            // That's all that gets displayed, so it's all that MapLibre should care about.
            locationManager.lastLocation.coordinate != userLocation.coordinates
@@ -102,7 +102,7 @@ public struct NavigationMapView: View {
     // TODO: Make map URL configurable but gitignored
     let state = NavigationState.modifiedPedestrianExample(droppingNWaypoints: 4)
 
-    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(_, _, snappedUserLocation: userLocation, _, _, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
 

@@ -9,7 +9,7 @@ struct TestMKDistanceFormatterUnits {
         Locale(identifier: "de_DE"),
         Locale(identifier: "ja_JP"),
     ])
-    func testMetricUnits(locale: Locale) throws {
+    func metricUnits(locale: Locale) throws {
         let (shortUnit, longUnit) = MKDistanceFormatter.Units.metric.getShortAndLong(
             for: locale
         )
@@ -21,7 +21,7 @@ struct TestMKDistanceFormatterUnits {
         Locale(identifier: "en_US"),
         Locale(identifier: "en_CA"),
     ])
-    func testImperialUnits(locale: Locale) throws {
+    func imperialUnits(locale: Locale) throws {
         let (shortUnit, longUnit) = MKDistanceFormatter.Units.imperial.getShortAndLong(
             for: locale
         )
@@ -47,7 +47,7 @@ struct TestMKDistanceFormatterUnits {
         Locale(identifier: "de_DE"),
         Locale(identifier: "ja_JP"),
     ])
-    func testMetricThreshold(locale: Locale) throws {
+    func metricThreshold(locale: Locale) throws {
         #expect(MKDistanceFormatter.Units.metric.thresholdForLargeUnit(for: locale) == 1000)
     }
 
@@ -55,14 +55,14 @@ struct TestMKDistanceFormatterUnits {
         Locale(identifier: "en_US"),
         Locale(identifier: "en_CA"),
     ])
-    func testImperialUnitsThreshold(locale: Locale) throws {
+    func imperialUnitsThreshold(locale: Locale) throws {
         #expect(MKDistanceFormatter.Units.imperial.thresholdForLargeUnit(for: locale) == 289)
     }
 
     @Test("Test imperial UK threshold", arguments: [
         Locale(identifier: "en_GB"),
     ])
-    func testImperialUKThreshold(locale _: Locale) throws {
+    func imperialUKThreshold(locale _: Locale) throws {
         #expect(
             MKDistanceFormatter.Units.imperialWithYards.thresholdForLargeUnit(for: .current) == 300
         )

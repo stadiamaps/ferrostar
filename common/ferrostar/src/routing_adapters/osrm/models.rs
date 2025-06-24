@@ -140,19 +140,13 @@ pub struct RouteStep {
     pub mode: Option<String>,
     /// The maneuver for this step
     pub maneuver: StepManeuver,
-    /// TODO: docs
+    /// List of intersections at which the route passes through.
     pub intersections: Vec<Intersections>,
 
     /// A list of exits (name or number), separated by semicolons.
-    ///
-    /// NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
-    /// and Valhalla.
     pub exits: Option<String>,
 
-    /// The side of the way on which traffic proceeds.
-    ///
-    /// NOTE: This annotation is not in the official spec, but is a common extension used by Mapbox
-    /// and Valhalla.
+    /// The side of the way on which traffic proceeds..
     pub driving_side: Option<String>,
     // Mapbox and Valhalla extensions that might be useful later
     // pub rotary_name: Option<String>,

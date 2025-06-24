@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.core
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapter
+import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
 import java.time.Instant
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavigationController
@@ -30,7 +30,7 @@ import uniffi.ferrostar.Waypoint
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
 data class NavigationState(
     /** The raw trip state from the core. */
-    val tripState: TripState = TripState.Idle,
+    val tripState: TripState = TripState.Idle(null),
     val routeGeometry: List<GeographicCoordinate> = emptyList(),
     /** Indicates when the core is calculating a new route (ex: due to the user being off route). */
     val isCalculatingNewRoute: Boolean = false
@@ -40,12 +40,14 @@ data class NavigationState(
 
 fun NavigationState.isNavigating(): Boolean =
     when (tripState) {
-      TripState.Complete,
-      TripState.Idle -> false
+      is TripState.Complete,
+      is TripState.Idle -> false
+
       is TripState.Navigating -> true
     }
 
 private val moshi: Moshi = Moshi.Builder().build()
+
 @OptIn(ExperimentalStdlibApi::class)
 private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<String, Any>>()
 
@@ -63,7 +65,7 @@ private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<Strin
  */
 class FerrostarCore(
     val routeProvider: RouteProvider,
-    val httpClient: OkHttpClient,
+    val httpClient: HttpClientProvider,
     val locationProvider: LocationProvider,
     val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
@@ -135,6 +137,7 @@ class FerrostarCore(
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
   private var _lastLocation: UserLocation? = null
+
   // The last location from which we triggered a recalculation
   private var _lastRecalculationLocation: UserLocation? = null
 
@@ -150,7 +153,7 @@ class FerrostarCore(
   constructor(
       valhallaEndpointURL: URL,
       profile: String,
-      httpClient: OkHttpClient,
+      httpClient: HttpClientProvider,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
@@ -166,7 +169,7 @@ class FerrostarCore(
 
   constructor(
       routeAdapter: RouteAdapter,
-      httpClient: OkHttpClient,
+      httpClient: HttpClientProvider,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
@@ -179,7 +182,7 @@ class FerrostarCore(
 
   constructor(
       customRouteProvider: CustomRouteProvider,
-      httpClient: OkHttpClient,
+      httpClient: HttpClientProvider,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
@@ -197,12 +200,12 @@ class FerrostarCore(
         when (routeProvider) {
           is RouteProvider.CustomProvider ->
               routeProvider.provider.getRoutes(initialLocation, waypoints)
-          is RouteProvider.RouteAdapter -> {
-            val routeRequest =
-                routeProvider.adapter.generateRequest(initialLocation, waypoints).toOkhttp3Request()
 
-            val res = httpClient.newCall(routeRequest).await()
-            val bodyBytes = res.body?.bytes()
+          is RouteProvider.RouteAdapter -> {
+            val routeRequest = routeProvider.adapter.generateRequest(initialLocation, waypoints)
+
+            val res = httpClient.call(routeRequest)
+            val bodyBytes = res.bodyBytes()
             if (!res.isSuccessful) {
               throw InvalidStatusCodeException(res.code)
             } else if (bodyBytes == null) {
@@ -353,6 +356,7 @@ class FerrostarCore(
             is CorrectiveAction.DoNothing -> {
               // Do nothing
             }
+
             is CorrectiveAction.GetNewRoutes -> {
               isCalculatingNewRoute = true
               _lastRecalculationLocation = location

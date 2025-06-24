@@ -7,7 +7,7 @@ import Testing
 
 struct CPTravelEstimatesTests {
     @Test("Initialize TripProgress for Trip")
-    func testFromTrip() async throws {
+    func fromTrip() async throws {
         let tripProgress = TripProgress(
             distanceToNextManeuver: 11.1,
             distanceRemaining: 22.2,
@@ -25,7 +25,7 @@ struct CPTravelEstimatesTests {
     }
 
     @Test("Initialize TripProgress for Step")
-    func testFromStep() async throws {
+    func fromStep() async throws {
         let tripProgress = TripProgress(
             distanceToNextManeuver: 11.1,
             distanceRemaining: 22.2,
