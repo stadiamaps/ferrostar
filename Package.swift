@@ -165,6 +165,7 @@ let package = Package(
             dependencies: [
                 "FerrostarCore",
                 "FerrostarSwiftUI",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/TestSupport"
         ),
