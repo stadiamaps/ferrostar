@@ -79,41 +79,28 @@ use uniffi_deps::*;
 uniffi::setup_scaffolding!();
 
 #[cfg(feature = "uniffi")]
-uniffi::custom_type!(Uuid, String);
-
-#[cfg(feature = "uniffi")]
-impl UniffiCustomTypeConverter for Uuid {
-    type Builtin = String;
-
-    fn into_custom(val: Self::Builtin) -> uniffi::Result<Self> {
+uniffi::custom_type!(Uuid, String, {
+    try_lift: |val| {
         Ok(Uuid::from_str(&val)?)
-    }
-
-    fn from_custom(obj: Self) -> Self::Builtin {
+    },
+    lower: |obj| {
         obj.to_string()
     }
-}
+});
 
 // Silliness to keep the macro happy; TODO: open a ticket
 #[cfg(feature = "uniffi")]
 type UtcDateTime = DateTime<Utc>;
 
 #[cfg(feature = "uniffi")]
-uniffi::custom_type!(UtcDateTime, i64);
-
-#[cfg(feature = "uniffi")]
-impl UniffiCustomTypeConverter for DateTime<Utc> {
-    type Builtin = i64;
-
-    fn into_custom(val: Self::Builtin) -> uniffi::Result<Self> {
-        Self::from_timestamp_millis(val).ok_or(anyhow!("Timestamp {val} out of range"))
-    }
-
-    fn from_custom(obj: Self) -> Self::Builtin {
+uniffi::custom_type!(UtcDateTime, i64, {
+    try_lift: |val| {
+        DateTime::<Utc>::from_timestamp_millis(val).ok_or(anyhow!("Timestamp {val} out of range"))
+    },
+    lower: |obj| {
         obj.timestamp_millis()
     }
-}
-
+});
 //
 // Helpers that are only exposed via the FFI interface.
 //
