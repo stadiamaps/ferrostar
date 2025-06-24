@@ -47,7 +47,7 @@ extension FerrostarCore {
 }
 
 extension CLLocation {
-    var simulatedLocationProvider: LocationProviding {
+    var simulatedLocationProvider: SimulatedLocationProvider {
         let simulated = SimulatedLocationProvider(location: self)
         simulated.warpFactor = 2
         return simulated
@@ -56,14 +56,17 @@ extension CLLocation {
 
 /// This is a shared core where ferrostar lives
 class AppEnvironment: ObservableObject {
-    var locationProvider: LocationProviding
+    let locationProvider: SwitchableLocationProvider
     @Published var ferrostarCore: FerrostarCore
     @Published var camera = SharedMapViewCamera(camera: .center(AppDefaults.initialLocation.coordinate, zoom: 14))
 
     let navigationDelegate = NavigationDelegate()
 
     init(initialLocation: CLLocation = AppDefaults.initialLocation) throws {
-        locationProvider = initialLocation.simulatedLocationProvider
+        locationProvider = SwitchableLocationProvider(
+            simulated: initialLocation.simulatedLocationProvider,
+            type: .simulated
+        )
 
         ferrostarCore = try FerrostarCore(locationProvider: locationProvider)
 
@@ -91,25 +94,12 @@ class AppEnvironment: ObservableObject {
             throw DemoAppError.noRoutes
         }
 
-        if let simulated = locationProvider as? SimulatedLocationProvider {
-            // This configures the simulator to the desired route.
-            // The ferrostarCore.startNavigation will still start the location
-            // provider/simulator.
-            simulated.lastLocation = UserLocation(clCoordinateLocation2D: route.geometry.first!.clLocationCoordinate2D)
-        }
+        try locationProvider.use(route: route)
 
         return route
     }
 
     func startNavigation(route: Route) throws {
-        if let simulated = locationProvider as? SimulatedLocationProvider {
-            // This configures the simulator to the desired route.
-            // The ferrostarCore.startNavigation will still start the location
-            // provider/simulator.
-            try simulated.setSimulatedRoute(route, resampleDistance: 5)
-            print("DemoApp: setting route to be simulated")
-        }
-
         // Starts the navigation state machine.
         // It's worth having a look through the parameters,
         // as most of the configuration happens here.
@@ -118,5 +108,9 @@ class AppEnvironment: ObservableObject {
 
     func stopNavigation() {
         ferrostarCore.stopNavigation()
+    }
+
+    func toggleLocationSimulation() {
+        locationProvider.toggle()
     }
 }
