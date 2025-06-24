@@ -123,6 +123,7 @@ let package = Package(
                 "FerrostarCore",
                 "FerrostarSwiftUI",
                 "FerrostarCarPlayUI",
+                "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/FerrostarCarPlayUITests"
