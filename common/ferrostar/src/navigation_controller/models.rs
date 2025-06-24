@@ -283,8 +283,6 @@ pub struct NavigationControllerConfig {
 }
 
 pub struct InitialNavigationState {
-    /// The user location at the start of the navigation session.
-    pub user_location: UserLocation,
     /// The trip state at the start of the navigation session.
     pub trip_state: TripState,
     /// The route that the user is navigating.
