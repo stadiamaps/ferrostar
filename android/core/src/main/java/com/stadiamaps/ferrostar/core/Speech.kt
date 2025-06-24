@@ -151,13 +151,17 @@ class AndroidTtsObserver(
    * Fails silently if TTS is unavailable.
    */
   override fun onSpokenInstructionTrigger(spokenInstruction: SpokenInstruction) {
-    if (tts == null) {
+    if (tts == null || !isInitializedSuccessfully) {
       android.util.Log.e(TAG, "TTS engine is not initialized.")
       return
     }
     val tts = tts ?: return
 
-    if (isInitializedSuccessfully && !isMuted && requestAudioFocus()) {
+    if (!requestAudioFocus()) {
+      android.util.Log.e(TAG, "Unable to request audio focus; TTS will mix with other audio.")
+    }
+
+    if (!isMuted) {
       // In the future, someone may wish to parse SSML to get more natural utterances into TtsSpans.
       // Amazon Polly is generally the intended target for SSML on Android though.
       val status =

@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.core
 
 import android.content.Context
+import android.media.AudioManager
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import app.cash.turbine.test
@@ -32,6 +33,9 @@ class AndroidTextToSpeechTest {
     every { Log.e(any(), any()) } returns 0
 
     context = mockk(relaxed = true)
+    val audioManager = mockk<AudioManager>(relaxed = true)
+    every { context.getSystemService(Context.AUDIO_SERVICE) } returns audioManager
+
     androidTts = AndroidTtsObserver(context = context, engine = engine)
   }
 
@@ -91,6 +95,8 @@ class AndroidTextToSpeechTest {
   @Test
   fun `test on speak`() {
     val tts = mockk<TextToSpeech>(relaxed = true)
+    every { tts.setOnUtteranceProgressListener(any()) } returns TextToSpeech.SUCCESS
+
     androidTts.start(tts)
     androidTts.setMuted(false)
     androidTts.onInit(TextToSpeech.SUCCESS)
