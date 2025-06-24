@@ -3,14 +3,18 @@ import Combine
 import FerrostarCoreFFI
 import Foundation
 
-/// An Spoken instruction provider that takes a speech synthesizer.
+/// An Spoken instruction provider that triggers speech synthesis in response to navigation events.
+///
+/// Automatically handles audio session management,
+/// including ducking volume from other apps when appropriate.
 public class SpokenInstructionObserver {
     @Published public private(set) var isMuted: Bool
 
     let synthesizer: SpeechSynthesizer
-    private let queue = DispatchQueue(label: "ferrostar-spoken-instruction-observer", qos: .default)
+    private let audioManager = AudioSessionManager()
+    private var audioFocusReleaseTask: Task<Void, Never>?
 
-    /// Create a spoken instruction observer with any ``SpeechSynthesizer``
+    /// Creates a spoken instruction observer with any ``SpeechSynthesizer``.
     ///
     /// - Parameters:
     ///   - synthesizer: The speech synthesizer.
@@ -23,12 +27,20 @@ public class SpokenInstructionObserver {
         self.isMuted = isMuted
     }
 
+    deinit {
+        audioFocusReleaseTask?.cancel()
+        // NOTE: The audioFocusReleaseTask will deinit itself
+    }
+
     public func spokenInstructionTriggered(_ instruction: FerrostarCoreFFI.SpokenInstruction) {
         guard !isMuted else {
             return
         }
 
-        queue.async {
+        Task {
+            cancelAudioFocusRelease()
+            await audioManager.requestAudioFocus()
+
             let utterance: AVSpeechUtterance = if #available(iOS 16.0, *),
                                                   let ssml = instruction.ssml,
                                                   let ssmlUtterance = AVSpeechUtterance(ssmlRepresentation: ssml)
@@ -39,6 +51,7 @@ public class SpokenInstructionObserver {
             }
 
             self.synthesizer.speak(utterance)
+            scheduleAudioFocusRelease()
         }
     }
 
@@ -49,14 +62,40 @@ public class SpokenInstructionObserver {
 
         // This used to have `synthesizer.isSpeaking`, but I think we want to run it regardless.
         if isMuted {
-            queue.async {
-                self.stopAndClearQueue()
-            }
+            stopAndClearQueue()
         }
     }
 
     public func stopAndClearQueue() {
-        synthesizer.stopSpeaking(at: .immediate)
+        Task {
+            synthesizer.stopSpeaking(at: .immediate)
+            await audioManager.releaseAudioFocus()
+        }
+    }
+
+    func scheduleAudioFocusRelease() {
+        cancelAudioFocusRelease()
+
+        audioFocusReleaseTask = Task { [weak self] in
+            // Wait at least 500ms; then keep waiting until either:
+            //   - The task is cancelled
+            //   - The synthesizer is no longer speaking
+            repeat {
+                try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
+            } while !Task.isCancelled && self?.synthesizer.isSpeaking ?? false
+
+            guard !Task.isCancelled else {
+                return
+            }
+
+            // Release audio focus (unduck other sources) once we're done speaking
+            await self?.audioManager.releaseAudioFocus()
+        }
+    }
+
+    private func cancelAudioFocusRelease() {
+        audioFocusReleaseTask?.cancel()
+        audioFocusReleaseTask = nil
     }
 }
 
