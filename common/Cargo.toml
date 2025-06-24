@@ -1,13 +1,13 @@
 [workspace]
-members = [
-    "uniffi-bindgen",
-    "uniffi-bindgen-swift",
-    "ferrostar",
-]
+members = ["uniffi-bindgen", "uniffi-bindgen-swift", "ferrostar"]
 resolver = "2"
 
 [workspace.package]
-authors = ["Ian Wagner <ian@stadiamaps.com>", "Jacob Fielding <jacob@rallista.app>", "Luke Seelenbinder <luke@stadiamaps.com>"]
+authors = [
+    "Ian Wagner <ian@stadiamaps.com>",
+    "Jacob Fielding <jacob@rallista.app>",
+    "Luke Seelenbinder <luke@stadiamaps.com>",
+]
 license = "BSD-3-Clause"
 edition = "2021"
 repository = "https://github.com/stadiamaps/ferrostar"
@@ -22,7 +22,7 @@ lto = "thin"
 opt-level = "s"
 
 [workspace.dependencies]
-uniffi = "0.28.3"
+uniffi = "0.29.3"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
