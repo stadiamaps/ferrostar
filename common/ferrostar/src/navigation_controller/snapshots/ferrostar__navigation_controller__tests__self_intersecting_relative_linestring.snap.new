@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-assertion_line: 630
+assertion_line: 664
 expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfIntersecting),\nArc::new(DistanceEntryAndExitCondition::new(0, 0, 0)))"
 ---
 - Navigating:

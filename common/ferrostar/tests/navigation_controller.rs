@@ -8,7 +8,7 @@ use ferrostar::navigation_controller::models::{
 use ferrostar::navigation_controller::step_advance::conditions::{
     DistanceToEndOfStep, ManualStepAdvance,
 };
-use ferrostar::navigation_controller::NavigationController;
+use ferrostar::navigation_controller::{create_navigator, NavigationController, Navigator};
 use ferrostar::routing_adapters::osrm::OsrmResponseParser;
 use ferrostar::routing_adapters::RouteResponseParser;
 use std::sync::Arc;
@@ -45,7 +45,7 @@ fn same_location_results_in_identical_state() {
         speed: None,
     };
 
-    let controller = NavigationController::new(
+    let controller = create_navigator(
         route,
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
@@ -53,6 +53,7 @@ fn same_location_results_in_identical_state() {
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
+        false,
     );
 
     let initial_state = controller.get_initial_state(initial_user_location);
@@ -162,7 +163,7 @@ fn simple_route_state_machine_advances_with_location_change() {
         speed: None,
     };
 
-    let controller = NavigationController::new(
+    let controller = create_navigator(
         route,
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
@@ -175,6 +176,7 @@ fn simple_route_state_machine_advances_with_location_change() {
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
+        false,
     );
 
     // The first update is meaningless in this test, except to get the state

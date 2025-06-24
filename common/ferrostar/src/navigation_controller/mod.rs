@@ -42,6 +42,38 @@ pub struct NavigationController {
     config: NavigationControllerConfig,
 }
 
+/// Core interface for navigation functionalities.
+///
+/// This trait defines the essential operations for a navigation state manager.
+/// This lets us build additional layers (e.g. event logging)
+/// around [`NavigationController`] a composable manner.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub trait Navigator: Send + Sync {
+    fn get_initial_state(&self, location: UserLocation) -> NavState;
+    fn advance_to_next_step(&self, state: &NavState) -> NavState;
+    fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState;
+}
+
+/// Creates a new navigation controller for the given route and configuration.
+///
+/// It returns an Arc-wrapped trait object implementing `Navigator`.
+/// If `should_record` is true, it creates a controller with event recording enabled.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub fn create_navigator(
+    route: Route,
+    config: NavigationControllerConfig,
+    should_record: bool,
+) -> Arc<dyn Navigator> {
+    if should_record {
+        // Creates a navigation controller with a wrapper that records events.
+        // TODO: Currently just returns the regular controller
+        Arc::new(NavigationController { route, config })
+    } else {
+        // Creates a normal navigation controller.
+        Arc::new(NavigationController { route, config })
+    }
+}
+
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationController {
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
@@ -49,9 +81,11 @@ impl NavigationController {
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
         Self { route, config }
     }
+}
 
+impl Navigator for NavigationController {
     /// Returns initial trip state as if the user had just started the route with no progress.
-    pub fn get_initial_state(&self, location: UserLocation) -> NavState {
+    fn get_initial_state(&self, location: UserLocation) -> NavState {
         let remaining_steps = self.route.steps.clone();
 
         let initial_summary = TripSummary {
@@ -117,7 +151,7 @@ impl NavigationController {
     ///
     /// This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-    pub fn advance_to_next_step(&self, state: &NavState) -> NavState {
+    fn advance_to_next_step(&self, state: &NavState) -> NavState {
         match state.trip_state() {
             TripState::Idle { user_location } => NavState::idle(user_location),
             TripState::Navigating {
@@ -192,7 +226,7 @@ impl NavigationController {
     ///
     /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
     /// this function will panic.
-    pub fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState {
+    fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState {
         match state.trip_state() {
             TripState::Idle { .. } => NavState::idle(Some(location)),
             TripState::Navigating {

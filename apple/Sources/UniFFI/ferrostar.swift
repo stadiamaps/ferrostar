@@ -626,33 +626,6 @@ fileprivate struct FfiConverterTimestamp: FfiConverterRustBuffer {
  */
 public protocol NavigationControllerProtocol : AnyObject {
     
-    /**
-     * Advances navigation to the next step.
-     *
-     * Depending on the advancement strategy, this may be automatic.
-     * For other cases, it is desirable to advance to the next step manually (ex: walking in an
-     * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
-     *
-     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
-     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-     */
-    func advanceToNextStep(state: TripState)  -> TripState
-    
-    /**
-     * Returns initial trip state as if the user had just started the route with no progress.
-     */
-    func getInitialState(location: UserLocation)  -> TripState
-    
-    /**
-     * Updates the user's current location and updates the navigation state accordingly.
-     *
-     * # Panics
-     *
-     * If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
-     * this function will panic.
-     */
-    func updateUserLocation(location: UserLocation, state: TripState)  -> TripState
-    
 }
 
 /**
@@ -725,52 +698,6 @@ public convenience init(route: Route, config: NavigationControllerConfig) {
     
 
     
-    /**
-     * Advances navigation to the next step.
-     *
-     * Depending on the advancement strategy, this may be automatic.
-     * For other cases, it is desirable to advance to the next step manually (ex: walking in an
-     * urban tunnel). We leave this decision to the app developer and provide this as a convenience.
-     *
-     * This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
-     * As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-     */
-open func advanceToNextStep(state: TripState) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
-    uniffi_ferrostar_fn_method_navigationcontroller_advance_to_next_step(self.uniffiClonePointer(),
-        FfiConverterTypeTripState.lower(state),$0
-    )
-})
-}
-    
-    /**
-     * Returns initial trip state as if the user had just started the route with no progress.
-     */
-open func getInitialState(location: UserLocation) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
-    uniffi_ferrostar_fn_method_navigationcontroller_get_initial_state(self.uniffiClonePointer(),
-        FfiConverterTypeUserLocation.lower(location),$0
-    )
-})
-}
-    
-    /**
-     * Updates the user's current location and updates the navigation state accordingly.
-     *
-     * # Panics
-     *
-     * If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
-     * this function will panic.
-     */
-open func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
-    uniffi_ferrostar_fn_method_navigationcontroller_update_user_location(self.uniffiClonePointer(),
-        FfiConverterTypeUserLocation.lower(location),
-        FfiConverterTypeTripState.lower(state),$0
-    )
-})
-}
-    
 
 }
 
@@ -823,6 +750,162 @@ public func FfiConverterTypeNavigationController_lift(_ pointer: UnsafeMutableRa
 #endif
 public func FfiConverterTypeNavigationController_lower(_ value: NavigationController) -> UnsafeMutableRawPointer {
     return FfiConverterTypeNavigationController.lower(value)
+}
+
+
+
+
+/**
+ * Core interface for navigation functionalities.
+ *
+ * This trait defines the essential operations for a navigation state manager.
+ * This lets us build additional layers (e.g. event logging)
+ * around [`NavigationController`] a composable manner.
+ */
+public protocol NavigatorProtocol : AnyObject {
+    
+    func getInitialState(location: UserLocation)  -> TripState
+    
+    func advanceToNextStep(state: TripState)  -> TripState
+    
+    func updateUserLocation(location: UserLocation, state: TripState)  -> TripState
+    
+}
+
+/**
+ * Core interface for navigation functionalities.
+ *
+ * This trait defines the essential operations for a navigation state manager.
+ * This lets us build additional layers (e.g. event logging)
+ * around [`NavigationController`] a composable manner.
+ */
+open class Navigator:
+    NavigatorProtocol {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_navigator(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_navigator(pointer, $0) }
+    }
+
+    
+
+    
+open func getInitialState(location: UserLocation) -> TripState {
+    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigator_get_initial_state(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation.lower(location),$0
+    )
+})
+}
+    
+open func advanceToNextStep(state: TripState) -> TripState {
+    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigator_advance_to_next_step(self.uniffiClonePointer(),
+        FfiConverterTypeTripState.lower(state),$0
+    )
+})
+}
+    
+open func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
+    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigator_update_user_location(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation.lower(location),
+        FfiConverterTypeTripState.lower(state),$0
+    )
+})
+}
+    
+
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigator: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = Navigator
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> Navigator {
+        return Navigator(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: Navigator) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Navigator {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: Navigator, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigator_lift(_ pointer: UnsafeMutableRawPointer) throws -> Navigator {
+    return try FfiConverterTypeNavigator.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigator_lower(_ value: Navigator) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeNavigator.lower(value)
 }
 
 
@@ -6574,6 +6657,21 @@ public func createFerrostarLogger() {try! rustCall() {
 }
 }
 /**
+ * Creates a new navigation controller for the given route and configuration.
+ *
+ * It returns an Arc-wrapped trait object implementing `Navigator`.
+ * If `should_record` is true, it creates a controller with event recording enabled.
+ */
+public func createNavigator(route: Route, config: NavigationControllerConfig, shouldRecord: Bool) -> Navigator {
+    return try!  FfiConverterTypeNavigator.lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_create_navigator(
+        FfiConverterTypeRoute.lower(route),
+        FfiConverterTypeNavigationControllerConfig.lower(config),
+        FfiConverterBool.lower(shouldRecord),$0
+    )
+})
+}
+/**
  * Creates a [`RouteResponseParser`] capable of parsing OSRM responses.
  *
  * This response parser is designed to be fairly flexible,
@@ -6712,6 +6810,9 @@ private var initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 18551) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_ferrostar_checksum_func_create_navigator() != 1507) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 16550) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -6736,13 +6837,13 @@ private var initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_advance_to_next_step() != 3820) {
+    if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 29800) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_get_initial_state() != 63862) {
+    if (uniffi_ferrostar_checksum_method_navigator_advance_to_next_step() != 25349) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcontroller_update_user_location() != 3165) {
+    if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 27482) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {

@@ -1,10 +1,14 @@
 package com.stadiamaps.ferrostar.core
 
 import android.content.Context
+import android.media.AudioManager
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
+import android.speech.tts.UtteranceProgressListener
 import androidx.annotation.VisibleForTesting
 import java.lang.ref.WeakReference
+import java.util.Timer
+import java.util.TimerTask
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -88,6 +92,22 @@ class AndroidTtsObserver(
   private val context: Context?
     get() = weakContext.get()
 
+  private val audioFocusManager =
+      AudioFocusManager(
+          context,
+          AudioManager.OnAudioFocusChangeListener { focusChange ->
+            when (focusChange) {
+              AudioManager.AUDIOFOCUS_LOSS,
+              AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                // Handle focus loss if needed (pause TTS)
+                stopAndClearQueue()
+              }
+              AudioManager.AUDIOFOCUS_GAIN -> {
+                // Audio focus regained; no action needed
+              }
+            }
+          })
+
   override fun setMuted(isMuted: Boolean) {
     _muteState.update { _ ->
       if (isMuted && tts?.isSpeaking == true) {
@@ -144,13 +164,18 @@ class AndroidTtsObserver(
    * Fails silently if TTS is unavailable.
    */
   override fun onSpokenInstructionTrigger(spokenInstruction: SpokenInstruction) {
-    if (tts == null) {
+    if (tts == null || !isInitializedSuccessfully) {
       android.util.Log.e(TAG, "TTS engine is not initialized.")
       return
     }
     val tts = tts ?: return
 
-    if (isInitializedSuccessfully && !isMuted) {
+    if (!audioFocusManager.requestAudioFocus()) {
+      android.util.Log.w(
+          TAG, "Unable to request audio focus; TTS will mix with audio from other apps.")
+    }
+
+    if (!isMuted) {
       // In the future, someone may wish to parse SSML to get more natural utterances into TtsSpans.
       // Amazon Polly is generally the intended target for SSML on Android though.
       val status =
@@ -171,6 +196,8 @@ class AndroidTtsObserver(
     if (status != TextToSpeech.SUCCESS) {
       tts = null
       android.util.Log.e(TAG, "Unable to initialize TTS engine: code $status")
+    } else {
+      tts?.setOnUtteranceProgressListener(utteranceProgressListener)
     }
 
     statusObserver?.onTtsInitialized(tts, status)
@@ -178,6 +205,7 @@ class AndroidTtsObserver(
 
   override fun stopAndClearQueue() {
     tts?.stop()
+    audioFocusManager.releaseAudioFocus()
   }
 
   /**
@@ -190,5 +218,42 @@ class AndroidTtsObserver(
     tts?.shutdown()
     tts = null
     statusObserver?.onTtsShutdownAndRelease()
+    audioFocusManager.releaseAudioFocus()
+  }
+
+  // Audio session ducking
+  private var releaseTimer: Timer? = null
+
+  // Create the listener as a property
+  private val utteranceProgressListener =
+      object : UtteranceProgressListener() {
+        override fun onStart(utteranceId: String?) {
+          releaseTimer?.cancel()
+          releaseTimer = null
+        }
+
+        override fun onDone(utteranceId: String?) {
+          scheduleAudioFocusRelease()
+        }
+
+        override fun onError(utteranceId: String?) {
+          audioFocusManager.releaseAudioFocus()
+        }
+      }
+
+  private val RELEASE_DELAY_MS = 500L // 500ms after last utterance
+
+  private fun scheduleAudioFocusRelease() {
+    releaseTimer?.cancel()
+    releaseTimer =
+        Timer().apply {
+          schedule(
+              object : TimerTask() {
+                override fun run() {
+                  audioFocusManager.releaseAudioFocus()
+                }
+              },
+              RELEASE_DELAY_MS)
+        }
   }
 }
