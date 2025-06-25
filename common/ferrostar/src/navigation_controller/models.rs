@@ -273,6 +273,14 @@ pub struct NavigationControllerConfig {
     pub waypoint_advance: WaypointAdvanceMode,
     /// Configures when navigation advances to the next step in the route.
     pub step_advance_condition: Arc<dyn StepAdvanceCondition>,
+    /// A special advance condition used for the final 2 route steps (last and arrival).
+    ///
+    /// This exists because several of our step advance conditions require entry and
+    /// exit from a step's geometry. The end of the route/arrival doesn't always accomidate
+    /// the expected location updates for the core step advance condition.
+    ///
+    /// This exception is applied when remaining steps is less than or equal to 2.
+    pub arrival_step_advance_condition: Arc<dyn StepAdvanceCondition>,
     /// Configures when the user is deemed to be off course.
     ///
     /// NOTE: This is distinct from the action that is taken.

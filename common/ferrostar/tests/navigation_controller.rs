@@ -50,6 +50,10 @@ fn same_location_results_in_identical_state() {
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             step_advance_condition: Arc::new(ManualStepAdvance),
+            arrival_step_advance_condition: Arc::new(DistanceToEndOfStep {
+                distance: 25,
+                minimum_horizontal_accuracy: 0,
+            }),
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
@@ -94,6 +98,10 @@ fn simple_route_state_machine_manual_advance() {
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             step_advance_condition: Arc::new(ManualStepAdvance),
+            arrival_step_advance_condition: Arc::new(DistanceToEndOfStep {
+                distance: 25,
+                minimum_horizontal_accuracy: 0,
+            }),
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
@@ -171,6 +179,10 @@ fn simple_route_state_machine_advances_with_location_change() {
             // this is not testing the thresholds.
             step_advance_condition: Arc::new(DistanceToEndOfStep {
                 distance: 0,
+                minimum_horizontal_accuracy: 0,
+            }),
+            arrival_step_advance_condition: Arc::new(DistanceToEndOfStep {
+                distance: 25,
                 minimum_horizontal_accuracy: 0,
             }),
             route_deviation_tracking: RouteDeviationTracking::None,

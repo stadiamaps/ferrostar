@@ -12,7 +12,7 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
-    models::{Route, RouteStep, UserLocation},
+    models::{Route, UserLocation},
     navigation_controller::models::TripSummary,
 };
 use chrono::Utc;
@@ -20,7 +20,6 @@ use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
 };
-use log::info;
 use models::{
     NavState, NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode,
 };
@@ -241,6 +240,7 @@ impl Navigator for NavigationController {
                 snapped_user_location: previous_snapped_user_location,
                 ..
             } => {
+                // Remaining steps is empty, the route is finished.
                 let Some(current_step) = remaining_steps.first() else {
                     return NavState::apply_complete(location, summary);
                 };
@@ -279,11 +279,18 @@ impl Navigator for NavigationController {
 
                 // Get the step advance condition result.
                 let next_step = remaining_steps.get(1).cloned();
-                let step_advance_result = state.step_advance_condition().should_advance_step(
-                    location,
-                    current_step.clone(),
-                    next_step,
-                );
+                let step_advance_result = if remaining_steps.len() <= 2 {
+                    self.config
+                        .arrival_step_advance_condition
+                        .should_advance_step(location, current_step.clone(), next_step)
+                } else {
+                    state.step_advance_condition().should_advance_step(
+                        location,
+                        current_step.clone(),
+                        next_step,
+                    )
+                };
+
                 let intermediate_state = TripState::Navigating {
                     current_step_geometry_index,
                     user_location: location,
@@ -300,11 +307,6 @@ impl Navigator for NavigationController {
 
                 let intermediate_nav_state =
                     NavState::new(intermediate_state, step_advance_result.next_iteration);
-
-                // Exit early if the user is snapped to the last coordinate in the route.
-                if Self::is_at_end_of_route(&remaining_steps, current_step_geometry_index) {
-                    return NavState::apply_complete(location, summary);
-                }
 
                 let new_nav_state = if step_advance_result.should_advance {
                     // Advance to the next step
@@ -450,29 +452,6 @@ impl NavigationController {
             _ => false,
         }
     }
-
-    /// Checks if the user is at the end of the route based on their snapped position.
-    ///
-    /// Returns `true` if the user is snapped to the last coordinate of the second-to-last step,
-    /// indicating they have effectively completed the route. We can't check the last step, because
-    /// it is an arrival step. Which is essentially single point step that copies of last point
-    /// of the 2nd to last step.
-    fn is_at_end_of_route(
-        remaining_steps: &[RouteStep],
-        current_step_geometry_index: Option<u64>,
-    ) -> bool {
-        // Check if we're on the second-to-last step and have a valid geometry index
-        let [current_step, _] = remaining_steps else {
-            return false;
-        };
-
-        let Some(geometry_index) = current_step_geometry_index else {
-            return false;
-        };
-        let last_coordinate_index = current_step.geometry.len() as u64;
-
-        geometry_index >= last_coordinate_index
-    }
 }
 
 /// JavaScript wrapper for `NavigationController`.
@@ -567,6 +546,10 @@ mod tests {
                 },
                 snapped_location_course_filtering: CourseFiltering::Raw,
                 step_advance_condition,
+                arrival_step_advance_condition: Arc::new(DistanceToEndOfStep {
+                    distance: 5,
+                    minimum_horizontal_accuracy: 0,
+                }),
             },
         );
 
@@ -576,6 +559,13 @@ mod tests {
             let new_simulation_state = advance_location_simulation(&simulation_state);
             let new_state =
                 controller.update_user_location(new_simulation_state.current_location, &state);
+
+            // // Exit if there are no more locations.
+            // // TODO: This test simulation doesn't let us complete the actual route for
+            // // step_advance_conditions that require the user to exit the step (e.g. DistanceEntryAndExitCondition)
+            // if simulation_state.remaining_locations.is_empty() {
+            //     break;
+            // }
 
             match new_state.trip_state() {
                 TripState::Idle { .. } => {}
@@ -608,13 +598,6 @@ mod tests {
             simulation_state = new_simulation_state;
             state = new_state.clone();
             states.push(new_state);
-
-            // Exit if there are no more locations.
-            // TODO: This test simulation doesn't let us complete the actual route for
-            // step_advance_conditions that require the user to exit the step (e.g. DistanceEntryAndExitCondition)
-            if simulation_state.remaining_locations.is_empty() {
-                break;
-            }
         }
 
         states.into_iter().map(|state| state.trip_state()).collect()
