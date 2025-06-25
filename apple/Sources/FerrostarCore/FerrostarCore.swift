@@ -87,6 +87,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     public var minimumMovementBeforeRecaluclation = CLLocationDistance(50)
 
     /// The observable state of the model (for easy binding in SwiftUI views).
+    @Published private var coreNavState: NavState?
     @Published public private(set) var state: NavigationState?
     @Published public private(set) var route: Route?
 
@@ -294,23 +295,26 @@ public protocol FerrostarCoreDelegate: AnyObject {
         locationProvider.startUpdating()
 
         self.route = route
+
+        let navState = controller.getInitialState(location: location)
+        coreNavState = coreNavState
         state = NavigationState(
-            tripState: controller.getInitialState(location: location),
+            navState: navState,
             routeGeometry: route.geometry
         )
 
         DispatchQueue.main.async {
-            self.update(newState: controller.getInitialState(location: location), location: location)
+            self.update(navState, location: location)
         }
     }
 
     public func advanceToNextStep() {
-        guard let controller = navigationController, let tripState = state?.tripState, let lastLocation else {
+        guard let controller = navigationController, let state = coreNavState, let lastLocation else {
             return
         }
 
-        let newState = controller.advanceToNextStep(state: tripState)
-        update(newState: newState, location: lastLocation)
+        let newState = controller.advanceToNextStep(state: state)
+        update(newState, location: lastLocation)
     }
 
     // TODO: Ability to pause without totally stopping and clearing state
@@ -329,11 +333,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Internal state update.
     ///
     /// You should call this rather than setting properties directly
-    private func update(newState: TripState, location: UserLocation) {
+    private func update(_ state: NavState, location: UserLocation) {
         DispatchQueue.main.async {
-            self.state?.tripState = newState
+            self.state?.tripState = state.tripState
 
-            switch newState {
+            switch state.tripState {
             case let .navigating(
                 currentStepGeometryIndex: _,
                 userLocation: _,
@@ -421,15 +425,15 @@ extension FerrostarCore: LocationManagingDelegate {
     @MainActor
     public func locationManager(_: LocationProviding, didUpdateLocations locations: [UserLocation]) {
         guard let location = locations.last,
-              let state = state?.tripState,
-              let newState = navigationController?.updateUserLocation(location: location, state: state)
+              let navState = coreNavState,
+              let newState = navigationController?.updateUserLocation(location: location, state: navState)
         else {
             return
         }
 
         lastLocation = location
 
-        update(newState: newState, location: location)
+        update(newState, location: location)
     }
 
     public func locationManager(_: LocationProviding, didUpdateHeading _: Heading) {

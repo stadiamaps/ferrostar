@@ -845,6 +845,143 @@ public func FfiConverterTypeDistanceEntryAndExitCondition_lower(_ value: Distanc
 
 
 /**
+ * Requires that the user be at least this far (distance in meters)
+ * from the current route step.
+ *
+ * This results in *delayed* advance,
+ * but is more robust to spurious / unwanted step changes in scenarios including
+ * self-intersecting routes (sudden jump to the next step)
+ * and pauses at intersections (advancing too soon before the maneuver is complete).
+ *
+ * NOTE! This may be less robust to things like short steps, out and backs and U-turns,
+ * where this may eagerly exit a current step before the user has traversed it if the start
+ * the step within range of the end.
+ */
+public protocol DistanceFromStepProtocol : AnyObject {
+    
+}
+
+/**
+ * Requires that the user be at least this far (distance in meters)
+ * from the current route step.
+ *
+ * This results in *delayed* advance,
+ * but is more robust to spurious / unwanted step changes in scenarios including
+ * self-intersecting routes (sudden jump to the next step)
+ * and pauses at intersections (advancing too soon before the maneuver is complete).
+ *
+ * NOTE! This may be less robust to things like short steps, out and backs and U-turns,
+ * where this may eagerly exit a current step before the user has traversed it if the start
+ * the step within range of the end.
+ */
+open class DistanceFromStep:
+    DistanceFromStepProtocol {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_distancefromstep(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_distancefromstep(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDistanceFromStep: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = DistanceFromStep
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceFromStep {
+        return DistanceFromStep(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: DistanceFromStep) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceFromStep {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: DistanceFromStep, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceFromStep_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceFromStep {
+    return try FfiConverterTypeDistanceFromStep.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceFromStep_lower(_ value: DistanceFromStep) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeDistanceFromStep.lower(value)
+}
+
+
+
+
+/**
  * Automatically advances when the user's location is close enough to the end of the step
  */
 public protocol DistanceToEndOfStepProtocol : AnyObject {
@@ -7018,6 +7155,31 @@ fileprivate struct FfiConverterSequenceString: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterSequenceTypeStepAdvanceCondition: FfiConverterRustBuffer {
+    typealias SwiftType = [StepAdvanceCondition]
+
+    public static func write(_ value: [StepAdvanceCondition], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeStepAdvanceCondition.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [StepAdvanceCondition] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [StepAdvanceCondition]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeStepAdvanceCondition.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterSequenceTypeGeographicCoordinate: FfiConverterRustBuffer {
     typealias SwiftType = [GeographicCoordinate]
 
@@ -7521,6 +7683,51 @@ public func locationSimulationFromRoute(route: Route, resampleDistance: Double?,
     )
 })
 }
+public func stepAdvanceAnd(conditions: [StepAdvanceCondition]) -> StepAdvanceCondition {
+    return try!  FfiConverterTypeStepAdvanceCondition.lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_and(
+        FfiConverterSequenceTypeStepAdvanceCondition.lower(conditions),$0
+    )
+})
+}
+public func stepAdvanceDistanceEntryAndExit(minimumHorizontalAccuracy: UInt16, distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16) -> StepAdvanceCondition {
+    return try!  FfiConverterTypeStepAdvanceCondition.lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_distance_entry_and_exit(
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),
+        FfiConverterUInt16.lower(distanceToEndOfStep),
+        FfiConverterUInt16.lower(distanceAfterEndStep),$0
+    )
+})
+}
+public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition {
+    return try!  FfiConverterTypeStepAdvanceCondition.lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_distance_from_step(
+        FfiConverterUInt16.lower(distance),
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
+    )
+})
+}
+public func stepAdvanceDistanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition {
+    return try!  FfiConverterTypeStepAdvanceCondition.lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_distance_to_end_of_step(
+        FfiConverterUInt16.lower(distance),
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
+    )
+})
+}
+public func stepAdvanceManual() -> StepAdvanceCondition {
+    return try!  FfiConverterTypeStepAdvanceCondition.lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_manual($0
+    )
+})
+}
+public func stepAdvanceOr(conditions: [StepAdvanceCondition]) -> StepAdvanceCondition {
+    return try!  FfiConverterTypeStepAdvanceCondition.lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_or(
+        FfiConverterSequenceTypeStepAdvanceCondition.lower(conditions),$0
+    )
+})
+}
 
 private enum InitializationResult {
     case ok
@@ -7568,6 +7775,24 @@ private var initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_and() != 5654) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 14203) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 14431) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 38430) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 41226) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_or() != 53625) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 17041) {

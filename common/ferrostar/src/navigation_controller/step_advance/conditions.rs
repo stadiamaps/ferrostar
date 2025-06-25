@@ -90,6 +90,10 @@ impl StepAdvanceCondition for DistanceToEndOfStep {
 /// NOTE! This may be less robust to things like short steps, out and backs and U-turns,
 /// where this may eagerly exit a current step before the user has traversed it if the start
 /// the step within range of the end.
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct DistanceFromStep {
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
@@ -143,7 +147,7 @@ impl StepAdvanceCondition for DistanceFromStep {
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct OrAdvanceConditions {
-    conditions: Vec<Arc<dyn StepAdvanceCondition>>,
+    pub conditions: Vec<Arc<dyn StepAdvanceCondition>>,
 }
 
 impl StepAdvanceCondition for OrAdvanceConditions {
@@ -173,7 +177,7 @@ impl StepAdvanceCondition for OrAdvanceConditions {
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct AndAdvanceConditions {
-    conditions: Vec<Arc<dyn StepAdvanceCondition>>,
+    pub conditions: Vec<Arc<dyn StepAdvanceCondition>>,
 }
 
 impl StepAdvanceCondition for AndAdvanceConditions {
@@ -204,16 +208,16 @@ impl StepAdvanceCondition for AndAdvanceConditions {
 pub struct DistanceEntryAndExitCondition {
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
-    minimum_horizontal_accuracy: u16,
+    pub minimum_horizontal_accuracy: u16,
     /// Mark the arrival at the end of the step once the user is within this distance.
-    distance_to_end_of_step: u16,
+    pub distance_to_end_of_step: u16,
     /// Advance after the user has left the end of the step by
     /// this distance.
-    distance_after_end_step: u16,
+    pub distance_after_end_step: u16,
     /// This becomes true when the user is within range of the end of the step.
     /// Because this step condition is stateful, it must first upgrade this to true,
     /// and then check if the user exited the step by the threshold distance.
-    has_reached_end_of_current_step: bool,
+    pub has_reached_end_of_current_step: bool,
 }
 
 impl DistanceEntryAndExitCondition {

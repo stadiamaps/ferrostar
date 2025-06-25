@@ -1,4 +1,10 @@
-use crate::models::{RouteStep, UserLocation};
+use crate::{
+    models::{RouteStep, UserLocation},
+    navigation_controller::step_advance::conditions::{
+        AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceFromStep, DistanceToEndOfStep,
+        ManualStepAdvance, OrAdvanceConditions,
+    },
+};
 use std::sync::Arc;
 
 pub mod conditions;
@@ -29,4 +35,64 @@ pub trait StepAdvanceCondition: Sync + Send {
         current_step: RouteStep,
         next_step: Option<RouteStep>,
     ) -> StepAdvanceResult;
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_manual() -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(ManualStepAdvance)
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_distance_to_end_of_step(
+    distance: u16,
+    minimum_horizontal_accuracy: u16,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceToEndOfStep {
+        distance,
+        minimum_horizontal_accuracy,
+    })
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_distance_from_step(
+    distance: u16,
+    minimum_horizontal_accuracy: u16,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceFromStep {
+        distance,
+        minimum_horizontal_accuracy,
+    })
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_or(
+    conditions: Vec<Arc<dyn StepAdvanceCondition>>,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(OrAdvanceConditions { conditions })
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_and(
+    conditions: Vec<Arc<dyn StepAdvanceCondition>>,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(AndAdvanceConditions { conditions })
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_distance_entry_and_exit(
+    minimum_horizontal_accuracy: u16,
+    distance_to_end_of_step: u16,
+    distance_after_end_step: u16,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceEntryAndExitCondition::new(
+        minimum_horizontal_accuracy,
+        distance_to_end_of_step,
+        distance_after_end_step,
+    ))
 }
