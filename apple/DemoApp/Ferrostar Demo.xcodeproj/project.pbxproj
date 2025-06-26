@@ -12,7 +12,6 @@
 		1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5582B2E6E98006B131D /* DemoApp.swift */; };
 		1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */; };
 		1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679C2B2F6F85008BFF1F /* APIKeys.swift */; };
-		1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */; };
 		167FD69B2B54B55A00CB4445 /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 167FD69A2B54B55A00CB4445 /* FerrostarCore */; };
 		167FD69D2B54B55A00CB4445 /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 167FD69C2B54B55A00CB4445 /* FerrostarMapLibreUI */; };
 		168ECA7A2B2E8C42007B11DE /* API-Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 168ECA792B2E8C42007B11DE /* API-Keys.plist */; };
@@ -39,7 +38,6 @@
 		1611A5582B2E6E98006B131D /* DemoApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
 		1663679C2B2F6F85008BFF1F /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
-		1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationData.swift; sourceTree = "<group>"; };
 		168ECA792B2E8C42007B11DE /* API-Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "API-Keys.plist"; sourceTree = "<group>"; };
 		168ECA7B2B2F6A1E007B11DE /* Ferrostar Demo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Ferrostar Demo-Info.plist"; sourceTree = "<group>"; };
 		E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationDelegate.swift; sourceTree = "<group>"; };
@@ -112,7 +110,6 @@
 			isa = PBXGroup;
 			children = (
 				1663679C2B2F6F85008BFF1F /* APIKeys.swift */,
-				1663679E2B2F8FB3008BFF1F /* MockLocationData.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -227,7 +224,6 @@
 				1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */,
 				1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */,
 				FE16E4A62E0CAB0A009D7B83 /* DemoModel.swift in Sources */,
-				1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */,
 				1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */,
 				FE0AFFBC2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift in Sources */,
 				E90D97912B8AF507005E43F8 /* NavigationDelegate.swift in Sources */,

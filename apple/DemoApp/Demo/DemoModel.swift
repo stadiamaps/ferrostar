@@ -57,8 +57,12 @@ extension DemoModel {
             simulated: AppDefaults.initialLocation.simulatedLocationProvider,
             type: .simulated
         ))
-        origin = (locations.first != nil) ? locations.first!.coordinate : kCLLocationCoordinate2DInvalid
-        destination = AppDefaults.initialLocation.coordinate
+
+        origin = (locationProvider.lastLocation != nil) ? locationProvider.lastLocation!.clLocation
+            .coordinate : AppDefaults.initialLocation.coordinate
+
+        // "Cupertino HS"
+        destination = CLLocationCoordinate2D(latitude: 37.31910, longitude: -122.01018)
     }
 }
 
@@ -157,6 +161,8 @@ let demoModel = DemoModel()
 
     func loadRoute(_ destination: CLLocationCoordinate2D) async {
         await wrap {
+            guard let lastCoordinate else { throw DemoError.noOrigin }
+            origin = lastCoordinate
             let routes = try await routes(from: origin, to: destination)
             guard !routes.isEmpty else { throw DemoError.noRoutesLoaded }
             return .routes(routes)
