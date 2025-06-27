@@ -16,6 +16,7 @@ actor AudioSessionManager {
 
         do {
             try audioSession.setCategory(.playback, options: [.duckOthers, .interruptSpokenAudioAndMixWithOthers])
+            try audioSession.setMode(.voicePrompt)
             try audioSession.setActive(true)
             hasAudioFocus = true
         } catch {
