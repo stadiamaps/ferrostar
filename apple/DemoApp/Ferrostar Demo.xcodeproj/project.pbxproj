@@ -25,6 +25,7 @@
 		E9505FCA2AD449B30016BF0A /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FC92AD449B30016BF0A /* FerrostarCore */; };
 		E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */; };
 		FE0AFFBC2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */; };
+		FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		E9DD18E42B18EE7A00CAF29A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E9DD18E52B18F4BD00CAF29A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayNavigationView.swift; sourceTree = "<group>"; };
+		FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchableLocationProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +76,7 @@
 				1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */,
 				FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */,
 				16C8F1722CEEBE530014DE3D /* AppEnvironment.swift */,
+				FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */,
 				E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */,
 				1611A5562B2E6E98006B131D /* DemoNavigationView.swift */,
 				1611A5582B2E6E98006B131D /* DemoApp.swift */,
@@ -211,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1611A55B2B2E6E98006B131D /* DemoNavigationView.swift in Sources */,
+				FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */,
 				1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */,
 				1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */,
 				1663679F2B2F8FB3008BFF1F /* MockLocationData.swift in Sources */,
