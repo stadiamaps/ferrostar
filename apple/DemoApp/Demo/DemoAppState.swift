@@ -2,7 +2,7 @@ import CoreLocation
 import FerrostarCoreFFI
 import Foundation
 
-enum DemoNavigationState: CustomStringConvertible {
+enum DemoAppState: CustomStringConvertible {
     case idle
     case destination(CLLocationCoordinate2D)
     case routes([Route])
@@ -40,8 +40,8 @@ enum DemoNavigationState: CustomStringConvertible {
     }
 }
 
-extension DemoNavigationState {
-    func setDestination(_ destination: CLLocationCoordinate2D) throws -> DemoNavigationState {
+extension DemoAppState {
+    func setDestination(_ destination: CLLocationCoordinate2D) throws -> DemoAppState {
         switch self {
         case .idle:
             guard destination != kCLLocationCoordinate2DInvalid else { throw DemoError.invalidDestination }

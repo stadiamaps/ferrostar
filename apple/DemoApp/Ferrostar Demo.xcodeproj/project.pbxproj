@@ -24,7 +24,7 @@
 		E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */; };
 		FE0AFFBC2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */; };
 		FE16E4A12E0CAA61009D7B83 /* DemoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A02E0CAA61009D7B83 /* DemoError.swift */; };
-		FE16E4A32E0CAA73009D7B83 /* DemoNavigationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A22E0CAA73009D7B83 /* DemoNavigationState.swift */; };
+		FE16E4A32E0CAA73009D7B83 /* DemoAppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */; };
 		FE16E4A62E0CAB0A009D7B83 /* DemoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */; };
 		FE16E4A82E0CAC34009D7B83 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */; };
 		FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */; };
@@ -46,7 +46,7 @@
 		E9DD18E52B18F4BD00CAF29A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayNavigationView.swift; sourceTree = "<group>"; };
 		FE16E4A02E0CAA61009D7B83 /* DemoError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoError.swift; sourceTree = "<group>"; };
-		FE16E4A22E0CAA73009D7B83 /* DemoNavigationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoNavigationState.swift; sourceTree = "<group>"; };
+		FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAppState.swift; sourceTree = "<group>"; };
 		FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoModel.swift; sourceTree = "<group>"; };
 		FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchableLocationProvider.swift; sourceTree = "<group>"; };
@@ -84,7 +84,7 @@
 				E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */,
 				1611A5562B2E6E98006B131D /* DemoNavigationView.swift */,
 				FE16E4A02E0CAA61009D7B83 /* DemoError.swift */,
-				FE16E4A22E0CAA73009D7B83 /* DemoNavigationState.swift */,
+				FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */,
 				1611A5582B2E6E98006B131D /* DemoApp.swift */,
 				FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */,
 			);
@@ -227,7 +227,7 @@
 				1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */,
 				FE0AFFBC2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift in Sources */,
 				E90D97912B8AF507005E43F8 /* NavigationDelegate.swift in Sources */,
-				FE16E4A32E0CAA73009D7B83 /* DemoNavigationState.swift in Sources */,
+				FE16E4A32E0CAA73009D7B83 /* DemoAppState.swift in Sources */,
 				FE16E4A82E0CAC34009D7B83 /* AppDefaults.swift in Sources */,
 				FE16E4A12E0CAA61009D7B83 /* DemoError.swift in Sources */,
 			);

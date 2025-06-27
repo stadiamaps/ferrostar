@@ -27,13 +27,13 @@ private extension DemoModel {
             chooseRoute(route)
         } catch {
             errorMessage = error.localizedDescription
-            navigationState = .idle
+            appState = .idle
         }
     }
 }
 
-private extension DemoNavigationState {
-    var showNavigationStateButton: Bool {
+private extension DemoAppState {
+    var showStateButton: Bool {
         switch self {
         case .idle, .destination(_), .routes(_), .selectedRoute:
             true
@@ -98,9 +98,9 @@ struct DemoNavigationView: View {
                             .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
 
                         if locationServicesEnabled {
-                            if model.navigationState.showNavigationStateButton {
+                            if model.appState.showStateButton {
                                 NavigationUIButton {
-                                    switch model.navigationState {
+                                    switch model.appState {
                                     case .idle:
                                         model.chooseDestination()
                                     case let .destination(coordinate):
@@ -118,7 +118,7 @@ struct DemoNavigationView: View {
                                         break
                                     }
                                 } label: {
-                                    Text(model.navigationState.buttonText)
+                                    Text(model.appState.buttonText)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.5)
                                         .font(.body.bold())

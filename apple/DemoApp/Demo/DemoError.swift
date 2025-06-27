@@ -6,6 +6,6 @@ enum DemoError: Error {
     case invalidDestination
     case noRoutesLoaded
     case noFirstRoute
-    case invalidState(DemoNavigationState)
+    case invalidState(DemoAppState)
     case invalidCPRouteChoice
 }

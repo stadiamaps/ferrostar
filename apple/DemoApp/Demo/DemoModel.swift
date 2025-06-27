@@ -70,7 +70,7 @@ let demoModel = DemoModel()
 
 @Observable final class DemoModel {
     var errorMessage: String?
-    var navigationState: DemoNavigationState = .idle
+    var appState: DemoAppState = .idle
     let locationProvider: SwitchableLocationProvider
     let core: FerrostarCore
     var origin: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
@@ -120,42 +120,42 @@ let demoModel = DemoModel()
         )
     }
 
-    private func startNavigation(on route: Route) throws -> DemoNavigationState {
+    private func startNavigation(on route: Route) throws -> DemoAppState {
         try locationProvider.use(route: route)
         try core.startNavigation(route: route)
         camera = .automotiveNavigation()
         return .navigating
     }
 
-    private func stopNavigation() -> DemoNavigationState {
+    private func stopNavigation() -> DemoAppState {
         core.stopNavigation()
         camera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
         return .idle
     }
 
-    private func wrap(wrap: () throws -> DemoNavigationState) {
+    private func wrap(wrap: () throws -> DemoAppState) {
         do {
             errorMessage = nil
-            navigationState = try wrap()
+            appState = try wrap()
         } catch {
             errorMessage = error.localizedDescription
-            navigationState = .idle
+            appState = .idle
         }
     }
 
-    private func wrap(wrap: () async throws -> DemoNavigationState) async {
+    private func wrap(wrap: () async throws -> DemoAppState) async {
         do {
             errorMessage = nil
-            navigationState = try await wrap()
+            appState = try await wrap()
         } catch {
             errorMessage = error.localizedDescription
-            navigationState = .idle
+            appState = .idle
         }
     }
 
     func chooseDestination() {
         wrap {
-            try navigationState.setDestination(destination)
+            try appState.setDestination(destination)
         }
     }
 
