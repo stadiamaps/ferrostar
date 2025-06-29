@@ -282,13 +282,6 @@ pub struct NavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
-pub struct InitialNavigationState {
-    /// The trip state at the start of the navigation session.
-    pub trip_state: TripState,
-    /// The route that the user is navigating.
-    pub route: Route,
-}
-
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event.
     pub timestamp: i64,
