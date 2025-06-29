@@ -1,13 +1,5 @@
 ▿ 1 element
-  ▿ Route
-    ▿ bbox: BoundingBox
-      ▿ ne: GeographicCoordinate
-        - lat: 60.535008
-        - lng: -149.543469
-      ▿ sw: GeographicCoordinate
-        - lat: 60.534716
-        - lng: -149.548581
-    - distance: 284.0
+  ▿ Route [distance 284.0 waypoints: Waypoint: GeographicCoordinate(lat: 60.534715, lng: -149.543469) kind: break,Waypoint: GeographicCoordinate(lat: 60.534991, lng: -149.548581) kind: break steps: RouteStep: Drive west on AK 1/Seward Highway.,RouteStep: You have arrived at your destination.]
     ▿ geometry: 10 elements
       ▿ GeographicCoordinate
         - lat: 60.534716
@@ -39,12 +31,27 @@
       ▿ GeographicCoordinate
         - lat: 60.534991
         - lng: -149.548581
+    ▿ bbox: BoundingBox
+      ▿ ne: GeographicCoordinate
+        - lat: 60.535008
+        - lng: -149.543469
+      ▿ sw: GeographicCoordinate
+        - lat: 60.534716
+        - lng: -149.548581
+    - distance: 284.0
+    ▿ waypoints: 2 elements
+      ▿ Waypoint: GeographicCoordinate(lat: 60.534715, lng: -149.543469) kind: break
+        ▿ coordinate: GeographicCoordinate
+          - lat: 60.534715
+          - lng: -149.543469
+        - kind: break
+      ▿ Waypoint: GeographicCoordinate(lat: 60.534991, lng: -149.548581) kind: break
+        ▿ coordinate: GeographicCoordinate
+          - lat: 60.534991
+          - lng: -149.548581
+        - kind: break
     ▿ steps: 2 elements
-      ▿ RouteStep
-        - annotations: Optional<Array<String>>.none
-        - distance: 284.0
-        - duration: 11.488
-        - exits: 0 elements
+      ▿ RouteStep: Drive west on AK 1/Seward Highway.
         ▿ geometry: 10 elements
           ▿ GeographicCoordinate
             - lat: 60.534716
@@ -76,17 +83,17 @@
           ▿ GeographicCoordinate
             - lat: 60.534991
             - lng: -149.548581
-        - incidents: 0 elements
-        - instruction: "Drive west on AK 1/Seward Highway."
+        - distance: 284.0
+        - duration: 11.488
         ▿ roadName: Optional<String>
           - some: "Seward Highway"
-        - spokenInstructions: 0 elements
-        - visualInstructions: 0 elements
-      ▿ RouteStep
-        - annotations: Optional<Array<String>>.none
-        - distance: 0.0
-        - duration: 0.0
         - exits: 0 elements
+        - instruction: "Drive west on AK 1/Seward Highway."
+        - visualInstructions: 0 elements
+        - spokenInstructions: 0 elements
+        - annotations: Optional<Array<String>>.none
+        - incidents: 0 elements
+      ▿ RouteStep: You have arrived at your destination.
         ▿ geometry: 2 elements
           ▿ GeographicCoordinate
             - lat: 60.534991
@@ -94,20 +101,13 @@
           ▿ GeographicCoordinate
             - lat: 60.534991
             - lng: -149.548581
-        - incidents: 0 elements
-        - instruction: "You have arrived at your destination."
+        - distance: 0.0
+        - duration: 0.0
         ▿ roadName: Optional<String>
           - some: "Seward Highway"
-        - spokenInstructions: 0 elements
+        - exits: 0 elements
+        - instruction: "You have arrived at your destination."
         - visualInstructions: 0 elements
-    ▿ waypoints: 2 elements
-      ▿ Waypoint
-        ▿ coordinate: GeographicCoordinate
-          - lat: 60.534715
-          - lng: -149.543469
-        - kind: WaypointKind.break
-      ▿ Waypoint
-        ▿ coordinate: GeographicCoordinate
-          - lat: 60.534991
-          - lng: -149.548581
-        - kind: WaypointKind.break
+        - spokenInstructions: 0 elements
+        - annotations: Optional<Array<String>>.none
+        - incidents: 0 elements
