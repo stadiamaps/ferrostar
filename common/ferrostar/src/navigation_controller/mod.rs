@@ -465,7 +465,7 @@ impl Navigator for NavigationController {
             } => {
                 let trip_state = Self::completed_trip_state(*user_location, summary.clone());
                 NavigatorState::from(trip_state)
-            },
+            }
         }
     }
 }
@@ -479,27 +479,40 @@ pub struct JsNavigationController(NavigationController);
 #[wasm_bindgen(js_class = NavigationController)]
 impl JsNavigationController {
     #[wasm_bindgen(constructor)]
-    pub fn new(route: JsValue, config: JsValue) -> Result<JsNavigationController, JsValue> {
+    pub fn new(
+        route: JsValue,
+        config: JsValue,
+        should_record: JsValue,
+    ) -> Result<JsNavigationController, JsValue> {
         let route: Route = serde_wasm_bindgen::from_value(route)?;
         let config: NavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
+        let should_record: bool = serde_wasm_bindgen::from_value(should_record)?;
 
-        Ok(JsNavigationController(NavigationController::new(
-            route, config,
-        )))
+        // TODO: Both conditions return the same thing
+        if should_record {
+            Ok(JsNavigationController(NavigationController::new(
+                route, config,
+            )))
+        } else {
+            Ok(JsNavigationController(NavigationController::new(
+                route, config,
+            )))
+        }
     }
 
+    // TODO: These fn's still return `TripState` instead of `NavigatorState`
     #[wasm_bindgen(js_name = getInitialState)]
     pub fn get_initial_state(&self, location: JsValue) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
 
-        serde_wasm_bindgen::to_value(&self.0.get_initial_state(location))
+        serde_wasm_bindgen::to_value(&self.0.get_initial_state(location).trip_state)
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
     pub fn advance_to_next_step(&self, state: JsValue) -> Result<JsValue, JsValue> {
         let state: TripState = serde_wasm_bindgen::from_value(state)?;
 
-        serde_wasm_bindgen::to_value(&self.0.advance_to_next_step(&state))
+        serde_wasm_bindgen::to_value(&self.0.advance_to_next_step(&state).trip_state)
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
@@ -512,7 +525,7 @@ impl JsNavigationController {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
         let state: TripState = serde_wasm_bindgen::from_value(state)?;
 
-        serde_wasm_bindgen::to_value(&self.0.update_user_location(location, &state))
+        serde_wasm_bindgen::to_value(&self.0.update_user_location(location, &state).trip_state)
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 }
@@ -555,15 +568,18 @@ mod tests {
                 },
                 snapped_location_course_filtering: CourseFiltering::Raw,
             },
-            false
+            false,
         );
 
-        let mut state = controller.get_initial_state(simulation_state.current_location).trip_state;
+        let mut state = controller
+            .get_initial_state(simulation_state.current_location)
+            .trip_state;
         let mut states = vec![state.clone()];
         loop {
             let new_simulation_state = advance_location_simulation(&simulation_state);
-            let new_state =
-                controller.update_user_location(new_simulation_state.current_location, &state).trip_state;
+            let new_state = controller
+                .update_user_location(new_simulation_state.current_location, &state)
+                .trip_state;
 
             match new_state {
                 TripState::Idle { .. } => {}
