@@ -53,7 +53,10 @@ fn same_location_results_in_identical_state() {
     );
 
     let initial_state = controller.get_initial_state(initial_user_location);
-    assert!(matches!(initial_state.trip_state, TripState::Navigating { .. }));
+    assert!(matches!(
+        initial_state.trip_state,
+        TripState::Navigating { .. }
+    ));
 
     // Nothing should happen if given the exact same user location update
     assert_eq!(
@@ -129,7 +132,9 @@ fn simple_route_state_machine_manual_advance() {
 
     // There are only two steps, so advancing to the next step should put us in the "arrived" state
     assert!(matches!(
-        controller.advance_to_next_step(&terminal_state.trip_state).trip_state,
+        controller
+            .advance_to_next_step(&terminal_state.trip_state)
+            .trip_state,
         TripState::Complete { .. }
     ));
 }
@@ -186,7 +191,9 @@ fn simple_route_state_machine_advances_with_location_change() {
         remaining_waypoints,
         progress,
         ..
-    } = controller.update_user_location(user_location_end_of_first_step, &initial_state.trip_state).trip_state
+    } = controller
+        .update_user_location(user_location_end_of_first_step, &initial_state.trip_state)
+        .trip_state
     else {
         panic!("Expected state to be navigating");
     };
