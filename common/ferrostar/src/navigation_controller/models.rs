@@ -46,18 +46,6 @@ impl NavState {
         }
     }
 
-    /// Pass through for a completed trip. Calling the apply_completed function once
-    /// is still required to complete the trip summary.
-    pub fn completed(user_location: UserLocation, summary: TripSummary) -> Self {
-        Self {
-            trip_state: TripState::Complete {
-                user_location,
-                summary,
-            },
-            step_advance_condition: Arc::new(ManualStepAdvance {}), // No op condition.
-        }
-    }
-
     /// Create a new NavState representing a completed trip.
     /// This function will create a ended trip state.
     pub fn apply_complete(user_location: UserLocation, last_summary: TripSummary) -> Self {

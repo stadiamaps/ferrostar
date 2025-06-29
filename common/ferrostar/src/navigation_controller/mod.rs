@@ -168,7 +168,7 @@ impl Navigator for NavigationController {
 
                         // Create a new trip state with the updated current_step
                         // and remaining_steps
-                        let trip_state = self.create_new_trip_state(
+                        let trip_state = self.create_intermediate_trip_state(
                             &state.trip_state(),
                             &user_location,
                             &current_step,
@@ -179,7 +179,7 @@ impl Navigator for NavigationController {
                         NavState::new(trip_state, state.step_advance_condition())
                     }
                     StepAdvanceStatus::EndOfRoute => {
-                        NavState::completed(user_location, summary.clone())
+                        NavState::apply_complete(user_location, summary.clone())
                     }
                 }
             }
@@ -231,7 +231,7 @@ impl Navigator for NavigationController {
                 };
 
                 let intermediate_nav_state = NavState::new(
-                    self.create_new_trip_state(
+                    self.create_intermediate_trip_state(
                         &state.trip_state(),
                         &location,
                         current_step,
@@ -256,8 +256,19 @@ impl Navigator for NavigationController {
 
 /// Shared functionality for the navigation controller that is not exported by uniFFI.
 impl NavigationController {
+    /// Create an intermediate trip state. This can be returned as the new state or passed
+    /// to the advance_to_next_step method.
     ///
-    fn create_new_trip_state(
+    /// Parameters:
+    /// - `trip_state`: The existing/last trip state.
+    /// - `location`: The user's current location.
+    /// - `current_step`: The current route step.
+    /// - `remaining_steps`: The remaining route steps.
+    /// - `remaining_waypoints`: The remaining waypoints.
+    ///
+    /// Returns:
+    /// - `TripState`: The intermediate trip state.
+    fn create_intermediate_trip_state(
         &self,
         trip_state: &TripState,
         location: &UserLocation,
@@ -324,6 +335,7 @@ impl NavigationController {
                     annotation_json,
                 }
             }
+            // Pass through for non-navigating states.
             _ => trip_state.clone(),
         }
     }
