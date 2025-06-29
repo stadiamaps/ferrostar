@@ -153,6 +153,8 @@ pub enum TripState {
 }
 
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub struct NavigatorState {
     pub trip_state: TripState,
     pub recording_event_data: Option<NavigationRecordingEventData>,
@@ -314,6 +316,8 @@ pub struct NavigationRecordingEvent {
 }
 
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 pub enum NavigationRecordingEventData {
     LocationUpdate {
         /// Updated user location.
