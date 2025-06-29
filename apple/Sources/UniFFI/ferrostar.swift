@@ -2450,7 +2450,7 @@ public func FfiConverterTypeRouteResponseParser_lower(_ value: RouteResponsePars
  * When implementing custom step advance logic, this trait allows you to define
  * whether the condition should advance to the next condition, the next step or not.
  */
-public protocol StepAdvanceCondition : AnyObject {
+public protocol StepAdvanceConditionProtocol : AnyObject {
     
     /**
      * This callback method is used by a step advance condition to receive step updates.
@@ -2465,8 +2465,8 @@ public protocol StepAdvanceCondition : AnyObject {
  * When implementing custom step advance logic, this trait allows you to define
  * whether the condition should advance to the next condition, the next step or not.
  */
-open class StepAdvanceConditionImpl:
-    StepAdvanceCondition {
+open class StepAdvanceCondition:
+    StepAdvanceConditionProtocol {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
     /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
@@ -2533,72 +2533,20 @@ open func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, 
 
 }
 
-
-// Put the implementation in a struct so we don't pollute the top-level namespace
-fileprivate struct UniffiCallbackInterfaceStepAdvanceCondition {
-
-    // Create the VTable using a series of closures.
-    // Swift automatically converts these into C callback functions.
-    static var vtable: UniffiVTableCallbackInterfaceStepAdvanceCondition = UniffiVTableCallbackInterfaceStepAdvanceCondition(
-        shouldAdvanceStep: { (
-            uniffiHandle: UInt64,
-            userLocation: RustBuffer,
-            currentStep: RustBuffer,
-            nextStep: RustBuffer,
-            uniffiOutReturn: UnsafeMutablePointer<RustBuffer>,
-            uniffiCallStatus: UnsafeMutablePointer<RustCallStatus>
-        ) in
-            let makeCall = {
-                () throws -> StepAdvanceResult in
-                guard let uniffiObj = try? FfiConverterTypeStepAdvanceCondition.handleMap.get(handle: uniffiHandle) else {
-                    throw UniffiInternalError.unexpectedStaleHandle
-                }
-                return uniffiObj.shouldAdvanceStep(
-                     userLocation: try FfiConverterTypeUserLocation.lift(userLocation),
-                     currentStep: try FfiConverterTypeRouteStep.lift(currentStep),
-                     nextStep: try FfiConverterOptionTypeRouteStep.lift(nextStep)
-                )
-            }
-
-            
-            let writeReturn = { uniffiOutReturn.pointee = FfiConverterTypeStepAdvanceResult.lower($0) }
-            uniffiTraitInterfaceCall(
-                callStatus: uniffiCallStatus,
-                makeCall: makeCall,
-                writeReturn: writeReturn
-            )
-        },
-        uniffiFree: { (uniffiHandle: UInt64) -> () in
-            let result = try? FfiConverterTypeStepAdvanceCondition.handleMap.remove(handle: uniffiHandle)
-            if result == nil {
-                print("Uniffi callback interface StepAdvanceCondition: handle missing in uniffiFree")
-            }
-        }
-    )
-}
-
-private func uniffiCallbackInitStepAdvanceCondition() {
-    uniffi_ferrostar_fn_init_callback_vtable_stepadvancecondition(&UniffiCallbackInterfaceStepAdvanceCondition.vtable)
-}
-
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
 public struct FfiConverterTypeStepAdvanceCondition: FfiConverter {
-    fileprivate static var handleMap = UniffiHandleMap<StepAdvanceCondition>()
 
     typealias FfiType = UnsafeMutableRawPointer
     typealias SwiftType = StepAdvanceCondition
 
     public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> StepAdvanceCondition {
-        return StepAdvanceConditionImpl(unsafeFromRawPointer: pointer)
+        return StepAdvanceCondition(unsafeFromRawPointer: pointer)
     }
 
     public static func lower(_ value: StepAdvanceCondition) -> UnsafeMutableRawPointer {
-        guard let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: handleMap.insert(obj: value))) else {
-            fatalError("Cast to UnsafeMutableRawPointer failed")
-        }
-        return ptr
+        return value.uniffiClonePointer()
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> StepAdvanceCondition {
@@ -7777,22 +7725,22 @@ private var initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_and() != 5654) {
+    if (uniffi_ferrostar_checksum_func_step_advance_and() != 12026) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 14203) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 30627) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 14431) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 56337) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 38430) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 23918) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 41226) {
+    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 32116) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_or() != 53625) {
+    if (uniffi_ferrostar_checksum_func_step_advance_or() != 48609) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 17041) {
@@ -7835,7 +7783,6 @@ private var initializationResult: InitializationResult = {
     uniffiCallbackInitRouteDeviationDetector()
     uniffiCallbackInitRouteRequestGenerator()
     uniffiCallbackInitRouteResponseParser()
-    uniffiCallbackInitStepAdvanceCondition()
     return InitializationResult.ok
 }()
 

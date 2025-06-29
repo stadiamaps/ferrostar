@@ -24,7 +24,7 @@ pub struct StepAdvanceResult {
 
 /// When implementing custom step advance logic, this trait allows you to define
 /// whether the condition should advance to the next condition, the next step or not.
-#[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait StepAdvanceCondition: Sync + Send {
     /// This callback method is used by a step advance condition to receive step updates.
     /// The step advance condition can choose based on its outcome and internal state
