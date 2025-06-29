@@ -152,6 +152,21 @@ pub enum TripState {
     },
 }
 
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+pub struct NavigatorState {
+    pub trip_state: TripState,
+    pub recording_event_data: Option<NavigationRecordingEventData>,
+}
+
+impl From<TripState> for NavigatorState {
+    fn from(trip_state: TripState) -> Self {
+        Self {
+            trip_state,
+            recording_event_data: None,
+        }
+    }
+}
+
 #[allow(clippy::large_enum_variant)]
 pub enum StepAdvanceStatus {
     /// Navigation has advanced, and the information on the next step is embedded.
@@ -298,6 +313,7 @@ pub struct NavigationRecordingEvent {
     pub event_data: NavigationRecordingEventData,
 }
 
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 pub enum NavigationRecordingEventData {
     LocationUpdate {
         /// Updated user location.
