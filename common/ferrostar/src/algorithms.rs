@@ -241,7 +241,6 @@ pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
     match remaining_steps.get(1) {
         Some(new_step) => Advanced {
             step: new_step.clone(),
-            linestring: new_step.get_linestring(),
         },
         None => EndOfRoute,
     }

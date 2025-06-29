@@ -201,7 +201,8 @@ impl StepAdvanceCondition for AndAdvanceConditions {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+// TODO: Add copy back after debugging (don't merge!)
+#[derive(Debug, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
@@ -238,9 +239,9 @@ impl DistanceEntryAndExitCondition {
 impl Default for DistanceEntryAndExitCondition {
     fn default() -> Self {
         Self {
-            minimum_horizontal_accuracy: 0,
-            distance_to_end_of_step: 10,
-            distance_after_end_step: 5,
+            minimum_horizontal_accuracy: 25,
+            distance_to_end_of_step: 20,
+            distance_after_end_step: 10,
             has_reached_end_of_current_step: false,
         }
     }
@@ -274,11 +275,16 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                     )),
                 }
             } else {
-                // The condition was not advanced. So we return the last iteration
+                // The condition was not advanced. So we return a fresh iteration
                 // where has_reached_end_of_current_step is still true to re-trigger this part 2 logic.
                 StepAdvanceResult {
                     should_advance: false,
-                    next_iteration: Arc::new(self.clone()),
+                    next_iteration: Arc::new(DistanceEntryAndExitCondition {
+                        minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+                        distance_to_end_of_step: self.distance_to_end_of_step,
+                        distance_after_end_step: self.distance_after_end_step,
+                        has_reached_end_of_current_step: true,
+                    }),
                 }
             }
         } else {
@@ -287,11 +293,15 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 distance: self.distance_to_end_of_step,
             };
 
-            let mut next_iteration = self.clone();
             // Use the distance to end to determine if has_reached_end_of_current_step
-            next_iteration.has_reached_end_of_current_step = distance_to_end
-                .should_advance_step(user_location, current_step, next_step)
-                .should_advance;
+            let next_iteration = DistanceEntryAndExitCondition {
+                minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+                distance_to_end_of_step: self.distance_to_end_of_step,
+                distance_after_end_step: self.distance_after_end_step,
+                has_reached_end_of_current_step: distance_to_end
+                    .should_advance_step(user_location, current_step, next_step)
+                    .should_advance,
+            };
 
             StepAdvanceResult {
                 should_advance: false,

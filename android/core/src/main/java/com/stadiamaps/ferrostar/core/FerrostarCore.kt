@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
+import uniffi.ferrostar.NavState
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.Navigator
 import uniffi.ferrostar.Route
@@ -134,6 +135,7 @@ class FerrostarCore(
   private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
   private var _navigationController: Navigator? = null
+  private val _navState: MutableStateFlow<NavState?> = MutableStateFlow(null)
   private var _state: MutableStateFlow<NavigationState> = MutableStateFlow(NavigationState())
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
@@ -257,9 +259,9 @@ class FerrostarCore(
         locationProvider.lastLocation
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
-    val initialTripState = controller.getInitialState(startingLocation)
-    val newState = NavigationState(tripState = initialTripState, route.geometry, false)
-    handleStateUpdate(initialTripState, startingLocation)
+    val initialNavState = controller.getInitialState(startingLocation)
+    val newState = NavigationState(tripState = initialNavState.tripState, route.geometry, false)
+    handleStateUpdate(initialNavState.tripState, startingLocation)
 
     _navigationController = controller
     _state.value = newState

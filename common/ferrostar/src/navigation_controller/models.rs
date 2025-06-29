@@ -8,7 +8,6 @@ use crate::models::{
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use chrono::{DateTime, Utc};
-use geo::LineString;
 #[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -43,6 +42,18 @@ impl NavState {
     pub fn idle(user_location: Option<UserLocation>) -> Self {
         Self {
             trip_state: TripState::Idle { user_location },
+            step_advance_condition: Arc::new(ManualStepAdvance {}), // No op condition.
+        }
+    }
+
+    /// Pass through for a completed trip. Calling the apply_completed function once
+    /// is still required to complete the trip summary.
+    pub fn completed(user_location: UserLocation, summary: TripSummary) -> Self {
+        Self {
+            trip_state: TripState::Complete {
+                user_location,
+                summary,
+            },
             step_advance_condition: Arc::new(ManualStepAdvance {}), // No op condition.
         }
     }
@@ -214,10 +225,7 @@ pub enum TripState {
 #[allow(clippy::large_enum_variant)]
 pub enum StepAdvanceStatus {
     /// Navigation has advanced, and the information on the next step is embedded.
-    Advanced {
-        step: RouteStep,
-        linestring: LineString,
-    },
+    Advanced { step: RouteStep },
     /// Navigation has reached the end of the route.
     EndOfRoute,
 }

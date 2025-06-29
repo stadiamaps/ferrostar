@@ -25,7 +25,8 @@ extension FerrostarCore {
             stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
                 minimumHorizontalAccuracy: 32,
                 distanceToEndOfStep: 10,
-                distanceAfterEndStep: 10
+                distanceAfterEndStep: 5 // Note this condition should be very close to the step end as it'll hold the
+                // puck at the step until met.
             ),
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 10, minimumHorizontalAccuracy: 32),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),

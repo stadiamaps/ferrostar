@@ -12,7 +12,7 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
-    models::{Route, UserLocation},
+    models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
 };
 use chrono::Utc;
@@ -152,70 +152,39 @@ impl Navigator for NavigationController {
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
     fn advance_to_next_step(&self, state: &NavState) -> NavState {
         match state.trip_state() {
-            TripState::Idle { user_location } => NavState::idle(user_location),
             TripState::Navigating {
-                current_step_geometry_index,
                 user_location,
-                snapped_user_location,
                 ref remaining_steps,
                 ref remaining_waypoints,
-                deviation,
                 summary,
                 ..
             } => {
-                // FIXME: This logic is mostly duplicated below
                 let update = advance_step(remaining_steps);
                 match update {
-                    StepAdvanceStatus::Advanced {
-                        step: current_step,
-                        linestring,
-                    } => {
+                    StepAdvanceStatus::Advanced { step: current_step } => {
                         // Apply the updates
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
 
-                        let progress = calculate_trip_progress(
-                            &snapped_user_location.into(),
-                            &linestring,
+                        // Create a new trip state with the updated current_step
+                        // and remaining_steps
+                        let trip_state = self.create_new_trip_state(
+                            &state.trip_state(),
+                            &user_location,
+                            &current_step,
                             &remaining_steps,
+                            &remaining_waypoints,
                         );
-
-                        let visual_instruction = current_step
-                            .get_active_visual_instruction(progress.distance_to_next_maneuver)
-                            .cloned();
-                        let spoken_instruction = current_step
-                            .get_current_spoken_instruction(progress.distance_to_next_maneuver)
-                            .cloned();
-                        let annotation_json = current_step_geometry_index
-                            .and_then(|index| current_step.get_annotation_at_current_index(index));
-
-                        let trip_state = TripState::Navigating {
-                            current_step_geometry_index: current_step_geometry_index,
-                            user_location: user_location,
-                            snapped_user_location: snapped_user_location,
-                            remaining_steps,
-                            remaining_waypoints: remaining_waypoints.clone(),
-                            progress,
-                            summary: summary.clone(),
-                            // NOTE: We *can't* run deviation calculations in this method,
-                            // as it requires a non-snapped user location.
-                            deviation,
-                            visual_instruction,
-                            spoken_instruction,
-                            annotation_json,
-                        };
 
                         NavState::new(trip_state, state.step_advance_condition())
                     }
                     StepAdvanceStatus::EndOfRoute => {
-                        NavState::apply_complete(user_location, summary.clone())
+                        NavState::completed(user_location, summary.clone())
                     }
                 }
             }
-            TripState::Complete {
-                user_location,
-                summary,
-            } => NavState::apply_complete(user_location, summary.clone()),
+            // Pass through any other states.
+            _ => state.clone(),
         }
     }
 
@@ -227,46 +196,16 @@ impl Navigator for NavigationController {
     /// this function will panic.
     fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState {
         match state.trip_state() {
-            TripState::Idle { .. } => NavState::idle(Some(location)),
             TripState::Navigating {
                 ref remaining_steps,
                 ref remaining_waypoints,
-                deviation,
-                visual_instruction,
-                spoken_instruction,
-                annotation_json,
                 summary,
-                user_location: previous_user_location,
-                snapped_user_location: previous_snapped_user_location,
                 ..
             } => {
                 // Remaining steps is empty, the route is finished.
                 let Some(current_step) = remaining_steps.first() else {
                     return NavState::apply_complete(location, summary);
                 };
-
-                //
-                // Core navigation logic
-                //
-
-                // Find the nearest point on the route line
-                let current_step_linestring = current_step.get_linestring();
-                let (current_step_geometry_index, snapped_user_location) =
-                    self.snap_user_to_line(location, &current_step_linestring);
-
-                // Update trip summary with accumulated distance
-                let updated_summary = summary.update(
-                    &previous_user_location,
-                    &location,
-                    &previous_snapped_user_location,
-                    &snapped_user_location,
-                );
-
-                let progress = calculate_trip_progress(
-                    &snapped_user_location.into(),
-                    &current_step_linestring,
-                    remaining_steps,
-                );
 
                 // Trim the remaining waypoints if needed.
                 let remaining_waypoints = if self.should_advance_waypoint(&state.trip_state()) {
@@ -291,116 +230,104 @@ impl Navigator for NavigationController {
                     )
                 };
 
-                let intermediate_state = TripState::Navigating {
-                    current_step_geometry_index,
-                    user_location: location,
-                    snapped_user_location,
-                    remaining_steps: remaining_steps.clone(),
-                    remaining_waypoints: remaining_waypoints.clone(),
-                    progress,
-                    summary: updated_summary,
-                    deviation: deviation,
-                    visual_instruction: visual_instruction.clone(),
-                    spoken_instruction: spoken_instruction.clone(),
-                    annotation_json: annotation_json.clone(),
-                };
+                let intermediate_nav_state = NavState::new(
+                    self.create_new_trip_state(
+                        &state.trip_state(),
+                        &location,
+                        current_step,
+                        &remaining_steps,
+                        &remaining_waypoints,
+                    ),
+                    step_advance_result.next_iteration.clone(),
+                );
 
-                let intermediate_nav_state =
-                    NavState::new(intermediate_state, step_advance_result.next_iteration);
-
-                let new_nav_state = if step_advance_result.should_advance {
+                if step_advance_result.should_advance {
                     // Advance to the next step
-                    self.advance_to_next_step(&intermediate_nav_state)
-                } else {
-                    // Do not advance
-                    intermediate_nav_state
-                };
-
-                match new_nav_state.trip_state() {
-                    TripState::Idle {
-                        user_location: location,
-                    } => NavState::idle(location),
-                    TripState::Navigating {
-                        user_location: location,
-                        snapped_user_location,
-                        remaining_steps,
-                        remaining_waypoints,
-                        progress,
-                        summary,
-                        // Explicitly recalculated
-                        current_step_geometry_index: _,
-                        deviation: _,
-                        visual_instruction: _,
-                        spoken_instruction: _,
-                        annotation_json: _,
-                    } => {
-                        // Recalculate deviation. This happens later, as the current step may have changed.
-                        // The distance to the next maneuver will be updated by advance_to_next_step if needed.
-                        let current_step = remaining_steps
-                            .first()
-                            .expect("Invalid state: navigating with zero remaining steps.");
-
-                        let deviation = self.config.route_deviation_tracking.check_route_deviation(
-                            location,
-                            &self.route,
-                            current_step,
-                        );
-
-                        // we need to update the geometry index, since the step has changed
-                        let (updated_current_step_geometry_index, updated_snapped_user_location) =
-                            if let Some(current_route_step) = remaining_steps.first() {
-                                let current_step_linestring = current_route_step.get_linestring();
-                                self.snap_user_to_line(
-                                    snapped_user_location,
-                                    &current_step_linestring,
-                                )
-                            } else {
-                                (current_step_geometry_index, snapped_user_location)
-                            };
-
-                        let visual_instruction = current_step
-                            .get_active_visual_instruction(progress.distance_to_next_maneuver)
-                            .cloned();
-                        let spoken_instruction = current_step
-                            .get_current_spoken_instruction(progress.distance_to_next_maneuver)
-                            .cloned();
-
-                        let annotation_json = current_step_geometry_index
-                            .and_then(|index| current_step.get_annotation_at_current_index(index));
-
-                        let trip_state = TripState::Navigating {
-                            current_step_geometry_index: updated_current_step_geometry_index,
-                            user_location: location,
-                            snapped_user_location: updated_snapped_user_location,
-                            remaining_steps,
-                            remaining_waypoints,
-                            progress,
-                            summary: summary.clone(),
-                            deviation,
-                            visual_instruction,
-                            spoken_instruction,
-                            annotation_json,
-                        };
-
-                        NavState::new(trip_state, new_nav_state.step_advance_condition())
-                    }
-                    TripState::Complete {
-                        user_location,
-                        summary,
-                    } => NavState::apply_complete(user_location, summary),
+                    return self.advance_to_next_step(&intermediate_nav_state);
                 }
+
+                return intermediate_nav_state;
             }
-            // Terminal state
-            TripState::Complete {
-                user_location,
-                summary,
-            } => NavState::apply_complete(user_location, summary),
+            // Pass through
+            _ => state.clone(),
         }
     }
 }
 
 /// Shared functionality for the navigation controller that is not exported by uniFFI.
 impl NavigationController {
+    ///
+    fn create_new_trip_state(
+        &self,
+        trip_state: &TripState,
+        location: &UserLocation,
+        current_step: &RouteStep,
+        remaining_steps: &Vec<RouteStep>,
+        remaining_waypoints: &Vec<Waypoint>,
+    ) -> TripState {
+        match trip_state {
+            TripState::Navigating {
+                user_location: previous_user_location,
+                snapped_user_location: previous_snapped_user_location,
+                summary: previous_summary,
+                ..
+            } => {
+                //
+                // Core navigation logic
+                //
+
+                // Find the nearest point on the route line
+                let current_step_linestring = current_step.get_linestring();
+                let (current_step_geometry_index, snapped_user_location) =
+                    self.snap_user_to_line(*location, &current_step_linestring);
+
+                let deviation = self.config.route_deviation_tracking.check_route_deviation(
+                    *location,
+                    &self.route,
+                    current_step,
+                );
+
+                // Update trip summary with accumulated distance
+                let updated_summary = previous_summary.update(
+                    &previous_user_location,
+                    &location,
+                    &previous_snapped_user_location,
+                    &snapped_user_location,
+                );
+
+                let progress = calculate_trip_progress(
+                    &snapped_user_location.into(),
+                    &current_step_linestring,
+                    &remaining_steps,
+                );
+
+                let visual_instruction = current_step
+                    .get_active_visual_instruction(progress.distance_to_next_maneuver)
+                    .cloned();
+                let spoken_instruction = current_step
+                    .get_current_spoken_instruction(progress.distance_to_next_maneuver)
+                    .cloned();
+                let annotation_json = current_step_geometry_index
+                    .and_then(|index| current_step.get_annotation_at_current_index(index));
+
+                TripState::Navigating {
+                    current_step_geometry_index: current_step_geometry_index,
+                    user_location: location.clone(),
+                    snapped_user_location,
+                    remaining_steps: remaining_steps.clone(),
+                    remaining_waypoints: remaining_waypoints.clone(),
+                    progress,
+                    summary: updated_summary,
+                    deviation,
+                    visual_instruction,
+                    spoken_instruction,
+                    annotation_json,
+                }
+            }
+            _ => trip_state.clone(),
+        }
+    }
+
     /// Snaps the user's location to the route line and updates the user's course if necessary.
     ///
     /// This bundles all work related to snapping the user's location to the route line and is not intended to be exported.
