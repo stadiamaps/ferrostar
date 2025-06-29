@@ -6,6 +6,7 @@ pub mod recording;
 #[cfg(test)]
 pub(crate) mod test_helpers;
 
+use crate::navigation_controller::models::NavigatorState;
 use crate::{
     algorithms::{
         advance_step, apply_snapped_course, calculate_trip_progress,
@@ -44,9 +45,9 @@ pub struct NavigationController {
 /// around [`NavigationController`] a composable manner.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait Navigator: Send + Sync {
-    fn get_initial_state(&self, location: UserLocation) -> TripState;
-    fn advance_to_next_step(&self, state: &TripState) -> TripState;
-    fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState;
+    fn get_initial_state(&self, location: UserLocation) -> NavigatorState;
+    fn advance_to_next_step(&self, state: &TripState) -> NavigatorState;
+    fn update_user_location(&self, location: UserLocation, state: &TripState) -> NavigatorState;
 }
 
 /// Creates a new navigation controller for the given route and configuration.
@@ -144,7 +145,7 @@ impl NavigationController {
 
 impl Navigator for NavigationController {
     /// Returns initial trip state as if the user had just started the route with no progress.
-    fn get_initial_state(&self, location: UserLocation) -> TripState {
+    fn get_initial_state(&self, location: UserLocation) -> NavigatorState {
         let remaining_steps = self.route.steps.clone();
 
         let initial_summary = TripSummary {
@@ -156,7 +157,8 @@ impl Navigator for NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return Self::completed_trip_state(location, initial_summary);
+            let trip_state = Self::completed_trip_state(location, initial_summary);
+            return NavigatorState::from(trip_state);
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -184,7 +186,7 @@ impl Navigator for NavigationController {
         let annotation_json = current_step_geometry_index
             .and_then(|index| current_route_step.get_annotation_at_current_index(index));
 
-        TripState::Navigating {
+        let trip_state = TripState::Navigating {
             current_step_geometry_index,
             user_location: location,
             snapped_user_location,
@@ -197,7 +199,9 @@ impl Navigator for NavigationController {
             visual_instruction,
             spoken_instruction,
             annotation_json,
-        }
+        };
+
+        NavigatorState::from(trip_state)
     }
 
     /// Advances navigation to the next step.
@@ -208,11 +212,14 @@ impl Navigator for NavigationController {
     ///
     /// This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-    fn advance_to_next_step(&self, state: &TripState) -> TripState {
+    fn advance_to_next_step(&self, state: &TripState) -> NavigatorState {
         match state {
-            TripState::Idle { user_location } => TripState::Idle {
-                user_location: *user_location,
-            },
+            TripState::Idle { user_location } => {
+                let trip_state = TripState::Idle {
+                    user_location: *user_location,
+                };
+                NavigatorState::from(trip_state)
+            }
             TripState::Navigating {
                 current_step_geometry_index,
                 user_location,
@@ -249,7 +256,7 @@ impl Navigator for NavigationController {
                         let annotation_json = current_step_geometry_index
                             .and_then(|index| current_step.get_annotation_at_current_index(index));
 
-                        TripState::Navigating {
+                        let trip_state = TripState::Navigating {
                             current_step_geometry_index: *current_step_geometry_index,
                             user_location: *user_location,
                             snapped_user_location: *snapped_user_location,
@@ -263,17 +270,24 @@ impl Navigator for NavigationController {
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
-                        }
+                        };
+
+                        NavigatorState::from(trip_state)
                     }
                     StepAdvanceStatus::EndOfRoute => {
-                        Self::completed_trip_state(*user_location, summary.clone())
+                        let trip_state =
+                            Self::completed_trip_state(*user_location, summary.clone());
+                        NavigatorState::from(trip_state)
                     }
                 }
             }
             TripState::Complete {
                 user_location,
                 summary,
-            } => Self::completed_trip_state(*user_location, summary.clone()),
+            } => {
+                let trip_state = Self::completed_trip_state(*user_location, summary.clone());
+                NavigatorState::from(trip_state)
+            }
         }
     }
 
@@ -283,11 +297,14 @@ impl Navigator for NavigationController {
     ///
     /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
     /// this function will panic.
-    fn update_user_location(&self, location: UserLocation, state: &TripState) -> TripState {
+    fn update_user_location(&self, location: UserLocation, state: &TripState) -> NavigatorState {
         match state {
-            TripState::Idle { .. } => TripState::Idle {
-                user_location: Some(location),
-            },
+            TripState::Idle { .. } => {
+                let trip_state = TripState::Idle {
+                    user_location: Some(location),
+                };
+                NavigatorState::from(trip_state)
+            }
             TripState::Navigating {
                 ref remaining_steps,
                 ref remaining_waypoints,
@@ -301,7 +318,9 @@ impl Navigator for NavigationController {
                 ..
             } => {
                 let Some(current_step) = remaining_steps.first() else {
-                    return Self::completed_trip_state(*previous_user_location, summary.clone());
+                    let trip_state =
+                        Self::completed_trip_state(*previous_user_location, summary.clone());
+                    return NavigatorState::from(trip_state);
                 };
 
                 //
@@ -350,7 +369,7 @@ impl Navigator for NavigationController {
                     annotation_json: annotation_json.clone(),
                 };
 
-                match if should_advance_to_next_step(
+                let navigator_state = if should_advance_to_next_step(
                     &current_step_linestring,
                     remaining_steps.get(1),
                     &location,
@@ -360,9 +379,14 @@ impl Navigator for NavigationController {
                     self.advance_to_next_step(&intermediate_state)
                 } else {
                     // Do not advance
-                    intermediate_state
-                } {
-                    TripState::Idle { user_location } => TripState::Idle { user_location },
+                    NavigatorState::from(intermediate_state)
+                };
+
+                match navigator_state.trip_state {
+                    TripState::Idle { user_location } => {
+                        let trip_state = TripState::Idle { user_location };
+                        NavigatorState::from(trip_state)
+                    }
                     TripState::Navigating {
                         user_location: location,
                         snapped_user_location,
@@ -410,7 +434,7 @@ impl Navigator for NavigationController {
                         let annotation_json = current_step_geometry_index
                             .and_then(|index| current_step.get_annotation_at_current_index(index));
 
-                        TripState::Navigating {
+                        let trip_state = TripState::Navigating {
                             current_step_geometry_index: updated_current_step_geometry_index,
                             user_location: location,
                             snapped_user_location: updated_snapped_user_location,
@@ -422,19 +446,26 @@ impl Navigator for NavigationController {
                             visual_instruction,
                             spoken_instruction,
                             annotation_json,
-                        }
+                        };
+                        NavigatorState::from(trip_state)
                     }
                     TripState::Complete {
                         user_location,
                         summary,
-                    } => Self::completed_trip_state(user_location, summary.clone()),
+                    } => {
+                        let trip_state = Self::completed_trip_state(user_location, summary.clone());
+                        NavigatorState::from(trip_state)
+                    }
                 }
             }
             // Terminal state
             TripState::Complete {
                 user_location,
                 summary,
-            } => Self::completed_trip_state(*user_location, summary.clone()),
+            } => {
+                let trip_state = Self::completed_trip_state(*user_location, summary.clone());
+                NavigatorState::from(trip_state)
+            }
         }
     }
 }
@@ -448,27 +479,40 @@ pub struct JsNavigationController(NavigationController);
 #[wasm_bindgen(js_class = NavigationController)]
 impl JsNavigationController {
     #[wasm_bindgen(constructor)]
-    pub fn new(route: JsValue, config: JsValue) -> Result<JsNavigationController, JsValue> {
+    pub fn new(
+        route: JsValue,
+        config: JsValue,
+        should_record: JsValue,
+    ) -> Result<JsNavigationController, JsValue> {
         let route: Route = serde_wasm_bindgen::from_value(route)?;
         let config: NavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
+        let should_record: bool = serde_wasm_bindgen::from_value(should_record)?;
 
-        Ok(JsNavigationController(NavigationController::new(
-            route, config,
-        )))
+        // TODO: Both conditions return the same thing
+        if should_record {
+            Ok(JsNavigationController(NavigationController::new(
+                route, config,
+            )))
+        } else {
+            Ok(JsNavigationController(NavigationController::new(
+                route, config,
+            )))
+        }
     }
 
+    // TODO: These fn's still return `TripState` instead of `NavigatorState`
     #[wasm_bindgen(js_name = getInitialState)]
     pub fn get_initial_state(&self, location: JsValue) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
 
-        serde_wasm_bindgen::to_value(&self.0.get_initial_state(location))
+        serde_wasm_bindgen::to_value(&self.0.get_initial_state(location).trip_state)
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
     pub fn advance_to_next_step(&self, state: JsValue) -> Result<JsValue, JsValue> {
         let state: TripState = serde_wasm_bindgen::from_value(state)?;
 
-        serde_wasm_bindgen::to_value(&self.0.advance_to_next_step(&state))
+        serde_wasm_bindgen::to_value(&self.0.advance_to_next_step(&state).trip_state)
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
@@ -481,7 +525,7 @@ impl JsNavigationController {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
         let state: TripState = serde_wasm_bindgen::from_value(state)?;
 
-        serde_wasm_bindgen::to_value(&self.0.update_user_location(location, &state))
+        serde_wasm_bindgen::to_value(&self.0.update_user_location(location, &state).trip_state)
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 }
@@ -508,7 +552,7 @@ mod tests {
             location_simulation_from_route(&route, Some(10.0), LocationBias::None)
                 .expect("Unable to create simulation");
 
-        let controller = NavigationController::new(
+        let controller = create_navigator(
             route,
             NavigationControllerConfig {
                 waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
@@ -524,14 +568,18 @@ mod tests {
                 },
                 snapped_location_course_filtering: CourseFiltering::Raw,
             },
+            false,
         );
 
-        let mut state = controller.get_initial_state(simulation_state.current_location);
+        let mut state = controller
+            .get_initial_state(simulation_state.current_location)
+            .trip_state;
         let mut states = vec![state.clone()];
         loop {
             let new_simulation_state = advance_location_simulation(&simulation_state);
-            let new_state =
-                controller.update_user_location(new_simulation_state.current_location, &state);
+            let new_state = controller
+                .update_user_location(new_simulation_state.current_location, &state)
+                .trip_state;
 
             match new_state {
                 TripState::Idle { .. } => {}

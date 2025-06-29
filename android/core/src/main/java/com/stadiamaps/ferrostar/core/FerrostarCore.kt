@@ -247,17 +247,20 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
+    // TODO: This is always false
+    val should_record = false
     val controller: Navigator =
         createNavigator(
             route,
             _config,
-            false,
+            should_record,
         )
     val startingLocation =
         locationProvider.lastLocation
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
-    val initialTripState = controller.getInitialState(startingLocation)
+    val initialNavigatorState = controller.getInitialState(startingLocation)
+    val initialTripState = initialNavigatorState.tripState
     val newState = NavigationState(tripState = initialTripState, route.geometry, false)
     handleStateUpdate(initialTripState, startingLocation)
 
@@ -281,11 +284,13 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
+    // TODO: This is always false
+    val should_record = false
     val controller: Navigator =
         createNavigator(
             route,
             _config,
-            false,
+            should_record,
         )
     val startingLocation =
         locationProvider.lastLocation
@@ -296,7 +301,8 @@ class FerrostarCore(
 
     _navigationController = controller
     _state.update {
-      val newState = controller.getInitialState(startingLocation)
+      val newNavigatorState = controller.getInitialState(startingLocation)
+      val newState = newNavigatorState.tripState
 
       handleStateUpdate(newState, startingLocation)
 
@@ -310,7 +316,8 @@ class FerrostarCore(
 
     if (controller != null && location != null) {
       _state.update { currentValue ->
-        val newState = controller.advanceToNextStep(state = currentValue.tripState)
+        val newNavigatorState = controller.advanceToNextStep(state = currentValue.tripState)
+        val newState = newNavigatorState.tripState
 
         handleStateUpdate(newState, location)
 
@@ -411,8 +418,9 @@ class FerrostarCore(
 
     if (controller != null) {
       _state.update { currentValue ->
-        val newState =
+        val newNavigatorState =
             controller.updateUserLocation(location = location, state = currentValue.tripState)
+        val newState = newNavigatorState.tripState
 
         handleStateUpdate(newState, location)
 

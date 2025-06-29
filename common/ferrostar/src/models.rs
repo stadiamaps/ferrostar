@@ -264,7 +264,7 @@ impl From<UserLocation> for Point {
 ///
 /// NOTE: This type is unstable and is still under active development and should be
 /// considered unstable.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
