@@ -4,11 +4,11 @@ import MapLibreSwiftUI
 import SwiftUI
 
 struct DemoCarPlayNavigationView: View {
-    @StateObject var ferrostarCore: FerrostarCore
+    var model: DemoModel
     let styleURL: URL
-    @Binding public var camera: MapViewCamera
 
     var body: some View {
-        CarPlayNavigationView(navigationState: ferrostarCore.state, styleURL: styleURL, camera: $camera)
+        @Bindable var bindableModel = model
+        CarPlayNavigationView(navigationState: model.coreState, styleURL: styleURL, camera: $bindableModel.camera)
     }
 }
