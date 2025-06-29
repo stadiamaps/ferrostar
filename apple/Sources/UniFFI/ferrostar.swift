@@ -764,11 +764,11 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
  */
 public protocol NavigatorProtocol : AnyObject {
     
-    func getInitialState(location: UserLocation)  -> TripState
+    func getInitialState(location: UserLocation)  -> NavigatorState
     
-    func advanceToNextStep(state: TripState)  -> TripState
+    func advanceToNextStep(state: TripState)  -> NavigatorState
     
-    func updateUserLocation(location: UserLocation, state: TripState)  -> TripState
+    func updateUserLocation(location: UserLocation, state: TripState)  -> NavigatorState
     
 }
 
@@ -829,24 +829,24 @@ open class Navigator:
     
 
     
-open func getInitialState(location: UserLocation) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
+open func getInitialState(location: UserLocation) -> NavigatorState {
+    return try!  FfiConverterTypeNavigatorState.lift(try! rustCall() {
     uniffi_ferrostar_fn_method_navigator_get_initial_state(self.uniffiClonePointer(),
         FfiConverterTypeUserLocation.lower(location),$0
     )
 })
 }
     
-open func advanceToNextStep(state: TripState) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
+open func advanceToNextStep(state: TripState) -> NavigatorState {
+    return try!  FfiConverterTypeNavigatorState.lift(try! rustCall() {
     uniffi_ferrostar_fn_method_navigator_advance_to_next_step(self.uniffiClonePointer(),
         FfiConverterTypeTripState.lower(state),$0
     )
 })
 }
     
-open func updateUserLocation(location: UserLocation, state: TripState) -> TripState {
-    return try!  FfiConverterTypeTripState.lift(try! rustCall() {
+open func updateUserLocation(location: UserLocation, state: TripState) -> NavigatorState {
+    return try!  FfiConverterTypeNavigatorState.lift(try! rustCall() {
     uniffi_ferrostar_fn_method_navigator_update_user_location(self.uniffiClonePointer(),
         FfiConverterTypeUserLocation.lower(location),
         FfiConverterTypeTripState.lower(state),$0
@@ -2690,6 +2690,72 @@ public func FfiConverterTypeNavigationControllerConfig_lift(_ buf: RustBuffer) t
 #endif
 public func FfiConverterTypeNavigationControllerConfig_lower(_ value: NavigationControllerConfig) -> RustBuffer {
     return FfiConverterTypeNavigationControllerConfig.lower(value)
+}
+
+
+public struct NavigatorState {
+    public var tripState: TripState
+    public var recordingEventData: NavigationRecordingEventData?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(tripState: TripState, recordingEventData: NavigationRecordingEventData?) {
+        self.tripState = tripState
+        self.recordingEventData = recordingEventData
+    }
+}
+
+
+
+extension NavigatorState: Equatable, Hashable {
+    public static func ==(lhs: NavigatorState, rhs: NavigatorState) -> Bool {
+        if lhs.tripState != rhs.tripState {
+            return false
+        }
+        if lhs.recordingEventData != rhs.recordingEventData {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(tripState)
+        hasher.combine(recordingEventData)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigatorState: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigatorState {
+        return
+            try NavigatorState(
+                tripState: FfiConverterTypeTripState.read(from: &buf), 
+                recordingEventData: FfiConverterOptionTypeNavigationRecordingEventData.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: NavigatorState, into buf: inout [UInt8]) {
+        FfiConverterTypeTripState.write(value.tripState, into: &buf)
+        FfiConverterOptionTypeNavigationRecordingEventData.write(value.recordingEventData, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigatorState_lift(_ buf: RustBuffer) throws -> NavigatorState {
+    return try FfiConverterTypeNavigatorState.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigatorState_lower(_ value: NavigatorState) -> RustBuffer {
+    return FfiConverterTypeNavigatorState.lower(value)
 }
 
 
@@ -4766,6 +4832,108 @@ extension ModelError: Foundation.LocalizedError {
     }
 }
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum NavigationRecordingEventData {
+    
+    case locationUpdate(
+        /**
+         * Updated user location.
+         */userLocation: UserLocation
+    )
+    case tripStateUpdate(
+        /**
+         * Updated trip state.
+         */tripState: TripState
+    )
+    case routeUpdate(
+        /**
+         * Updated route steps.
+         */route: Route
+    )
+    case error(
+        /**
+         * Error message.
+         */errorMessage: String
+    )
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuffer {
+    typealias SwiftType = NavigationRecordingEventData
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationRecordingEventData {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .locationUpdate(userLocation: try FfiConverterTypeUserLocation.read(from: &buf)
+        )
+        
+        case 2: return .tripStateUpdate(tripState: try FfiConverterTypeTripState.read(from: &buf)
+        )
+        
+        case 3: return .routeUpdate(route: try FfiConverterTypeRoute.read(from: &buf)
+        )
+        
+        case 4: return .error(errorMessage: try FfiConverterString.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: NavigationRecordingEventData, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .locationUpdate(userLocation):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
+            
+        
+        case let .tripStateUpdate(tripState):
+            writeInt(&buf, Int32(2))
+            FfiConverterTypeTripState.write(tripState, into: &buf)
+            
+        
+        case let .routeUpdate(route):
+            writeInt(&buf, Int32(3))
+            FfiConverterTypeRoute.write(route, into: &buf)
+            
+        
+        case let .error(errorMessage):
+            writeInt(&buf, Int32(4))
+            FfiConverterString.write(errorMessage, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecordingEventData_lift(_ buf: RustBuffer) throws -> NavigationRecordingEventData {
+    return try FfiConverterTypeNavigationRecordingEventData.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecordingEventData_lower(_ value: NavigationRecordingEventData) -> RustBuffer {
+    return FfiConverterTypeNavigationRecordingEventData.lower(value)
+}
+
+
+
+extension NavigationRecordingEventData: Equatable, Hashable {}
+
+
+
 
 public enum ParsingError {
 
@@ -6164,6 +6332,30 @@ fileprivate struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeNavigationRecordingEventData: FfiConverterRustBuffer {
+    typealias SwiftType = NavigationRecordingEventData?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeNavigationRecordingEventData.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeNavigationRecordingEventData.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
     typealias SwiftType = SpecialAdvanceConditions?
 
@@ -6837,13 +7029,13 @@ private var initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 29800) {
+    if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 44157) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_advance_to_next_step() != 25349) {
+    if (uniffi_ferrostar_checksum_method_navigator_advance_to_next_step() != 45035) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 27482) {
+    if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 47148) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {
