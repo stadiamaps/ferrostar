@@ -534,7 +534,7 @@ mod tests {
     fn test_full_route_state_snapshot(
         route: Route,
         step_advance: StepAdvanceMode,
-    ) -> Vec<NavigatorState> {
+    ) -> Vec<TripState> {
         let mut simulation_state =
             location_simulation_from_route(&route, Some(10.0), LocationBias::None)
                 .expect("Unable to create simulation");
@@ -558,14 +558,14 @@ mod tests {
             false
         );
 
-        let mut state = controller.get_initial_state(simulation_state.current_location);
+        let mut state = controller.get_initial_state(simulation_state.current_location).trip_state;
         let mut states = vec![state.clone()];
         loop {
             let new_simulation_state = advance_location_simulation(&simulation_state);
             let new_state =
-                controller.update_user_location(new_simulation_state.current_location, &state.trip_state);
+                controller.update_user_location(new_simulation_state.current_location, &state).trip_state;
 
-            match new_state.trip_state {
+            match new_state {
                 TripState::Idle { .. } => {}
                 TripState::Navigating {
                     current_step_geometry_index,

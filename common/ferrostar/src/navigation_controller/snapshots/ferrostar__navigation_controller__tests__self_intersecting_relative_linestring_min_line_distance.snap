@@ -334,12 +334,12 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 227.59235473784523
+      distanceToNextManeuver: 227.5923547378452
       distanceRemaining: 1035.8583547378453
       durationRemaining: 46.733135559702674
     summary:
-      distanceTraveled: 37.24724404027442
-      snappedDistanceTraveled: 37.24724404027442
+      distanceTraveled: 37.24724404027443
+      snappedDistanceTraveled: 37.24724404027443
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -506,12 +506,12 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 218.68877790339582
+      distanceToNextManeuver: 218.6887779033958
       distanceRemaining: 1026.9547779033958
       durationRemaining: 46.37298490614234
     summary:
-      distanceTraveled: 46.14764982195013
-      snappedDistanceTraveled: 46.14764982195013
+      distanceTraveled: 46.14764982195015
+      snappedDistanceTraveled: 46.14764982195015
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -682,8 +682,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 1018.0512010699947
       durationRemaining: 46.012834252624415
     summary:
-      distanceTraveled: 55.04806002491911
-      snappedDistanceTraveled: 55.04806002491911
+      distanceTraveled: 55.048060024919124
+      snappedDistanceTraveled: 55.048060024919124
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -854,8 +854,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 1009.1476242362194
       durationRemaining: 45.65268359909135
     summary:
-      distanceTraveled: 63.94847465052118
-      snappedDistanceTraveled: 63.94847465052118
+      distanceTraveled: 63.94847465052119
+      snappedDistanceTraveled: 63.94847465052119
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -1022,12 +1022,12 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 192.05181523228163
-      distanceRemaining: 1000.3178152322816
+      distanceToNextManeuver: 192.0518152322816
+      distanceRemaining: 1000.3178152322815
       durationRemaining: 45.29551686231688
     summary:
-      distanceTraveled: 72.7942316910342
-      snappedDistanceTraveled: 72.7942316910342
+      distanceTraveled: 72.79423169103421
+      snappedDistanceTraveled: 72.79423169103421
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -1194,12 +1194,12 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 183.14823839888052
+      distanceToNextManeuver: 183.1482383988805
       distanceRemaining: 991.4142383988805
       durationRemaining: 44.93536620879895
     summary:
-      distanceTraveled: 81.69465516020831
-      snappedDistanceTraveled: 81.69465516020831
+      distanceTraveled: 81.69465516020833
+      snappedDistanceTraveled: 81.69465516020833
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -1370,8 +1370,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 982.5106615654794
       durationRemaining: 44.57521555528103
     summary:
-      distanceTraveled: 90.59508305144664
-      snappedDistanceTraveled: 90.59508305144664
+      distanceTraveled: 90.59508305144665
+      snappedDistanceTraveled: 90.59508305144665
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -1542,8 +1542,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 973.4807284418143
       durationRemaining: 44.20995377604743
     summary:
-      distanceTraveled: 99.62956395423879
-      snappedDistanceTraveled: 99.62956395423879
+      distanceTraveled: 99.6295639542388
+      snappedDistanceTraveled: 99.6295639542388
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -1714,8 +1714,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 964.4507953191978
       durationRemaining: 43.84469199685624
     summary:
-      distanceTraveled: 108.66404940064507
-      snappedDistanceTraveled: 108.66404940064507
+      distanceTraveled: 108.66404940064508
+      snappedDistanceTraveled: 108.66404940064508
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -1886,8 +1886,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 955.420862195907
       durationRemaining: 43.47943021763778
     summary:
-      distanceTraveled: 117.69853939165395
-      snappedDistanceTraveled: 117.69853939165395
+      distanceTraveled: 117.69853939165397
+      snappedDistanceTraveled: 117.69853939165397
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -2058,8 +2058,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 946.3909290732904
       durationRemaining: 43.11416843844659
     summary:
-      distanceTraveled: 126.73303392683664
-      snappedDistanceTraveled: 126.73303392683664
+      distanceTraveled: 126.73303392683665
+      snappedDistanceTraveled: 126.73303392683665
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -2230,8 +2230,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 937.3398930873956
       durationRemaining: 42.748053046135304
     summary:
-      distanceTraveled: 135.74384590326036
-      snappedDistanceTraveled: 135.74384590326036
+      distanceTraveled: 135.7438459032604
+      snappedDistanceTraveled: 135.7438459032604
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -2402,8 +2402,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 928.309959964779
       durationRemaining: 42.38279126694412
     summary:
-      distanceTraveled: 144.7783494488594
-      snappedDistanceTraveled: 144.7783494488594
+      distanceTraveled: 144.77834944885942
+      snappedDistanceTraveled: 144.77834944885942
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -2574,8 +2574,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 919.2800268425365
       durationRemaining: 42.01752948776806
     summary:
-      distanceTraveled: 153.81285753827507
-      snappedDistanceTraveled: 153.81285753827507
+      distanceTraveled: 153.8128575382751
+      snappedDistanceTraveled: 153.8128575382751
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -2746,8 +2746,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 910.2500937188715
       durationRemaining: 41.65226770853447
     summary:
-      distanceTraveled: 162.84737017341058
-      snappedDistanceTraveled: 162.84737017341058
+      distanceTraveled: 162.8473701734106
+      snappedDistanceTraveled: 162.8473701734106
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -2918,8 +2918,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 901.2201605962549
       durationRemaining: 41.28700592934327
     summary:
-      distanceTraveled: 171.8818873521451
-      snappedDistanceTraveled: 171.8818873521451
+      distanceTraveled: 171.88188735214513
+      snappedDistanceTraveled: 171.88188735214513
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -3090,8 +3090,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 892.1902274729641
       durationRemaining: 40.921744150124816
     summary:
-      distanceTraveled: 180.9164090754671
-      snappedDistanceTraveled: 180.9164090754671
+      distanceTraveled: 180.91640907546713
+      snappedDistanceTraveled: 180.91640907546713
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -3262,8 +3262,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 882.8396109558554
       durationRemaining: 40.54351069266772
     summary:
-      distanceTraveled: 190.27379508822975
-      snappedDistanceTraveled: 190.27379508822975
+      distanceTraveled: 190.27379508822978
+      snappedDistanceTraveled: 190.27379508822978
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -3434,8 +3434,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 873.5414963308135
       durationRemaining: 40.16740094246812
     summary:
-      distanceTraveled: 199.55223280387884
-      snappedDistanceTraveled: 199.55223280387884
+      distanceTraveled: 199.55223280387887
+      snappedDistanceTraveled: 199.55223280387887
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -3606,8 +3606,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 864.1908798122827
       durationRemaining: 39.789167484953495
     summary:
-      distanceTraveled: 208.9096284992435
-      snappedDistanceTraveled: 208.9096284992435
+      distanceTraveled: 208.90962849924352
+      snappedDistanceTraveled: 208.90962849924352
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -3778,8 +3778,8 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 854.840263294125
       durationRemaining: 39.41093402745396
     summary:
-      distanceTraveled: 218.267029075349
-      snappedDistanceTraveled: 218.267029075349
+      distanceTraveled: 218.26702907534903
+      snappedDistanceTraveled: 218.26702907534903
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11122,9 +11122,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 472.5097693776746
-      distanceRemaining: 472.5097693776746
-      durationRemaining: 23.262498124567884
+      distanceToNextManeuver: 472.5097693776747
+      distanceRemaining: 472.5097693776747
+      durationRemaining: 23.262498124567887
     summary:
       distanceTraveled: 600.3416385072162
       snappedDistanceTraveled: 600.3397615798098
