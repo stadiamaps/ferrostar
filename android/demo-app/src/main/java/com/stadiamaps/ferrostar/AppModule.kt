@@ -18,7 +18,6 @@ import java.net.URL
 import java.time.Duration
 import okhttp3.OkHttpClient
 import uniffi.ferrostar.CourseFiltering
-import uniffi.ferrostar.DistanceEntryAndExitCondition
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.WaypointAdvanceMode
@@ -91,7 +90,11 @@ object AppModule {
             navigationControllerConfig =
                 NavigationControllerConfig(
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
-                  stepAdvanceDistanceEntryAndExit(32u, 10u, 5u,),
+                    stepAdvanceDistanceEntryAndExit(
+                        32u,
+                        10u,
+                        5u,
+                    ),
                     stepAdvanceDistanceToEndOfStep(10u, 32u),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),

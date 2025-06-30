@@ -264,6 +264,7 @@ class FerrostarCore(
     handleStateUpdate(initialNavState, startingLocation)
 
     _navigationController = controller
+    _navState.value = initialNavState
     _state.value = newState
 
     locationProvider.addListener(this, _executor)
@@ -297,13 +298,13 @@ class FerrostarCore(
     spokenInstructionObserver?.stopAndClearQueue()
 
     _navigationController = controller
-    _state.update {
-      val newState = controller.getInitialState(startingLocation)
 
-      handleStateUpdate(newState, startingLocation)
+    val newState = controller.getInitialState(startingLocation)
 
-      NavigationState(tripState = newState.tripState, route.geometry, false)
-    }
+    handleStateUpdate(newState, startingLocation)
+
+    _navState.update { newState }
+    _state.update { NavigationState(tripState = newState.tripState, route.geometry, false) }
   }
 
   fun advanceToNextStep() {
@@ -315,8 +316,10 @@ class FerrostarCore(
         val newState = controller.advanceToNextStep(state = it)
         handleStateUpdate(newState, location)
 
+        _navState.update { newState }
         _state.update { currentState ->
-          NavigationState(tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
+          NavigationState(
+              tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
         }
       }
     }
@@ -342,7 +345,6 @@ class FerrostarCore(
    * recalculation as the user goes off route).
    */
   private fun handleStateUpdate(newState: NavState, location: UserLocation) {
-    _navState.value = newState
     val tripState = newState.tripState
     if (tripState is TripState.Navigating) {
       if (tripState.deviation is RouteDeviation.OffRoute) {
@@ -419,8 +421,10 @@ class FerrostarCore(
         val newState = controller.updateUserLocation(location = location, state = it)
         handleStateUpdate(newState, location)
 
+        _navState.update { newState }
         _state.update { currentState ->
-          NavigationState(tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
+          NavigationState(
+              tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
         }
       }
     }
