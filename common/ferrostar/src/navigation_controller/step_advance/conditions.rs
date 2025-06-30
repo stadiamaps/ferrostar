@@ -201,8 +201,7 @@ impl StepAdvanceCondition for AndAdvanceConditions {
     }
 }
 
-// TODO: Add copy back after debugging (don't merge!)
-#[derive(Debug, Clone)]
+#[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
