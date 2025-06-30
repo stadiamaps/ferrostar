@@ -21,6 +21,12 @@ public struct NavigationState: Hashable {
         self.isCalculatingNewRoute = isCalculatingNewRoute
     }
 
+    init(navState: NavState, routeGeometry: [GeographicCoordinate], isCalculatingNewRoute: Bool = false) {
+        tripState = navState.tripState
+        self.routeGeometry = routeGeometry
+        self.isCalculatingNewRoute = isCalculatingNewRoute
+    }
+
     public var currentProgress: TripProgress? {
         guard case let .navigating(_, _, _, _, _, progress, _, _, _,
                                    _, _) = tripState

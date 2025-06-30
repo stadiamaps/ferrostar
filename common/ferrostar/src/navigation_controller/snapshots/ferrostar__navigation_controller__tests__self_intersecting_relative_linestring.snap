@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{ minimum_horizontal_accuracy: 0, special_advance_conditions: None, })"
+expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfIntersecting),\nArc::new(DistanceEntryAndExitCondition::new(0, 0, 0)))"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -4475,7 +4475,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 0
+    current_step_geometry_index: 3
     user_location:
       coordinates:
         lat: 45.375411
@@ -4495,6 +4495,26 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         accuracy: 5
       speed: ~
     remaining_steps:
+      - geometry:
+          - lat: 45.377106
+            lng: -122.584167
+          - lat: 45.376869
+            lng: -122.584504
+          - lat: 45.376527
+            lng: -122.584983
+          - lat: 45.375948
+            lng: -122.585794
+          - lat: 45.375411
+            lng: -122.586549
+        distance: 264.647
+        duration: 10.705
+        road_name: ""
+        exits: []
+        instruction: Drive southwest on I 205 South/OR 213 South.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
       - geometry:
           - lat: 45.375411
             lng: -122.586549
@@ -4614,9 +4634,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 294.6163828522293
-      distanceRemaining: 807.8823828522293
-      durationRemaining: 37.51105973221229
+      distanceToNextManeuver: 0
+      distanceRemaining: 808.266
+      durationRemaining: 37.527
     summary:
       distanceTraveled: 264.84112941399343
       snappedDistanceTraveled: 264.84112941399343
@@ -10403,7 +10423,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 0
+    current_step_geometry_index: 20
     user_location:
       coordinates:
         lat: 45.375703
@@ -10423,6 +10443,61 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         accuracy: 5
       speed: ~
     remaining_steps:
+      - geometry:
+          - lat: 45.375411
+            lng: -122.586549
+          - lat: 45.374846
+            lng: -122.587677
+          - lat: 45.374808
+            lng: -122.587796
+          - lat: 45.374781
+            lng: -122.587928
+          - lat: 45.374774
+            lng: -122.588028
+          - lat: 45.37478
+            lng: -122.588136
+          - lat: 45.374789
+            lng: -122.588209
+          - lat: 45.374812
+            lng: -122.588294
+          - lat: 45.374849
+            lng: -122.588384
+          - lat: 45.37488
+            lng: -122.588451
+          - lat: 45.374919
+            lng: -122.588512
+          - lat: 45.374978
+            lng: -122.588569
+          - lat: 45.375024
+            lng: -122.58861
+          - lat: 45.375075
+            lng: -122.58864
+          - lat: 45.375143
+            lng: -122.588661
+          - lat: 45.375324
+            lng: -122.588722
+          - lat: 45.375415
+            lng: -122.588676
+          - lat: 45.375483
+            lng: -122.588617
+          - lat: 45.375559
+            lng: -122.58852
+          - lat: 45.37561
+            lng: -122.588432
+          - lat: 45.375657
+            lng: -122.58831
+          - lat: 45.375703
+            lng: -122.588114
+        distance: 295
+        duration: 12.258
+        road_name: ""
+        exits:
+          - "10"
+        instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
       - geometry:
           - lat: 45.375703
             lng: -122.588114
@@ -10487,9 +10562,9 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
           lng: -122.585901
         kind: Break
     progress:
-      distanceToNextManeuver: 513.3974531370221
-      distanceRemaining: 513.3974531370221
-      durationRemaining: 25.275471672231188
+      distanceToNextManeuver: 0
+      distanceRemaining: 513.266
+      durationRemaining: 25.269
     summary:
       distanceTraveled: 559.4602864802567
       snappedDistanceTraveled: 559.4602864802567

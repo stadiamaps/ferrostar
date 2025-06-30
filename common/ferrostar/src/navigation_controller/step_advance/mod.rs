@@ -1,0 +1,101 @@
+use crate::{
+    models::{RouteStep, UserLocation},
+    navigation_controller::step_advance::conditions::{
+        AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceFromStep, DistanceToEndOfStep,
+        ManualStepAdvance, OrAdvanceConditions,
+    },
+};
+use std::sync::Arc;
+
+pub mod conditions;
+
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+pub struct StepAdvanceResult {
+    /// The step should be advanced.
+    pub should_advance: bool,
+    /// The next iteration of the step advance condition.
+    /// This allows us to copy the condition and its current state
+    /// to the next user location update/next interaction of the step
+    /// advance calculation.
+    ///
+    /// IMPORTANT! If the condition advances. This **must** be the clean/default state.
+    pub next_iteration: Arc<dyn StepAdvanceCondition>,
+}
+
+/// When implementing custom step advance logic, this trait allows you to define
+/// whether the condition should advance to the next condition, the next step or not.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub trait StepAdvanceCondition: Sync + Send {
+    // NOTE: This cannot be exported `with_foreign` because of uniffi's Arc implementation.
+    // It will cause a stack overflow when with_foreign is used at some point in the trip.
+
+    /// This callback method is used by a step advance condition to receive step updates.
+    /// The step advance condition can choose based on its outcome and internal state
+    /// whether to advance to the next step or not.
+    fn should_advance_step(
+        &self,
+        user_location: UserLocation,
+        current_step: RouteStep,
+        next_step: Option<RouteStep>,
+    ) -> StepAdvanceResult;
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_manual() -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(ManualStepAdvance)
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_distance_to_end_of_step(
+    distance: u16,
+    minimum_horizontal_accuracy: u16,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceToEndOfStep {
+        distance,
+        minimum_horizontal_accuracy,
+    })
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_distance_from_step(
+    distance: u16,
+    minimum_horizontal_accuracy: u16,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceFromStep {
+        distance,
+        minimum_horizontal_accuracy,
+    })
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_or(
+    conditions: Vec<Arc<dyn StepAdvanceCondition>>,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(OrAdvanceConditions { conditions })
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_and(
+    conditions: Vec<Arc<dyn StepAdvanceCondition>>,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(AndAdvanceConditions { conditions })
+}
+
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_distance_entry_and_exit(
+    minimum_horizontal_accuracy: u16,
+    distance_to_end_of_step: u16,
+    distance_after_end_step: u16,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceEntryAndExitCondition::new(
+        minimum_horizontal_accuracy,
+        distance_to_end_of_step,
+        distance_after_end_step,
+    ))
+}
