@@ -98,10 +98,7 @@ fn simple_route_state_machine_manual_advance() {
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             step_advance_condition: Arc::new(ManualStepAdvance),
-            arrival_step_advance_condition: Arc::new(DistanceToEndOfStep {
-                distance: 25,
-                minimum_horizontal_accuracy: 0,
-            }),
+            arrival_step_advance_condition: Arc::new(ManualStepAdvance),
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
