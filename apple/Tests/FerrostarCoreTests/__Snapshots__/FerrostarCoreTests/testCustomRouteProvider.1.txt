@@ -1,5 +1,12 @@
 ▿ 1 element
-  ▿ Route
+  ▿ Route [distance 1.0 waypoints: Waypoint: GeographicCoordinate(lat: 0.0, lng: 0.0) kind: break,Waypoint: GeographicCoordinate(lat: 1.0, lng: 1.0) kind: break steps: RouteStep: Sail straight]
+    ▿ geometry: 2 elements
+      ▿ GeographicCoordinate
+        - lat: 0.0
+        - lng: 0.0
+      ▿ GeographicCoordinate
+        - lat: 1.0
+        - lng: 1.0
     ▿ bbox: BoundingBox
       ▿ ne: GeographicCoordinate
         - lat: 1.0
@@ -8,19 +15,19 @@
         - lat: 0.0
         - lng: 0.0
     - distance: 1.0
-    ▿ geometry: 2 elements
-      ▿ GeographicCoordinate
-        - lat: 0.0
-        - lng: 0.0
-      ▿ GeographicCoordinate
-        - lat: 1.0
-        - lng: 1.0
+    ▿ waypoints: 2 elements
+      ▿ Waypoint: GeographicCoordinate(lat: 0.0, lng: 0.0) kind: break
+        ▿ coordinate: GeographicCoordinate
+          - lat: 0.0
+          - lng: 0.0
+        - kind: break
+      ▿ Waypoint: GeographicCoordinate(lat: 1.0, lng: 1.0) kind: break
+        ▿ coordinate: GeographicCoordinate
+          - lat: 1.0
+          - lng: 1.0
+        - kind: break
     ▿ steps: 1 element
-      ▿ RouteStep
-        - annotations: Optional<Array<String>>.none
-        - distance: 1.0
-        - duration: 0.0
-        - exits: 0 elements
+      ▿ RouteStep: Sail straight
         ▿ geometry: 2 elements
           ▿ GeographicCoordinate
             - lat: 0.0
@@ -28,11 +35,12 @@
           ▿ GeographicCoordinate
             - lat: 1.0
             - lng: 1.0
-        - incidents: 0 elements
-        - instruction: "Sail straight"
+        - distance: 1.0
+        - duration: 0.0
         ▿ roadName: Optional<String>
           - some: "foo road"
-        - spokenInstructions: 0 elements
+        - exits: 0 elements
+        - instruction: "Sail straight"
         ▿ visualInstructions: 1 element
           ▿ VisualInstruction
             ▿ primaryContent: VisualInstructionContent
@@ -47,14 +55,6 @@
             - secondaryContent: Optional<VisualInstructionContent>.none
             - subContent: Optional<VisualInstructionContent>.none
             - triggerDistanceBeforeManeuver: 42.0
-    ▿ waypoints: 2 elements
-      ▿ Waypoint
-        ▿ coordinate: GeographicCoordinate
-          - lat: 0.0
-          - lng: 0.0
-        - kind: WaypointKind.break
-      ▿ Waypoint
-        ▿ coordinate: GeographicCoordinate
-          - lat: 1.0
-          - lng: 1.0
-        - kind: WaypointKind.break
+        - spokenInstructions: 0 elements
+        - annotations: Optional<Array<String>>.none
+        - incidents: 0 elements

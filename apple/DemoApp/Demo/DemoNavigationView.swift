@@ -8,6 +8,17 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
+extension SwitchableLocationProvider.State {
+    @ViewBuilder var label: some View {
+        switch self {
+        case .simulated:
+            Label("Sim", systemImage: "location.slash.circle")
+        case .device:
+            Label("Device", systemImage: "location.circle")
+        }
+    }
+}
+
 struct DemoNavigationView: View {
     @EnvironmentObject private var appEnvironment: AppEnvironment
     @EnvironmentObject private var ferrostarCore: FerrostarCore
@@ -106,6 +117,12 @@ struct DemoNavigationView: View {
                                 Text("Enable Location Services")
                             }
                         }
+                        Button {
+                            appEnvironment.toggleLocationSimulation()
+                        } label: {
+                            appEnvironment.locationProvider.type.label
+                        }
+                        .buttonStyle(NavigationUIButtonStyle())
                     }
                 }
             )
