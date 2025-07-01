@@ -172,6 +172,3 @@ struct DemoNavigationView: View {
     }
 }
 
-// #Preview {
-//    DemoNavigationView()
-// }
