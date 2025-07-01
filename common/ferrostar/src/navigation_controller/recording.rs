@@ -4,6 +4,9 @@ use crate::navigation_controller::models::{
     NavigationRecordingEventData, TripState,
 };
 use chrono::Utc;
+use serde::{Serialize, Deserialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct NavigationRecording {
     /// Version of Ferrostar that created this recording.
     pub version: String,
@@ -31,6 +34,10 @@ impl NavigationRecording {
             initial_state,
             events: Vec::new(),
         }
+    }
+
+    pub fn to_json(&self) -> Result<String, serde_json::Error> {
+        serde_json::to_string(self)
     }
 
     /// Records a location update from the user during navigation.
