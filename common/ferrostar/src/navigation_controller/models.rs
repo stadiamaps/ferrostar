@@ -1,5 +1,7 @@
 //! State and configuration data models.
 
+#[cfg(feature = "wasm-bindgen")]
+use super::step_advance::JsStepAdvanceCondition;
 use crate::algorithms::distance_between_locations;
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{
@@ -13,8 +15,6 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
-#[cfg(feature = "wasm-bindgen")]
-use super::step_advance::JsStepAdvanceCondition;
 
 use super::step_advance::conditions::ManualStepAdvance;
 use super::step_advance::StepAdvanceCondition;

@@ -238,7 +238,6 @@ impl StepAdvanceCondition for AndAdvanceConditions {
     }
 }
 
-
 impl StepAdvanceConditionJsConvertible for AndAdvanceConditions {
     #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {

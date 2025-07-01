@@ -5,8 +5,8 @@ use crate::{
         ManualStepAdvance, OrAdvanceConditions,
     },
 };
-use std::sync::Arc;
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 use tsify::Tsify;
 
 pub mod conditions;
@@ -71,11 +71,11 @@ pub enum JsStepAdvanceCondition {
     },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     OrAdvanceConditions {
-        conditions: Vec<JsStepAdvanceCondition>
+        conditions: Vec<JsStepAdvanceCondition>,
     },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     AndAdvanceConditions {
-        conditions: Vec<JsStepAdvanceCondition>
+        conditions: Vec<JsStepAdvanceCondition>,
     },
 }
 
@@ -85,13 +85,15 @@ impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
         match condition {
             JsStepAdvanceCondition::Manual => Arc::new(ManualStepAdvance),
             JsStepAdvanceCondition::DistanceToEndOfStep {
-                distance, minimum_horizontal_accuracy
+                distance,
+                minimum_horizontal_accuracy,
             } => Arc::new(DistanceToEndOfStep {
                 distance,
                 minimum_horizontal_accuracy,
             }),
             JsStepAdvanceCondition::DistanceFromStep {
-                distance, minimum_horizontal_accuracy
+                distance,
+                minimum_horizontal_accuracy,
             } => Arc::new(DistanceToEndOfStep {
                 distance,
                 minimum_horizontal_accuracy,
@@ -107,12 +109,16 @@ impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
                 distance_after_end_step,
                 has_reached_end_of_current_step,
             }),
-            JsStepAdvanceCondition::OrAdvanceConditions { conditions } => Arc::new(OrAdvanceConditions {
-                conditions: conditions.into_iter().map(|c| c.into()).collect()
-            }),
-            JsStepAdvanceCondition::AndAdvanceConditions { conditions } => Arc::new(AndAdvanceConditions {
-                conditions: conditions.into_iter().map(|c| c.into()).collect()
-            }),
+            JsStepAdvanceCondition::OrAdvanceConditions { conditions } => {
+                Arc::new(OrAdvanceConditions {
+                    conditions: conditions.into_iter().map(|c| c.into()).collect(),
+                })
+            }
+            JsStepAdvanceCondition::AndAdvanceConditions { conditions } => {
+                Arc::new(AndAdvanceConditions {
+                    conditions: conditions.into_iter().map(|c| c.into()).collect(),
+                })
+            }
         }
     }
 }

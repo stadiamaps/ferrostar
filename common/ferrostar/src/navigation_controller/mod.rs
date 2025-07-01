@@ -27,9 +27,9 @@ use std::clone::Clone;
 use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
-use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
-#[cfg(feature = "wasm-bindgen")]
 use crate::navigation_controller::models::{JsNavState, JsNavigationControllerConfig};
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 /// Manages the navigation lifecycle through a route,
 /// returning an updated state given inputs like user location.
@@ -409,7 +409,8 @@ impl JsNavigationController {
         let config: JsNavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
 
         Ok(JsNavigationController(NavigationController::new(
-            route, config.into(),
+            route,
+            config.into(),
         )))
     }
 
@@ -419,8 +420,7 @@ impl JsNavigationController {
         let nav_state = self.0.get_initial_state(location);
         let result: JsNavState = nav_state.into();
 
-        serde_wasm_bindgen::to_value(&result)
-            .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+        serde_wasm_bindgen::to_value(&result).map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
     pub fn advance_to_next_step(&self, state: JsValue) -> Result<JsValue, JsValue> {
