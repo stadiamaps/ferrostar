@@ -60,7 +60,7 @@ fn same_location_results_in_identical_state() {
 
     // Nothing should happen if given the exact same user location update
     assert_eq!(
-        controller.update_user_location(initial_user_location, &initial_state.trip_state),
+        controller.update_user_location(initial_user_location, &initial_state),
         initial_state
     );
 }
@@ -108,7 +108,7 @@ fn simple_route_state_machine_manual_advance() {
 
     // The current step should not advance until we specifically trigger an advance
     let intermediate_state =
-        controller.update_user_location(user_location_end_of_first_step, &initial_state.trip_state);
+        controller.update_user_location(user_location_end_of_first_step, &initial_state);
     let TripState::Navigating {
         snapped_user_location,
         ..
@@ -120,7 +120,7 @@ fn simple_route_state_machine_manual_advance() {
     assert_eq!(snapped_user_location, user_location_end_of_first_step);
 
     // Jump to the next step
-    let terminal_state = controller.advance_to_next_step(&intermediate_state.trip_state);
+    let terminal_state = controller.advance_to_next_step(&intermediate_state);
     let TripState::Navigating {
         remaining_steps, ..
     } = terminal_state.trip_state.clone()
@@ -132,9 +132,7 @@ fn simple_route_state_machine_manual_advance() {
 
     // There are only two steps, so advancing to the next step should put us in the "arrived" state
     assert!(matches!(
-        controller
-            .advance_to_next_step(&terminal_state.trip_state)
-            .trip_state,
+        controller.advance_to_next_step(&terminal_state).trip_state,
         TripState::Complete { .. }
     ));
 }
@@ -192,7 +190,7 @@ fn simple_route_state_machine_advances_with_location_change() {
         progress,
         ..
     } = controller
-        .update_user_location(user_location_end_of_first_step, &initial_state.trip_state)
+        .update_user_location(user_location_end_of_first_step, &initial_state)
         .trip_state
     else {
         panic!("Expected state to be navigating");
