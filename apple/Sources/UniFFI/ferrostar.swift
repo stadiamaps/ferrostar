@@ -3610,7 +3610,7 @@ public func FfiConverterTypeNavState_lower(_ value: NavState) -> RustBuffer {
 
 public struct NavigationControllerConfig {
     /**
-     * Configures when navigation advances to next waypoint in the route.
+     * Configures when navigation advances to the next waypoint in the route.
      */
     public var waypointAdvance: WaypointAdvanceMode
     /**
@@ -3624,7 +3624,7 @@ public struct NavigationControllerConfig {
      * exit from a step's geometry. The end of the route/arrival doesn't always accommodate
      * the expected location updates for the core step advance condition.
      *
-     * This exception is applied when remaining steps is less than or equal to 2.
+     * This exception is applied when the number of remaining steps is less than or equal to 2.
      */
     public var arrivalStepAdvanceCondition: StepAdvanceCondition
     /**
@@ -3643,7 +3643,7 @@ public struct NavigationControllerConfig {
     // declare one manually.
     public init(
         /**
-         * Configures when navigation advances to next waypoint in the route.
+         * Configures when navigation advances to the next waypoint in the route.
          */waypointAdvance: WaypointAdvanceMode, 
         /**
          * Configures when navigation advances to the next step in the route.
@@ -3655,7 +3655,7 @@ public struct NavigationControllerConfig {
          * exit from a step's geometry. The end of the route/arrival doesn't always accommodate
          * the expected location updates for the core step advance condition.
          *
-         * This exception is applied when remaining steps is less than or equal to 2.
+         * This exception is applied when the number of remaining steps is less than or equal to 2.
          */arrivalStepAdvanceCondition: StepAdvanceCondition, 
         /**
          * Configures when the user is deemed to be off course.

@@ -13,6 +13,8 @@ use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
+#[cfg(feature = "wasm-bindgen")]
+use super::step_advance::JsStepAdvanceCondition;
 
 use super::step_advance::conditions::ManualStepAdvance;
 use super::step_advance::StepAdvanceCondition;
@@ -25,6 +27,7 @@ use super::step_advance::StepAdvanceCondition;
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct NavState {
     trip_state: TripState,
+    // This has to be here because we actually do need to update internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
 }
 
@@ -69,6 +72,36 @@ impl NavState {
     #[inline]
     pub fn step_advance_condition(&self) -> Arc<dyn StepAdvanceCondition> {
         self.step_advance_condition.clone()
+    }
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[derive(Serialize, Deserialize, Tsify)]
+#[serde(rename_all = "camelCase")]
+#[tsify(into_wasm_abi, from_wasm_abi)]
+pub struct JsNavState {
+    trip_state: TripState,
+    // This has to be here because we actually do need to update internal state that changes throughout navigation.
+    step_advance_condition: JsStepAdvanceCondition,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+impl From<JsNavState> for NavState {
+    fn from(value: JsNavState) -> Self {
+        Self {
+            trip_state: value.trip_state,
+            step_advance_condition: value.step_advance_condition.into(),
+        }
+    }
+}
+
+#[cfg(feature = "wasm-bindgen")]
+impl From<NavState> for JsNavState {
+    fn from(value: NavState) -> Self {
+        Self {
+            trip_state: value.trip_state,
+            step_advance_condition: value.step_advance_condition.to_js(),
+        }
     }
 }
 
@@ -261,11 +294,8 @@ pub enum WaypointAdvanceMode {
 
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
-    /// Configures when navigation advances to next waypoint in the route.
+    /// Configures when navigation advances to the next waypoint in the route.
     pub waypoint_advance: WaypointAdvanceMode,
     /// Configures when navigation advances to the next step in the route.
     pub step_advance_condition: Arc<dyn StepAdvanceCondition>,
@@ -275,7 +305,7 @@ pub struct NavigationControllerConfig {
     /// exit from a step's geometry. The end of the route/arrival doesn't always accommodate
     /// the expected location updates for the core step advance condition.
     ///
-    /// This exception is applied when remaining steps is less than or equal to 2.
+    /// This exception is applied when the number of remaining steps is less than or equal to 2.
     pub arrival_step_advance_condition: Arc<dyn StepAdvanceCondition>,
     /// Configures when the user is deemed to be off course.
     ///
@@ -284,6 +314,45 @@ pub struct NavigationControllerConfig {
     pub route_deviation_tracking: RouteDeviationTracking,
     /// Configures how the heading component of the snapped location is reported in [`TripState`].
     pub snapped_location_course_filtering: CourseFiltering,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[derive(Deserialize, Tsify)]
+#[serde(rename_all = "camelCase")]
+#[tsify(from_wasm_abi)]
+pub struct JsNavigationControllerConfig {
+    /// Configures when navigation advances to the next waypoint in the route.
+    pub waypoint_advance: WaypointAdvanceMode,
+    /// Configures when navigation advances to the next step in the route.
+    pub step_advance_condition: JsStepAdvanceCondition,
+    /// A special advance condition used for the final 2 route steps (last and arrival).
+    ///
+    /// This exists because several of our step advance conditions require entry and
+    /// exit from a step's geometry. The end of the route/arrival doesn't always accommodate
+    /// the expected location updates for the core step advance condition.
+    ///
+    /// This exception is applied when the number of remaining steps is less than or equal to 2.
+    pub arrival_step_advance_condition: JsStepAdvanceCondition,
+    /// Configures when the user is deemed to be off course.
+    ///
+    /// NOTE: This is distinct from the action that is taken.
+    /// It is only the determination that the user has deviated from the expected route.
+    pub route_deviation_tracking: RouteDeviationTracking,
+    /// Configures how the heading component of the snapped location is reported in [`TripState`].
+    pub snapped_location_course_filtering: CourseFiltering,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+impl From<JsNavigationControllerConfig> for NavigationControllerConfig {
+    fn from(js_config: JsNavigationControllerConfig) -> Self {
+        Self {
+            waypoint_advance: js_config.waypoint_advance,
+            step_advance_condition: js_config.step_advance_condition.into(),
+            arrival_step_advance_condition: js_config.arrival_step_advance_condition.into(),
+            route_deviation_tracking: js_config.route_deviation_tracking,
+            snapped_location_course_filtering: js_config.snapped_location_course_filtering,
+        }
+    }
 }
 
 pub struct InitialNavigationState {

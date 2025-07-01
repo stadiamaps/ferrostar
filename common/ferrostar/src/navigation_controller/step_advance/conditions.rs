@@ -6,9 +6,20 @@ use crate::{
 };
 use geo::Point;
 
-use super::{StepAdvanceCondition, StepAdvanceResult};
+use super::{StepAdvanceCondition, StepAdvanceConditionJsConvertible, StepAdvanceResult};
+
+#[cfg(feature = "wasm-bindgen")]
+use serde::{Deserialize, Serialize};
+
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
+
+#[cfg(feature = "wasm-bindgen")]
+use super::JsStepAdvanceCondition;
 
 // MARK: Manual
+
+// We *could* implement Serialize for the major modes...
 
 /// Never advances to the next step automatically;
 /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
@@ -16,8 +27,6 @@ use super::{StepAdvanceCondition, StepAdvanceResult};
 /// You can use this to implement custom behaviors in external code.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct ManualStepAdvance;
 
 impl StepAdvanceCondition for ManualStepAdvance {
@@ -35,13 +44,18 @@ impl StepAdvanceCondition for ManualStepAdvance {
     }
 }
 
+impl StepAdvanceConditionJsConvertible for ManualStepAdvance {
+    #[cfg(feature = "wasm-bindgen")]
+    fn to_js(&self) -> JsStepAdvanceCondition {
+        JsStepAdvanceCondition::Manual
+    }
+}
+
 // MARK: Basic Conditions
 
 /// Automatically advances when the user's location is close enough to the end of the step
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct DistanceToEndOfStep {
     /// Distance to the last waypoint in the step, measured in meters, at which to advance.
     pub distance: u16,
@@ -79,6 +93,16 @@ impl StepAdvanceCondition for DistanceToEndOfStep {
     }
 }
 
+impl StepAdvanceConditionJsConvertible for DistanceToEndOfStep {
+    #[cfg(feature = "wasm-bindgen")]
+    fn to_js(&self) -> JsStepAdvanceCondition {
+        JsStepAdvanceCondition::DistanceToEndOfStep {
+            distance: self.distance,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+        }
+    }
+}
+
 /// Requires that the user be at least this far (distance in meters)
 /// from the current route step.
 ///
@@ -92,14 +116,12 @@ impl StepAdvanceCondition for DistanceToEndOfStep {
 /// the step within range of the end.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct DistanceFromStep {
+    /// The minimum the distance the user must have travelled from the step's polyline.
+    pub distance: u16,
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
     pub minimum_horizontal_accuracy: u16,
-    /// The minimum the distance the user must have travelled from the step's polyline.
-    pub distance: u16,
 }
 
 impl StepAdvanceCondition for DistanceFromStep {
@@ -133,6 +155,16 @@ impl StepAdvanceCondition for DistanceFromStep {
     }
 }
 
+impl StepAdvanceConditionJsConvertible for DistanceFromStep {
+    #[cfg(feature = "wasm-bindgen")]
+    fn to_js(&self) -> JsStepAdvanceCondition {
+        JsStepAdvanceCondition::DistanceFromStep {
+            distance: self.distance,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+        }
+    }
+}
+
 // MARK: Operator Conditions
 
 /// Advance if any of the conditions are met (OR).
@@ -144,8 +176,6 @@ impl StepAdvanceCondition for DistanceFromStep {
 /// 2. A default advance behavior.
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct OrAdvanceConditions {
     pub conditions: Vec<Arc<dyn StepAdvanceCondition>>,
 }
@@ -171,11 +201,18 @@ impl StepAdvanceCondition for OrAdvanceConditions {
     }
 }
 
+impl StepAdvanceConditionJsConvertible for OrAdvanceConditions {
+    #[cfg(feature = "wasm-bindgen")]
+    fn to_js(&self) -> JsStepAdvanceCondition {
+        JsStepAdvanceCondition::OrAdvanceConditions {
+            conditions: self.conditions.iter().map(|c| c.to_js()).collect(),
+        }
+    }
+}
+
 /// Advance if all of the conditions are met (AND).
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct AndAdvanceConditions {
     pub conditions: Vec<Arc<dyn StepAdvanceCondition>>,
 }
@@ -201,10 +238,18 @@ impl StepAdvanceCondition for AndAdvanceConditions {
     }
 }
 
+
+impl StepAdvanceConditionJsConvertible for AndAdvanceConditions {
+    #[cfg(feature = "wasm-bindgen")]
+    fn to_js(&self) -> JsStepAdvanceCondition {
+        JsStepAdvanceCondition::AndAdvanceConditions {
+            conditions: self.conditions.iter().map(|c| c.to_js()).collect(),
+        }
+    }
+}
+
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct DistanceEntryAndExitCondition {
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
@@ -306,6 +351,18 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 should_advance: false,
                 next_iteration: Arc::new(next_iteration),
             }
+        }
+    }
+}
+
+impl StepAdvanceConditionJsConvertible for DistanceEntryAndExitCondition {
+    #[cfg(feature = "wasm-bindgen")]
+    fn to_js(&self) -> JsStepAdvanceCondition {
+        JsStepAdvanceCondition::DistanceEntryExit {
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+            distance_to_end_of_step: self.distance_to_end_of_step,
+            distance_after_end_step: self.distance_after_end_step,
+            has_reached_end_of_current_step: self.has_reached_end_of_current_step,
         }
     }
 }

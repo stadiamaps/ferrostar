@@ -28,6 +28,8 @@ use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+#[cfg(feature = "wasm-bindgen")]
+use crate::navigation_controller::models::{JsNavState, JsNavigationControllerConfig};
 
 /// Manages the navigation lifecycle through a route,
 /// returning an updated state given inputs like user location.
@@ -404,25 +406,28 @@ impl JsNavigationController {
     #[wasm_bindgen(constructor)]
     pub fn new(route: JsValue, config: JsValue) -> Result<JsNavigationController, JsValue> {
         let route: Route = serde_wasm_bindgen::from_value(route)?;
-        let config: NavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
+        let config: JsNavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
 
         Ok(JsNavigationController(NavigationController::new(
-            route, config,
+            route, config.into(),
         )))
     }
 
     #[wasm_bindgen(js_name = getInitialState)]
     pub fn get_initial_state(&self, location: JsValue) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
+        let nav_state = self.0.get_initial_state(location);
+        let result: JsNavState = nav_state.into();
 
-        serde_wasm_bindgen::to_value(&self.0.get_initial_state(location))
+        serde_wasm_bindgen::to_value(&result)
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
     pub fn advance_to_next_step(&self, state: JsValue) -> Result<JsValue, JsValue> {
-        let state: TripState = serde_wasm_bindgen::from_value(state)?;
+        let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
+        let new_state = self.0.advance_to_next_step(&state.into());
 
-        serde_wasm_bindgen::to_value(&self.0.advance_to_next_step(&state))
+        serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
@@ -433,9 +438,10 @@ impl JsNavigationController {
         state: JsValue,
     ) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
-        let state: TripState = serde_wasm_bindgen::from_value(state)?;
+        let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
+        let new_state = self.0.update_user_location(location, &state.into());
 
-        serde_wasm_bindgen::to_value(&self.0.update_user_location(location, &state))
+        serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 }

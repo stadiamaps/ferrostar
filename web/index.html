@@ -68,13 +68,19 @@
 
       // TODO: type + use TypeScript enum
       const config = {
-        stepAdvance: {
-          RelativeLineStringDistance: {
+        stepAdvanceCondition: {
+          DistanceEntryExit: {
             minimumHorizontalAccuracy: 25,
-            specialAdvanceConditions: {
-              MinimumDistanceFromCurrentStepLine: 10,
-            },
-          },
+            distanceToEndOfStep: 10,
+            distanceAfterEndStep: 5,
+            hasReachedEndOfCurrentStep: false,
+          }
+        },
+        arrivalStepAdvanceCondition: {
+          DistanceToEndOfStep: {
+            distance: 10,
+            minimumHorizontalAccuracy: 25,
+          }
         },
         routeDeviationTracking: {
           StaticThreshold: {
