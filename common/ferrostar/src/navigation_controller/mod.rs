@@ -46,8 +46,12 @@ pub struct NavigationController {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait Navigator: Send + Sync {
     fn get_initial_state(&self, location: UserLocation) -> NavigatorState;
-    fn advance_to_next_step(&self, state: &TripState) -> NavigatorState;
-    fn update_user_location(&self, location: UserLocation, state: &TripState) -> NavigatorState;
+    fn advance_to_next_step(&self, state: &NavigatorState) -> NavigatorState;
+    fn update_user_location(
+        &self,
+        location: UserLocation,
+        state: &NavigatorState,
+    ) -> NavigatorState;
 }
 
 /// Creates a new navigation controller for the given route and configuration.
@@ -212,8 +216,8 @@ impl Navigator for NavigationController {
     ///
     /// This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-    fn advance_to_next_step(&self, state: &TripState) -> NavigatorState {
-        match state {
+    fn advance_to_next_step(&self, state: &NavigatorState) -> NavigatorState {
+        match state.trip_state() {
             TripState::Idle { user_location } => {
                 let trip_state = TripState::Idle {
                     user_location: *user_location,
@@ -297,8 +301,12 @@ impl Navigator for NavigationController {
     ///
     /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
     /// this function will panic.
-    fn update_user_location(&self, location: UserLocation, state: &TripState) -> NavigatorState {
-        match state {
+    fn update_user_location(
+        &self,
+        location: UserLocation,
+        state: &NavigatorState,
+    ) -> NavigatorState {
+        match state.trip_state() {
             TripState::Idle { .. } => {
                 let trip_state = TripState::Idle {
                     user_location: Some(location),
@@ -347,7 +355,7 @@ impl Navigator for NavigationController {
                 );
 
                 // Trim the remaining waypoints if needed.
-                let remaining_waypoints = if self.should_advance_waypoint(state) {
+                let remaining_waypoints = if self.should_advance_waypoint(state.trip_state()) {
                     let mut remaining_waypoints = remaining_waypoints.clone();
                     remaining_waypoints.remove(0);
                     remaining_waypoints
@@ -376,7 +384,7 @@ impl Navigator for NavigationController {
                     self.config.step_advance,
                 ) {
                     // Advance to the next step
-                    self.advance_to_next_step(&intermediate_state)
+                    self.advance_to_next_step(&NavigatorState::from(intermediate_state))
                 } else {
                     // Do not advance
                     NavigatorState::from(intermediate_state)
@@ -578,7 +586,7 @@ mod tests {
         loop {
             let new_simulation_state = advance_location_simulation(&simulation_state);
             let new_state = controller
-                .update_user_location(new_simulation_state.current_location, &state)
+                .update_user_location(new_simulation_state.current_location, &NavigatorState::from(state))
                 .trip_state;
 
             match new_state {

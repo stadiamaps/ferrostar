@@ -158,14 +158,20 @@ pub enum TripState {
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub struct NavigatorState {
     pub trip_state: TripState,
-    pub recording_event_data: Option<NavigationRecordingEventData>,
+    pub recording_events: Option<Vec<NavigationRecordingEvent>>,
+}
+
+impl NavigatorState {
+    pub fn trip_state(&self) -> &TripState {
+        &self.trip_state
+    }
 }
 
 impl From<TripState> for NavigatorState {
     fn from(trip_state: TripState) -> Self {
         Self {
             trip_state,
-            recording_event_data: None,
+            recording_events: None,
         }
     }
 }
@@ -309,6 +315,10 @@ pub struct InitialNavigationState {
     pub route: Route,
 }
 
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event.
     pub timestamp: i64,
