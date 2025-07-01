@@ -69,8 +69,8 @@ extension DemoModel {
 let demoModel = DemoModel()
 
 @Observable final class DemoModel {
-    var errorMessage: String?
-    var appState: DemoAppState = .idle
+    @MainActor var errorMessage: String?
+    @MainActor var appState: DemoAppState = .idle
     let locationProvider: SwitchableLocationProvider
     let core: FerrostarCore
     var origin: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
@@ -133,29 +133,26 @@ let demoModel = DemoModel()
         return .idle
     }
 
-    private func wrap(wrap: () throws -> DemoAppState) {
-        do {
-            errorMessage = nil
-            appState = try wrap()
-        } catch {
-            errorMessage = error.localizedDescription
-            appState = .idle
-        }
-    }
-
     private func wrap(wrap: () async throws -> DemoAppState) async {
         do {
-            errorMessage = nil
-            appState = try await wrap()
+            await MainActor.run {
+                errorMessage = nil
+            }
+            let newState = try await wrap()
+            await MainActor.run {
+                appState = newState
+            }
         } catch {
-            errorMessage = error.localizedDescription
-            appState = .idle
+            await MainActor.run {
+                errorMessage = error.localizedDescription
+                appState = .idle
+            }
         }
     }
 
-    func chooseDestination() {
-        wrap {
-            try appState.setDestination(destination)
+    func chooseDestination() async {
+        await wrap {
+            try await appState.setDestination(destination)
         }
     }
 
@@ -169,19 +166,19 @@ let demoModel = DemoModel()
         }
     }
 
-    func chooseRoute(_ route: Route) {
-        wrap {
+    func chooseRoute(_ route: Route) async {
+        await wrap {
             selectedRoute = route
             return .selectedRoute(route)
         }
     }
 
-    func navigate(_ route: Route) {
-        wrap { try startNavigation(on: route) }
+    func navigate(_ route: Route) async {
+        await wrap { try startNavigation(on: route) }
     }
 
-    func stop() {
-        wrap {
+    func stop() async {
+        await wrap {
             selectedRoute = nil
             return stopNavigation()
         }

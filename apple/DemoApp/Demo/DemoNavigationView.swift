@@ -20,11 +20,11 @@ private extension SwitchableLocationProvider.State {
 }
 
 private extension DemoModel {
-    func selectRoute(from routes: [Route]) {
+    @MainActor func selectRoute(from routes: [Route]) async {
         do {
             guard let route = routes.first else { throw DemoError.noFirstRoute }
             selectedRoute = route
-            chooseRoute(route)
+            await chooseRoute(route)
         } catch {
             errorMessage = error.localizedDescription
             appState = .idle
@@ -50,108 +50,110 @@ struct DemoNavigationView: View {
     var body: some View {
         let locationServicesEnabled = model.locationServicesEnabled
 
-        NavigationStack {
-            DynamicallyOrientingNavigationView(
-                styleURL: AppDefaults.mapStyleURL,
-                camera: $model.camera,
-                navigationState: model.coreState,
-                isMuted: model.core.spokenInstructionObserver.isMuted,
-                onTapMute: model.core.spokenInstructionObserver.toggleMute,
-                onTapExit: { stopNavigation() },
-                makeMapContent: {
-                    let source = ShapeSource(identifier: "userLocation") {
-                        // Demonstrate how to add a dynamic overlay;
-                        // also incidentally shows the extent of puck lag
-                        if let coordinate = model.lastCoordinate {
-                            MLNPointFeature(coordinate: coordinate)
-                        }
-                    }
-                    CircleStyleLayer(identifier: "foo", source: source)
+        DynamicallyOrientingNavigationView(
+            styleURL: AppDefaults.mapStyleURL,
+            camera: $model.camera,
+            navigationState: model.coreState,
+            isMuted: model.core.spokenInstructionObserver.isMuted,
+            onTapMute: model.core.spokenInstructionObserver.toggleMute,
+            onTapExit: {
+                Task {
+                    await stopNavigation()
                 }
-            )
-            .navigationSpeedLimit(
-                // Configure speed limit signage based on user preference or location
-                speedLimit: model.core.annotation?.speedLimit,
-                speedLimitStyle: .mutcdStyle
-            )
-            .innerGrid(
-                topCenter: {
-                    if let errorMessage = model.errorMessage {
-                        NavigationUIBanner(severity: .error) {
-                            Text(errorMessage)
-                        }
-                        .onTapGesture {
-                            model.errorMessage = nil
-                        }
-                    } else if isFetchingRoutes {
-                        NavigationUIBanner(severity: .loading) {
-                            Text("Loading route...")
-                        }
+            },
+            makeMapContent: {
+                let source = ShapeSource(identifier: "userLocation") {
+                    // Demonstrate how to add a dynamic overlay;
+                    // also incidentally shows the extent of puck lag
+                    if let coordinate = model.lastCoordinate {
+                        MLNPointFeature(coordinate: coordinate)
                     }
-                },
-                bottomTrailing: {
-                    VStack {
-                        Text(locationLabel)
-                            .font(.caption)
-                            .padding(.all, 8)
-                            .foregroundColor(.white)
-                            .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+                }
+                CircleStyleLayer(identifier: "foo", source: source)
+            }
+        )
+        .navigationSpeedLimit(
+            // Configure speed limit signage based on user preference or location
+            speedLimit: model.core.annotation?.speedLimit,
+            speedLimitStyle: .mutcdStyle
+        )
+        .innerGrid(
+            topCenter: {
+                if let errorMessage = model.errorMessage {
+                    NavigationUIBanner(severity: .error) {
+                        Text(errorMessage)
+                    }
+                    .onTapGesture {
+                        model.errorMessage = nil
+                    }
+                } else if isFetchingRoutes {
+                    NavigationUIBanner(severity: .loading) {
+                        Text("Loading route...")
+                    }
+                }
+            },
+            bottomTrailing: {
+                VStack {
+                    Text(locationLabel)
+                        .font(.caption)
+                        .padding(.all, 8)
+                        .foregroundColor(.white)
+                        .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
 
-                        if locationServicesEnabled {
-                            if model.appState.showStateButton {
-                                NavigationUIButton {
+                    if locationServicesEnabled {
+                        if model.appState.showStateButton {
+                            NavigationUIButton {
+                                Task {
                                     switch model.appState {
                                     case .idle:
-                                        model.chooseDestination()
+                                        await model.chooseDestination()
                                     case let .destination(coordinate):
-                                        Task {
-                                            isFetchingRoutes = true
-                                            await model.loadRoute(coordinate)
-                                            isFetchingRoutes = false
-                                        }
+                                        isFetchingRoutes = true
+                                        await model.loadRoute(coordinate)
+                                        isFetchingRoutes = false
                                     case let .routes(routes):
-                                        model.selectRoute(from: routes)
+                                        await model.selectRoute(from: routes)
                                     case let .selectedRoute(route):
-                                        startNavigation(route)
+                                        await startNavigation(route)
                                     case .navigating:
                                         // Should not reach this.
                                         break
                                     }
-                                } label: {
-                                    Text(model.appState.buttonText)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.5)
-                                        .font(.body.bold())
                                 }
-                            }
-                        } else {
-                            NavigationUIButton {
-                                // TODO: enable location services.
                             } label: {
-                                Text("Enable Location Services")
+                                Text(model.appState.buttonText)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
+                                    .font(.body.bold())
                             }
                         }
-                        Button {
-                            model.toggleLocationSimulation()
+                    } else {
+                        NavigationUIButton {
+                            // TODO: enable location services.
                         } label: {
-                            model.locationProvider.type.label
+                            Text("Enable Location Services")
                         }
-                        .buttonStyle(NavigationUIButtonStyle())
                     }
+                    Button {
+                        model.toggleLocationSimulation()
+                    } label: {
+                        model.locationProvider.type.label
+                    }
+                    .buttonStyle(NavigationUIButtonStyle())
                 }
-            )
-        }
+            }
+        )
     }
 
     // MARK: Conveniences
 
-    func startNavigation(_ route: Route) {
-        model.navigate(route)
+    func startNavigation(_ route: Route) async {
+        await model.navigate(route)
         preventAutoLock()
     }
 
-    func stopNavigation() {
-        model.stop()
+    func stopNavigation() async {
+        await model.stop()
         allowAutoLock()
     }
 
