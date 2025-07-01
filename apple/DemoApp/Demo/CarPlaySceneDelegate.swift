@@ -38,7 +38,12 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
             return
         }
 
-        let manager = setupCarPlay(on: window)
+        guard let model = demoModel else {
+            Logger.carPlay.error("No shared DemoModel")
+            return
+        }
+
+        let manager = setupCarPlay(on: window, model: model)
         let mapTemplate = manager.mapTemplate
 
         // Set the root template
@@ -70,31 +75,24 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
         templateApplicationScene.session.carPlayManager = nil
     }
 
-    private func setupCarPlay(on window: UIWindow) -> FerrostarCarPlayManager {
-        let view = DemoCarPlayNavigationView(
-            ferrostarCore: appEnvironment.ferrostarCore,
-            styleURL: AppDefaults.mapStyleURL,
-            camera: Binding(
-                get: { appEnvironment.camera.camera },
-                set: { appEnvironment.camera.camera = $0 }
-            )
-        )
+    private func setupCarPlay(on window: UIWindow, model: DemoModel) -> FerrostarCarPlayManager {
+        let view = DemoCarPlayNavigationView(model: model, styleURL: AppDefaults.mapStyleURL)
 
         let carPlayViewController = UIHostingController(rootView: view)
 
         let carPlayManager = FerrostarCarPlayManager(
-            appEnvironment.ferrostarCore,
+            model.core,
             distanceUnits: .default,
             // TODO: We may need to hold the view or viewController here, but it seems
             //       to work for now.
-            showCentering: !appEnvironment.camera.camera.isTrackingUserLocationWithCourse,
-            onCenter: { appEnvironment.camera.camera = .automotiveNavigation(pitch: 25)
+            showCentering: !model.camera.isTrackingUserLocationWithCourse,
+            onCenter: { model.camera = .automotiveNavigation(pitch: 25)
             },
             onStartTrip: {
                 // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
             },
             onCancelTrip: {
-                appEnvironment.ferrostarCore.stopNavigation()
+                model.core.stopNavigation()
             }
         )
 
