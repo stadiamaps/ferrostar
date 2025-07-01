@@ -171,4 +171,3 @@ struct DemoNavigationView: View {
         UIApplication.shared.isIdleTimerDisabled = false
     }
 }
-
