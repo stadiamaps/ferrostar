@@ -5,7 +5,6 @@ use crate::navigation_controller::models::{
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
-use std::fmt::Display;
 
 #[derive(Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
@@ -22,17 +21,21 @@ pub struct NavigationRecording {
     pub events: Vec<NavigationRecordingEvent>,
 }
 
+/// Custom error type for navigation recording operations.
 #[derive(Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum NavigationRecordingError {
-    #[cfg_attr(feature = "std", error("Serialization error: {0}"))]
-    SerializationError(String),
+    #[cfg_attr(feature = "std", error("Serialization error: {error}."))]
+    SerializationError { error: String },
 }
 
+/// Implement conversion from serde_json::Error to NavigationRecordingError.
 impl From<serde_json::Error> for NavigationRecordingError {
     fn from(e: serde_json::Error) -> Self {
-        NavigationRecordingError::SerializationError(e.to_string())
+        NavigationRecordingError::SerializationError {
+            error: e.to_string(),
+        }
     }
 }
 
@@ -40,9 +43,9 @@ impl From<serde_json::Error> for NavigationRecordingError {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationRecording {
     /// Serialize the recording to a pretty JSON format.
-    /// Returns a Result with the JSON string or an error message.
+    /// Returns a Result with the JSON string or an error.
     pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
-        serde_json::to_string_pretty(self).map_err(NavigationRecordingError::from)
+        serde_json::to_string_pretty(self).map_err(|error| NavigationRecordingError::from(error))
     }
 }
 
