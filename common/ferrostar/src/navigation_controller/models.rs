@@ -9,15 +9,14 @@ use crate::models::{
 use alloc::vec::Vec;
 use chrono::{DateTime, Utc};
 use geo::LineString;
-#[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
+#[cfg(any(feature = "wasm-bindgen", test))]
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
 /// High-level state describing progress through a route.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
@@ -34,9 +33,8 @@ pub struct TripProgress {
 
 /// Information pertaining to the user's full navigation trip. This includes
 /// simple stats like total duration and distance.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
@@ -80,9 +78,8 @@ impl TripSummary {
 /// This is produced by [`NavigationController`](super::NavigationController) methods
 /// including [`get_initial_state`](super::NavigationController::get_initial_state)
 /// and [`update_user_location`](super::NavigationController::update_user_location).
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 #[allow(clippy::large_enum_variant)]
@@ -164,9 +161,9 @@ pub enum StepAdvanceStatus {
 }
 
 /// Controls filtering/post-processing of user course by the [`NavigationController`].
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum CourseFiltering {
     /// Snap the user's course to the current step's linestring using the next index in the step's geometry.
@@ -180,9 +177,9 @@ pub enum CourseFiltering {
 
 /// The step advance mode describes when the current maneuver has been successfully completed,
 /// and we should advance to the next step.
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum StepAdvanceMode {
     /// Never advances to the next step automatically;
@@ -214,9 +211,9 @@ pub enum StepAdvanceMode {
 }
 
 /// Special conditions which alter the normal step advance logic,
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum SpecialAdvanceConditions {
     /// Allows navigation to advance to the next step as soon as the user
@@ -254,18 +251,18 @@ pub enum SpecialAdvanceConditions {
 /// This will not normally cause any issues, but keep in mind that
 /// manually advancing to the next step does not *necessarily* imply
 /// that the waypoint will be marked as complete!
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum WaypointAdvanceMode {
     /// Advance when the waypoint is within a certain range of meters from the user's location.
     WaypointWithinRange(f64),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
@@ -282,6 +279,7 @@ pub struct NavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct InitialNavigationState {
     /// The user location at the start of the navigation session.
     pub user_location: UserLocation,
@@ -291,6 +289,7 @@ pub struct InitialNavigationState {
     pub route: Route,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event.
     pub timestamp: i64,
@@ -298,6 +297,7 @@ pub struct NavigationRecordingEvent {
     pub event_data: NavigationRecordingEventData,
 }
 
+#[derive(Serialize, Deserialize)]
 pub enum NavigationRecordingEventData {
     LocationUpdate {
         /// Updated user location.
