@@ -25,6 +25,7 @@ pub struct NavigationRecording {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationRecording {
     /// Serialize the recording to a pretty JSON format.
+    /// Returns a Result with the JSON string or an error message.
     pub fn to_json(&self) -> Result<String, String> {
         serde_json::to_string_pretty(self).map_err(|e| e.to_string())
     }
