@@ -32,7 +32,7 @@ class NavigationDelegate: FerrostarCoreDelegate {
                     stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
                         distanceToEndOfStep: 10,
                         distanceAfterEndStep: 2,
-                        minimumHorizontalAccuracy: 32,
+                        minimumHorizontalAccuracy: 32
                     ),
                     arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(
                         distance: 10,
