@@ -6,7 +6,7 @@ pub mod recording;
 #[cfg(test)]
 pub(crate) mod test_helpers;
 
-use crate::navigation_controller::models::NavigatorState;
+use crate::navigation_controller::models::NavState;
 use crate::{
     algorithms::{
         advance_step, apply_snapped_course, calculate_trip_progress,
@@ -45,13 +45,9 @@ pub struct NavigationController {
 /// around [`NavigationController`] a composable manner.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait Navigator: Send + Sync {
-    fn get_initial_state(&self, location: UserLocation) -> NavigatorState;
-    fn advance_to_next_step(&self, state: &NavigatorState) -> NavigatorState;
-    fn update_user_location(
-        &self,
-        location: UserLocation,
-        state: &NavigatorState,
-    ) -> NavigatorState;
+    fn get_initial_state(&self, location: UserLocation) -> NavState;
+    fn advance_to_next_step(&self, state: &NavState) -> NavState;
+    fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState;
 }
 
 /// Creates a new navigation controller for the given route and configuration.
@@ -149,7 +145,7 @@ impl NavigationController {
 
 impl Navigator for NavigationController {
     /// Returns initial trip state as if the user had just started the route with no progress.
-    fn get_initial_state(&self, location: UserLocation) -> NavigatorState {
+    fn get_initial_state(&self, location: UserLocation) -> NavState {
         let remaining_steps = self.route.steps.clone();
 
         let initial_summary = TripSummary {
@@ -162,7 +158,7 @@ impl Navigator for NavigationController {
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
             let trip_state = Self::completed_trip_state(location, initial_summary);
-            return NavigatorState::from(trip_state);
+            return NavState::from(trip_state);
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -205,7 +201,7 @@ impl Navigator for NavigationController {
             annotation_json,
         };
 
-        NavigatorState::from(trip_state)
+        NavState::from(trip_state)
     }
 
     /// Advances navigation to the next step.
@@ -216,13 +212,13 @@ impl Navigator for NavigationController {
     ///
     /// This method is takes the intermediate state (e.g. from `update_user_location`) and advances if necessary.
     /// As a result, you do not to re-calculate things like deviation or the snapped user location (search this file for usage of this function).
-    fn advance_to_next_step(&self, state: &NavigatorState) -> NavigatorState {
+    fn advance_to_next_step(&self, state: &NavState) -> NavState {
         match state.trip_state() {
             TripState::Idle { user_location } => {
                 let trip_state = TripState::Idle {
                     user_location: *user_location,
                 };
-                NavigatorState::from(trip_state)
+                NavState::from(trip_state)
             }
             TripState::Navigating {
                 current_step_geometry_index,
@@ -276,12 +272,12 @@ impl Navigator for NavigationController {
                             annotation_json,
                         };
 
-                        NavigatorState::from(trip_state)
+                        NavState::from(trip_state)
                     }
                     StepAdvanceStatus::EndOfRoute => {
                         let trip_state =
                             Self::completed_trip_state(*user_location, summary.clone());
-                        NavigatorState::from(trip_state)
+                        NavState::from(trip_state)
                     }
                 }
             }
@@ -290,7 +286,7 @@ impl Navigator for NavigationController {
                 summary,
             } => {
                 let trip_state = Self::completed_trip_state(*user_location, summary.clone());
-                NavigatorState::from(trip_state)
+                NavState::from(trip_state)
             }
         }
     }
@@ -301,17 +297,13 @@ impl Navigator for NavigationController {
     ///
     /// If there is no current step ([`TripState::Navigating`] has an empty `remainingSteps` value),
     /// this function will panic.
-    fn update_user_location(
-        &self,
-        location: UserLocation,
-        state: &NavigatorState,
-    ) -> NavigatorState {
+    fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState {
         match state.trip_state() {
             TripState::Idle { .. } => {
                 let trip_state = TripState::Idle {
                     user_location: Some(location),
                 };
-                NavigatorState::from(trip_state)
+                NavState::from(trip_state)
             }
             TripState::Navigating {
                 ref remaining_steps,
@@ -328,7 +320,7 @@ impl Navigator for NavigationController {
                 let Some(current_step) = remaining_steps.first() else {
                     let trip_state =
                         Self::completed_trip_state(*previous_user_location, summary.clone());
-                    return NavigatorState::from(trip_state);
+                    return NavState::from(trip_state);
                 };
 
                 //
@@ -384,16 +376,16 @@ impl Navigator for NavigationController {
                     self.config.step_advance,
                 ) {
                     // Advance to the next step
-                    self.advance_to_next_step(&NavigatorState::from(intermediate_state))
+                    self.advance_to_next_step(&NavState::from(intermediate_state))
                 } else {
                     // Do not advance
-                    NavigatorState::from(intermediate_state)
+                    NavState::from(intermediate_state)
                 };
 
                 match navigator_state.trip_state {
                     TripState::Idle { user_location } => {
                         let trip_state = TripState::Idle { user_location };
-                        NavigatorState::from(trip_state)
+                        NavState::from(trip_state)
                     }
                     TripState::Navigating {
                         user_location: location,
@@ -455,14 +447,14 @@ impl Navigator for NavigationController {
                             spoken_instruction,
                             annotation_json,
                         };
-                        NavigatorState::from(trip_state)
+                        NavState::from(trip_state)
                     }
                     TripState::Complete {
                         user_location,
                         summary,
                     } => {
                         let trip_state = Self::completed_trip_state(user_location, summary.clone());
-                        NavigatorState::from(trip_state)
+                        NavState::from(trip_state)
                     }
                 }
             }
@@ -472,7 +464,7 @@ impl Navigator for NavigationController {
                 summary,
             } => {
                 let trip_state = Self::completed_trip_state(*user_location, summary.clone());
-                NavigatorState::from(trip_state)
+                NavState::from(trip_state)
             }
         }
     }
@@ -586,7 +578,10 @@ mod tests {
         loop {
             let new_simulation_state = advance_location_simulation(&simulation_state);
             let new_state = controller
-                .update_user_location(new_simulation_state.current_location, &NavigatorState::from(state))
+                .update_user_location(
+                    new_simulation_state.current_location,
+                    &NavState::from(state),
+                )
                 .trip_state;
 
             match new_state {
