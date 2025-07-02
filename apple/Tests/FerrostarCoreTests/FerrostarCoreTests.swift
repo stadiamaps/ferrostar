@@ -403,7 +403,7 @@ final class FerrostarCoreTests: XCTestCase {
             stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
                 distanceToEndOfStep: 10,
                 distanceAfterEndStep: 2,
-                minimumHorizontalAccuracy: 32,
+                minimumHorizontalAccuracy: 32
             ),
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 10, minimumHorizontalAccuracy: 32),
             routeDeviationTracking: .custom(detector: { _, _, _ in

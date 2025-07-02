@@ -39,7 +39,7 @@ let package = Package(
     name: "FerrostarCore",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v16),
+        .iOS(.v16)
     ],
     products: [
         // Products define the executables and libraries a package produces, and make them visible to other packages.
@@ -102,11 +102,11 @@ let package = Package(
         .target(
             name: "FerrostarSwiftUI",
             dependencies: [
-                .target(name: "FerrostarCore"),
+                .target(name: "FerrostarCore")
             ],
             path: "apple/Sources/FerrostarSwiftUI",
             resources: [
-                .process("Resources"),
+                .process("Resources")
             ]
         ),
         .target(
