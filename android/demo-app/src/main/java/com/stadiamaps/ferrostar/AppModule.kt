@@ -90,11 +90,7 @@ object AppModule {
             navigationControllerConfig =
                 NavigationControllerConfig(
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
-                    stepAdvanceDistanceEntryAndExit(
-                        32u,
-                        10u,
-                        5u,
-                    ),
+                    stepAdvanceDistanceEntryAndExit(10u, 5u, 32u),
                     stepAdvanceDistanceToEndOfStep(10u, 32u),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),

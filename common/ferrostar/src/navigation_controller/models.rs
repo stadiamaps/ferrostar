@@ -16,7 +16,7 @@ use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
-use super::step_advance::conditions::ManualStepAdvance;
+use super::step_advance::conditions::ManualStepCondition;
 use super::step_advance::StepAdvanceCondition;
 
 /// This is a lower level container for the TripState that enables
@@ -45,7 +45,7 @@ impl NavState {
     pub fn idle(user_location: Option<UserLocation>) -> Self {
         Self {
             trip_state: TripState::Idle { user_location },
-            step_advance_condition: Arc::new(ManualStepAdvance {}), // No op condition.
+            step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
         }
     }
 
@@ -60,7 +60,7 @@ impl NavState {
                     ..last_summary
                 },
             },
-            step_advance_condition: Arc::new(ManualStepAdvance {}), // No op condition.
+            step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
         }
     }
 

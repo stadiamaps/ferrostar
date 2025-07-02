@@ -1,12 +1,16 @@
 use crate::{
     models::{RouteStep, UserLocation},
     navigation_controller::step_advance::conditions::{
-        AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceFromStep, DistanceToEndOfStep,
-        ManualStepAdvance, OrAdvanceConditions,
+        AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceFromStepCondition,
+        DistanceToEndOfStepCondition, ManualStepCondition, OrAdvanceConditions,
     },
 };
+
+#[cfg(feature = "wasm-bindgen")]
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+
+#[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
 pub mod conditions;
@@ -83,18 +87,18 @@ pub enum JsStepAdvanceCondition {
 impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
     fn from(condition: JsStepAdvanceCondition) -> Arc<dyn StepAdvanceCondition> {
         match condition {
-            JsStepAdvanceCondition::Manual => Arc::new(ManualStepAdvance),
+            JsStepAdvanceCondition::Manual => Arc::new(ManualStepCondition),
             JsStepAdvanceCondition::DistanceToEndOfStep {
                 distance,
                 minimum_horizontal_accuracy,
-            } => Arc::new(DistanceToEndOfStep {
+            } => Arc::new(DistanceToEndOfStepCondition {
                 distance,
                 minimum_horizontal_accuracy,
             }),
             JsStepAdvanceCondition::DistanceFromStep {
                 distance,
                 minimum_horizontal_accuracy,
-            } => Arc::new(DistanceToEndOfStep {
+            } => Arc::new(DistanceToEndOfStepCondition {
                 distance,
                 minimum_horizontal_accuracy,
             }),
@@ -126,7 +130,7 @@ impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 pub fn step_advance_manual() -> Arc<dyn StepAdvanceCondition> {
-    Arc::new(ManualStepAdvance)
+    Arc::new(ManualStepCondition)
 }
 
 #[cfg(feature = "uniffi")]
@@ -135,7 +139,7 @@ pub fn step_advance_distance_to_end_of_step(
     distance: u16,
     minimum_horizontal_accuracy: u16,
 ) -> Arc<dyn StepAdvanceCondition> {
-    Arc::new(DistanceToEndOfStep {
+    Arc::new(DistanceToEndOfStepCondition {
         distance,
         minimum_horizontal_accuracy,
     })
@@ -147,7 +151,7 @@ pub fn step_advance_distance_from_step(
     distance: u16,
     minimum_horizontal_accuracy: u16,
 ) -> Arc<dyn StepAdvanceCondition> {
-    Arc::new(DistanceFromStep {
+    Arc::new(DistanceFromStepCondition {
         distance,
         minimum_horizontal_accuracy,
     })
@@ -172,13 +176,13 @@ pub fn step_advance_and(
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 pub fn step_advance_distance_entry_and_exit(
-    minimum_horizontal_accuracy: u16,
     distance_to_end_of_step: u16,
     distance_after_end_step: u16,
+    minimum_horizontal_accuracy: u16,
 ) -> Arc<dyn StepAdvanceCondition> {
     Arc::new(DistanceEntryAndExitCondition::new(
-        minimum_horizontal_accuracy,
         distance_to_end_of_step,
         distance_after_end_step,
+        minimum_horizontal_accuracy,
     ))
 }

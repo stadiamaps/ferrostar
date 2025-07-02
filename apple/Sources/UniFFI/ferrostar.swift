@@ -868,7 +868,7 @@ public func FfiConverterTypeDistanceEntryAndExitCondition_lower(_ value: Distanc
  * where this may eagerly exit a current step before the user has traversed it if the start
  * the step within range of the end.
  */
-public protocol DistanceFromStepProtocol: AnyObject, Sendable {
+public protocol DistanceFromStepConditionProtocol: AnyObject, Sendable {
     
 }
 /**
@@ -884,7 +884,7 @@ public protocol DistanceFromStepProtocol: AnyObject, Sendable {
  * where this may eagerly exit a current step before the user has traversed it if the start
  * the step within range of the end.
  */
-open class DistanceFromStep: DistanceFromStepProtocol, @unchecked Sendable {
+open class DistanceFromStepCondition: DistanceFromStepConditionProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
     /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
@@ -921,7 +921,7 @@ open class DistanceFromStep: DistanceFromStepProtocol, @unchecked Sendable {
     @_documentation(visibility: private)
 #endif
     public func uniffiClonePointer() -> UnsafeMutableRawPointer {
-        return try! rustCall { uniffi_ferrostar_fn_clone_distancefromstep(self.pointer, $0) }
+        return try! rustCall { uniffi_ferrostar_fn_clone_distancefromstepcondition(self.pointer, $0) }
     }
     // No primary constructor declared for this class.
 
@@ -930,7 +930,7 @@ open class DistanceFromStep: DistanceFromStepProtocol, @unchecked Sendable {
             return
         }
 
-        try! rustCall { uniffi_ferrostar_fn_free_distancefromstep(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_fn_free_distancefromstepcondition(pointer, $0) }
     }
 
     
@@ -943,20 +943,20 @@ open class DistanceFromStep: DistanceFromStepProtocol, @unchecked Sendable {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public struct FfiConverterTypeDistanceFromStep: FfiConverter {
+public struct FfiConverterTypeDistanceFromStepCondition: FfiConverter {
 
     typealias FfiType = UnsafeMutableRawPointer
-    typealias SwiftType = DistanceFromStep
+    typealias SwiftType = DistanceFromStepCondition
 
-    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceFromStep {
-        return DistanceFromStep(unsafeFromRawPointer: pointer)
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceFromStepCondition {
+        return DistanceFromStepCondition(unsafeFromRawPointer: pointer)
     }
 
-    public static func lower(_ value: DistanceFromStep) -> UnsafeMutableRawPointer {
+    public static func lower(_ value: DistanceFromStepCondition) -> UnsafeMutableRawPointer {
         return value.uniffiClonePointer()
     }
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceFromStep {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceFromStepCondition {
         let v: UInt64 = try readInt(&buf)
         // The Rust code won't compile if a pointer won't fit in a UInt64.
         // We have to go via `UInt` because that's the thing that's the size of a pointer.
@@ -967,7 +967,7 @@ public struct FfiConverterTypeDistanceFromStep: FfiConverter {
         return try lift(ptr!)
     }
 
-    public static func write(_ value: DistanceFromStep, into buf: inout [UInt8]) {
+    public static func write(_ value: DistanceFromStepCondition, into buf: inout [UInt8]) {
         // This fiddling is because `Int` is the thing that's the same size as a pointer.
         // The Rust code won't compile if a pointer won't fit in a `UInt64`.
         writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
@@ -978,15 +978,15 @@ public struct FfiConverterTypeDistanceFromStep: FfiConverter {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeDistanceFromStep_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceFromStep {
-    return try FfiConverterTypeDistanceFromStep.lift(pointer)
+public func FfiConverterTypeDistanceFromStepCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceFromStepCondition {
+    return try FfiConverterTypeDistanceFromStepCondition.lift(pointer)
 }
 
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeDistanceFromStep_lower(_ value: DistanceFromStep) -> UnsafeMutableRawPointer {
-    return FfiConverterTypeDistanceFromStep.lower(value)
+public func FfiConverterTypeDistanceFromStepCondition_lower(_ value: DistanceFromStepCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeDistanceFromStepCondition.lower(value)
 }
 
 
@@ -997,13 +997,13 @@ public func FfiConverterTypeDistanceFromStep_lower(_ value: DistanceFromStep) ->
 /**
  * Automatically advances when the user's location is close enough to the end of the step
  */
-public protocol DistanceToEndOfStepProtocol: AnyObject, Sendable {
+public protocol DistanceToEndOfStepConditionProtocol: AnyObject, Sendable {
     
 }
 /**
  * Automatically advances when the user's location is close enough to the end of the step
  */
-open class DistanceToEndOfStep: DistanceToEndOfStepProtocol, @unchecked Sendable {
+open class DistanceToEndOfStepCondition: DistanceToEndOfStepConditionProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
     /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
@@ -1040,7 +1040,7 @@ open class DistanceToEndOfStep: DistanceToEndOfStepProtocol, @unchecked Sendable
     @_documentation(visibility: private)
 #endif
     public func uniffiClonePointer() -> UnsafeMutableRawPointer {
-        return try! rustCall { uniffi_ferrostar_fn_clone_distancetoendofstep(self.pointer, $0) }
+        return try! rustCall { uniffi_ferrostar_fn_clone_distancetoendofstepcondition(self.pointer, $0) }
     }
     // No primary constructor declared for this class.
 
@@ -1049,7 +1049,7 @@ open class DistanceToEndOfStep: DistanceToEndOfStepProtocol, @unchecked Sendable
             return
         }
 
-        try! rustCall { uniffi_ferrostar_fn_free_distancetoendofstep(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_fn_free_distancetoendofstepcondition(pointer, $0) }
     }
 
     
@@ -1062,20 +1062,20 @@ open class DistanceToEndOfStep: DistanceToEndOfStepProtocol, @unchecked Sendable
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public struct FfiConverterTypeDistanceToEndOfStep: FfiConverter {
+public struct FfiConverterTypeDistanceToEndOfStepCondition: FfiConverter {
 
     typealias FfiType = UnsafeMutableRawPointer
-    typealias SwiftType = DistanceToEndOfStep
+    typealias SwiftType = DistanceToEndOfStepCondition
 
-    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceToEndOfStep {
-        return DistanceToEndOfStep(unsafeFromRawPointer: pointer)
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceToEndOfStepCondition {
+        return DistanceToEndOfStepCondition(unsafeFromRawPointer: pointer)
     }
 
-    public static func lower(_ value: DistanceToEndOfStep) -> UnsafeMutableRawPointer {
+    public static func lower(_ value: DistanceToEndOfStepCondition) -> UnsafeMutableRawPointer {
         return value.uniffiClonePointer()
     }
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceToEndOfStep {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceToEndOfStepCondition {
         let v: UInt64 = try readInt(&buf)
         // The Rust code won't compile if a pointer won't fit in a UInt64.
         // We have to go via `UInt` because that's the thing that's the size of a pointer.
@@ -1086,7 +1086,7 @@ public struct FfiConverterTypeDistanceToEndOfStep: FfiConverter {
         return try lift(ptr!)
     }
 
-    public static func write(_ value: DistanceToEndOfStep, into buf: inout [UInt8]) {
+    public static func write(_ value: DistanceToEndOfStepCondition, into buf: inout [UInt8]) {
         // This fiddling is because `Int` is the thing that's the same size as a pointer.
         // The Rust code won't compile if a pointer won't fit in a `UInt64`.
         writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
@@ -1097,15 +1097,15 @@ public struct FfiConverterTypeDistanceToEndOfStep: FfiConverter {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeDistanceToEndOfStep_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceToEndOfStep {
-    return try FfiConverterTypeDistanceToEndOfStep.lift(pointer)
+public func FfiConverterTypeDistanceToEndOfStepCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceToEndOfStepCondition {
+    return try FfiConverterTypeDistanceToEndOfStepCondition.lift(pointer)
 }
 
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeDistanceToEndOfStep_lower(_ value: DistanceToEndOfStep) -> UnsafeMutableRawPointer {
-    return FfiConverterTypeDistanceToEndOfStep.lower(value)
+public func FfiConverterTypeDistanceToEndOfStepCondition_lower(_ value: DistanceToEndOfStepCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeDistanceToEndOfStepCondition.lower(value)
 }
 
 
@@ -1119,7 +1119,7 @@ public func FfiConverterTypeDistanceToEndOfStep_lower(_ value: DistanceToEndOfSt
  *
  * You can use this to implement custom behaviors in external code.
  */
-public protocol ManualStepAdvanceProtocol: AnyObject, Sendable {
+public protocol ManualStepConditionProtocol: AnyObject, Sendable {
     
 }
 /**
@@ -1128,7 +1128,7 @@ public protocol ManualStepAdvanceProtocol: AnyObject, Sendable {
  *
  * You can use this to implement custom behaviors in external code.
  */
-open class ManualStepAdvance: ManualStepAdvanceProtocol, @unchecked Sendable {
+open class ManualStepCondition: ManualStepConditionProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
     /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
@@ -1165,7 +1165,7 @@ open class ManualStepAdvance: ManualStepAdvanceProtocol, @unchecked Sendable {
     @_documentation(visibility: private)
 #endif
     public func uniffiClonePointer() -> UnsafeMutableRawPointer {
-        return try! rustCall { uniffi_ferrostar_fn_clone_manualstepadvance(self.pointer, $0) }
+        return try! rustCall { uniffi_ferrostar_fn_clone_manualstepcondition(self.pointer, $0) }
     }
     // No primary constructor declared for this class.
 
@@ -1174,7 +1174,7 @@ open class ManualStepAdvance: ManualStepAdvanceProtocol, @unchecked Sendable {
             return
         }
 
-        try! rustCall { uniffi_ferrostar_fn_free_manualstepadvance(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_fn_free_manualstepcondition(pointer, $0) }
     }
 
     
@@ -1187,20 +1187,20 @@ open class ManualStepAdvance: ManualStepAdvanceProtocol, @unchecked Sendable {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public struct FfiConverterTypeManualStepAdvance: FfiConverter {
+public struct FfiConverterTypeManualStepCondition: FfiConverter {
 
     typealias FfiType = UnsafeMutableRawPointer
-    typealias SwiftType = ManualStepAdvance
+    typealias SwiftType = ManualStepCondition
 
-    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> ManualStepAdvance {
-        return ManualStepAdvance(unsafeFromRawPointer: pointer)
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> ManualStepCondition {
+        return ManualStepCondition(unsafeFromRawPointer: pointer)
     }
 
-    public static func lower(_ value: ManualStepAdvance) -> UnsafeMutableRawPointer {
+    public static func lower(_ value: ManualStepCondition) -> UnsafeMutableRawPointer {
         return value.uniffiClonePointer()
     }
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ManualStepAdvance {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ManualStepCondition {
         let v: UInt64 = try readInt(&buf)
         // The Rust code won't compile if a pointer won't fit in a UInt64.
         // We have to go via `UInt` because that's the thing that's the size of a pointer.
@@ -1211,7 +1211,7 @@ public struct FfiConverterTypeManualStepAdvance: FfiConverter {
         return try lift(ptr!)
     }
 
-    public static func write(_ value: ManualStepAdvance, into buf: inout [UInt8]) {
+    public static func write(_ value: ManualStepCondition, into buf: inout [UInt8]) {
         // This fiddling is because `Int` is the thing that's the same size as a pointer.
         // The Rust code won't compile if a pointer won't fit in a `UInt64`.
         writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
@@ -1222,15 +1222,15 @@ public struct FfiConverterTypeManualStepAdvance: FfiConverter {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeManualStepAdvance_lift(_ pointer: UnsafeMutableRawPointer) throws -> ManualStepAdvance {
-    return try FfiConverterTypeManualStepAdvance.lift(pointer)
+public func FfiConverterTypeManualStepCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> ManualStepCondition {
+    return try FfiConverterTypeManualStepCondition.lift(pointer)
 }
 
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeManualStepAdvance_lower(_ value: ManualStepAdvance) -> UnsafeMutableRawPointer {
-    return FfiConverterTypeManualStepAdvance.lower(value)
+public func FfiConverterTypeManualStepCondition_lower(_ value: ManualStepCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeManualStepCondition.lower(value)
 }
 
 
@@ -7941,12 +7941,12 @@ public func stepAdvanceAnd(conditions: [StepAdvanceCondition]) -> StepAdvanceCon
     )
 })
 }
-public func stepAdvanceDistanceEntryAndExit(minimumHorizontalAccuracy: UInt16, distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16) -> StepAdvanceCondition  {
+public func stepAdvanceDistanceEntryAndExit(distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_distance_entry_and_exit(
-        FfiConverterUInt16.lower(minimumHorizontalAccuracy),
         FfiConverterUInt16.lower(distanceToEndOfStep),
-        FfiConverterUInt16.lower(distanceAfterEndStep),$0
+        FfiConverterUInt16.lower(distanceAfterEndStep),
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
     )
 })
 }
@@ -8031,7 +8031,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_step_advance_and() != 12026) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 30627) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 34284) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 56337) {

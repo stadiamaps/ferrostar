@@ -30,9 +30,9 @@ class NavigationDelegate: FerrostarCoreDelegate {
                 let config = SwiftNavigationControllerConfig(
                     waypointAdvance: .waypointWithinRange(100.0),
                     stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
-                        minimumHorizontalAccuracy: 32,
                         distanceToEndOfStep: 10,
-                        distanceAfterEndStep: 10
+                        distanceAfterEndStep: 2,
+                        minimumHorizontalAccuracy: 32,
                     ),
                     arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(
                         distance: 10,

@@ -6,7 +6,7 @@ use ferrostar::navigation_controller::models::{
     CourseFiltering, NavigationControllerConfig, TripState, WaypointAdvanceMode,
 };
 use ferrostar::navigation_controller::step_advance::conditions::{
-    DistanceToEndOfStep, ManualStepAdvance,
+    DistanceToEndOfStepCondition, ManualStepCondition,
 };
 use ferrostar::navigation_controller::{create_navigator, NavigationController, Navigator};
 use ferrostar::routing_adapters::osrm::OsrmResponseParser;
@@ -49,8 +49,8 @@ fn same_location_results_in_identical_state() {
         route,
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
-            step_advance_condition: Arc::new(ManualStepAdvance),
-            arrival_step_advance_condition: Arc::new(DistanceToEndOfStep {
+            step_advance_condition: Arc::new(ManualStepCondition),
+            arrival_step_advance_condition: Arc::new(DistanceToEndOfStepCondition {
                 distance: 25,
                 minimum_horizontal_accuracy: 0,
             }),
@@ -97,8 +97,8 @@ fn simple_route_state_machine_manual_advance() {
         route,
         NavigationControllerConfig {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
-            step_advance_condition: Arc::new(ManualStepAdvance),
-            arrival_step_advance_condition: Arc::new(ManualStepAdvance),
+            step_advance_condition: Arc::new(ManualStepCondition),
+            arrival_step_advance_condition: Arc::new(ManualStepCondition),
             route_deviation_tracking: RouteDeviationTracking::None,
             snapped_location_course_filtering: CourseFiltering::Raw,
         },
@@ -174,11 +174,11 @@ fn simple_route_state_machine_advances_with_location_change() {
             waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
             // NOTE: We will use an exact location to trigger the update;
             // this is not testing the thresholds.
-            step_advance_condition: Arc::new(DistanceToEndOfStep {
+            step_advance_condition: Arc::new(DistanceToEndOfStepCondition {
                 distance: 0,
                 minimum_horizontal_accuracy: 0,
             }),
-            arrival_step_advance_condition: Arc::new(DistanceToEndOfStep {
+            arrival_step_advance_condition: Arc::new(DistanceToEndOfStepCondition {
                 distance: 25,
                 minimum_horizontal_accuracy: 0,
             }),

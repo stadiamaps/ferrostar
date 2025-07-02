@@ -27,9 +27,9 @@ use super::JsStepAdvanceCondition;
 /// You can use this to implement custom behaviors in external code.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-pub struct ManualStepAdvance;
+pub struct ManualStepCondition;
 
-impl StepAdvanceCondition for ManualStepAdvance {
+impl StepAdvanceCondition for ManualStepCondition {
     #[allow(unused_variables)]
     fn should_advance_step(
         &self,
@@ -39,12 +39,12 @@ impl StepAdvanceCondition for ManualStepAdvance {
     ) -> StepAdvanceResult {
         StepAdvanceResult {
             should_advance: false,
-            next_iteration: Arc::new(ManualStepAdvance),
+            next_iteration: Arc::new(ManualStepCondition),
         }
     }
 }
 
-impl StepAdvanceConditionJsConvertible for ManualStepAdvance {
+impl StepAdvanceConditionJsConvertible for ManualStepCondition {
     #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::Manual
@@ -56,7 +56,7 @@ impl StepAdvanceConditionJsConvertible for ManualStepAdvance {
 /// Automatically advances when the user's location is close enough to the end of the step
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-pub struct DistanceToEndOfStep {
+pub struct DistanceToEndOfStepCondition {
     /// Distance to the last waypoint in the step, measured in meters, at which to advance.
     pub distance: u16,
     /// The minimum required horizontal accuracy of the user location, in meters.
@@ -64,7 +64,7 @@ pub struct DistanceToEndOfStep {
     pub minimum_horizontal_accuracy: u16,
 }
 
-impl StepAdvanceCondition for DistanceToEndOfStep {
+impl StepAdvanceCondition for DistanceToEndOfStepCondition {
     #[allow(unused_variables)]
     fn should_advance_step(
         &self,
@@ -85,7 +85,7 @@ impl StepAdvanceCondition for DistanceToEndOfStep {
 
         StepAdvanceResult {
             should_advance,
-            next_iteration: Arc::new(DistanceToEndOfStep {
+            next_iteration: Arc::new(DistanceToEndOfStepCondition {
                 distance: self.distance,
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
             }),
@@ -93,7 +93,7 @@ impl StepAdvanceCondition for DistanceToEndOfStep {
     }
 }
 
-impl StepAdvanceConditionJsConvertible for DistanceToEndOfStep {
+impl StepAdvanceConditionJsConvertible for DistanceToEndOfStepCondition {
     #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::DistanceToEndOfStep {
@@ -116,7 +116,7 @@ impl StepAdvanceConditionJsConvertible for DistanceToEndOfStep {
 /// the step within range of the end.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-pub struct DistanceFromStep {
+pub struct DistanceFromStepCondition {
     /// The minimum the distance the user must have travelled from the step's polyline.
     pub distance: u16,
     /// The minimum required horizontal accuracy of the user location, in meters.
@@ -124,7 +124,7 @@ pub struct DistanceFromStep {
     pub minimum_horizontal_accuracy: u16,
 }
 
-impl StepAdvanceCondition for DistanceFromStep {
+impl StepAdvanceCondition for DistanceFromStepCondition {
     #[allow(unused_variables)]
     fn should_advance_step(
         &self,
@@ -147,7 +147,7 @@ impl StepAdvanceCondition for DistanceFromStep {
 
         StepAdvanceResult {
             should_advance,
-            next_iteration: Arc::new(DistanceFromStep {
+            next_iteration: Arc::new(DistanceFromStepCondition {
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                 distance: self.distance,
             }),
@@ -155,7 +155,7 @@ impl StepAdvanceCondition for DistanceFromStep {
     }
 }
 
-impl StepAdvanceConditionJsConvertible for DistanceFromStep {
+impl StepAdvanceConditionJsConvertible for DistanceFromStepCondition {
     #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::DistanceFromStep {
@@ -250,14 +250,14 @@ impl StepAdvanceConditionJsConvertible for AndAdvanceConditions {
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct DistanceEntryAndExitCondition {
-    /// The minimum required horizontal accuracy of the user location, in meters.
-    /// Values larger than this cannot ever trigger a step advance.
-    pub minimum_horizontal_accuracy: u16,
     /// Mark the arrival at the end of the step once the user is within this distance.
     pub distance_to_end_of_step: u16,
     /// Advance after the user has left the end of the step by
     /// this distance.
     pub distance_after_end_step: u16,
+    /// The minimum required horizontal accuracy of the user location, in meters.
+    /// Values larger than this cannot ever trigger a step advance.
+    pub minimum_horizontal_accuracy: u16,
     /// This becomes true when the user is within range of the end of the step.
     /// Because this step condition is stateful, it must first upgrade this to true,
     /// and then check if the user exited the step by the threshold distance.
@@ -266,14 +266,14 @@ pub struct DistanceEntryAndExitCondition {
 
 impl DistanceEntryAndExitCondition {
     pub fn new(
-        minimum_horizontal_accuracy: u16,
         distance_to_end_of_step: u16,
         distance_after_end_step: u16,
+        minimum_horizontal_accuracy: u16,
     ) -> Self {
         Self {
-            minimum_horizontal_accuracy,
             distance_to_end_of_step,
             distance_after_end_step,
+            minimum_horizontal_accuracy,
             has_reached_end_of_current_step: false,
         }
     }
@@ -282,9 +282,9 @@ impl DistanceEntryAndExitCondition {
 impl Default for DistanceEntryAndExitCondition {
     fn default() -> Self {
         Self {
-            minimum_horizontal_accuracy: 25,
             distance_to_end_of_step: 20,
-            distance_after_end_step: 10,
+            distance_after_end_step: 5,
+            minimum_horizontal_accuracy: 25,
             has_reached_end_of_current_step: false,
         }
     }
@@ -299,7 +299,7 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
         next_step: Option<RouteStep>,
     ) -> StepAdvanceResult {
         if self.has_reached_end_of_current_step {
-            let distance_from_end = DistanceFromStep {
+            let distance_from_end = DistanceFromStepCondition {
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                 distance: self.distance_after_end_step,
             };
@@ -331,7 +331,7 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 }
             }
         } else {
-            let distance_to_end = DistanceToEndOfStep {
+            let distance_to_end = DistanceToEndOfStepCondition {
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                 distance: self.distance_to_end_of_step,
             };
@@ -369,7 +369,12 @@ impl StepAdvanceConditionJsConvertible for DistanceEntryAndExitCondition {
 #[cfg(test)]
 mod tests {
     use crate::models::GeographicCoordinate;
+
+    #[cfg(all(feature = "std", not(feature = "web-time")))]
     use std::time::SystemTime;
+
+    #[cfg(feature = "web-time")]
+    use web_time::SystemTime;
 
     use super::*;
 
@@ -396,7 +401,7 @@ mod tests {
         // This point is near the beginning of the step, not the end
         let user_location = user_location(0.0, 0.0001, 5.0);
 
-        let condition = ManualStepAdvance;
+        let condition = ManualStepCondition;
 
         // Test the condition - we should NOT advance since we're far from the end
         let result = condition.should_advance_step(user_location, route_step, None);
@@ -423,7 +428,7 @@ mod tests {
         let user_location = user_location(0.0, 0.0001, 5.0);
 
         // Set up the condition with a distance threshold of 20 meters
-        let condition = DistanceToEndOfStep {
+        let condition = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 20, // Must be within 20 meters of the end to advance
         };
@@ -450,7 +455,7 @@ mod tests {
         let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
 
         // Set up the condition with a distance threshold of 20 meters
-        let condition = DistanceToEndOfStep {
+        let condition = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 20, // Must be within 20 meters of the end to advance
         };
@@ -477,7 +482,7 @@ mod tests {
         let user_location = user_location(0.0, 0.0005, 5.0); // Point directly on the line
 
         // Set up the condition with a minimum deviation of 100 meters to advance
-        let condition = DistanceFromStep {
+        let condition = DistanceFromStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 100, // Must be at least 100 meters from route to advance
         };
@@ -505,7 +510,7 @@ mod tests {
         let user_location = user_location(0.005, 0.0005, 5.0);
 
         // Set up the condition with a minimum deviation of 100 meters to advance
-        let condition = DistanceFromStep {
+        let condition = DistanceFromStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 100, // Must be at least 100 meters from route to advance
         };
@@ -534,8 +539,8 @@ mod tests {
         let user_location = user_location(0.0, 0.0001, 5.0);
 
         // Create two false conditions - both manual step advance
-        let manual_condition1 = ManualStepAdvance;
-        let manual_condition2 = ManualStepAdvance;
+        let manual_condition1 = ManualStepCondition;
+        let manual_condition2 = ManualStepCondition;
 
         // Create an OR condition - should only advance when at least one condition is true
         let or_condition = OrAdvanceConditions {
@@ -564,10 +569,10 @@ mod tests {
         let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
 
         // Create a false condition
-        let manual_condition = ManualStepAdvance;
+        let manual_condition = ManualStepCondition;
 
         // Create a true condition - distance to end of step
-        let distance_condition = DistanceToEndOfStep {
+        let distance_condition = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 20, // Must be within 20 meters of the end to advance
         };
@@ -599,10 +604,10 @@ mod tests {
         let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
 
         // Create a false condition
-        let manual_condition = ManualStepAdvance;
+        let manual_condition = ManualStepCondition;
 
         // Create a true condition - distance to end of step
-        let distance_condition = DistanceToEndOfStep {
+        let distance_condition = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 20, // Must be within 20 meters of the end to advance
         };
@@ -637,12 +642,12 @@ mod tests {
         let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
 
         // Create two true conditions - both distance to end of step but with different thresholds
-        let distance_condition1 = DistanceToEndOfStep {
+        let distance_condition1 = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 30, // Must be within 30 meters of the end to advance
         };
 
-        let distance_condition2 = DistanceToEndOfStep {
+        let distance_condition2 = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 20, // Must be within 20 meters of the end to advance
         };

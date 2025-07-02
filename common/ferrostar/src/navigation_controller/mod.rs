@@ -456,7 +456,7 @@ mod tests {
     //     CourseFiltering, SpecialAdvanceConditions, StepAdvanceMode,
     // };
     use crate::navigation_controller::step_advance::conditions::{
-        DistanceEntryAndExitCondition, DistanceToEndOfStep,
+        DistanceEntryAndExitCondition, DistanceToEndOfStepCondition,
     };
     use crate::navigation_controller::test_helpers::{
         get_test_route, nav_controller_insta_settings, TestRoute,
@@ -491,7 +491,7 @@ mod tests {
                 },
                 snapped_location_course_filtering: CourseFiltering::Raw,
                 step_advance_condition,
-                arrival_step_advance_condition: Arc::new(DistanceToEndOfStep {
+                arrival_step_advance_condition: Arc::new(DistanceToEndOfStepCondition {
                     distance: 5,
                     minimum_horizontal_accuracy: 0,
                 }),
@@ -555,7 +555,7 @@ mod tests {
         nav_controller_insta_settings().bind(|| {
             insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
                 get_test_route(TestRoute::Extended),
-                Arc::new(DistanceToEndOfStep {
+                Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,
                 })
@@ -578,7 +578,7 @@ mod tests {
         nav_controller_insta_settings().bind(|| {
             insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
                 get_test_route(TestRoute::SelfIntersecting),
-                Arc::new(DistanceToEndOfStep {
+                Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,
                 })
@@ -601,7 +601,7 @@ mod tests {
         nav_controller_insta_settings().bind(|| {
             insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
                 get_test_route(TestRoute::SelfIntersecting),
-                Arc::new(DistanceToEndOfStep {
+                Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,
                 })
