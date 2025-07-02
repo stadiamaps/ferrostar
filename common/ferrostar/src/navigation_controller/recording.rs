@@ -23,24 +23,16 @@ pub struct NavigationRecording {
 }
 
 #[derive(Debug)]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
+#[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum NavigationRecordingError {
+    #[cfg_attr(feature = "std", error("Serialization error: {0}"))]
     SerializationError(String),
 }
 
 impl From<serde_json::Error> for NavigationRecordingError {
     fn from(e: serde_json::Error) -> Self {
         NavigationRecordingError::SerializationError(e.to_string())
-    }
-}
-
-impl Display for NavigationRecordingError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            NavigationRecordingError::SerializationError(e) => {
-                write!(f, "Error serializing navigation recording: {}", e)
-            }
-        }
     }
 }
 
