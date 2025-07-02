@@ -163,7 +163,7 @@ pub enum StepAdvanceStatus {
 /// Controls filtering/post-processing of user course by the [`NavigationController`].
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum CourseFiltering {
     /// Snap the user's course to the current step's linestring using the next index in the step's geometry.
@@ -179,7 +179,7 @@ pub enum CourseFiltering {
 /// and we should advance to the next step.
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum StepAdvanceMode {
     /// Never advances to the next step automatically;
@@ -213,7 +213,7 @@ pub enum StepAdvanceMode {
 /// Special conditions which alter the normal step advance logic,
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum SpecialAdvanceConditions {
     /// Allows navigation to advance to the next step as soon as the user
@@ -253,7 +253,7 @@ pub enum SpecialAdvanceConditions {
 /// that the waypoint will be marked as complete!
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum WaypointAdvanceMode {
     /// Advance when the waypoint is within a certain range of meters from the user's location.
@@ -262,7 +262,7 @@ pub enum WaypointAdvanceMode {
 
 #[derive(Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {

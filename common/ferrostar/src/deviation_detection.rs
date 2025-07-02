@@ -39,7 +39,7 @@ use web_time::SystemTime;
 /// Determines if the user has deviated from the expected route.
 #[derive(Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
