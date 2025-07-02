@@ -768,7 +768,7 @@ public protocol NavigationRecordingProtocol: AnyObject, Sendable {
     
     /**
      * Serialize the recording to a pretty JSON format.
-     * Returns a Result with the JSON string or an error message.
+     * Returns a Result with the JSON string or an error.
      */
     func toJson() throws  -> String
     
@@ -827,7 +827,7 @@ open class NavigationRecording: NavigationRecordingProtocol, @unchecked Sendable
     
     /**
      * Serialize the recording to a pretty JSON format.
-     * Returns a Result with the JSON string or an error message.
+     * Returns a Result with the JSON string or an error.
      */
 open func toJson()throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeNavigationRecordingError_lift) {
@@ -5079,11 +5079,14 @@ extension ModelError: Foundation.LocalizedError {
 
 
 
+/**
+ * Custom error type for navigation recording operations.
+ */
 public enum NavigationRecordingError: Swift.Error {
 
     
     
-    case SerializationError(String
+    case SerializationError(error: String
     )
 }
 
@@ -5102,7 +5105,7 @@ public struct FfiConverterTypeNavigationRecordingError: FfiConverterRustBuffer {
 
         
         case 1: return .SerializationError(
-            try FfiConverterString.read(from: &buf)
+            error: try FfiConverterString.read(from: &buf)
             )
 
          default: throw UniffiInternalError.unexpectedEnumCase
@@ -5116,9 +5119,9 @@ public struct FfiConverterTypeNavigationRecordingError: FfiConverterRustBuffer {
 
         
         
-        case let .SerializationError(v1):
+        case let .SerializationError(error):
             writeInt(&buf, Int32(1))
-            FfiConverterString.write(v1, into: &buf)
+            FfiConverterString.write(error, into: &buf)
             
         }
     }
@@ -7336,7 +7339,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecording_to_json() != 62526) {
+    if (uniffi_ferrostar_checksum_method_navigationrecording_to_json() != 19832) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 29800) {
