@@ -764,6 +764,136 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 
 
 
+public protocol NavigationRecordingProtocol: AnyObject, Sendable {
+    
+    /**
+     * Serialize the recording to a pretty JSON format.
+     * Returns a Result with the JSON string or an error message.
+     */
+    func toJson() throws  -> String
+    
+}
+open class NavigationRecording: NavigationRecordingProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_navigationrecording(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_navigationrecording(pointer, $0) }
+    }
+
+    
+
+    
+    /**
+     * Serialize the recording to a pretty JSON format.
+     * Returns a Result with the JSON string or an error message.
+     */
+open func toJson()throws  -> String  {
+    return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeNavigationRecordingError_lift) {
+    uniffi_ferrostar_fn_method_navigationrecording_to_json(self.uniffiClonePointer(),$0
+    )
+})
+}
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigationRecording: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = NavigationRecording
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationRecording {
+        return NavigationRecording(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: NavigationRecording) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationRecording {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: NavigationRecording, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecording_lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationRecording {
+    return try FfiConverterTypeNavigationRecording.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecording_lower(_ value: NavigationRecording) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeNavigationRecording.lower(value)
+}
+
+
+
+
+
+
 /**
  * Core interface for navigation functionalities.
  *
@@ -4949,6 +5079,82 @@ extension ModelError: Foundation.LocalizedError {
 
 
 
+public enum NavigationRecordingError: Swift.Error {
+
+    
+    
+    case SerializationError(String
+    )
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigationRecordingError: FfiConverterRustBuffer {
+    typealias SwiftType = NavigationRecordingError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationRecordingError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        
+
+        
+        case 1: return .SerializationError(
+            try FfiConverterString.read(from: &buf)
+            )
+
+         default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: NavigationRecordingError, into buf: inout [UInt8]) {
+        switch value {
+
+        
+
+        
+        
+        case let .SerializationError(v1):
+            writeInt(&buf, Int32(1))
+            FfiConverterString.write(v1, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecordingError_lift(_ buf: RustBuffer) throws -> NavigationRecordingError {
+    return try FfiConverterTypeNavigationRecordingError.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecordingError_lower(_ value: NavigationRecordingError) -> RustBuffer {
+    return FfiConverterTypeNavigationRecordingError.lower(value)
+}
+
+
+extension NavigationRecordingError: Equatable, Hashable {}
+
+
+
+
+extension NavigationRecordingError: Foundation.LocalizedError {
+    public var errorDescription: String? {
+        String(reflecting: self)
+    }
+}
+
+
+
+
+
 public enum ParsingError: Swift.Error {
 
     
@@ -7128,6 +7334,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationrecording_to_json() != 62526) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 29800) {

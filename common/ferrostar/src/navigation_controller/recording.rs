@@ -41,7 +41,7 @@ impl Display for NavigationRecordingError {
                 write!(f, "Error serializing navigation recording: {}", e)
             }
         }
-    }   
+    }
 }
 
 /// Functionality for the navigation controller that is exported.
