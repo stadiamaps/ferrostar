@@ -57,54 +57,70 @@ extension DemoModel {
             simulated: AppDefaults.initialLocation.simulatedLocationProvider,
             type: .simulated
         ))
-
-        origin = (locationProvider.lastLocation != nil) ? locationProvider.lastLocation!.clLocation
-            .coordinate : AppDefaults.initialLocation.coordinate
-
-        // "Cupertino HS"
-        destination = CLLocationCoordinate2D(latitude: 37.31910, longitude: -122.01018)
     }
 }
 
 let demoModel = DemoModel()
 
 @Observable final class DemoModel {
-    @MainActor var errorMessage: String?
-    @MainActor var appState: DemoAppState = .idle
+    @ObservationIgnored
     let locationProvider: SwitchableLocationProvider
-    let core: FerrostarCore
-    var origin: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
-    var destination: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
-    var selectedRoute: Route?
-    var camera: MapViewCamera
 
-    var coreRoute: Route?
-    var coreState: NavigationState?
+    @ObservationIgnored
+    let core: FerrostarCore
 
     @ObservationIgnored
     private var cancellables = Set<AnyCancellable>()
 
+    @ObservationIgnored
     private let navigationDelegate = NavigationDelegate()
+
+    @MainActor var errorMessage: String?
+    @MainActor var appState: DemoAppState = .idle
+
+    @MainActor var origin: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
+    @MainActor var destination: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
+    @MainActor var selectedRoute: Route?
+    @MainActor var camera: MapViewCamera = .default()
+
+    @MainActor var coreRoute: Route?
+    @MainActor var coreState: NavigationState?
 
     init?(
         locationProvider: SwitchableLocationProvider
     ) {
         self.locationProvider = locationProvider
-        camera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
+
         do {
             core = try FerrostarCore(locationProvider: locationProvider)
             core.delegate = navigationDelegate
 
             // Listen to these Publishers in FerrostarCore, and assign to Observable properties.
             core.$state.receive(on: DispatchQueue.main).sink { [weak self] state in
-                self?.coreState = state
+                Task {
+                    await MainActor.run { [weak self] in
+                        self?.coreState = state
+                    }
+                }
             }.store(in: &cancellables)
 
             core.$route.receive(on: DispatchQueue.main).sink { [weak self] route in
-                self?.coreRoute = route
+                Task {
+                    await MainActor.run { [weak self] in
+                        self?.coreRoute = route
+                    }
+                }
             }.store(in: &cancellables)
         } catch {
             return nil
+        }
+    }
+
+    func onAppear() {
+        Task {
+            await MainActor.run {
+                camera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
+            }
         }
     }
 
@@ -120,16 +136,20 @@ let demoModel = DemoModel()
         )
     }
 
-    private func startNavigation(on route: Route) throws -> DemoAppState {
+    private func startNavigation(on route: Route) async throws -> DemoAppState {
         try locationProvider.use(route: route)
         try core.startNavigation(route: route)
-        camera = .automotiveNavigation()
+        await MainActor.run {
+            camera = .automotiveNavigation()
+        }
         return .navigating
     }
 
-    private func stopNavigation() -> DemoAppState {
+    private func stopNavigation() async -> DemoAppState {
         core.stopNavigation()
-        camera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
+        await MainActor.run {
+            camera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
+        }
         return .idle
     }
 
@@ -152,14 +172,24 @@ let demoModel = DemoModel()
 
     func chooseDestination() async {
         await wrap {
-            try await appState.setDestination(destination)
+            await MainActor.run {
+                origin = (locationProvider.lastLocation != nil) ? locationProvider.lastLocation!.clLocation
+                    .coordinate : AppDefaults.initialLocation.coordinate
+
+                // "Cupertino HS"
+                destination = CLLocationCoordinate2D(latitude: 37.31910, longitude: -122.01018)
+            }
+
+            return try await appState.setDestination(destination)
         }
     }
 
     func loadRoute(_ destination: CLLocationCoordinate2D) async {
         await wrap {
             guard let lastCoordinate else { throw DemoError.noOrigin }
-            origin = lastCoordinate
+            await MainActor.run {
+                origin = lastCoordinate
+            }
             let routes = try await routes(from: origin, to: destination)
             guard !routes.isEmpty else { throw DemoError.noRoutesLoaded }
             return .routes(routes)
@@ -168,19 +198,23 @@ let demoModel = DemoModel()
 
     func chooseRoute(_ route: Route) async {
         await wrap {
-            selectedRoute = route
+            await MainActor.run {
+                selectedRoute = route
+            }
             return .selectedRoute(route)
         }
     }
 
     func navigate(_ route: Route) async {
-        await wrap { try startNavigation(on: route) }
+        await wrap { try await startNavigation(on: route) }
     }
 
     func stop() async {
         await wrap {
-            selectedRoute = nil
-            return stopNavigation()
+            await MainActor.run {
+                selectedRoute = nil
+            }
+            return await stopNavigation()
         }
     }
 

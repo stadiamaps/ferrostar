@@ -143,6 +143,7 @@ struct DemoNavigationView: View {
                 }
             }
         )
+        .onAppear(perform: model.onAppear)
     }
 
     // MARK: Conveniences
