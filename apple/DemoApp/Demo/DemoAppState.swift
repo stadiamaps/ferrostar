@@ -1,5 +1,5 @@
 import CoreLocation
-import FerrostarCoreFFI
+@preconcurrency import FerrostarCoreFFI
 import Foundation
 
 enum DemoAppState: CustomStringConvertible {
