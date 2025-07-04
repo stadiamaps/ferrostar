@@ -37,7 +37,7 @@ private extension FerrostarCore {
 
         try self.init(
             valhallaEndpointUrl: URL(
-                string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)"
+                string: "https://api.stadiamaps.com/route/v1?api_key=\(sharedAPIKeys.stadiaMapsAPIKey)"
             )!,
             profile: "bicycle",
             locationProvider: locationProvider,
