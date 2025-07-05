@@ -1,5 +1,8 @@
 import CoreLocation
-import FerrostarCoreFFI
+
+// Temporary measure until we transition the demo app to Swift 6.
+// See https://github.com/stadiamaps/ferrostar/issues/164#issuecomment-3037767025
+@preconcurrency import FerrostarCoreFFI
 import Foundation
 
 enum DemoAppState: CustomStringConvertible {
