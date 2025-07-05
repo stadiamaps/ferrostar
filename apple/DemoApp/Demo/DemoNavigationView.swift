@@ -20,11 +20,11 @@ private extension SwitchableLocationProvider.State {
 }
 
 private extension DemoModel {
-    @MainActor func selectRoute(from routes: [Route]) async {
+    func selectRoute(from routes: [Route]) {
         do {
             guard let route = routes.first else { throw DemoError.noFirstRoute }
             selectedRoute = route
-            await chooseRoute(route)
+            chooseRoute(route)
         } catch {
             errorMessage = error.localizedDescription
             appState = .idle
@@ -56,11 +56,7 @@ struct DemoNavigationView: View {
             navigationState: model.coreState,
             isMuted: model.core.spokenInstructionObserver.isMuted,
             onTapMute: model.core.spokenInstructionObserver.toggleMute,
-            onTapExit: {
-                Task {
-                    await stopNavigation()
-                }
-            },
+            onTapExit: { stopNavigation() },
             makeMapContent: {
                 let source = ShapeSource(identifier: "userLocation") {
                     // Demonstrate how to add a dynamic overlay;
@@ -103,22 +99,22 @@ struct DemoNavigationView: View {
                     if locationServicesEnabled {
                         if model.appState.showStateButton {
                             NavigationUIButton {
-                                Task {
-                                    switch model.appState {
-                                    case .idle:
-                                        await model.chooseDestination()
-                                    case let .destination(coordinate):
+                                switch model.appState {
+                                case .idle:
+                                    model.chooseDestination()
+                                case let .destination(coordinate):
+                                    Task {
                                         isFetchingRoutes = true
                                         await model.loadRoute(coordinate)
                                         isFetchingRoutes = false
-                                    case let .routes(routes):
-                                        await model.selectRoute(from: routes)
-                                    case let .selectedRoute(route):
-                                        await startNavigation(route)
-                                    case .navigating:
-                                        // Should not reach this.
-                                        break
                                     }
+                                case let .routes(routes):
+                                    model.selectRoute(from: routes)
+                                case let .selectedRoute(route):
+                                    startNavigation(route)
+                                case .navigating:
+                                    // Should not reach this.
+                                    break
                                 }
                             } label: {
                                 Text(model.appState.buttonText)
@@ -147,13 +143,13 @@ struct DemoNavigationView: View {
 
     // MARK: Conveniences
 
-    func startNavigation(_ route: Route) async {
-        await model.navigate(route)
+    func startNavigation(_ route: Route) {
+        model.navigate(route)
         preventAutoLock()
     }
 
-    func stopNavigation() async {
-        await model.stop()
+    func stopNavigation() {
+        model.stop()
         allowAutoLock()
     }
 
