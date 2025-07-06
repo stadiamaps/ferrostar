@@ -77,55 +77,54 @@ fun InstructionsView(
               .background(theme.backgroundColor, RoundedCornerShape(10.dp))
               .clickable { isExpanded = true }) {
         Column(
-          modifier = Modifier.fillMaxWidth().padding(16.dp),
-          horizontalAlignment = Alignment.Start
-        ) {
-          // Primary content
-          ManeuverInstructionView(
-              text = instructions.primaryContent.text,
-              distanceFormatter = distanceFormatter,
-              distanceToNextManeuver = distanceToNextManeuver,
-              theme = theme) {
-                contentBuilder(instructions)
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalAlignment = Alignment.Start) {
+              // Primary content
+              ManeuverInstructionView(
+                  text = instructions.primaryContent.text,
+                  distanceFormatter = distanceFormatter,
+                  distanceToNextManeuver = distanceToNextManeuver,
+                  theme = theme) {
+                    contentBuilder(instructions)
+                  }
+
+              // TODO: Secondary content
+
+              // Expanded content
+              val showMultipleRows = isExpanded && remainingSteps.count() > 1
+              if (showMultipleRows) {
+                Spacer(modifier = Modifier.height(8.dp))
+                HorizontalDivider(thickness = 1.dp)
+                Spacer(modifier = Modifier.height(8.dp))
               }
 
-          // TODO: Secondary content
-
-          // Expanded content
-          val showMultipleRows = isExpanded && remainingSteps.count() > 1
-          if (showMultipleRows) {
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider(thickness = 1.dp)
-            Spacer(modifier = Modifier.height(8.dp))
-          }
-
-          if (isExpanded) {
-            Box(modifier = Modifier.weight(1f)) {
-              LazyColumn(
-                  modifier = Modifier.fillMaxSize(),
-                  horizontalAlignment = Alignment.Start,
-                  verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(remainingSteps) { step ->
-                      step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
-                        ManeuverInstructionView(
-                            text = upcomingInstruction.primaryContent.text,
-                            distanceFormatter = distanceFormatter,
-                            distanceToNextManeuver = step.distance,
-                            theme = theme) {
-                              contentBuilder(upcomingInstruction)
-                            }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        HorizontalDivider(thickness = 1.dp)
+              if (isExpanded) {
+                Box(modifier = Modifier.weight(1f)) {
+                  LazyColumn(
+                      modifier = Modifier.fillMaxSize(),
+                      horizontalAlignment = Alignment.Start,
+                      verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(remainingSteps) { step ->
+                          step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
+                            ManeuverInstructionView(
+                                text = upcomingInstruction.primaryContent.text,
+                                distanceFormatter = distanceFormatter,
+                                distanceToNextManeuver = step.distance,
+                                theme = theme) {
+                                  contentBuilder(upcomingInstruction)
+                                }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            HorizontalDivider(thickness = 1.dp)
+                          }
+                        }
                       }
-                    }
-                  }
-            }
-          }
+                }
+              }
 
-          if (showMultipleRows) {
-            Spacer(modifier = Modifier.height(16.dp))
-          }
-        }
+              if (showMultipleRows) {
+                Spacer(modifier = Modifier.height(16.dp))
+              }
+            }
 
         PillDragHandle(
             isExpanded,

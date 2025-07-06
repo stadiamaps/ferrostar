@@ -43,10 +43,9 @@ class RTLInstructionViewTests {
       withSnapshotBackground {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
           InstructionsView(
-            instructions = instructions,
-            distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
-            distanceToNextManeuver = 42.0
-          )
+              instructions = instructions,
+              distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
+              distanceToNextManeuver = 42.0)
         }
       }
     }
