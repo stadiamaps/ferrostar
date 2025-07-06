@@ -311,7 +311,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
         DispatchQueue.main.async {
             self.update(
-                navState,
+                newState: navState,
                 location: location
             )
         }
@@ -324,7 +324,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             return
         }
 
-        let newState = controller.advanceToNextStep(state: navState).tripState
+        let newState = controller.advanceToNextStep(state: navState)
         update(newState: newState, location: lastLocation)
     }
 
@@ -346,7 +346,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// You should call this rather than setting properties directly
     private func update(newState: NavState, location: UserLocation) {
         DispatchQueue.main.async {
-            self.state?.tripState = newState
+            self.state?.tripState = newState.tripState
 
             switch newState.tripState {
             case let .navigating(
