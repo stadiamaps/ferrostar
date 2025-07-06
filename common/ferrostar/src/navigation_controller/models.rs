@@ -306,15 +306,6 @@ pub struct NavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
-pub struct InitialNavigationState {
-    /// The user location at the start of the navigation session.
-    pub user_location: UserLocation,
-    /// The trip state at the start of the navigation session.
-    pub trip_state: TripState,
-    /// The route that the user is navigating.
-    pub route: Route,
-}
-
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
