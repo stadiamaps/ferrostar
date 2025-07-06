@@ -1,7 +1,7 @@
 import Combine
 import CoreLocation
-import FerrostarCore
-import FerrostarCoreFFI
+@preconcurrency import FerrostarCore
+@preconcurrency import FerrostarCoreFFI
 import Foundation
 import MapLibreSwiftUI
 
@@ -37,7 +37,7 @@ private extension FerrostarCore {
 
         try self.init(
             valhallaEndpointUrl: URL(
-                string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)"
+                string: "https://api.stadiamaps.com/route/v1?api_key=\(sharedAPIKeys.stadiaMapsAPIKey)"
             )!,
             profile: "bicycle",
             locationProvider: locationProvider,
@@ -66,8 +66,9 @@ extension DemoModel {
     }
 }
 
-let demoModel = DemoModel()
+@MainActor let demoModel = DemoModel()
 
+@MainActor
 @Observable final class DemoModel {
     var errorMessage: String?
     var appState: DemoAppState = .idle
@@ -114,10 +115,11 @@ let demoModel = DemoModel()
 
     private func routes(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) async throws -> [Route] {
         guard from != kCLLocationCoordinate2DInvalid else { throw DemoError.invalidOrigin }
-        return try await core.getRoutes(
+        async let routes = try await core.getRoutes(
             initialLocation: UserLocation(clCoordinateLocation2D: from),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(cl: to), kind: .break)]
         )
+        return try await routes
     }
 
     private func startNavigation(on route: Route) throws -> DemoAppState {

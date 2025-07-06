@@ -280,16 +280,6 @@ pub struct NavigationControllerConfig {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct InitialNavigationState {
-    /// The user location at the start of the navigation session.
-    pub user_location: UserLocation,
-    /// The trip state at the start of the navigation session.
-    pub trip_state: TripState,
-    /// The route that the user is navigating.
-    pub route: Route,
-}
-
-#[derive(Serialize, Deserialize)]
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event.
     pub timestamp: i64,

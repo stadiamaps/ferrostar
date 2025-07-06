@@ -1,7 +1,6 @@
 use crate::models::{Route, UserLocation};
 use crate::navigation_controller::models::{
-    InitialNavigationState, NavigationControllerConfig, NavigationRecordingEvent,
-    NavigationRecordingEventData, TripState,
+    NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData, TripState,
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
@@ -14,9 +13,11 @@ pub struct NavigationRecording {
     /// The timestamp when the navigation session started.
     pub initial_timestamp: i64,
     /// Configuration of the navigation session.
-    pub route_config: NavigationControllerConfig,
-    /// The initial state of the navigation session.
-    pub initial_state: InitialNavigationState,
+    pub config: NavigationControllerConfig,
+    /// The initial route assigned.
+    pub initial_route: Route,
+    /// Initial trip state.
+    pub initial_trip_state: Option<TripState>,
     /// Collection of events that occurred during the navigation session.
     pub events: Vec<NavigationRecordingEvent>,
 }
@@ -52,15 +53,13 @@ impl NavigationRecording {
 /// Functionality for the navigation controller that is not exported.
 impl NavigationRecording {
     /// Creates a new navigation recorder with route configuration and initial state.
-    pub fn new(
-        route_config: NavigationControllerConfig,
-        initial_state: InitialNavigationState,
-    ) -> Self {
+    pub fn new(config: NavigationControllerConfig, initial_route: Route) -> Self {
         Self {
             version: env!("CARGO_PKG_VERSION").to_string(),
             initial_timestamp: Utc::now().timestamp(),
-            route_config,
-            initial_state,
+            config,
+            initial_route,
+            initial_trip_state: None,
             events: Vec::new(),
         }
     }
