@@ -156,6 +156,7 @@ pub enum TripState {
 #[derive(Clone, Debug, PartialEq)]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct NavState {
     pub trip_state: TripState,
     pub recording_events: Option<Vec<NavigationRecordingEvent>>,
