@@ -76,7 +76,10 @@ fun InstructionsView(
               .animateContentSize(animationSpec = spring(stiffness = Spring.StiffnessHigh))
               .background(theme.backgroundColor, RoundedCornerShape(10.dp))
               .clickable { isExpanded = true }) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Column(
+          modifier = Modifier.fillMaxWidth().padding(16.dp),
+          horizontalAlignment = Alignment.Start
+        ) {
           // Primary content
           ManeuverInstructionView(
               text = instructions.primaryContent.text,
@@ -100,6 +103,7 @@ fun InstructionsView(
             Box(modifier = Modifier.weight(1f)) {
               LazyColumn(
                   modifier = Modifier.fillMaxSize(),
+                  horizontalAlignment = Alignment.Start,
                   verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(remainingSteps) { step ->
                       step.visualInstructions.firstOrNull()?.let { upcomingInstruction ->
