@@ -26,18 +26,6 @@ use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
-/// Manages the navigation lifecycle through a route,
-/// returning an updated state given inputs like user location.
-///
-/// Notes for implementing a new platform:
-/// - A controller is bound to a single route; if you want recalculation, create a new instance.
-/// - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutable state.
-#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-pub struct NavigationController {
-    route: Route,
-    config: NavigationControllerConfig,
-}
-
 /// Core interface for navigation functionalities.
 ///
 /// This trait defines the essential operations for a navigation state manager.
@@ -68,6 +56,18 @@ pub fn create_navigator(
         // Creates a normal navigation controller.
         Arc::new(NavigationController { route, config })
     }
+}
+
+/// Manages the navigation lifecycle through a route,
+/// returning an updated state given inputs like user location.
+///
+/// Notes for implementing a new platform:
+/// - A controller is bound to a single route; if you want recalculation, create a new instance.
+/// - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutable state.
+#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
+pub struct NavigationController {
+    route: Route,
+    config: NavigationControllerConfig,
 }
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
