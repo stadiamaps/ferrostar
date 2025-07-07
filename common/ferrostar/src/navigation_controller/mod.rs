@@ -98,7 +98,7 @@ impl Navigator for NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return NavState::apply_complete(location, initial_summary);
+            return NavState::complete(location, initial_summary);
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -181,7 +181,7 @@ impl Navigator for NavigationController {
                         NavState::new(trip_state, state.step_advance_condition())
                     }
                     StepAdvanceStatus::EndOfRoute => {
-                        NavState::apply_complete(user_location, summary.clone())
+                        NavState::complete(user_location, summary.clone())
                     }
                 }
             }
@@ -206,7 +206,7 @@ impl Navigator for NavigationController {
             } => {
                 // Remaining steps is empty, the route is finished.
                 let Some(current_step) = remaining_steps.first() else {
-                    return NavState::apply_complete(location, summary);
+                    return NavState::complete(location, summary);
                 };
 
                 // Trim the remaining waypoints if needed.

@@ -32,6 +32,7 @@ pub struct NavState {
 }
 
 impl NavState {
+    /// Creates a new navigation state with the provided trip state and step advance condition.
     pub fn new(
         trip_state: TripState,
         step_advance_condition: Arc<dyn StepAdvanceCondition>,
@@ -42,6 +43,7 @@ impl NavState {
         }
     }
 
+    /// Creates a new idle navigation state (no trip currently in progress, but still tracking the user's location).
     pub fn idle(user_location: Option<UserLocation>) -> Self {
         Self {
             trip_state: TripState::Idle { user_location },
@@ -49,9 +51,10 @@ impl NavState {
         }
     }
 
-    /// Create a new NavState representing a completed trip.
-    /// This function will create a ended trip state.
-    pub fn apply_complete(user_location: UserLocation, last_summary: TripSummary) -> Self {
+    /// Creates a navigation state indicating the trip is complete (arrived at the destination but still tracking the user's location).
+    ///
+    /// The summary is retained as a snapshot (the caller should have this from the last known state).
+    pub fn complete(user_location: UserLocation, last_summary: TripSummary) -> Self {
         Self {
             trip_state: TripState::Complete {
                 user_location,
