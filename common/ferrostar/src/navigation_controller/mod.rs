@@ -55,11 +55,10 @@ pub fn create_navigator(
 ) -> Arc<dyn Navigator> {
     if should_record {
         // Creates a navigation controller with a wrapper that records events.
-        // TODO: Currently just returns the regular controller
-        Arc::new(NavigationController { route, config })
+        Arc::new(RecordingNavigationController::new(route, config))
     } else {
         // Creates a normal navigation controller.
-        Arc::new(NavigationController { route, config })
+        Arc::new(NavigationController::new(route, config))
     }
 }
 
@@ -388,6 +387,40 @@ impl NavigationController {
             }
             TripState::Idle { .. } | TripState::Complete { .. } => false,
         }
+    }
+}
+
+pub struct RecordingNavigationController {
+    pub controller: NavigationController,
+    pub recording: NavigationRecording,
+}
+
+impl RecordingNavigationController {
+    pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
+        Self {
+            controller: NavigationController::new(route.clone(), config.clone()),
+            recording: NavigationRecording::new(config, route),
+        }
+    }
+}
+
+impl Navigator for RecordingNavigationController {
+    fn get_initial_state(&self, location: UserLocation) -> NavState {
+        self.controller.get_initial_state(location)
+    }
+
+    fn advance_to_next_step(&self, state: &NavState) -> NavState {
+        let new_state = self.controller.advance_to_next_step(&state);
+        let new_recording = self.recording.record_nav_state_update(new_state.clone());
+
+        NavState::add_recording(new_state, new_recording)
+    }
+
+    fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState {
+        let new_state = self.controller.update_user_location(location, state);
+        let new_recording = self.recording.record_nav_state_update(new_state.clone());
+
+        NavState::add_recording(new_state, new_recording)
     }
 }
 

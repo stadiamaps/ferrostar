@@ -73,6 +73,16 @@ impl NavState {
         }
     }
 
+    pub fn add_recording(
+        nav_state: NavState,
+        recording_events: Vec<NavigationRecordingEvent>,
+    ) -> Self {
+        Self {
+            trip_state: nav_state.trip_state,
+            recording_events: Some(recording_events),
+        }
+    }
+
     #[inline]
     pub fn trip_state(&self) -> TripState {
         self.trip_state.clone()
@@ -383,9 +393,9 @@ pub enum NavigationRecordingEventData {
         /// Updated user location.
         user_location: UserLocation,
     },
-    TripStateUpdate {
+    NavStateUpdate {
         /// Updated trip state.
-        trip_state: TripState,
+        nav_state: NavState,
     },
     RouteUpdate {
         /// Updated route steps.

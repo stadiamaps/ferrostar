@@ -1,6 +1,7 @@
-use crate::models::{Route, UserLocation};
+use crate::models::Route;
 use crate::navigation_controller::models::{
-    NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData, TripState,
+    NavState, NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData,
+    TripState,
 };
 use chrono::Utc;
 pub struct NavigationRecording {
@@ -32,36 +33,23 @@ impl NavigationRecording {
         }
     }
 
-    /// Records a location update from the user during navigation.
-    pub fn record_location_update(self, user_location: UserLocation) -> Self {
-        self.add_event(NavigationRecordingEventData::LocationUpdate { user_location })
+    pub fn record_nav_state_update(&self, new_state: NavState) -> Vec<NavigationRecordingEvent> {
+        Self::add_event(
+            self.events.clone(),
+            NavigationRecordingEventData::NavStateUpdate {
+                nav_state: new_state,
+            },
+        )
     }
 
-    /// Records a trip state update during navigation.
-    pub fn record_trip_state_update(self, trip_state: TripState) -> Self {
-        self.add_event(NavigationRecordingEventData::TripStateUpdate { trip_state })
-    }
-
-    /// Records a route update during navigation.
-    pub fn record_route_update(self, route: Route) -> Self {
-        self.add_event(NavigationRecordingEventData::RouteUpdate { route })
-    }
-
-    /// Records an error that occurred during navigation.
-    pub fn record_navigation_error(self, error_message: String) -> Self {
-        self.add_event(NavigationRecordingEventData::Error { error_message })
-    }
-
-    /// Helper method to add an event to the recording.
-    pub fn add_event(self, event_data: NavigationRecordingEventData) -> Self {
-        let event = NavigationRecordingEvent {
+    pub fn add_event(
+        mut old_events: Vec<NavigationRecordingEvent>,
+        new_event_data: NavigationRecordingEventData,
+    ) -> Vec<NavigationRecordingEvent> {
+        old_events.push(NavigationRecordingEvent {
             timestamp: Utc::now().timestamp(),
-            event_data,
-        };
-
-        let mut new_recording = self;
-        new_recording.events.push(event);
-
-        new_recording
+            event_data: new_event_data,
+        });
+        old_events
     }
 }
