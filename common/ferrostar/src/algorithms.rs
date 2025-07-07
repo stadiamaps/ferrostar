@@ -135,7 +135,7 @@ fn is_valid_float(value: f64) -> bool {
     !value.is_nan() && !value.is_subnormal() && !value.is_infinite()
 }
 
-pub(crate) fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
+fn snap_point_to_line(point: &Point, line: &LineString) -> Option<Point> {
     // Bail early when we have two essentially identical points.
     // This can cause some issues with edge cases (captured in proptest regressions)
     // with the underlying libraries.
