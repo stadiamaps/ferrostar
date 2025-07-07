@@ -17,10 +17,6 @@ use tsify::Tsify;
 #[cfg(feature = "wasm-bindgen")]
 use super::JsStepAdvanceCondition;
 
-// MARK: Manual
-
-// We *could* implement Serialize for the major modes...
-
 /// Never advances to the next step automatically;
 /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
 ///
@@ -50,8 +46,6 @@ impl StepAdvanceConditionJsConvertible for ManualStepCondition {
         JsStepAdvanceCondition::Manual
     }
 }
-
-// MARK: Basic Conditions
 
 /// Automatically advances when the user's location is close enough to the end of the step
 #[derive(Debug, Copy, Clone)]
@@ -165,8 +159,6 @@ impl StepAdvanceConditionJsConvertible for DistanceFromStepCondition {
     }
 }
 
-// MARK: Operator Conditions
-
 /// Advance if any of the conditions are met (OR).
 ///
 /// This is ideal for short circuit type advance conditions.
@@ -251,17 +243,17 @@ impl StepAdvanceConditionJsConvertible for AndAdvanceConditions {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct DistanceEntryAndExitCondition {
     /// Mark the arrival at the end of the step once the user is within this distance.
-    pub distance_to_end_of_step: u16,
-    /// Advance after the user has left the end of the step by
-    /// this distance.
-    pub distance_after_end_step: u16,
+    distance_to_end_of_step: u16,
+    /// Advance only after the user has left the end of the step by
+    /// at least this distance.
+    distance_after_end_step: u16,
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
-    pub minimum_horizontal_accuracy: u16,
-    /// This becomes true when the user is within range of the end of the step.
-    /// Because this step condition is stateful, it must first upgrade this to true,
-    /// and then check if the user exited the step by the threshold distance.
-    pub has_reached_end_of_current_step: bool,
+    minimum_horizontal_accuracy: u16,
+    /// Internal state for tracking when the user is within `distance_to_end_of_step` meters from the end of the step.
+    /// This allows for stateful advance only after entering a reasonable radues of the goal
+    /// and then exiting the area by a separate trigger threshold.
+    has_reached_end_of_current_step: bool,
 }
 
 impl DistanceEntryAndExitCondition {
