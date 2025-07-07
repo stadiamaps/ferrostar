@@ -35,6 +35,8 @@ pub trait StepAdvanceConditionJsConvertible {
 
 /// When implementing custom step advance logic, this trait allows you to define
 /// whether the condition should advance to the next condition, the next step or not.
+///
+/// At the moment, these must be implemented in Rust.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait StepAdvanceCondition: StepAdvanceConditionJsConvertible + Sync + Send {
     // NOTE: This cannot be exported `with_foreign` because of uniffi's Arc implementation.
