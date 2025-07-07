@@ -3551,10 +3551,12 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 
 
 /**
- * This is a lower level container for the TripState that enables
- * holding onto internal state that isn't possible to share with certain
- * platforms. E.g. the Arc<dyn StepAdvanceCondition> isn't useful nor possible
- * to use on the web.
+ * The navigation state.
+ *
+ * This is typically created from an initial trip state
+ * and conditions for advancing navigation to the next step.
+ * Any internal navigation state is packed in here so that
+ * the navigation controller can remain functionally pure.
  */
 public struct NavState {
     public var tripState: TripState
@@ -3623,8 +3625,6 @@ public struct NavigationControllerConfig {
      * This exists because several of our step advance conditions require entry and
      * exit from a step's geometry. The end of the route/arrival doesn't always accommodate
      * the expected location updates for the core step advance condition.
-     *
-     * This exception is applied when the number of remaining steps is less than or equal to 2.
      */
     public var arrivalStepAdvanceCondition: StepAdvanceCondition
     /**
@@ -3654,8 +3654,6 @@ public struct NavigationControllerConfig {
          * This exists because several of our step advance conditions require entry and
          * exit from a step's geometry. The end of the route/arrival doesn't always accommodate
          * the expected location updates for the core step advance condition.
-         *
-         * This exception is applied when the number of remaining steps is less than or equal to 2.
          */arrivalStepAdvanceCondition: StepAdvanceCondition, 
         /**
          * Configures when the user is deemed to be off course.
