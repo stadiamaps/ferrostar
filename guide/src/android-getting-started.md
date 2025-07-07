@@ -231,16 +231,14 @@ private val core =
           locationProvider = locationProvider,
           foregroundServiceManager = foregroundServiceManager,
           navigationControllerConfig =
-              NavigationControllerConfig(
-                  WaypointAdvanceMode.WaypointWithinRange(100.0),
-                  StepAdvanceMode.RelativeLineStringDistance(
-                      minimumHorizontalAccuracy = 25U,
-                      specialAdvanceConditions =
-                          // NOTE: We have not yet put this threshold through extensive real-world
-                          // testing
-                          SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
-                  RouteDeviationTracking.StaticThreshold(15U, 50.0),
-                  CourseFiltering.SNAP_TO_ROUTE)
+            NavigationControllerConfig(
+                WaypointAdvanceMode.WaypointWithinRange(100.0),
+                stepAdvanceDistanceEntryAndExit(10u, 5u, 32u),
+                // This is a special condition used for the last two steps of the route. As we can't assume the
+                // user continue moving past the step like the other conditions.
+                stepAdvanceDistanceToEndOfStep(10u, 32u),
+                RouteDeviationTracking.StaticThreshold(15U, 50.0),
+                CourseFiltering.SNAP_TO_ROUTE),
       )
 ```
 

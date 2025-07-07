@@ -24,7 +24,7 @@ pub struct StepAdvanceResult {
     pub should_advance: bool,
     /// The next iteration of the step advance condition.
     ///
-    /// This is what the navigation controller passes to the next isntance of `NavState` on the completion of
+    /// This is what the navigation controller passes to the next instance of `NavState` on the completion of
     /// an update (e.g. a user location update). Usually, this value is one of the following:
     ///
     /// 1. When should advance is true, this should typically be a clean/new instance of the condition.
