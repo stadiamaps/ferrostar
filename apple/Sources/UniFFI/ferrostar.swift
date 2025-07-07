@@ -2483,6 +2483,8 @@ public func FfiConverterTypeRouteResponseParser_lower(_ value: RouteResponsePars
 /**
  * When implementing custom step advance logic, this trait allows you to define
  * whether the condition should advance to the next condition, the next step or not.
+ *
+ * At the moment, these must be implemented in Rust.
  */
 public protocol StepAdvanceConditionProtocol: AnyObject, Sendable {
     
@@ -2497,6 +2499,8 @@ public protocol StepAdvanceConditionProtocol: AnyObject, Sendable {
 /**
  * When implementing custom step advance logic, this trait allows you to define
  * whether the condition should advance to the next condition, the next step or not.
+ *
+ * At the moment, these must be implemented in Rust.
  */
 open class StepAdvanceCondition: StepAdvanceConditionProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
