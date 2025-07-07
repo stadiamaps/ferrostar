@@ -742,9 +742,15 @@ public func FfiConverterTypeAndAdvanceConditions_lower(_ value: AndAdvanceCondit
 
 
 
+/**
+ * A stateful condition that requires the user to reach the end of the step then proceed past it to advance.
+ */
 public protocol DistanceEntryAndExitConditionProtocol: AnyObject, Sendable {
     
 }
+/**
+ * A stateful condition that requires the user to reach the end of the step then proceed past it to advance.
+ */
 open class DistanceEntryAndExitCondition: DistanceEntryAndExitConditionProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
@@ -856,8 +862,7 @@ public func FfiConverterTypeDistanceEntryAndExitCondition_lower(_ value: Distanc
 
 
 /**
- * Requires that the user be at least this far (distance in meters)
- * from the current route step.
+ * Requires that the user be at least this far from the current route step.
  *
  * This results in *delayed* advance,
  * but is more robust to spurious / unwanted step changes in scenarios including
@@ -872,8 +877,7 @@ public protocol DistanceFromStepConditionProtocol: AnyObject, Sendable {
     
 }
 /**
- * Requires that the user be at least this far (distance in meters)
- * from the current route step.
+ * Requires that the user be at least this far from the current route step.
  *
  * This results in *delayed* advance,
  * but is more robust to spurious / unwanted step changes in scenarios including
@@ -995,13 +999,19 @@ public func FfiConverterTypeDistanceFromStepCondition_lower(_ value: DistanceFro
 
 
 /**
- * Automatically advances when the user's location is close enough to the end of the step
+ * Automatically advances when the user's location is close enough to the end of the step.
+ *
+ * This results in an eager advance where the user will jump to the next step when the
+ * condition is met.
  */
 public protocol DistanceToEndOfStepConditionProtocol: AnyObject, Sendable {
     
 }
 /**
- * Automatically advances when the user's location is close enough to the end of the step
+ * Automatically advances when the user's location is close enough to the end of the step.
+ *
+ * This results in an eager advance where the user will jump to the next step when the
+ * condition is met.
  */
 open class DistanceToEndOfStepCondition: DistanceToEndOfStepConditionProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
@@ -4258,6 +4268,10 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
 }
 
 
+/**
+ * The step advance result is produced on every iteration of the navigation state machine and
+ * used by the navigation to build a new `NavState` instance for that update.
+ */
 public struct StepAdvanceResult {
     /**
      * The step should be advanced.
@@ -4265,9 +4279,15 @@ public struct StepAdvanceResult {
     public var shouldAdvance: Bool
     /**
      * The next iteration of the step advance condition.
-     * This allows us to copy the condition and its current state
-     * to the next user location update/next interaction of the step
-     * advance calculation.
+     *
+     * This is what the navigation controller passes to the next instance of `NavState` on the completion of
+     * an update (e.g. a user location update). Usually, this value is one of the following:
+     *
+     * 1. When should advance is true, this should typically be a clean/new instance of the condition.
+     * 2. When the condition is not advancing, but the condition maintains no state, this should be a
+     * clean/new instance of the condition.
+     * 3. When the condition is not advancing and maintains state, this should be a new
+     * instance including the current state of the condition. See `DistanceEntryAndExitCondition`
      *
      * IMPORTANT! If the condition advances. This **must** be the clean/default state.
      */
@@ -4281,9 +4301,15 @@ public struct StepAdvanceResult {
          */shouldAdvance: Bool, 
         /**
          * The next iteration of the step advance condition.
-         * This allows us to copy the condition and its current state
-         * to the next user location update/next interaction of the step
-         * advance calculation.
+         *
+         * This is what the navigation controller passes to the next instance of `NavState` on the completion of
+         * an update (e.g. a user location update). Usually, this value is one of the following:
+         *
+         * 1. When should advance is true, this should typically be a clean/new instance of the condition.
+         * 2. When the condition is not advancing, but the condition maintains no state, this should be a
+         * clean/new instance of the condition.
+         * 3. When the condition is not advancing and maintains state, this should be a new
+         * instance including the current state of the condition. See `DistanceEntryAndExitCondition`
          *
          * IMPORTANT! If the condition advances. This **must** be the clean/default state.
          */nextIteration: StepAdvanceCondition) {
