@@ -1,7 +1,7 @@
 import Combine
 import CoreLocation
-import FerrostarCore
-import FerrostarCoreFFI
+@preconcurrency import FerrostarCore
+@preconcurrency import FerrostarCoreFFI
 import Foundation
 import MapLibreSwiftUI
 
@@ -42,7 +42,7 @@ private extension FerrostarCore {
 
         try self.init(
             valhallaEndpointUrl: URL(
-                string: "https://api.stadiamaps.com/route/v1?api_key=\(APIKeys.shared.stadiaMapsAPIKey)"
+                string: "https://api.stadiamaps.com/route/v1?api_key=\(sharedAPIKeys.stadiaMapsAPIKey)"
             )!,
             profile: "bicycle",
             locationProvider: locationProvider,
@@ -71,11 +71,12 @@ extension DemoModel {
     }
 }
 
-let demoModel = DemoModel()
+@MainActor let demoModel = DemoModel()
 
+@MainActor
 @Observable final class DemoModel {
-    @MainActor var errorMessage: String?
-    @MainActor var appState: DemoAppState = .idle
+    var errorMessage: String?
+    var appState: DemoAppState = .idle
     let locationProvider: SwitchableLocationProvider
     let core: FerrostarCore
     var origin: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
@@ -119,10 +120,11 @@ let demoModel = DemoModel()
 
     private func routes(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) async throws -> [Route] {
         guard from != kCLLocationCoordinate2DInvalid else { throw DemoError.invalidOrigin }
-        return try await core.getRoutes(
+        async let routes = try await core.getRoutes(
             initialLocation: UserLocation(clCoordinateLocation2D: from),
             waypoints: [Waypoint(coordinate: GeographicCoordinate(cl: to), kind: .break)]
         )
+        return try await routes
     }
 
     private func startNavigation(on route: Route) throws -> DemoAppState {
@@ -138,26 +140,29 @@ let demoModel = DemoModel()
         return .idle
     }
 
-    private func wrap(wrap: () async throws -> DemoAppState) async {
+    private func wrap(wrap: () throws -> DemoAppState) {
         do {
-            await MainActor.run {
-                errorMessage = nil
-            }
-            let newState = try await wrap()
-            await MainActor.run {
-                appState = newState
-            }
+            errorMessage = nil
+            appState = try wrap()
         } catch {
-            await MainActor.run {
-                errorMessage = error.localizedDescription
-                appState = .idle
-            }
+            errorMessage = error.localizedDescription
+            appState = .idle
         }
     }
 
-    func chooseDestination() async {
-        await wrap {
-            try await appState.setDestination(destination)
+    private func wrap(wrap: () async throws -> DemoAppState) async {
+        do {
+            errorMessage = nil
+            appState = try await wrap()
+        } catch {
+            errorMessage = error.localizedDescription
+            appState = .idle
+        }
+    }
+
+    func chooseDestination() {
+        wrap {
+            try appState.setDestination(destination)
         }
     }
 
@@ -171,19 +176,19 @@ let demoModel = DemoModel()
         }
     }
 
-    func chooseRoute(_ route: Route) async {
-        await wrap {
+    func chooseRoute(_ route: Route) {
+        wrap {
             selectedRoute = route
             return .selectedRoute(route)
         }
     }
 
-    func navigate(_ route: Route) async {
-        await wrap { try startNavigation(on: route) }
+    func navigate(_ route: Route) {
+        wrap { try startNavigation(on: route) }
     }
 
-    func stop() async {
-        await wrap {
+    func stop() {
+        wrap {
             selectedRoute = nil
             return stopNavigation()
         }
