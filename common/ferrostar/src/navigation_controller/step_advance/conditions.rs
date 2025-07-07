@@ -243,17 +243,17 @@ impl StepAdvanceConditionJsConvertible for AndAdvanceConditions {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct DistanceEntryAndExitCondition {
     /// Mark the arrival at the end of the step once the user is within this distance.
-    distance_to_end_of_step: u16,
+    pub(super) distance_to_end_of_step: u16,
     /// Advance only after the user has left the end of the step by
     /// at least this distance.
-    distance_after_end_step: u16,
+    pub(super) distance_after_end_step: u16,
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
-    minimum_horizontal_accuracy: u16,
+    pub(super) minimum_horizontal_accuracy: u16,
     /// Internal state for tracking when the user is within `distance_to_end_of_step` meters from the end of the step.
     /// This allows for stateful advance only after entering a reasonable radues of the goal
     /// and then exiting the area by a separate trigger threshold.
-    has_reached_end_of_current_step: bool,
+    pub(super) has_reached_end_of_current_step: bool,
 }
 
 impl DistanceEntryAndExitCondition {

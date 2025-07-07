@@ -421,7 +421,7 @@ impl JsNavigationController {
 
     pub fn advance_to_next_step(&self, state: JsValue) -> Result<JsValue, JsValue> {
         let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
-        let new_state = self.0.advance_to_next_step(&state.into());
+        let new_state = self.0.advance_to_next_step(state.into());
 
         serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
@@ -435,7 +435,7 @@ impl JsNavigationController {
     ) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
         let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
-        let new_state = self.0.update_user_location(location, &state.into());
+        let new_state = self.0.update_user_location(location, state.into());
 
         serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
