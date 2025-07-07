@@ -494,13 +494,6 @@ mod tests {
             let new_state =
                 controller.update_user_location(new_simulation_state.current_location, state);
 
-            // // Exit if there are no more locations.
-            // // TODO: This test simulation doesn't let us complete the actual route for
-            // // step_advance_conditions that require the user to exit the step (e.g. DistanceEntryAndExitCondition)
-            // if simulation_state.remaining_locations.is_empty() {
-            //     break;
-            // }
-
             match new_state.trip_state() {
                 TripState::Idle { .. } => {}
                 TripState::Navigating {
