@@ -47,7 +47,12 @@ impl StepAdvanceConditionJsConvertible for ManualStepCondition {
     }
 }
 
-/// Automatically advances when the user's location is close enough to the end of the step
+// MARK: Basic Conditions
+
+/// Automatically advances when the user's location is close enough to the end of the step.
+///
+/// This results in an eager advance where the user will jump to the next step when the
+/// condition is met.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct DistanceToEndOfStepCondition {
@@ -97,8 +102,7 @@ impl StepAdvanceConditionJsConvertible for DistanceToEndOfStepCondition {
     }
 }
 
-/// Requires that the user be at least this far (distance in meters)
-/// from the current route step.
+/// Requires that the user be at least this far from the current route step.
 ///
 /// This results in *delayed* advance,
 /// but is more robust to spurious / unwanted step changes in scenarios including
@@ -239,13 +243,16 @@ impl StepAdvanceConditionJsConvertible for AndAdvanceConditions {
     }
 }
 
+/// A stateful condition that requires the user to reach the end of the step then proceed past it to advance.
 #[derive(Debug, Copy, Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct DistanceEntryAndExitCondition {
     /// Mark the arrival at the end of the step once the user is within this distance.
     pub(super) distance_to_end_of_step: u16,
-    /// Advance only after the user has left the end of the step by
-    /// at least this distance.
+    /// Advance only after the user has left the end of the step by at least this distance.
+    ///
+    /// This value should be small to avoid the user appearing stuck on the step when using
+    /// visible location snapping.
     pub(super) distance_after_end_step: u16,
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.

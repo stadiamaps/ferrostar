@@ -1,3 +1,4 @@
+//! Step advance condition traits and implementations
 use crate::{
     models::{RouteStep, UserLocation},
     navigation_controller::step_advance::conditions::{
@@ -15,19 +16,28 @@ use tsify::Tsify;
 
 pub mod conditions;
 
+/// The step advance result is produced on every iteration of the navigation state machine and
+/// used by the navigation to build a new `NavState` instance for that update.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct StepAdvanceResult {
     /// The step should be advanced.
     pub should_advance: bool,
     /// The next iteration of the step advance condition.
-    /// This allows us to copy the condition and its current state
-    /// to the next user location update/next interaction of the step
-    /// advance calculation.
+    ///
+    /// This is what the navigation controller passes to the next isntance of `NavState` on the completion of
+    /// an update (e.g. a user location update). Usually, this value is one of the following:
+    ///
+    /// 1. When should advance is true, this should typically be a clean/new instance of the condition.
+    /// 2. When the condition is not advancing, but the condition maintains no state, this should be a
+    ///    clean/new instance of the condition.
+    /// 3. When the condition is not advancing and maintains state, this should be a new
+    ///    instance including the current state of the condition. See `DistanceEntryAndExitCondition`
     ///
     /// IMPORTANT! If the condition advances. This **must** be the clean/default state.
     pub next_iteration: Arc<dyn StepAdvanceCondition>,
 }
 
+/// A trait for converting a step advance condition into a JavaScript object for Web/WASM.
 pub trait StepAdvanceConditionJsConvertible {
     #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition;
