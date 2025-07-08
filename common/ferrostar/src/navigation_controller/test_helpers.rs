@@ -6,35 +6,30 @@ use chrono::{DateTime, Utc};
 use geo::{point, BoundingRect, Distance, Haversine, LineString, Point};
 use insta::{dynamic_redaction, Settings};
 
-// A longer + more complex route
-const VALHALLA_EXTENDED_OSRM_RESPONSE: &str =
-    include_str!("fixtures/valhalla_extended_osrm_response.json");
-
-// A self-intersecting route
-const VALHALLA_SELF_INTERSECTING_OSRM_RESPONSE: &str =
-    include_str!("fixtures/valhalla_self_intersecting_osrm_response.json");
-
-/// Gets a longer + more complex route.
-///
-/// The accuracy of each parser is tested separately in the routing_adapters module;
-/// this function simply returns a route for an extended test of the state machine.
-pub fn get_extended_route() -> Route {
-    let parser = OsrmResponseParser::new(6);
-    parser
-        .parse_response(VALHALLA_EXTENDED_OSRM_RESPONSE.into())
-        .expect("Unable to parse OSRM response")
-        .pop()
-        .expect("Expected at least one route")
+pub enum TestRoute {
+    /// Gets a longer + more complex route.
+    Extended,
+    /// Gets a self-intersecting route.
+    SelfIntersecting,
 }
 
-/// Gets a self-intersecting route.
-///
+impl TestRoute {
+    pub fn file_content(&self) -> &'static str {
+        match self {
+            TestRoute::Extended => include_str!("fixtures/valhalla_extended_osrm_response.json"),
+            TestRoute::SelfIntersecting => {
+                include_str!("fixtures/valhalla_self_intersecting_osrm_response.json")
+            }
+        }
+    }
+}
+
 /// The accuracy of each parser is tested separately in the routing_adapters module;
 /// this function simply returns a route for an extended test of the state machine.
-pub fn get_self_intersecting_route() -> Route {
+pub fn get_test_route(test_route: TestRoute) -> Route {
     let parser = OsrmResponseParser::new(6);
     parser
-        .parse_response(VALHALLA_SELF_INTERSECTING_OSRM_RESPONSE.into())
+        .parse_response(test_route.file_content().into())
         .expect("Unable to parse OSRM response")
         .pop()
         .expect("Expected at least one route")
@@ -61,6 +56,49 @@ pub fn gen_dummy_route_step(
             point!(x: start_lng, y: start_lat),
             point!(x: end_lng, y: end_lat),
         ),
+        duration: 0.0,
+        road_name: None,
+        exits: vec![],
+        instruction: "".to_string(),
+        visual_instructions: vec![],
+        spoken_instructions: vec![],
+        annotations: None,
+        incidents: vec![],
+    }
+}
+
+/// Creates a RouteStep with a list of coordinates.
+///
+/// This is useful for testing specific scenarios where you need more control over the
+/// route geometry.
+///
+/// # Arguments
+///
+/// * `coordinates` - A vector of (longitude, latitude) pairs that will be converted to `GeographicCoordinate`s
+pub fn gen_route_step_with_coords(coordinates: Vec<(f64, f64)>) -> RouteStep {
+    if coordinates.len() < 2 {
+        panic!("A route step requires at least 2 coordinates");
+    }
+
+    let geo_coordinates: Vec<GeographicCoordinate> = coordinates
+        .into_iter()
+        .map(|(lng, lat)| GeographicCoordinate { lng, lat })
+        .collect();
+
+    // Calculate the total distance along the route
+    let points: Vec<Point> = geo_coordinates
+        .iter()
+        .map(|coord| point!(x: coord.lng, y: coord.lat))
+        .collect();
+
+    let mut total_distance = 0.0;
+    for i in 0..points.len() - 1 {
+        total_distance += Haversine.distance(points[i], points[i + 1]);
+    }
+
+    RouteStep {
+        geometry: geo_coordinates,
+        distance: total_distance,
         duration: 0.0,
         road_name: None,
         exits: vec![],

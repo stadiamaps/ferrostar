@@ -171,10 +171,18 @@ describe the available options.
 
 ```typescript
 ferrostar.startNavigation(route, {
-  stepAdvance: {
-    RelativeLineStringDistance: {
+  stepAdvanceCondition: {
+    DistanceEntryExit: {
       minimumHorizontalAccuracy: 25,
-      automaticAdvanceDistance: 10,
+      distanceToEndOfStep: 30,
+      distanceAfterEndStep: 5,
+      hasReachedEndOfCurrentStep: false,
+    },
+  },
+  arrivalStepAdvanceCondition: {
+    DistanceToEndOfStep: {
+      distance: 30,
+      minimumHorizontalAccuracy: 25,
     },
   },
   routeDeviationTracking: {

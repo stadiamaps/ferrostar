@@ -1,13 +1,15 @@
 package com.stadiamaps.ferrostar.core
 
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import uniffi.ferrostar.TripProgress
 
+@OptIn(ExperimentalTime::class)
 class TripProgressTest {
 
   private val timeZone = TimeZone.UTC

@@ -28,6 +28,7 @@
 		FE16E4A62E0CAB0A009D7B83 /* DemoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */; };
 		FE16E4A82E0CAC34009D7B83 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */; };
 		FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */; };
+		FEFEAA1C2E0F570B00101D5B /* DemoCarPlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEFEAA1B2E0F570B00101D5B /* DemoCarPlayModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoModel.swift; sourceTree = "<group>"; };
 		FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchableLocationProvider.swift; sourceTree = "<group>"; };
+		FEFEAA1B2E0F570B00101D5B /* DemoCarPlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +80,7 @@
 				1611A5542B2E6E98006B131D /* Preview Content */,
 				1663679B2B2F6F79008BFF1F /* Helpers */,
 				1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */,
+				FEFEAA1B2E0F570B00101D5B /* DemoCarPlayModel.swift */,
 				FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */,
 				FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */,
 				FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */,
@@ -230,6 +233,7 @@
 				FE16E4A32E0CAA73009D7B83 /* DemoAppState.swift in Sources */,
 				FE16E4A82E0CAC34009D7B83 /* AppDefaults.swift in Sources */,
 				FE16E4A12E0CAA61009D7B83 /* DemoError.swift in Sources */,
+				FEFEAA1C2E0F570B00101D5B /* DemoCarPlayModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,7 +388,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -418,7 +422,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

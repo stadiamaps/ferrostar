@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{ minimum_horizontal_accuracy: 0, special_advance_conditions: None, })"
+expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),\nArc::new(DistanceEntryAndExitCondition::new(0, 0, 0)))"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -1987,7 +1987,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 0
+    current_step_geometry_index: 2
     user_location:
       coordinates:
         lat: 40.775191
@@ -2007,6 +2007,34 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
         accuracy: 5
       speed: ~
     remaining_steps:
+      - geometry:
+          - lat: 40.775707
+            lng: -74.031614
+          - lat: 40.775349
+            lng: -74.031354
+          - lat: 40.775254
+            lng: -74.031343
+          - lat: 40.775191
+            lng: -74.031311
+        distance: 64.13
+        duration: 23.182
+        road_name: ""
+        exits: []
+        instruction: Drive southeast.
+        visual_instructions:
+          - primary_content:
+              text: John F. Kennedy Boulevard
+              maneuver_type: end of road
+              maneuver_modifier: right
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            secondary_content: ~
+            sub_content: ~
+            trigger_distance_before_maneuver: 64.13
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
       - geometry:
           - lat: 40.775191
             lng: -74.031311
@@ -2432,9 +2460,9 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
           lng: -74.040048
         kind: Break
     progress:
-      distanceToNextManeuver: 115.87039813235097
-      distanceRemaining: 1654.9443981323511
-      durationRemaining: 159.2681997839586
+      distanceToNextManeuver: 0
+      distanceRemaining: 1654.074
+      durationRemaining: 159.174
     summary:
       distanceTraveled: 63.54120321328182
       snappedDistanceTraveled: 63.54120321328182
@@ -2443,15 +2471,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     deviation: NoDeviation
     visual_instruction:
       primary_content:
-        text: Take the ramp on the left.
-        maneuver_type: on ramp
-        maneuver_modifier: slight left
+        text: John F. Kennedy Boulevard
+        maneuver_type: end of road
+        maneuver_modifier: right
         roundabout_exit_degrees: ~
         lane_info: ~
         exit_numbers: []
       secondary_content: ~
       sub_content: ~
-      trigger_distance_before_maneuver: 115
+      trigger_distance_before_maneuver: 64.13
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
@@ -9007,7 +9035,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 0
+    current_step_geometry_index: 9
     user_location:
       coordinates:
         lat: 40.775214
@@ -9027,6 +9055,48 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
         accuracy: 5
       speed: ~
     remaining_steps:
+      - geometry:
+          - lat: 40.775191
+            lng: -74.031311
+          - lat: 40.775168
+            lng: -74.031379
+          - lat: 40.775146
+            lng: -74.03145
+          - lat: 40.775131
+            lng: -74.03156
+          - lat: 40.775142
+            lng: -74.031708
+          - lat: 40.775151
+            lng: -74.031786
+          - lat: 40.775165
+            lng: -74.031856
+          - lat: 40.775201
+            lng: -74.032041
+          - lat: 40.775215
+            lng: -74.03222
+          - lat: 40.775218
+            lng: -74.032336
+          - lat: 40.775214
+            lng: -74.032662
+        distance: 115
+        duration: 12.446
+        road_name: John F. Kennedy Boulevard
+        exits: []
+        instruction: Turn right onto John F. Kennedy Boulevard/CR 501.
+        visual_instructions:
+          - primary_content:
+              text: Take the ramp on the left.
+              maneuver_type: on ramp
+              maneuver_modifier: slight left
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            secondary_content: ~
+            sub_content: ~
+            trigger_distance_before_maneuver: 115
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
       - geometry:
           - lat: 40.775214
             lng: -74.032662
@@ -9410,9 +9480,9 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
           lng: -74.040048
         kind: Break
     progress:
-      distanceToNextManeuver: 236.2945633385906
-      distanceRemaining: 1539.3685633385908
-      durationRemaining: 146.75461429690156
+      distanceToNextManeuver: 0
+      distanceRemaining: 1539.074
+      durationRemaining: 146.728
     summary:
       distanceTraveled: 179.41256912380243
       snappedDistanceTraveled: 179.41256912380243
@@ -9421,15 +9491,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     deviation: NoDeviation
     visual_instruction:
       primary_content:
-        text: "NJ 495 West, NJTP West"
-        maneuver_type: fork
-        maneuver_modifier: slight right
+        text: Take the ramp on the left.
+        maneuver_type: on ramp
+        maneuver_modifier: slight left
         roundabout_exit_degrees: ~
         lane_info: ~
         exit_numbers: []
       secondary_content: ~
       sub_content: ~
-      trigger_distance_before_maneuver: 236
+      trigger_distance_before_maneuver: 115
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
@@ -23065,7 +23135,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 0
+    current_step_geometry_index: 18
     user_location:
       coordinates:
         lat: 40.773943
@@ -23085,6 +23155,66 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
         accuracy: 5
       speed: ~
     remaining_steps:
+      - geometry:
+          - lat: 40.775214
+            lng: -74.032662
+          - lat: 40.775156
+            lng: -74.03284
+          - lat: 40.775144
+            lng: -74.0329
+          - lat: 40.775131
+            lng: -74.03296
+          - lat: 40.77511
+            lng: -74.033033
+          - lat: 40.775089
+            lng: -74.0331
+          - lat: 40.775068
+            lng: -74.033159
+          - lat: 40.775046
+            lng: -74.033214
+          - lat: 40.774985
+            lng: -74.033342
+          - lat: 40.774927
+            lng: -74.033441
+          - lat: 40.774853
+            lng: -74.033547
+          - lat: 40.774784
+            lng: -74.033628
+          - lat: 40.774714
+            lng: -74.033702
+          - lat: 40.77406
+            lng: -74.034357
+          - lat: 40.774032
+            lng: -74.034393
+          - lat: 40.773997
+            lng: -74.034448
+          - lat: 40.773973
+            lng: -74.034516
+          - lat: 40.773958
+            lng: -74.034568
+          - lat: 40.773949
+            lng: -74.034668
+          - lat: 40.773943
+            lng: -74.034778
+        distance: 236
+        duration: 21.323
+        road_name: ""
+        exits: []
+        instruction: Take the ramp on the left.
+        visual_instructions:
+          - primary_content:
+              text: "NJ 495 West, NJTP West"
+              maneuver_type: fork
+              maneuver_modifier: slight right
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            secondary_content: ~
+            sub_content: ~
+            trigger_distance_before_maneuver: 236
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
       - geometry:
           - lat: 40.773943
             lng: -74.034778
@@ -23408,9 +23538,9 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
           lng: -74.040048
         kind: Break
     progress:
-      distanceToNextManeuver: 556.5905230613173
-      distanceRemaining: 1301.6645230613174
-      durationRemaining: 125.34323560913143
+      distanceToNextManeuver: 0
+      distanceRemaining: 1303.074
+      durationRemaining: 125.405
     summary:
       distanceTraveled: 415.70972637852657
       snappedDistanceTraveled: 415.70972637852657
@@ -23419,21 +23549,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     deviation: NoDeviation
     visual_instruction:
       primary_content:
-        text: Tonnelle Avenue
-        maneuver_type: off ramp
+        text: "NJ 495 West, NJTP West"
+        maneuver_type: fork
         maneuver_modifier: slight right
         roundabout_exit_degrees: ~
         lane_info: ~
         exit_numbers: []
-      secondary_content:
-        text: "US 1 South, US 9 South: Jersey City"
-        maneuver_type: ~
-        maneuver_modifier: ~
-        roundabout_exit_degrees: ~
-        lane_info: ~
-        exit_numbers: []
+      secondary_content: ~
       sub_content: ~
-      trigger_distance_before_maneuver: 558
+      trigger_distance_before_maneuver: 236
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
@@ -48675,7 +48799,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 0
+    current_step_geometry_index: 17
     user_location:
       coordinates:
         lat: 40.775971
@@ -48695,6 +48819,109 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
         accuracy: 5
       speed: ~
     remaining_steps:
+      - geometry:
+          - lat: 40.773943
+            lng: -74.034778
+          - lat: 40.774192
+            lng: -74.035346
+          - lat: 40.77427
+            lng: -74.035524
+          - lat: 40.774326
+            lng: -74.035661
+          - lat: 40.774383
+            lng: -74.035801
+          - lat: 40.774438
+            lng: -74.035946
+          - lat: 40.774499
+            lng: -74.036112
+          - lat: 40.774559
+            lng: -74.036281
+          - lat: 40.774614
+            lng: -74.036437
+          - lat: 40.774661
+            lng: -74.036579
+          - lat: 40.774769
+            lng: -74.036915
+          - lat: 40.774928
+            lng: -74.037391
+          - lat: 40.774991
+            lng: -74.037621
+          - lat: 40.775192
+            lng: -74.038382
+          - lat: 40.775239
+            lng: -74.038553
+          - lat: 40.775288
+            lng: -74.03891
+          - lat: 40.775341
+            lng: -74.039057
+          - lat: 40.775435
+            lng: -74.039315
+          - lat: 40.775971
+            lng: -74.040798
+        distance: 558
+        duration: 24.452
+        road_name: ""
+        exits: []
+        instruction: Keep right to take NJ 495 West/NJTP West.
+        visual_instructions:
+          - primary_content:
+              text: Tonnelle Avenue
+              maneuver_type: off ramp
+              maneuver_modifier: slight right
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            secondary_content:
+              text: "US 1 South, US 9 South: Jersey City"
+              maneuver_type: ~
+              maneuver_modifier: ~
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            sub_content: ~
+            trigger_distance_before_maneuver: 558
+          - primary_content:
+              text: Tonnelle Avenue
+              maneuver_type: off ramp
+              maneuver_modifier: slight right
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            secondary_content:
+              text: "US 1 South, US 9 South: Jersey City"
+              maneuver_type: ~
+              maneuver_modifier: ~
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            sub_content:
+              text: ""
+              maneuver_type: ~
+              maneuver_modifier: ~
+              roundabout_exit_degrees: ~
+              lane_info:
+                - active: false
+                  directions:
+                    - straight
+                  active_direction: ~
+                - active: false
+                  directions:
+                    - straight
+                  active_direction: ~
+                - active: false
+                  directions:
+                    - straight
+                  active_direction: ~
+                - active: true
+                  directions:
+                    - straight
+                    - right
+                  active_direction: right
+              exit_numbers: []
+            trigger_distance_before_maneuver: 400
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
       - geometry:
           - lat: 40.775971
             lng: -74.040798
@@ -48915,9 +49142,9 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
           lng: -74.040048
         kind: Break
     progress:
-      distanceToNextManeuver: 371.27981865769516
-      distanceRemaining: 744.3538186576952
-      durationRemaining: 100.87814953968406
+      distanceToNextManeuver: 0
+      distanceRemaining: 745.0740000000001
+      durationRemaining: 100.953
     summary:
       distanceTraveled: 972.3084088306861
       snappedDistanceTraveled: 972.3084088306861
@@ -48926,15 +49153,44 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     deviation: NoDeviation
     visual_instruction:
       primary_content:
-        text: 29th Street
-        maneuver_type: turn
+        text: Tonnelle Avenue
+        maneuver_type: off ramp
         maneuver_modifier: slight right
         roundabout_exit_degrees: ~
         lane_info: ~
         exit_numbers: []
-      secondary_content: ~
-      sub_content: ~
-      trigger_distance_before_maneuver: 372
+      secondary_content:
+        text: "US 1 South, US 9 South: Jersey City"
+        maneuver_type: ~
+        maneuver_modifier: ~
+        roundabout_exit_degrees: ~
+        lane_info: ~
+        exit_numbers: []
+      sub_content:
+        text: ""
+        maneuver_type: ~
+        maneuver_modifier: ~
+        roundabout_exit_degrees: ~
+        lane_info:
+          - active: false
+            directions:
+              - straight
+            active_direction: ~
+          - active: false
+            directions:
+              - straight
+            active_direction: ~
+          - active: false
+            directions:
+              - straight
+            active_direction: ~
+          - active: true
+            directions:
+              - straight
+              - right
+            active_direction: right
+        exit_numbers: []
+      trigger_distance_before_maneuver: 400
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
@@ -65770,7 +66026,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 0
+    current_step_geometry_index: 51
     user_location:
       coordinates:
         lat: 40.775543
@@ -65790,6 +66046,132 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
         accuracy: 5
       speed: ~
     remaining_steps:
+      - geometry:
+          - lat: 40.775971
+            lng: -74.040798
+          - lat: 40.776179
+            lng: -74.041094
+          - lat: 40.776232
+            lng: -74.04117
+          - lat: 40.776276
+            lng: -74.041225
+          - lat: 40.776319
+            lng: -74.041267
+          - lat: 40.776354
+            lng: -74.041295
+          - lat: 40.776393
+            lng: -74.04132
+          - lat: 40.776435
+            lng: -74.041341
+          - lat: 40.776477
+            lng: -74.041357
+          - lat: 40.776515
+            lng: -74.041368
+          - lat: 40.776551
+            lng: -74.041374
+          - lat: 40.776586
+            lng: -74.041373
+          - lat: 40.776631
+            lng: -74.041368
+          - lat: 40.776667
+            lng: -74.041363
+          - lat: 40.776702
+            lng: -74.041351
+          - lat: 40.77674
+            lng: -74.041333
+          - lat: 40.776779
+            lng: -74.041309
+          - lat: 40.776813
+            lng: -74.041283
+          - lat: 40.776851
+            lng: -74.041247
+          - lat: 40.776885
+            lng: -74.041211
+          - lat: 40.776914
+            lng: -74.041165
+          - lat: 40.776944
+            lng: -74.041115
+          - lat: 40.776967
+            lng: -74.041071
+          - lat: 40.776989
+            lng: -74.041019
+          - lat: 40.777007
+            lng: -74.040961
+          - lat: 40.77702
+            lng: -74.040899
+          - lat: 40.777028
+            lng: -74.040841
+          - lat: 40.777032
+            lng: -74.040782
+          - lat: 40.777033
+            lng: -74.040718
+          - lat: 40.777031
+            lng: -74.040668
+          - lat: 40.777022
+            lng: -74.040606
+          - lat: 40.777008
+            lng: -74.040546
+          - lat: 40.776993
+            lng: -74.040503
+          - lat: 40.77697
+            lng: -74.040443
+          - lat: 40.776944
+            lng: -74.040394
+          - lat: 40.776918
+            lng: -74.040352
+          - lat: 40.776887
+            lng: -74.040308
+          - lat: 40.776857
+            lng: -74.040272
+          - lat: 40.776825
+            lng: -74.040239
+          - lat: 40.776786
+            lng: -74.040207
+          - lat: 40.776747
+            lng: -74.040181
+          - lat: 40.776717
+            lng: -74.040168
+          - lat: 40.776678
+            lng: -74.040155
+          - lat: 40.776645
+            lng: -74.040145
+          - lat: 40.776615
+            lng: -74.040139
+          - lat: 40.776584
+            lng: -74.040137
+          - lat: 40.776549
+            lng: -74.04014
+          - lat: 40.776511
+            lng: -74.040148
+          - lat: 40.776479
+            lng: -74.04016
+          - lat: 40.776438
+            lng: -74.040182
+          - lat: 40.776351
+            lng: -74.040234
+          - lat: 40.775953
+            lng: -74.040403
+          - lat: 40.775543
+            lng: -74.040677
+        distance: 372
+        duration: 38.663
+        road_name: Tonnelle Avenue
+        exits: []
+        instruction: Take the US 1 South/US 9 South exit toward Jersey City.
+        visual_instructions:
+          - primary_content:
+              text: 29th Street
+              maneuver_type: turn
+              maneuver_modifier: slight right
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            secondary_content: ~
+            sub_content: ~
+            trigger_distance_before_maneuver: 372
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
       - geometry:
           - lat: 40.775543
             lng: -74.040677
@@ -65884,9 +66266,9 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
           lng: -74.040048
         kind: Break
     progress:
-      distanceToNextManeuver: 84.20016342266678
-      distanceRemaining: 373.2741634226668
-      durationRemaining: 62.314341301935016
+      distanceToNextManeuver: 0
+      distanceRemaining: 373.074
+      durationRemaining: 62.290000000000006
     summary:
       distanceTraveled: 1343.5900221731513
       snappedDistanceTraveled: 1343.5900221731513
@@ -65895,15 +66277,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     deviation: NoDeviation
     visual_instruction:
       primary_content:
-        text: Dell Avenue
-        maneuver_type: new name
-        maneuver_modifier: right
+        text: 29th Street
+        maneuver_type: turn
+        maneuver_modifier: slight right
         roundabout_exit_degrees: ~
         lane_info: ~
         exit_numbers: []
       secondary_content: ~
       sub_content: ~
-      trigger_distance_before_maneuver: 84
+      trigger_distance_before_maneuver: 372
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
@@ -67551,7 +67933,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 0
+    current_step_geometry_index: 7
     user_location:
       coordinates:
         lat: 40.775673
@@ -67571,6 +67953,44 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
         accuracy: 5
       speed: ~
     remaining_steps:
+      - geometry:
+          - lat: 40.775543
+            lng: -74.040677
+          - lat: 40.775499
+            lng: -74.040825
+          - lat: 40.775486
+            lng: -74.040879
+          - lat: 40.775479
+            lng: -74.040935
+          - lat: 40.775479
+            lng: -74.041
+          - lat: 40.775493
+            lng: -74.041072
+          - lat: 40.775524
+            lng: -74.041213
+          - lat: 40.775536
+            lng: -74.04125
+          - lat: 40.775673
+            lng: -74.041608
+        distance: 84
+        duration: 10.215
+        road_name: 29th Street
+        exits: []
+        instruction: Bear right onto 29th Street.
+        visual_instructions:
+          - primary_content:
+              text: Dell Avenue
+              maneuver_type: new name
+              maneuver_modifier: right
+              roundabout_exit_degrees: ~
+              lane_info: ~
+              exit_numbers: []
+            secondary_content: ~
+            sub_content: ~
+            trigger_distance_before_maneuver: 84
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
       - geometry:
           - lat: 40.775673
             lng: -74.041608
@@ -67627,9 +68047,9 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
           lng: -74.040048
         kind: Break
     progress:
-      distanceToNextManeuver: 288.6979726529003
-      distanceRemaining: 288.6979726529003
-      durationRemaining: 52.00726086019422
+      distanceToNextManeuver: 0
+      distanceRemaining: 289.074
+      durationRemaining: 52.075
     summary:
       distanceTraveled: 1427.7911693849112
       snappedDistanceTraveled: 1427.7911693849112
@@ -67638,15 +68058,15 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
     deviation: NoDeviation
     visual_instruction:
       primary_content:
-        text: Your destination is on the left.
-        maneuver_type: arrive
-        maneuver_modifier: left
+        text: Dell Avenue
+        maneuver_type: new name
+        maneuver_modifier: right
         roundabout_exit_degrees: ~
         lane_info: ~
         exit_numbers: []
       secondary_content: ~
       sub_content: ~
-      trigger_distance_before_maneuver: 289.074
+      trigger_distance_before_maneuver: 84
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
@@ -67731,7 +68151,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 50.63698804019624
     summary:
       distanceTraveled: 1435.4021358899977
-      snappedDistanceTraveled: 1435.4021358899977
+      snappedDistanceTraveled: 1435.4240965572742
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67830,7 +68250,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 49.28216208637249
     summary:
       distanceTraveled: 1442.9141731353789
-      snappedDistanceTraveled: 1442.9141731353789
+      snappedDistanceTraveled: 1442.9361338026554
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67929,7 +68349,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 47.91188926622615
     summary:
       distanceTraveled: 1450.5251367887206
-      snappedDistanceTraveled: 1450.5251367887206
+      snappedDistanceTraveled: 1450.5470974559971
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68028,7 +68448,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 46.22060143550537
     summary:
       distanceTraveled: 1459.905523411688
-      snappedDistanceTraveled: 1459.905523411688
+      snappedDistanceTraveled: 1459.9274840789644
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68127,7 +68547,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 44.52428001006302
     summary:
       distanceTraveled: 1469.3470537817348
-      snappedDistanceTraveled: 1469.3470537817348
+      snappedDistanceTraveled: 1469.3690144490113
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68226,7 +68646,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 42.83299217945209
     summary:
       distanceTraveled: 1478.7274359353419
-      snappedDistanceTraveled: 1478.7274359353419
+      snappedDistanceTraveled: 1478.7493966026184
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68325,7 +68745,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 41.14170434873131
     summary:
       distanceTraveled: 1488.1078158701175
-      snappedDistanceTraveled: 1488.1078158701175
+      snappedDistanceTraveled: 1488.129776537394
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68424,7 +68844,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 39.45041651801052
     summary:
       distanceTraveled: 1497.4881935853575
-      snappedDistanceTraveled: 1497.4881935853575
+      snappedDistanceTraveled: 1497.510154252634
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68523,7 +68943,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 37.75409509256818
     summary:
       distanceTraveled: 1506.9297154490187
-      snappedDistanceTraveled: 1506.9297154490187
+      snappedDistanceTraveled: 1506.9516761162952
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68622,7 +69042,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 36.062807261957246
     summary:
       distanceTraveled: 1516.3100886948873
-      snappedDistanceTraveled: 1516.3100886948873
+      snappedDistanceTraveled: 1516.3320493621638
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68721,7 +69141,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 34.371519431236464
     summary:
       distanceTraveled: 1525.6904597219188
-      snappedDistanceTraveled: 1525.6904597219188
+      snappedDistanceTraveled: 1525.7124203891954
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68820,7 +69240,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 33.808246423658666
     summary:
       distanceTraveled: 1528.8172495710317
-      snappedDistanceTraveled: 1528.8172495710317
+      snappedDistanceTraveled: 1528.8392102383082
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68919,7 +69339,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 32.101636597176565
     summary:
       distanceTraveled: 1538.2966124730553
-      snappedDistanceTraveled: 1538.2966124730553
+      snappedDistanceTraveled: 1538.3185731403319
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69018,7 +69438,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 30.39502677069446
     summary:
       distanceTraveled: 1547.7759731494305
-      snappedDistanceTraveled: 1547.7759731494305
+      snappedDistanceTraveled: 1547.797933816707
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69117,7 +69537,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 28.70387245582556
     summary:
       distanceTraveled: 1557.156336718096
-      snappedDistanceTraveled: 1557.156336718096
+      snappedDistanceTraveled: 1557.1782973853726
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69216,7 +69636,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 26.997262629343453
     summary:
       distanceTraveled: 1566.6356929724548
-      snappedDistanceTraveled: 1566.6356929724548
+      snappedDistanceTraveled: 1566.6576536397313
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69315,7 +69735,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 25.280221607803984
     summary:
       distanceTraveled: 1576.1534892826332
-      snappedDistanceTraveled: 1576.1534892826332
+      snappedDistanceTraveled: 1576.1754499499098
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69414,7 +69834,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 23.573611781321883
     summary:
       distanceTraveled: 1585.6328410856847
-      snappedDistanceTraveled: 1585.6328410856847
+      snappedDistanceTraveled: 1585.6548017529612
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69513,7 +69933,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 21.88245746634316
     summary:
       distanceTraveled: 1595.0131956880798
-      snappedDistanceTraveled: 1595.0131956880798
+      snappedDistanceTraveled: 1595.0351563553563
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69612,7 +70032,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 20.175847639861058
     summary:
       distanceTraveled: 1604.4925430691037
-      snappedDistanceTraveled: 1604.4925430691037
+      snappedDistanceTraveled: 1604.5145037363802
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69711,7 +70131,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 18.603266506376873
     summary:
       distanceTraveled: 1613.2245230154313
-      snappedDistanceTraveled: 1613.2245230154313
+      snappedDistanceTraveled: 1613.2464836827078
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69810,7 +70230,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 17.004797680611052
     summary:
       distanceTraveled: 1622.0938171098016
-      snappedDistanceTraveled: 1622.0938171098016
+      snappedDistanceTraveled: 1622.1157777770782
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69905,7 +70325,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 15.432216547126863
     summary:
       distanceTraveled: 1630.8257932491072
-      snappedDistanceTraveled: 1630.8257932491072
+      snappedDistanceTraveled: 1630.8477539163837
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70000,7 +70420,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 13.84416325791199
     summary:
       distanceTraveled: 1639.6570302410623
-      snappedDistanceTraveled: 1639.6570302410623
+      snappedDistanceTraveled: 1639.6789909083388
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70095,7 +70515,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 12.261166587876863
     summary:
       distanceTraveled: 1648.4274863843677
-      snappedDistanceTraveled: 1648.4274863843677
+      snappedDistanceTraveled: 1648.4494470516443
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70190,7 +70610,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 10.688585454540691
     summary:
       distanceTraveled: 1657.1594568260898
-      snappedDistanceTraveled: 1657.1594568260898
+      snappedDistanceTraveled: 1657.1814174933663
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70285,7 +70705,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 9.09011662877487
     summary:
       distanceTraveled: 1666.0287411611325
-      snappedDistanceTraveled: 1666.0287411611325
+      snappedDistanceTraveled: 1666.050701828409
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70380,7 +70800,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 7.517535495290684
     summary:
       distanceTraveled: 1674.760707796364
-      snappedDistanceTraveled: 1674.760707796364
+      snappedDistanceTraveled: 1674.7826684636404
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70475,7 +70895,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 6.095513396543129
     summary:
       distanceTraveled: 1682.6463648271913
-      snappedDistanceTraveled: 1682.6463648271913
+      snappedDistanceTraveled: 1682.6683254944678
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70570,7 +70990,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 4.668485037589753
     summary:
       distanceTraveled: 1690.5931365471831
-      snappedDistanceTraveled: 1690.5931365471831
+      snappedDistanceTraveled: 1690.6150972144596
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70665,7 +71085,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 3.2464629386938366
     summary:
       distanceTraveled: 1698.4787904003156
-      snappedDistanceTraveled: 1698.4787904003156
+      snappedDistanceTraveled: 1698.500751067592
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70760,7 +71180,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 1.82444084005603
     summary:
       distanceTraveled: 1706.3644426755861
-      snappedDistanceTraveled: 1706.3644426755861
+      snappedDistanceTraveled: 1706.3864033428626
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70855,7 +71275,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 0.9097462147930102
     summary:
       distanceTraveled: 1711.458858487836
-      snappedDistanceTraveled: 1711.458858487836
+      snappedDistanceTraveled: 1711.4808191551126
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70914,7 +71334,7 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       durationRemaining: 0
     summary:
       distanceTraveled: 1716.4928929978105
-      snappedDistanceTraveled: 1716.4928929978105
+      snappedDistanceTraveled: 1716.514853665087
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70933,6 +71353,6 @@ expression: "test_full_route_state_snapshot(get_extended_route(),\nStepAdvanceMo
       speed: ~
     summary:
       distanceTraveled: 1716.4928929978105
-      snappedDistanceTraveled: 1716.4928929978105
+      snappedDistanceTraveled: 1716.514853665087
       startedAt: "[timestamp]"
       endedAt: "[timestamp]"

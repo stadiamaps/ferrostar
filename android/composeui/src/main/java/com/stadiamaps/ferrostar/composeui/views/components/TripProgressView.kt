@@ -39,8 +39,9 @@ import com.stadiamaps.ferrostar.composeui.theme.DefaultTripProgressViewTheme
 import com.stadiamaps.ferrostar.composeui.theme.TripProgressViewStyle
 import com.stadiamaps.ferrostar.composeui.theme.TripProgressViewTheme
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import uniffi.ferrostar.TripProgress
 
@@ -59,6 +60,7 @@ import uniffi.ferrostar.TripProgress
  * @param onTapExit An optional callback to invoke when the exit button is tapped. If null, the exit
  *   button is not displayed.
  */
+@OptIn(ExperimentalTime::class)
 @Composable
 fun TripProgressView(
     modifier: Modifier = Modifier,
@@ -141,6 +143,7 @@ fun TripProgressView(
   }
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview
 @Composable
 fun ProgressViewPreview() {
@@ -154,6 +157,7 @@ fun ProgressViewPreview() {
       timeZone = TimeZone.of("America/Los_Angeles"))
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview
 @Composable
 fun ProgressViewInformationalPreview() {
@@ -195,6 +199,7 @@ fun ProgressViewInformationalPreview() {
       timeZone = TimeZone.of("America/Los_Angeles"))
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview
 @Composable
 fun ProgressViewWithExitPreview() {
@@ -211,6 +216,7 @@ fun ProgressViewWithExitPreview() {
       onTapExit = { /* no-op */ })
 }
 
+@OptIn(ExperimentalTime::class)
 @Preview(locale = "de_DE")
 @Composable
 fun ProgressView24HourPreview() {

@@ -1,6 +1,9 @@
 package com.stadiamaps.ferrostar.views
 
 import android.icu.util.ULocale
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
 import app.cash.paparazzi.Paparazzi
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
@@ -38,10 +41,12 @@ class RTLInstructionViewTests {
 
     paparazzi.snapshot {
       withSnapshotBackground {
-        InstructionsView(
-            instructions = instructions,
-            distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
-            distanceToNextManeuver = 42.0)
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+          InstructionsView(
+              instructions = instructions,
+              distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
+              distanceToNextManeuver = 42.0)
+        }
       }
     }
   }
