@@ -43,10 +43,10 @@ impl From<serde_json::Error> for NavigationRecordingError {
 /// Functionality for the navigation controller that is exported.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationRecording {
-    /// Serialize the recording to a pretty JSON format.
+    /// Serialize the recording to a JSON format.
     /// Returns a Result with the JSON string or an error.
     pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
-        serde_json::to_string_pretty(self).map_err(|error| NavigationRecordingError::from(error))
+        serde_json::to_string(self).map_err(NavigationRecordingError::from)
     }
 }
 
