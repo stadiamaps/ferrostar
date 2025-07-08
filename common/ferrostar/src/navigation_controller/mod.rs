@@ -98,7 +98,7 @@ impl Navigator for NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return NavState::complete(location, todo!("RECORDING"), initial_summary);
+            return NavState::complete(location, None, initial_summary);
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -141,7 +141,7 @@ impl Navigator for NavigationController {
             annotation_json,
         };
         let next_advance = Arc::clone(&self.config.step_advance_condition);
-        return NavState::new(trip_state, next_advance, todo!("RECORDING"));
+        return NavState::new(trip_state, next_advance, None);
     }
 
     /// Advances navigation to the next step (or finishes the route).
@@ -178,14 +178,10 @@ impl Navigator for NavigationController {
                             &remaining_waypoints,
                         );
 
-                        NavState::new(
-                            trip_state,
-                            state.step_advance_condition(),
-                            todo!("RECORDING"),
-                        )
+                        NavState::new(trip_state, state.step_advance_condition(), None)
                     }
                     StepAdvanceStatus::EndOfRoute => {
-                        NavState::complete(user_location, todo!("RECORDING"), summary.clone())
+                        NavState::complete(user_location, None, summary.clone())
                     }
                 }
             }
@@ -210,7 +206,7 @@ impl Navigator for NavigationController {
             } => {
                 // Remaining steps is empty, the route is finished.
                 let Some(current_step) = remaining_steps.first() else {
-                    return NavState::complete(location, todo!("RECORDING"), summary);
+                    return NavState::complete(location, None, summary);
                 };
 
                 // Trim the remaining waypoints if needed.
@@ -245,7 +241,7 @@ impl Navigator for NavigationController {
                         &remaining_waypoints,
                     ),
                     step_advance_result.next_iteration,
-                    todo!("RECORDING"),
+                    None,
                 );
 
                 if step_advance_result.should_advance {
