@@ -20,7 +20,7 @@ private extension MapViewCamera {
     }
 
     private static func bounding(bbox: BoundingBox) -> MapViewCamera {
-        MapViewCamera.boundingBox(bbox.coordinateBounds)
+        boundingBox(bbox.coordinateBounds)
     }
 
     static func bounding(route: Route) -> MapViewCamera {
