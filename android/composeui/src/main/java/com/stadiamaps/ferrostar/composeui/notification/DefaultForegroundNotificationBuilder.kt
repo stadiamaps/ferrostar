@@ -15,6 +15,7 @@ import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDurationFormatter
 import com.stadiamaps.ferrostar.composeui.views.components.maneuver.maneuverIcon
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import com.stadiamaps.ferrostar.core.service.ForegroundNotificationBuilder
+import kotlin.time.ExperimentalTime
 import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.VisualInstruction
@@ -80,6 +81,7 @@ class DefaultForegroundNotificationBuilder(
         .build()
   }
 
+  @OptIn(ExperimentalTime::class)
   @SuppressLint("DiscouragedApi")
   private fun getLayoutWith(
       tripProgress: TripProgress,
