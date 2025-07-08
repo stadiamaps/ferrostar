@@ -28,12 +28,12 @@ private extension FerrostarCore {
         let config = SwiftNavigationControllerConfig(
             waypointAdvance: .waypointWithinRange(100.0),
             stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
-                distanceToEndOfStep: 10,
+                distanceToEndOfStep: 30,
                 distanceAfterEndOfStep: 2,
                 minimumHorizontalAccuracy: 32
             ),
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(
-                distance: 10,
+                distance: 30,
                 minimumHorizontalAccuracy: 32
             ),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),

@@ -174,14 +174,14 @@ ferrostar.startNavigation(route, {
   stepAdvanceCondition: {
     DistanceEntryExit: {
       minimumHorizontalAccuracy: 25,
-      distanceToEndOfStep: 10,
+      distanceToEndOfStep: 30,
       distanceAfterEndStep: 5,
       hasReachedEndOfCurrentStep: false,
     },
   },
   arrivalStepAdvanceCondition: {
     DistanceToEndOfStep: {
-      distance: 10,
+      distance: 30,
       minimumHorizontalAccuracy: 25,
     },
   },

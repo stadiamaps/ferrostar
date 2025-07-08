@@ -261,6 +261,7 @@ pub struct DistanceEntryAndExitCondition {
     /// This allows for stateful advance only after entering a reasonable radues of the goal
     /// and then exiting the area by a separate trigger threshold.
     pub(super) has_reached_end_of_current_step: bool,
+    // TODO: Do we want a speed multiplier
 }
 
 impl DistanceEntryAndExitCondition {

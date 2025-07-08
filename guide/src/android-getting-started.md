@@ -233,10 +233,10 @@ private val core =
           navigationControllerConfig =
             NavigationControllerConfig(
                 WaypointAdvanceMode.WaypointWithinRange(100.0),
-                stepAdvanceDistanceEntryAndExit(10u, 5u, 32u),
+                stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
                 // This is a special condition used for the last two steps of the route. As we can't assume the
                 // user continue moving past the step like the other conditions.
-                stepAdvanceDistanceToEndOfStep(10u, 32u),
+                stepAdvanceDistanceToEndOfStep(30u, 32u),
                 RouteDeviationTracking.StaticThreshold(15U, 50.0),
                 CourseFiltering.SNAP_TO_ROUTE),
       )

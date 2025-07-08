@@ -48,13 +48,13 @@ let config = SwiftNavigationControllerConfig(
     waypointAdvance: .waypointWithinRange(100.0),
     stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
         minimumHorizontalAccuracy: 32,
-        distanceToEndOfStep: 10,
+        distanceToEndOfStep: 30,
         distanceAfterEndStep: 5 // Note this condition should be very close to the step end as it'll hold the
         // puck at the step until met.
     ),
     // This is a special condition used for the last two steps of the route. As we can't assume the
     // user continue moving past the step like the other conditions.
-    arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 10, minimumHorizontalAccuracy: 32),
+    arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 30, minimumHorizontalAccuracy: 32),
     routeDeviationTracking: .custom(detector: { _, _, _ in
         // Pretend that the user is always off route
         .offRoute(deviationFromRouteLine: 42)
@@ -70,10 +70,10 @@ Kotlin:
 ```kotlin
 val config = NavigationControllerConfig(
     waypointAdvance = WaypointAdvanceMode.WaypointWithinRange(100.0),
-    stepAdvanceCondition = stepAdvanceDistanceEntryAndExit(10u, 5u, 32u),
+    stepAdvanceCondition = stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
     // This is a special condition used for the last two steps of the route. As we can't assume the
     // user continue moving past the step like the other conditions.
-    arrivalStepAdvanceCondition =stepAdvanceDistanceToEndOfStep(10u, 32u),
+    arrivalStepAdvanceCondition = stepAdvanceDistanceToEndOfStep(30u, 32u),
     routeDeviationTracking =
         RouteDeviationTracking.Custom(
             detector =
