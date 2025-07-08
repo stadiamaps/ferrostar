@@ -4270,7 +4270,7 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
 
 /**
  * The step advance result is produced on every iteration of the navigation state machine and
- * used by the navigation to build a new `NavState` instance for that update.
+ * used by the navigation to build a new [`NavState`](super::NavState) instance for that update.
  */
 public struct StepAdvanceResult {
     /**
@@ -4280,14 +4280,14 @@ public struct StepAdvanceResult {
     /**
      * The next iteration of the step advance condition.
      *
-     * This is what the navigation controller passes to the next instance of `NavState` on the completion of
+     * This is what the navigation controller passes to the next instance of [`NavState`](super::NavState) on the completion of
      * an update (e.g. a user location update). Usually, this value is one of the following:
      *
-     * 1. When should advance is true, this should typically be a clean/new instance of the condition.
+     * 1. When `should_advance` is true, this should typically be a clean/new instance of the condition.
      * 2. When the condition is not advancing, but the condition maintains no state, this should be a
      * clean/new instance of the condition.
      * 3. When the condition is not advancing and maintains state, this should be a new
-     * instance including the current state of the condition. See `DistanceEntryAndExitCondition`
+     * instance including the current state of the condition. See [`DistanceEntryAndExitCondition`]
      *
      * IMPORTANT! If the condition advances. This **must** be the clean/default state.
      */
@@ -4302,14 +4302,14 @@ public struct StepAdvanceResult {
         /**
          * The next iteration of the step advance condition.
          *
-         * This is what the navigation controller passes to the next instance of `NavState` on the completion of
+         * This is what the navigation controller passes to the next instance of [`NavState`](super::NavState) on the completion of
          * an update (e.g. a user location update). Usually, this value is one of the following:
          *
-         * 1. When should advance is true, this should typically be a clean/new instance of the condition.
+         * 1. When `should_advance` is true, this should typically be a clean/new instance of the condition.
          * 2. When the condition is not advancing, but the condition maintains no state, this should be a
          * clean/new instance of the condition.
          * 3. When the condition is not advancing and maintains state, this should be a new
-         * instance including the current state of the condition. See `DistanceEntryAndExitCondition`
+         * instance including the current state of the condition. See [`DistanceEntryAndExitCondition`]
          *
          * IMPORTANT! If the condition advances. This **must** be the clean/default state.
          */nextIteration: StepAdvanceCondition) {
@@ -7962,6 +7962,11 @@ public func locationSimulationFromRoute(route: Route, resampleDistance: Double?,
     )
 })
 }
+/**
+ * Convenience function for creating an [`AndAdvanceConditions`].
+ *
+ * This composes multiple conditions together and advances to the next step if ALL of them trigger.
+ */
 public func stepAdvanceAnd(conditions: [StepAdvanceCondition]) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_and(
@@ -7969,15 +7974,28 @@ public func stepAdvanceAnd(conditions: [StepAdvanceCondition]) -> StepAdvanceCon
     )
 })
 }
-public func stepAdvanceDistanceEntryAndExit(distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
+/**
+ * Convenience function for creating a [`DistanceEntryAndExitCondition`].
+ *
+ * Requires the user to first travel within `distance_to_end_of_step` meters of the end of the step,
+ * and then travel at least `distance_after_end_of_step` meters away from the step geometry.
+ * This ensures the user completes the maneuver before advancing to the next step.
+ */
+public func stepAdvanceDistanceEntryAndExit(distanceToEndOfStep: UInt16, distanceAfterEndOfStep: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_distance_entry_and_exit(
         FfiConverterUInt16.lower(distanceToEndOfStep),
-        FfiConverterUInt16.lower(distanceAfterEndStep),
+        FfiConverterUInt16.lower(distanceAfterEndOfStep),
         FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
     )
 })
 }
+/**
+ * Convenience function for creating a [`DistanceFromStepCondition`].
+ *
+ * This advances to the next step when the user is at least `distance` meters away _from_ any point on the current route step geometry.
+ * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
+ */
 public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_distance_from_step(
@@ -7986,6 +8004,12 @@ public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccur
     )
 })
 }
+/**
+ * Convenience function for creating a [`DistanceToEndOfStepCondition`].
+ *
+ * This advances to the next step when the user is within `distance` meters of the last point in the current route step.
+ * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
+ */
 public func stepAdvanceDistanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_distance_to_end_of_step(
@@ -7994,12 +8018,24 @@ public func stepAdvanceDistanceToEndOfStep(distance: UInt16, minimumHorizontalAc
     )
 })
 }
+/**
+ * Convenience function for creating a [`ManualStepCondition`].
+ *
+ * This never advances to the next step automatically.
+ * You must manually advance to the next step programmatically using a FerrostarCore
+ * platform wrapper or by calling [`super::Navigator::advance_to_next_step`] manually.
+ */
 public func stepAdvanceManual() -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_manual($0
     )
 })
 }
+/**
+ * Convenience function for creating an [`OrAdvanceConditions`].
+ *
+ * This composes multiple conditions together and advances to the next step if ANY of them trigger.
+ */
 public func stepAdvanceOr(conditions: [StepAdvanceCondition]) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_or(
@@ -8056,22 +8092,22 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_and() != 12026) {
+    if (uniffi_ferrostar_checksum_func_step_advance_and() != 55830) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 34284) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 48000) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 56337) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 42108) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 23918) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 39292) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 32116) {
+    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 14605) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_or() != 48609) {
+    if (uniffi_ferrostar_checksum_func_step_advance_or() != 26194) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 17041) {

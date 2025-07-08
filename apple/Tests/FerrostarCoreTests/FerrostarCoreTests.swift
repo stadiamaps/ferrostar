@@ -61,19 +61,19 @@ let mockGETRouteAdapter = RouteAdapter(
     responseParser: MockRouteResponseParser(routes: [mockRoute])
 )
 
-private class MockPOSTRouteRequestGenerator: RouteRequestGenerator {
+private final class MockPOSTRouteRequestGenerator: RouteRequestGenerator {
     func generateRequest(userLocation _: UserLocation, waypoints _: [Waypoint]) throws -> RouteRequest {
         RouteRequest.httpPost(url: valhallaEndpointUrl.absoluteString, headers: [:], body: Data())
     }
 }
 
-private class MockGETRouteRequestGenerator: RouteRequestGenerator {
+private final class MockGETRouteRequestGenerator: RouteRequestGenerator {
     func generateRequest(userLocation _: UserLocation, waypoints _: [Waypoint]) throws -> RouteRequest {
         RouteRequest.httpGet(url: valhallaEndpointUrl.absoluteString, headers: [:])
     }
 }
 
-private class MockRouteResponseParser: RouteResponseParser {
+private final class MockRouteResponseParser: RouteResponseParser {
     private let routes: [Route]
 
     init(routes: [Route]) {
@@ -402,7 +402,7 @@ final class FerrostarCoreTests: XCTestCase {
             waypointAdvance: .waypointWithinRange(100.0),
             stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
                 distanceToEndOfStep: 10,
-                distanceAfterEndStep: 2,
+                distanceAfterEndOfStep: 2,
                 minimumHorizontalAccuracy: 32
             ),
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 10, minimumHorizontalAccuracy: 32),

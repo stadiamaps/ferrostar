@@ -6,7 +6,7 @@ enum CarPlayMapButtons {
         isEnabled: Bool = true,
         _ action: @escaping () -> Void
     ) -> CPMapButton {
-        var button = CPMapButton { _ in
+        let button = CPMapButton { _ in
             action()
         }
 
