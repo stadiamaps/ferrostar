@@ -1,5 +1,6 @@
 import FerrostarCarPlayUI
 import FerrostarCore
+import FerrostarMapLibreUI
 import MapLibreSwiftUI
 import SwiftUI
 
@@ -19,7 +20,9 @@ struct DemoCarPlayNavigationView: View {
                     navigationState: model.coreState,
                     styleURL: AppDefaults.mapStyleURL,
                     camera: $bindableModel.camera
-                )
+                ) {
+                    model.routePreview
+                }
             }
         }
     }

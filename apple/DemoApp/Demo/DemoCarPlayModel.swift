@@ -4,6 +4,8 @@ import FerrostarCore
 import FerrostarCoreFFI
 import FerrostarSwiftUI
 import Foundation
+import MapLibre
+import MapLibreSwiftDSL
 import MapLibreSwiftUI
 
 @MainActor
@@ -95,6 +97,8 @@ private extension DemoAppState {
             model.camera = newValue
         }
     }
+
+    @MapViewContentBuilder var routePreview: [StyleLayerDefinition] { model.routePreview }
 
     func chooseDestination(_ mapTemplate: CPMapTemplate) {
         model.chooseDestination()
@@ -218,7 +222,6 @@ private extension DemoAppState {
     }
 
     func mapTemplate(_ mapTemplate: CPMapTemplate, selectedPreviewFor _: CPTrip, using routeChoice: CPRouteChoice) {
-        // FIXME: Show route overview on the map.
         select(choice: routeChoice, mapTemplate: mapTemplate)
     }
 
