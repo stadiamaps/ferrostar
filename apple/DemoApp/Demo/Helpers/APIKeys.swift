@@ -1,8 +1,8 @@
 import Foundation
 
-class APIKeys {
-    static let shared = APIKeys()
+let sharedAPIKeys = APIKeys()
 
+struct APIKeys {
     let stadiaMapsAPIKey: String
 
     init() {

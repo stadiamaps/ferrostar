@@ -6,7 +6,8 @@ import com.stadiamaps.ferrostar.composeui.views.components.ProgressViewWithExitP
 import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.withSnapshotBackground
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
 import org.junit.Rule
 import org.junit.Test
@@ -16,6 +17,7 @@ class TripProgressViewTest {
 
   @get:Rule val paparazzi = paparazziDefault()
 
+  @OptIn(ExperimentalTime::class)
   @Test
   fun testProgressView() {
     paparazzi.snapshot {

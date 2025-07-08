@@ -1,8 +1,9 @@
 package com.stadiamaps.ferrostar.core.extensions
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.datetime.DateTimePeriod
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
@@ -16,6 +17,7 @@ import uniffi.ferrostar.TripProgress
  *   testing.
  * @param timeZone The time zone to use for the calculation, defaults to the system default.
  */
+@OptIn(ExperimentalTime::class)
 fun TripProgress.estimatedArrivalTime(
     fromDate: Instant = Clock.System.now(),
     timeZone: TimeZone = TimeZone.currentSystemDefault()

@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.37.0"
+version = "0.38.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
@@ -46,7 +46,7 @@ tsify = { version = "0.5.5", default-features = false, features = ["js"] }
 log = "0.4.27"
 
 [target.'cfg(target_os = "android")'.dependencies]
-android_logger = { version = "0.15.0" }
+android_logger = { version = "0.15.1" }
 
 [build-dependencies]
 uniffi = { workspace = true, features = ["build"] }
