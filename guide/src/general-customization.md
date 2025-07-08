@@ -39,13 +39,14 @@ are provided:
 | `DistanceEntryAndExitCondition` | Automatically | Advance when the user enters a range of the step's end and wait for the user to move away from the step. |
 
 If you want a new condition, the trait is relatively simple to implement and PR's are welcome!
+(Note that currently these must be written in Rust directly.)
 
 The customizable step advance conditions are designed to help you create more complex and flexible step advancement logic. You can also combine multiple conditions using the `OrAdvanceConditions` and `AndAdvanceConditions`.
 
 ##### Recommended conditions
 
 The `DistanceEntryAndExitCondition` is ideal for most navigation use cases, but may be overkill in certain cases.
-It's primary focus is on ensuring the user has approximately reached the end of the step, and then intentionally
+Its primary focus is on ensuring the user has approximately reached the end of the step, and then intentionally
 proceeded past it. This is particularly useful for scenarios like stop lights, where the simpler `DistanceToEndOfStepCondition`
 would appear to make the maneuver before the user has actually done so in real life.
 

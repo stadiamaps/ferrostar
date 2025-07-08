@@ -31,7 +31,7 @@ class NavigationDelegate: FerrostarCoreDelegate {
                     waypointAdvance: .waypointWithinRange(100.0),
                     stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
                         distanceToEndOfStep: 10,
-                        distanceAfterEndStep: 2,
+                        distanceAfterEndOfStep: 2,
                         minimumHorizontalAccuracy: 32
                     ),
                     arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(

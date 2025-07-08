@@ -1,4 +1,4 @@
-//! Step advance condition traits and implementations
+//! Step advance condition traits and implementations.
 use crate::{
     models::{RouteStep, UserLocation},
     navigation_controller::step_advance::conditions::{
@@ -17,21 +17,21 @@ use tsify::Tsify;
 pub mod conditions;
 
 /// The step advance result is produced on every iteration of the navigation state machine and
-/// used by the navigation to build a new `NavState` instance for that update.
+/// used by the navigation to build a new [`NavState`](super::NavState) instance for that update.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct StepAdvanceResult {
     /// The step should be advanced.
     pub should_advance: bool,
     /// The next iteration of the step advance condition.
     ///
-    /// This is what the navigation controller passes to the next instance of `NavState` on the completion of
+    /// This is what the navigation controller passes to the next instance of [`NavState`](super::NavState) on the completion of
     /// an update (e.g. a user location update). Usually, this value is one of the following:
     ///
-    /// 1. When should advance is true, this should typically be a clean/new instance of the condition.
+    /// 1. When `should_advance` is true, this should typically be a clean/new instance of the condition.
     /// 2. When the condition is not advancing, but the condition maintains no state, this should be a
     ///    clean/new instance of the condition.
     /// 3. When the condition is not advancing and maintains state, this should be a new
-    ///    instance including the current state of the condition. See `DistanceEntryAndExitCondition`
+    ///    instance including the current state of the condition. See [`DistanceEntryAndExitCondition`]
     ///
     /// IMPORTANT! If the condition advances. This **must** be the clean/default state.
     pub next_iteration: Arc<dyn StepAdvanceCondition>,
@@ -122,7 +122,7 @@ impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
             } => Arc::new(DistanceEntryAndExitCondition {
                 minimum_horizontal_accuracy,
                 distance_to_end_of_step,
-                distance_after_end_step,
+                distance_after_end_of_step: distance_after_end_step,
                 has_reached_end_of_current_step,
             }),
             JsStepAdvanceCondition::OrAdvanceConditions { conditions } => {
@@ -139,12 +139,21 @@ impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
     }
 }
 
+/// Convenience function for creating a [`ManualStepCondition`].
+///
+/// This never advances to the next step automatically.
+/// You must manually advance to the next step programmatically using a FerrostarCore
+/// platform wrapper or by calling [`super::Navigator::advance_to_next_step`] manually.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 pub fn step_advance_manual() -> Arc<dyn StepAdvanceCondition> {
     Arc::new(ManualStepCondition)
 }
 
+/// Convenience function for creating a [`DistanceToEndOfStepCondition`].
+///
+/// This advances to the next step when the user is within `distance` meters of the last point in the current route step.
+/// Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 pub fn step_advance_distance_to_end_of_step(
@@ -157,6 +166,10 @@ pub fn step_advance_distance_to_end_of_step(
     })
 }
 
+/// Convenience function for creating a [`DistanceFromStepCondition`].
+///
+/// This advances to the next step when the user is at least `distance` meters away _from_ any point on the current route step geometry.
+/// Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 pub fn step_advance_distance_from_step(
@@ -169,6 +182,9 @@ pub fn step_advance_distance_from_step(
     })
 }
 
+/// Convenience function for creating an [`OrAdvanceConditions`].
+///
+/// This composes multiple conditions together and advances to the next step if ANY of them trigger.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 pub fn step_advance_or(
@@ -177,6 +193,9 @@ pub fn step_advance_or(
     Arc::new(OrAdvanceConditions { conditions })
 }
 
+/// Convenience function for creating an [`AndAdvanceConditions`].
+///
+/// This composes multiple conditions together and advances to the next step if ALL of them trigger.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 pub fn step_advance_and(
@@ -185,16 +204,21 @@ pub fn step_advance_and(
     Arc::new(AndAdvanceConditions { conditions })
 }
 
+/// Convenience function for creating a [`DistanceEntryAndExitCondition`].
+///
+/// Requires the user to first travel within `distance_to_end_of_step` meters of the end of the step,
+/// and then travel at least `distance_after_end_of_step` meters away from the step geometry.
+/// This ensures the user completes the maneuver before advancing to the next step.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
 pub fn step_advance_distance_entry_and_exit(
     distance_to_end_of_step: u16,
-    distance_after_end_step: u16,
+    distance_after_end_of_step: u16,
     minimum_horizontal_accuracy: u16,
 ) -> Arc<dyn StepAdvanceCondition> {
     Arc::new(DistanceEntryAndExitCondition::new(
         distance_to_end_of_step,
-        distance_after_end_step,
+        distance_after_end_of_step,
         minimum_horizontal_accuracy,
     ))
 }
