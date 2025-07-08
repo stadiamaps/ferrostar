@@ -414,15 +414,10 @@ impl JsNavigationController {
         let config: NavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
         let should_record: bool = serde_wasm_bindgen::from_value(should_record)?;
 
-        // Ok(JsNavigationController(create_navigator(
-        //     route,
-        //     config,
-        //     should_record,
-        // let config: JsNavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
-
         Ok(JsNavigationController(NavigationController::new(
             route,
             config.into(),
+            should_record,
         )))
     }
 
