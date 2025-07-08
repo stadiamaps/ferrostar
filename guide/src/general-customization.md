@@ -25,18 +25,34 @@ implementations would be welcome additions to the library.
 
 #### Step advance
 
-The step advance mode controls when navigation advances to the next step in the route.
-See the `StepAdvanceMode` for details
-(either in the [rustdocs](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/enum.StepAdvanceMode.html)
-or in the equivalent platform library docs;
-the API is bridged idiomatically to Swift and Kotlin).
+The step advance system uses a common `StepAdvanceCondition` trait that tells the NavigationController
+whether to advance the step or not on every iteration (user location update). Several implementations
+are provided:
 
-Ferrostar currently includes several simplistic methods,
-but more implementations are welcome!
+| `StepAdvanceCondition | Methodology | Description |
+| --- | --- | --- |
+| `ManualStepCondition` | Never | This is useful for conditions where you may want the user to manually call the navigation controller's advance method. |
+| `DistanceToEndOfStepCondition` | Automatically | Eagerly advance when the user is within range of the step's end. |
+| `DistanceFromStepCondition` | Automatically | Delay the advance until the user is a distance from the step. |
+| `OrAdvanceConditions` | Automatically | Combine multiple conditions with an OR operation. |
+| `AndAdvanceConditions` | Automatically | Combine multiple conditions with an AND operation. |
+| `DistanceEntryAndExitCondition` | Automatically | Advance when the user enters a range of the step's end and wait for the user to move away from the step. |
 
-You can use the manual step advance mode to disable automatic progress,
-and trigger advance on your own using the `advanceToNextStep` method
-on `FerrostarCore` at the platform layer.
+If you want a new condition, the trait is relatively simple to implement and PR's are welcome!
+(Note that currently these must be written in Rust directly.)
+
+The customizable step advance conditions are designed to help you create more complex and flexible step advancement logic. You can also combine multiple conditions using the `OrAdvanceConditions` and `AndAdvanceConditions`.
+
+##### Recommended conditions
+
+The `DistanceEntryAndExitCondition` is ideal for most navigation use cases, but may be overkill in certain cases.
+Its primary focus is on ensuring the user has approximately reached the end of the step, and then intentionally
+proceeded past it. This is particularly useful for scenarios like stop lights, where the simpler `DistanceToEndOfStepCondition`
+would appear to make the maneuver before the user has actually done so in real life.
+
+The `OrAdvanceConditions` may be useful to attach a backup condition to ensure the user doesn't get stuck when offline. E.g.
+the user may have lost connection and missed a step's end only to then re-joined the route. In a situation like this you
+could add an Or with `DistanceFromStepCondition` with a very large value to effectively clean up a stuck state while offline.
 
 #### Route deviation tracking
 
