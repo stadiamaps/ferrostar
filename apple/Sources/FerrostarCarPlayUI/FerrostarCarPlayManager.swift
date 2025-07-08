@@ -73,7 +73,7 @@ public class FerrostarCarPlayManager: NSObject {
         .sink { [weak self] route, navState in
             guard let self else { return }
             guard let navState else {
-                if case let .navigating = self.uiState {
+                if uiState == .navigating {
                     terminateTrip(cancelled: true)
                 }
                 return
