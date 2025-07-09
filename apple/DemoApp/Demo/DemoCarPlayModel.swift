@@ -25,9 +25,9 @@ private extension DemoAppState {
             switch self {
             case .idle:
                 model.chooseDestination(mapTemplate)
-            case let .destination(coordinate):
+            case let .destination(item):
                 Task {
-                    await model.loadRoute(coordinate, mapTemplate)
+                    await model.loadRoute(item, mapTemplate)
                 }
             case let .routes(routes):
                 model.preview(routes, mapTemplate: mapTemplate)
@@ -101,7 +101,7 @@ private extension DemoAppState {
         updateTemplate(mapTemplate)
     }
 
-    func loadRoute(_ destination: CLLocationCoordinate2D, _ mapTemplate: CPMapTemplate) async {
+    func loadRoute(_ destination: MKMapItem, _ mapTemplate: CPMapTemplate) async {
         await model.loadRoute(destination)
         updateTemplate(mapTemplate)
     }
@@ -164,14 +164,11 @@ private extension DemoAppState {
         }
     }
 
-    private var start: MKMapItem { MKMapItem(placemark: MKPlacemark(coordinate: model.origin)) }
-    private var end: MKMapItem { MKMapItem(placemark: MKPlacemark(coordinate: model.destination)) }
-
     private func trip(_ routes: [Route]) -> CPTrip {
         CPTrip.fromFerrostar(
             routes: routes,
-            origin: start,
-            destination: end,
+            origin: model.origin,
+            destination: model.destination,
             distanceFormatter: formatterCollection.distanceFormatter,
             durationFormatter: formatterCollection.durationFormatter
         )

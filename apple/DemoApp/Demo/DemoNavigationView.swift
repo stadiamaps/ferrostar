@@ -102,10 +102,10 @@ struct DemoNavigationView: View {
                                 switch model.appState {
                                 case .idle:
                                     model.chooseDestination()
-                                case let .destination(coordinate):
+                                case let .destination(item):
                                     Task {
                                         isFetchingRoutes = true
-                                        await model.loadRoute(coordinate)
+                                        await model.loadRoute(item)
                                         isFetchingRoutes = false
                                     }
                                 case let .routes(routes):

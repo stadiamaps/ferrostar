@@ -4,10 +4,11 @@ import CoreLocation
 // See https://github.com/stadiamaps/ferrostar/issues/164#issuecomment-3037767025
 @preconcurrency import FerrostarCoreFFI
 import Foundation
+@preconcurrency import MapKit
 
-enum DemoAppState: CustomStringConvertible {
+enum DemoAppState: CustomStringConvertible, Sendable {
     case idle
-    case destination(CLLocationCoordinate2D)
+    case destination(MKMapItem)
     case routes([Route])
     case selectedRoute(Route)
     case navigating
@@ -16,8 +17,8 @@ enum DemoAppState: CustomStringConvertible {
         switch self {
         case .idle:
             "Idle"
-        case let .destination(location):
-            "Destination: (\(location)"
+        case let .destination(item):
+            "Destination: (\(item)"
         case let .routes(routes):
             "Routes: \(routes.count)"
         case let .selectedRoute(route):
@@ -44,10 +45,10 @@ enum DemoAppState: CustomStringConvertible {
 }
 
 extension DemoAppState {
-    func setDestination(_ destination: CLLocationCoordinate2D) throws -> DemoAppState {
+    func setDestination(_ destination: MKMapItem) throws -> DemoAppState {
         switch self {
         case .idle:
-            guard destination != kCLLocationCoordinate2DInvalid else { throw DemoError.invalidDestination }
+            guard destination != .invalid else { throw DemoError.invalidDestination }
             return .destination(destination)
         case .destination(_), .routes(_), .selectedRoute(_), .navigating:
             throw DemoError.invalidState(self)
