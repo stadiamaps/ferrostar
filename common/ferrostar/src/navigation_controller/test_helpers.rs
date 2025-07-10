@@ -196,6 +196,6 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
         ".**.snappedDistanceTravelled",
         dynamic_redaction(create_distance_redaction()),
     );
-    
+
     settings
 }
