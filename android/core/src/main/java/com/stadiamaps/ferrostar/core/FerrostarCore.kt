@@ -249,11 +249,13 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
+    // TODO: This is always false
+    val should_record = false
     val controller: Navigator =
         createNavigator(
             route,
             _config,
-            false,
+            should_record,
         )
     val startingLocation =
         locationProvider.lastLocation
@@ -284,11 +286,13 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
+    // TODO: This is always false
+    val should_record = false
     val controller: Navigator =
         createNavigator(
             route,
             _config,
-            false,
+            should_record,
         )
     val startingLocation =
         locationProvider.lastLocation

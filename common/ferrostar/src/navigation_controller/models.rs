@@ -31,6 +31,7 @@ pub struct NavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
+    recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 impl NavState {
@@ -38,10 +39,12 @@ impl NavState {
     pub fn new(
         trip_state: TripState,
         step_advance_condition: Arc<dyn StepAdvanceCondition>,
+        recording_events: Option<Vec<NavigationRecordingEvent>>,
     ) -> Self {
         Self {
             trip_state,
             step_advance_condition,
+            recording_events,
         }
     }
 
@@ -50,22 +53,29 @@ impl NavState {
         Self {
             trip_state: TripState::Idle { user_location },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
+            recording_events: None,
         }
     }
 
     /// Creates a navigation state indicating the trip is complete (arrived at the destination but still tracking the user's location).
     ///
     /// The summary is retained as a snapshot (the caller should have this from the last known state).
-    pub fn complete(user_location: UserLocation, last_summary: TripSummary) -> Self {
+    pub fn complete(
+        user_location: UserLocation,
+        recording_events: Option<Vec<NavigationRecordingEvent>>,
+        last_summary: TripSummary,
+    ) -> Self {
         Self {
             trip_state: TripState::Complete {
                 user_location,
+
                 summary: TripSummary {
                     ended_at: Some(Utc::now()),
                     ..last_summary
                 },
             },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
+            recording_events,
         }
     }
 
@@ -77,6 +87,11 @@ impl NavState {
     #[inline]
     pub fn step_advance_condition(&self) -> Arc<dyn StepAdvanceCondition> {
         self.step_advance_condition.clone()
+    }
+
+    #[inline]
+    pub fn recording_events(&self) -> Option<Vec<NavigationRecordingEvent>> {
+        self.recording_events.clone()
     }
 }
 
@@ -356,6 +371,10 @@ impl From<JsNavigationControllerConfig> for NavigationControllerConfig {
     }
 }
 
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event.
     pub timestamp: i64,
@@ -363,6 +382,10 @@ pub struct NavigationRecordingEvent {
     pub event_data: NavigationRecordingEventData,
 }
 
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[derive(Clone, Debug, PartialEq)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub enum NavigationRecordingEventData {
     LocationUpdate {
         /// Updated user location.

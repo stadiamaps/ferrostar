@@ -31,18 +31,6 @@ use crate::navigation_controller::models::{JsNavState, JsNavigationControllerCon
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
-/// Manages the navigation lifecycle through a route,
-/// returning an updated state given inputs like user location.
-///
-/// Notes for implementing a new platform:
-/// - A controller is bound to a single route; if you want recalculation, create a new instance.
-/// - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutable state.
-#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-pub struct NavigationController {
-    route: Route,
-    config: NavigationControllerConfig,
-}
-
 /// Core interface for navigation functionalities.
 ///
 /// This trait defines the essential operations for a navigation state manager.
@@ -75,6 +63,18 @@ pub fn create_navigator(
     }
 }
 
+/// Manages the navigation lifecycle through a route,
+/// returning an updated state given inputs like user location.
+///
+/// Notes for implementing a new platform:
+/// - A controller is bound to a single route; if you want recalculation, create a new instance.
+/// - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutable state.
+#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
+pub struct NavigationController {
+    route: Route,
+    config: NavigationControllerConfig,
+}
+
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationController {
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
@@ -98,7 +98,7 @@ impl Navigator for NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return NavState::complete(location, initial_summary);
+            return NavState::complete(location, None, initial_summary);
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -141,7 +141,7 @@ impl Navigator for NavigationController {
             annotation_json,
         };
         let next_advance = Arc::clone(&self.config.step_advance_condition);
-        return NavState::new(trip_state, next_advance);
+        return NavState::new(trip_state, next_advance, None);
     }
 
     /// Advances navigation to the next step (or finishes the route).
@@ -178,10 +178,10 @@ impl Navigator for NavigationController {
                             &remaining_waypoints,
                         );
 
-                        NavState::new(trip_state, state.step_advance_condition())
+                        NavState::new(trip_state, state.step_advance_condition(), None)
                     }
                     StepAdvanceStatus::EndOfRoute => {
-                        NavState::complete(user_location, summary.clone())
+                        NavState::complete(user_location, None, summary.clone())
                     }
                 }
             }
@@ -206,7 +206,7 @@ impl Navigator for NavigationController {
             } => {
                 // Remaining steps is empty, the route is finished.
                 let Some(current_step) = remaining_steps.first() else {
-                    return NavState::complete(location, summary);
+                    return NavState::complete(location, None, summary);
                 };
 
                 // Trim the remaining waypoints if needed.
@@ -241,6 +241,7 @@ impl Navigator for NavigationController {
                         &remaining_waypoints,
                     ),
                     step_advance_result.next_iteration,
+                    None,
                 );
 
                 if step_advance_result.should_advance {
@@ -394,19 +395,25 @@ impl NavigationController {
 /// JavaScript wrapper for `NavigationController`.
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = NavigationController)]
-pub struct JsNavigationController(NavigationController);
+pub struct JsNavigationController(Arc<dyn Navigator>);
 
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_class = NavigationController)]
 impl JsNavigationController {
     #[wasm_bindgen(constructor)]
-    pub fn new(route: JsValue, config: JsValue) -> Result<JsNavigationController, JsValue> {
+    pub fn new(
+        route: JsValue,
+        config: JsValue,
+        should_record: JsValue,
+    ) -> Result<JsNavigationController, JsValue> {
         let route: Route = serde_wasm_bindgen::from_value(route)?;
         let config: JsNavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
+        let should_record: bool = serde_wasm_bindgen::from_value(should_record)?;
 
         Ok(JsNavigationController(NavigationController::new(
             route,
             config.into(),
+            should_record,
         )))
     }
 
@@ -419,6 +426,7 @@ impl JsNavigationController {
         serde_wasm_bindgen::to_value(&result).map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
+    #[wasm_bindgen(js_name = advanceToNextStep)]
     pub fn advance_to_next_step(&self, state: JsValue) -> Result<JsValue, JsValue> {
         let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
         let new_state = self.0.advance_to_next_step(state.into());
@@ -467,7 +475,7 @@ mod tests {
             location_simulation_from_route(&route, Some(10.0), LocationBias::None)
                 .expect("Unable to create simulation");
 
-        let controller = NavigationController::new(
+        let controller = create_navigator(
             route,
             NavigationControllerConfig {
                 waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
@@ -485,6 +493,7 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                 }),
             },
+            false,
         );
 
         let mut state = controller.get_initial_state(simulation_state.current_location);

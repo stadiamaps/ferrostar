@@ -244,7 +244,7 @@ export class FerrostarMap extends LitElement {
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
     // Initialize the navigation controller
-    this.navigationController = new NavigationController(route, config);
+    this.navigationController = new NavigationController(route, config, false);
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
     // Initialize the trip state
