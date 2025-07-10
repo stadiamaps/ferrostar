@@ -39,7 +39,6 @@ pub struct StepAdvanceResult {
 
 /// A trait for converting a step advance condition into a JavaScript object for Web/WASM.
 pub trait StepAdvanceConditionJsConvertible {
-    #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition;
 }
 
@@ -63,9 +62,10 @@ pub trait StepAdvanceCondition: StepAdvanceConditionJsConvertible + Sync + Send 
     ) -> StepAdvanceResult;
 }
 
-#[cfg(feature = "wasm-bindgen")]
-#[derive(Serialize, Deserialize, Clone, Debug, Tsify)]
-#[tsify(from_wasm_abi)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum JsStepAdvanceCondition {
     Manual,
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
@@ -95,7 +95,6 @@ pub enum JsStepAdvanceCondition {
     },
 }
 
-#[cfg(feature = "wasm-bindgen")]
 impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
     fn from(condition: JsStepAdvanceCondition) -> Arc<dyn StepAdvanceCondition> {
         match condition {

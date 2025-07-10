@@ -37,7 +37,7 @@ impl NavigationRecording {
         Self::add_event(
             self.events.clone(),
             NavigationRecordingEventData::NavStateUpdate {
-                nav_state: new_state,
+                nav_state: new_state.into(),
             },
         )
     }

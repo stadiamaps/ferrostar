@@ -79,6 +79,7 @@ impl NavState {
     ) -> Self {
         Self {
             trip_state: nav_state.trip_state,
+            step_advance_condition: nav_state.step_advance_condition,
             recording_events: Some(recording_events),
         }
     }
@@ -94,10 +95,11 @@ impl NavState {
     }
 }
 
-#[cfg(feature = "wasm-bindgen")]
-#[derive(Serialize, Deserialize, Tsify)]
-#[serde(rename_all = "camelCase")]
-#[tsify(into_wasm_abi, from_wasm_abi)]
+#[derive(Serialize, Deserialize, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct JsNavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
@@ -105,7 +107,6 @@ pub struct JsNavState {
     recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
-#[cfg(feature = "wasm-bindgen")]
 impl From<JsNavState> for NavState {
     fn from(value: JsNavState) -> Self {
         Self {
@@ -116,7 +117,6 @@ impl From<JsNavState> for NavState {
     }
 }
 
-#[cfg(feature = "wasm-bindgen")]
 impl From<NavState> for JsNavState {
     fn from(value: NavState) -> Self {
         Self {
@@ -395,7 +395,7 @@ pub enum NavigationRecordingEventData {
     },
     NavStateUpdate {
         /// Updated trip state.
-        nav_state: NavState,
+        nav_state: JsNavState,
     },
     RouteUpdate {
         /// Updated route steps.

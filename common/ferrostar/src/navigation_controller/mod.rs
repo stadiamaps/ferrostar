@@ -28,6 +28,7 @@ use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
 use crate::navigation_controller::models::{JsNavState, JsNavigationControllerConfig};
+use crate::navigation_controller::recording::NavigationRecording;
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -409,14 +410,14 @@ impl Navigator for RecordingNavigationController {
         self.controller.get_initial_state(location)
     }
 
-    fn advance_to_next_step(&self, state: &NavState) -> NavState {
-        let new_state = self.controller.advance_to_next_step(&state);
+    fn advance_to_next_step(&self, state: NavState) -> NavState {
+        let new_state = self.controller.advance_to_next_step(state);
         let new_recording = self.recording.record_nav_state_update(new_state.clone());
 
         NavState::add_recording(new_state, new_recording)
     }
 
-    fn update_user_location(&self, location: UserLocation, state: &NavState) -> NavState {
+    fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
         let new_state = self.controller.update_user_location(location, state);
         let new_recording = self.recording.record_nav_state_update(new_state.clone());
 
