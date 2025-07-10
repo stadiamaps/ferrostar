@@ -161,6 +161,22 @@ fn create_timestamp_redaction(
     }
 }
 
+fn create_distance_redaction(
+) -> impl Fn(insta::internals::Content, insta::internals::ContentPath<'_>) -> String
+       + Send
+       + Sync
+       + 'static {
+    |value, _path| {
+        if value.is_nil() {
+            "[none]".to_string()
+        } else if let Some(distance) = value.as_f64() {
+            format!("{:.10}", distance)
+        } else {
+            "[unexpected-value]".to_string()
+        }
+    }
+}
+
 pub(crate) fn nav_controller_insta_settings() -> Settings {
     let mut settings = Settings::new();
     settings.add_redaction(
@@ -171,5 +187,15 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
         ".**.endedAt",
         dynamic_redaction(create_timestamp_redaction()),
     );
-    return settings;
+
+    settings.add_redaction(
+        ".**.distanceTravelled",
+        dynamic_redaction(create_distance_redaction()),
+    );
+    settings.add_redaction(
+        ".**.snappedDistanceTravelled",
+        dynamic_redaction(create_distance_redaction()),
+    );
+    
+    settings
 }
