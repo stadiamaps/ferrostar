@@ -8,4 +8,5 @@ enum DemoError: Error {
     case noFirstRoute
     case invalidState(DemoAppState)
     case invalidCPRouteChoice
+    case carplaySearchNoGeometry
 }
