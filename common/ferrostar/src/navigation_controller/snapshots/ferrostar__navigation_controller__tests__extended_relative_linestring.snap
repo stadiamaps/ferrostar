@@ -480,8 +480,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1717.6147901250579
       durationRemaining: 182.1430097720114
     summary:
-      distanceTraveled: 0
-      snappedDistanceTraveled: 0
+      distanceTraveled: "0.0000000000"
+      snappedDistanceTraveled: "0.0000000000"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -976,8 +976,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1672.183717805577
       durationRemaining: 165.7203820079352
     summary:
-      distanceTraveled: 45.43107231948095
-      snappedDistanceTraveled: 45.43107231948095
+      distanceTraveled: "45.4310723195"
+      snappedDistanceTraveled: "45.4310723195"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -1472,8 +1472,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1666.9303813597428
       durationRemaining: 163.8213823901693
     summary:
-      distanceTraveled: 50.68160561083462
-      snappedDistanceTraveled: 50.68160561083462
+      distanceTraveled: "50.6816056108"
+      snappedDistanceTraveled: "50.6816056108"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -1968,8 +1968,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1661.579653550692
       durationRemaining: 161.88717730566262
     summary:
-      distanceTraveled: 56.035549662589794
-      snappedDistanceTraveled: 56.035549662589794
+      distanceTraveled: "56.0355496626"
+      snappedDistanceTraveled: "56.0355496626"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -2464,8 +2464,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1654.074
       durationRemaining: 159.174
     summary:
-      distanceTraveled: 63.54120321328182
-      snappedDistanceTraveled: 63.54120321328182
+      distanceTraveled: "63.5412032133"
+      snappedDistanceTraveled: "63.5412032133"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -2932,8 +2932,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1648.6732268140304
       durationRemaining: 158.5894954515428
     summary:
-      distanceTraveled: 69.81237453160252
-      snappedDistanceTraveled: 69.81237453160252
+      distanceTraveled: "69.8123745316"
+      snappedDistanceTraveled: "69.8123745316"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -3400,8 +3400,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1642.2135061533559
       durationRemaining: 157.8903851616058
     summary:
-      distanceTraveled: 76.27209519227698
-      snappedDistanceTraveled: 76.27209519227698
+      distanceTraveled: "76.2720951923"
+      snappedDistanceTraveled: "76.2720951923"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -3868,8 +3868,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1632.8019109226634
       durationRemaining: 156.8718050377693
     summary:
-      distanceTraveled: 85.68369042296939
-      snappedDistanceTraveled: 85.68369042296939
+      distanceTraveled: "85.6836904230"
+      snappedDistanceTraveled: "85.6836904230"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -4336,8 +4336,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1626.5376259971292
       durationRemaining: 156.19384599269802
     summary:
-      distanceTraveled: 91.95052344770251
-      snappedDistanceTraveled: 91.95052344770251
+      distanceTraveled: "91.9505234477"
+      snappedDistanceTraveled: "91.9505234477"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -4804,8 +4804,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1620.2795951226037
       durationRemaining: 155.51656379909502
     summary:
-      distanceTraveled: 98.20649514894932
-      snappedDistanceTraveled: 98.20649514894932
+      distanceTraveled: "98.2064951489"
+      snappedDistanceTraveled: "98.2064951489"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -5272,8 +5272,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1613.6357517168774
       durationRemaining: 154.79752662494136
     summary:
-      distanceTraveled: 104.85033855467572
-      snappedDistanceTraveled: 104.85033855467572
+      distanceTraveled: "104.8503385547"
+      snappedDistanceTraveled: "104.8503385547"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -5740,8 +5740,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1607.539253899803
       durationRemaining: 154.13772652206043
     summary:
-      distanceTraveled: 110.94683637175007
-      snappedDistanceTraveled: 110.94683637175007
+      distanceTraveled: "110.9468363718"
+      snappedDistanceTraveled: "110.9468363718"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6208,8 +6208,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1599.5390720133826
       durationRemaining: 153.2718981415527
     summary:
-      distanceTraveled: 118.94813272030295
-      snappedDistanceTraveled: 118.94813272030295
+      distanceTraveled: "118.9481327203"
+      snappedDistanceTraveled: "118.9481327203"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6676,8 +6676,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1591.4551209584986
       durationRemaining: 152.39700375173456
     summary:
-      distanceTraveled: 127.03098295488677
-      snappedDistanceTraveled: 127.03098295488677
+      distanceTraveled: "127.0309829549"
+      snappedDistanceTraveled: "127.0309829549"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -7144,8 +7144,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1583.920704493682
       durationRemaining: 151.58158334024668
     summary:
-      distanceTraveled: 134.5655904399359
-      snappedDistanceTraveled: 134.5655904399359
+      distanceTraveled: "134.5655904399"
+      snappedDistanceTraveled: "134.5655904399"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -7612,8 +7612,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1576.3021492451678
       durationRemaining: 150.7570569174379
     summary:
-      distanceTraveled: 142.1839571332003
-      snappedDistanceTraveled: 142.1839571332003
+      distanceTraveled: "142.1839571332"
+      snappedDistanceTraveled: "142.1839571332"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8080,8 +8080,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1566.528611349486
       durationRemaining: 149.69930515526698
     summary:
-      distanceTraveled: 151.95749502888216
-      snappedDistanceTraveled: 151.95749502888216
+      distanceTraveled: "151.9574950289"
+      snappedDistanceTraveled: "151.9574950289"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8548,8 +8548,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1557.3493506517061
       durationRemaining: 148.7058696887925
     summary:
-      distanceTraveled: 161.13657295712727
-      snappedDistanceTraveled: 161.13657295712727
+      distanceTraveled: "161.1365729571"
+      snappedDistanceTraveled: "161.1365729571"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9016,8 +9016,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1548.2532606989764
       durationRemaining: 147.721435466604
     summary:
-      distanceTraveled: 170.23349077992816
-      snappedDistanceTraveled: 170.23349077992816
+      distanceTraveled: "170.2334907799"
+      snappedDistanceTraveled: "170.2334907799"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9484,8 +9484,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1539.074
       durationRemaining: 146.728
     summary:
-      distanceTraveled: 179.41256912380243
-      snappedDistanceTraveled: 179.41256912380243
+      distanceTraveled: "179.4125691238"
+      snappedDistanceTraveled: "179.4125691238"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9910,8 +9910,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1531.2099540901188
       durationRemaining: 146.01747012315084
     summary:
-      distanceTraveled: 187.57117686975013
-      snappedDistanceTraveled: 187.57117686975013
+      distanceTraveled: "187.5711768698"
+      snappedDistanceTraveled: "187.5711768698"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -10336,8 +10336,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1523.0513448428246
       durationRemaining: 145.28032594950656
     summary:
-      distanceTraveled: 195.7297876195714
-      snappedDistanceTraveled: 195.7297876195714
+      distanceTraveled: "195.7297876196"
+      snappedDistanceTraveled: "195.7297876196"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -10762,8 +10762,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1517.8257746971365
       durationRemaining: 144.8081868299451
     summary:
-      distanceTraveled: 200.95535776525935
-      snappedDistanceTraveled: 200.95535776525935
+      distanceTraveled: "200.9553577653"
+      snappedDistanceTraveled: "200.9553577653"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11188,8 +11188,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1512.5707103210545
       durationRemaining: 144.3333828566773
     summary:
-      distanceTraveled: 206.2104221413414
-      snappedDistanceTraveled: 206.2104221413414
+      distanceTraveled: "206.2104221413"
+      snappedDistanceTraveled: "206.2104221413"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11614,8 +11614,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1505.9951149389262
       durationRemaining: 143.7392666688251
     summary:
-      distanceTraveled: 212.78601752346952
-      snappedDistanceTraveled: 212.78601752346952
+      distanceTraveled: "212.7860175235"
+      snappedDistanceTraveled: "212.7860175235"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12040,8 +12040,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1499.8891854136575
       durationRemaining: 143.18758558718397
     summary:
-      distanceTraveled: 218.89194704873842
-      snappedDistanceTraveled: 218.89194704873842
+      distanceTraveled: "218.8919470487"
+      snappedDistanceTraveled: "218.8919470487"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12466,8 +12466,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1494.39964379418
       durationRemaining: 142.69159619755635
     summary:
-      distanceTraveled: 224.38148866821578
-      snappedDistanceTraveled: 224.38148866821578
+      distanceTraveled: "224.3814886682"
+      snappedDistanceTraveled: "224.3814886682"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12892,8 +12892,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1489.161950335298
       durationRemaining: 142.21836171609982
     summary:
-      distanceTraveled: 229.61918212709804
-      snappedDistanceTraveled: 229.61918212709804
+      distanceTraveled: "229.6191821271"
+      snappedDistanceTraveled: "229.6191821271"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13318,8 +13318,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1482.8137663878397
       durationRemaining: 141.64479253681316
     summary:
-      distanceTraveled: 235.9572468639308
-      snappedDistanceTraveled: 235.9572468639308
+      distanceTraveled: "235.9572468639"
+      snappedDistanceTraveled: "235.9572468639"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13744,8 +13744,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1476.4269435228612
       durationRemaining: 141.06773226583886
     summary:
-      distanceTraveled: 242.3545366325662
-      snappedDistanceTraveled: 242.3545366325662
+      distanceTraveled: "242.3545366326"
+      snappedDistanceTraveled: "242.3545366326"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14170,8 +14170,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1471.117377480198
       durationRemaining: 140.58800397461974
     summary:
-      distanceTraveled: 247.65783571660816
-      snappedDistanceTraveled: 247.65783571660816
+      distanceTraveled: "247.6578357166"
+      snappedDistanceTraveled: "247.6578357166"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14596,8 +14596,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1465.8870706417201
       durationRemaining: 140.11543688683642
     summary:
-      distanceTraveled: 252.8945354415293
-      snappedDistanceTraveled: 252.8945354415293
+      distanceTraveled: "252.8945354415"
+      snappedDistanceTraveled: "252.8945354415"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15022,8 +15022,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1459.8171111968463
       durationRemaining: 139.56700576292522
     summary:
-      distanceTraveled: 258.9644939725712
-      snappedDistanceTraveled: 258.9644939725712
+      distanceTraveled: "258.9644939726"
+      snappedDistanceTraveled: "258.9644939726"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15448,8 +15448,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1453.7471517530666
       durationRemaining: 139.01857463911287
     summary:
-      distanceTraveled: 265.03445433018396
-      snappedDistanceTraveled: 265.03445433018396
+      distanceTraveled: "265.0344543302"
+      snappedDistanceTraveled: "265.0344543302"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15874,8 +15874,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1448.6087672428882
       durationRemaining: 138.55431288949197
     summary:
-      distanceTraveled: 270.1542761300217
-      snappedDistanceTraveled: 270.1542761300217
+      distanceTraveled: "270.1542761300"
+      snappedDistanceTraveled: "270.1542761300"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -16300,8 +16300,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1443.4812633770377
       durationRemaining: 138.09103422452785
     summary:
-      distanceTraveled: 275.3012542571925
-      snappedDistanceTraveled: 275.3012542571925
+      distanceTraveled: "275.3012542572"
+      snappedDistanceTraveled: "275.3012542572"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -16726,8 +16726,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1433.5106152292337
       durationRemaining: 137.1901692649701
     summary:
-      distanceTraveled: 285.2719024049965
-      snappedDistanceTraveled: 285.2719024049965
+      distanceTraveled: "285.2719024050"
+      snappedDistanceTraveled: "285.2719024050"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -17152,8 +17152,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1424.3764165435164
       durationRemaining: 136.36487893202286
     summary:
-      distanceTraveled: 294.3892703986018
-      snappedDistanceTraveled: 294.3892703986018
+      distanceTraveled: "294.3892703986"
+      snappedDistanceTraveled: "294.3892703986"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -17578,8 +17578,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1415.2423243909925
       durationRemaining: 135.5395982245302
     summary:
-      distanceTraveled: 303.5444496625687
-      snappedDistanceTraveled: 303.5444496625687
+      distanceTraveled: "303.5444496626"
+      snappedDistanceTraveled: "303.5444496626"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -18004,8 +18004,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1406.1081257047786
       durationRemaining: 134.71430789153808
     summary:
-      distanceTraveled: 312.66182433613005
-      snappedDistanceTraveled: 312.66182433613005
+      distanceTraveled: "312.6618243361"
+      snappedDistanceTraveled: "312.6618243361"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -18430,8 +18430,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1396.974033552751
       durationRemaining: 133.8890271840903
     summary:
-      distanceTraveled: 321.81701005222106
-      snappedDistanceTraveled: 321.81701005222106
+      distanceTraveled: "321.8170100522"
+      snappedDistanceTraveled: "321.8170100522"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -18856,8 +18856,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1387.8398348665373
       durationRemaining: 133.06373685109818
     summary:
-      distanceTraveled: 330.934391405626
-      snappedDistanceTraveled: 330.934391405626
+      distanceTraveled: "330.9343914056"
+      snappedDistanceTraveled: "330.9343914056"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -19282,8 +19282,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1378.7754157488935
       durationRemaining: 132.24475122039684
     summary:
-      distanceTraveled: 340.000692408305
-      snappedDistanceTraveled: 340.000692408305
+      distanceTraveled: "340.0006924083"
+      snappedDistanceTraveled: "340.0006924083"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -19708,8 +19708,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1369.5715440287909
       durationRemaining: 131.413165810703
     summary:
-      distanceTraveled: 349.2064782730932
-      snappedDistanceTraveled: 349.2064782730932
+      distanceTraveled: "349.2064782731"
+      snappedDistanceTraveled: "349.2064782731"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -20134,8 +20134,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1360.5071249101557
       durationRemaining: 130.59418017991206
     summary:
-      distanceTraveled: 358.2727857919438
-      snappedDistanceTraveled: 358.2727857919438
+      distanceTraveled: "358.2727857919"
+      snappedDistanceTraveled: "358.2727857919"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -20560,8 +20560,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1351.3032531905496
       durationRemaining: 129.7625947702631
     summary:
-      distanceTraveled: 367.4785782723217
-      snappedDistanceTraveled: 367.4785782723217
+      distanceTraveled: "367.4785782723"
+      snappedDistanceTraveled: "367.4785782723"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -20986,8 +20986,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1342.2388340719142
       durationRemaining: 128.94360913947216
     summary:
-      distanceTraveled: 376.54489230661244
-      snappedDistanceTraveled: 376.54489230661244
+      distanceTraveled: "376.5448923066"
+      snappedDistanceTraveled: "376.5448923066"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -21412,8 +21412,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1337.893335840415
       durationRemaining: 128.55098600900493
     summary:
-      distanceTraveled: 380.8903905381118
-      snappedDistanceTraveled: 380.8903905381118
+      distanceTraveled: "380.8903905381"
+      snappedDistanceTraveled: "380.8903905381"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -21838,8 +21838,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1331.8438659295048
       durationRemaining: 128.00440614921538
     summary:
-      distanceTraveled: 386.9398604490219
-      snappedDistanceTraveled: 386.9398604490219
+      distanceTraveled: "386.9398604490"
+      snappedDistanceTraveled: "386.9398604490"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -22264,8 +22264,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1325.5264382128335
       durationRemaining: 127.43361584750953
     summary:
-      distanceTraveled: 393.2572881656931
-      snappedDistanceTraveled: 393.2572881656931
+      distanceTraveled: "393.2572881657"
+      snappedDistanceTraveled: "393.2572881657"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -22690,8 +22690,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1320.840756619266
       durationRemaining: 127.01025657369748
     summary:
-      distanceTraveled: 397.9429697592608
-      snappedDistanceTraveled: 397.9429697592608
+      distanceTraveled: "397.9429697593"
+      snappedDistanceTraveled: "397.9429697593"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -23116,8 +23116,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1312.3607832666648
       durationRemaining: 126.24407660845378
     summary:
-      distanceTraveled: 406.4229431118618
-      snappedDistanceTraveled: 406.4229431118618
+      distanceTraveled: "406.4229431119"
+      snappedDistanceTraveled: "406.4229431119"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -23542,8 +23542,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1303.074
       durationRemaining: 125.405
     summary:
-      distanceTraveled: 415.70972637852657
-      snappedDistanceTraveled: 415.70972637852657
+      distanceTraveled: "415.7097263785"
+      snappedDistanceTraveled: "415.7097263785"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -23908,8 +23908,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1292.4085206042214
       durationRemaining: 124.93763028282154
     summary:
-      distanceTraveled: 424.97285486807493
-      snappedDistanceTraveled: 424.97285486807493
+      distanceTraveled: "424.9728548681"
+      snappedDistanceTraveled: "424.9728548681"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -24280,8 +24280,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1283.2699100884975
       durationRemaining: 124.53716916394971
     summary:
-      distanceTraveled: 434.1073532886994
-      snappedDistanceTraveled: 434.1073532886994
+      distanceTraveled: "434.1073532887"
+      snappedDistanceTraveled: "434.1073532887"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -24652,8 +24652,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1274.0139076314015
       durationRemaining: 124.13156383763985
     summary:
-      distanceTraveled: 443.37047314759144
-      snappedDistanceTraveled: 443.37047314759144
+      distanceTraveled: "443.3704731476"
+      snappedDistanceTraveled: "443.3704731476"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -25024,8 +25024,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1264.7936831339741
       durationRemaining: 123.72752632973464
     summary:
-      distanceTraveled: 452.5780281362311
-      snappedDistanceTraveled: 452.5780281362311
+      distanceTraveled: "452.5780281362"
+      snappedDistanceTraveled: "452.5780281362"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -25396,8 +25396,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1255.6192946571675
       durationRemaining: 123.32549739239617
     summary:
-      distanceTraveled: 461.76851600734807
-      snappedDistanceTraveled: 461.76851600734807
+      distanceTraveled: "461.7685160073"
+      snappedDistanceTraveled: "461.7685160073"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -25768,8 +25768,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1246.3990701599944
       durationRemaining: 122.92145988450213
     summary:
-      distanceTraveled: 470.97606231284306
-      snappedDistanceTraveled: 470.97606231284306
+      distanceTraveled: "470.9760623128"
+      snappedDistanceTraveled: "470.9760623128"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -26140,8 +26140,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1237.7404170852665
       durationRemaining: 122.54203087915579
     summary:
-      distanceTraveled: 479.63471729139616
-      snappedDistanceTraveled: 479.63471729139616
+      distanceTraveled: "479.6347172914"
+      snappedDistanceTraveled: "479.6347172914"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -26512,8 +26512,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1229.0817640116982
       durationRemaining: 122.1626018738603
     summary:
-      distanceTraveled: 488.29336846114273
-      snappedDistanceTraveled: 488.29336846114273
+      distanceTraveled: "488.2933684611"
+      snappedDistanceTraveled: "488.2933684611"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -26884,8 +26884,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1222.5679663894
       durationRemaining: 121.87716212572332
     summary:
-      distanceTraveled: 494.81114275736263
-      snappedDistanceTraveled: 494.81114275736263
+      distanceTraveled: "494.8111427574"
+      snappedDistanceTraveled: "494.8111427574"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -27256,8 +27256,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1215.9721777449865
       durationRemaining: 121.58812946634482
     summary:
-      distanceTraveled: 501.40301572651526
-      snappedDistanceTraveled: 501.40301572651526
+      distanceTraveled: "501.4030157265"
+      snappedDistanceTraveled: "501.4030157265"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -27628,8 +27628,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1209.2631248370637
       durationRemaining: 121.29413347762703
     summary:
-      distanceTraveled: 508.1218804931879
-      snappedDistanceTraveled: 508.1218804931879
+      distanceTraveled: "508.1218804932"
+      snappedDistanceTraveled: "508.1218804932"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -28000,8 +28000,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1202.5874619580816
       durationRemaining: 121.00160066630647
     summary:
-      distanceTraveled: 514.7880897792244
-      snappedDistanceTraveled: 514.7880897792244
+      distanceTraveled: "514.7880897792"
+      snappedDistanceTraveled: "514.7880897792"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -28372,8 +28372,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1195.7850365960394
       durationRemaining: 120.70351302302214
     summary:
-      distanceTraveled: 521.6036667641752
-      snappedDistanceTraveled: 521.6036667641752
+      distanceTraveled: "521.6036667642"
+      snappedDistanceTraveled: "521.6036667642"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -28744,8 +28744,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1188.9315078704683
       durationRemaining: 120.40318599005141
     summary:
-      distanceTraveled: 528.444732320297
-      snappedDistanceTraveled: 528.444732320297
+      distanceTraveled: "528.4447323203"
+      snappedDistanceTraveled: "528.4447323203"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -29116,8 +29116,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1181.1478307453635
       durationRemaining: 120.06209912076277
     summary:
-      distanceTraveled: 536.2376921383778
-      snappedDistanceTraveled: 536.2376921383778
+      distanceTraveled: "536.2376921384"
+      snappedDistanceTraveled: "536.2376921384"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -29488,8 +29488,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1173.39445576505
       durationRemaining: 119.72234011535305
     summary:
-      distanceTraveled: 543.9821064335202
-      snappedDistanceTraveled: 543.9821064335202
+      distanceTraveled: "543.9821064335"
+      snappedDistanceTraveled: "543.9821064335"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -29860,8 +29860,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1165.5771615931585
       durationRemaining: 119.37978012056615
     summary:
-      distanceTraveled: 551.802596160132
-      snappedDistanceTraveled: 551.802596160132
+      distanceTraveled: "551.8025961601"
+      snappedDistanceTraveled: "551.8025961601"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -30232,8 +30232,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1157.6772766040833
       durationRemaining: 119.03360093104489
     summary:
-      distanceTraveled: 559.699326220367
-      snappedDistanceTraveled: 559.699326220367
+      distanceTraveled: "559.6993262204"
+      snappedDistanceTraveled: "559.6993262204"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -30604,8 +30604,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1150.4176865759207
       durationRemaining: 118.71547997160289
     summary:
-      distanceTraveled: 566.9679942637658
-      snappedDistanceTraveled: 566.9679942637658
+      distanceTraveled: "566.9679942638"
+      snappedDistanceTraveled: "566.9679942638"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -30976,8 +30976,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1143.187223878344
       durationRemaining: 118.39863539475496
     summary:
-      distanceTraveled: 574.1897295397048
-      snappedDistanceTraveled: 574.1897295397048
+      distanceTraveled: "574.1897295397"
+      snappedDistanceTraveled: "574.1897295397"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -31371,8 +31371,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1136.6487628831196
       durationRemaining: 118.11211487816854
     summary:
-      distanceTraveled: 580.7369489642495
-      snappedDistanceTraveled: 580.7369489642495
+      distanceTraveled: "580.7369489642"
+      snappedDistanceTraveled: "580.7369489642"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -31766,8 +31766,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1130.137715594857
       durationRemaining: 117.8267956518377
     summary:
-      distanceTraveled: 587.2396355369102
-      snappedDistanceTraveled: 587.2396355369102
+      distanceTraveled: "587.2396355369"
+      snappedDistanceTraveled: "587.2396355369"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -32161,8 +32161,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1122.4536116339173
       durationRemaining: 117.49007215711926
     summary:
-      distanceTraveled: 594.9237434669303
-      snappedDistanceTraveled: 594.9237434669303
+      distanceTraveled: "594.9237434669"
+      snappedDistanceTraveled: "594.9237434669"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -32556,8 +32556,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1114.7695076727882
       durationRemaining: 117.15334866239252
     summary:
-      distanceTraveled: 602.6078487511576
-      snappedDistanceTraveled: 602.6078487511576
+      distanceTraveled: "602.6078487512"
+      snappedDistanceTraveled: "602.6078487512"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -32951,8 +32951,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1107.0854037116594
       durationRemaining: 116.81662516766576
     summary:
-      distanceTraveled: 610.2919513892821
-      snappedDistanceTraveled: 610.2919513892821
+      distanceTraveled: "610.2919513893"
+      snappedDistanceTraveled: "610.2919513893"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -33346,8 +33346,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1099.401299751898
       durationRemaining: 116.47990167299895
     summary:
-      distanceTraveled: 617.9760513798923
-      snappedDistanceTraveled: 617.9760513798923
+      distanceTraveled: "617.9760513799"
+      snappedDistanceTraveled: "617.9760513799"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -33741,8 +33741,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1090.6506959509707
       durationRemaining: 116.0964433143246
     summary:
-      distanceTraveled: 626.7312984847335
-      snappedDistanceTraveled: 626.7312984847335
+      distanceTraveled: "626.7312984847"
+      snappedDistanceTraveled: "626.7312984847"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -34136,8 +34136,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1081.9000921498464
       durationRemaining: 115.71298495564166
     summary:
-      distanceTraveled: 635.4865420693772
-      snappedDistanceTraveled: 635.4865420693772
+      distanceTraveled: "635.4865420694"
+      snappedDistanceTraveled: "635.4865420694"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -34531,8 +34531,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1073.0943491782532
       durationRemaining: 115.32711035502983
     summary:
-      distanceTraveled: 644.274578845938
-      snappedDistanceTraveled: 644.274578845938
+      distanceTraveled: "644.2745788459"
+      snappedDistanceTraveled: "644.2745788459"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -34926,8 +34926,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1064.3437453773256
       durationRemaining: 114.9436519963555
     summary:
-      distanceTraveled: 653.0298154992332
-      snappedDistanceTraveled: 653.0298154992332
+      distanceTraveled: "653.0298154992"
+      snappedDistanceTraveled: "653.0298154992"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -35321,8 +35321,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1055.5931415762016
       durationRemaining: 114.56019363767254
     summary:
-      distanceTraveled: 661.7850486323249
-      snappedDistanceTraveled: 661.7850486323249
+      distanceTraveled: "661.7850486323"
+      snappedDistanceTraveled: "661.7850486323"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -35716,8 +35716,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1048.7002604468946
       durationRemaining: 114.25814215133954
     summary:
-      distanceTraveled: 668.6765681793413
-      snappedDistanceTraveled: 668.6765681793413
+      distanceTraveled: "668.6765681793"
+      snappedDistanceTraveled: "668.6765681793"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -36111,8 +36111,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1041.8906747873043
       durationRemaining: 113.95974073817055
     summary:
-      distanceTraveled: 675.4889208466619
-      snappedDistanceTraveled: 675.4889208466619
+      distanceTraveled: "675.4889208467"
+      snappedDistanceTraveled: "675.4889208467"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -36506,8 +36506,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1034.9977936579976
       durationRemaining: 113.65768925183755
     summary:
-      distanceTraveled: 682.3804365371722
-      snappedDistanceTraveled: 682.3804365371722
+      distanceTraveled: "682.3804365372"
+      snappedDistanceTraveled: "682.3804365372"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -36901,8 +36901,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1025.2724846289923
       durationRemaining: 113.23151854148408
     summary:
-      distanceTraveled: 692.1088516078564
-      snappedDistanceTraveled: 692.1088516078564
+      distanceTraveled: "692.1088516079"
+      snappedDistanceTraveled: "692.1088516079"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -37296,8 +37296,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1015.652559222762
       durationRemaining: 112.80996582457881
     summary:
-      distanceTraveled: 701.721268410474
-      snappedDistanceTraveled: 701.721268410474
+      distanceTraveled: "701.7212684105"
+      snappedDistanceTraveled: "701.7212684105"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -37691,8 +37691,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 1005.9272501924154
       durationRemaining: 112.38379511416656
     summary:
-      distanceTraveled: 711.4496760529694
-      snappedDistanceTraveled: 711.4496760529694
+      distanceTraveled: "711.4496760530"
+      snappedDistanceTraveled: "711.4496760530"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -38086,8 +38086,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 996.2019411634101
       durationRemaining: 111.95762440381309
     summary:
-      distanceTraveled: 721.1780799141093
-      snappedDistanceTraveled: 721.1780799141093
+      distanceTraveled: "721.1780799141"
+      snappedDistanceTraveled: "721.1780799141"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -38481,8 +38481,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 986.4766321332199
       durationRemaining: 111.5314536934077
     summary:
-      distanceTraveled: 730.9064799964115
-      snappedDistanceTraveled: 730.9064799964115
+      distanceTraveled: "730.9064799964"
+      snappedDistanceTraveled: "730.9064799964"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -38876,8 +38876,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 976.8567067269896
       durationRemaining: 111.10990097650242
     summary:
-      distanceTraveled: 740.5188819057081
-      snappedDistanceTraveled: 740.5188819057081
+      distanceTraveled: "740.5188819057"
+      snappedDistanceTraveled: "740.5188819057"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -39271,8 +39271,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 967.1313976979843
       durationRemaining: 110.68373026614896
     summary:
-      distanceTraveled: 750.2472745572857
-      snappedDistanceTraveled: 750.2472745572857
+      distanceTraveled: "750.2472745573"
+      snappedDistanceTraveled: "750.2472745573"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -39666,8 +39666,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 959.5024783510731
       durationRemaining: 110.34942500473197
     summary:
-      distanceTraveled: 757.8860754919325
-      snappedDistanceTraveled: 757.8860754919325
+      distanceTraveled: "757.8860754919"
+      snappedDistanceTraveled: "757.8860754919"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -40061,8 +40061,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 951.8131627841497
       durationRemaining: 110.01247313332979
     summary:
-      distanceTraveled: 765.5660889665008
-      snappedDistanceTraveled: 765.5660889665008
+      distanceTraveled: "765.5660889665"
+      snappedDistanceTraveled: "765.5660889665"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -40456,8 +40456,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 944.1992590247257
       durationRemaining: 109.67882586679676
     summary:
-      distanceTraveled: 773.1782407222371
-      snappedDistanceTraveled: 773.1782407222371
+      distanceTraveled: "773.1782407222"
+      snappedDistanceTraveled: "773.1782407222"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -40851,8 +40851,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 936.5738265336208
       durationRemaining: 109.3446734021507
     summary:
-      distanceTraveled: 780.8106677193105
-      snappedDistanceTraveled: 780.8106677193105
+      distanceTraveled: "780.8106677193"
+      snappedDistanceTraveled: "780.8106677193"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -41246,8 +41246,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 928.8759277296936
       durationRemaining: 109.00734540653488
     summary:
-      distanceTraveled: 788.5057325522474
-      snappedDistanceTraveled: 788.5057325522474
+      distanceTraveled: "788.5057325522"
+      snappedDistanceTraveled: "788.5057325522"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -41641,8 +41641,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 921.2620239701878
       durationRemaining: 108.67369813999827
     summary:
-      distanceTraveled: 796.1178801989602
-      snappedDistanceTraveled: 796.1178801989602
+      distanceTraveled: "796.1178801990"
+      snappedDistanceTraveled: "796.1178801990"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -42036,8 +42036,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 914.43364726897
       durationRemaining: 108.37447328856784
     summary:
-      distanceTraveled: 802.9588728422648
-      snappedDistanceTraveled: 802.9588728422648
+      distanceTraveled: "802.9588728423"
+      snappedDistanceTraveled: "802.9588728423"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -42431,8 +42431,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 907.5524940993798
       durationRemaining: 108.07293573067749
     summary:
-      distanceTraveled: 809.8280904651558
-      snappedDistanceTraveled: 809.8280904651558
+      distanceTraveled: "809.8280904652"
+      snappedDistanceTraveled: "809.8280904652"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -42826,8 +42826,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 899.5263037440081
       durationRemaining: 107.72122174040948
     summary:
-      distanceTraveled: 817.8483024779393
-      snappedDistanceTraveled: 817.8483024779393
+      distanceTraveled: "817.8483024779"
+      snappedDistanceTraveled: "817.8483024779"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -43221,8 +43221,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 891.4700575394475
       durationRemaining: 107.36819067913005
     summary:
-      distanceTraveled: 825.9169271941387
-      snappedDistanceTraveled: 825.9169271941387
+      distanceTraveled: "825.9169271941"
+      snappedDistanceTraveled: "825.9169271941"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -43616,8 +43616,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 883.4438671840758
       durationRemaining: 107.01647668886204
     summary:
-      distanceTraveled: 833.9371330063625
-      snappedDistanceTraveled: 833.9371330063625
+      distanceTraveled: "833.9371330064"
+      snappedDistanceTraveled: "833.9371330064"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -44011,8 +44011,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 873.5629325541524
       durationRemaining: 106.58348634196082
     summary:
-      distanceTraveled: 843.8125183350242
-      snappedDistanceTraveled: 843.8125183350242
+      distanceTraveled: "843.8125183350"
+      snappedDistanceTraveled: "843.8125183350"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -44406,8 +44406,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 863.6521713753074
       durationRemaining: 106.1491889721667
     summary:
-      distanceTraveled: 853.7359853545413
-      snappedDistanceTraveled: 853.7359853545413
+      distanceTraveled: "853.7359853545"
+      snappedDistanceTraveled: "853.7359853545"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -44801,8 +44801,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 853.7712367463449
       durationRemaining: 105.71619862530757
     summary:
-      distanceTraveled: 863.6113613321073
-      snappedDistanceTraveled: 863.6113613321073
+      distanceTraveled: "863.6113613321"
+      snappedDistanceTraveled: "863.6113613321"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -45196,8 +45196,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 843.8903021164216
       durationRemaining: 105.28320827840635
     summary:
-      distanceTraveled: 873.4867326959527
-      snappedDistanceTraveled: 873.4867326959527
+      distanceTraveled: "873.4867326960"
+      snappedDistanceTraveled: "873.4867326960"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -45591,8 +45591,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 834.0093674862864
       durationRemaining: 104.85021793149583
     summary:
-      distanceTraveled: 883.362099445669
-      snappedDistanceTraveled: 883.362099445669
+      distanceTraveled: "883.3620994457"
+      snappedDistanceTraveled: "883.3620994457"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -45986,8 +45986,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 824.0986063076532
       durationRemaining: 104.41592056171099
     summary:
-      distanceTraveled: 893.2855479755751
-      snappedDistanceTraveled: 893.2855479755751
+      distanceTraveled: "893.2855479756"
+      snappedDistanceTraveled: "893.2855479756"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -46381,8 +46381,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 814.3001955053851
       durationRemaining: 103.98654647401017
     summary:
-      distanceTraveled: 903.0848639572245
-      snappedDistanceTraveled: 903.0848639572245
+      distanceTraveled: "903.0848639572"
+      snappedDistanceTraveled: "903.0848639572"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -46776,8 +46776,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 804.4192608766346
       durationRemaining: 103.55355612716033
     summary:
-      distanceTraveled: 912.9602167406674
-      snappedDistanceTraveled: 912.9602167406674
+      distanceTraveled: "912.9602167407"
+      snappedDistanceTraveled: "912.9602167407"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -47171,8 +47171,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 794.5084996977894
       durationRemaining: 103.11925875736621
     summary:
-      distanceTraveled: 922.883651373726
-      snappedDistanceTraveled: 922.883651373726
+      distanceTraveled: "922.8836513737"
+      snappedDistanceTraveled: "922.8836513737"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -47566,8 +47566,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 784.6275650676542
       durationRemaining: 102.6862684104557
     summary:
-      distanceTraveled: 932.7589948081927
-      snappedDistanceTraveled: 932.7589948081927
+      distanceTraveled: "932.7589948082"
+      snappedDistanceTraveled: "932.7589948082"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -47961,8 +47961,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 774.7466304377309
       durationRemaining: 102.25327806355448
     summary:
-      distanceTraveled: 942.6343336278355
-      snappedDistanceTraveled: 942.6343336278355
+      distanceTraveled: "942.6343336278"
+      snappedDistanceTraveled: "942.6343336278"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -48356,8 +48356,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 764.8656958075957
       durationRemaining: 101.82028771664396
     summary:
-      distanceTraveled: 952.5096678333276
-      snappedDistanceTraveled: 952.5096678333276
+      distanceTraveled: "952.5096678333"
+      snappedDistanceTraveled: "952.5096678333"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -48751,8 +48751,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 754.9549346287506
       durationRemaining: 101.38599034684984
     summary:
-      distanceTraveled: 962.4330839770345
-      snappedDistanceTraveled: 962.4330839770345
+      distanceTraveled: "962.4330839770"
+      snappedDistanceTraveled: "962.4330839770"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -49146,8 +49146,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 745.0740000000001
       durationRemaining: 100.953
     summary:
-      distanceTraveled: 972.3084088306861
-      snappedDistanceTraveled: 972.3084088306861
+      distanceTraveled: "972.3084088307"
+      snappedDistanceTraveled: "972.3084088307"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -49438,8 +49438,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 735.853220383771
       durationRemaining: 99.99465859596167
     summary:
-      distanceTraveled: 980.8090124675183
-      snappedDistanceTraveled: 980.8090124675183
+      distanceTraveled: "980.8090124675"
+      snappedDistanceTraveled: "980.8090124675"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -49701,8 +49701,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 727.352622109138
       durationRemaining: 99.1111676521656
     summary:
-      distanceTraveled: 989.3096125295124
-      snappedDistanceTraveled: 989.3096125295124
+      distanceTraveled: "989.3096125295"
+      snappedDistanceTraveled: "989.3096125295"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -49964,8 +49964,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 718.8520238352139
       durationRemaining: 98.22767670844321
     summary:
-      distanceTraveled: 997.8102090159863
-      snappedDistanceTraveled: 997.8102090159863
+      distanceTraveled: "997.8102090160"
+      snappedDistanceTraveled: "997.8102090160"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -50227,8 +50227,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 710.3514255616738
       durationRemaining: 97.34418576476074
     summary:
-      distanceTraveled: 1006.3108019267399
-      snappedDistanceTraveled: 1006.3108019267399
+      distanceTraveled: "1006.3108019267"
+      snappedDistanceTraveled: "1006.3108019267"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -50490,8 +50490,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 701.6516908729348
       durationRemaining: 96.43999801672118
     summary:
-      distanceTraveled: 1015.0105366154788
-      snappedDistanceTraveled: 1015.0105366154788
+      distanceTraveled: "1015.0105366155"
+      snappedDistanceTraveled: "1015.0105366155"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -50753,8 +50753,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 694.9148006359508
       durationRemaining: 95.73981418007463
     summary:
-      distanceTraveled: 1021.7474268524628
-      snappedDistanceTraveled: 1021.7474268524628
+      distanceTraveled: "1021.7474268525"
+      snappedDistanceTraveled: "1021.7474268525"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -51016,8 +51016,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 688.9676129788572
       durationRemaining: 95.12170634032677
     summary:
-      distanceTraveled: 1027.6946145095565
-      snappedDistanceTraveled: 1027.6946145095565
+      distanceTraveled: "1027.6946145096"
+      snappedDistanceTraveled: "1027.6946145096"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -51279,8 +51279,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 684.4173221884239
       durationRemaining: 94.64878189723396
     summary:
-      distanceTraveled: 1032.2449052999898
-      snappedDistanceTraveled: 1032.2449052999898
+      distanceTraveled: "1032.2449053000"
+      snappedDistanceTraveled: "1032.2449053000"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -51542,8 +51542,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 679.596780262003
       durationRemaining: 94.14776949803715
     summary:
-      distanceTraveled: 1037.0654472264107
-      snappedDistanceTraveled: 1037.0654472264107
+      distanceTraveled: "1037.0654472264"
+      snappedDistanceTraveled: "1037.0654472264"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -51805,8 +51805,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 674.6030305160286
       durationRemaining: 93.62875512591725
     summary:
-      distanceTraveled: 1042.059196972385
-      snappedDistanceTraveled: 1042.059196972385
+      distanceTraveled: "1042.0591969724"
+      snappedDistanceTraveled: "1042.0591969724"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -52068,8 +52068,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 669.7423900925282
       durationRemaining: 93.12357517781564
     summary:
-      distanceTraveled: 1046.9198373958855
-      snappedDistanceTraveled: 1046.9198373958855
+      distanceTraveled: "1046.9198373959"
+      snappedDistanceTraveled: "1046.9198373959"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -52331,8 +52331,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 665.4166483243545
       durationRemaining: 92.67398874237773
     summary:
-      distanceTraveled: 1051.245579164059
-      snappedDistanceTraveled: 1051.245579164059
+      distanceTraveled: "1051.2455791641"
+      snappedDistanceTraveled: "1051.2455791641"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -52594,8 +52594,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 661.3818691745371
       durationRemaining: 92.25464286530948
     summary:
-      distanceTraveled: 1055.2803583138764
-      snappedDistanceTraveled: 1055.2803583138764
+      distanceTraveled: "1055.2803583139"
+      snappedDistanceTraveled: "1055.2803583139"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -52857,8 +52857,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 657.4891305527541
       durationRemaining: 91.8500596574224
     summary:
-      distanceTraveled: 1059.1730969356595
-      snappedDistanceTraveled: 1059.1730969356595
+      distanceTraveled: "1059.1730969357"
+      snappedDistanceTraveled: "1059.1730969357"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -53120,8 +53120,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 652.4676708741231
       durationRemaining: 91.32816531453284
     summary:
-      distanceTraveled: 1064.1945566142906
-      snappedDistanceTraveled: 1064.1945566142906
+      distanceTraveled: "1064.1945566143"
+      snappedDistanceTraveled: "1064.1945566143"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -53383,8 +53383,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 648.442568521094
       durationRemaining: 90.90982517400823
     summary:
-      distanceTraveled: 1068.2196589673197
-      snappedDistanceTraveled: 1068.2196589673197
+      distanceTraveled: "1068.2196589673"
+      snappedDistanceTraveled: "1068.2196589673"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -53646,8 +53646,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 644.4217077650137
       durationRemaining: 90.4919258745127
     summary:
-      distanceTraveled: 1072.2405197234
-      snappedDistanceTraveled: 1072.2405197234
+      distanceTraveled: "1072.2405197234"
+      snappedDistanceTraveled: "1072.2405197234"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -53909,8 +53909,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 639.9326814384021
       durationRemaining: 90.0253688184219
     summary:
-      distanceTraveled: 1076.7295460500115
-      snappedDistanceTraveled: 1076.7295460500115
+      distanceTraveled: "1076.7295460500"
+      snappedDistanceTraveled: "1076.7295460500"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -54172,8 +54172,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 635.1483161742285
       durationRemaining: 89.52811636087151
     summary:
-      distanceTraveled: 1081.5139113141852
-      snappedDistanceTraveled: 1081.5139113141852
+      distanceTraveled: "1081.5139113142"
+      snappedDistanceTraveled: "1081.5139113142"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -54435,8 +54435,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 630.7795424408528
       durationRemaining: 89.07405749298573
     summary:
-      distanceTraveled: 1085.882685047561
-      snappedDistanceTraveled: 1085.882685047561
+      distanceTraveled: "1085.8826850476"
+      snappedDistanceTraveled: "1085.8826850476"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -54698,8 +54698,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 625.5792489447563
       durationRemaining: 88.53357645148148
     summary:
-      distanceTraveled: 1091.0829785436574
-      snappedDistanceTraveled: 1091.0829785436574
+      distanceTraveled: "1091.0829785437"
+      snappedDistanceTraveled: "1091.0829785437"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -54961,8 +54961,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 620.7334145619732
       durationRemaining: 88.02993533658487
     summary:
-      distanceTraveled: 1095.9288129264405
-      snappedDistanceTraveled: 1095.9288129264405
+      distanceTraveled: "1095.9288129264"
+      snappedDistanceTraveled: "1095.9288129264"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -55224,8 +55224,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 615.693443400613
       durationRemaining: 87.50611704354273
     summary:
-      distanceTraveled: 1100.9687840878007
-      snappedDistanceTraveled: 1100.9687840878007
+      distanceTraveled: "1100.9687840878"
+      snappedDistanceTraveled: "1100.9687840878"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -55487,8 +55487,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 610.3219042873253
       durationRemaining: 86.94783796629264
     summary:
-      distanceTraveled: 1106.3403232010883
-      snappedDistanceTraveled: 1106.3403232010883
+      distanceTraveled: "1106.3403232011"
+      snappedDistanceTraveled: "1106.3403232011"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -55750,8 +55750,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 605.8199745231893
       durationRemaining: 86.47993981986579
     summary:
-      distanceTraveled: 1110.8422529652241
-      snappedDistanceTraveled: 1110.8422529652241
+      distanceTraveled: "1110.8422529652"
+      snappedDistanceTraveled: "1110.8422529652"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -56013,8 +56013,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 600.8043749773639
       durationRemaining: 85.95865453696189
     summary:
-      distanceTraveled: 1115.8578525110497
-      snappedDistanceTraveled: 1115.8578525110497
+      distanceTraveled: "1115.8578525110"
+      snappedDistanceTraveled: "1115.8578525110"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -56276,8 +56276,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 595.5263583237588
       durationRemaining: 85.41009551040722
     summary:
-      distanceTraveled: 1121.1358691646547
-      snappedDistanceTraveled: 1121.1358691646547
+      distanceTraveled: "1121.1358691647"
+      snappedDistanceTraveled: "1121.1358691647"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -56539,8 +56539,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 590.10932348402
       durationRemaining: 84.8470879351147
     summary:
-      distanceTraveled: 1126.5529040043934
-      snappedDistanceTraveled: 1126.5529040043934
+      distanceTraveled: "1126.5529040044"
+      snappedDistanceTraveled: "1126.5529040044"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -56802,8 +56802,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 585.1451809407507
       durationRemaining: 84.33115072234474
     summary:
-      distanceTraveled: 1131.5170465476629
-      snappedDistanceTraveled: 1131.5170465476629
+      distanceTraveled: "1131.5170465477"
+      snappedDistanceTraveled: "1131.5170465477"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -57065,8 +57065,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 580.1573186574777
       durationRemaining: 83.81274825068296
     summary:
-      distanceTraveled: 1136.5049088309358
-      snappedDistanceTraveled: 1136.5049088309358
+      distanceTraveled: "1136.5049088309"
+      snappedDistanceTraveled: "1136.5049088309"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -57328,8 +57328,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 574.767163954757
       durationRemaining: 83.2525344031795
     summary:
-      distanceTraveled: 1141.8950635336564
-      snappedDistanceTraveled: 1141.8950635336564
+      distanceTraveled: "1141.8950635337"
+      snappedDistanceTraveled: "1141.8950635337"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -57591,8 +57591,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 570.5511322209386
       durationRemaining: 82.81435043832836
     summary:
-      distanceTraveled: 1146.1110952674749
-      snappedDistanceTraveled: 1146.1110952674749
+      distanceTraveled: "1146.1110952675"
+      snappedDistanceTraveled: "1146.1110952675"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -57854,8 +57854,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 565.2354767251006
       durationRemaining: 82.26187950167356
     summary:
-      distanceTraveled: 1151.4267507633128
-      snappedDistanceTraveled: 1151.4267507633128
+      distanceTraveled: "1151.4267507633"
+      snappedDistanceTraveled: "1151.4267507633"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -58117,8 +58117,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 559.9488808290771
       durationRemaining: 81.71242881046939
     summary:
-      distanceTraveled: 1156.7133466593364
-      snappedDistanceTraveled: 1156.7133466593364
+      distanceTraveled: "1156.7133466593"
+      snappedDistanceTraveled: "1156.7133466593"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -58380,8 +58380,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 555.9624356637455
       durationRemaining: 81.298106419536
     summary:
-      distanceTraveled: 1160.699791824668
-      snappedDistanceTraveled: 1160.699791824668
+      distanceTraveled: "1160.6997918247"
+      snappedDistanceTraveled: "1160.6997918247"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -58643,8 +58643,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 550.299799431713
       durationRemaining: 80.70957280491484
     summary:
-      distanceTraveled: 1166.3624280567003
-      snappedDistanceTraveled: 1166.3624280567003
+      distanceTraveled: "1166.3624280567"
+      snappedDistanceTraveled: "1166.3624280567"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -58906,8 +58906,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 545.2617567590333
       durationRemaining: 80.18595494509276
     summary:
-      distanceTraveled: 1171.40047072938
-      snappedDistanceTraveled: 1171.40047072938
+      distanceTraveled: "1171.4004707294"
+      snappedDistanceTraveled: "1171.4004707294"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -59169,8 +59169,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 540.6938880231075
       durationRemaining: 79.71120357698229
     summary:
-      distanceTraveled: 1175.968339465306
-      snappedDistanceTraveled: 1175.968339465306
+      distanceTraveled: "1175.9683394653"
+      snappedDistanceTraveled: "1175.9683394653"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -59432,8 +59432,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 535.6333751124066
       durationRemaining: 79.18525032250263
     summary:
-      distanceTraveled: 1181.0288523760069
-      snappedDistanceTraveled: 1181.0288523760069
+      distanceTraveled: "1181.0288523760"
+      snappedDistanceTraveled: "1181.0288523760"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -59695,8 +59695,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 531.1259548725322
       durationRemaining: 78.71678153558257
     summary:
-      distanceTraveled: 1185.5362726158812
-      snappedDistanceTraveled: 1185.5362726158812
+      distanceTraveled: "1185.5362726159"
+      snappedDistanceTraveled: "1185.5362726159"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -59958,8 +59958,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 526.6112735280994
       durationRemaining: 78.24755808176589
     summary:
-      distanceTraveled: 1190.050953960314
-      snappedDistanceTraveled: 1190.050953960314
+      distanceTraveled: "1190.0509539603"
+      snappedDistanceTraveled: "1190.0509539603"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -60221,8 +60221,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 521.5057304099913
       durationRemaining: 77.7169247119395
     summary:
-      distanceTraveled: 1195.1564970784223
-      snappedDistanceTraveled: 1195.1564970784223
+      distanceTraveled: "1195.1564970784"
+      snappedDistanceTraveled: "1195.1564970784"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -60484,8 +60484,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 516.6478322602209
       durationRemaining: 77.21202977601322
     summary:
-      distanceTraveled: 1200.0143952281928
-      snappedDistanceTraveled: 1200.0143952281928
+      distanceTraveled: "1200.0143952282"
+      snappedDistanceTraveled: "1200.0143952282"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -60747,8 +60747,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 513.1369686026449
       durationRemaining: 76.8471359007636
     summary:
-      distanceTraveled: 1203.5252588857688
-      snappedDistanceTraveled: 1203.5252588857688
+      distanceTraveled: "1203.5252588858"
+      snappedDistanceTraveled: "1203.5252588858"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -61010,8 +61010,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 508.6643380961832
       durationRemaining: 76.38228290809874
     summary:
-      distanceTraveled: 1207.9978893922305
-      snappedDistanceTraveled: 1207.9978893922305
+      distanceTraveled: "1207.9978893922"
+      snappedDistanceTraveled: "1207.9978893922"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -61273,8 +61273,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 504.8995274498028
       durationRemaining: 75.99099561234335
     summary:
-      distanceTraveled: 1211.7627000386108
-      snappedDistanceTraveled: 1211.7627000386108
+      distanceTraveled: "1211.7627000386"
+      snappedDistanceTraveled: "1211.7627000386"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -61536,8 +61536,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 501.5256333961277
       durationRemaining: 75.64033737095292
     summary:
-      distanceTraveled: 1215.1365940922858
-      snappedDistanceTraveled: 1215.1365940922858
+      distanceTraveled: "1215.1365940923"
+      snappedDistanceTraveled: "1215.1365940923"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -61799,8 +61799,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 498.0744745336217
       durationRemaining: 75.28164878197154
     summary:
-      distanceTraveled: 1218.5877529547918
-      snappedDistanceTraveled: 1218.5877529547918
+      distanceTraveled: "1218.5877529548"
+      snappedDistanceTraveled: "1218.5877529548"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -62062,8 +62062,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 494.1744570646795
       durationRemaining: 74.87630906314975
     summary:
-      distanceTraveled: 1222.487770423734
-      snappedDistanceTraveled: 1222.487770423734
+      distanceTraveled: "1222.4877704237"
+      snappedDistanceTraveled: "1222.4877704237"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -62325,8 +62325,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 489.8956845502263
       durationRemaining: 74.4316042735629
     summary:
-      distanceTraveled: 1226.7665429381873
-      snappedDistanceTraveled: 1226.7665429381873
+      distanceTraveled: "1226.7665429382"
+      snappedDistanceTraveled: "1226.7665429382"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -62588,8 +62588,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 486.1967531470065
       durationRemaining: 74.04716399172773
     summary:
-      distanceTraveled: 1230.4654743414071
-      snappedDistanceTraveled: 1230.4654743414071
+      distanceTraveled: "1230.4654743414"
+      snappedDistanceTraveled: "1230.4654743414"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -62851,8 +62851,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 481.2757598617312
       durationRemaining: 73.53571140197343
     summary:
-      distanceTraveled: 1235.3864676266824
-      snappedDistanceTraveled: 1235.3864676266824
+      distanceTraveled: "1235.3864676267"
+      snappedDistanceTraveled: "1235.3864676267"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -63114,8 +63114,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 476.01134623258616
       durationRemaining: 72.98856617578086
     summary:
-      distanceTraveled: 1240.645244136912
-      snappedDistanceTraveled: 1240.645244136912
+      distanceTraveled: "1240.6452441369"
+      snappedDistanceTraveled: "1240.6452441369"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -63377,8 +63377,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 470.6570044699358
       durationRemaining: 72.4320744672611
     summary:
-      distanceTraveled: 1246.0053220049747
-      snappedDistanceTraveled: 1246.0053220049747
+      distanceTraveled: "1246.0053220050"
+      snappedDistanceTraveled: "1246.0053220050"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -63640,8 +63640,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 461.3115545361185
       durationRemaining: 71.46077572857513
     summary:
-      distanceTraveled: 1255.3502803799875
-      snappedDistanceTraveled: 1255.3502803799875
+      distanceTraveled: "1255.3502803800"
+      snappedDistanceTraveled: "1255.3502803800"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -63903,8 +63903,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 452.06506403039657
       durationRemaining: 70.49976211991189
     summary:
-      distanceTraveled: 1264.5894543506329
-      snappedDistanceTraveled: 1264.5894543506329
+      distanceTraveled: "1264.5894543506"
+      snappedDistanceTraveled: "1264.5894543506"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -64166,8 +64166,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 442.76163455655
       durationRemaining: 69.53283068510724
     summary:
-      distanceTraveled: 1273.9089624492806
-      snappedDistanceTraveled: 1273.9089624492806
+      distanceTraveled: "1273.9089624493"
+      snappedDistanceTraveled: "1273.9089624493"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -64429,8 +64429,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 433.5151440508281
       durationRemaining: 68.571817076444
     summary:
-      distanceTraveled: 1283.1481385431832
-      snappedDistanceTraveled: 1283.1481385431832
+      distanceTraveled: "1283.1481385432"
+      snappedDistanceTraveled: "1283.1481385432"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -64692,8 +64692,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 424.16969411701075
       durationRemaining: 67.60051833775803
     summary:
-      distanceTraveled: 1292.4931011166395
-      snappedDistanceTraveled: 1292.4931011166395
+      distanceTraveled: "1292.4931011166"
+      snappedDistanceTraveled: "1292.4931011166"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -64955,8 +64955,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 415.66327045449384
       durationRemaining: 66.71642194511317
     summary:
-      distanceTraveled: 1300.988751332751
-      snappedDistanceTraveled: 1300.988751332751
+      distanceTraveled: "1300.9887513328"
+      snappedDistanceTraveled: "1300.9887513328"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -65218,8 +65218,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 407.12827072143136
       durationRemaining: 65.8293555615664
     summary:
-      distanceTraveled: 1309.5458997484252
-      snappedDistanceTraveled: 1309.5458997484252
+      distanceTraveled: "1309.5458997484"
+      snappedDistanceTraveled: "1309.5458997484"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -65481,8 +65481,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 398.62184705891445
       durationRemaining: 64.94525916892154
     summary:
-      distanceTraveled: 1318.0415536063667
-      snappedDistanceTraveled: 1318.0415536063667
+      distanceTraveled: "1318.0415536064"
+      snappedDistanceTraveled: "1318.0415536064"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -65744,8 +65744,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 390.1154233955794
       durationRemaining: 64.06116277619164
     summary:
-      distanceTraveled: 1326.537209272476
-      snappedDistanceTraveled: 1326.537209272476
+      distanceTraveled: "1326.5372092725"
+      snappedDistanceTraveled: "1326.5372092725"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -66007,8 +66007,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 381.5804236625169
       durationRemaining: 63.17409639264488
     summary:
-      distanceTraveled: 1335.0943628657637
-      snappedDistanceTraveled: 1335.0943628657637
+      distanceTraveled: "1335.0943628658"
+      snappedDistanceTraveled: "1335.0943628658"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -66270,8 +66270,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 373.074
       durationRemaining: 62.290000000000006
     summary:
-      distanceTraveled: 1343.5900221731513
-      snappedDistanceTraveled: 1343.5900221731513
+      distanceTraveled: "1343.5900221732"
+      snappedDistanceTraveled: "1343.5900221732"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -66407,8 +66407,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 366.57998903371237
       durationRemaining: 61.50028188070681
     summary:
-      distanceTraveled: 1350.2841956017933
-      snappedDistanceTraveled: 1350.2841956017933
+      distanceTraveled: "1350.2841956018"
+      snappedDistanceTraveled: "1350.2841956018"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -66544,8 +66544,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 359.8858146449335
       durationRemaining: 60.68622245949995
     summary:
-      distanceTraveled: 1356.978370950886
-      snappedDistanceTraveled: 1356.978370950886
+      distanceTraveled: "1356.9783709509"
+      snappedDistanceTraveled: "1356.9783709509"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -66681,8 +66681,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 355.11449234638445
       durationRemaining: 60.10599558712283
     summary:
-      distanceTraveled: 1361.749693249435
-      snappedDistanceTraveled: 1361.749693249435
+      distanceTraveled: "1361.7496932494"
+      snappedDistanceTraveled: "1361.7496932494"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -66818,8 +66818,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 350.3351916670527
       durationRemaining: 59.52479848665409
     summary:
-      distanceTraveled: 1366.5289939287668
-      snappedDistanceTraveled: 1366.5289939287668
+      distanceTraveled: "1366.5289939288"
+      snappedDistanceTraveled: "1366.5289939288"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -66955,8 +66955,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 344.861852791376
       durationRemaining: 58.85920138409412
     summary:
-      distanceTraveled: 1372.0023328044435
-      snappedDistanceTraveled: 1372.0023328044435
+      distanceTraveled: "1372.0023328044"
+      snappedDistanceTraveled: "1372.0023328044"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67092,8 +67092,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 338.60240798828204
       durationRemaining: 58.098008185717866
     summary:
-      distanceTraveled: 1378.2617776075376
-      snappedDistanceTraveled: 1378.2617776075376
+      distanceTraveled: "1378.2617776075"
+      snappedDistanceTraveled: "1378.2617776075"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67229,8 +67229,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 332.4534355806163
       durationRemaining: 57.350249219714236
     summary:
-      distanceTraveled: 1384.4187888643396
-      snappedDistanceTraveled: 1384.4187888643396
+      distanceTraveled: "1384.4187888643"
+      snappedDistanceTraveled: "1384.4187888643"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67366,8 +67366,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 326.2392126448632
       durationRemaining: 56.59455532341997
     summary:
-      distanceTraveled: 1390.6256591383635
-      snappedDistanceTraveled: 1390.6256591383635
+      distanceTraveled: "1390.6256591384"
+      snappedDistanceTraveled: "1390.6256591384"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67503,8 +67503,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 322.8499103541698
       durationRemaining: 56.18239195556958
     summary:
-      distanceTraveled: 1394.014961429057
-      snappedDistanceTraveled: 1394.014961429057
+      distanceTraveled: "1394.0149614291"
+      snappedDistanceTraveled: "1394.0149614291"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67640,8 +67640,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 314.45495315583173
       durationRemaining: 55.161505196271676
     summary:
-      distanceTraveled: 1402.4088313107234
-      snappedDistanceTraveled: 1402.4088313107234
+      distanceTraveled: "1402.4088313107"
+      snappedDistanceTraveled: "1402.4088313107"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67777,8 +67777,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 305.9462088861391
       durationRemaining: 54.126781116332275
     summary:
-      distanceTraveled: 1410.928181738303
-      snappedDistanceTraveled: 1410.928181738303
+      distanceTraveled: "1410.9281817383"
+      snappedDistanceTraveled: "1410.9281817383"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -67914,8 +67914,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 297.55125168663153
       durationRemaining: 53.10589435689216
     summary:
-      distanceTraveled: 1419.3220446716489
-      snappedDistanceTraveled: 1419.3220446716489
+      distanceTraveled: "1419.3220446716"
+      snappedDistanceTraveled: "1419.3220446716"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68051,8 +68051,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 289.074
       durationRemaining: 52.075
     summary:
-      distanceTraveled: 1427.7911693849112
-      snappedDistanceTraveled: 1427.7911693849112
+      distanceTraveled: "1427.7911693849"
+      snappedDistanceTraveled: "1427.7911693849"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68150,8 +68150,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 281.09143890027246
       durationRemaining: 50.63698804019624
     summary:
-      distanceTraveled: 1435.4021358899977
-      snappedDistanceTraveled: 1435.4240965572742
+      distanceTraveled: "1435.4021358900"
+      snappedDistanceTraveled: "1435.4240965573"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68249,8 +68249,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 273.5706523851376
       durationRemaining: 49.28216208637249
     summary:
-      distanceTraveled: 1442.9141731353789
-      snappedDistanceTraveled: 1442.9361338026554
+      distanceTraveled: "1442.9141731354"
+      snappedDistanceTraveled: "1442.9361338027"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68348,8 +68348,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 265.9641186316862
       durationRemaining: 47.91188926622615
     summary:
-      distanceTraveled: 1450.5251367887206
-      snappedDistanceTraveled: 1450.5470974559971
+      distanceTraveled: "1450.5251367887"
+      snappedDistanceTraveled: "1450.5470974560"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68447,8 +68447,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 256.57559557114314
       durationRemaining: 46.22060143550537
     summary:
-      distanceTraveled: 1459.905523411688
-      snappedDistanceTraveled: 1459.9274840789644
+      distanceTraveled: "1459.9055234117"
+      snappedDistanceTraveled: "1459.9274840790"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68546,8 +68546,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 247.15913047775243
       durationRemaining: 44.52428001006302
     summary:
-      distanceTraveled: 1469.3470537817348
-      snappedDistanceTraveled: 1469.3690144490113
+      distanceTraveled: "1469.3470537817"
+      snappedDistanceTraveled: "1469.3690144490"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68645,8 +68645,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 237.77060741781918
       durationRemaining: 42.83299217945209
     summary:
-      distanceTraveled: 1478.7274359353419
-      snappedDistanceTraveled: 1478.7493966026184
+      distanceTraveled: "1478.7274359353"
+      snappedDistanceTraveled: "1478.7493966026"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68744,8 +68744,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 228.3820843572761
       durationRemaining: 41.14170434873131
     summary:
-      distanceTraveled: 1488.1078158701175
-      snappedDistanceTraveled: 1488.129776537394
+      distanceTraveled: "1488.1078158701"
+      snappedDistanceTraveled: "1488.1297765374"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68843,8 +68843,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 218.99356129673305
       durationRemaining: 39.45041651801052
     summary:
-      distanceTraveled: 1497.4881935853575
-      snappedDistanceTraveled: 1497.510154252634
+      distanceTraveled: "1497.4881935854"
+      snappedDistanceTraveled: "1497.5101542526"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -68942,8 +68942,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 209.57709620334236
       durationRemaining: 37.75409509256818
     summary:
-      distanceTraveled: 1506.9297154490187
-      snappedDistanceTraveled: 1506.9516761162952
+      distanceTraveled: "1506.9297154490"
+      snappedDistanceTraveled: "1506.9516761163"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69041,8 +69041,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 200.18857314340912
       durationRemaining: 36.062807261957246
     summary:
-      distanceTraveled: 1516.3100886948873
-      snappedDistanceTraveled: 1516.3320493621638
+      distanceTraveled: "1516.3100886949"
+      snappedDistanceTraveled: "1516.3320493622"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69140,8 +69140,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 190.80005008286605
       durationRemaining: 34.371519431236464
     summary:
-      distanceTraveled: 1525.6904597219188
-      snappedDistanceTraveled: 1525.7124203891954
+      distanceTraveled: "1525.6904597219"
+      snappedDistanceTraveled: "1525.7124203892"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69239,8 +69239,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 187.67326023375335
       durationRemaining: 33.808246423658666
     summary:
-      distanceTraveled: 1528.8172495710317
-      snappedDistanceTraveled: 1528.8392102383082
+      distanceTraveled: "1528.8172495710"
+      snappedDistanceTraveled: "1528.8392102383"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69338,8 +69338,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 178.1996831049874
       durationRemaining: 32.101636597176565
     summary:
-      distanceTraveled: 1538.2966124730553
-      snappedDistanceTraveled: 1538.3185731403319
+      distanceTraveled: "1538.2966124731"
+      snappedDistanceTraveled: "1538.3185731403"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69437,8 +69437,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 168.72610597622142
       durationRemaining: 30.39502677069446
     summary:
-      distanceTraveled: 1547.7759731494305
-      snappedDistanceTraveled: 1547.797933816707
+      distanceTraveled: "1547.7759731494"
+      snappedDistanceTraveled: "1547.7979338167"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69536,8 +69536,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 159.3383240767224
       durationRemaining: 28.70387245582556
     summary:
-      distanceTraveled: 1557.156336718096
-      snappedDistanceTraveled: 1557.1782973853726
+      distanceTraveled: "1557.1563367181"
+      snappedDistanceTraveled: "1557.1782973854"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69635,8 +69635,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 149.8647469479564
       durationRemaining: 26.997262629343453
     summary:
-      distanceTraveled: 1566.6356929724548
-      snappedDistanceTraveled: 1566.6576536397313
+      distanceTraveled: "1566.6356929725"
+      snappedDistanceTraveled: "1566.6576536397"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69734,8 +69734,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 140.3332651186621
       durationRemaining: 25.280221607803984
     summary:
-      distanceTraveled: 1576.1534892826332
-      snappedDistanceTraveled: 1576.1754499499098
+      distanceTraveled: "1576.1534892826"
+      snappedDistanceTraveled: "1576.1754499499"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69833,8 +69833,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 130.85968798989614
       durationRemaining: 23.573611781321883
     summary:
-      distanceTraveled: 1585.6328410856847
-      snappedDistanceTraveled: 1585.6548017529612
+      distanceTraveled: "1585.6328410857"
+      snappedDistanceTraveled: "1585.6548017530"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -69932,8 +69932,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 121.47190608978747
       durationRemaining: 21.88245746634316
     summary:
-      distanceTraveled: 1595.0131956880798
-      snappedDistanceTraveled: 1595.0351563553563
+      distanceTraveled: "1595.0131956881"
+      snappedDistanceTraveled: "1595.0351563554"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70031,8 +70031,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 111.99832896102151
       durationRemaining: 20.175847639861058
     summary:
-      distanceTraveled: 1604.4925430691037
-      snappedDistanceTraveled: 1604.5145037363802
+      distanceTraveled: "1604.4925430691"
+      snappedDistanceTraveled: "1604.5145037364"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70130,8 +70130,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 103.26875971319035
       durationRemaining: 18.603266506376873
     summary:
-      distanceTraveled: 1613.2245230154313
-      snappedDistanceTraveled: 1613.2464836827078
+      distanceTraveled: "1613.2245230154"
+      snappedDistanceTraveled: "1613.2464836827"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70229,8 +70229,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 94.3954850643295
       durationRemaining: 17.004797680611052
     summary:
-      distanceTraveled: 1622.0938171098016
-      snappedDistanceTraveled: 1622.1157777770782
+      distanceTraveled: "1622.0938171098"
+      snappedDistanceTraveled: "1622.1157777771"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70324,8 +70324,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 85.66591581649834
       durationRemaining: 15.432216547126863
     summary:
-      distanceTraveled: 1630.8257932491072
-      snappedDistanceTraveled: 1630.8477539163837
+      distanceTraveled: "1630.8257932491"
+      snappedDistanceTraveled: "1630.8477539164"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70419,8 +70419,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 76.85045894609027
       durationRemaining: 13.84416325791199
     summary:
-      distanceTraveled: 1639.6570302410623
-      snappedDistanceTraveled: 1639.6789909083388
+      distanceTraveled: "1639.6570302411"
+      snappedDistanceTraveled: "1639.6789909083"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70514,8 +70514,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 68.06307191980636
       durationRemaining: 12.261166587876863
     summary:
-      distanceTraveled: 1648.4274863843677
-      snappedDistanceTraveled: 1648.4494470516443
+      distanceTraveled: "1648.4274863844"
+      snappedDistanceTraveled: "1648.4494470516"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70609,8 +70609,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 59.33350267279684
       durationRemaining: 10.688585454540691
     summary:
-      distanceTraveled: 1657.1594568260898
-      snappedDistanceTraveled: 1657.1814174933663
+      distanceTraveled: "1657.1594568261"
+      snappedDistanceTraveled: "1657.1814174934"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70704,8 +70704,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 50.460228023936
       durationRemaining: 9.09011662877487
     summary:
-      distanceTraveled: 1666.0287411611325
-      snappedDistanceTraveled: 1666.050701828409
+      distanceTraveled: "1666.0287411611"
+      snappedDistanceTraveled: "1666.0507018284"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70799,8 +70799,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 41.73065877610483
       durationRemaining: 7.517535495290684
     summary:
-      distanceTraveled: 1674.760707796364
-      snappedDistanceTraveled: 1674.7826684636404
+      distanceTraveled: "1674.7607077964"
+      snappedDistanceTraveled: "1674.7826684636"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70894,8 +70894,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 33.83685913763435
       durationRemaining: 6.095513396543129
     summary:
-      distanceTraveled: 1682.6463648271913
-      snappedDistanceTraveled: 1682.6683254944678
+      distanceTraveled: "1682.6463648272"
+      snappedDistanceTraveled: "1682.6683254945"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -70989,8 +70989,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 25.91526920319194
       durationRemaining: 4.668485037589753
     summary:
-      distanceTraveled: 1690.5931365471831
-      snappedDistanceTraveled: 1690.6150972144596
+      distanceTraveled: "1690.5931365472"
+      snappedDistanceTraveled: "1690.6150972145"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -71084,8 +71084,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 18.02146956389788
       durationRemaining: 3.2464629386938366
     summary:
-      distanceTraveled: 1698.4787904003156
-      snappedDistanceTraveled: 1698.500751067592
+      distanceTraveled: "1698.4787904003"
+      snappedDistanceTraveled: "1698.5007510676"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -71179,8 +71179,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 10.127669926036617
       durationRemaining: 1.82444084005603
     summary:
-      distanceTraveled: 1706.3644426755861
-      snappedDistanceTraveled: 1706.3864033428626
+      distanceTraveled: "1706.3644426756"
+      snappedDistanceTraveled: "1706.3864033429"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -71274,8 +71274,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 5.050100380126253
       durationRemaining: 0.9097462147930102
     summary:
-      distanceTraveled: 1711.458858487836
-      snappedDistanceTraveled: 1711.4808191551126
+      distanceTraveled: "1711.4588584878"
+      snappedDistanceTraveled: "1711.4808191551"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -71333,8 +71333,8 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
       distanceRemaining: 0
       durationRemaining: 0
     summary:
-      distanceTraveled: 1716.4928929978105
-      snappedDistanceTraveled: 1716.514853665087
+      distanceTraveled: "1716.4928929978"
+      snappedDistanceTraveled: "1716.5148536651"
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -71352,7 +71352,7 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::Extended),
         accuracy: 5
       speed: ~
     summary:
-      distanceTraveled: 1716.4928929978105
-      snappedDistanceTraveled: 1716.514853665087
+      distanceTraveled: "1716.4928929978"
+      snappedDistanceTraveled: "1716.5148536651"
       startedAt: "[timestamp]"
       endedAt: "[timestamp]"

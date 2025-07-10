@@ -169,7 +169,16 @@ fn create_distance_redaction(
     |value, _path| {
         if value.is_nil() {
             "[none]".to_string()
+        } else if let Some(distance_str) = value.as_str() {
+            match distance_str.parse::<f64>() {
+                Ok(distance) => {
+                    // Round to 10 decimal places
+                    format!("{:.10}", distance)
+                }
+                Err(_) => "[invalid-distance]".to_string(),
+            }
         } else if let Some(distance) = value.as_f64() {
+            // Round to 10 decimal places
             format!("{:.10}", distance)
         } else {
             "[unexpected-value]".to_string()
@@ -189,11 +198,11 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
     );
 
     settings.add_redaction(
-        ".**.distanceTravelled",
+        ".**.distanceTraveled",
         dynamic_redaction(create_distance_redaction()),
     );
     settings.add_redaction(
-        ".**.snappedDistanceTravelled",
+        ".**.snappedDistanceTraveled",
         dynamic_redaction(create_distance_redaction()),
     );
 
