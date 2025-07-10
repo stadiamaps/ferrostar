@@ -205,6 +205,18 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
         ".**.snappedDistanceTraveled",
         dynamic_redaction(create_distance_redaction()),
     );
+    settings.add_redaction(
+        ".**.distanceToNextManeuver",
+        dynamic_redaction(create_distance_redaction()),
+    );
+    settings.add_redaction(
+        ".**.distanceRemaining",
+        dynamic_redaction(create_distance_redaction()),
+    );
+    settings.add_redaction(
+        ".**.durationRemaining",
+        dynamic_redaction(create_distance_redaction()),
+    );
 
     settings
 }
