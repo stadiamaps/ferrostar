@@ -1394,7 +1394,7 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
  *
  * This trait defines the essential operations for a navigation state manager.
  * This lets us build additional layers (e.g. event logging)
- * around [`NavigationController`] a composable manner.
+ * around [`NavigationController`] in a composable manner.
  */
 public protocol NavigatorProtocol: AnyObject, Sendable {
     
@@ -1410,7 +1410,7 @@ public protocol NavigatorProtocol: AnyObject, Sendable {
  *
  * This trait defines the essential operations for a navigation state manager.
  * This lets us build additional layers (e.g. event logging)
- * around [`NavigationController`] a composable manner.
+ * around [`NavigationController`] in a composable manner.
  */
 open class Navigator: NavigatorProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
