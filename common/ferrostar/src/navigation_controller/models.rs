@@ -31,6 +31,7 @@ pub struct NavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
+    recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 impl NavState {
@@ -42,6 +43,7 @@ impl NavState {
         Self {
             trip_state,
             step_advance_condition,
+            recording_events: None,
         }
     }
 
@@ -50,6 +52,7 @@ impl NavState {
         Self {
             trip_state: TripState::Idle { user_location },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
+            recording_events: None,
         }
     }
 
@@ -66,6 +69,7 @@ impl NavState {
                 },
             },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
+            recording_events: None,
         }
     }
 
@@ -88,6 +92,7 @@ pub struct JsNavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update internal state that changes throughout navigation.
     step_advance_condition: JsStepAdvanceCondition,
+    recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 #[cfg(feature = "wasm-bindgen")]
@@ -96,6 +101,7 @@ impl From<JsNavState> for NavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.into(),
+            recording_events: value.recording_events,
         }
     }
 }
@@ -106,6 +112,7 @@ impl From<NavState> for JsNavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.to_js(),
+            recording_events: value.recording_events,
         }
     }
 }
@@ -246,31 +253,6 @@ pub enum TripState {
         /// simple stats like total duration, and distance.
         summary: TripSummary,
     },
-}
-
-#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[derive(Clone, Debug, PartialEq)]
-#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
-pub struct NavState {
-    pub trip_state: TripState,
-    pub recording_events: Option<Vec<NavigationRecordingEvent>>,
-}
-
-impl NavState {
-    pub fn trip_state(&self) -> &TripState {
-        &self.trip_state
-    }
-}
-
-impl From<TripState> for NavState {
-    fn from(trip_state: TripState) -> Self {
-        Self {
-            trip_state,
-            recording_events: None,
-        }
-    }
 }
 
 #[allow(clippy::large_enum_variant)]
