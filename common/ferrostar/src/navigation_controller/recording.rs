@@ -13,8 +13,6 @@ pub struct NavigationRecording {
     pub config: NavigationControllerConfig,
     /// The initial route assigned.
     pub initial_route: Route,
-    /// Initial trip state.
-    pub initial_trip_state: Option<TripState>,
     /// Collection of events that occurred during the navigation session.
     pub events: Vec<NavigationRecordingEvent>,
 }
@@ -28,18 +26,24 @@ impl NavigationRecording {
             initial_timestamp: Utc::now().timestamp(),
             config,
             initial_route,
-            initial_trip_state: None,
             events: Vec::new(),
         }
     }
 
-    pub fn record_nav_state_update(&self, new_state: NavState) -> Vec<NavigationRecordingEvent> {
-        Self::add_event(
-            self.events.clone(),
-            NavigationRecordingEventData::NavStateUpdate {
-                nav_state: new_state.into(),
-            },
-        )
+    pub fn record_nav_state_update(
+        &self,
+        old_state: NavState,
+        new_state: NavState,
+    ) -> Vec<NavigationRecordingEvent> {
+        match old_state.recording_events {
+            Some(old_events) => Self::add_event(
+                old_events,
+                NavigationRecordingEventData::NavStateUpdate {
+                    nav_state: new_state.into(),
+                },
+            ),
+            None => Vec::new(),
+        }
     }
 
     pub fn add_event(

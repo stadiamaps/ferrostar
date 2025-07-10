@@ -407,19 +407,30 @@ impl RecordingNavigationController {
 
 impl Navigator for RecordingNavigationController {
     fn get_initial_state(&self, location: UserLocation) -> NavState {
-        self.controller.get_initial_state(location)
+        let initial_state = self.controller.get_initial_state(location);
+        let new_recording = self
+            .recording
+            .record_nav_state_update(initial_state.clone(), initial_state.clone());
+
+        NavState::add_recording(initial_state, new_recording)
     }
 
     fn advance_to_next_step(&self, state: NavState) -> NavState {
-        let new_state = self.controller.advance_to_next_step(state);
-        let new_recording = self.recording.record_nav_state_update(new_state.clone());
+        let new_state = self.controller.advance_to_next_step(state.clone());
+        let new_recording = self
+            .recording
+            .record_nav_state_update(state, new_state.clone());
 
         NavState::add_recording(new_state, new_recording)
     }
 
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
-        let new_state = self.controller.update_user_location(location, state);
-        let new_recording = self.recording.record_nav_state_update(new_state.clone());
+        let new_state = self
+            .controller
+            .update_user_location(location, state.clone());
+        let new_recording = self
+            .recording
+            .record_nav_state_update(state, new_state.clone());
 
         NavState::add_recording(new_state, new_recording)
     }

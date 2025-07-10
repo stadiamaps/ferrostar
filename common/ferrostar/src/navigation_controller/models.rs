@@ -31,7 +31,7 @@ pub struct NavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
-    recording_events: Option<Vec<NavigationRecordingEvent>>,
+    pub recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 impl NavState {
