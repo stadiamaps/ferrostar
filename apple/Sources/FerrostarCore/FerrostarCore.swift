@@ -305,27 +305,23 @@ public protocol FerrostarCoreDelegate: AnyObject {
         let navState = controller.getInitialState(location: location)
         coreNavState = navState
         state = NavigationState(
-            tripState: navState.tripState,
+            navState: navState,
             routeGeometry: route.geometry
         )
 
         DispatchQueue.main.async {
-            self.update(
-                newState: navState,
-                location: location
-            )
+            self.update(navState, location: location)
         }
     }
 
     public func advanceToNextStep() {
-        guard let controller = navigationController, let navState = coreNavState,
-              let lastLocation
+        guard let controller = navigationController, let state = coreNavState, let lastLocation
         else {
             return
         }
 
-        let newState = controller.advanceToNextStep(state: navState)
-        update(newState: newState, location: lastLocation)
+        let newState = controller.advanceToNextStep(state: state)
+        update(newState, location: lastLocation)
     }
 
     // TODO: Ability to pause without totally stopping and clearing state
@@ -344,11 +340,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Internal state update.
     ///
     /// You should call this rather than setting properties directly
-    private func update(newState: NavState, location: UserLocation) {
+    private func update(_ state: NavState, location: UserLocation) {
         DispatchQueue.main.async {
-            self.state?.tripState = newState.tripState
+            self.coreNavState = state
+            self.state?.tripState = state.tripState
 
-            switch newState.tripState {
+            switch state.tripState {
             case let .navigating(
                 currentStepGeometryIndex: _,
                 userLocation: _,
@@ -449,7 +446,7 @@ extension FerrostarCore: LocationManagingDelegate {
 
         lastLocation = location
 
-        update(newState: newState, location: location)
+        update(newState, location: location)
     }
 
     public func locationManager(_: LocationProviding, didUpdateHeading _: Heading) {

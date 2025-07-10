@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStepAdvanceMode::RelativeLineStringDistance\n{\n    minimum_horizontal_accuracy: 0, special_advance_conditions:\n    Some(SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(10)),\n})"
+expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfIntersecting),\nArc::new(DistanceToEndOfStep\n{ distance: 0, minimum_horizontal_accuracy: 0, }))"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -4475,355 +4475,11 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
     spoken_instruction: ~
     annotation_json: ~
 - Navigating:
-    current_step_geometry_index: 3
-    user_location:
-      coordinates:
-        lat: 45.375411
-        lng: -122.586549
-      horizontal_accuracy: 0
-      course_over_ground:
-        degrees: 235
-        accuracy: 5
-      speed: ~
-    snapped_user_location:
-      coordinates:
-        lat: 45.375411
-        lng: -122.586549
-      horizontal_accuracy: 0
-      course_over_ground:
-        degrees: 235
-        accuracy: 5
-      speed: ~
-    remaining_steps:
-      - geometry:
-          - lat: 45.377106
-            lng: -122.584167
-          - lat: 45.376869
-            lng: -122.584504
-          - lat: 45.376527
-            lng: -122.584983
-          - lat: 45.375948
-            lng: -122.585794
-          - lat: 45.375411
-            lng: -122.586549
-        distance: 264.647
-        duration: 10.705
-        road_name: ""
-        exits: []
-        instruction: Drive southwest on I 205 South/OR 213 South.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.375411
-            lng: -122.586549
-          - lat: 45.374846
-            lng: -122.587677
-          - lat: 45.374808
-            lng: -122.587796
-          - lat: 45.374781
-            lng: -122.587928
-          - lat: 45.374774
-            lng: -122.588028
-          - lat: 45.37478
-            lng: -122.588136
-          - lat: 45.374789
-            lng: -122.588209
-          - lat: 45.374812
-            lng: -122.588294
-          - lat: 45.374849
-            lng: -122.588384
-          - lat: 45.37488
-            lng: -122.588451
-          - lat: 45.374919
-            lng: -122.588512
-          - lat: 45.374978
-            lng: -122.588569
-          - lat: 45.375024
-            lng: -122.58861
-          - lat: 45.375075
-            lng: -122.58864
-          - lat: 45.375143
-            lng: -122.588661
-          - lat: 45.375324
-            lng: -122.588722
-          - lat: 45.375415
-            lng: -122.588676
-          - lat: 45.375483
-            lng: -122.588617
-          - lat: 45.375559
-            lng: -122.58852
-          - lat: 45.37561
-            lng: -122.588432
-          - lat: 45.375657
-            lng: -122.58831
-          - lat: 45.375703
-            lng: -122.588114
-        distance: 295
-        duration: 12.258
-        road_name: ""
-        exits:
-          - "10"
-        instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.375703
-            lng: -122.588114
-          - lat: 45.375631
-            lng: -122.58789
-          - lat: 45.375576
-            lng: -122.587713
-          - lat: 45.375506
-            lng: -122.58758
-          - lat: 45.375468
-            lng: -122.587524
-          - lat: 45.37531
-            lng: -122.587349
-          - lat: 45.375003
-            lng: -122.587226
-          - lat: 45.374495
-            lng: -122.587017
-          - lat: 45.374137
-            lng: -122.586867
-          - lat: 45.373646
-            lng: -122.586686
-          - lat: 45.373572
-            lng: -122.586658
-          - lat: 45.373194
-            lng: -122.586506
-          - lat: 45.372855
-            lng: -122.586367
-          - lat: 45.372463
-            lng: -122.586234
-          - lat: 45.372156
-            lng: -122.586125
-          - lat: 45.371846
-            lng: -122.586016
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 513.266
-        duration: 25.269
-        road_name: Cascade Highway
-        exits: []
-        instruction: Keep right to take OR 213 South/Cascade Highway.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.371508
-            lng: -122.585901
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 0
-        duration: 0
-        road_name: Cascade Highway
-        exits: []
-        instruction: You have arrived at your destination.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
-    progress:
-      distanceToNextManeuver: 0
-      distanceRemaining: 808.266
-      durationRemaining: 37.527
-    summary:
-      distanceTraveled: 264.84112941399343
-      snappedDistanceTraveled: 264.84112941399343
-      startedAt: "[timestamp]"
-      endedAt: "[none]"
-    deviation: NoDeviation
-    visual_instruction: ~
-    spoken_instruction: ~
-    annotation_json: ~
-- Navigating:
-    current_step_geometry_index: 3
-    user_location:
-      coordinates:
-        lat: 45.37536
-        lng: -122.586652
-      horizontal_accuracy: 0
-      course_over_ground:
-        degrees: 234
-        accuracy: 5
-      speed: ~
-    snapped_user_location:
-      coordinates:
-        lat: 45.375411
-        lng: -122.586549
-      horizontal_accuracy: 0
-      course_over_ground:
-        degrees: 234
-        accuracy: 5
-      speed: ~
-    remaining_steps:
-      - geometry:
-          - lat: 45.377106
-            lng: -122.584167
-          - lat: 45.376869
-            lng: -122.584504
-          - lat: 45.376527
-            lng: -122.584983
-          - lat: 45.375948
-            lng: -122.585794
-          - lat: 45.375411
-            lng: -122.586549
-        distance: 264.647
-        duration: 10.705
-        road_name: ""
-        exits: []
-        instruction: Drive southwest on I 205 South/OR 213 South.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.375411
-            lng: -122.586549
-          - lat: 45.374846
-            lng: -122.587677
-          - lat: 45.374808
-            lng: -122.587796
-          - lat: 45.374781
-            lng: -122.587928
-          - lat: 45.374774
-            lng: -122.588028
-          - lat: 45.37478
-            lng: -122.588136
-          - lat: 45.374789
-            lng: -122.588209
-          - lat: 45.374812
-            lng: -122.588294
-          - lat: 45.374849
-            lng: -122.588384
-          - lat: 45.37488
-            lng: -122.588451
-          - lat: 45.374919
-            lng: -122.588512
-          - lat: 45.374978
-            lng: -122.588569
-          - lat: 45.375024
-            lng: -122.58861
-          - lat: 45.375075
-            lng: -122.58864
-          - lat: 45.375143
-            lng: -122.588661
-          - lat: 45.375324
-            lng: -122.588722
-          - lat: 45.375415
-            lng: -122.588676
-          - lat: 45.375483
-            lng: -122.588617
-          - lat: 45.375559
-            lng: -122.58852
-          - lat: 45.37561
-            lng: -122.588432
-          - lat: 45.375657
-            lng: -122.58831
-          - lat: 45.375703
-            lng: -122.588114
-        distance: 295
-        duration: 12.258
-        road_name: ""
-        exits:
-          - "10"
-        instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.375703
-            lng: -122.588114
-          - lat: 45.375631
-            lng: -122.58789
-          - lat: 45.375576
-            lng: -122.587713
-          - lat: 45.375506
-            lng: -122.58758
-          - lat: 45.375468
-            lng: -122.587524
-          - lat: 45.37531
-            lng: -122.587349
-          - lat: 45.375003
-            lng: -122.587226
-          - lat: 45.374495
-            lng: -122.587017
-          - lat: 45.374137
-            lng: -122.586867
-          - lat: 45.373646
-            lng: -122.586686
-          - lat: 45.373572
-            lng: -122.586658
-          - lat: 45.373194
-            lng: -122.586506
-          - lat: 45.372855
-            lng: -122.586367
-          - lat: 45.372463
-            lng: -122.586234
-          - lat: 45.372156
-            lng: -122.586125
-          - lat: 45.371846
-            lng: -122.586016
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 513.266
-        duration: 25.269
-        road_name: Cascade Highway
-        exits: []
-        instruction: Keep right to take OR 213 South/Cascade Highway.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.371508
-            lng: -122.585901
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 0
-        duration: 0
-        road_name: Cascade Highway
-        exits: []
-        instruction: You have arrived at your destination.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
-    progress:
-      distanceToNextManeuver: 0
-      distanceRemaining: 808.266
-      durationRemaining: 37.527
-    summary:
-      distanceTraveled: 274.6842463361657
-      snappedDistanceTraveled: 264.84112941399343
-      startedAt: "[timestamp]"
-      endedAt: "[none]"
-    deviation: NoDeviation
-    visual_instruction: ~
-    spoken_instruction: ~
-    annotation_json: ~
-- Navigating:
     current_step_geometry_index: 0
     user_location:
       coordinates:
-        lat: 45.375308
-        lng: -122.586754
+        lat: 45.375411
+        lng: -122.586549
       horizontal_accuracy: 0
       course_over_ground:
         degrees: 235
@@ -4962,8 +4618,312 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 807.8823828522293
       durationRemaining: 37.51105973221229
     summary:
-      distanceTraveled: 284.5285266366116
+      distanceTraveled: 264.84112941399343
       snappedDistanceTraveled: 264.84112941399343
+      startedAt: "[timestamp]"
+      endedAt: "[none]"
+    deviation: NoDeviation
+    visual_instruction: ~
+    spoken_instruction: ~
+    annotation_json: ~
+- Navigating:
+    current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.37536
+        lng: -122.586652
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 234
+        accuracy: 5
+      speed: ~
+    snapped_user_location:
+      coordinates:
+        lat: 45.37536
+        lng: -122.586652
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 234
+        accuracy: 5
+      speed: ~
+    remaining_steps:
+      - geometry:
+          - lat: 45.375411
+            lng: -122.586549
+          - lat: 45.374846
+            lng: -122.587677
+          - lat: 45.374808
+            lng: -122.587796
+          - lat: 45.374781
+            lng: -122.587928
+          - lat: 45.374774
+            lng: -122.588028
+          - lat: 45.37478
+            lng: -122.588136
+          - lat: 45.374789
+            lng: -122.588209
+          - lat: 45.374812
+            lng: -122.588294
+          - lat: 45.374849
+            lng: -122.588384
+          - lat: 45.37488
+            lng: -122.588451
+          - lat: 45.374919
+            lng: -122.588512
+          - lat: 45.374978
+            lng: -122.588569
+          - lat: 45.375024
+            lng: -122.58861
+          - lat: 45.375075
+            lng: -122.58864
+          - lat: 45.375143
+            lng: -122.588661
+          - lat: 45.375324
+            lng: -122.588722
+          - lat: 45.375415
+            lng: -122.588676
+          - lat: 45.375483
+            lng: -122.588617
+          - lat: 45.375559
+            lng: -122.58852
+          - lat: 45.37561
+            lng: -122.588432
+          - lat: 45.375657
+            lng: -122.58831
+          - lat: 45.375703
+            lng: -122.588114
+        distance: 295
+        duration: 12.258
+        road_name: ""
+        exits:
+          - "10"
+        instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+      - geometry:
+          - lat: 45.375703
+            lng: -122.588114
+          - lat: 45.375631
+            lng: -122.58789
+          - lat: 45.375576
+            lng: -122.587713
+          - lat: 45.375506
+            lng: -122.58758
+          - lat: 45.375468
+            lng: -122.587524
+          - lat: 45.37531
+            lng: -122.587349
+          - lat: 45.375003
+            lng: -122.587226
+          - lat: 45.374495
+            lng: -122.587017
+          - lat: 45.374137
+            lng: -122.586867
+          - lat: 45.373646
+            lng: -122.586686
+          - lat: 45.373572
+            lng: -122.586658
+          - lat: 45.373194
+            lng: -122.586506
+          - lat: 45.372855
+            lng: -122.586367
+          - lat: 45.372463
+            lng: -122.586234
+          - lat: 45.372156
+            lng: -122.586125
+          - lat: 45.371846
+            lng: -122.586016
+          - lat: 45.371508
+            lng: -122.585901
+        distance: 513.266
+        duration: 25.269
+        road_name: Cascade Highway
+        exits: []
+        instruction: Keep right to take OR 213 South/Cascade Highway.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+      - geometry:
+          - lat: 45.371508
+            lng: -122.585901
+          - lat: 45.371508
+            lng: -122.585901
+        distance: 0
+        duration: 0
+        road_name: Cascade Highway
+        exits: []
+        instruction: You have arrived at your destination.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
+    progress:
+      distanceToNextManeuver: 284.75792348146643
+      distanceRemaining: 798.0239234814665
+      durationRemaining: 37.101415681477334
+    summary:
+      distanceTraveled: 274.6842463361657
+      snappedDistanceTraveled: 274.6842463361657
+      startedAt: "[timestamp]"
+      endedAt: "[none]"
+    deviation: NoDeviation
+    visual_instruction: ~
+    spoken_instruction: ~
+    annotation_json: ~
+- Navigating:
+    current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375308
+        lng: -122.586754
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
+    snapped_user_location:
+      coordinates:
+        lat: 45.375308
+        lng: -122.586754
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 235
+        accuracy: 5
+      speed: ~
+    remaining_steps:
+      - geometry:
+          - lat: 45.375411
+            lng: -122.586549
+          - lat: 45.374846
+            lng: -122.587677
+          - lat: 45.374808
+            lng: -122.587796
+          - lat: 45.374781
+            lng: -122.587928
+          - lat: 45.374774
+            lng: -122.588028
+          - lat: 45.37478
+            lng: -122.588136
+          - lat: 45.374789
+            lng: -122.588209
+          - lat: 45.374812
+            lng: -122.588294
+          - lat: 45.374849
+            lng: -122.588384
+          - lat: 45.37488
+            lng: -122.588451
+          - lat: 45.374919
+            lng: -122.588512
+          - lat: 45.374978
+            lng: -122.588569
+          - lat: 45.375024
+            lng: -122.58861
+          - lat: 45.375075
+            lng: -122.58864
+          - lat: 45.375143
+            lng: -122.588661
+          - lat: 45.375324
+            lng: -122.588722
+          - lat: 45.375415
+            lng: -122.588676
+          - lat: 45.375483
+            lng: -122.588617
+          - lat: 45.375559
+            lng: -122.58852
+          - lat: 45.37561
+            lng: -122.588432
+          - lat: 45.375657
+            lng: -122.58831
+          - lat: 45.375703
+            lng: -122.588114
+        distance: 295
+        duration: 12.258
+        road_name: ""
+        exits:
+          - "10"
+        instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+      - geometry:
+          - lat: 45.375703
+            lng: -122.588114
+          - lat: 45.375631
+            lng: -122.58789
+          - lat: 45.375576
+            lng: -122.587713
+          - lat: 45.375506
+            lng: -122.58758
+          - lat: 45.375468
+            lng: -122.587524
+          - lat: 45.37531
+            lng: -122.587349
+          - lat: 45.375003
+            lng: -122.587226
+          - lat: 45.374495
+            lng: -122.587017
+          - lat: 45.374137
+            lng: -122.586867
+          - lat: 45.373646
+            lng: -122.586686
+          - lat: 45.373572
+            lng: -122.586658
+          - lat: 45.373194
+            lng: -122.586506
+          - lat: 45.372855
+            lng: -122.586367
+          - lat: 45.372463
+            lng: -122.586234
+          - lat: 45.372156
+            lng: -122.586125
+          - lat: 45.371846
+            lng: -122.586016
+          - lat: 45.371508
+            lng: -122.585901
+        distance: 513.266
+        duration: 25.269
+        road_name: Cascade Highway
+        exits: []
+        instruction: Keep right to take OR 213 South/Cascade Highway.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+      - geometry:
+          - lat: 45.371508
+            lng: -122.585901
+          - lat: 45.371508
+            lng: -122.585901
+        distance: 0
+        duration: 0
+        road_name: Cascade Highway
+        exits: []
+        instruction: You have arrived at your destination.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
+    progress:
+      distanceToNextManeuver: 274.93774239243174
+      distanceRemaining: 788.2037423924316
+      durationRemaining: 36.69336219066586
+    summary:
+      distanceTraveled: 284.5285266366116
+      snappedDistanceTraveled: 284.5285266366116
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -5115,7 +5075,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 36.283718139930905
     summary:
       distanceTraveled: 294.3716555361137
-      snappedDistanceTraveled: 294.3710302718917
+      snappedDistanceTraveled: 294.3716555361137
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -5267,7 +5227,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 35.87726085936732
     summary:
       distanceTraveled: 304.1510500528229
-      snappedDistanceTraveled: 304.1504247886009
+      snappedDistanceTraveled: 304.1510500528229
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -5419,7 +5379,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 35.46602059835052
     summary:
       distanceTraveled: 314.0586707972442
-      snappedDistanceTraveled: 314.0580455330222
+      snappedDistanceTraveled: 314.0586707972442
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -5571,7 +5531,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 35.05956331778694
     summary:
       distanceTraveled: 323.8380771363796
-      snappedDistanceTraveled: 323.8374518721576
+      snappedDistanceTraveled: 323.8380771363796
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -5723,7 +5683,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 34.64832305680409
     summary:
       distanceTraveled: 333.7457097797129
-      snappedDistanceTraveled: 333.74508451549093
+      snappedDistanceTraveled: 333.7457097797129
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -5875,7 +5835,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 34.2418657762405
     summary:
       distanceTraveled: 343.5251279412608
-      snappedDistanceTraveled: 343.5245026770388
+      snappedDistanceTraveled: 343.5251279412608
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6027,7 +5987,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 33.83222172546026
     summary:
       distanceTraveled: 353.3682926572912
-      snappedDistanceTraveled: 353.3676673930692
+      snappedDistanceTraveled: 353.3682926572912
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6179,7 +6139,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 33.424168234648775
     summary:
       distanceTraveled: 363.21261982163884
-      snappedDistanceTraveled: 363.21199455741686
+      snappedDistanceTraveled: 363.21261982163884
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6331,7 +6291,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 33.01452418391382
     summary:
       distanceTraveled: 373.0557965140358
-      snappedDistanceTraveled: 373.05517124981384
+      snappedDistanceTraveled: 373.0557965140358
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6483,7 +6443,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 32.80077021769595
     summary:
       distanceTraveled: 378.1966290063251
-      snappedDistanceTraveled: 378.19600374210313
+      snappedDistanceTraveled: 378.1966290063251
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6635,7 +6595,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 32.59025165242166
     summary:
       distanceTraveled: 383.2663548310334
-      snappedDistanceTraveled: 383.26572956681144
+      snappedDistanceTraveled: 383.2663548310334
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6787,7 +6747,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 32.36747055545424
     summary:
       distanceTraveled: 388.620494302257
-      snappedDistanceTraveled: 388.619869038035
+      snappedDistanceTraveled: 388.620494302257
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -6939,7 +6899,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 32.144025761079476
     summary:
       distanceTraveled: 394.0057203424627
-      snappedDistanceTraveled: 394.00509507824074
+      snappedDistanceTraveled: 394.0057203424627
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -7091,7 +7051,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 31.81784798785173
     summary:
       distanceTraveled: 401.85548727851955
-      snappedDistanceTraveled: 401.85486201429757
+      snappedDistanceTraveled: 401.85548727851955
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -7243,7 +7203,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 31.466217550917904
     summary:
       distanceTraveled: 410.317795884775
-      snappedDistanceTraveled: 410.31717062055304
+      snappedDistanceTraveled: 410.317795884775
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -7395,7 +7355,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 31.225659818987786
     summary:
       distanceTraveled: 416.1070380873679
-      snappedDistanceTraveled: 416.10641282314594
+      snappedDistanceTraveled: 416.1070380873679
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -7547,7 +7507,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 30.930015343167884
     summary:
       distanceTraveled: 423.2219932486398
-      snappedDistanceTraveled: 423.22136798441784
+      snappedDistanceTraveled: 423.2219932486398
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -7699,7 +7659,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 30.591554090964372
     summary:
       distanceTraveled: 431.3673733595907
-      snappedDistanceTraveled: 431.36674809536873
+      snappedDistanceTraveled: 431.3673733595907
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -7851,7 +7811,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 30.331159248461432
     summary:
       distanceTraveled: 437.63401380161775
-      snappedDistanceTraveled: 437.6333885373958
+      snappedDistanceTraveled: 437.63401380161775
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8003,7 +7963,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 30.063446679031998
     summary:
       distanceTraveled: 444.0767620461669
-      snappedDistanceTraveled: 444.0761367819449
+      snappedDistanceTraveled: 444.0767620461669
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8155,7 +8115,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 29.733991645687354
     summary:
       distanceTraveled: 452.00539924935424
-      snappedDistanceTraveled: 452.00477398513226
+      snappedDistanceTraveled: 452.00539924935424
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8307,7 +8267,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 29.48322916822035
     summary:
       distanceTraveled: 458.0402280022312
-      snappedDistanceTraveled: 458.0396027380092
+      snappedDistanceTraveled: 458.0402280022312
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8459,7 +8419,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 29.228261807628495
     summary:
       distanceTraveled: 464.1762511197542
-      snappedDistanceTraveled: 464.17562585553225
+      snappedDistanceTraveled: 464.1762511197542
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8611,7 +8571,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 28.90676385946165
     summary:
       distanceTraveled: 471.9133937783625
-      snappedDistanceTraveled: 471.9127685141405
+      snappedDistanceTraveled: 471.9133937783625
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8763,7 +8723,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 28.62219228555594
     summary:
       distanceTraveled: 478.76555624756054
-      snappedDistanceTraveled: 478.76493098333856
+      snappedDistanceTraveled: 478.76555624756054
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -8915,7 +8875,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 28.331919857235533
     summary:
       distanceTraveled: 485.7439772981171
-      snappedDistanceTraveled: 485.7433520338951
+      snappedDistanceTraveled: 485.7439772981171
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9067,7 +9027,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 28.047348283309404
     summary:
       distanceTraveled: 492.59613900549095
-      snappedDistanceTraveled: 492.595513741269
+      snappedDistanceTraveled: 492.59613900549095
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9219,7 +9179,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 27.822305320871518
     summary:
       distanceTraveled: 498.0174375503837
-      snappedDistanceTraveled: 498.0168122861617
+      snappedDistanceTraveled: 498.0174375503837
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9371,7 +9331,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 27.601167566200857
     summary:
       distanceTraveled: 503.33395118697
-      snappedDistanceTraveled: 503.33332592274803
+      snappedDistanceTraveled: 503.33395118697
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9523,7 +9483,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 27.23322020926775
     summary:
       distanceTraveled: 512.1889414215325
-      snappedDistanceTraveled: 512.1883161573105
+      snappedDistanceTraveled: 512.1889414215325
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9675,7 +9635,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 26.998916250935615
     summary:
       distanceTraveled: 517.8379367016247
-      snappedDistanceTraveled: 517.8373114374027
+      snappedDistanceTraveled: 517.8379367016247
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9827,7 +9787,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 26.76159963561076
     summary:
       distanceTraveled: 523.5390715728794
-      snappedDistanceTraveled: 523.5384463086574
+      snappedDistanceTraveled: 523.5390715728794
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -9979,7 +9939,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 26.39132294399669
     summary:
       distanceTraveled: 532.4501193805274
-      snappedDistanceTraveled: 532.4494941163055
+      snappedDistanceTraveled: 532.4501193805274
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -10131,7 +10091,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 26.16489751496642
     summary:
       distanceTraveled: 537.9112655969124
-      snappedDistanceTraveled: 537.9106403326904
+      snappedDistanceTraveled: 537.9112655969124
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -10283,7 +10243,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 25.939713859043465
     summary:
       distanceTraveled: 543.3189429969914
-      snappedDistanceTraveled: 543.3183177327694
+      snappedDistanceTraveled: 543.3189429969914
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -10435,311 +10395,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 25.60435692949598
     summary:
       distanceTraveled: 551.3896162157349
-      snappedDistanceTraveled: 551.3889909515129
-      startedAt: "[timestamp]"
-      endedAt: "[none]"
-    deviation: NoDeviation
-    visual_instruction: ~
-    spoken_instruction: ~
-    annotation_json: ~
-- Navigating:
-    current_step_geometry_index: 20
-    user_location:
-      coordinates:
-        lat: 45.375703
-        lng: -122.588114
-      horizontal_accuracy: 0
-      course_over_ground:
-        degrees: 115
-        accuracy: 5
-      speed: ~
-    snapped_user_location:
-      coordinates:
-        lat: 45.375703
-        lng: -122.588114
-      horizontal_accuracy: 0
-      course_over_ground:
-        degrees: 115
-        accuracy: 5
-      speed: ~
-    remaining_steps:
-      - geometry:
-          - lat: 45.375411
-            lng: -122.586549
-          - lat: 45.374846
-            lng: -122.587677
-          - lat: 45.374808
-            lng: -122.587796
-          - lat: 45.374781
-            lng: -122.587928
-          - lat: 45.374774
-            lng: -122.588028
-          - lat: 45.37478
-            lng: -122.588136
-          - lat: 45.374789
-            lng: -122.588209
-          - lat: 45.374812
-            lng: -122.588294
-          - lat: 45.374849
-            lng: -122.588384
-          - lat: 45.37488
-            lng: -122.588451
-          - lat: 45.374919
-            lng: -122.588512
-          - lat: 45.374978
-            lng: -122.588569
-          - lat: 45.375024
-            lng: -122.58861
-          - lat: 45.375075
-            lng: -122.58864
-          - lat: 45.375143
-            lng: -122.588661
-          - lat: 45.375324
-            lng: -122.588722
-          - lat: 45.375415
-            lng: -122.588676
-          - lat: 45.375483
-            lng: -122.588617
-          - lat: 45.375559
-            lng: -122.58852
-          - lat: 45.37561
-            lng: -122.588432
-          - lat: 45.375657
-            lng: -122.58831
-          - lat: 45.375703
-            lng: -122.588114
-        distance: 295
-        duration: 12.258
-        road_name: ""
-        exits:
-          - "10"
-        instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.375703
-            lng: -122.588114
-          - lat: 45.375631
-            lng: -122.58789
-          - lat: 45.375576
-            lng: -122.587713
-          - lat: 45.375506
-            lng: -122.58758
-          - lat: 45.375468
-            lng: -122.587524
-          - lat: 45.37531
-            lng: -122.587349
-          - lat: 45.375003
-            lng: -122.587226
-          - lat: 45.374495
-            lng: -122.587017
-          - lat: 45.374137
-            lng: -122.586867
-          - lat: 45.373646
-            lng: -122.586686
-          - lat: 45.373572
-            lng: -122.586658
-          - lat: 45.373194
-            lng: -122.586506
-          - lat: 45.372855
-            lng: -122.586367
-          - lat: 45.372463
-            lng: -122.586234
-          - lat: 45.372156
-            lng: -122.586125
-          - lat: 45.371846
-            lng: -122.586016
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 513.266
-        duration: 25.269
-        road_name: Cascade Highway
-        exits: []
-        instruction: Keep right to take OR 213 South/Cascade Highway.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.371508
-            lng: -122.585901
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 0
-        duration: 0
-        road_name: Cascade Highway
-        exits: []
-        instruction: You have arrived at your destination.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
-    progress:
-      distanceToNextManeuver: 0
-      distanceRemaining: 513.266
-      durationRemaining: 25.269
-    summary:
-      distanceTraveled: 559.4602864802567
-      snappedDistanceTraveled: 559.4596612160348
-      startedAt: "[timestamp]"
-      endedAt: "[none]"
-    deviation: NoDeviation
-    visual_instruction: ~
-    spoken_instruction: ~
-    annotation_json: ~
-- Navigating:
-    current_step_geometry_index: 20
-    user_location:
-      coordinates:
-        lat: 45.375667
-        lng: -122.588002
-      horizontal_accuracy: 0
-      course_over_ground:
-        degrees: 115
-        accuracy: 5
-      speed: ~
-    snapped_user_location:
-      coordinates:
-        lat: 45.375703
-        lng: -122.588114
-      horizontal_accuracy: 0
-      course_over_ground:
-        degrees: 115
-        accuracy: 5
-      speed: ~
-    remaining_steps:
-      - geometry:
-          - lat: 45.375411
-            lng: -122.586549
-          - lat: 45.374846
-            lng: -122.587677
-          - lat: 45.374808
-            lng: -122.587796
-          - lat: 45.374781
-            lng: -122.587928
-          - lat: 45.374774
-            lng: -122.588028
-          - lat: 45.37478
-            lng: -122.588136
-          - lat: 45.374789
-            lng: -122.588209
-          - lat: 45.374812
-            lng: -122.588294
-          - lat: 45.374849
-            lng: -122.588384
-          - lat: 45.37488
-            lng: -122.588451
-          - lat: 45.374919
-            lng: -122.588512
-          - lat: 45.374978
-            lng: -122.588569
-          - lat: 45.375024
-            lng: -122.58861
-          - lat: 45.375075
-            lng: -122.58864
-          - lat: 45.375143
-            lng: -122.588661
-          - lat: 45.375324
-            lng: -122.588722
-          - lat: 45.375415
-            lng: -122.588676
-          - lat: 45.375483
-            lng: -122.588617
-          - lat: 45.375559
-            lng: -122.58852
-          - lat: 45.37561
-            lng: -122.588432
-          - lat: 45.375657
-            lng: -122.58831
-          - lat: 45.375703
-            lng: -122.588114
-        distance: 295
-        duration: 12.258
-        road_name: ""
-        exits:
-          - "10"
-        instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.375703
-            lng: -122.588114
-          - lat: 45.375631
-            lng: -122.58789
-          - lat: 45.375576
-            lng: -122.587713
-          - lat: 45.375506
-            lng: -122.58758
-          - lat: 45.375468
-            lng: -122.587524
-          - lat: 45.37531
-            lng: -122.587349
-          - lat: 45.375003
-            lng: -122.587226
-          - lat: 45.374495
-            lng: -122.587017
-          - lat: 45.374137
-            lng: -122.586867
-          - lat: 45.373646
-            lng: -122.586686
-          - lat: 45.373572
-            lng: -122.586658
-          - lat: 45.373194
-            lng: -122.586506
-          - lat: 45.372855
-            lng: -122.586367
-          - lat: 45.372463
-            lng: -122.586234
-          - lat: 45.372156
-            lng: -122.586125
-          - lat: 45.371846
-            lng: -122.586016
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 513.266
-        duration: 25.269
-        road_name: Cascade Highway
-        exits: []
-        instruction: Keep right to take OR 213 South/Cascade Highway.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-      - geometry:
-          - lat: 45.371508
-            lng: -122.585901
-          - lat: 45.371508
-            lng: -122.585901
-        distance: 0
-        duration: 0
-        road_name: Cascade Highway
-        exits: []
-        instruction: You have arrived at your destination.
-        visual_instructions: []
-        spoken_instructions: []
-        annotations: ~
-        incidents: []
-    remaining_waypoints:
-      - coordinate:
-          lat: 45.371508
-          lng: -122.585901
-        kind: Break
-    progress:
-      distanceToNextManeuver: 0
-      distanceRemaining: 513.266
-      durationRemaining: 25.269
-    summary:
-      distanceTraveled: 569.0809116182483
-      snappedDistanceTraveled: 559.4596612160348
+      snappedDistanceTraveled: 551.3896162157349
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -10750,11 +10406,11 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
     current_step_geometry_index: 0
     user_location:
       coordinates:
-        lat: 45.375631
-        lng: -122.58789
+        lat: 45.375703
+        lng: -122.588114
       horizontal_accuracy: 0
       course_over_ground:
-        degrees: 113
+        degrees: 115
         accuracy: 5
       speed: ~
     snapped_user_location:
@@ -10763,7 +10419,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
         lng: -122.588114
       horizontal_accuracy: 0
       course_over_ground:
-        degrees: 113
+        degrees: 115
         accuracy: 5
       speed: ~
     remaining_steps:
@@ -10835,8 +10491,202 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       distanceRemaining: 513.3974531370221
       durationRemaining: 25.275471672231188
     summary:
+      distanceTraveled: 559.4602864802567
+      snappedDistanceTraveled: 559.4602864802567
+      startedAt: "[timestamp]"
+      endedAt: "[none]"
+    deviation: NoDeviation
+    visual_instruction: ~
+    spoken_instruction: ~
+    annotation_json: ~
+- Navigating:
+    current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375667
+        lng: -122.588002
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 115
+        accuracy: 5
+      speed: ~
+    snapped_user_location:
+      coordinates:
+        lat: 45.375667
+        lng: -122.588002
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 115
+        accuracy: 5
+      speed: ~
+    remaining_steps:
+      - geometry:
+          - lat: 45.375703
+            lng: -122.588114
+          - lat: 45.375631
+            lng: -122.58789
+          - lat: 45.375576
+            lng: -122.587713
+          - lat: 45.375506
+            lng: -122.58758
+          - lat: 45.375468
+            lng: -122.587524
+          - lat: 45.37531
+            lng: -122.587349
+          - lat: 45.375003
+            lng: -122.587226
+          - lat: 45.374495
+            lng: -122.587017
+          - lat: 45.374137
+            lng: -122.586867
+          - lat: 45.373646
+            lng: -122.586686
+          - lat: 45.373572
+            lng: -122.586658
+          - lat: 45.373194
+            lng: -122.586506
+          - lat: 45.372855
+            lng: -122.586367
+          - lat: 45.372463
+            lng: -122.586234
+          - lat: 45.372156
+            lng: -122.586125
+          - lat: 45.371846
+            lng: -122.586016
+          - lat: 45.371508
+            lng: -122.585901
+        distance: 513.266
+        duration: 25.269
+        road_name: Cascade Highway
+        exits: []
+        instruction: Keep right to take OR 213 South/Cascade Highway.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+      - geometry:
+          - lat: 45.371508
+            lng: -122.585901
+          - lat: 45.371508
+            lng: -122.585901
+        distance: 0
+        duration: 0
+        road_name: Cascade Highway
+        exits: []
+        instruction: You have arrived at your destination.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
+    progress:
+      distanceToNextManeuver: 503.776825466902
+      distanceRemaining: 503.776825466902
+      durationRemaining: 24.80183102469898
+    summary:
+      distanceTraveled: 569.0809116182483
+      snappedDistanceTraveled: 569.0809116182483
+      startedAt: "[timestamp]"
+      endedAt: "[none]"
+    deviation: NoDeviation
+    visual_instruction: ~
+    spoken_instruction: ~
+    annotation_json: ~
+- Navigating:
+    current_step_geometry_index: 0
+    user_location:
+      coordinates:
+        lat: 45.375631
+        lng: -122.58789
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 113
+        accuracy: 5
+      speed: ~
+    snapped_user_location:
+      coordinates:
+        lat: 45.375631
+        lng: -122.58789
+      horizontal_accuracy: 0
+      course_over_ground:
+        degrees: 113
+        accuracy: 5
+      speed: ~
+    remaining_steps:
+      - geometry:
+          - lat: 45.375703
+            lng: -122.588114
+          - lat: 45.375631
+            lng: -122.58789
+          - lat: 45.375576
+            lng: -122.587713
+          - lat: 45.375506
+            lng: -122.58758
+          - lat: 45.375468
+            lng: -122.587524
+          - lat: 45.37531
+            lng: -122.587349
+          - lat: 45.375003
+            lng: -122.587226
+          - lat: 45.374495
+            lng: -122.587017
+          - lat: 45.374137
+            lng: -122.586867
+          - lat: 45.373646
+            lng: -122.586686
+          - lat: 45.373572
+            lng: -122.586658
+          - lat: 45.373194
+            lng: -122.586506
+          - lat: 45.372855
+            lng: -122.586367
+          - lat: 45.372463
+            lng: -122.586234
+          - lat: 45.372156
+            lng: -122.586125
+          - lat: 45.371846
+            lng: -122.586016
+          - lat: 45.371508
+            lng: -122.585901
+        distance: 513.266
+        duration: 25.269
+        road_name: Cascade Highway
+        exits: []
+        instruction: Keep right to take OR 213 South/Cascade Highway.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+      - geometry:
+          - lat: 45.371508
+            lng: -122.585901
+          - lat: 45.371508
+            lng: -122.585901
+        distance: 0
+        duration: 0
+        road_name: Cascade Highway
+        exits: []
+        instruction: You have arrived at your destination.
+        visual_instructions: []
+        spoken_instructions: []
+        annotations: ~
+        incidents: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
+    progress:
+      distanceToNextManeuver: 494.15619779678184
+      distanceRemaining: 494.15619779678184
+      durationRemaining: 24.328190377166774
+    summary:
       distanceTraveled: 578.7015418205035
-      snappedDistanceTraveled: 559.4596612160348
+      snappedDistanceTraveled: 578.7015418205035
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -10933,7 +10783,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 23.95473374107907
     summary:
       distanceTraveled: 586.2738968190058
-      snappedDistanceTraveled: 586.2720198915994
+      snappedDistanceTraveled: 586.2738968190058
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11030,7 +10880,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 23.583920202180362
     summary:
       distanceTraveled: 593.8198061345637
-      snappedDistanceTraveled: 593.8179292071572
+      snappedDistanceTraveled: 593.8198061345637
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11127,7 +10977,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 23.262498124567887
     summary:
       distanceTraveled: 600.3416385072162
-      snappedDistanceTraveled: 600.3397615798098
+      snappedDistanceTraveled: 600.3416385072162
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11224,7 +11074,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 22.94483884387219
     summary:
       distanceTraveled: 606.8009635551899
-      snappedDistanceTraveled: 606.7990866277835
+      snappedDistanceTraveled: 606.8009635551899
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11321,7 +11171,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 22.64542496813081
     summary:
       distanceTraveled: 612.8826827504994
-      snappedDistanceTraveled: 612.8808058230929
+      snappedDistanceTraveled: 612.8826827504994
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11418,7 +11268,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 22.280235322762483
     summary:
       distanceTraveled: 620.316102873425
-      snappedDistanceTraveled: 620.3142259460186
+      snappedDistanceTraveled: 620.316102873425
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11515,7 +11365,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 21.914710532476533
     summary:
       distanceTraveled: 627.7101107880013
-      snappedDistanceTraveled: 627.7082338605949
+      snappedDistanceTraveled: 627.7101107880013
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11612,7 +11462,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 21.549520887108205
     summary:
       distanceTraveled: 635.1435360376245
-      snappedDistanceTraveled: 635.141659110218
+      snappedDistanceTraveled: 635.1435360376245
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11709,7 +11559,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 21.111326858373754
     summary:
       distanceTraveled: 644.0413701763498
-      snappedDistanceTraveled: 644.0394932489434
+      snappedDistanceTraveled: 644.0413701763498
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11806,7 +11656,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 20.678033221860165
     summary:
       distanceTraveled: 652.8322588291121
-      snappedDistanceTraveled: 652.8303819017057
+      snappedDistanceTraveled: 652.8322588291121
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -11903,7 +11753,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 20.241802542406027
     summary:
       distanceTraveled: 661.7091563368542
-      snappedDistanceTraveled: 661.7072794094478
+      snappedDistanceTraveled: 661.7091563368542
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12000,7 +11850,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 19.80360851369948
     summary:
       distanceTraveled: 670.6069931553598
-      snappedDistanceTraveled: 670.6051162279533
+      snappedDistanceTraveled: 670.6069931553598
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12097,7 +11947,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 19.319187899947377
     summary:
       distanceTraveled: 680.4460196088521
-      snappedDistanceTraveled: 680.4441426814457
+      snappedDistanceTraveled: 680.4460196088521
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12194,7 +12044,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 18.839640752275734
     summary:
       distanceTraveled: 690.1782798523973
-      snappedDistanceTraveled: 690.1764029249908
+      snappedDistanceTraveled: 690.1782798523973
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12291,7 +12141,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 18.35522013852363
     summary:
       distanceTraveled: 700.0173085760259
-      snappedDistanceTraveled: 700.0154316486195
+      snappedDistanceTraveled: 700.0173085760259
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12388,7 +12238,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 17.872804553150996
     summary:
       distanceTraveled: 709.8349212195943
-      snappedDistanceTraveled: 709.8330442921879
+      snappedDistanceTraveled: 709.8349212195943
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12485,7 +12335,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 17.393257405507846
     summary:
       distanceTraveled: 719.5671849121785
-      snappedDistanceTraveled: 719.5653079847721
+      snappedDistanceTraveled: 719.5671849121785
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12582,7 +12432,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 16.908836791755743
     summary:
       distanceTraveled: 729.4062170477275
-      snappedDistanceTraveled: 729.4043401203211
+      snappedDistanceTraveled: 729.4062170477275
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12679,7 +12529,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 16.49830739463034
     summary:
       distanceTraveled: 737.7481592534774
-      snappedDistanceTraveled: 737.746282326071
+      snappedDistanceTraveled: 737.7481592534774
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12776,7 +12626,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 16.092632321910624
     summary:
       distanceTraveled: 745.9834438373312
-      snappedDistanceTraveled: 745.9815669099247
+      snappedDistanceTraveled: 745.9834438373312
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12873,7 +12723,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 15.68210292481412
     summary:
       distanceTraveled: 754.3253877073035
-      snappedDistanceTraveled: 754.3235107798971
+      snappedDistanceTraveled: 754.3253877073035
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -12970,7 +12820,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 15.276427852065506
     summary:
       distanceTraveled: 762.5606739775654
-      snappedDistanceTraveled: 762.558797050159
+      snappedDistanceTraveled: 762.5606739775654
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13067,7 +12917,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 14.865898454969006
     summary:
       distanceTraveled: 770.902619512072
-      snappedDistanceTraveled: 770.9007425846655
+      snappedDistanceTraveled: 770.902619512072
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13164,7 +13014,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 14.402614767760095
     summary:
       distanceTraveled: 780.3169258000538
-      snappedDistanceTraveled: 780.3150488726474
+      snappedDistanceTraveled: 780.3169258000538
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13261,7 +13111,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 13.939331080525106
     summary:
       distanceTraveled: 789.7312329340766
-      snappedDistanceTraveled: 789.7293560066702
+      snappedDistanceTraveled: 789.7312329340766
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13358,7 +13208,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 13.47919056810996
     summary:
       distanceTraveled: 799.0578612966112
-      snappedDistanceTraveled: 799.0559843692048
+      snappedDistanceTraveled: 799.0578612966112
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13455,7 +13305,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 13.015906880901053
     summary:
       distanceTraveled: 808.4721701115726
-      snappedDistanceTraveled: 808.4702931841662
+      snappedDistanceTraveled: 808.4721701115726
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13552,7 +13402,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 12.552623193666063
     summary:
       distanceTraveled: 817.8864797725747
-      snappedDistanceTraveled: 817.8846028451683
+      snappedDistanceTraveled: 817.8864797725747
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13649,7 +13499,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 12.089339506457152
     summary:
       distanceTraveled: 827.300790279065
-      snappedDistanceTraveled: 827.2989133516586
+      snappedDistanceTraveled: 827.300790279065
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13746,7 +13596,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 11.670172658277853
     summary:
       distanceTraveled: 835.8149416700023
-      snappedDistanceTraveled: 835.8130647425959
+      snappedDistanceTraveled: 835.8149416700023
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13843,7 +13693,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 11.23894697877455
     summary:
       distanceTraveled: 844.5846550144882
-      snappedDistanceTraveled: 844.5827780870818
+      snappedDistanceTraveled: 844.5846550144882
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -13940,7 +13790,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 10.810648991003802
     summary:
       distanceTraveled: 853.2687247503917
-      snappedDistanceTraveled: 853.2668478229853
+      snappedDistanceTraveled: 853.2687247503917
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14037,7 +13887,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 10.379423311500497
     summary:
       distanceTraveled: 862.0384397667982
-      snappedDistanceTraveled: 862.0365628393918
+      snappedDistanceTraveled: 862.0384397667982
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14134,7 +13984,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 9.951125323729753
     summary:
       distanceTraveled: 870.7225113055476
-      snappedDistanceTraveled: 870.7206343781412
+      snappedDistanceTraveled: 870.7225113055476
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14231,7 +14081,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 9.519899644226447
     summary:
       distanceTraveled: 879.4922279938745
-      snappedDistanceTraveled: 879.4903510664681
+      snappedDistanceTraveled: 879.4922279938745
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14328,7 +14178,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 9.035367915984594
     summary:
       distanceTraveled: 889.3312787472108
-      snappedDistanceTraveled: 889.3294018198044
+      snappedDistanceTraveled: 889.3312787472108
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14425,7 +14275,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 8.555713154947695
     summary:
       distanceTraveled: 899.063563556866
-      snappedDistanceTraveled: 899.0616866294596
+      snappedDistanceTraveled: 899.063563556866
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14522,7 +14372,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 8.073181127123291
     summary:
       distanceTraveled: 908.8811981017527
-      snappedDistanceTraveled: 908.8793211743463
+      snappedDistanceTraveled: 908.8811981017527
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14619,7 +14469,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 7.588649398853018
     summary:
       distanceTraveled: 918.7202522673127
-      snappedDistanceTraveled: 918.7183753399063
+      snappedDistanceTraveled: 918.7202522673127
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14716,7 +14566,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 7.148773139392509
     summary:
       distanceTraveled: 927.6462163967311
-      snappedDistanceTraveled: 927.6443394693247
+      snappedDistanceTraveled: 927.6462163967311
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14813,7 +14663,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 6.705562435826556
     summary:
       distanceTraveled: 936.6623496102121
-      snappedDistanceTraveled: 936.6604726828057
+      snappedDistanceTraveled: 936.6623496102121
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -14910,7 +14760,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 6.265686176341716
     summary:
       distanceTraveled: 945.5883151233119
-      snappedDistanceTraveled: 945.5864381959054
+      snappedDistanceTraveled: 945.5883151233119
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15007,7 +14857,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 5.822475472775761
     summary:
       distanceTraveled: 954.6044496068047
-      snappedDistanceTraveled: 954.6025726793982
+      snappedDistanceTraveled: 954.6044496068047
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15104,7 +14954,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 5.38259921335111
     summary:
       distanceTraveled: 963.5304165022934
-      snappedDistanceTraveled: 963.528539574887
+      snappedDistanceTraveled: 963.5304165022934
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15201,7 +15051,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 4.948764460691389
     summary:
       distanceTraveled: 972.3483767893434
-      snappedDistanceTraveled: 972.346499861937
+      snappedDistanceTraveled: 972.3483767893434
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15298,7 +15148,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 4.5181611910557855
     summary:
       distanceTraveled: 981.0776545943822
-      snappedDistanceTraveled: 981.0757776669758
+      snappedDistanceTraveled: 981.0776545943822
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15391,7 +15241,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 4.084326438431664
     summary:
       distanceTraveled: 989.8956162453508
-      snappedDistanceTraveled: 989.8937393179443
+      snappedDistanceTraveled: 989.8956162453508
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15484,7 +15334,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 3.650491685771943
     summary:
       distanceTraveled: 998.713578583889
-      snappedDistanceTraveled: 998.7117016564825
+      snappedDistanceTraveled: 998.713578583889
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15577,7 +15427,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 3.216430182391121
     summary:
       distanceTraveled: 1007.531541608197
-      snappedDistanceTraveled: 1007.5296646807906
+      snappedDistanceTraveled: 1007.531541608197
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15670,7 +15520,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 2.775585709141268
     summary:
       distanceTraveled: 1016.4762921152711
-      snappedDistanceTraveled: 1016.4744151878647
+      snappedDistanceTraveled: 1016.4762921152711
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15763,7 +15613,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 2.341524205735375
     summary:
       distanceTraveled: 1025.294256522369
-      snappedDistanceTraveled: 1025.2923795949625
+      snappedDistanceTraveled: 1025.294256522369
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15856,7 +15706,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 1.902444275943948
     summary:
       distanceTraveled: 1034.2202288556352
-      snappedDistanceTraveled: 1034.2183519282287
+      snappedDistanceTraveled: 1034.2202288556352
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -15949,7 +15799,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 1.4289264045905916
     summary:
       distanceTraveled: 1043.8313971687917
-      snappedDistanceTraveled: 1043.8295202413851
+      snappedDistanceTraveled: 1043.8313971687917
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -16042,7 +15892,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 0.9503639642545492
     summary:
       distanceTraveled: 1053.5506639170903
-      snappedDistanceTraveled: 1053.5487869896838
+      snappedDistanceTraveled: 1053.5506639170903
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -16135,7 +15985,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 0.4785624403360396
     summary:
       distanceTraveled: 1063.1437225706466
-      snappedDistanceTraveled: 1063.14184564324
+      snappedDistanceTraveled: 1063.1437225706466
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -16184,7 +16034,7 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       durationRemaining: 0
     summary:
       distanceTraveled: 1072.8629908966695
-      snappedDistanceTraveled: 1072.861113969263
+      snappedDistanceTraveled: 1072.8629908966695
       startedAt: "[timestamp]"
       endedAt: "[none]"
     deviation: NoDeviation
@@ -16203,6 +16053,6 @@ expression: "test_full_route_state_snapshot(get_self_intersecting_route(),\nStep
       speed: ~
     summary:
       distanceTraveled: 1072.8629908966695
-      snappedDistanceTraveled: 1072.861113969263
+      snappedDistanceTraveled: 1072.8629908966695
       startedAt: "[timestamp]"
       endedAt: "[timestamp]"

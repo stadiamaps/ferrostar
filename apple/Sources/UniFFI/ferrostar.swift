@@ -624,6 +624,631 @@ fileprivate struct FfiConverterTimestamp: FfiConverterRustBuffer {
 
 
 /**
+ * Advance if all of the conditions are met (AND).
+ */
+public protocol AndAdvanceConditionsProtocol: AnyObject, Sendable {
+    
+}
+/**
+ * Advance if all of the conditions are met (AND).
+ */
+open class AndAdvanceConditions: AndAdvanceConditionsProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_andadvanceconditions(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_andadvanceconditions(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeAndAdvanceConditions: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = AndAdvanceConditions
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> AndAdvanceConditions {
+        return AndAdvanceConditions(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: AndAdvanceConditions) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> AndAdvanceConditions {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: AndAdvanceConditions, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeAndAdvanceConditions_lift(_ pointer: UnsafeMutableRawPointer) throws -> AndAdvanceConditions {
+    return try FfiConverterTypeAndAdvanceConditions.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeAndAdvanceConditions_lower(_ value: AndAdvanceConditions) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeAndAdvanceConditions.lower(value)
+}
+
+
+
+
+
+
+/**
+ * A stateful condition that requires the user to reach the end of the step then proceed past it to advance.
+ */
+public protocol DistanceEntryAndExitConditionProtocol: AnyObject, Sendable {
+    
+}
+/**
+ * A stateful condition that requires the user to reach the end of the step then proceed past it to advance.
+ */
+open class DistanceEntryAndExitCondition: DistanceEntryAndExitConditionProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_distanceentryandexitcondition(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_distanceentryandexitcondition(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDistanceEntryAndExitCondition: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = DistanceEntryAndExitCondition
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceEntryAndExitCondition {
+        return DistanceEntryAndExitCondition(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: DistanceEntryAndExitCondition) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceEntryAndExitCondition {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: DistanceEntryAndExitCondition, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceEntryAndExitCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceEntryAndExitCondition {
+    return try FfiConverterTypeDistanceEntryAndExitCondition.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceEntryAndExitCondition_lower(_ value: DistanceEntryAndExitCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeDistanceEntryAndExitCondition.lower(value)
+}
+
+
+
+
+
+
+/**
+ * Requires that the user be at least this far from the current route step.
+ *
+ * This results in *delayed* advance,
+ * but is more robust to spurious / unwanted step changes in scenarios including
+ * self-intersecting routes (sudden jump to the next step)
+ * and pauses at intersections (advancing too soon before the maneuver is complete).
+ *
+ * NOTE! This may be less robust to things like short steps, out and backs and U-turns,
+ * where this may eagerly exit a current step before the user has traversed it if the start
+ * the step within range of the end.
+ */
+public protocol DistanceFromStepConditionProtocol: AnyObject, Sendable {
+    
+}
+/**
+ * Requires that the user be at least this far from the current route step.
+ *
+ * This results in *delayed* advance,
+ * but is more robust to spurious / unwanted step changes in scenarios including
+ * self-intersecting routes (sudden jump to the next step)
+ * and pauses at intersections (advancing too soon before the maneuver is complete).
+ *
+ * NOTE! This may be less robust to things like short steps, out and backs and U-turns,
+ * where this may eagerly exit a current step before the user has traversed it if the start
+ * the step within range of the end.
+ */
+open class DistanceFromStepCondition: DistanceFromStepConditionProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_distancefromstepcondition(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_distancefromstepcondition(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDistanceFromStepCondition: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = DistanceFromStepCondition
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceFromStepCondition {
+        return DistanceFromStepCondition(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: DistanceFromStepCondition) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceFromStepCondition {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: DistanceFromStepCondition, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceFromStepCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceFromStepCondition {
+    return try FfiConverterTypeDistanceFromStepCondition.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceFromStepCondition_lower(_ value: DistanceFromStepCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeDistanceFromStepCondition.lower(value)
+}
+
+
+
+
+
+
+/**
+ * Automatically advances when the user's location is close enough to the end of the step.
+ *
+ * This results in an eager advance where the user will jump to the next step when the
+ * condition is met.
+ */
+public protocol DistanceToEndOfStepConditionProtocol: AnyObject, Sendable {
+    
+}
+/**
+ * Automatically advances when the user's location is close enough to the end of the step.
+ *
+ * This results in an eager advance where the user will jump to the next step when the
+ * condition is met.
+ */
+open class DistanceToEndOfStepCondition: DistanceToEndOfStepConditionProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_distancetoendofstepcondition(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_distancetoendofstepcondition(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDistanceToEndOfStepCondition: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = DistanceToEndOfStepCondition
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceToEndOfStepCondition {
+        return DistanceToEndOfStepCondition(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: DistanceToEndOfStepCondition) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceToEndOfStepCondition {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: DistanceToEndOfStepCondition, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceToEndOfStepCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceToEndOfStepCondition {
+    return try FfiConverterTypeDistanceToEndOfStepCondition.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceToEndOfStepCondition_lower(_ value: DistanceToEndOfStepCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeDistanceToEndOfStepCondition.lower(value)
+}
+
+
+
+
+
+
+/**
+ * Never advances to the next step automatically;
+ * requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
+ *
+ * You can use this to implement custom behaviors in external code.
+ */
+public protocol ManualStepConditionProtocol: AnyObject, Sendable {
+    
+}
+/**
+ * Never advances to the next step automatically;
+ * requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
+ *
+ * You can use this to implement custom behaviors in external code.
+ */
+open class ManualStepCondition: ManualStepConditionProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_manualstepcondition(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_manualstepcondition(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeManualStepCondition: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = ManualStepCondition
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> ManualStepCondition {
+        return ManualStepCondition(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: ManualStepCondition) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ManualStepCondition {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: ManualStepCondition, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeManualStepCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> ManualStepCondition {
+    return try FfiConverterTypeManualStepCondition.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeManualStepCondition_lower(_ value: ManualStepCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeManualStepCondition.lower(value)
+}
+
+
+
+
+
+
+/**
  * Manages the navigation lifecycle through a route,
  * returning an updated state given inputs like user location.
  *
@@ -915,6 +1540,137 @@ public func FfiConverterTypeNavigator_lift(_ pointer: UnsafeMutableRawPointer) t
 #endif
 public func FfiConverterTypeNavigator_lower(_ value: Navigator) -> UnsafeMutableRawPointer {
     return FfiConverterTypeNavigator.lower(value)
+}
+
+
+
+
+
+
+/**
+ * Advance if any of the conditions are met (OR).
+ *
+ * This is ideal for short circuit type advance conditions.
+ *
+ * E.g. you may have:
+ * 1. A short circuit detecting if the user has exceeded a large distance from the current step.
+ * 2. A default advance behavior.
+ */
+public protocol OrAdvanceConditionsProtocol: AnyObject, Sendable {
+    
+}
+/**
+ * Advance if any of the conditions are met (OR).
+ *
+ * This is ideal for short circuit type advance conditions.
+ *
+ * E.g. you may have:
+ * 1. A short circuit detecting if the user has exceeded a large distance from the current step.
+ * 2. A default advance behavior.
+ */
+open class OrAdvanceConditions: OrAdvanceConditionsProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_oradvanceconditions(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_oradvanceconditions(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeOrAdvanceConditions: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = OrAdvanceConditions
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> OrAdvanceConditions {
+        return OrAdvanceConditions(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: OrAdvanceConditions) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> OrAdvanceConditions {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: OrAdvanceConditions, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeOrAdvanceConditions_lift(_ pointer: UnsafeMutableRawPointer) throws -> OrAdvanceConditions {
+    return try FfiConverterTypeOrAdvanceConditions.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeOrAdvanceConditions_lower(_ value: OrAdvanceConditions) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeOrAdvanceConditions.lower(value)
 }
 
 
@@ -1727,6 +2483,153 @@ public func FfiConverterTypeRouteResponseParser_lift(_ pointer: UnsafeMutableRaw
 #endif
 public func FfiConverterTypeRouteResponseParser_lower(_ value: RouteResponseParser) -> UnsafeMutableRawPointer {
     return FfiConverterTypeRouteResponseParser.lower(value)
+}
+
+
+
+
+
+
+/**
+ * When implementing custom step advance logic, this trait allows you to define
+ * whether the condition should advance to the next condition, the next step or not.
+ *
+ * At the moment, these must be implemented in Rust.
+ */
+public protocol StepAdvanceConditionProtocol: AnyObject, Sendable {
+    
+    /**
+     * This callback method is used by a step advance condition to receive step updates.
+     * The step advance condition can choose based on its outcome and internal state
+     * whether to advance to the next step or not.
+     */
+    func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?)  -> StepAdvanceResult
+    
+}
+/**
+ * When implementing custom step advance logic, this trait allows you to define
+ * whether the condition should advance to the next condition, the next step or not.
+ *
+ * At the moment, these must be implemented in Rust.
+ */
+open class StepAdvanceCondition: StepAdvanceConditionProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_stepadvancecondition(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_stepadvancecondition(pointer, $0) }
+    }
+
+    
+
+    
+    /**
+     * This callback method is used by a step advance condition to receive step updates.
+     * The step advance condition can choose based on its outcome and internal state
+     * whether to advance to the next step or not.
+     */
+open func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?) -> StepAdvanceResult  {
+    return try!  FfiConverterTypeStepAdvanceResult_lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_stepadvancecondition_should_advance_step(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation_lower(userLocation),
+        FfiConverterTypeRouteStep_lower(currentStep),
+        FfiConverterOptionTypeRouteStep.lower(nextStep),$0
+    )
+})
+}
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeStepAdvanceCondition: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = StepAdvanceCondition
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> StepAdvanceCondition {
+        return StepAdvanceCondition(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: StepAdvanceCondition) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> StepAdvanceCondition {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: StepAdvanceCondition, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeStepAdvanceCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> StepAdvanceCondition {
+    return try FfiConverterTypeStepAdvanceCondition.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeStepAdvanceCondition_lower(_ value: StepAdvanceCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeStepAdvanceCondition.lower(value)
 }
 
 
@@ -2661,39 +3564,29 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 }
 
 
+/**
+ * The navigation state.
+ *
+ * This is typically created from an initial trip state
+ * and conditions for advancing navigation to the next step.
+ * Any internal navigation state is packed in here so that
+ * the navigation controller can remain functionally pure.
+ */
 public struct NavState {
     public var tripState: TripState
-    public var recordingEvents: [NavigationRecordingEvent]?
+    public var stepAdvanceCondition: StepAdvanceCondition
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(tripState: TripState, recordingEvents: [NavigationRecordingEvent]?) {
+    public init(tripState: TripState, stepAdvanceCondition: StepAdvanceCondition) {
         self.tripState = tripState
-        self.recordingEvents = recordingEvents
+        self.stepAdvanceCondition = stepAdvanceCondition
     }
 }
 
 #if compiler(>=6)
 extension NavState: Sendable {}
 #endif
-
-
-extension NavState: Equatable, Hashable {
-    public static func ==(lhs: NavState, rhs: NavState) -> Bool {
-        if lhs.tripState != rhs.tripState {
-            return false
-        }
-        if lhs.recordingEvents != rhs.recordingEvents {
-            return false
-        }
-        return true
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(tripState)
-        hasher.combine(recordingEvents)
-    }
-}
 
 
 
@@ -2705,13 +3598,13 @@ public struct FfiConverterTypeNavState: FfiConverterRustBuffer {
         return
             try NavState(
                 tripState: FfiConverterTypeTripState.read(from: &buf), 
-                recordingEvents: FfiConverterOptionSequenceTypeNavigationRecordingEvent.read(from: &buf)
+                stepAdvanceCondition: FfiConverterTypeStepAdvanceCondition.read(from: &buf)
         )
     }
 
     public static func write(_ value: NavState, into buf: inout [UInt8]) {
         FfiConverterTypeTripState.write(value.tripState, into: &buf)
-        FfiConverterOptionSequenceTypeNavigationRecordingEvent.write(value.recordingEvents, into: &buf)
+        FfiConverterTypeStepAdvanceCondition.write(value.stepAdvanceCondition, into: &buf)
     }
 }
 
@@ -2733,13 +3626,21 @@ public func FfiConverterTypeNavState_lower(_ value: NavState) -> RustBuffer {
 
 public struct NavigationControllerConfig {
     /**
-     * Configures when navigation advances to next waypoint in the route.
+     * Configures when navigation advances to the next waypoint in the route.
      */
     public var waypointAdvance: WaypointAdvanceMode
     /**
      * Configures when navigation advances to the next step in the route.
      */
-    public var stepAdvance: StepAdvanceMode
+    public var stepAdvanceCondition: StepAdvanceCondition
+    /**
+     * A special advance condition used for the final 2 route steps (last and arrival).
+     *
+     * This exists because several of our step advance conditions require entry and
+     * exit from a step's geometry. The end of the route/arrival doesn't always accommodate
+     * the expected location updates for the core step advance condition.
+     */
+    public var arrivalStepAdvanceCondition: StepAdvanceCondition
     /**
      * Configures when the user is deemed to be off course.
      *
@@ -2756,11 +3657,18 @@ public struct NavigationControllerConfig {
     // declare one manually.
     public init(
         /**
-         * Configures when navigation advances to next waypoint in the route.
+         * Configures when navigation advances to the next waypoint in the route.
          */waypointAdvance: WaypointAdvanceMode, 
         /**
          * Configures when navigation advances to the next step in the route.
-         */stepAdvance: StepAdvanceMode, 
+         */stepAdvanceCondition: StepAdvanceCondition, 
+        /**
+         * A special advance condition used for the final 2 route steps (last and arrival).
+         *
+         * This exists because several of our step advance conditions require entry and
+         * exit from a step's geometry. The end of the route/arrival doesn't always accommodate
+         * the expected location updates for the core step advance condition.
+         */arrivalStepAdvanceCondition: StepAdvanceCondition, 
         /**
          * Configures when the user is deemed to be off course.
          *
@@ -2771,7 +3679,8 @@ public struct NavigationControllerConfig {
          * Configures how the heading component of the snapped location is reported in [`TripState`].
          */snappedLocationCourseFiltering: CourseFiltering) {
         self.waypointAdvance = waypointAdvance
-        self.stepAdvance = stepAdvance
+        self.stepAdvanceCondition = stepAdvanceCondition
+        self.arrivalStepAdvanceCondition = arrivalStepAdvanceCondition
         self.routeDeviationTracking = routeDeviationTracking
         self.snappedLocationCourseFiltering = snappedLocationCourseFiltering
     }
@@ -2791,7 +3700,8 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
         return
             try NavigationControllerConfig(
                 waypointAdvance: FfiConverterTypeWaypointAdvanceMode.read(from: &buf), 
-                stepAdvance: FfiConverterTypeStepAdvanceMode.read(from: &buf), 
+                stepAdvanceCondition: FfiConverterTypeStepAdvanceCondition.read(from: &buf), 
+                arrivalStepAdvanceCondition: FfiConverterTypeStepAdvanceCondition.read(from: &buf), 
                 routeDeviationTracking: FfiConverterTypeRouteDeviationTracking.read(from: &buf), 
                 snappedLocationCourseFiltering: FfiConverterTypeCourseFiltering.read(from: &buf)
         )
@@ -2799,7 +3709,8 @@ public struct FfiConverterTypeNavigationControllerConfig: FfiConverterRustBuffer
 
     public static func write(_ value: NavigationControllerConfig, into buf: inout [UInt8]) {
         FfiConverterTypeWaypointAdvanceMode.write(value.waypointAdvance, into: &buf)
-        FfiConverterTypeStepAdvanceMode.write(value.stepAdvance, into: &buf)
+        FfiConverterTypeStepAdvanceCondition.write(value.stepAdvanceCondition, into: &buf)
+        FfiConverterTypeStepAdvanceCondition.write(value.arrivalStepAdvanceCondition, into: &buf)
         FfiConverterTypeRouteDeviationTracking.write(value.routeDeviationTracking, into: &buf)
         FfiConverterTypeCourseFiltering.write(value.snappedLocationCourseFiltering, into: &buf)
     }
@@ -2818,88 +3729,6 @@ public func FfiConverterTypeNavigationControllerConfig_lift(_ buf: RustBuffer) t
 #endif
 public func FfiConverterTypeNavigationControllerConfig_lower(_ value: NavigationControllerConfig) -> RustBuffer {
     return FfiConverterTypeNavigationControllerConfig.lower(value)
-}
-
-
-public struct NavigationRecordingEvent {
-    /**
-     * The timestamp of the event.
-     */
-    public var timestamp: Int64
-    /**
-     * Data associated with the event.
-     */
-    public var eventData: NavigationRecordingEventData
-
-    // Default memberwise initializers are never public by default, so we
-    // declare one manually.
-    public init(
-        /**
-         * The timestamp of the event.
-         */timestamp: Int64, 
-        /**
-         * Data associated with the event.
-         */eventData: NavigationRecordingEventData) {
-        self.timestamp = timestamp
-        self.eventData = eventData
-    }
-}
-
-#if compiler(>=6)
-extension NavigationRecordingEvent: Sendable {}
-#endif
-
-
-extension NavigationRecordingEvent: Equatable, Hashable {
-    public static func ==(lhs: NavigationRecordingEvent, rhs: NavigationRecordingEvent) -> Bool {
-        if lhs.timestamp != rhs.timestamp {
-            return false
-        }
-        if lhs.eventData != rhs.eventData {
-            return false
-        }
-        return true
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(timestamp)
-        hasher.combine(eventData)
-    }
-}
-
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public struct FfiConverterTypeNavigationRecordingEvent: FfiConverterRustBuffer {
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationRecordingEvent {
-        return
-            try NavigationRecordingEvent(
-                timestamp: FfiConverterInt64.read(from: &buf), 
-                eventData: FfiConverterTypeNavigationRecordingEventData.read(from: &buf)
-        )
-    }
-
-    public static func write(_ value: NavigationRecordingEvent, into buf: inout [UInt8]) {
-        FfiConverterInt64.write(value.timestamp, into: &buf)
-        FfiConverterTypeNavigationRecordingEventData.write(value.eventData, into: &buf)
-    }
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeNavigationRecordingEvent_lift(_ buf: RustBuffer) throws -> NavigationRecordingEvent {
-    return try FfiConverterTypeNavigationRecordingEvent.lift(buf)
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeNavigationRecordingEvent_lower(_ value: NavigationRecordingEvent) -> RustBuffer {
-    return FfiConverterTypeNavigationRecordingEvent.lower(value)
 }
 
 
@@ -3436,6 +4265,96 @@ public func FfiConverterTypeSpokenInstruction_lift(_ buf: RustBuffer) throws -> 
 #endif
 public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) -> RustBuffer {
     return FfiConverterTypeSpokenInstruction.lower(value)
+}
+
+
+/**
+ * The step advance result is produced on every iteration of the navigation state machine and
+ * used by the navigation to build a new [`NavState`](super::NavState) instance for that update.
+ */
+public struct StepAdvanceResult {
+    /**
+     * The step should be advanced.
+     */
+    public var shouldAdvance: Bool
+    /**
+     * The next iteration of the step advance condition.
+     *
+     * This is what the navigation controller passes to the next instance of [`NavState`](super::NavState) on the completion of
+     * an update (e.g. a user location update). Usually, this value is one of the following:
+     *
+     * 1. When `should_advance` is true, this should typically be a clean/new instance of the condition.
+     * 2. When the condition is not advancing, but the condition maintains no state, this should be a
+     * clean/new instance of the condition.
+     * 3. When the condition is not advancing and maintains state, this should be a new
+     * instance including the current state of the condition. See [`DistanceEntryAndExitCondition`]
+     *
+     * IMPORTANT! If the condition advances. This **must** be the clean/default state.
+     */
+    public var nextIteration: StepAdvanceCondition
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The step should be advanced.
+         */shouldAdvance: Bool, 
+        /**
+         * The next iteration of the step advance condition.
+         *
+         * This is what the navigation controller passes to the next instance of [`NavState`](super::NavState) on the completion of
+         * an update (e.g. a user location update). Usually, this value is one of the following:
+         *
+         * 1. When `should_advance` is true, this should typically be a clean/new instance of the condition.
+         * 2. When the condition is not advancing, but the condition maintains no state, this should be a
+         * clean/new instance of the condition.
+         * 3. When the condition is not advancing and maintains state, this should be a new
+         * instance including the current state of the condition. See [`DistanceEntryAndExitCondition`]
+         *
+         * IMPORTANT! If the condition advances. This **must** be the clean/default state.
+         */nextIteration: StepAdvanceCondition) {
+        self.shouldAdvance = shouldAdvance
+        self.nextIteration = nextIteration
+    }
+}
+
+#if compiler(>=6)
+extension StepAdvanceResult: Sendable {}
+#endif
+
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeStepAdvanceResult: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> StepAdvanceResult {
+        return
+            try StepAdvanceResult(
+                shouldAdvance: FfiConverterBool.read(from: &buf), 
+                nextIteration: FfiConverterTypeStepAdvanceCondition.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: StepAdvanceResult, into buf: inout [UInt8]) {
+        FfiConverterBool.write(value.shouldAdvance, into: &buf)
+        FfiConverterTypeStepAdvanceCondition.write(value.nextIteration, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeStepAdvanceResult_lift(_ buf: RustBuffer) throws -> StepAdvanceResult {
+    return try FfiConverterTypeStepAdvanceResult.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeStepAdvanceResult_lower(_ value: StepAdvanceResult) -> RustBuffer {
+    return FfiConverterTypeStepAdvanceResult.lower(value)
 }
 
 
@@ -5100,114 +6019,6 @@ extension ModelError: Foundation.LocalizedError {
 
 
 
-// Note that we don't yet support `indirect` for enums.
-// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
-
-public enum NavigationRecordingEventData {
-    
-    case locationUpdate(
-        /**
-         * Updated user location.
-         */userLocation: UserLocation
-    )
-    case tripStateUpdate(
-        /**
-         * Updated trip state.
-         */tripState: TripState
-    )
-    case routeUpdate(
-        /**
-         * Updated route steps.
-         */route: Route
-    )
-    case error(
-        /**
-         * Error message.
-         */errorMessage: String
-    )
-}
-
-
-#if compiler(>=6)
-extension NavigationRecordingEventData: Sendable {}
-#endif
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuffer {
-    typealias SwiftType = NavigationRecordingEventData
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationRecordingEventData {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        
-        case 1: return .locationUpdate(userLocation: try FfiConverterTypeUserLocation.read(from: &buf)
-        )
-        
-        case 2: return .tripStateUpdate(tripState: try FfiConverterTypeTripState.read(from: &buf)
-        )
-        
-        case 3: return .routeUpdate(route: try FfiConverterTypeRoute.read(from: &buf)
-        )
-        
-        case 4: return .error(errorMessage: try FfiConverterString.read(from: &buf)
-        )
-        
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: NavigationRecordingEventData, into buf: inout [UInt8]) {
-        switch value {
-        
-        
-        case let .locationUpdate(userLocation):
-            writeInt(&buf, Int32(1))
-            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
-            
-        
-        case let .tripStateUpdate(tripState):
-            writeInt(&buf, Int32(2))
-            FfiConverterTypeTripState.write(tripState, into: &buf)
-            
-        
-        case let .routeUpdate(route):
-            writeInt(&buf, Int32(3))
-            FfiConverterTypeRoute.write(route, into: &buf)
-            
-        
-        case let .error(errorMessage):
-            writeInt(&buf, Int32(4))
-            FfiConverterString.write(errorMessage, into: &buf)
-            
-        }
-    }
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeNavigationRecordingEventData_lift(_ buf: RustBuffer) throws -> NavigationRecordingEventData {
-    return try FfiConverterTypeNavigationRecordingEventData.lift(buf)
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeNavigationRecordingEventData_lower(_ value: NavigationRecordingEventData) -> RustBuffer {
-    return FfiConverterTypeNavigationRecordingEventData.lower(value)
-}
-
-
-extension NavigationRecordingEventData: Equatable, Hashable {}
-
-
-
-
-
-
 
 public enum ParsingError: Swift.Error {
 
@@ -5771,221 +6582,6 @@ extension SimulationError: Foundation.LocalizedError {
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * Special conditions which alter the normal step advance logic,
- */
-
-public enum SpecialAdvanceConditions {
-    
-    /**
-     * Allows navigation to advance to the next step as soon as the user
-     * comes within this distance (in meters) of the end of the current step.
-     *
-     * This results in *early* advance when the user is near the goal.
-     */
-    case advanceAtDistanceFromEnd(UInt16
-    )
-    /**
-     * Requires that the user be at least this far (distance in meters)
-     * from the current route step.
-     *
-     * This results in *delayed* advance,
-     * but is more robust to spurious / unwanted step changes in scenarios including
-     * self-intersecting routes (sudden jump to the next step)
-     * and pauses at intersections (advancing too soon before the maneuver is complete).
-     *
-     * Note that this could be theoretically less robust to things like U-turns,
-     * but we need a bit more real-world testing to confirm if it's an issue.
-     */
-    case minimumDistanceFromCurrentStepLine(UInt16
-    )
-}
-
-
-#if compiler(>=6)
-extension SpecialAdvanceConditions: Sendable {}
-#endif
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public struct FfiConverterTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
-    typealias SwiftType = SpecialAdvanceConditions
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SpecialAdvanceConditions {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        
-        case 1: return .advanceAtDistanceFromEnd(try FfiConverterUInt16.read(from: &buf)
-        )
-        
-        case 2: return .minimumDistanceFromCurrentStepLine(try FfiConverterUInt16.read(from: &buf)
-        )
-        
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: SpecialAdvanceConditions, into buf: inout [UInt8]) {
-        switch value {
-        
-        
-        case let .advanceAtDistanceFromEnd(v1):
-            writeInt(&buf, Int32(1))
-            FfiConverterUInt16.write(v1, into: &buf)
-            
-        
-        case let .minimumDistanceFromCurrentStepLine(v1):
-            writeInt(&buf, Int32(2))
-            FfiConverterUInt16.write(v1, into: &buf)
-            
-        }
-    }
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeSpecialAdvanceConditions_lift(_ buf: RustBuffer) throws -> SpecialAdvanceConditions {
-    return try FfiConverterTypeSpecialAdvanceConditions.lift(buf)
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeSpecialAdvanceConditions_lower(_ value: SpecialAdvanceConditions) -> RustBuffer {
-    return FfiConverterTypeSpecialAdvanceConditions.lower(value)
-}
-
-
-extension SpecialAdvanceConditions: Equatable, Hashable {}
-
-
-
-
-
-
-// Note that we don't yet support `indirect` for enums.
-// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
-/**
- * The step advance mode describes when the current maneuver has been successfully completed,
- * and we should advance to the next step.
- */
-
-public enum StepAdvanceMode {
-    
-    /**
-     * Never advances to the next step automatically;
-     * requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
-     *
-     * You can use this to implement custom behaviors in external code.
-     */
-    case manual
-    /**
-     * Automatically advances when the user's location is close enough to the end of the step
-     */
-    case distanceToEndOfStep(
-        /**
-         * Distance to the last waypoint in the step, measured in meters, at which to advance.
-         */distance: UInt16, 
-        /**
-         * The minimum required horizontal accuracy of the user location, in meters.
-         * Values larger than this cannot trigger a step advance.
-         */minimumHorizontalAccuracy: UInt16
-    )
-    /**
-     * Automatically advances when the user's distance to the *next* step's linestring  is less
-     * than the distance to the current step's linestring, subject to certain conditions.
-     */
-    case relativeLineStringDistance(
-        /**
-         * The minimum required horizontal accuracy of the user location, in meters.
-         * Values larger than this cannot ever trigger a step advance.
-         */minimumHorizontalAccuracy: UInt16, 
-        /**
-         * Optional extra conditions which refine the step advance logic.
-         *
-         * See the enum variant documentation for details.
-         */specialAdvanceConditions: SpecialAdvanceConditions?
-    )
-}
-
-
-#if compiler(>=6)
-extension StepAdvanceMode: Sendable {}
-#endif
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public struct FfiConverterTypeStepAdvanceMode: FfiConverterRustBuffer {
-    typealias SwiftType = StepAdvanceMode
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> StepAdvanceMode {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        
-        case 1: return .manual
-        
-        case 2: return .distanceToEndOfStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
-        )
-        
-        case 3: return .relativeLineStringDistance(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), specialAdvanceConditions: try FfiConverterOptionTypeSpecialAdvanceConditions.read(from: &buf)
-        )
-        
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: StepAdvanceMode, into buf: inout [UInt8]) {
-        switch value {
-        
-        
-        case .manual:
-            writeInt(&buf, Int32(1))
-        
-        
-        case let .distanceToEndOfStep(distance,minimumHorizontalAccuracy):
-            writeInt(&buf, Int32(2))
-            FfiConverterUInt16.write(distance, into: &buf)
-            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
-            
-        
-        case let .relativeLineStringDistance(minimumHorizontalAccuracy,specialAdvanceConditions):
-            writeInt(&buf, Int32(3))
-            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
-            FfiConverterOptionTypeSpecialAdvanceConditions.write(specialAdvanceConditions, into: &buf)
-            
-        }
-    }
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeStepAdvanceMode_lift(_ buf: RustBuffer) throws -> StepAdvanceMode {
-    return try FfiConverterTypeStepAdvanceMode.lift(buf)
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeStepAdvanceMode_lower(_ value: StepAdvanceMode) -> RustBuffer {
-    return FfiConverterTypeStepAdvanceMode.lower(value)
-}
-
-
-extension StepAdvanceMode: Equatable, Hashable {}
-
-
-
-
-
-
-// Note that we don't yet support `indirect` for enums.
-// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
-/**
  * The state of a navigation session.
  *
  * This is produced by [`NavigationController`](super::NavigationController) methods
@@ -6525,6 +7121,30 @@ fileprivate struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffe
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeRouteStep: FfiConverterRustBuffer {
+    typealias SwiftType = RouteStep?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeRouteStep.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeRouteStep.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeSpeed: FfiConverterRustBuffer {
     typealias SwiftType = Speed?
 
@@ -6717,30 +7337,6 @@ fileprivate struct FfiConverterOptionTypeManeuverType: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-fileprivate struct FfiConverterOptionTypeSpecialAdvanceConditions: FfiConverterRustBuffer {
-    typealias SwiftType = SpecialAdvanceConditions?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterTypeSpecialAdvanceConditions.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterTypeSpecialAdvanceConditions.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
 fileprivate struct FfiConverterOptionSequenceString: FfiConverterRustBuffer {
     typealias SwiftType = [String]?
 
@@ -6781,30 +7377,6 @@ fileprivate struct FfiConverterOptionSequenceTypeLaneInfo: FfiConverterRustBuffe
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterSequenceTypeLaneInfo.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-fileprivate struct FfiConverterOptionSequenceTypeNavigationRecordingEvent: FfiConverterRustBuffer {
-    typealias SwiftType = [NavigationRecordingEvent]?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterSequenceTypeNavigationRecordingEvent.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterSequenceTypeNavigationRecordingEvent.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -6854,6 +7426,31 @@ fileprivate struct FfiConverterSequenceString: FfiConverterRustBuffer {
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             seq.append(try FfiConverterString.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeStepAdvanceCondition: FfiConverterRustBuffer {
+    typealias SwiftType = [StepAdvanceCondition]
+
+    public static func write(_ value: [StepAdvanceCondition], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeStepAdvanceCondition.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [StepAdvanceCondition] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [StepAdvanceCondition]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeStepAdvanceCondition.read(from: &buf))
         }
         return seq
     }
@@ -6929,31 +7526,6 @@ fileprivate struct FfiConverterSequenceTypeLaneInfo: FfiConverterRustBuffer {
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             seq.append(try FfiConverterTypeLaneInfo.read(from: &buf))
-        }
-        return seq
-    }
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-fileprivate struct FfiConverterSequenceTypeNavigationRecordingEvent: FfiConverterRustBuffer {
-    typealias SwiftType = [NavigationRecordingEvent]
-
-    public static func write(_ value: [NavigationRecordingEvent], into buf: inout [UInt8]) {
-        let len = Int32(value.count)
-        writeInt(&buf, len)
-        for item in value {
-            FfiConverterTypeNavigationRecordingEvent.write(item, into: &buf)
-        }
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [NavigationRecordingEvent] {
-        let len: Int32 = try readInt(&buf)
-        var seq = [NavigationRecordingEvent]()
-        seq.reserveCapacity(Int(len))
-        for _ in 0 ..< len {
-            seq.append(try FfiConverterTypeNavigationRecordingEvent.read(from: &buf))
         }
         return seq
     }
@@ -7390,6 +7962,87 @@ public func locationSimulationFromRoute(route: Route, resampleDistance: Double?,
     )
 })
 }
+/**
+ * Convenience function for creating an [`AndAdvanceConditions`].
+ *
+ * This composes multiple conditions together and advances to the next step if ALL of them trigger.
+ */
+public func stepAdvanceAnd(conditions: [StepAdvanceCondition]) -> StepAdvanceCondition  {
+    return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_and(
+        FfiConverterSequenceTypeStepAdvanceCondition.lower(conditions),$0
+    )
+})
+}
+/**
+ * Convenience function for creating a [`DistanceEntryAndExitCondition`].
+ *
+ * Requires the user to first travel within `distance_to_end_of_step` meters of the end of the step,
+ * and then travel at least `distance_after_end_of_step` meters away from the step geometry.
+ * This ensures the user completes the maneuver before advancing to the next step.
+ */
+public func stepAdvanceDistanceEntryAndExit(distanceToEndOfStep: UInt16, distanceAfterEndOfStep: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
+    return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_distance_entry_and_exit(
+        FfiConverterUInt16.lower(distanceToEndOfStep),
+        FfiConverterUInt16.lower(distanceAfterEndOfStep),
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
+    )
+})
+}
+/**
+ * Convenience function for creating a [`DistanceFromStepCondition`].
+ *
+ * This advances to the next step when the user is at least `distance` meters away _from_ any point on the current route step geometry.
+ * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
+ */
+public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
+    return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_distance_from_step(
+        FfiConverterUInt16.lower(distance),
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
+    )
+})
+}
+/**
+ * Convenience function for creating a [`DistanceToEndOfStepCondition`].
+ *
+ * This advances to the next step when the user is within `distance` meters of the last point in the current route step.
+ * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
+ */
+public func stepAdvanceDistanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
+    return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_distance_to_end_of_step(
+        FfiConverterUInt16.lower(distance),
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
+    )
+})
+}
+/**
+ * Convenience function for creating a [`ManualStepCondition`].
+ *
+ * This never advances to the next step automatically.
+ * You must manually advance to the next step programmatically using a FerrostarCore
+ * platform wrapper or by calling [`super::Navigator::advance_to_next_step`] manually.
+ */
+public func stepAdvanceManual() -> StepAdvanceCondition  {
+    return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_manual($0
+    )
+})
+}
+/**
+ * Convenience function for creating an [`OrAdvanceConditions`].
+ *
+ * This composes multiple conditions together and advances to the next step if ANY of them trigger.
+ */
+public func stepAdvanceOr(conditions: [StepAdvanceCondition]) -> StepAdvanceCondition  {
+    return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_or(
+        FfiConverterSequenceTypeStepAdvanceCondition.lower(conditions),$0
+    )
+})
+}
 
 private enum InitializationResult {
     case ok
@@ -7439,6 +8092,24 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_ferrostar_checksum_func_step_advance_and() != 55830) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 48000) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 42108) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 39292) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 14605) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_or() != 26194) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 17041) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -7461,6 +8132,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 44735) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 27532) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 60881) {

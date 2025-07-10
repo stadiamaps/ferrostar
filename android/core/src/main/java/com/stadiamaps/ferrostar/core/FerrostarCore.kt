@@ -135,7 +135,7 @@ class FerrostarCore(
   private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
   private var _navigationController: Navigator? = null
-  private var _navState: MutableStateFlow<NavState?> = MutableStateFlow(null)
+  private val _navState: MutableStateFlow<NavState?> = MutableStateFlow(null)
   private var _state: MutableStateFlow<NavigationState> = MutableStateFlow(NavigationState())
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
@@ -249,13 +249,11 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
-    // TODO: This is always false
-    val should_record = false
     val controller: Navigator =
         createNavigator(
             route,
             _config,
-            should_record,
+            false,
         )
     val startingLocation =
         locationProvider.lastLocation
@@ -286,13 +284,11 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
-    // TODO: This is always false
-    val should_record = false
     val controller: Navigator =
         createNavigator(
             route,
             _config,
-            should_record,
+            false,
         )
     val startingLocation =
         locationProvider.lastLocation
@@ -303,11 +299,12 @@ class FerrostarCore(
 
     _navigationController = controller
 
-    val newNavState = controller.getInitialState(startingLocation)
-    handleStateUpdate(newNavState, startingLocation)
+    val newState = controller.getInitialState(startingLocation)
 
-    _navState.update { newNavState }
-    _state.update { NavigationState(tripState = newNavState.tripState, route.geometry, false) }
+    handleStateUpdate(newState, startingLocation)
+
+    _navState.update { newState }
+    _state.update { NavigationState(tripState = newState.tripState, route.geometry, false) }
   }
 
   fun advanceToNextStep() {
@@ -316,13 +313,13 @@ class FerrostarCore(
 
     if (controller != null && location != null) {
       _navState.value?.let {
-        val newNavState = controller.advanceToNextStep(state = it)
+        val newState = controller.advanceToNextStep(state = it)
+        handleStateUpdate(newState, location)
 
-        handleStateUpdate(newNavState, location)
-        _navState.update { newNavState }
-        _state.update { currentValue ->
+        _navState.update { newState }
+        _state.update { currentState ->
           NavigationState(
-              tripState = newNavState.tripState, currentValue.routeGeometry, isCalculatingNewRoute)
+              tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
         }
       }
     }
@@ -421,14 +418,13 @@ class FerrostarCore(
 
     if (controller != null) {
       _navState.value?.let {
-        val newNavState = controller.advanceToNextStep(state = it)
+        val newState = controller.updateUserLocation(location = location, state = it)
+        handleStateUpdate(newState, location)
 
-        handleStateUpdate(newNavState, location)
-
-        _navState.update { newNavState }
-        _state.update { currentValue ->
+        _navState.update { newState }
+        _state.update { currentState ->
           NavigationState(
-              tripState = newNavState.tripState, currentValue.routeGeometry, isCalculatingNewRoute)
+              tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
         }
       }
     }
