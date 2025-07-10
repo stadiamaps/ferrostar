@@ -1,12 +1,7 @@
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import maplibregl, { GeolocateControl, Map } from "maplibre-gl";
-import {
-  JsNavState,
-  NavigationController,
-  RouteAdapter,
-  TripState,
-} from "@stadiamaps/ferrostar";
+import { JsNavState, NavigationController, RouteAdapter, TripState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
 import { SimulatedLocationProvider } from "./location";
@@ -51,6 +46,15 @@ export class FerrostarMap extends LitElement {
    */
   @property({ type: Object, attribute: false })
   customStyles?: object | null;
+
+  /**
+   * A boolean flag indicating whether recording should occur.
+   *
+   * When set to `true`, the system will perform recording operations.
+   * When set to `false`, recording operations are disabled.
+   */
+  @property({ type: Boolean })
+  _should_record: boolean = true;
 
   /**
    * Enables voice guidance via the web speech synthesis API.
@@ -244,7 +248,11 @@ export class FerrostarMap extends LitElement {
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
     // Initialize the navigation controller
-    this.navigationController = new NavigationController(route, config, false);
+    this.navigationController = new NavigationController(
+      route,
+      config,
+      this._should_record,
+    );
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
     // Initialize the trip state
@@ -337,6 +345,9 @@ export class FerrostarMap extends LitElement {
   }
 
   private navStateUpdate(newState: JsNavState | null) {
+    if (this._should_record) {
+      console.log(newState?.recordingEvents);
+    }
     this._navState = newState;
     this.onTripStateChange?.(newState?.tripState || null);
   }
