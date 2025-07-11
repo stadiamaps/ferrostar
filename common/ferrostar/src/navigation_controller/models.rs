@@ -370,10 +370,8 @@ impl From<NavigationControllerConfig> for JsNavigationControllerConfig {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[derive(Clone)]
-#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event.
@@ -382,9 +380,8 @@ pub struct NavigationRecordingEvent {
     pub event_data: NavigationRecordingEventData,
 }
 
+#[derive(Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[derive(Clone)]
-#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub enum NavigationRecordingEventData {
     LocationUpdate {

@@ -400,6 +400,12 @@ pub struct RecordingNavigationController {
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl RecordingNavigationController {
+    /// Serializes the navigation recording to a JSON string.
+    ///
+    /// # Returns
+    ///
+    /// - `Ok(String)` - A JSON string representation of the navigation recording
+    /// - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
     pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
         serde_json::to_string(&self.recording).map_err(NavigationRecordingError::from)
     }

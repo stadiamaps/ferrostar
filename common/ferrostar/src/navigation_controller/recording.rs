@@ -13,6 +13,8 @@ pub struct NavigationRecording {
     /// The timestamp when the navigation session started.
     pub initial_timestamp: i64,
     /// Configuration of the navigation session.
+    ///
+    /// NOTE: This has to be the `JsNavigationControllerConfig` since `NavigationControllerConfig` can't be Serialized
     pub config: JsNavigationControllerConfig,
     /// The initial route assigned.
     pub initial_route: Route,
@@ -27,6 +29,7 @@ pub struct NavigationRecording {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum NavigationRecordingError {
+    /// TODO: Converting error into string is not ideal
     #[cfg_attr(feature = "std", error("Serialization error: {error}."))]
     SerializationError { error: String },
 }

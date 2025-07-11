@@ -1680,6 +1680,14 @@ public func FfiConverterTypeOrAdvanceConditions_lower(_ value: OrAdvanceConditio
 
 public protocol RecordingNavigationControllerProtocol: AnyObject, Sendable {
     
+    /**
+     * Serializes the navigation recording to a JSON string.
+     *
+     * # Returns
+     *
+     * - `Ok(String)` - A JSON string representation of the navigation recording
+     * - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
+     */
     func toJson() throws  -> String
     
 }
@@ -1735,6 +1743,14 @@ open class RecordingNavigationController: RecordingNavigationControllerProtocol,
     
 
     
+    /**
+     * Serializes the navigation recording to a JSON string.
+     *
+     * # Returns
+     *
+     * - `Ok(String)` - A JSON string representation of the navigation recording
+     * - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
+     */
 open func toJson()throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeNavigationRecordingError_lift) {
     uniffi_ferrostar_fn_method_recordingnavigationcontroller_to_json(self.uniffiClonePointer(),$0
@@ -6227,6 +6243,88 @@ extension ModelError: Foundation.LocalizedError {
 
 
 
+
+/**
+ * Custom error type for navigation recording operations.
+ */
+public enum NavigationRecordingError: Swift.Error {
+
+    
+    
+    /**
+     * TODO: Converting error into string is not ideal
+     */
+    case SerializationError(error: String
+    )
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigationRecordingError: FfiConverterRustBuffer {
+    typealias SwiftType = NavigationRecordingError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationRecordingError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        
+
+        
+        case 1: return .SerializationError(
+            error: try FfiConverterString.read(from: &buf)
+            )
+
+         default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: NavigationRecordingError, into buf: inout [UInt8]) {
+        switch value {
+
+        
+
+        
+        
+        case let .SerializationError(error):
+            writeInt(&buf, Int32(1))
+            FfiConverterString.write(error, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecordingError_lift(_ buf: RustBuffer) throws -> NavigationRecordingError {
+    return try FfiConverterTypeNavigationRecordingError.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecordingError_lower(_ value: NavigationRecordingError) -> RustBuffer {
+    return FfiConverterTypeNavigationRecordingError.lower(value)
+}
+
+
+extension NavigationRecordingError: Equatable, Hashable {}
+
+
+
+
+extension NavigationRecordingError: Foundation.LocalizedError {
+    public var errorDescription: String? {
+        String(reflecting: self)
+    }
+}
+
+
+
+
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 
@@ -6331,85 +6429,6 @@ public func FfiConverterTypeNavigationRecordingEventData_lower(_ value: Navigati
 extension NavigationRecordingEventData: Equatable, Hashable {}
 
 
-
-
-
-
-
-/**
- * Custom error type for navigation recording operations.
- */
-public enum NavigationRecordingError: Swift.Error {
-
-    
-    
-    case SerializationError(error: String
-    )
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public struct FfiConverterTypeNavigationRecordingError: FfiConverterRustBuffer {
-    typealias SwiftType = NavigationRecordingError
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationRecordingError {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-
-        
-
-        
-        case 1: return .SerializationError(
-            error: try FfiConverterString.read(from: &buf)
-            )
-
-         default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: NavigationRecordingError, into buf: inout [UInt8]) {
-        switch value {
-
-        
-
-        
-        
-        case let .SerializationError(error):
-            writeInt(&buf, Int32(1))
-            FfiConverterString.write(error, into: &buf)
-            
-        }
-    }
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeNavigationRecordingError_lift(_ buf: RustBuffer) throws -> NavigationRecordingError {
-    return try FfiConverterTypeNavigationRecordingError.lift(buf)
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeNavigationRecordingError_lower(_ value: NavigationRecordingError) -> RustBuffer {
-    return FfiConverterTypeNavigationRecordingError.lower(value)
-}
-
-
-extension NavigationRecordingError: Equatable, Hashable {}
-
-
-
-
-extension NavigationRecordingError: Foundation.LocalizedError {
-    public var errorDescription: String? {
-        String(reflecting: self)
-    }
-}
 
 
 
@@ -8563,7 +8582,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 30110) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_recordingnavigationcontroller_to_json() != 48045) {
+    if (uniffi_ferrostar_checksum_method_recordingnavigationcontroller_to_json() != 9155) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {
