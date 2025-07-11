@@ -28,8 +28,9 @@ use crate::algorithms::distance_between_locations;
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct NavState {
     trip_state: TripState,
-    // This has to be here because we actually do need to update internal state that changes throughout navigation.
+    // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
+    recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 impl NavState {
@@ -41,6 +42,7 @@ impl NavState {
         Self {
             trip_state,
             step_advance_condition,
+            recording_events: None,
         }
     }
 
@@ -49,6 +51,7 @@ impl NavState {
         Self {
             trip_state: TripState::Idle { user_location },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
+            recording_events: None,
         }
     }
 
@@ -65,6 +68,7 @@ impl NavState {
                 },
             },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
+            recording_events: None,
         }
     }
 
@@ -85,8 +89,9 @@ impl NavState {
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct JsNavState {
     trip_state: TripState,
-    // This has to be here because we actually do need to update internal state that changes throughout navigation.
+    // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: JsStepAdvanceCondition,
+    recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 #[cfg(feature = "wasm-bindgen")]
@@ -95,6 +100,7 @@ impl From<JsNavState> for NavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.into(),
+            recording_events: value.recording_events,
         }
     }
 }
@@ -105,6 +111,7 @@ impl From<NavState> for JsNavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.to_js(),
+            recording_events: value.recording_events,
         }
     }
 }
@@ -364,6 +371,10 @@ impl From<NavigationControllerConfig> for JsNavigationControllerConfig {
 }
 
 #[derive(Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[derive(Clone)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event.
     pub timestamp: i64,
@@ -371,7 +382,10 @@ pub struct NavigationRecordingEvent {
     pub event_data: NavigationRecordingEventData,
 }
 
-#[derive(Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[derive(Clone)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub enum NavigationRecordingEventData {
     LocationUpdate {
         /// Updated user location.
