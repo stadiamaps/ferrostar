@@ -391,6 +391,13 @@ impl NavigationController {
     }
 }
 
+/// A wrapper around [`NavigationController`] that records navigation events.
+///
+/// This controller provides the same navigation functionality as [`NavigationController`]
+/// but additionally records all [`NavState`] changes
+/// The recording can be exported as JSON for debugging or testing purposes.
+///
+/// NOTE: Work in Progress
 pub struct RecordingNavigationController {
     pub controller: NavigationController,
     pub recording: NavigationRecording,
