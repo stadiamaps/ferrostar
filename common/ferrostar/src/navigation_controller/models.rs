@@ -1,22 +1,20 @@
 //! State and configuration data models.
 
+use super::step_advance::conditions::ManualStepCondition;
+use super::step_advance::{JsStepAdvanceCondition, StepAdvanceCondition};
+use crate::algorithms::distance_between_locations;
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{
     Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint,
 };
+
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
-#[cfg(any(feature = "wasm-bindgen", test))]
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
-
-use super::step_advance::conditions::ManualStepCondition;
-use super::step_advance::JsStepAdvanceCondition;
-use super::step_advance::StepAdvanceCondition;
-use crate::algorithms::distance_between_locations;
 
 /// The navigation state.
 ///

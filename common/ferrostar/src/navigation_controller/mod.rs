@@ -14,6 +14,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
+    navigation_controller::recording::{NavigationRecording, NavigationRecordingError},
 };
 use chrono::Utc;
 use geo::{
@@ -28,7 +29,6 @@ use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
 use crate::navigation_controller::models::{JsNavState, JsNavigationControllerConfig};
-use crate::navigation_controller::recording::{NavigationRecording, NavigationRecordingError};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -392,6 +392,13 @@ impl NavigationController {
     }
 }
 
+/// A wrapper around [`NavigationController`] that records navigation events.
+///
+/// This controller provides the same navigation functionality as [`NavigationController`]
+/// but additionally records all [`NavState`] changes
+/// The recording can be exported as JSON for debugging or testing purposes.
+///
+/// NOTE: Work in Progress
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct RecordingNavigationController {
     controller: NavigationController,

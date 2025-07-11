@@ -1678,6 +1678,15 @@ public func FfiConverterTypeOrAdvanceConditions_lower(_ value: OrAdvanceConditio
 
 
 
+/**
+ * A wrapper around [`NavigationController`] that records navigation events.
+ *
+ * This controller provides the same navigation functionality as [`NavigationController`]
+ * but additionally records all [`NavState`] changes
+ * The recording can be exported as JSON for debugging or testing purposes.
+ *
+ * NOTE: Work in Progress
+ */
 public protocol RecordingNavigationControllerProtocol: AnyObject, Sendable {
     
     /**
@@ -1691,6 +1700,15 @@ public protocol RecordingNavigationControllerProtocol: AnyObject, Sendable {
     func toJson() throws  -> String
     
 }
+/**
+ * A wrapper around [`NavigationController`] that records navigation events.
+ *
+ * This controller provides the same navigation functionality as [`NavigationController`]
+ * but additionally records all [`NavState`] changes
+ * The recording can be exported as JSON for debugging or testing purposes.
+ *
+ * NOTE: Work in Progress
+ */
 open class RecordingNavigationController: RecordingNavigationControllerProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
