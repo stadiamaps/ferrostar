@@ -23,7 +23,6 @@ private extension DemoModel {
     func selectRoute(from routes: [Route]) {
         do {
             guard let route = routes.first else { throw DemoError.noFirstRoute }
-            selectedRoute = route
             chooseRoute(route)
         } catch {
             errorMessage = error.localizedDescription
@@ -66,6 +65,8 @@ struct DemoNavigationView: View {
                     }
                 }
                 CircleStyleLayer(identifier: "foo", source: source)
+
+                model.routePreview
             }
         )
         .navigationSpeedLimit(
