@@ -43,7 +43,7 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
             return
         }
 
-        let carPlayModel = DemoCarPlayModel(model: model)
+        let carPlayModel = DemoCarPlayModel(model: model, interfaceController: interfaceController)
         templateApplicationScene.session.model = carPlayModel
 
         let view = DemoCarPlayNavigationView(model: carPlayModel)
