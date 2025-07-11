@@ -26,7 +26,6 @@ pub struct NavigationRecording {
 
 /// Custom error type for navigation recording operations.
 #[derive(Debug)]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum NavigationRecordingError {
     /// TODO: Converting error into string is not ideal
@@ -55,6 +54,16 @@ impl NavigationRecording {
             initial_trip_state: None,
             events: Vec::new(),
         }
+    }
+
+    /// Serializes the navigation recording to a JSON string.
+    ///
+    /// # Returns
+    ///
+    /// - `Ok(String)` - A JSON string representation of the navigation recording
+    /// - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
+    pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
+        serde_json::to_string(self).map_err(NavigationRecordingError::from)
     }
 
     /// Records a location update from the user during navigation.

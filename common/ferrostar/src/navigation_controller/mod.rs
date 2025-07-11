@@ -14,7 +14,6 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
-    navigation_controller::recording::{NavigationRecording, NavigationRecordingError},
 };
 use chrono::Utc;
 use geo::{
@@ -389,32 +388,6 @@ impl NavigationController {
             }
             TripState::Idle { .. } | TripState::Complete { .. } => false,
         }
-    }
-}
-
-/// A wrapper around [`NavigationController`] that records navigation events.
-///
-/// This controller provides the same navigation functionality as [`NavigationController`]
-/// but additionally records all [`NavState`] changes
-/// The recording can be exported as JSON for debugging or testing purposes.
-///
-/// NOTE: Work in Progress
-#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
-pub struct RecordingNavigationController {
-    controller: NavigationController,
-    recording: NavigationRecording,
-}
-
-#[cfg_attr(feature = "uniffi", uniffi::export)]
-impl RecordingNavigationController {
-    /// Serializes the navigation recording to a JSON string.
-    ///
-    /// # Returns
-    ///
-    /// - `Ok(String)` - A JSON string representation of the navigation recording
-    /// - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
-    pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
-        serde_json::to_string(&self.recording).map_err(NavigationRecordingError::from)
     }
 }
 
