@@ -28,18 +28,8 @@ pub struct NavigationRecording {
 #[derive(Debug)]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum NavigationRecordingError {
-    /// TODO: Converting error into string is not ideal
-    #[cfg_attr(feature = "std", error("Serialization error: {error}."))]
-    SerializationError { error: String },
-}
-
-/// Implement conversion from serde_json::Error to NavigationRecordingError.
-impl From<serde_json::Error> for NavigationRecordingError {
-    fn from(e: serde_json::Error) -> Self {
-        NavigationRecordingError::SerializationError {
-            error: e.to_string(),
-        }
-    }
+    #[error(transparent)]
+    SerializationError(#[from] serde_json::Error),
 }
 
 /// Functionality for the navigation controller that is not exported.
@@ -63,7 +53,7 @@ impl NavigationRecording {
     /// - `Ok(String)` - A JSON string representation of the navigation recording
     /// - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
     pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
-        serde_json::to_string(self).map_err(NavigationRecordingError::from)
+        serde_json::to_string(self).map_err(NavigationRecordingError::SerializationError)
     }
 
     /// Records a location update from the user during navigation.
