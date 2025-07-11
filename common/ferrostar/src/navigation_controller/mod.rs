@@ -28,6 +28,7 @@ use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
 use crate::navigation_controller::models::{JsNavState, JsNavigationControllerConfig};
+use crate::navigation_controller::recording::{NavigationRecording, NavigationRecordingError};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -388,6 +389,19 @@ impl NavigationController {
             }
             TripState::Idle { .. } | TripState::Complete { .. } => false,
         }
+    }
+}
+
+#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
+pub struct RecordingNavigationController {
+    controller: NavigationController,
+    recording: NavigationRecording,
+}
+
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+impl RecordingNavigationController {
+    pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
+        serde_json::to_string(&self.recording).map_err(NavigationRecordingError::from)
     }
 }
 

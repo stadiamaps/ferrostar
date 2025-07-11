@@ -14,7 +14,6 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
-#[cfg(feature = "wasm-bindgen")]
 use super::JsStepAdvanceCondition;
 
 /// Never advances to the next step automatically;
@@ -41,7 +40,6 @@ impl StepAdvanceCondition for ManualStepCondition {
 }
 
 impl StepAdvanceConditionJsConvertible for ManualStepCondition {
-    #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::Manual
     }
@@ -93,7 +91,6 @@ impl StepAdvanceCondition for DistanceToEndOfStepCondition {
 }
 
 impl StepAdvanceConditionJsConvertible for DistanceToEndOfStepCondition {
-    #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::DistanceToEndOfStep {
             distance: self.distance,
@@ -154,7 +151,6 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
 }
 
 impl StepAdvanceConditionJsConvertible for DistanceFromStepCondition {
-    #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::DistanceFromStep {
             distance: self.distance,
@@ -198,7 +194,6 @@ impl StepAdvanceCondition for OrAdvanceConditions {
 }
 
 impl StepAdvanceConditionJsConvertible for OrAdvanceConditions {
-    #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::OrAdvanceConditions {
             conditions: self.conditions.iter().map(|c| c.to_js()).collect(),
@@ -235,7 +230,6 @@ impl StepAdvanceCondition for AndAdvanceConditions {
 }
 
 impl StepAdvanceConditionJsConvertible for AndAdvanceConditions {
-    #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::AndAdvanceConditions {
             conditions: self.conditions.iter().map(|c| c.to_js()).collect(),
@@ -355,7 +349,6 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
 }
 
 impl StepAdvanceConditionJsConvertible for DistanceEntryAndExitCondition {
-    #[cfg(feature = "wasm-bindgen")]
     fn to_js(&self) -> JsStepAdvanceCondition {
         JsStepAdvanceCondition::DistanceEntryExit {
             minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,

@@ -1,8 +1,5 @@
 //! State and configuration data models.
 
-#[cfg(feature = "wasm-bindgen")]
-use super::step_advance::JsStepAdvanceCondition;
-use crate::algorithms::distance_between_locations;
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{
     Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint,
@@ -17,7 +14,9 @@ use std::sync::Arc;
 use tsify::Tsify;
 
 use super::step_advance::conditions::ManualStepCondition;
+use super::step_advance::JsStepAdvanceCondition;
 use super::step_advance::StepAdvanceCondition;
+use crate::algorithms::distance_between_locations;
 
 /// The navigation state.
 ///
@@ -294,11 +293,8 @@ pub enum WaypointAdvanceMode {
     WaypointWithinRange(f64),
 }
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
     /// Configures when navigation advances to the next waypoint in the route.
     pub waypoint_advance: WaypointAdvanceMode,
@@ -319,10 +315,10 @@ pub struct NavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
-#[cfg(feature = "wasm-bindgen")]
-#[derive(Deserialize, Tsify)]
-#[serde(rename_all = "camelCase")]
-#[tsify(from_wasm_abi)]
+#[derive(Serialize, Deserialize)]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct JsNavigationControllerConfig {
     /// Configures when navigation advances to the next waypoint in the route.
     pub waypoint_advance: WaypointAdvanceMode,
@@ -343,7 +339,6 @@ pub struct JsNavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
-#[cfg(feature = "wasm-bindgen")]
 impl From<JsNavigationControllerConfig> for NavigationControllerConfig {
     fn from(js_config: JsNavigationControllerConfig) -> Self {
         Self {
@@ -352,6 +347,18 @@ impl From<JsNavigationControllerConfig> for NavigationControllerConfig {
             arrival_step_advance_condition: js_config.arrival_step_advance_condition.into(),
             route_deviation_tracking: js_config.route_deviation_tracking,
             snapped_location_course_filtering: js_config.snapped_location_course_filtering,
+        }
+    }
+}
+
+impl From<NavigationControllerConfig> for JsNavigationControllerConfig {
+    fn from(config: NavigationControllerConfig) -> Self {
+        Self {
+            waypoint_advance: config.waypoint_advance,
+            step_advance_condition: config.step_advance_condition.to_js(),
+            arrival_step_advance_condition: config.arrival_step_advance_condition.to_js(),
+            route_deviation_tracking: config.route_deviation_tracking,
+            snapped_location_course_filtering: config.snapped_location_course_filtering,
         }
     }
 }

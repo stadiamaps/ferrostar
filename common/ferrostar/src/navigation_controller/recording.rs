@@ -1,19 +1,19 @@
 use crate::models::{Route, UserLocation};
 use crate::navigation_controller::models::{
-    NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData, TripState,
+    JsNavigationControllerConfig, NavigationControllerConfig, NavigationRecordingEvent,
+    NavigationRecordingEventData, TripState,
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct NavigationRecording {
     /// Version of Ferrostar that created this recording.
     pub version: String,
     /// The timestamp when the navigation session started.
     pub initial_timestamp: i64,
     /// Configuration of the navigation session.
-    pub config: NavigationControllerConfig,
+    pub config: JsNavigationControllerConfig,
     /// The initial route assigned.
     pub initial_route: Route,
     /// Initial trip state.
@@ -40,16 +40,6 @@ impl From<serde_json::Error> for NavigationRecordingError {
     }
 }
 
-/// Functionality for the navigation controller that is exported.
-#[cfg_attr(feature = "uniffi", uniffi::export)]
-impl NavigationRecording {
-    /// Serialize the recording to a JSON format.
-    /// Returns a Result with the JSON string or an error.
-    pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
-        serde_json::to_string(self).map_err(NavigationRecordingError::from)
-    }
-}
-
 /// Functionality for the navigation controller that is not exported.
 impl NavigationRecording {
     /// Creates a new navigation recorder with route configuration and initial state.
@@ -57,7 +47,7 @@ impl NavigationRecording {
         Self {
             version: env!("CARGO_PKG_VERSION").to_string(),
             initial_timestamp: Utc::now().timestamp(),
-            config,
+            config: JsNavigationControllerConfig::from(config),
             initial_route,
             initial_trip_state: None,
             events: Vec::new(),
