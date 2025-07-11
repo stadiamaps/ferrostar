@@ -14,6 +14,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
+fix    navigation_controller::recording::NavigationRecording,
 };
 use chrono::Utc;
 use geo::{
@@ -28,7 +29,6 @@ use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
 use crate::navigation_controller::models::{JsNavState, JsNavigationControllerConfig};
-use crate::navigation_controller::recording::NavigationRecording;
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 

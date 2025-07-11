@@ -389,10 +389,6 @@ pub struct NavigationRecordingEvent {
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub enum NavigationRecordingEventData {
-    LocationUpdate {
-        /// Updated user location.
-        user_location: UserLocation,
-    },
     NavStateUpdate {
         /// Updated trip state.
         nav_state: JsNavState,

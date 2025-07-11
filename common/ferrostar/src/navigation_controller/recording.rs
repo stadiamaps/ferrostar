@@ -1,7 +1,6 @@
 use crate::models::Route;
 use crate::navigation_controller::models::{
     NavState, NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData,
-    TripState,
 };
 use chrono::Utc;
 pub struct NavigationRecording {
@@ -23,7 +22,7 @@ impl NavigationRecording {
     pub fn new(config: NavigationControllerConfig, initial_route: Route) -> Self {
         Self {
             version: env!("CARGO_PKG_VERSION").to_string(),
-            initial_timestamp: Utc::now().timestamp(),
+            initial_timestamp: Utc::now().timestamp_millis(),
             config,
             initial_route,
             events: Vec::new(),
@@ -46,12 +45,40 @@ impl NavigationRecording {
         }
     }
 
+    pub fn record_route_update(
+        &self,
+        old_state: NavState,
+        new_route: Route,
+    ) -> Vec<NavigationRecordingEvent> {
+        match old_state.recording_events {
+            Some(old_events) => Self::add_event(
+                old_events,
+                NavigationRecordingEventData::RouteUpdate { route: new_route },
+            ),
+            None => Vec::new(),
+        }
+    }
+
+    pub fn record_error(
+        &self,
+        old_state: NavState,
+        error_message: String,
+    ) -> Vec<NavigationRecordingEvent> {
+        match old_state.recording_events {
+            Some(old_events) => Self::add_event(
+                old_events,
+                NavigationRecordingEventData::Error { error_message },
+            ),
+            None => Vec::new(),
+        }
+    }
+
     pub fn add_event(
         mut old_events: Vec<NavigationRecordingEvent>,
         new_event_data: NavigationRecordingEventData,
     ) -> Vec<NavigationRecordingEvent> {
         old_events.push(NavigationRecordingEvent {
-            timestamp: Utc::now().timestamp(),
+            timestamp: Utc::now().timestamp_millis(),
             event_data: new_event_data,
         });
         old_events
