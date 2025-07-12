@@ -1,14 +1,121 @@
 //! State and configuration data models.
 
+#[cfg(feature = "wasm-bindgen")]
+use super::step_advance::JsStepAdvanceCondition;
+use crate::algorithms::distance_between_locations;
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
+use crate::models::{
+    Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint,
+};
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
-use geo::LineString;
+use chrono::{DateTime, Utc};
 #[cfg(any(feature = "wasm-bindgen", test))]
 use serde::{Deserialize, Serialize};
+use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
+
+use super::step_advance::conditions::ManualStepCondition;
+use super::step_advance::StepAdvanceCondition;
+
+/// The navigation state.
+///
+/// This is typically created from an initial trip state
+/// and conditions for advancing navigation to the next step.
+/// Any internal navigation state is packed in here so that
+/// the navigation controller can remain functionally pure.
+#[derive(Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+pub struct NavState {
+    trip_state: TripState,
+    // This has to be here because we actually do need to update the internal state that changes throughout navigation.
+    step_advance_condition: Arc<dyn StepAdvanceCondition>,
+    recording_events: Option<Vec<NavigationRecordingEvent>>,
+}
+
+impl NavState {
+    /// Creates a new navigation state with the provided trip state and step advance condition.
+    pub fn new(
+        trip_state: TripState,
+        step_advance_condition: Arc<dyn StepAdvanceCondition>,
+    ) -> Self {
+        Self {
+            trip_state,
+            step_advance_condition,
+            recording_events: None,
+        }
+    }
+
+    /// Creates a new idle navigation state (no trip currently in progress, but still tracking the user's location).
+    pub fn idle(user_location: Option<UserLocation>) -> Self {
+        Self {
+            trip_state: TripState::Idle { user_location },
+            step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
+            recording_events: None,
+        }
+    }
+
+    /// Creates a navigation state indicating the trip is complete (arrived at the destination but still tracking the user's location).
+    ///
+    /// The summary is retained as a snapshot (the caller should have this from the last known state).
+    pub fn complete(user_location: UserLocation, last_summary: TripSummary) -> Self {
+        Self {
+            trip_state: TripState::Complete {
+                user_location,
+                summary: TripSummary {
+                    ended_at: Some(Utc::now()),
+                    ..last_summary
+                },
+            },
+            step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
+            recording_events: None,
+        }
+    }
+
+    #[inline]
+    pub fn trip_state(&self) -> TripState {
+        self.trip_state.clone()
+    }
+
+    #[inline]
+    pub fn step_advance_condition(&self) -> Arc<dyn StepAdvanceCondition> {
+        self.step_advance_condition.clone()
+    }
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[derive(Serialize, Deserialize, Tsify)]
+#[serde(rename_all = "camelCase")]
+#[tsify(into_wasm_abi, from_wasm_abi)]
+pub struct JsNavState {
+    trip_state: TripState,
+    // This has to be here because we actually do need to update the internal state that changes throughout navigation.
+    step_advance_condition: JsStepAdvanceCondition,
+    recording_events: Option<Vec<NavigationRecordingEvent>>,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+impl From<JsNavState> for NavState {
+    fn from(value: JsNavState) -> Self {
+        Self {
+            trip_state: value.trip_state,
+            step_advance_condition: value.step_advance_condition.into(),
+            recording_events: value.recording_events,
+        }
+    }
+}
+
+#[cfg(feature = "wasm-bindgen")]
+impl From<NavState> for JsNavState {
+    fn from(value: NavState) -> Self {
+        Self {
+            trip_state: value.trip_state,
+            step_advance_condition: value.step_advance_condition.to_js(),
+            recording_events: value.recording_events,
+        }
+    }
+}
 
 /// High-level state describing progress through a route.
 #[derive(Debug, Clone, PartialEq)]
@@ -26,6 +133,49 @@ pub struct TripProgress {
     pub distance_remaining: f64,
     /// The total duration remaining in the trip, in seconds.
     pub duration_remaining: f64,
+}
+
+/// Information pertaining to the user's full navigation trip. This includes
+/// simple stats like total duration and distance.
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(any(feature = "wasm-bindgen", test), serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct TripSummary {
+    /// The total raw distance traveled in the trip, in meters.
+    pub distance_traveled: f64,
+    /// The total snapped distance traveled in the trip, in meters.
+    pub snapped_distance_traveled: f64,
+    /// When the trip was started.
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date"))]
+    pub started_at: DateTime<Utc>,
+    /// When the trip was completed or canceled.
+    #[cfg_attr(feature = "wasm-bindgen", tsify(type = "Date | null"))]
+    pub ended_at: Option<DateTime<Utc>>,
+}
+
+impl TripSummary {
+    pub(crate) fn update(
+        &self,
+        previous_location: &UserLocation,
+        current_location: &UserLocation,
+        previous_snapped_location: &UserLocation,
+        current_snapped_location: &UserLocation,
+    ) -> Self {
+        // Calculate distance increment between the user locations.
+        let distance_increment = distance_between_locations(previous_location, current_location);
+        let snapped_distance_increment =
+            distance_between_locations(previous_snapped_location, current_snapped_location);
+
+        TripSummary {
+            distance_traveled: self.distance_traveled + distance_increment,
+            snapped_distance_traveled: self.snapped_distance_traveled + snapped_distance_increment,
+            started_at: self.started_at,
+            ended_at: self.ended_at,
+        }
+    }
 }
 
 /// The state of a navigation session.
@@ -81,6 +231,9 @@ pub enum TripState {
         /// The trip progress includes information that is useful for showing the
         /// user's progress along the full navigation trip, the route and its components.
         progress: TripProgress,
+        /// Information pertaining to the user's full navigation trip. This includes
+        /// simple stats like total duration, and distance.
+        summary: TripSummary,
         /// The route deviation status: is the user following the route or not?
         deviation: RouteDeviation,
         /// The visual instruction that should be displayed in the user interface.
@@ -94,16 +247,18 @@ pub enum TripState {
         annotation_json: Option<String>,
     },
     /// The navigation controller has reached the end of the trip.
-    Complete { user_location: UserLocation },
+    Complete {
+        user_location: UserLocation,
+        /// Information pertaining to the user's full navigation trip. This includes
+        /// simple stats like total duration, and distance.
+        summary: TripSummary,
+    },
 }
 
 #[allow(clippy::large_enum_variant)]
 pub enum StepAdvanceStatus {
     /// Navigation has advanced, and the information on the next step is embedded.
-    Advanced {
-        step: RouteStep,
-        linestring: LineString,
-    },
+    Advanced { step: RouteStep },
     /// Navigation has reached the end of the route.
     EndOfRoute,
 }
@@ -121,65 +276,6 @@ pub enum CourseFiltering {
 
     /// Use the raw course as reported by the location provider with no processing.
     Raw,
-}
-
-/// The step advance mode describes when the current maneuver has been successfully completed,
-/// and we should advance to the next step.
-#[derive(Debug, Copy, Clone)]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
-pub enum StepAdvanceMode {
-    /// Never advances to the next step automatically;
-    /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
-    ///
-    /// You can use this to implement custom behaviors in external code.
-    Manual,
-    /// Automatically advances when the user's location is close enough to the end of the step
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-    DistanceToEndOfStep {
-        /// Distance to the last waypoint in the step, measured in meters, at which to advance.
-        distance: u16,
-        /// The minimum required horizontal accuracy of the user location, in meters.
-        /// Values larger than this cannot trigger a step advance.
-        minimum_horizontal_accuracy: u16,
-    },
-    /// Automatically advances when the user's distance to the *next* step's linestring  is less
-    /// than the distance to the current step's linestring, subject to certain conditions.
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-    RelativeLineStringDistance {
-        /// The minimum required horizontal accuracy of the user location, in meters.
-        /// Values larger than this cannot ever trigger a step advance.
-        minimum_horizontal_accuracy: u16,
-        /// Optional extra conditions which refine the step advance logic.
-        ///
-        /// See the enum variant documentation for details.
-        special_advance_conditions: Option<SpecialAdvanceConditions>,
-    },
-}
-
-/// Special conditions which alter the normal step advance logic,
-#[derive(Debug, Copy, Clone)]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
-pub enum SpecialAdvanceConditions {
-    /// Allows navigation to advance to the next step as soon as the user
-    /// comes within this distance (in meters) of the end of the current step.
-    ///
-    /// This results in *early* advance when the user is near the goal.
-    AdvanceAtDistanceFromEnd(u16),
-    /// Requires that the user be at least this far (distance in meters)
-    /// from the current route step.
-    ///
-    /// This results in *delayed* advance,
-    /// but is more robust to spurious / unwanted step changes in scenarios including
-    /// self-intersecting routes (sudden jump to the next step)
-    /// and pauses at intersections (advancing too soon before the maneuver is complete).
-    ///
-    /// Note that this could be theoretically less robust to things like U-turns,
-    /// but we need a bit more real-world testing to confirm if it's an issue.
-    MinimumDistanceFromCurrentStepLine(u16),
 }
 
 /// Controls when a waypoint should be marked as complete.
@@ -210,14 +306,17 @@ pub enum WaypointAdvanceMode {
 
 #[derive(Clone)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Deserialize, Tsify))]
-#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub struct NavigationControllerConfig {
-    /// Configures when navigation advances to next waypoint in the route.
+    /// Configures when navigation advances to the next waypoint in the route.
     pub waypoint_advance: WaypointAdvanceMode,
     /// Configures when navigation advances to the next step in the route.
-    pub step_advance: StepAdvanceMode,
+    pub step_advance_condition: Arc<dyn StepAdvanceCondition>,
+    /// A special advance condition used for the final 2 route steps (last and arrival).
+    ///
+    /// This exists because several of our step advance conditions require entry and
+    /// exit from a step's geometry. The end of the route/arrival doesn't always accommodate
+    /// the expected location updates for the core step advance condition.
+    pub arrival_step_advance_condition: Arc<dyn StepAdvanceCondition>,
     /// Configures when the user is deemed to be off course.
     ///
     /// NOTE: This is distinct from the action that is taken.
@@ -225,4 +324,75 @@ pub struct NavigationControllerConfig {
     pub route_deviation_tracking: RouteDeviationTracking,
     /// Configures how the heading component of the snapped location is reported in [`TripState`].
     pub snapped_location_course_filtering: CourseFiltering,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[derive(Deserialize, Tsify)]
+#[serde(rename_all = "camelCase")]
+#[tsify(from_wasm_abi)]
+pub struct JsNavigationControllerConfig {
+    /// Configures when navigation advances to the next waypoint in the route.
+    pub waypoint_advance: WaypointAdvanceMode,
+    /// Configures when navigation advances to the next step in the route.
+    pub step_advance_condition: JsStepAdvanceCondition,
+    /// A special advance condition used for the final 2 route steps (last and arrival).
+    ///
+    /// This exists because several of our step advance conditions require entry and
+    /// exit from a step's geometry. The end of the route/arrival doesn't always accommodate
+    /// the expected location updates for the core step advance condition.
+    pub arrival_step_advance_condition: JsStepAdvanceCondition,
+    /// Configures when the user is deemed to be off course.
+    ///
+    /// NOTE: This is distinct from the action that is taken.
+    /// It is only the determination that the user has deviated from the expected route.
+    pub route_deviation_tracking: RouteDeviationTracking,
+    /// Configures how the heading component of the snapped location is reported in [`TripState`].
+    pub snapped_location_course_filtering: CourseFiltering,
+}
+
+#[cfg(feature = "wasm-bindgen")]
+impl From<JsNavigationControllerConfig> for NavigationControllerConfig {
+    fn from(js_config: JsNavigationControllerConfig) -> Self {
+        Self {
+            waypoint_advance: js_config.waypoint_advance,
+            step_advance_condition: js_config.step_advance_condition.into(),
+            arrival_step_advance_condition: js_config.arrival_step_advance_condition.into(),
+            route_deviation_tracking: js_config.route_deviation_tracking,
+            snapped_location_course_filtering: js_config.snapped_location_course_filtering,
+        }
+    }
+}
+
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[derive(Clone)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+pub struct NavigationRecordingEvent {
+    /// The timestamp of the event.
+    pub timestamp: i64,
+    /// Data associated with the event.
+    pub event_data: NavigationRecordingEventData,
+}
+
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[derive(Clone)]
+#[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+pub enum NavigationRecordingEventData {
+    LocationUpdate {
+        /// Updated user location.
+        user_location: UserLocation,
+    },
+    TripStateUpdate {
+        /// Updated trip state.
+        trip_state: TripState,
+    },
+    RouteUpdate {
+        /// Updated route steps.
+        route: Route,
+    },
+    Error {
+        /// Error message.
+        error_message: String,
+    },
 }

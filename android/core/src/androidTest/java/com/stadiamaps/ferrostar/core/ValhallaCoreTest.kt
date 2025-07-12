@@ -8,7 +8,7 @@
  */
 package com.stadiamaps.ferrostar.core
 
-import com.stadiamaps.ferrostar.core.http.FerrostarOkHttpClient.Companion.toFerrostarOkHttpClient
+import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import java.net.URL
 import java.time.Instant
 import kotlinx.coroutines.test.TestResult
@@ -28,11 +28,11 @@ import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
-import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointAdvanceMode
 import uniffi.ferrostar.WaypointKind
+import uniffi.ferrostar.stepAdvanceManual
 
 const val simpleRoute =
     """
@@ -252,16 +252,14 @@ class ValhallaCoreTest {
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toFerrostarOkHttpClient(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
-                    StepAdvanceMode.Manual,
+                    stepAdvanceManual(),
+                    stepAdvanceManual(),
                     RouteDeviationTracking.None,
                     CourseFiltering.RAW))
 
@@ -307,16 +305,14 @@ class ValhallaCoreTest {
             valhallaEndpointURL = URL(valhallaEndpointUrl),
             profile = "auto",
             httpClient =
-                OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
-                    .toFerrostarOkHttpClient(),
+                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
             foregroundServiceManager = MockForegroundNotificationManager(),
             navigationControllerConfig =
                 NavigationControllerConfig(
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
-                    StepAdvanceMode.Manual,
+                    stepAdvanceManual(),
+                    stepAdvanceManual(),
                     RouteDeviationTracking.None,
                     CourseFiltering.RAW),
             options = mapOf("costing_options" to mapOf("auto" to mapOf("useTolls" to 0))))

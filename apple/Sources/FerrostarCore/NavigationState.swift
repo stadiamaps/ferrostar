@@ -21,8 +21,14 @@ public struct NavigationState: Hashable {
         self.isCalculatingNewRoute = isCalculatingNewRoute
     }
 
+    init(navState: NavState, routeGeometry: [GeographicCoordinate], isCalculatingNewRoute: Bool = false) {
+        tripState = navState.tripState
+        self.routeGeometry = routeGeometry
+        self.isCalculatingNewRoute = isCalculatingNewRoute
+    }
+
     public var currentProgress: TripProgress? {
-        guard case let .navigating(_, _, _, _, _, progress, _, _,
+        guard case let .navigating(_, _, _, _, _, progress, _, _, _,
                                    _, _) = tripState
         else {
             return nil
@@ -31,8 +37,18 @@ public struct NavigationState: Hashable {
         return progress
     }
 
+    public var currentSummary: TripSummary? {
+        guard case let .navigating(_, _, _, _, _, _, summary, _, _,
+                                   _, _) = tripState
+        else {
+            return nil
+        }
+
+        return summary
+    }
+
     public var currentVisualInstruction: VisualInstruction? {
-        guard case let .navigating(_, _, _, _, _, _, _, visualInstruction, _, _) = tripState else {
+        guard case let .navigating(_, _, _, _, _, _, _, _, visualInstruction, _, _) = tripState else {
             return nil
         }
 
@@ -40,7 +56,7 @@ public struct NavigationState: Hashable {
     }
 
     public var remainingSteps: [RouteStep]? {
-        guard case let .navigating(_, _, _, remainingSteps, _, _, _, _, _, _) = tripState else {
+        guard case let .navigating(_, _, _, remainingSteps, _, _, _, _, _, _, _) = tripState else {
             return nil
         }
 
@@ -55,7 +71,7 @@ public struct NavigationState: Hashable {
     ///
     /// A segment is the line between two coordinates on the geometry.
     public var currentAnnotationJSON: String? {
-        guard case let .navigating(_, _, _, _, _, _, _, _, _, annotationJson) = tripState else {
+        guard case let .navigating(_, _, _, _, _, _, _, _, _, _, annotationJson) = tripState else {
             return nil
         }
 
@@ -72,7 +88,7 @@ public struct NavigationState: Hashable {
     }
 
     public var currentRoadName: String? {
-        guard case let .navigating(_, _, _, remainingSteps, _, _, _, _, _, _) = tripState else {
+        guard case let .navigating(_, _, _, remainingSteps, _, _, _, _, _, _, _) = tripState else {
             return nil
         }
 
@@ -93,9 +109,9 @@ public struct NavigationState: Hashable {
         switch tripState {
         case let .idle(userLocation):
             userLocation
-        case let .complete(userLocation):
+        case let .complete(userLocation, _):
             userLocation
-        case let .navigating(_, userLocation, snappedUserLocation, _, _, _, deviation, _, _, _):
+        case let .navigating(_, userLocation, snappedUserLocation, _, _, _, _, deviation, _, _, _):
             switch deviation {
             case .noDeviation:
                 snappedUserLocation

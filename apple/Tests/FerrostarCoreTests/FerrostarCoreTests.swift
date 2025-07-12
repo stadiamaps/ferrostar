@@ -61,19 +61,19 @@ let mockGETRouteAdapter = RouteAdapter(
     responseParser: MockRouteResponseParser(routes: [mockRoute])
 )
 
-private class MockPOSTRouteRequestGenerator: RouteRequestGenerator {
+private final class MockPOSTRouteRequestGenerator: RouteRequestGenerator {
     func generateRequest(userLocation _: UserLocation, waypoints _: [Waypoint]) throws -> RouteRequest {
         RouteRequest.httpPost(url: valhallaEndpointUrl.absoluteString, headers: [:], body: Data())
     }
 }
 
-private class MockGETRouteRequestGenerator: RouteRequestGenerator {
+private final class MockGETRouteRequestGenerator: RouteRequestGenerator {
     func generateRequest(userLocation _: UserLocation, waypoints _: [Waypoint]) throws -> RouteRequest {
         RouteRequest.httpGet(url: valhallaEndpointUrl.absoluteString, headers: [:])
     }
 }
 
-private class MockRouteResponseParser: RouteResponseParser {
+private final class MockRouteResponseParser: RouteResponseParser {
     private let routes: [Route]
 
     init(routes: [Route]) {
@@ -124,7 +124,8 @@ final class FerrostarCoreTests: XCTestCase {
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
                 waypointAdvance: .waypointWithinRange(100.0),
-                stepAdvance: .manual,
+                stepAdvanceCondition: stepAdvanceManual(),
+                arrivalStepAdvanceCondition: stepAdvanceManual(),
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
             ),
@@ -168,7 +169,8 @@ final class FerrostarCoreTests: XCTestCase {
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
                 waypointAdvance: .waypointWithinRange(100.0),
-                stepAdvance: .manual,
+                stepAdvanceCondition: stepAdvanceManual(),
+                arrivalStepAdvanceCondition: stepAdvanceManual(),
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
             ),
@@ -204,7 +206,8 @@ final class FerrostarCoreTests: XCTestCase {
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
                 waypointAdvance: .waypointWithinRange(100.0),
-                stepAdvance: .manual,
+                stepAdvanceCondition: stepAdvanceManual(),
+                arrivalStepAdvanceCondition: stepAdvanceManual(),
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
             ),
@@ -243,7 +246,8 @@ final class FerrostarCoreTests: XCTestCase {
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
                 waypointAdvance: .waypointWithinRange(100.0),
-                stepAdvance: .manual,
+                stepAdvanceCondition: stepAdvanceManual(),
+                arrivalStepAdvanceCondition: stepAdvanceManual(),
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
             ),
@@ -290,7 +294,8 @@ final class FerrostarCoreTests: XCTestCase {
             locationProvider: SimulatedLocationProvider(),
             navigationControllerConfig: .init(
                 waypointAdvance: .waypointWithinRange(100.0),
-                stepAdvance: .manual,
+                stepAdvanceCondition: stepAdvanceManual(),
+                arrivalStepAdvanceCondition: stepAdvanceManual(),
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
             ),
@@ -337,7 +342,8 @@ final class FerrostarCoreTests: XCTestCase {
             locationProvider: locationProvider,
             navigationControllerConfig: .init(
                 waypointAdvance: .waypointWithinRange(100.0),
-                stepAdvance: .manual,
+                stepAdvanceCondition: stepAdvanceManual(),
+                arrivalStepAdvanceCondition: stepAdvanceManual(),
                 routeDeviationTracking: .none,
                 snappedLocationCourseFiltering: .raw
             ),
@@ -394,10 +400,12 @@ final class FerrostarCoreTests: XCTestCase {
         locationProvider.lastLocation = CLLocation(latitude: 0, longitude: 0).userLocation
         let config = SwiftNavigationControllerConfig(
             waypointAdvance: .waypointWithinRange(100.0),
-            stepAdvance: .relativeLineStringDistance(
-                minimumHorizontalAccuracy: 16,
-                specialAdvanceConditions: .advanceAtDistanceFromEnd(16)
+            stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
+                distanceToEndOfStep: 10,
+                distanceAfterEndOfStep: 2,
+                minimumHorizontalAccuracy: 32
             ),
+            arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 10, minimumHorizontalAccuracy: 32),
             routeDeviationTracking: .custom(detector: { _, _, _ in
                 // Pretend that the user is always off route
                 .offRoute(deviationFromRouteLine: 42)

@@ -14,11 +14,11 @@ interface IResponse {
 }
 
 /** Interface representing a basic HTTP Client that can make RouteRequests */
-interface IHttpClient {
+interface HttpClientProvider {
   suspend fun call(request: RouteRequest): IResponse
 }
 
-class FerrostarOkHttpClient(private val client: OkHttpClient) : IHttpClient {
+class OkHttpClientProvider(private val client: OkHttpClient) : HttpClientProvider {
   override suspend fun call(request: RouteRequest): IResponse {
     val okHttpRequest = request.toOkhttp3Request()
 
@@ -38,8 +38,8 @@ class FerrostarOkHttpClient(private val client: OkHttpClient) : IHttpClient {
   }
 
   companion object {
-    fun OkHttpClient.toFerrostarOkHttpClient(): FerrostarOkHttpClient {
-      return FerrostarOkHttpClient(this)
+    fun OkHttpClient.toOkHttpClientProvider(): OkHttpClientProvider {
+      return OkHttpClientProvider(this)
     }
 
     @Throws

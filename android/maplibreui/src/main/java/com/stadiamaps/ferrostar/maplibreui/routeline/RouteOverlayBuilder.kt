@@ -1,9 +1,9 @@
 package com.stadiamaps.ferrostar.maplibreui.routeline
 
 import androidx.compose.runtime.Composable
-import com.mapbox.mapboxsdk.geometry.LatLng
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.stadiamaps.ferrostar.core.NavigationUiState
+import org.maplibre.android.geometry.LatLng
 
 /**
  * A Route Overlay (Polyline) Builder with sensible defaults - showing the full Navigation Route

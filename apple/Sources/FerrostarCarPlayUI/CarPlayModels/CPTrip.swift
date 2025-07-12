@@ -2,6 +2,45 @@ import CarPlay
 import FerrostarCoreFFI
 import FerrostarSwiftUI
 
+private let RouteKey = "com.stadiamaps.ferrostar.route"
+
+extension CPRouteChoice {
+    convenience init(
+        summaryVariants: [String],
+        additionalInformationVariants: [String],
+        selectionSummaryVariants: [String],
+        route: Route
+    ) {
+        self.init(
+            summaryVariants: summaryVariants,
+            additionalInformationVariants: additionalInformationVariants,
+            selectionSummaryVariants: selectionSummaryVariants
+        )
+        userInfo = [RouteKey: route]
+    }
+
+    public var route: Route? {
+        guard let info = userInfo as? [String: Any] else { return nil }
+        return info[RouteKey] as? Route
+    }
+}
+
+private extension [Waypoint] {
+    func originDestination() throws -> (origin: MKMapItem, destination: MKMapItem) {
+        guard let originWaypoint = first, let destinationWaypoint = last else {
+            throw FerrostarCarPlayError.invalidTrip
+        }
+
+        // TODO: We could improve this with an address dictionary/CPPostalAddress if we enhanced
+        //       the optional metadata associated to a ferrostar waypoint. Especially common for
+        //       the origin and destination, less so for intermediate.
+        let origin = MKMapItem(placemark: MKPlacemark(coordinate: originWaypoint.coordinate.clLocationCoordinate2D))
+        let destination =
+            MKMapItem(placemark: MKPlacemark(coordinate: destinationWaypoint.coordinate.clLocationCoordinate2D))
+        return (origin, destination)
+    }
+}
+
 extension CPTrip {
     /// Create a new CarPlay Trip definition from the routes and waypoints supplied to/by
     /// Ferrostar. This object is used to outline the various route option metadata and the associated
@@ -17,20 +56,26 @@ extension CPTrip {
         routes: [Route],
         waypoints: [Waypoint],
         distanceFormatter: Formatter,
-        durationFormatter _: DateComponentsFormatter
+        durationFormatter: DateComponentsFormatter
     ) throws -> CPTrip {
-        guard let originWaypoint = waypoints.first,
-              let destinationWaypoint = waypoints.last
-        else {
-            throw FerrostarCarPlayError.invalidTrip
-        }
+        let (origin, destination) = try waypoints.originDestination()
 
-        // TODO: We could improve this with an address dictionary/CPPostalAddress if we enhanced
-        //       the optional metadata associated to a ferrostar waypoint. Especially common for
-        //       the origin and destination, less so for intermediate.
-        let origin = MKPlacemark(coordinate: originWaypoint.coordinate.clLocationCoordinate2D)
-        let destination = MKPlacemark(coordinate: destinationWaypoint.coordinate.clLocationCoordinate2D)
+        return fromFerrostar(
+            routes: routes,
+            origin: origin,
+            destination: destination,
+            distanceFormatter: distanceFormatter,
+            durationFormatter: durationFormatter
+        )
+    }
 
+    public static func fromFerrostar(
+        routes: [Route],
+        origin: MKMapItem,
+        destination: MKMapItem,
+        distanceFormatter: Formatter,
+        durationFormatter _: DateComponentsFormatter
+    ) -> CPTrip {
         let routeChoices: [CPRouteChoice] = routes.enumerated().map { index, route in
             let routeNumber = index + 1
             let distance = distanceFormatter.string(for: route.distance)
@@ -39,13 +84,14 @@ extension CPTrip {
             return CPRouteChoice(
                 summaryVariants: ["Route \(routeNumber)"],
                 additionalInformationVariants: [summary],
-                selectionSummaryVariants: ["Selected Route \(routeNumber)"]
+                selectionSummaryVariants: ["Selected Route \(routeNumber)"],
+                route: route
             )
         }
 
         return CPTrip(
-            origin: .init(placemark: origin),
-            destination: .init(placemark: destination),
+            origin: origin,
+            destination: destination,
             routeChoices: routeChoices
         )
     }

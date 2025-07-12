@@ -127,17 +127,17 @@ fun LandscapeNavigationView(
   }
 }
 
+val previewViewModel =
+    MockNavigationViewModel(
+        MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+
 @Preview(
     device =
         "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
 private fun LandscapeNavigationViewPreview() {
-  val viewModel =
-      MockNavigationViewModel(
-          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
-
   LandscapeNavigationView(
       Modifier.fillMaxSize(),
       styleUrl = "https://demotiles.maplibre.org/style.json",
-      viewModel = viewModel)
+      viewModel = previewViewModel)
 }

@@ -58,12 +58,7 @@ class NavigatingTemplateHost {
     }
 
     func update(_ instruction: VisualInstruction, currentStep: RouteStep) {
-        let stepDistance = CarPlayMeasurementLength(units: units, distance: currentStep.distance)
-
-        currentSession?.upcomingManeuvers = [instruction.maneuver(
-            stepDuration: currentStep.duration,
-            stepDistance: stepDistance.rounded()
-        )]
+        currentSession?.updateEstimates(instruction: instruction, step: currentStep, units: units)
     }
 
     func cancelTrip() {
@@ -82,22 +77,6 @@ class NavigatingTemplateHost {
             return
         }
 
-        let estimates = CPTravelEstimates.fromFerrostarForTrip(
-            progress: progress,
-            units: units,
-            locale: .current
-        )
-
-        mapTemplate.updateEstimates(estimates, for: currentSession.trip)
-
-        if let currentManeuer = currentSession.upcomingManeuvers.first {
-            let estimates = CPTravelEstimates.fromFerrostarForStep(
-                progress: progress,
-                units: units,
-                locale: .current
-            )
-
-            currentSession.updateEstimates(estimates, for: currentManeuer)
-        }
+        progress.updateUpcomingEstimates(session: currentSession, mapTemplate: mapTemplate, units: units)
     }
 }

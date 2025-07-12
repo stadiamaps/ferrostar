@@ -6,7 +6,7 @@
     "CatMe0w <CatMe0w@live.cn> (https://github.com/CatMe0w)",
     "Luke Seelenbinder <luke@stadiamaps.com>"
   ],
-  "version": "0.34.1",
+  "version": "0.39.0",
   "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/ferrostar-webcomponents.js",
@@ -34,7 +34,7 @@
     "lint:fix": "eslint --cache --ext .js,.ts,.html src --fix"
   },
   "dependencies": {
-    "@maptimy/platform-formatters": "^0.5.0",
+    "@maptimy/platform-formatters": "^0.6.0",
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
     "lit": "^3.2.1",
     "maplibre-gl": "^4.5.0 || ^5"

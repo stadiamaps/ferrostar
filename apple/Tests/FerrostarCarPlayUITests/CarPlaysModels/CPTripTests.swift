@@ -3,6 +3,7 @@ import FerrostarCoreFFI
 import FerrostarSwiftUI
 import MapKit
 import Testing
+import TestSupport
 
 @testable import FerrostarCarPlayUI
 
@@ -23,7 +24,7 @@ struct CPTripTests {
         let trip = try CPTrip.fromFerrostar(
             routes: [route],
             waypoints: [origin, destination],
-            distanceFormatter: DefaultFormatters.distanceFormatter,
+            distanceFormatter: usaDistanceFormatter,
             durationFormatter: DefaultFormatters.durationFormat
         )
 
