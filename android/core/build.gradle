@@ -47,8 +47,6 @@ dependencies {
 
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp.core)
-    implementation libs.moshi
-    implementation libs.moshi.kotlin
     implementation libs.kotlinx.serialization
 
     // TODO: Migrate version to TOML (doesn't work). Likely related issue: https://github.com/gradle/gradle/issues/21267
