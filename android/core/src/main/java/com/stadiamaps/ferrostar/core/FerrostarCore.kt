@@ -51,7 +51,8 @@ fun NavigationState.isNavigating(): Boolean =
 
 private val json = Json { ignoreUnknownKeys = true }
 
-// TODO - This JSON Serialization is fairly forced
+private fun Map<String, Any>.toJsonElement(): JsonElement = Json.parseToJsonElement(this.toJson())
+
 private fun Map<String, Any>.toJson(): String =
     json.encodeToString(
         MapSerializer(String.serializer(), JsonElement.serializer()),
@@ -63,6 +64,12 @@ private fun Map<String, Any>.toJson(): String =
             is Double -> Json.encodeToJsonElement(Double.serializer(), v)
             is Float -> Json.encodeToJsonElement(Float.serializer(), v)
             is Long -> Json.encodeToJsonElement(Long.serializer(), v)
+            is Map<*, *> -> {
+              @Suppress("UNCHECKED_CAST")
+              (v as? Map<String, Any>)?.toJsonElement()
+                  ?: throw IllegalArgumentException("Unsupported map value type: ${v::class}")
+            }
+
             null -> Json.encodeToJsonElement(String.serializer(), "null")
             else -> throw IllegalArgumentException("Unsupported value type: ${v::class}")
           }
