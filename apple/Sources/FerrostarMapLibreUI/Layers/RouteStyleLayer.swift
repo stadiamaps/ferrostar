@@ -26,7 +26,7 @@ public struct ActiveRouteStyle: RouteStyle {
 /// This is typically overlaid on top of the active route style of the entire polyline.
 public struct TravelledRouteStyle: RouteStyle {
     public var color: UIColor = .systemGray
-    public var casingColor: UIColor? = nil
+    public var casingColor: UIColor?
     public let lineCap: LineCap = .round
     public let lineJoin: LineJoin = .round
     public init() { /* No def */ }
