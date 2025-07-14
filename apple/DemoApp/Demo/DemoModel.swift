@@ -89,11 +89,11 @@ extension DemoModel {
 @MainActor let demoModel = DemoModel()
 
 // TODO: Something like this?
-//private enum CameraState {
+// private enum CameraState {
 //    case normal(MapViewCamera)
 //    case preview(Route)
 //    case zoom(MapViewCamera)
-//}
+// }
 
 @MainActor
 @Observable final class DemoModel {
