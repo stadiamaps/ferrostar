@@ -13,8 +13,6 @@ pub struct NavigationRecording {
     /// The timestamp when the navigation session started.
     pub initial_timestamp: i64,
     /// Configuration of the navigation session.
-    ///
-    /// NOTE: This has to be the `JsNavigationControllerConfig` since `NavigationControllerConfig` can't be Serialized
     pub config: SerializableNavigationControllerConfig,
     /// The initial route assigned.
     pub initial_route: Route,
