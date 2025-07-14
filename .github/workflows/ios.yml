@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Upgrade swiftformat to latest
-      run: brew install swiftformat
+      run: brew install swiftformat@0.56.4
 
     - name: Checkout repo
       uses: actions/checkout@v4
