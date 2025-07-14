@@ -1,7 +1,7 @@
 //! State and configuration data models.
 
 use super::step_advance::conditions::ManualStepCondition;
-use super::step_advance::{JsStepAdvanceCondition, StepAdvanceCondition};
+use super::step_advance::{SerializableStepAdvanceCondition, StepAdvanceCondition};
 use crate::algorithms::distance_between_locations;
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
 use crate::models::{
@@ -88,7 +88,7 @@ impl NavState {
 pub struct JsNavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
-    step_advance_condition: JsStepAdvanceCondition,
+    step_advance_condition: SerializableStepAdvanceCondition,
     recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
@@ -324,17 +324,17 @@ pub struct NavigationControllerConfig {
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
-pub struct JsNavigationControllerConfig {
+pub struct SerializableNavigationControllerConfig {
     /// Configures when navigation advances to the next waypoint in the route.
     pub waypoint_advance: WaypointAdvanceMode,
     /// Configures when navigation advances to the next step in the route.
-    pub step_advance_condition: JsStepAdvanceCondition,
+    pub step_advance_condition: SerializableStepAdvanceCondition,
     /// A special advance condition used for the final 2 route steps (last and arrival).
     ///
     /// This exists because several of our step advance conditions require entry and
     /// exit from a step's geometry. The end of the route/arrival doesn't always accommodate
     /// the expected location updates for the core step advance condition.
-    pub arrival_step_advance_condition: JsStepAdvanceCondition,
+    pub arrival_step_advance_condition: SerializableStepAdvanceCondition,
     /// Configures when the user is deemed to be off course.
     ///
     /// NOTE: This is distinct from the action that is taken.
@@ -344,8 +344,8 @@ pub struct JsNavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
-impl From<JsNavigationControllerConfig> for NavigationControllerConfig {
-    fn from(js_config: JsNavigationControllerConfig) -> Self {
+impl From<SerializableNavigationControllerConfig> for NavigationControllerConfig {
+    fn from(js_config: SerializableNavigationControllerConfig) -> Self {
         Self {
             waypoint_advance: js_config.waypoint_advance,
             step_advance_condition: js_config.step_advance_condition.into(),
@@ -356,7 +356,7 @@ impl From<JsNavigationControllerConfig> for NavigationControllerConfig {
     }
 }
 
-impl From<NavigationControllerConfig> for JsNavigationControllerConfig {
+impl From<NavigationControllerConfig> for SerializableNavigationControllerConfig {
     fn from(config: NavigationControllerConfig) -> Self {
         Self {
             waypoint_advance: config.waypoint_advance,

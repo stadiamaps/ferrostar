@@ -1,7 +1,7 @@
 use crate::models::{Route, UserLocation};
 use crate::navigation_controller::models::{
-    JsNavigationControllerConfig, NavigationControllerConfig, NavigationRecordingEvent,
-    NavigationRecordingEventData, TripState,
+    NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData,
+    SerializableNavigationControllerConfig, TripState,
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
@@ -15,7 +15,7 @@ pub struct NavigationRecording {
     /// Configuration of the navigation session.
     ///
     /// NOTE: This has to be the `JsNavigationControllerConfig` since `NavigationControllerConfig` can't be Serialized
-    pub config: JsNavigationControllerConfig,
+    pub config: SerializableNavigationControllerConfig,
     /// The initial route assigned.
     pub initial_route: Route,
     /// Initial trip state.
@@ -39,7 +39,7 @@ impl NavigationRecording {
         Self {
             version: env!("CARGO_PKG_VERSION").to_string(),
             initial_timestamp: Utc::now().timestamp(),
-            config: JsNavigationControllerConfig::from(config),
+            config: SerializableNavigationControllerConfig::from(config),
             initial_route,
             initial_trip_state: None,
             events: Vec::new(),
