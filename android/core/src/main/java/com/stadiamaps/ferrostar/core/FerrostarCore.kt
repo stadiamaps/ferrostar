@@ -1,8 +1,5 @@
 package com.stadiamaps.ferrostar.core
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapter
 import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
@@ -15,6 +12,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavState
@@ -48,10 +49,31 @@ fun NavigationState.isNavigating(): Boolean =
       is TripState.Navigating -> true
     }
 
-private val moshi: Moshi = Moshi.Builder().build()
+private val json = Json { ignoreUnknownKeys = true }
 
-@OptIn(ExperimentalStdlibApi::class)
-private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<String, Any>>()
+private fun Map<String, Any>.toJsonElement(): JsonElement = Json.parseToJsonElement(this.toJson())
+
+private fun Map<String, Any>.toJson(): String =
+    json.encodeToString(
+        MapSerializer(String.serializer(), JsonElement.serializer()),
+        mapValues { (_, v) ->
+          when (v) {
+            is String -> Json.encodeToJsonElement(String.serializer(), v)
+            is Int -> Json.encodeToJsonElement(Int.serializer(), v)
+            is Boolean -> Json.encodeToJsonElement(Boolean.serializer(), v)
+            is Double -> Json.encodeToJsonElement(Double.serializer(), v)
+            is Float -> Json.encodeToJsonElement(Float.serializer(), v)
+            is Long -> Json.encodeToJsonElement(Long.serializer(), v)
+            is Map<*, *> -> {
+              @Suppress("UNCHECKED_CAST")
+              (v as? Map<String, Any>)?.toJsonElement()
+                  ?: throw IllegalArgumentException("Unsupported map value type: ${v::class}")
+            }
+
+            null -> Json.encodeToJsonElement(String.serializer(), "null")
+            else -> throw IllegalArgumentException("Unsupported value type: ${v::class}")
+          }
+        })
 
 /**
  * This is the entrypoint for end users of Ferrostar on Android, and is responsible for "driving"
@@ -163,8 +185,7 @@ class FerrostarCore(
       options: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
-          RouteAdapter.newValhallaHttp(
-              valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(options))),
+          RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile, options.toJson())),
       httpClient,
       locationProvider,
       foregroundServiceManager,
