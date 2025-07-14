@@ -73,7 +73,7 @@ struct TopDrawerView<PersistentContent: View, ExpandedContent: View>: View {
         })
     }
 
-    public var body: some View {
+    var body: some View {
         content
             .background(backgroundColor)
             .cornerRadius(12)
