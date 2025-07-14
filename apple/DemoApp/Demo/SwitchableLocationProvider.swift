@@ -72,12 +72,16 @@ import Foundation
 
     func toggle() {
         current.stopUpdating()
+        let delegate = current.delegate
+
         switch type {
         case .simulated:
             type = .device
         case .device:
             type = .simulated
         }
+
+        current.delegate = delegate
         current.startUpdating()
     }
 }

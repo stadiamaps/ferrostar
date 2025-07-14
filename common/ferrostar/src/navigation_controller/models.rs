@@ -29,7 +29,7 @@ use super::step_advance::StepAdvanceCondition;
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct NavState {
     trip_state: TripState,
-    // This has to be here because we actually do need to update internal state that changes throughout navigation.
+    // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
     recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
@@ -101,8 +101,9 @@ impl NavState {
 #[tsify(into_wasm_abi, from_wasm_abi)]
 pub struct JsNavState {
     trip_state: TripState,
-    // This has to be here because we actually do need to update internal state that changes throughout navigation.
+    // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: JsStepAdvanceCondition,
+    recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 #[cfg(feature = "wasm-bindgen")]
@@ -111,6 +112,7 @@ impl From<JsNavState> for NavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.into(),
+            recording_events: value.recording_events,
         }
     }
 }
@@ -121,6 +123,7 @@ impl From<NavState> for JsNavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.to_js(),
+            recording_events: value.recording_events,
         }
     }
 }
@@ -372,7 +375,7 @@ impl From<JsNavigationControllerConfig> for NavigationControllerConfig {
 }
 
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub struct NavigationRecordingEvent {
@@ -383,7 +386,7 @@ pub struct NavigationRecordingEvent {
 }
 
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone)]
 #[cfg_attr(any(feature = "wasm-bindgen", test), derive(Serialize, Deserialize))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub enum NavigationRecordingEventData {

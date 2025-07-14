@@ -35,7 +35,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 ///
 /// This trait defines the essential operations for a navigation state manager.
 /// This lets us build additional layers (e.g. event logging)
-/// around [`NavigationController`] a composable manner.
+/// around [`NavigationController`] in a composable manner.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait Navigator: Send + Sync {
     fn get_initial_state(&self, location: UserLocation) -> NavState;
@@ -141,7 +141,7 @@ impl Navigator for NavigationController {
             annotation_json,
         };
         let next_advance = Arc::clone(&self.config.step_advance_condition);
-        return NavState::new(trip_state, next_advance, None);
+        NavState::new(trip_state, next_advance, None)
     }
 
     /// Advances navigation to the next step (or finishes the route).
@@ -410,7 +410,7 @@ impl JsNavigationController {
         let config: JsNavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
         let should_record: bool = serde_wasm_bindgen::from_value(should_record)?;
 
-        Ok(JsNavigationController(NavigationController::new(
+        Ok(JsNavigationController(create_navigator(
             route,
             config.into(),
             should_record,
