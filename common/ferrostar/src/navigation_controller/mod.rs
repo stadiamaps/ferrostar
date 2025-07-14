@@ -14,7 +14,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
-fix    navigation_controller::recording::NavigationRecording,
+    navigation_controller::recording::NavigationRecording,
 };
 use chrono::Utc;
 use geo::{
