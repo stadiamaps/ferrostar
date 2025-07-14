@@ -468,7 +468,7 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		FE0519072E2051EF0084240B /* XCRemoteSwiftPackageReference "swiftui-autocomplete-search" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:stadiamaps/swiftui-autocomplete-search.git";
+			repositoryURL = "https://github.com/stadiamaps/swiftui-autocomplete-search.git";
 			requirement = {
 				kind = exactVersion;
 				version = 4.0.0;

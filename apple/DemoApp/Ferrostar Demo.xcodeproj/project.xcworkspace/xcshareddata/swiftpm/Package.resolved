@@ -1,5 +1,5 @@
 {
-  "originHash" : "ecb94942f45573604a04cbe4884679f5421193862addbd8c363f69de81177267",
+  "originHash" : "d357985b4d7ad9aee352512dae98e0de0dcb93960231f876c3d268a1bca6155a",
   "pins" : [
     {
       "identity" : "anycodable",
@@ -49,7 +49,7 @@
     {
       "identity" : "swiftui-autocomplete-search",
       "kind" : "remoteSourceControl",
-      "location" : "git@github.com:stadiamaps/swiftui-autocomplete-search.git",
+      "location" : "https://github.com/stadiamaps/swiftui-autocomplete-search.git",
       "state" : {
         "revision" : "6b36baf01f96b72c71b24f3edd248ca9795d845a",
         "version" : "4.0.0"
