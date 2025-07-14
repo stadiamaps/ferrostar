@@ -64,7 +64,7 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
         }
     }
 
-    public func templateApplicationScene(
+    func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didDisconnect _: CPInterfaceController,
         from window: CPWindow

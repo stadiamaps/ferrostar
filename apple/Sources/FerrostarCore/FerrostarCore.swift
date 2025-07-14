@@ -98,10 +98,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private let locationProvider: LocationProviding
     private var navigationController: NavigatorProtocol?
     private var routeRequestInFlight = false
-    private var lastAutomaticRecalculation: Date? = nil
-    private var lastLocation: UserLocation? = nil
+    private var lastAutomaticRecalculation: Date?
+    private var lastLocation: UserLocation?
     // The last location from which we triggered a recalculation
-    private var lastRecalculationLocation: UserLocation? = nil
+    private var lastRecalculationLocation: UserLocation?
     private var recalculationTask: Task<Void, Never>?
     private var queuedUtteranceIDs: Set<UUID> = Set()
 
