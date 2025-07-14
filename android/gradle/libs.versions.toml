@@ -9,11 +9,11 @@ desugar_jdk_libs = "2.1.5"
 ktx = "1.16.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.0"
+kotlinx-serialization = "1.8.1"
 androidx-appcompat = "1.7.1"
 androidx-activity-compose = "1.10.1"
 compose = "2025.06.01"
 okhttp = "5.0.0"
-moshi = "1.15.2"
 maplibre-compose = "1.0.0"
 playServicesLocation = "21.3.0"
 junit = "4.13.2"
@@ -55,9 +55,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 # OkHttp & Moshi
 okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
 okhttp-core = { group = "com.squareup.okhttp3", name = "okhttp" }
-moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
 okhttp-mock = { group = "com.github.gmazzo", name = "okhttp-mock", version.ref = "okhttp-mock" }
+kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 # MapLibre
 maplibre-compose = { group = "io.github.rallista", name = "maplibre-compose", version.ref = "maplibre-compose" }
 # Google Play Services (for Google module)

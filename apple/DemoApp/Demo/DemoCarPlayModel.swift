@@ -63,12 +63,14 @@ private extension DemoAppState {
 @MainActor
 @Observable final class DemoCarPlayModel: NSObject, @preconcurrency CPMapTemplateDelegate {
     private var model: DemoModel
+    private var interfaceController: CPInterfaceController
     private var session: CPNavigationSession?
 
     private let formatterCollection: FormatterCollection = FoundationFormatterCollection()
 
-    init(model: DemoModel) {
+    init(model: DemoModel, interfaceController: CPInterfaceController) {
         self.model = model
+        self.interfaceController = interfaceController
     }
 
     func createAndAttachTemplate() -> CPMapTemplate {
