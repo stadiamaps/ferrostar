@@ -26,8 +26,7 @@ private extension DemoModel {
             selectedRoute = route
             chooseRoute(route)
         } catch {
-            errorMessage = error.localizedDescription
-            appState = .idle
+            handleError(error)
         }
     }
 }
