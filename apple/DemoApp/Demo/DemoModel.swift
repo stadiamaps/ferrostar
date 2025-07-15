@@ -140,9 +140,9 @@ extension DemoModel {
         return .idle
     }
 
-    func handleError(_ error: Error) {
+    func handleError(_ error: Error, newAppState: DemoAppState = .idle) {
         errorMessage = error.localizedDescription
-        appState = .idle
+        appState = newAppState
     }
 
     private func wrap(wrap: () throws -> DemoAppState) {
