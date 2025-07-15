@@ -22,6 +22,8 @@
 		E90D97912B8AF507005E43F8 /* NavigationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */; };
 		E9505FCA2AD449B30016BF0A /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FC92AD449B30016BF0A /* FerrostarCore */; };
 		E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */ = {isa = PBXBuildFile; productRef = E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */; };
+		FE0519092E2051EF0084240B /* StadiaMapsAutocompleteSearch in Frameworks */ = {isa = PBXBuildFile; productRef = FE0519082E2051EF0084240B /* StadiaMapsAutocompleteSearch */; };
+		FE0519172E2059400084240B /* DemoModel+Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0519162E2059400084240B /* DemoModel+Search.swift */; };
 		FE0AFFBC2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */; };
 		FE16E4A12E0CAA61009D7B83 /* DemoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A02E0CAA61009D7B83 /* DemoError.swift */; };
 		FE16E4A32E0CAA73009D7B83 /* DemoAppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */; };
@@ -46,6 +48,7 @@
 		E9505FB72AD449700016BF0A /* Ferrostar Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ferrostar Demo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E9DD18E42B18EE7A00CAF29A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E9DD18E52B18F4BD00CAF29A /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		FE0519162E2059400084240B /* DemoModel+Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DemoModel+Search.swift"; sourceTree = "<group>"; };
 		FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayNavigationView.swift; sourceTree = "<group>"; };
 		FE16E4A02E0CAA61009D7B83 /* DemoError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoError.swift; sourceTree = "<group>"; };
 		FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAppState.swift; sourceTree = "<group>"; };
@@ -66,6 +69,7 @@
 				167FD69B2B54B55A00CB4445 /* FerrostarCore in Frameworks */,
 				E9505FCC2AD449B30016BF0A /* FerrostarMapLibreUI in Frameworks */,
 				169A1D582B2E8280006CE59E /* FerrostarMapLibreUI in Frameworks */,
+				FE0519092E2051EF0084240B /* StadiaMapsAutocompleteSearch in Frameworks */,
 				167FD69D2B54B55A00CB4445 /* FerrostarMapLibreUI in Frameworks */,
 				169B50132B2E46800008EBB7 /* FerrostarCore in Frameworks */,
 				169A1D562B2E8280006CE59E /* FerrostarCore in Frameworks */,
@@ -93,6 +97,7 @@
 				1611A5582B2E6E98006B131D /* DemoApp.swift */,
 				FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */,
 				FE7D4EE02E1DB9A100E077CB /* DemoModel+RoutePreview.swift */,
+				FE0519162E2059400084240B /* DemoModel+Search.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -167,6 +172,7 @@
 				169A1D572B2E8280006CE59E /* FerrostarMapLibreUI */,
 				167FD69A2B54B55A00CB4445 /* FerrostarCore */,
 				167FD69C2B54B55A00CB4445 /* FerrostarMapLibreUI */,
+				FE0519082E2051EF0084240B /* StadiaMapsAutocompleteSearch */,
 			);
 			productName = "iOS Demo";
 			productReference = E9505FB72AD449700016BF0A /* Ferrostar Demo.app */;
@@ -198,6 +204,7 @@
 			mainGroup = E9505FAE2AD449700016BF0A;
 			packageReferences = (
 				167FD6992B54B55A00CB4445 /* XCLocalSwiftPackageReference "../.." */,
+				FE0519072E2051EF0084240B /* XCRemoteSwiftPackageReference "swiftui-autocomplete-search" */,
 			);
 			productRefGroup = E9505FB82AD449700016BF0A /* Products */;
 			projectDirPath = "";
@@ -229,6 +236,7 @@
 				FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */,
 				1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */,
 				FE7D4EE12E1DB9A100E077CB /* DemoModel+RoutePreview.swift in Sources */,
+				FE0519172E2059400084240B /* DemoModel+Search.swift in Sources */,
 				1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */,
 				FE16E4A62E0CAB0A009D7B83 /* DemoModel.swift in Sources */,
 				1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */,
@@ -461,6 +469,17 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		FE0519072E2051EF0084240B /* XCRemoteSwiftPackageReference "swiftui-autocomplete-search" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stadiamaps/swiftui-autocomplete-search.git";
+			requirement = {
+				kind = exactVersion;
+				version = 4.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		167FD69A2B54B55A00CB4445 /* FerrostarCore */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -493,6 +512,11 @@
 		E9505FCB2AD449B30016BF0A /* FerrostarMapLibreUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FerrostarMapLibreUI;
+		};
+		FE0519082E2051EF0084240B /* StadiaMapsAutocompleteSearch */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FE0519072E2051EF0084240B /* XCRemoteSwiftPackageReference "swiftui-autocomplete-search" */;
+			productName = StadiaMapsAutocompleteSearch;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

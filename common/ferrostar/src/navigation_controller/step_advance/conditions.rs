@@ -6,7 +6,7 @@ use crate::{
 };
 use geo::Point;
 
-use super::{StepAdvanceCondition, StepAdvanceConditionJsConvertible, StepAdvanceResult};
+use super::{StepAdvanceCondition, StepAdvanceConditionSerializable, StepAdvanceResult};
 
 #[cfg(feature = "wasm-bindgen")]
 use serde::{Deserialize, Serialize};
@@ -14,8 +14,7 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
-#[cfg(feature = "wasm-bindgen")]
-use super::JsStepAdvanceCondition;
+use super::SerializableStepAdvanceCondition;
 
 /// Never advances to the next step automatically;
 /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
@@ -40,10 +39,9 @@ impl StepAdvanceCondition for ManualStepCondition {
     }
 }
 
-impl StepAdvanceConditionJsConvertible for ManualStepCondition {
-    #[cfg(feature = "wasm-bindgen")]
-    fn to_js(&self) -> JsStepAdvanceCondition {
-        JsStepAdvanceCondition::Manual
+impl StepAdvanceConditionSerializable for ManualStepCondition {
+    fn to_js(&self) -> SerializableStepAdvanceCondition {
+        SerializableStepAdvanceCondition::Manual
     }
 }
 
@@ -92,10 +90,9 @@ impl StepAdvanceCondition for DistanceToEndOfStepCondition {
     }
 }
 
-impl StepAdvanceConditionJsConvertible for DistanceToEndOfStepCondition {
-    #[cfg(feature = "wasm-bindgen")]
-    fn to_js(&self) -> JsStepAdvanceCondition {
-        JsStepAdvanceCondition::DistanceToEndOfStep {
+impl StepAdvanceConditionSerializable for DistanceToEndOfStepCondition {
+    fn to_js(&self) -> SerializableStepAdvanceCondition {
+        SerializableStepAdvanceCondition::DistanceToEndOfStep {
             distance: self.distance,
             minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
         }
@@ -153,10 +150,9 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
     }
 }
 
-impl StepAdvanceConditionJsConvertible for DistanceFromStepCondition {
-    #[cfg(feature = "wasm-bindgen")]
-    fn to_js(&self) -> JsStepAdvanceCondition {
-        JsStepAdvanceCondition::DistanceFromStep {
+impl StepAdvanceConditionSerializable for DistanceFromStepCondition {
+    fn to_js(&self) -> SerializableStepAdvanceCondition {
+        SerializableStepAdvanceCondition::DistanceFromStep {
             distance: self.distance,
             minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
         }
@@ -197,10 +193,9 @@ impl StepAdvanceCondition for OrAdvanceConditions {
     }
 }
 
-impl StepAdvanceConditionJsConvertible for OrAdvanceConditions {
-    #[cfg(feature = "wasm-bindgen")]
-    fn to_js(&self) -> JsStepAdvanceCondition {
-        JsStepAdvanceCondition::OrAdvanceConditions {
+impl StepAdvanceConditionSerializable for OrAdvanceConditions {
+    fn to_js(&self) -> SerializableStepAdvanceCondition {
+        SerializableStepAdvanceCondition::OrAdvanceConditions {
             conditions: self.conditions.iter().map(|c| c.to_js()).collect(),
         }
     }
@@ -234,10 +229,9 @@ impl StepAdvanceCondition for AndAdvanceConditions {
     }
 }
 
-impl StepAdvanceConditionJsConvertible for AndAdvanceConditions {
-    #[cfg(feature = "wasm-bindgen")]
-    fn to_js(&self) -> JsStepAdvanceCondition {
-        JsStepAdvanceCondition::AndAdvanceConditions {
+impl StepAdvanceConditionSerializable for AndAdvanceConditions {
+    fn to_js(&self) -> SerializableStepAdvanceCondition {
+        SerializableStepAdvanceCondition::AndAdvanceConditions {
             conditions: self.conditions.iter().map(|c| c.to_js()).collect(),
         }
     }
@@ -354,10 +348,9 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
     }
 }
 
-impl StepAdvanceConditionJsConvertible for DistanceEntryAndExitCondition {
-    #[cfg(feature = "wasm-bindgen")]
-    fn to_js(&self) -> JsStepAdvanceCondition {
-        JsStepAdvanceCondition::DistanceEntryExit {
+impl StepAdvanceConditionSerializable for DistanceEntryAndExitCondition {
+    fn to_js(&self) -> SerializableStepAdvanceCondition {
+        SerializableStepAdvanceCondition::DistanceEntryExit {
             minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
             distance_to_end_of_step: self.distance_to_end_of_step,
             distance_after_end_step: self.distance_after_end_of_step,

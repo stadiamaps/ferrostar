@@ -180,13 +180,17 @@ extension DemoModel {
         return .idle
     }
 
+    func handleError(_ error: Error, newAppState: DemoAppState = .idle) {
+        errorMessage = error.localizedDescription
+        appState = newAppState
+    }
+
     private func wrap(wrap: () throws -> DemoAppState) {
         do {
             errorMessage = nil
             appState = try wrap()
         } catch {
-            errorMessage = error.localizedDescription
-            appState = .idle
+            handleError(error)
         }
     }
 
@@ -195,8 +199,7 @@ extension DemoModel {
             errorMessage = nil
             appState = try await wrap()
         } catch {
-            errorMessage = error.localizedDescription
-            appState = .idle
+            handleError(error)
         }
     }
 
