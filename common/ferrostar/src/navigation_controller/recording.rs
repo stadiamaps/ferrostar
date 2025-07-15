@@ -1,7 +1,7 @@
 use crate::models::Route;
 use crate::navigation_controller::models::{
     NavState, NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData,
-    SerializableNavigationControllerConfig, TripState,
+    SerializableNavigationControllerConfig,
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};

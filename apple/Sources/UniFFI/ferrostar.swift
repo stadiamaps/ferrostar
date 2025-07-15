@@ -3402,6 +3402,84 @@ public func FfiConverterTypeIncident_lower(_ value: Incident) -> RustBuffer {
 }
 
 
+public struct JsNavState {
+    public var tripState: TripState
+    public var stepAdvanceCondition: SerializableStepAdvanceCondition
+    public var recordingEvents: [NavigationRecordingEvent]?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(tripState: TripState, stepAdvanceCondition: SerializableStepAdvanceCondition, recordingEvents: [NavigationRecordingEvent]?) {
+        self.tripState = tripState
+        self.stepAdvanceCondition = stepAdvanceCondition
+        self.recordingEvents = recordingEvents
+    }
+}
+
+#if compiler(>=6)
+extension JsNavState: Sendable {}
+#endif
+
+
+extension JsNavState: Equatable, Hashable {
+    public static func ==(lhs: JsNavState, rhs: JsNavState) -> Bool {
+        if lhs.tripState != rhs.tripState {
+            return false
+        }
+        if lhs.stepAdvanceCondition != rhs.stepAdvanceCondition {
+            return false
+        }
+        if lhs.recordingEvents != rhs.recordingEvents {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(tripState)
+        hasher.combine(stepAdvanceCondition)
+        hasher.combine(recordingEvents)
+    }
+}
+
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeJsNavState: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> JsNavState {
+        return
+            try JsNavState(
+                tripState: FfiConverterTypeTripState.read(from: &buf), 
+                stepAdvanceCondition: FfiConverterTypeSerializableStepAdvanceCondition.read(from: &buf), 
+                recordingEvents: FfiConverterOptionSequenceTypeNavigationRecordingEvent.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: JsNavState, into buf: inout [UInt8]) {
+        FfiConverterTypeTripState.write(value.tripState, into: &buf)
+        FfiConverterTypeSerializableStepAdvanceCondition.write(value.stepAdvanceCondition, into: &buf)
+        FfiConverterOptionSequenceTypeNavigationRecordingEvent.write(value.recordingEvents, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeJsNavState_lift(_ buf: RustBuffer) throws -> JsNavState {
+    return try FfiConverterTypeJsNavState.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeJsNavState_lower(_ value: JsNavState) -> RustBuffer {
+    return FfiConverterTypeJsNavState.lower(value)
+}
+
+
 /**
  * The content of a visual instruction.
  */
@@ -6110,15 +6188,10 @@ extension ModelError: Foundation.LocalizedError {
 
 public enum NavigationRecordingEventData {
     
-    case locationUpdate(
-        /**
-         * Updated user location.
-         */userLocation: UserLocation
-    )
-    case tripStateUpdate(
+    case navStateUpdate(
         /**
          * Updated trip state.
-         */tripState: TripState
+         */navState: JsNavState
     )
     case routeUpdate(
         /**
@@ -6147,16 +6220,13 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         let variant: Int32 = try readInt(&buf)
         switch variant {
         
-        case 1: return .locationUpdate(userLocation: try FfiConverterTypeUserLocation.read(from: &buf)
+        case 1: return .navStateUpdate(navState: try FfiConverterTypeJsNavState.read(from: &buf)
         )
         
-        case 2: return .tripStateUpdate(tripState: try FfiConverterTypeTripState.read(from: &buf)
+        case 2: return .routeUpdate(route: try FfiConverterTypeRoute.read(from: &buf)
         )
         
-        case 3: return .routeUpdate(route: try FfiConverterTypeRoute.read(from: &buf)
-        )
-        
-        case 4: return .error(errorMessage: try FfiConverterString.read(from: &buf)
+        case 3: return .error(errorMessage: try FfiConverterString.read(from: &buf)
         )
         
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -6167,23 +6237,18 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         switch value {
         
         
-        case let .locationUpdate(userLocation):
+        case let .navStateUpdate(navState):
             writeInt(&buf, Int32(1))
-            FfiConverterTypeUserLocation.write(userLocation, into: &buf)
-            
-        
-        case let .tripStateUpdate(tripState):
-            writeInt(&buf, Int32(2))
-            FfiConverterTypeTripState.write(tripState, into: &buf)
+            FfiConverterTypeJsNavState.write(navState, into: &buf)
             
         
         case let .routeUpdate(route):
-            writeInt(&buf, Int32(3))
+            writeInt(&buf, Int32(2))
             FfiConverterTypeRoute.write(route, into: &buf)
             
         
         case let .error(errorMessage):
-            writeInt(&buf, Int32(4))
+            writeInt(&buf, Int32(3))
             FfiConverterString.write(errorMessage, into: &buf)
             
         }
@@ -6681,6 +6746,124 @@ extension RoutingRequestGenerationError: Foundation.LocalizedError {
         String(reflecting: self)
     }
 }
+
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum SerializableStepAdvanceCondition {
+    
+    case manual
+    case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16
+    )
+    case distanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16
+    )
+    case distanceEntryExit(minimumHorizontalAccuracy: UInt16, distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, hasReachedEndOfCurrentStep: Bool
+    )
+    case orAdvanceConditions(conditions: [SerializableStepAdvanceCondition]
+    )
+    case andAdvanceConditions(conditions: [SerializableStepAdvanceCondition]
+    )
+}
+
+
+#if compiler(>=6)
+extension SerializableStepAdvanceCondition: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRustBuffer {
+    typealias SwiftType = SerializableStepAdvanceCondition
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SerializableStepAdvanceCondition {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .manual
+        
+        case 2: return .distanceToEndOfStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
+        )
+        
+        case 3: return .distanceFromStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
+        )
+        
+        case 4: return .distanceEntryExit(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), distanceToEndOfStep: try FfiConverterUInt16.read(from: &buf), distanceAfterEndStep: try FfiConverterUInt16.read(from: &buf), hasReachedEndOfCurrentStep: try FfiConverterBool.read(from: &buf)
+        )
+        
+        case 5: return .orAdvanceConditions(conditions: try FfiConverterSequenceTypeSerializableStepAdvanceCondition.read(from: &buf)
+        )
+        
+        case 6: return .andAdvanceConditions(conditions: try FfiConverterSequenceTypeSerializableStepAdvanceCondition.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: SerializableStepAdvanceCondition, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .manual:
+            writeInt(&buf, Int32(1))
+        
+        
+        case let .distanceToEndOfStep(distance,minimumHorizontalAccuracy):
+            writeInt(&buf, Int32(2))
+            FfiConverterUInt16.write(distance, into: &buf)
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+            
+        
+        case let .distanceFromStep(distance,minimumHorizontalAccuracy):
+            writeInt(&buf, Int32(3))
+            FfiConverterUInt16.write(distance, into: &buf)
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+            
+        
+        case let .distanceEntryExit(minimumHorizontalAccuracy,distanceToEndOfStep,distanceAfterEndStep,hasReachedEndOfCurrentStep):
+            writeInt(&buf, Int32(4))
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+            FfiConverterUInt16.write(distanceToEndOfStep, into: &buf)
+            FfiConverterUInt16.write(distanceAfterEndStep, into: &buf)
+            FfiConverterBool.write(hasReachedEndOfCurrentStep, into: &buf)
+            
+        
+        case let .orAdvanceConditions(conditions):
+            writeInt(&buf, Int32(5))
+            FfiConverterSequenceTypeSerializableStepAdvanceCondition.write(conditions, into: &buf)
+            
+        
+        case let .andAdvanceConditions(conditions):
+            writeInt(&buf, Int32(6))
+            FfiConverterSequenceTypeSerializableStepAdvanceCondition.write(conditions, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeSerializableStepAdvanceCondition_lift(_ buf: RustBuffer) throws -> SerializableStepAdvanceCondition {
+    return try FfiConverterTypeSerializableStepAdvanceCondition.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeSerializableStepAdvanceCondition_lower(_ value: SerializableStepAdvanceCondition) -> RustBuffer {
+    return FfiConverterTypeSerializableStepAdvanceCondition.lower(value)
+}
+
+
+extension SerializableStepAdvanceCondition: Equatable, Hashable {}
+
+
 
 
 
@@ -7919,6 +8102,31 @@ fileprivate struct FfiConverterSequenceTypeBlockedLane: FfiConverterRustBuffer {
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             seq.append(try FfiConverterTypeBlockedLane.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeSerializableStepAdvanceCondition: FfiConverterRustBuffer {
+    typealias SwiftType = [SerializableStepAdvanceCondition]
+
+    public static func write(_ value: [SerializableStepAdvanceCondition], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeSerializableStepAdvanceCondition.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [SerializableStepAdvanceCondition] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [SerializableStepAdvanceCondition]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeSerializableStepAdvanceCondition.read(from: &buf))
         }
         return seq
     }
