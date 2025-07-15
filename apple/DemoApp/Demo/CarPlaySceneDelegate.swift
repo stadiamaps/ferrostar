@@ -43,7 +43,7 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
             return
         }
 
-        let carPlayModel = DemoCarPlayModel(model: model)
+        let carPlayModel = DemoCarPlayModel(model: model, interfaceController: interfaceController)
         templateApplicationScene.session.model = carPlayModel
 
         let view = DemoCarPlayNavigationView(model: carPlayModel)
@@ -64,7 +64,7 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
         }
     }
 
-    public func templateApplicationScene(
+    func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didDisconnect _: CPInterfaceController,
         from window: CPWindow

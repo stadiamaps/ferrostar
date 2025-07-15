@@ -1,32 +1,54 @@
 use crate::models::Route;
 use crate::navigation_controller::models::{
     NavState, NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData,
+    SerializableNavigationControllerConfig, TripState,
 };
 use chrono::Utc;
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Deserialize)]
 pub struct NavigationRecording {
     /// Version of Ferrostar that created this recording.
     pub version: String,
     /// The timestamp when the navigation session started.
     pub initial_timestamp: i64,
     /// Configuration of the navigation session.
-    pub config: NavigationControllerConfig,
+    pub config: SerializableNavigationControllerConfig,
     /// The initial route assigned.
     pub initial_route: Route,
     /// Collection of events that occurred during the navigation session.
     pub events: Vec<NavigationRecordingEvent>,
 }
 
-/// Functionality for the navigation controller that is exported. (or will be exported)
+/// Custom error type for navigation recording operations.
+#[derive(Debug)]
+#[cfg_attr(feature = "std", derive(thiserror::Error))]
+pub enum NavigationRecordingError {
+    #[error(transparent)]
+    SerializationError(#[from] serde_json::Error),
+}
+
+/// Functionality for the navigation controller that is not exported.
 impl NavigationRecording {
     /// Creates a new navigation recorder with route configuration and initial state.
     pub fn new(config: NavigationControllerConfig, initial_route: Route) -> Self {
         Self {
             version: env!("CARGO_PKG_VERSION").to_string(),
             initial_timestamp: Utc::now().timestamp_millis(),
-            config,
+            config: SerializableNavigationControllerConfig::from(config),
             initial_route,
             events: Vec::new(),
         }
+    }
+
+    /// Serializes the navigation recording to a JSON string.
+    ///
+    /// # Returns
+    ///
+    /// - `Ok(String)` - A JSON string representation of the navigation recording
+    /// - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
+    pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
+        serde_json::to_string(self).map_err(NavigationRecordingError::SerializationError)
     }
 
     pub fn record_nav_state_update(

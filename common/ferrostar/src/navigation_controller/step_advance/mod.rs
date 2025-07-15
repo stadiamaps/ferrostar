@@ -6,8 +6,6 @@ use crate::{
         DistanceToEndOfStepCondition, ManualStepCondition, OrAdvanceConditions,
     },
 };
-
-#[cfg(feature = "wasm-bindgen")]
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
@@ -38,8 +36,8 @@ pub struct StepAdvanceResult {
 }
 
 /// A trait for converting a step advance condition into a JavaScript object for Web/WASM.
-pub trait StepAdvanceConditionJsConvertible {
-    fn to_js(&self) -> JsStepAdvanceCondition;
+pub trait StepAdvanceConditionSerializable {
+    fn to_js(&self) -> SerializableStepAdvanceCondition;
 }
 
 /// When implementing custom step advance logic, this trait allows you to define
@@ -47,7 +45,7 @@ pub trait StepAdvanceConditionJsConvertible {
 ///
 /// At the moment, these must be implemented in Rust.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
-pub trait StepAdvanceCondition: StepAdvanceConditionJsConvertible + Sync + Send {
+pub trait StepAdvanceCondition: StepAdvanceConditionSerializable + Sync + Send {
     // NOTE: This cannot be exported `with_foreign` because of uniffi's Arc implementation.
     // It will cause a stack overflow when with_foreign is used at some point in the trip.
 
@@ -63,10 +61,9 @@ pub trait StepAdvanceCondition: StepAdvanceConditionJsConvertible + Sync + Send 
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
-pub enum JsStepAdvanceCondition {
+pub enum SerializableStepAdvanceCondition {
     Manual,
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     DistanceToEndOfStep {
@@ -87,33 +84,33 @@ pub enum JsStepAdvanceCondition {
     },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     OrAdvanceConditions {
-        conditions: Vec<JsStepAdvanceCondition>,
+        conditions: Vec<SerializableStepAdvanceCondition>,
     },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     AndAdvanceConditions {
-        conditions: Vec<JsStepAdvanceCondition>,
+        conditions: Vec<SerializableStepAdvanceCondition>,
     },
 }
 
-impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
-    fn from(condition: JsStepAdvanceCondition) -> Arc<dyn StepAdvanceCondition> {
+impl From<SerializableStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
+    fn from(condition: SerializableStepAdvanceCondition) -> Arc<dyn StepAdvanceCondition> {
         match condition {
-            JsStepAdvanceCondition::Manual => Arc::new(ManualStepCondition),
-            JsStepAdvanceCondition::DistanceToEndOfStep {
+            SerializableStepAdvanceCondition::Manual => Arc::new(ManualStepCondition),
+            SerializableStepAdvanceCondition::DistanceToEndOfStep {
                 distance,
                 minimum_horizontal_accuracy,
             } => Arc::new(DistanceToEndOfStepCondition {
                 distance,
                 minimum_horizontal_accuracy,
             }),
-            JsStepAdvanceCondition::DistanceFromStep {
+            SerializableStepAdvanceCondition::DistanceFromStep {
                 distance,
                 minimum_horizontal_accuracy,
             } => Arc::new(DistanceToEndOfStepCondition {
                 distance,
                 minimum_horizontal_accuracy,
             }),
-            JsStepAdvanceCondition::DistanceEntryExit {
+            SerializableStepAdvanceCondition::DistanceEntryExit {
                 minimum_horizontal_accuracy,
                 distance_to_end_of_step,
                 distance_after_end_step,
@@ -124,12 +121,12 @@ impl From<JsStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
                 distance_after_end_of_step: distance_after_end_step,
                 has_reached_end_of_current_step,
             }),
-            JsStepAdvanceCondition::OrAdvanceConditions { conditions } => {
+            SerializableStepAdvanceCondition::OrAdvanceConditions { conditions } => {
                 Arc::new(OrAdvanceConditions {
                     conditions: conditions.into_iter().map(|c| c.into()).collect(),
                 })
             }
-            JsStepAdvanceCondition::AndAdvanceConditions { conditions } => {
+            SerializableStepAdvanceCondition::AndAdvanceConditions { conditions } => {
                 Arc::new(AndAdvanceConditions {
                     conditions: conditions.into_iter().map(|c| c.into()).collect(),
                 })

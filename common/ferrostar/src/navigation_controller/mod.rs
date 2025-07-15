@@ -28,7 +28,7 @@ use std::clone::Clone;
 use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
-use crate::navigation_controller::models::{JsNavState, JsNavigationControllerConfig};
+use crate::navigation_controller::models::{JsNavState, SerializableNavigationControllerConfig};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -458,7 +458,8 @@ impl JsNavigationController {
         should_record: JsValue,
     ) -> Result<JsNavigationController, JsValue> {
         let route: Route = serde_wasm_bindgen::from_value(route)?;
-        let config: JsNavigationControllerConfig = serde_wasm_bindgen::from_value(config)?;
+        let config: SerializableNavigationControllerConfig =
+            serde_wasm_bindgen::from_value(config)?;
         let should_record: bool = serde_wasm_bindgen::from_value(should_record)?;
 
         Ok(JsNavigationController(create_navigator(
