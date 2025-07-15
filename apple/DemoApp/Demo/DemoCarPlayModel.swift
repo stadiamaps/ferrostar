@@ -126,8 +126,7 @@ private extension DemoAppState {
             guard let route = choice.route else { throw DemoError.invalidCPRouteChoice }
             startNavigationSession(route, mapTemplate: mapTemplate)
         } catch {
-            model.errorMessage = error.localizedDescription
-            model.appState = .idle
+            model.handleError(error)
         }
     }
 
@@ -137,8 +136,7 @@ private extension DemoAppState {
             model.chooseRoute(route)
             updateTemplate(mapTemplate)
         } catch {
-            model.errorMessage = error.localizedDescription
-            model.appState = .idle
+            model.handleError(error)
         }
     }
 
