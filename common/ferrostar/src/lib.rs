@@ -33,6 +33,9 @@ pub mod navigation_controller;
 pub mod routing_adapters;
 pub mod simulation;
 
+#[cfg(test)]
+pub(crate) mod test_utils;
+
 #[cfg(target_os = "android")]
 fn init_logger() {
     android_logger::init_once(
