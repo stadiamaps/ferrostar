@@ -38,13 +38,13 @@ public struct NavigationState: Hashable {
     }
 
     public var currentSummary: TripSummary? {
-        guard case let .navigating(_, _, _, _, _, _, summary, _, _,
-                                   _, _) = tripState
-        else {
-            return nil
+        switch tripState {
+        case let .navigating(_, _, _, _, _, _, summary, _, _, _, _),
+             let .complete(_, summary):
+            summary
+        case .idle:
+            nil
         }
-
-        return summary
     }
 
     public var currentVisualInstruction: VisualInstruction? {
