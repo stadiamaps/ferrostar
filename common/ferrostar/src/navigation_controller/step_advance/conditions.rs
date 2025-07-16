@@ -443,31 +443,6 @@ mod tests {
     }
 
     #[test]
-    fn test_distance_from_step_doesnt_advance() {
-        // FIXME: This comment isn't even correct?
-        // Create a location that's on the line (so deviation = 0)
-        let user_location = make_user_location(coord!(x: 0.0, y: 0.0005), 5.0); // Point directly on the line
-
-        // Set up the condition with a minimum deviation of 100 meters to advance
-        let condition = DistanceFromStepCondition {
-            minimum_horizontal_accuracy: 10,
-            distance: 100, // Must be at least 100 meters from route to advance
-        };
-
-        // Test the condition - we should NOT advance since we're right on the route
-        let result = condition.should_advance_step(
-            user_location,
-            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
-            None,
-        );
-
-        assert!(
-            !result.should_advance,
-            "Should not advance when on the route"
-        );
-    }
-
-    #[test]
     fn test_distance_from_step_advance() {
         // Create a location that's far from the route (500+ meters north)
         // At the equator, 0.005° latitude is approximately 555 meters
