@@ -264,27 +264,24 @@ pub struct DistanceEntryAndExitCondition {
     // TODO: Do we want a speed multiplier
 }
 
-impl DistanceEntryAndExitCondition {
-    pub fn new(
-        distance_to_end_of_step: u16,
-        distance_after_end_step: u16,
-        minimum_horizontal_accuracy: u16,
-    ) -> Self {
-        Self {
-            distance_to_end_of_step,
-            distance_after_end_of_step: distance_after_end_step,
-            minimum_horizontal_accuracy,
-            has_reached_end_of_current_step: false,
-        }
-    }
-}
-
 impl Default for DistanceEntryAndExitCondition {
     fn default() -> Self {
         Self {
             distance_to_end_of_step: 20,
             distance_after_end_of_step: 5,
             minimum_horizontal_accuracy: 25,
+            has_reached_end_of_current_step: false,
+        }
+    }
+}
+
+#[cfg(test)]
+impl DistanceEntryAndExitCondition {
+    pub fn exact() -> Self {
+        Self {
+            distance_to_end_of_step: 0,
+            distance_after_end_of_step: 0,
+            minimum_horizontal_accuracy: 0,
             has_reached_end_of_current_step: false,
         }
     }
@@ -311,11 +308,12 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
             if should_advance {
                 StepAdvanceResult {
                     should_advance: true,
-                    next_iteration: Arc::new(DistanceEntryAndExitCondition::new(
-                        self.distance_to_end_of_step,
-                        self.distance_after_end_of_step,
-                        self.minimum_horizontal_accuracy,
-                    )),
+                    next_iteration: Arc::new(DistanceEntryAndExitCondition {
+                        distance_to_end_of_step: self.distance_to_end_of_step,
+                        distance_after_end_of_step: self.distance_after_end_of_step,
+                        minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+                        has_reached_end_of_current_step: false,
+                    }),
                 }
             } else {
                 // The condition was not advanced. So we return a fresh iteration
@@ -678,11 +676,12 @@ mod tests {
             ]);
 
         // Create a condition that requires proximity to end followed by distance from step
-        let condition = DistanceEntryAndExitCondition::new(
-            10, // minimum horizontal accuracy
-            20, // distance to end of step (20 meters)
-            5,  // distance after end step (5 meters)
-        );
+        let condition = DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 20,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
 
         // First update: User is close to the end of the step
         let user_location_near_end = user_location(0.0, 0.00099, 5.0); // Almost at the end point
@@ -723,11 +722,12 @@ mod tests {
             ]);
 
         // Create a condition that requires proximity to end followed by distance from step
-        let condition = DistanceEntryAndExitCondition::new(
-            10, // minimum horizontal accuracy
-            20, // distance to end of step (20 meters)
-            5,  // distance after end step (5 meters)
-        );
+        let condition = DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 20,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
 
         // First update: User is close to the end of the step
         let user_location_near_end = user_location(0.0, 0.00099, 5.0); // Almost at the end point

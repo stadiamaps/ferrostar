@@ -558,7 +558,7 @@ mod tests {
         nav_controller_insta_settings().bind(|| {
             insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
                 get_test_route(TestRoute::Extended),
-                Arc::new(DistanceEntryAndExitCondition::new(0, 0, 0))
+                Arc::new(DistanceEntryAndExitCondition::exact())
             ));
         });
     }
@@ -581,7 +581,7 @@ mod tests {
         nav_controller_insta_settings().bind(|| {
             insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
                 get_test_route(TestRoute::SelfIntersecting),
-                Arc::new(DistanceEntryAndExitCondition::new(0, 0, 0))
+                Arc::new(DistanceEntryAndExitCondition::exact())
             ));
         });
     }
