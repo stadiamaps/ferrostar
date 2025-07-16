@@ -77,9 +77,9 @@ pub enum SerializableStepAdvanceCondition {
     },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     DistanceEntryExit {
-        minimum_horizontal_accuracy: u16,
         distance_to_end_of_step: u16,
         distance_after_end_step: u16,
+        minimum_horizontal_accuracy: u16,
         has_reached_end_of_current_step: bool,
     },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
@@ -212,9 +212,10 @@ pub fn step_advance_distance_entry_and_exit(
     distance_after_end_of_step: u16,
     minimum_horizontal_accuracy: u16,
 ) -> Arc<dyn StepAdvanceCondition> {
-    Arc::new(DistanceEntryAndExitCondition::new(
+    Arc::new(DistanceEntryAndExitCondition {
         distance_to_end_of_step,
         distance_after_end_of_step,
         minimum_horizontal_accuracy,
-    ))
+        has_reached_end_of_current_step: false,
+    })
 }
