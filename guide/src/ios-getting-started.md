@@ -108,7 +108,7 @@ or self-hosting.
 If your routes include spoken instructions,
 Ferrostar can trigger the speech synthesis at the right time.
 Ferrostar includes the `SpokenInstructionObserver` class, 
-which can use `AVSpeechSynthesizer` or your own speech synthesis.
+which can use `AVSpeechSynthesizer` or your own speech synthesis. This is the default for the `FerrostarCore` initializer.
 
 The `SpeechSynthesizer` protocol
 specifies the required interface,
@@ -122,11 +122,7 @@ Your navigation view can store the spoken instruction observer as an instance va
 @State private var spokenInstructionObserver = SpokenInstructionObserver.initAVSpeechSynthesizer()
 ```
 
-Then, you'll need to configure `FerrostarCore` to use it.
-
-```swift
-ferrostarCore.spokenInstructionObserver = spokenInstructionObserver
-```
+Then, you'll need to initialize `FerrostarCore` to reference it. As stated above, it has a default parameter to use `AVSpeechSynthesizer`.
 
 Finally, you can use this to drive state on navigation view.
 `DynamicallyOrientingNavigationView` has constructor arguments to configure the mute button UI.

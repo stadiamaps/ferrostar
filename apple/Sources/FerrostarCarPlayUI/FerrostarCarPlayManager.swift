@@ -1,102 +1,121 @@
 import CarPlay
+import Combine
 import FerrostarCore
+import FerrostarCoreFFI
+import FerrostarSwiftUI
 import Foundation
 import MapLibreSwiftUI
 import os
 import OSLog
 import SwiftUI
 
-private extension Logger {
-    static let cpMapTemplateDelegate = Logger(category: "CPMapTemplateDelegate")
-}
-
-public class FerrostarCarPlayManager: NSObject, CPTemplateApplicationSceneDelegate {
-    private let ferrostarCore: FerrostarCore
-    @Binding var camera: MapViewCamera
-
+public class FerrostarCarPlayManager: NSObject {
     private let logger: Logger
-    private let distanceUnits: MKDistanceFormatter.Units
 
-    private var ferrostarAdapter: FerrostarCarPlayAdapter?
-    private var interfaceController: CPInterfaceController?
+    // TODO: This should be customizable. For now we're just ignore it.
+    private var uiState: CarPlayUIState = .idle(nil)
+    private let ferrostarCore: FerrostarCore
+    private var navigatingTemplate: NavigatingTemplateHost
+    private var cancellables = Set<AnyCancellable>()
+
+    public var mapTemplate: CPMapTemplate = .init()
 
     public init(
         _ ferrostarCore: FerrostarCore,
-        camera: Binding<MapViewCamera>,
         logger: Logger = Logger(
             subsystem: Bundle.main.bundleIdentifier ?? "FerrostarCarPlayUI",
             category: "FerrostarCarPlayManager"
         ),
-        distanceUnits: MKDistanceFormatter.Units
+        formatterCollection: FormatterCollection = FoundationFormatterCollection(),
+        distanceUnits: MKDistanceFormatter.Units,
+        showCentering: Bool,
+        onCenter: @escaping () -> Void,
+        onStartTrip: @escaping () -> Void,
+        onCancelTrip: @escaping () -> Void
     ) {
         self.ferrostarCore = ferrostarCore
-        _camera = camera
         self.logger = logger
-        self.distanceUnits = distanceUnits
 
-        super.init()
-    }
-
-    // MARK: CPApplicationDelegate
-
-    public func templateApplicationScene(
-        _: CPTemplateApplicationScene,
-        didConnect interfaceController: CPInterfaceController,
-        to _: CPWindow
-    ) {
-        logger.debug("\(#function)")
-        self.interfaceController = interfaceController
-
-        // Create the map template
-        let mapTemplate = CPMapTemplate()
-
-        // Create the navigation adapter
-        ferrostarAdapter = FerrostarCarPlayAdapter(ferrostarCore: ferrostarCore,
-                                                   distanceUnits: distanceUnits)
-
-        ferrostarAdapter?.setup(
-            on: mapTemplate,
-            showCentering: !camera.isTrackingUserLocationWithCourse,
-            onCenter: { [weak self] in
-                self?.camera = .automotiveNavigation(pitch: 25)
-            },
-            onStartTrip: {
-                // TODO: This will require some work on the FerrostarCore side - to accept a route before starting.
-            },
-            onCancelTrip: { [weak self] in
-                self?.ferrostarCore.stopNavigation()
-            }
+        navigatingTemplate = NavigatingTemplateHost(
+            mapTemplate: mapTemplate,
+            formatters: formatterCollection,
+            units: distanceUnits,
+            showCentering: showCentering, // TODO: Make this dynamic based on the camera state
+            onCenter: onCenter,
+            onStartTrip: onStartTrip,
+            onCancelTrip: onCancelTrip
         )
 
-        // Set the root template
-        interfaceController.setRootTemplate(mapTemplate, animated: true) { [weak self] success, error in
-            if let error {
-                self?.logger.error("Failed didConnect to CPWindow with error: \(error)")
-            } else {
-                self?.logger.debug("Connected to CPWindow - template presented: \(success)")
+        super.init()
+        setupObservers()
+    }
+
+    public func disconnect() {
+        logger.debug("\(#function)")
+    }
+
+    private func terminateTrip(cancelled: Bool = false) {
+        if cancelled {
+            navigatingTemplate.cancelTrip()
+        } else {
+            navigatingTemplate.completeTrip()
+        }
+        uiState = .idle(nil)
+    }
+
+    private func setupObservers() {
+        // Handle Navigation Start/Stop
+        Publishers.CombineLatest(
+            ferrostarCore.$route,
+            ferrostarCore.$state
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] route, navState in
+            guard let self else { return }
+            guard let navState else {
+                if uiState == .navigating {
+                    terminateTrip(cancelled: true)
+                }
+                return
+            }
+
+            switch navState.tripState {
+            case .navigating:
+                if let route, uiState != .navigating {
+                    uiState = .navigating
+                    do {
+                        try navigatingTemplate.start(routes: [route], waypoints: route.waypoints)
+                        logger.debug("CarPlay - started")
+                    } catch {
+                        logger.debug("CarPlay - startup error: \(error, privacy: .public)")
+                    }
+                }
+                navigatingTemplate.update(navigationState: navState)
+            case .complete:
+                terminateTrip()
+            case .idle:
+                break
             }
         }
-    }
+        .store(in: &cancellables)
 
-    public func templateApplicationScene(
-        _: CPTemplateApplicationScene,
-        didDisconnect _: CPInterfaceController,
-        from _: CPWindow
-    ) {
-        logger.debug("\(#function)")
-        interfaceController = nil
-        ferrostarAdapter = nil
-    }
-}
+        ferrostarCore.$state
+            .receive(on: DispatchQueue.main)
+            .compactMap { navState -> (VisualInstruction, RouteStep)? in
+                guard let instruction = navState?.currentVisualInstruction,
+                      let step = navState?.currentStep
+                else {
+                    return nil
+                }
 
-extension FerrostarCarPlayManager: CPMapTemplateDelegate {
-    public func mapTemplate(_: CPMapTemplate, selectedPreviewFor _: CPTrip, using _: CPRouteChoice) {
-        Logger.cpMapTemplateDelegate.debug("\(#function)")
-        // TODO: What is this for?
-    }
+                return (instruction, step)
+            }
+            .removeDuplicates(by: { $0.0 == $1.0 })
+            .sink { [weak self] instruction, step in
+                guard let self else { return }
 
-    public func mapTemplate(_: CPMapTemplate, startedTrip _: CPTrip, using _: CPRouteChoice) {
-        Logger.cpMapTemplateDelegate.debug("\(#function)")
-        // TODO: What is this for?
+                navigatingTemplate.update(instruction, currentStep: step)
+            }
+            .store(in: &cancellables)
     }
 }

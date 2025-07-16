@@ -8,39 +8,62 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct DemoNavigationView: View {
-    @EnvironmentObject private var appEnvironment: AppEnvironment
-    @EnvironmentObject private var ferrostarCore: FerrostarCore
-
-    @State private var isFetchingRoutes = false
-    @State private var routes: [Route]?
-    @State private var errorMessage: String? {
-        didSet {
-            Task {
-                try await Task.sleep(nanoseconds: 10 * NSEC_PER_SEC)
-                errorMessage = nil
-            }
+private extension SwitchableLocationProvider.State {
+    @ViewBuilder var label: some View {
+        switch self {
+        case .simulated:
+            Label("Sim", systemImage: "location.slash.circle")
+        case .device:
+            Label("Device", systemImage: "location.circle")
         }
     }
+}
+
+private extension DemoModel {
+    func selectRoute(from routes: [Route]) {
+        do {
+            guard let route = routes.first else { throw DemoError.noFirstRoute }
+            selectedRoute = route
+            chooseRoute(route)
+        } catch {
+            handleError(error)
+        }
+    }
+}
+
+private extension DemoAppState {
+    var showStateButton: Bool {
+        switch self {
+        case .idle, .destination(_), .routes(_), .selectedRoute:
+            true
+        case .navigating:
+            false
+        }
+    }
+}
+
+struct DemoNavigationView: View {
+    @Bindable var model: DemoModel
+    @State private var isFetchingRoutes = false
+    @State private var showSearch = false
 
     var body: some View {
-        let locationServicesEnabled = appEnvironment.locationProvider.authorizationStatus == .authorizedAlways
-            || appEnvironment.locationProvider.authorizationStatus == .authorizedWhenInUse
+        let locationServicesEnabled = model.locationServicesEnabled
 
-        NavigationStack {
+        VStack {
             DynamicallyOrientingNavigationView(
                 styleURL: AppDefaults.mapStyleURL,
-                camera: $appEnvironment.camera.camera,
-                navigationState: appEnvironment.ferrostarCore.state,
-                isMuted: appEnvironment.spokenInstructionObserver.isMuted,
-                onTapMute: appEnvironment.spokenInstructionObserver.toggleMute,
+                camera: $model.camera,
+                navigationState: model.coreState,
+                isMuted: model.core.spokenInstructionObserver.isMuted,
+                onTapMute: model.core.spokenInstructionObserver.toggleMute,
                 onTapExit: { stopNavigation() },
                 makeMapContent: {
                     let source = ShapeSource(identifier: "userLocation") {
                         // Demonstrate how to add a dynamic overlay;
                         // also incidentally shows the extent of puck lag
-                        if let userLocation = appEnvironment.locationProvider.lastLocation {
-                            MLNPointFeature(coordinate: userLocation.clLocation.coordinate)
+                        if let coordinate = model.lastCoordinate {
+                            MLNPointFeature(coordinate: coordinate)
                         }
                     }
                     CircleStyleLayer(identifier: "foo", source: source)
@@ -48,17 +71,17 @@ struct DemoNavigationView: View {
             )
             .navigationSpeedLimit(
                 // Configure speed limit signage based on user preference or location
-                speedLimit: ferrostarCore.annotation?.speedLimit,
+                speedLimit: model.core.annotation?.speedLimit,
                 speedLimitStyle: .mutcdStyle
             )
             .innerGrid(
                 topCenter: {
-                    if let errorMessage {
+                    if let errorMessage = model.errorMessage {
                         NavigationUIBanner(severity: .error) {
                             Text(errorMessage)
                         }
                         .onTapGesture {
-                            self.errorMessage = nil
+                            model.errorMessage = nil
                         }
                     } else if isFetchingRoutes {
                         NavigationUIBanner(severity: .loading) {
@@ -75,25 +98,31 @@ struct DemoNavigationView: View {
                             .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
 
                         if locationServicesEnabled {
-                            if ferrostarCore.state == nil {
+                            if model.appState.showStateButton {
                                 NavigationUIButton {
-                                    Task {
-                                        do {
+                                    switch model.appState {
+                                    case .idle:
+                                        showSearch = true
+                                    case let .destination(coordinate):
+                                        Task {
                                             isFetchingRoutes = true
-                                            try startNavigation()
+                                            await model.loadRoute(coordinate)
                                             isFetchingRoutes = false
-                                        } catch {
-                                            isFetchingRoutes = false
-                                            errorMessage = "\(error.localizedDescription)"
                                         }
+                                    case let .routes(routes):
+                                        model.selectRoute(from: routes)
+                                    case let .selectedRoute(route):
+                                        startNavigation(route)
+                                    case .navigating:
+                                        // Should not reach this.
+                                        break
                                     }
                                 } label: {
-                                    Text("Start Nav")
+                                    Text(model.appState.buttonText)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.5)
                                         .font(.body.bold())
                                 }
-                                .disabled(routes?.isEmpty == true)
                             }
                         } else {
                             NavigationUIButton {
@@ -102,48 +131,43 @@ struct DemoNavigationView: View {
                                 Text("Enable Location Services")
                             }
                         }
+                        Button {
+                            model.toggleLocationSimulation()
+                        } label: {
+                            model.locationProvider.type.label
+                        }
+                        .buttonStyle(NavigationUIButtonStyle())
                     }
                 }
             )
-            .task {
-                await getRoutes()
+
+            if showSearch {
+                model.searchView
+                    .onChange(of: model.destination) { _, _ in
+                        showSearch = false
+                    }
             }
         }
     }
 
     // MARK: Conveniences
 
-    func getRoutes() async {
-        do {
-            routes = try await appEnvironment.getRoutes()
-        } catch {
-            print("DemoApp: error getting routes: \(error)")
-        }
-    }
-
-    func startNavigation() throws {
-        guard let route = routes?.first else {
-            print("DemoApp: No route")
-            return
-        }
-
-        try appEnvironment.startNavigation(route: route)
-        appEnvironment.camera.camera = .automotiveNavigation()
+    func startNavigation(_ route: Route) {
+        model.navigate(route)
         preventAutoLock()
     }
 
     func stopNavigation() {
-        appEnvironment.stopNavigation()
-        appEnvironment.camera.camera = .center(AppDefaults.initialLocation.coordinate, zoom: 14)
+        model.stop()
         allowAutoLock()
     }
 
     var locationLabel: String {
-        guard let userLocation = appEnvironment.locationProvider.lastLocation else {
-            return "No location - authed as \(appEnvironment.locationProvider.authorizationStatus)"
+        guard let horizontalAccuracy = model.horizontalAccuracy else {
+            return "Not Authorized"
         }
 
-        return "±\(Int(userLocation.horizontalAccuracy))m accuracy"
+        return "±\(Int(horizontalAccuracy))m accuracy"
     }
 
     private func preventAutoLock() {
@@ -153,8 +177,4 @@ struct DemoNavigationView: View {
     private func allowAutoLock() {
         UIApplication.shared.isIdleTimerDisabled = false
     }
-}
-
-#Preview {
-    DemoNavigationView()
 }

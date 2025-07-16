@@ -105,6 +105,9 @@ final class AnnotationPublisherTests: XCTestCase {
         NavigationState(
             tripState: .navigating(
                 currentStepGeometryIndex: 1,
+                userLocation: UserLocation(
+                    clCoordinateLocation2D: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
+                ),
                 snappedUserLocation: UserLocation(
                     clCoordinateLocation2D: CLLocationCoordinate2D(latitude: 0.0, longitude: 0.0)
                 ),
@@ -114,6 +117,12 @@ final class AnnotationPublisherTests: XCTestCase {
                     distanceToNextManeuver: 1.0,
                     distanceRemaining: 2.0,
                     durationRemaining: 3.0
+                ),
+                summary: TripSummary(
+                    distanceTraveled: 4,
+                    snappedDistanceTraveled: 5,
+                    startedAt: Date(),
+                    endedAt: nil
                 ),
                 deviation: .noDeviation,
                 visualInstruction: nil,

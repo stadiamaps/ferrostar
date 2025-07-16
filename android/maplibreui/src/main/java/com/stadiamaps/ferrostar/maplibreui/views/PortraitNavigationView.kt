@@ -33,16 +33,12 @@ import com.stadiamaps.ferrostar.composeui.views.overlays.PortraitNavigationOverl
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.boundingBox
-import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
-import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * A portrait orientation of the navigation view with instructions, default controls and the
@@ -110,7 +106,6 @@ fun PortraitNavigationView(
         uiState,
         mapControls,
         locationRequestProperties,
-        snapUserLocationToRoute,
         routeOverlayBuilder,
         onMapReadyCallback = { camera.value = navigationCamera },
         mapContent)
@@ -145,11 +140,8 @@ fun PortraitNavigationView(
 @Preview(device = Devices.PIXEL_5)
 @Composable
 private fun PortraitNavigationViewPreview() {
-  val viewModel =
-      MockNavigationViewModel(MutableStateFlow(NavigationUiState.pedestrianExample()).asStateFlow())
-
   PortraitNavigationView(
       Modifier.fillMaxSize(),
       styleUrl = "https://demotiles.maplibre.org/style.json",
-      viewModel = viewModel)
+      viewModel = previewViewModel)
 }

@@ -3,12 +3,13 @@ import FerrostarCoreFFI
 import FerrostarSwiftUI
 import MapKit
 import Testing
+import TestSupport
 
 @testable import FerrostarCarPlayUI
 
 struct CPTripTests {
     @Test("CPTrip creation")
-    func testCPTripCreation() async throws {
+    func cPTripCreation() async throws {
         let route = Route(
             geometry: [],
             bbox: .init(sw: .init(lat: 0, lng: 0), ne: .init(lat: 1, lng: 1)),
@@ -23,7 +24,7 @@ struct CPTripTests {
         let trip = try CPTrip.fromFerrostar(
             routes: [route],
             waypoints: [origin, destination],
-            distanceFormatter: DefaultFormatters.distanceFormatter,
+            distanceFormatter: usaDistanceFormatter,
             durationFormatter: DefaultFormatters.durationFormat
         )
 

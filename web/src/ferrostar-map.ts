@@ -2,6 +2,7 @@ import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import maplibregl, { GeolocateControl, Map } from "maplibre-gl";
 import {
+  JsNavState,
   NavigationController,
   RouteAdapter,
   TripState,
@@ -34,7 +35,7 @@ export class FerrostarMap extends LitElement {
   options: object = {};
 
   @state()
-  protected _tripState: TripState | null = null;
+  protected _navState: JsNavState | null = null;
 
   @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
@@ -60,10 +61,21 @@ export class FerrostarMap extends LitElement {
 
   /**
    * Automatically geolocates the user on map load.
+   *
    * Defaults to true.
+   * Has no effect if `addGeolocateControl` is false.
    */
   @property({ type: Boolean })
   geolocateOnLoad: boolean = true;
+
+  /**
+   * Optionally adds a geolocate control to the map.
+   *
+   * Defaults to true.
+   * Set this to false if you want to disable the geolocation control or bring your own.
+   */
+  @property({ type: Boolean })
+  addGeolocateControl: boolean = true;
 
   routeAdapter: RouteAdapter | null = null;
 
@@ -172,20 +184,22 @@ export class FerrostarMap extends LitElement {
   }
 
   firstUpdated() {
-    this.geolocateControl = new GeolocateControl({
-      positionOptions: {
-        enableHighAccuracy: true,
-      },
-      trackUserLocation: true,
-    });
+    if (this.addGeolocateControl) {
+      this.geolocateControl = new GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+      });
 
-    this.map.addControl(this.geolocateControl);
+      this.map.addControl(this.geolocateControl);
 
-    this.map.on("load", (_) => {
-      if (this.geolocateOnLoad) {
-        this.geolocateControl?.trigger();
-      }
-    });
+      this.map.on("load", (_) => {
+        if (this.geolocateOnLoad) {
+          this.geolocateControl?.trigger();
+        }
+      });
+    }
   }
 
   // TODO: type
@@ -230,7 +244,7 @@ export class FerrostarMap extends LitElement {
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
     // Initialize the navigation controller
-    this.navigationController = new NavigationController(route, config);
+    this.navigationController = new NavigationController(route, config, false);
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
     // Initialize the trip state
@@ -244,7 +258,7 @@ export class FerrostarMap extends LitElement {
           speed: null,
         };
 
-    this.tripStateUpdate(
+    this.navStateUpdate(
       this.navigationController.getInitialState(startingLocation),
     );
 
@@ -316,15 +330,15 @@ export class FerrostarMap extends LitElement {
     this.routeAdapter = null;
     this.navigationController?.free();
     this.navigationController = null;
-    this.tripStateUpdate(null);
+    this.navStateUpdate(null);
     this.clearMap();
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
   }
 
-  private tripStateUpdate(newState: TripState | null) {
-    this._tripState = newState;
-    this.onTripStateChange?.(newState);
+  private navStateUpdate(newState: JsNavState | null) {
+    this._navState = newState;
+    this.onTripStateChange?.(newState?.tripState || null);
   }
 
   private onLocationUpdated() {
@@ -332,11 +346,11 @@ export class FerrostarMap extends LitElement {
       return;
     }
     // Update the trip state with the new location
-    const newTripState = this.navigationController!.updateUserLocation(
+    const newNavState = this.navigationController!.updateUserLocation(
       this.locationProvider.lastLocation,
-      this._tripState,
+      this._navState,
     );
-    this.tripStateUpdate(newTripState);
+    this.navStateUpdate(newNavState);
 
     // Update the simulated location marker if needed
     this.simulatedLocationMarker?.setLngLat(
@@ -350,7 +364,7 @@ export class FerrostarMap extends LitElement {
     });
 
     // Speak the next instruction if voice guidance is enabled
-    const tripState = this._tripState;
+    const tripState = this._navState?.tripState;
     if (
       this.useVoiceGuidance &&
       tripState != null &&
@@ -391,17 +405,17 @@ export class FerrostarMap extends LitElement {
           <!-- Fix names/ids; currently this is a breaking change -->
           <div id="overlay">
             <instructions-view
-              .tripState=${this._tripState}
+              .tripState=${this._navState?.tripState}
             ></instructions-view>
 
             <div id="bottom-component">
               <trip-progress-view
-                .tripState=${this._tripState}
+                .tripState=${this._navState?.tripState}
               ></trip-progress-view>
               <button
                 id="stop-button"
                 @click=${this.stopNavigation}
-                ?hidden=${!this._tripState}
+                ?hidden=${!this._navState?.tripState}
               >
                 <img src=${CloseSvg} alt="Stop navigation" class="icon" />
               </button>

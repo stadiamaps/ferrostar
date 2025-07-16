@@ -16,8 +16,8 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.33.0"
-    let releaseChecksum = "26e398a8150bd62cdf1782d289fa9b544b0c346eeafb55220259c128f8f9b18b"
+    let releaseTag = "0.39.0"
+    let releaseChecksum = "d3cd1b4c2e4cf7857dcc32fd20228b332d4c9d8038e1c3c04f71988f0d5179f6"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url:
@@ -123,6 +123,7 @@ let package = Package(
                 "FerrostarCore",
                 "FerrostarSwiftUI",
                 "FerrostarCarPlayUI",
+                "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/FerrostarCarPlayUITests"
@@ -164,6 +165,7 @@ let package = Package(
             dependencies: [
                 "FerrostarCore",
                 "FerrostarSwiftUI",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/TestSupport"
         ),

@@ -3,13 +3,13 @@ package com.stadiamaps.ferrostar.maplibreui.extensions
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import com.mapbox.mapboxsdk.geometry.LatLngBounds
 import com.maplibre.compose.camera.CameraState
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.camera.models.CameraPadding
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.models.CameraControlState
 import com.stadiamaps.ferrostar.core.BoundingBox
+import org.maplibre.android.geometry.LatLngBounds
 
 @Composable
 fun VisualNavigationViewConfig.cameraControlState(

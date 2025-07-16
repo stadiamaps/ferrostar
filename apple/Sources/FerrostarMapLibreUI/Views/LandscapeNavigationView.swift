@@ -18,7 +18,7 @@ public struct LandscapeNavigationView: View,
     let navigationCamera: MapViewCamera
     public var mapInsets: NavigationMapViewContentInsetBundle
 
-    private var navigationState: NavigationState?
+    private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
     public var speedLimit: Measurement<UnitSpeed>?
@@ -151,7 +151,7 @@ public struct LandscapeNavigationView: View,
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .imperial
 
-    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(_, _, snappedUserLocation: userLocation, _, _, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
 
@@ -174,7 +174,7 @@ public struct LandscapeNavigationView: View,
     formatter.locale = Locale(identifier: "en-US")
     formatter.units = .metric
 
-    guard case let .navigating(_, snappedUserLocation: userLocation, _, _, _, _, _, _, _) = state.tripState else {
+    guard case let .navigating(_, _, snappedUserLocation: userLocation, _, _, _, _, _, _, _, _) = state.tripState else {
         return EmptyView()
     }
 

@@ -9,6 +9,8 @@ import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
+import com.stadiamaps.ferrostar.core.http.HttpClientProvider
+import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
@@ -18,9 +20,9 @@ import okhttp3.OkHttpClient
 import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
-import uniffi.ferrostar.SpecialAdvanceConditions
-import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.WaypointAdvanceMode
+import uniffi.ferrostar.stepAdvanceDistanceEntryAndExit
+import uniffi.ferrostar.stepAdvanceDistanceToEndOfStep
 
 /**
  * A basic sample of a dependency injection module for the demo app. This is only used to
@@ -69,8 +71,8 @@ object AppModule {
     // TODO: Make this configurable?
     FusedLocationProvider(appContext)
   }
-  private val httpClient: OkHttpClient by lazy {
-    OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
+  private val httpClient: HttpClientProvider by lazy {
+    OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build().toOkHttpClientProvider()
   }
 
   private val foregroundServiceManager: ForegroundServiceManager by lazy {
@@ -88,12 +90,8 @@ object AppModule {
             navigationControllerConfig =
                 NavigationControllerConfig(
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
-                    StepAdvanceMode.RelativeLineStringDistance(
-                        minimumHorizontalAccuracy = 25U,
-                        specialAdvanceConditions =
-                            // NOTE: We have not yet put this threshold through extensive real-world
-                            // testing
-                            SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
+                    stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
+                    stepAdvanceDistanceToEndOfStep(30u, 32u),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),
             options =

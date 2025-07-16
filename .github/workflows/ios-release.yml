@@ -34,7 +34,7 @@ jobs:
         git push origin ${{ github.event.release.tag_name }} --force
 
     - name: Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v2.2.2
       with:
         files: common/target/ios/libferrostar-rs.xcframework.zip
         draft: false

@@ -17,6 +17,7 @@ import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
 import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
 import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
 import com.stadiamaps.ferrostar.core.NavigationUiState
+import kotlin.time.ExperimentalTime
 
 data class NavigationViewComponentBuilder(
     internal val instructionsView:
@@ -35,6 +36,7 @@ data class NavigationViewComponentBuilder(
     // maplibre specific.
 ) {
   companion object {
+    @OptIn(ExperimentalTime::class)
     fun Default(theme: NavigationUITheme = DefaultNavigationUITheme) =
         NavigationViewComponentBuilder(
             instructionsView = { modifier, uiState ->

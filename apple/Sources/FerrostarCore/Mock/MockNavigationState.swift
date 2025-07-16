@@ -3,49 +3,63 @@ import FerrostarCoreFFI
 import Foundation
 
 public extension NavigationState {
-    static let pedestrianExample = NavigationState(
-        tripState: .navigating(
-            currentStepGeometryIndex: 0,
-            snappedUserLocation: UserLocation(
-                latitude: samplePedestrianWaypoints.first!.lat,
-                longitude: samplePedestrianWaypoints.first!.lng,
-                horizontalAccuracy: 0,
-                course: 0,
-                courseAccuracy: 0,
-                timestamp: Date(),
-                speed: 0,
-                speedAccuracy: 0
+    static var pedestrianExample: NavigationState {
+        let userLocation = UserLocation(
+            latitude: samplePedestrianWaypoints.first!.lat,
+            longitude: samplePedestrianWaypoints.first!.lng,
+            horizontalAccuracy: 0,
+            course: 0,
+            courseAccuracy: 0,
+            timestamp: Date(),
+            speed: 0,
+            speedAccuracy: 0
+        )
+
+        return NavigationState(
+            tripState: .navigating(
+                currentStepGeometryIndex: 0,
+                userLocation: userLocation,
+                snappedUserLocation: userLocation,
+                remainingSteps: [],
+                remainingWaypoints: [],
+                progress: TripProgress(
+                    distanceToNextManeuver: 0,
+                    distanceRemaining: 0,
+                    durationRemaining: 0
+                ),
+                summary: TripSummary(
+                    distanceTraveled: 0,
+                    snappedDistanceTraveled: 0,
+                    startedAt: Date(),
+                    endedAt: nil
+                ),
+                deviation: .noDeviation,
+                visualInstruction: nil,
+                spokenInstruction: nil,
+                annotationJson: nil
             ),
-            remainingSteps: [],
-            remainingWaypoints: [],
-            progress: TripProgress(
-                distanceToNextManeuver: 0,
-                distanceRemaining: 0,
-                durationRemaining: 0
-            ),
-            deviation: .noDeviation,
-            visualInstruction: nil,
-            spokenInstruction: nil,
-            annotationJson: nil
-        ),
-        routeGeometry: samplePedestrianWaypoints,
-        isCalculatingNewRoute: false
-    )
+            routeGeometry: samplePedestrianWaypoints,
+            isCalculatingNewRoute: false
+        )
+    }
 
     static func modifiedPedestrianExample(droppingNWaypoints n: Int) -> NavigationState {
+        let userLocation = UserLocation(
+            coordinates: samplePedestrianWaypoints.first!,
+            horizontalAccuracy: 10,
+            courseOverGround: CourseOverGround(degrees: 0, accuracy: 10),
+            timestamp: Date(),
+            speed: Speed(value: 0, accuracy: 2)
+        )
+
         let remainingLocations = Array(samplePedestrianWaypoints.dropFirst(n))
         let lastUserLocation = remainingLocations.first!
 
         return NavigationState(
             tripState: .navigating(
                 currentStepGeometryIndex: 0,
-                snappedUserLocation: UserLocation(
-                    coordinates: samplePedestrianWaypoints.first!,
-                    horizontalAccuracy: 10,
-                    courseOverGround: CourseOverGround(degrees: 0, accuracy: 10),
-                    timestamp: Date(),
-                    speed: Speed(value: 0, accuracy: 2)
-                ),
+                userLocation: userLocation,
+                snappedUserLocation: userLocation,
                 remainingSteps: [
                     RouteStep(
                         geometry: [lastUserLocation],
@@ -79,6 +93,12 @@ public extension NavigationState {
                     distanceToNextManeuver: 5,
                     distanceRemaining: 100,
                     durationRemaining: 99
+                ),
+                summary: TripSummary(
+                    distanceTraveled: 0,
+                    snappedDistanceTraveled: 0,
+                    startedAt: Date(),
+                    endedAt: nil
                 ),
                 deviation: .noDeviation,
                 visualInstruction: nil,
