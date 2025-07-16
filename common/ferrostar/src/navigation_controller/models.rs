@@ -330,7 +330,7 @@ pub struct NavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]

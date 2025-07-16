@@ -6,7 +6,7 @@ use crate::navigation_controller::models::{
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecording {
     /// Version of Ferrostar that created this recording.
     pub version: String,
@@ -47,8 +47,13 @@ impl NavigationRecording {
     ///
     /// - `Ok(String)` - A JSON string representation of the navigation recording
     /// - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
-    pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
-        serde_json::to_string(self).map_err(NavigationRecordingError::SerializationError)
+    pub fn to_json(
+        &self,
+        events: Vec<NavigationRecordingEvent>,
+    ) -> Result<String, NavigationRecordingError> {
+        let mut recording = self.clone();
+        recording.events = events;
+        serde_json::to_string(&recording).map_err(NavigationRecordingError::SerializationError)
     }
 
     pub fn record_nav_state_update(

@@ -13,7 +13,7 @@ use crate::{
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
-    navigation_controller::models::TripSummary,
+    navigation_controller::models::{NavigationRecordingEvent, TripSummary},
     navigation_controller::recording::NavigationRecording,
 };
 use chrono::Utc;
@@ -42,6 +42,9 @@ pub trait Navigator: Send + Sync {
     fn get_initial_state(&self, location: UserLocation) -> NavState;
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
+    fn get_recording(&self, events: Vec<NavigationRecordingEvent>) -> String {
+        "Recording not allowed for this controller".to_string()
+    }
 }
 
 /// Creates a new navigation controller for the given route and configuration.
@@ -441,6 +444,10 @@ impl Navigator for RecordingNavigationController {
 
         NavState::add_recording(new_state, new_recording)
     }
+
+    fn get_recording(&self, events: Vec<NavigationRecordingEvent>) -> String {
+        self.recording.to_json(events).unwrap()
+    }
 }
 
 /// JavaScript wrapper for `NavigationController`.
@@ -499,6 +506,13 @@ impl JsNavigationController {
 
         serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+
+    pub fn get_recording(&self, events: JsValue) -> Result<JsValue, JsValue> {
+        let events: Vec<NavigationRecordingEvent> = serde_wasm_bindgen::from_value(events)?;
+        let recording = self.0.get_recording(events);
+
+        Ok(JsValue::from(recording))
     }
 }
 

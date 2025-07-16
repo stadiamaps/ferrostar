@@ -341,6 +341,14 @@ export class FerrostarMap extends LitElement {
     // TODO: Factor out the UI layer from the core
     this.routeAdapter?.free();
     this.routeAdapter = null;
+
+    if (this.should_record) {
+      let recording = this.navigationController?.get_recording(
+        this._navState?.recordingEvents,
+      );
+      this.saveJsonStringToFile("recording.json", recording);
+    }
+
     this.navigationController?.free();
     this.navigationController = null;
     this.navStateUpdate(null);
@@ -349,12 +357,25 @@ export class FerrostarMap extends LitElement {
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
   }
 
+  private saveJsonStringToFile(filename: string, jsonString: string) {
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
   private navStateUpdate(newState: JsNavState | null) {
     if (this.should_record) {
-      console.log(newState?.recordingEvents);
+      console.log(this._navState?.recordingEvents);
     }
     this._navState = newState;
     this.onTripStateChange?.(newState?.tripState || null);
+
+    if (newState?.tripState && "Complete" in newState.tripState) {
+      this.stopNavigation();
+    }
   }
 
   private onLocationUpdated() {
