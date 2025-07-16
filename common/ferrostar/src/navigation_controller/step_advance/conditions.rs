@@ -1,20 +1,24 @@
 use std::sync::Arc;
 
+use super::{StepAdvanceCondition, StepAdvanceConditionSerializable, StepAdvanceResult};
 use crate::{
     algorithms::{deviation_from_line, is_within_threshold_to_end_of_linestring},
     models::{RouteStep, UserLocation},
 };
 use geo::Point;
 
-use super::{StepAdvanceCondition, StepAdvanceConditionSerializable, StepAdvanceResult};
+#[cfg(test)]
+use proptest::prelude::*;
+
+#[cfg(test)]
+use crate::test_utils::{arb_coord, make_user_location};
 
 #[cfg(feature = "wasm-bindgen")]
 use serde::{Deserialize, Serialize};
 
+use super::SerializableStepAdvanceCondition;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
-
-use super::SerializableStepAdvanceCondition;
 
 /// Never advances to the next step automatically;
 /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
@@ -359,43 +363,34 @@ impl StepAdvanceConditionSerializable for DistanceEntryAndExitCondition {
 
 #[cfg(test)]
 mod tests {
-    use crate::models::GeographicCoordinate;
-
-    #[cfg(all(feature = "std", not(feature = "web-time")))]
-    use std::time::SystemTime;
-
-    #[cfg(feature = "web-time")]
-    use web_time::SystemTime;
-
     use super::*;
+    use crate::navigation_controller::test_helpers::gen_route_step_with_coords;
+    use crate::test_utils::make_user_location;
+    use geo::coord;
+    use std::sync::LazyLock;
 
-    fn user_location(lat: f64, lng: f64, horizontal_accuracy: f64) -> UserLocation {
-        UserLocation {
-            coordinates: GeographicCoordinate { lat, lng },
-            horizontal_accuracy,
-            course_over_ground: None,
-            timestamp: SystemTime::now(),
-            speed: None,
-        }
-    }
+    static STRAIGHT_LINE_SHORT_ROUTE_STEP: LazyLock<RouteStep> = LazyLock::new(|| {
+        gen_route_step_with_coords(vec![
+            coord!(x: 0.0, y: 0.0),   // Origin
+            coord!(x: 0.001, y: 0.0), // 111 meters east at the equator
+        ])
+    });
+
+    static LOCATION_NEAR_START_OF_STEP: LazyLock<UserLocation> =
+        LazyLock::new(|| make_user_location(coord!(x: 0.0001, y: 0.0), 5.0));
+    static LOCATION_NEAR_END_OF_STEP: LazyLock<UserLocation> =
+        LazyLock::new(|| make_user_location(coord!(x: 0.00099, y: 0.0), 5.0));
 
     #[test]
     fn test_manual_step_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
-        // Create a location that's far from the end of the step
-        // This point is near the beginning of the step, not the end
-        let user_location = user_location(0.0, 0.0001, 5.0);
-
         let condition = ManualStepCondition;
 
         // Test the condition - we should NOT advance since we're far from the end
-        let result = condition.should_advance_step(user_location, route_step, None);
+        let result = condition.should_advance_step(
+            *LOCATION_NEAR_START_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         // We should never advance to the next step in manual mode,
         // so the list should always be empty.
@@ -407,17 +402,6 @@ mod tests {
 
     #[test]
     fn test_distance_to_end_of_step_doesnt_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
-        // Create a location that's far from the end of the step
-        // This point is near the beginning of the step, not the end
-        let user_location = user_location(0.0, 0.0001, 5.0);
-
         // Set up the condition with a distance threshold of 20 meters
         let condition = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
@@ -425,7 +409,11 @@ mod tests {
         };
 
         // Test the condition - we should NOT advance since we're far from the end
-        let result = condition.should_advance_step(user_location, route_step, None);
+        let result = condition.should_advance_step(
+            *LOCATION_NEAR_START_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             !result.should_advance,
@@ -435,16 +423,6 @@ mod tests {
 
     #[test]
     fn test_distance_to_end_of_step_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
-        // Create a location that's very close to the end point of the step
-        let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
-
         // Set up the condition with a distance threshold of 20 meters
         let condition = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
@@ -452,7 +430,11 @@ mod tests {
         };
 
         // Test the condition - we SHOULD advance since we're close to the end
-        let result = condition.should_advance_step(user_location, route_step, None);
+        let result = condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             result.should_advance,
@@ -462,15 +444,9 @@ mod tests {
 
     #[test]
     fn test_distance_from_step_doesnt_advance() {
-        // Create a straight line route step running east to west
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
+        // FIXME: This comment isn't even correct?
         // Create a location that's on the line (so deviation = 0)
-        let user_location = user_location(0.0, 0.0005, 5.0); // Point directly on the line
+        let user_location = make_user_location(coord!(x: 0.0, y: 0.0005), 5.0); // Point directly on the line
 
         // Set up the condition with a minimum deviation of 100 meters to advance
         let condition = DistanceFromStepCondition {
@@ -479,7 +455,11 @@ mod tests {
         };
 
         // Test the condition - we should NOT advance since we're right on the route
-        let result = condition.should_advance_step(user_location, route_step, None);
+        let result = condition.should_advance_step(
+            user_location,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             !result.should_advance,
@@ -489,16 +469,9 @@ mod tests {
 
     #[test]
     fn test_distance_from_step_advance() {
-        // Create a straight line route step running east to west
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
         // Create a location that's far from the route (500+ meters north)
         // At the equator, 0.005° latitude is approximately 555 meters
-        let user_location = user_location(0.005, 0.0005, 5.0);
+        let user_location = make_user_location(coord!(x: 0.005, y: 0.0005), 5.0);
 
         // Set up the condition with a minimum deviation of 100 meters to advance
         let condition = DistanceFromStepCondition {
@@ -507,7 +480,11 @@ mod tests {
         };
 
         // Test the condition - we SHOULD advance since we're far from the route
-        let result = condition.should_advance_step(user_location, route_step, None);
+        let result = condition.should_advance_step(
+            user_location,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             result.should_advance,
@@ -519,16 +496,6 @@ mod tests {
 
     #[test]
     fn test_or_condition_doesnt_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
-        // Create a location for testing
-        let user_location = user_location(0.0, 0.0001, 5.0);
-
         // Create two false conditions - both manual step advance
         let manual_condition1 = ManualStepCondition;
         let manual_condition2 = ManualStepCondition;
@@ -539,7 +506,11 @@ mod tests {
         };
 
         // Test the condition - we should NOT advance since both conditions are false
-        let result = or_condition.should_advance_step(user_location, route_step, None);
+        let result = or_condition.should_advance_step(
+            *LOCATION_NEAR_START_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             !result.should_advance,
@@ -549,16 +520,6 @@ mod tests {
 
     #[test]
     fn test_or_condition_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
-        // Create a location that's very close to the end point of the step
-        let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
-
         // Create a false condition
         let manual_condition = ManualStepCondition;
 
@@ -574,7 +535,11 @@ mod tests {
         };
 
         // Test the condition - we SHOULD advance since one condition is true
-        let result = or_condition.should_advance_step(user_location, route_step, None);
+        let result = or_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             result.should_advance,
@@ -584,16 +549,6 @@ mod tests {
 
     #[test]
     fn test_and_condition_doesnt_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
-        // Create a location that's very close to the end point of the step
-        let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
-
         // Create a false condition
         let manual_condition = ManualStepCondition;
 
@@ -612,7 +567,11 @@ mod tests {
         };
 
         // Test the condition - we should NOT advance since one condition is false
-        let result = and_condition.should_advance_step(user_location, route_step, None);
+        let result = and_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             !result.should_advance,
@@ -622,16 +581,6 @@ mod tests {
 
     #[test]
     fn test_and_condition_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
-        // Create a location that's very close to the end point of the step
-        let user_location = user_location(0.0, 0.00099, 5.0); // Almost at the end point
-
         // Create two true conditions - both distance to end of step but with different thresholds
         let distance_condition1 = DistanceToEndOfStepCondition {
             minimum_horizontal_accuracy: 10,
@@ -649,7 +598,11 @@ mod tests {
         };
 
         // Test the condition - we SHOULD advance since both conditions are true
-        let result = and_condition.should_advance_step(user_location, route_step, None);
+        let result = and_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             result.should_advance,
@@ -661,13 +614,6 @@ mod tests {
 
     #[test]
     fn test_entry_and_exit_condition_doesnt_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
         // Create a condition that requires proximity to end followed by distance from step
         let condition = DistanceEntryAndExitCondition {
             distance_to_end_of_step: 10,
@@ -676,12 +622,13 @@ mod tests {
             has_reached_end_of_current_step: false,
         };
 
-        // First update: User is close to the end of the step
-        let user_location_near_end = user_location(0.0, 0.00099, 5.0); // Almost at the end point
-
+        // First update: User is close to the end of the step...
         // Should not advance yet, but should update internal state
-        let result1 =
-            condition.should_advance_step(user_location_near_end, route_step.clone(), None);
+        let result1 = condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             !result1.should_advance,
@@ -690,14 +637,17 @@ mod tests {
 
         // Second update: User has moved but is still too close to the route
         // This is only 2 meters from the end point, not the required 5 meters
-        let user_location_still_close = user_location(0.00002, 0.001, 5.0);
+        let user_location_still_close = make_user_location(coord!(x: 0.001, y: 0.00002), 5.0);
 
         // Get the next iteration from the first result
         let next_condition = result1.next_iteration;
 
         // Should still not advance because we haven't moved far enough away
-        let result2 =
-            next_condition.should_advance_step(user_location_still_close, route_step, None);
+        let result2 = next_condition.should_advance_step(
+            user_location_still_close,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             !result2.should_advance,
@@ -707,13 +657,6 @@ mod tests {
 
     #[test]
     fn test_entry_and_exit_condition_advance() {
-        // Create a straight line route step
-        let route_step =
-            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![
-                (0.0, 0.0),   // Origin
-                (0.001, 0.0), // 111 meters east at the equator
-            ]);
-
         // Create a condition that requires proximity to end followed by distance from step
         let condition = DistanceEntryAndExitCondition {
             distance_to_end_of_step: 10,
@@ -722,12 +665,13 @@ mod tests {
             has_reached_end_of_current_step: false,
         };
 
-        // First update: User is close to the end of the step
-        let user_location_near_end = user_location(0.0, 0.00099, 5.0); // Almost at the end point
-
+        // First update: User is close to the end of the step...
         // Should not advance yet, but should update internal state
-        let result1 =
-            condition.should_advance_step(user_location_near_end, route_step.clone(), None);
+        let result1 = condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             !result1.should_advance,
@@ -739,14 +683,100 @@ mod tests {
 
         // Second update: User has moved far enough from the route (> 5 meters)
         // ~55 meters north of the route (0.0005 degrees latitude)
-        let user_location_far = user_location(0.0005, 0.001, 5.0);
+        let user_location_far = make_user_location(coord!(x: 0.001, y: 0.0005), 5.0);
 
         // Now should advance because we've satisfied both conditions sequentially
-        let result2 = next_condition.should_advance_step(user_location_far, route_step, None);
+        let result2 = next_condition.should_advance_step(
+            user_location_far,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
 
         assert!(
             result2.should_advance,
             "Should advance when user has first reached end of step and then moved away"
         );
     }
+}
+
+#[cfg(test)]
+proptest! {
+    #[test]
+    fn manual_step_never_advances(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+        accuracy: f64
+    ) {
+        // Create a straight line random route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+
+        // User location exactly at the end of the step
+        let user_location = make_user_location(c2, accuracy);
+
+        let condition = ManualStepCondition;
+
+        // Test the condition - we should NOT advance since we're far from the end
+        let result = condition.should_advance_step(user_location, route_step, None);
+
+        // We should never advance to the next step in manual mode,
+        // so the list should always be empty.
+        prop_assert!(
+            !result.should_advance,
+            "Should not advance with the manual condition"
+        );
+    }
+
+    #[test]
+    fn entry_and_exit_never_advances_on_zero_movement(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+    ) {
+        // Create a straight line random route step
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+
+        // User location exactly at the end of the step
+        let user_location = make_user_location(c2, 5.0);
+
+        // Create a condition that requires proximity to end followed by distance from step
+        let condition = DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 20,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
+
+        // First update: User is close to the end of the step...
+        // Should not advance yet, but should update internal state
+        let result1 =
+            condition.should_advance_step(user_location, route_step.clone(), None);
+
+        prop_assert!(
+            !result1.should_advance,
+            "Should not advance on first update even when at the end of the step"
+        );
+
+        // Second update: User has not moved
+
+        // Get the next iteration from the first result
+        let next_condition = result1.next_iteration;
+
+        // Should still not advance because we haven't moved far enough away
+        let result2 =
+            next_condition.should_advance_step(user_location, route_step, None);
+
+        prop_assert!(
+            !result2.should_advance,
+            "Should not advance when user hasn't moved far enough from the route"
+        );
+    }
+
+    // TODO: handling of accuracy parameter for "always" advance
+
+    // TODO: "or" advance with one condition that's always trivially true and another which is always false
+
+    // TODO: enter+exit with two updates: one exact, and another that exceeds the distance threshold (could generate such a coordinate with polar formulas; probably a crate for that if our existing ones can't do it)
+
+    // TODO: Similar to the above, but with, say, 5 random updates where the user is *always* within the distance threshold, so they never advance to the next step
 }
