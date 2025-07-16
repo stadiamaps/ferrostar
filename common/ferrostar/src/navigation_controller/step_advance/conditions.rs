@@ -312,9 +312,9 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 StepAdvanceResult {
                     should_advance: true,
                     next_iteration: Arc::new(DistanceEntryAndExitCondition::new(
-                        self.minimum_horizontal_accuracy,
                         self.distance_to_end_of_step,
                         self.distance_after_end_of_step,
+                        self.minimum_horizontal_accuracy,
                     )),
                 }
             } else {
@@ -323,9 +323,9 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 StepAdvanceResult {
                     should_advance: false,
                     next_iteration: Arc::new(DistanceEntryAndExitCondition {
-                        minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                         distance_to_end_of_step: self.distance_to_end_of_step,
                         distance_after_end_of_step: self.distance_after_end_of_step,
+                        minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                         has_reached_end_of_current_step: true,
                     }),
                 }
