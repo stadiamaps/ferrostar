@@ -59,7 +59,7 @@ export class FerrostarMap extends LitElement {
    * When set to `false`, recording operations are disabled.
    */
   @property({ type: Boolean })
-  _should_record: boolean = true;
+  should_record: boolean = false;
 
   /**
    * Enables voice guidance via the web speech synthesis API.
@@ -256,7 +256,7 @@ export class FerrostarMap extends LitElement {
     this.navigationController = new NavigationController(
       route,
       config,
-      this._should_record,
+      this.should_record,
     );
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
@@ -350,7 +350,7 @@ export class FerrostarMap extends LitElement {
   }
 
   private navStateUpdate(newState: JsNavState | null) {
-    if (this._should_record) {
+    if (this.should_record) {
       console.log(newState?.recordingEvents);
     }
     this._navState = newState;
