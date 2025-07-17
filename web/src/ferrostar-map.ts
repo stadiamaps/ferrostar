@@ -1,12 +1,7 @@
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import maplibregl, { GeolocateControl, Map } from "maplibre-gl";
-import {
-  NavigationController,
-  RouteAdapter,
-  SerializableNavState,
-  TripState,
-} from "@stadiamaps/ferrostar";
+import { NavigationController, RouteAdapter, SerializableNavState, TripState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
 import { SimulatedLocationProvider } from "./location";
@@ -371,7 +366,7 @@ export class FerrostarMap extends LitElement {
     this._navState = newState;
     this.onTripStateChange?.(newState?.tripState || null);
 
-    // Stop naviagtion automatically when it is finished.
+    // Stop navigation automatically when it is finished.
     if (
       newState?.tripState &&
       Object.keys(newState.tripState)[0] == "Complete"
