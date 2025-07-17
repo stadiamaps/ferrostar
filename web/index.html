@@ -150,7 +150,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         };
         ferrostar.geolocateOnLoad = false;
 
-        const simulateNavigationButton = document.getElementById("simulate");
+        const shouldRecordCheckbox = document.getElementById("shouldRecord");
 
         mapInstance.on("load", (_) => {
           // Post-first-load configuration
@@ -159,17 +159,17 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         ferrostar.onNavigationStart = (map) => {
           // Remove our search box when navigation starts
           map.removeControl(searchBox);
-          // Disable user to change shouldRecord
+          // Prevent user from changing shouldRecord during navigation
           shouldRecordCheckbox.disabled = true;
         };
         ferrostar.onNavigationStop = (map) => {
           // Put the search box back when we stop
           map.addControl(searchBox, "top-left");
-          // Enable user to change shouldRecord
           shouldRecordCheckbox.disabled = false;
         };
 
-        const shouldRecordCheckbox = document.getElementById("shouldRecord");
+        const simulateNavigationButton = document.getElementById("simulate");
+
         shouldRecordCheckbox.addEventListener("change", (event) => {
           ferrostar.should_record = event.target.checked;
         });
