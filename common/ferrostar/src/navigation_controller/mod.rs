@@ -28,7 +28,9 @@ use std::clone::Clone;
 use std::sync::Arc;
 
 #[cfg(feature = "wasm-bindgen")]
-use crate::navigation_controller::models::{JsNavState, SerializableNavigationControllerConfig};
+use crate::navigation_controller::models::{
+    SerializableNavState, SerializableNavigationControllerConfig,
+};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -480,17 +482,17 @@ impl JsNavigationController {
     pub fn get_initial_state(&self, location: JsValue) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
         let nav_state = self.0.get_initial_state(location);
-        let result: JsNavState = nav_state.into();
+        let result: SerializableNavState = nav_state.into();
 
         serde_wasm_bindgen::to_value(&result).map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
     #[wasm_bindgen(js_name = advanceToNextStep)]
     pub fn advance_to_next_step(&self, state: JsValue) -> Result<JsValue, JsValue> {
-        let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
+        let state: SerializableNavState = serde_wasm_bindgen::from_value(state)?;
         let new_state = self.0.advance_to_next_step(state.into());
 
-        serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
+        serde_wasm_bindgen::to_value(&SerializableNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
@@ -501,10 +503,10 @@ impl JsNavigationController {
         state: JsValue,
     ) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
-        let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
+        let state: SerializableNavState = serde_wasm_bindgen::from_value(state)?;
         let new_state = self.0.update_user_location(location, state.into());
 
-        serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
+        serde_wasm_bindgen::to_value(&SerializableNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 

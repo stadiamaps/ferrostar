@@ -6,17 +6,22 @@ use crate::navigation_controller::models::{
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
+
+/// Represents a recorded navigation session with its configuration and events.
+///
+/// # Fields
+///
+/// * `version` - The version of Ferrostar that created this recording
+/// * `initial_timestamp` - When the navigation session started (in milliseconds)
+/// * `config` - Configuration settings used for the navigation session
+/// * `initial_route` - The route that was initially assigned for navigation
+/// * `events` - A chronological list of all navigation events that occurred
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecording {
-    /// Version of Ferrostar that created this recording.
     pub version: String,
-    /// The timestamp when the navigation session started.
     pub initial_timestamp: i64,
-    /// Configuration of the navigation session.
     pub config: SerializableNavigationControllerConfig,
-    /// The initial route assigned.
     pub initial_route: Route,
-    /// Collection of events that occurred during the navigation session.
     pub events: Vec<NavigationRecordingEvent>,
 }
 
@@ -56,6 +61,18 @@ impl NavigationRecording {
         serde_json::to_string(&recording).map_err(NavigationRecordingError::SerializationError)
     }
 
+
+    /// Records a [`NavState`] update event.
+    ///
+    /// # Parameters
+    ///
+    /// * `old_state` - The previous navigation state that contains recording events
+    /// * `new_state` - The updated navigation state to be recorded
+    ///
+    /// # Returns
+    ///
+    /// A vector of [`NavigationRecordingEvent`] containing the state update event if `old_state` contains recording events,
+    /// otherwise returns an empty vector
     pub fn record_nav_state_update(
         &self,
         old_state: NavState,
@@ -72,6 +89,7 @@ impl NavigationRecording {
         }
     }
 
+    /// TODO: Actually implement this
     pub fn record_route_update(
         &self,
         old_state: NavState,
@@ -86,6 +104,7 @@ impl NavigationRecording {
         }
     }
 
+    /// TODO: Actually implement this
     pub fn record_error(
         &self,
         old_state: NavState,
@@ -100,7 +119,8 @@ impl NavigationRecording {
         }
     }
 
-    pub fn add_event(
+    /// Helper function to add an event.
+    fn add_event(
         mut old_events: Vec<NavigationRecordingEvent>,
         new_event_data: NavigationRecordingEventData,
     ) -> Vec<NavigationRecordingEvent> {
