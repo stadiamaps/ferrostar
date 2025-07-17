@@ -393,11 +393,11 @@ pub struct NavigationRecordingEvent {
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub enum NavigationRecordingEventData {
     NavStateUpdate {
-        /// Updated trip state.
+        /// Updated Nav state.
         nav_state: SerializableNavState,
     },
     RouteUpdate {
-        /// Updated route steps.
+        /// Updated route.
         route: Route,
     },
     Error {

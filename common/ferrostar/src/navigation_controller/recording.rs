@@ -26,7 +26,7 @@ pub struct NavigationRecording {
 
 /// Custom error type for navigation recording operations.
 /// Note: Due to UniFFI limitations, we cannot include the underlying error details.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum RecordingError {

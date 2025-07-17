@@ -1,12 +1,7 @@
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import maplibregl, { GeolocateControl, Map } from "maplibre-gl";
-import {
-  JsNavState,
-  NavigationController,
-  RouteAdapter,
-  TripState,
-} from "@stadiamaps/ferrostar";
+import { NavigationController, RouteAdapter, SerializableNavState, TripState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
 import { SimulatedLocationProvider } from "./location";
@@ -35,7 +30,7 @@ export class FerrostarMap extends LitElement {
   options: object = {};
 
   @state()
-  protected _navState: JsNavState | null = null;
+  protected _navState: SerializableNavState | null = null;
 
   @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
@@ -366,7 +361,7 @@ export class FerrostarMap extends LitElement {
     URL.revokeObjectURL(link.href);
   }
 
-  private navStateUpdate(newState: JsNavState | null) {
+  private navStateUpdate(newState: SerializableNavState | null) {
     if (this.should_record) {
       console.log(this._navState?.recordingEvents);
     }
