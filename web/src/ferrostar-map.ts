@@ -359,6 +359,7 @@ export class FerrostarMap extends LitElement {
   }
 
   private saveJsonStringToFile(filename: string, jsonString: string) {
+    console.log(jsonString);
     const blob = new Blob([jsonString], { type: "application/json" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
