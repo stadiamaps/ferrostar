@@ -28,7 +28,7 @@ pub struct NavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
-    recording_events: Option<Vec<NavigationRecordingEvent>>,
+    pub recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 impl NavState {
@@ -70,6 +70,17 @@ impl NavState {
         }
     }
 
+    pub fn add_recording(
+        nav_state: NavState,
+        recording_events: Vec<NavigationRecordingEvent>,
+    ) -> Self {
+        Self {
+            trip_state: nav_state.trip_state,
+            step_advance_condition: nav_state.step_advance_condition,
+            recording_events: Some(recording_events),
+        }
+    }
+
     #[inline]
     pub fn trip_state(&self) -> TripState {
         self.trip_state.clone()
@@ -81,20 +92,20 @@ impl NavState {
     }
 }
 
-#[cfg(feature = "wasm-bindgen")]
-#[derive(Serialize, Deserialize, Tsify)]
-#[serde(rename_all = "camelCase")]
-#[tsify(into_wasm_abi, from_wasm_abi)]
-pub struct JsNavState {
+#[derive(Serialize, Deserialize, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct SerializableNavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: SerializableStepAdvanceCondition,
     recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
-#[cfg(feature = "wasm-bindgen")]
-impl From<JsNavState> for NavState {
-    fn from(value: JsNavState) -> Self {
+impl From<SerializableNavState> for NavState {
+    fn from(value: SerializableNavState) -> Self {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.into(),
@@ -103,8 +114,7 @@ impl From<JsNavState> for NavState {
     }
 }
 
-#[cfg(feature = "wasm-bindgen")]
-impl From<NavState> for JsNavState {
+impl From<NavState> for SerializableNavState {
     fn from(value: NavState) -> Self {
         Self {
             trip_state: value.trip_state,
@@ -320,7 +330,7 @@ pub struct NavigationControllerConfig {
     pub snapped_location_course_filtering: CourseFiltering,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Clone)]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
@@ -382,16 +392,12 @@ pub struct NavigationRecordingEvent {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub enum NavigationRecordingEventData {
-    LocationUpdate {
-        /// Updated user location.
-        user_location: UserLocation,
-    },
-    TripStateUpdate {
-        /// Updated trip state.
-        trip_state: TripState,
+    NavStateUpdate {
+        /// Updated Nav state.
+        nav_state: SerializableNavState,
     },
     RouteUpdate {
-        /// Updated route steps.
+        /// Updated route.
         route: Route,
     },
     Error {

@@ -1,33 +1,42 @@
-use crate::models::{Route, UserLocation};
+use crate::models::Route;
 use crate::navigation_controller::models::{
-    NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData,
-    SerializableNavigationControllerConfig, TripState,
+    NavState, NavigationControllerConfig, NavigationRecordingEvent, NavigationRecordingEventData,
+    SerializableNavigationControllerConfig,
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+/// Represents a recorded navigation session with its configuration and events.
+///
+/// # Fields
+///
+/// * `version` - The version of Ferrostar that created this recording
+/// * `initial_timestamp` - When the navigation session started (in milliseconds)
+/// * `config` - Configuration settings used for the navigation session
+/// * `initial_route` - The route that was initially assigned for navigation
+/// * `events` - A chronological list of all navigation events that occurred
+#[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecording {
-    /// Version of Ferrostar that created this recording.
     pub version: String,
-    /// The timestamp when the navigation session started.
     pub initial_timestamp: i64,
-    /// Configuration of the navigation session.
     pub config: SerializableNavigationControllerConfig,
-    /// The initial route assigned.
     pub initial_route: Route,
-    /// Initial trip state.
-    pub initial_trip_state: Option<TripState>,
-    /// Collection of events that occurred during the navigation session.
     pub events: Vec<NavigationRecordingEvent>,
 }
 
 /// Custom error type for navigation recording operations.
-#[derive(Debug)]
+/// Note: Due to UniFFI limitations, we cannot include the underlying error details.
+#[derive(Debug, Serialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
-pub enum NavigationRecordingError {
-    #[error(transparent)]
-    SerializationError(#[from] serde_json::Error),
+pub enum RecordingError {
+    #[cfg_attr(feature = "std", error("Error serializing navigation recording."))]
+    SerializationError,
+    #[cfg_attr(
+        feature = "std",
+        error("Recording is not allowed for this controller.")
+    )]
+    RecordingNotAllowed,
 }
 
 /// Functionality for the navigation controller that is not exported.
@@ -36,10 +45,9 @@ impl NavigationRecording {
     pub fn new(config: NavigationControllerConfig, initial_route: Route) -> Self {
         Self {
             version: env!("CARGO_PKG_VERSION").to_string(),
-            initial_timestamp: Utc::now().timestamp(),
+            initial_timestamp: Utc::now().timestamp_millis(),
             config: SerializableNavigationControllerConfig::from(config),
             initial_route,
-            initial_trip_state: None,
             events: Vec::new(),
         }
     }
@@ -49,41 +57,79 @@ impl NavigationRecording {
     /// # Returns
     ///
     /// - `Ok(String)` - A JSON string representation of the navigation recording
-    /// - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
-    pub fn to_json(&self) -> Result<String, NavigationRecordingError> {
-        serde_json::to_string(self).map_err(NavigationRecordingError::SerializationError)
+    /// - `Err(RecordingError)` - If there was an error during JSON serialization
+    pub fn to_json(&self, events: Vec<NavigationRecordingEvent>) -> Result<String, RecordingError> {
+        let mut recording = self.clone();
+        recording.events = events;
+        serde_json::to_string(&recording).map_err(|_| RecordingError::SerializationError)
     }
 
-    /// Records a location update from the user during navigation.
-    pub fn record_location_update(self, user_location: UserLocation) -> Self {
-        self.add_event(NavigationRecordingEventData::LocationUpdate { user_location })
+    /// Records a [`NavState`] update event.
+    ///
+    /// # Parameters
+    ///
+    /// * `old_state` - The previous navigation state that contains recording events
+    /// * `new_state` - The updated navigation state to be recorded
+    ///
+    /// # Returns
+    ///
+    /// A vector of [`NavigationRecordingEvent`] containing the state update event if `old_state` contains recording events,
+    /// otherwise returns an empty vector
+    pub fn record_nav_state_update(
+        &self,
+        old_state: NavState,
+        new_state: NavState,
+    ) -> Vec<NavigationRecordingEvent> {
+        match old_state.recording_events {
+            Some(old_events) => Self::add_event(
+                old_events,
+                NavigationRecordingEventData::NavStateUpdate {
+                    nav_state: new_state.into(),
+                },
+            ),
+            None => Vec::new(),
+        }
     }
 
-    /// Records a trip state update during navigation.
-    pub fn record_trip_state_update(self, trip_state: TripState) -> Self {
-        self.add_event(NavigationRecordingEventData::TripStateUpdate { trip_state })
+    /// TODO: Actually implement this
+    pub fn record_route_update(
+        &self,
+        old_state: NavState,
+        new_route: Route,
+    ) -> Vec<NavigationRecordingEvent> {
+        match old_state.recording_events {
+            Some(old_events) => Self::add_event(
+                old_events,
+                NavigationRecordingEventData::RouteUpdate { route: new_route },
+            ),
+            None => Vec::new(),
+        }
     }
 
-    /// Records a route update during navigation.
-    pub fn record_route_update(self, route: Route) -> Self {
-        self.add_event(NavigationRecordingEventData::RouteUpdate { route })
+    /// TODO: Actually implement this
+    pub fn record_error(
+        &self,
+        old_state: NavState,
+        error_message: String,
+    ) -> Vec<NavigationRecordingEvent> {
+        match old_state.recording_events {
+            Some(old_events) => Self::add_event(
+                old_events,
+                NavigationRecordingEventData::Error { error_message },
+            ),
+            None => Vec::new(),
+        }
     }
 
-    /// Records an error that occurred during navigation.
-    pub fn record_navigation_error(self, error_message: String) -> Self {
-        self.add_event(NavigationRecordingEventData::Error { error_message })
-    }
-
-    /// Helper method to add an event to the recording.
-    pub fn add_event(self, event_data: NavigationRecordingEventData) -> Self {
-        let event = NavigationRecordingEvent {
-            timestamp: Utc::now().timestamp(),
-            event_data,
-        };
-
-        let mut new_recording = self;
-        new_recording.events.push(event);
-
-        new_recording
+    /// Helper function to add an event.
+    fn add_event(
+        mut old_events: Vec<NavigationRecordingEvent>,
+        new_event_data: NavigationRecordingEventData,
+    ) -> Vec<NavigationRecordingEvent> {
+        old_events.push(NavigationRecordingEvent {
+            timestamp: Utc::now().timestamp_millis(),
+            event_data: new_event_data,
+        });
+        old_events
     }
 }

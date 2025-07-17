@@ -7,13 +7,18 @@ pub mod step_advance;
 #[cfg(test)]
 pub(crate) mod test_helpers;
 
+#[cfg(feature = "wasm-bindgen")]
+use crate::navigation_controller::models::{
+    SerializableNavState, SerializableNavigationControllerConfig,
+};
 use crate::{
     algorithms::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
-    navigation_controller::models::TripSummary,
+    navigation_controller::models::{NavigationRecordingEvent, TripSummary},
+    navigation_controller::recording::{NavigationRecording, RecordingError},
 };
 use chrono::Utc;
 use geo::{
@@ -25,9 +30,6 @@ use models::{
 };
 use std::clone::Clone;
 use std::sync::Arc;
-
-#[cfg(feature = "wasm-bindgen")]
-use crate::navigation_controller::models::{JsNavState, SerializableNavigationControllerConfig};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -41,6 +43,12 @@ pub trait Navigator: Send + Sync {
     fn get_initial_state(&self, location: UserLocation) -> NavState;
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
+    fn get_recording(
+        &self,
+        _events: Vec<NavigationRecordingEvent>,
+    ) -> Result<String, RecordingError> {
+        Err(RecordingError::RecordingNotAllowed)
+    }
 }
 
 /// Creates a new navigation controller for the given route and configuration.
@@ -55,11 +63,10 @@ pub fn create_navigator(
 ) -> Arc<dyn Navigator> {
     if should_record {
         // Creates a navigation controller with a wrapper that records events.
-        // TODO: Currently just returns the regular controller
-        Arc::new(NavigationController { route, config })
+        Arc::new(RecordingNavigationController::new(route, config))
     } else {
         // Creates a normal navigation controller.
-        Arc::new(NavigationController { route, config })
+        Arc::new(NavigationController::new(route, config))
     }
 }
 
@@ -391,6 +398,65 @@ impl NavigationController {
     }
 }
 
+/// A wrapper around [`NavigationController`] that records navigation events.
+///
+/// This controller provides the same navigation functionality as [`NavigationController`]
+/// but additionally records all [`NavState`] changes
+/// The recording can be exported as JSON for debugging or testing purposes.
+///
+/// NOTE: Work in Progress
+pub struct RecordingNavigationController {
+    pub controller: NavigationController,
+    pub recording: NavigationRecording,
+}
+
+impl RecordingNavigationController {
+    pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
+        Self {
+            controller: NavigationController::new(route.clone(), config.clone()),
+            recording: NavigationRecording::new(config, route),
+        }
+    }
+}
+
+impl Navigator for RecordingNavigationController {
+    fn get_initial_state(&self, location: UserLocation) -> NavState {
+        let initial_state = self.controller.get_initial_state(location);
+        let new_recording = self
+            .recording
+            .record_nav_state_update(initial_state.clone(), initial_state.clone());
+
+        NavState::add_recording(initial_state, new_recording)
+    }
+
+    fn advance_to_next_step(&self, state: NavState) -> NavState {
+        let new_state = self.controller.advance_to_next_step(state.clone());
+        let new_recording = self
+            .recording
+            .record_nav_state_update(state, new_state.clone());
+
+        NavState::add_recording(new_state, new_recording)
+    }
+
+    fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
+        let new_state = self
+            .controller
+            .update_user_location(location, state.clone());
+        let new_recording = self
+            .recording
+            .record_nav_state_update(state, new_state.clone());
+
+        NavState::add_recording(new_state, new_recording)
+    }
+
+    fn get_recording(
+        &self,
+        _events: Vec<NavigationRecordingEvent>,
+    ) -> Result<String, RecordingError> {
+        self.recording.to_json(_events)
+    }
+}
+
 /// JavaScript wrapper for `NavigationController`.
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = NavigationController)]
@@ -421,17 +487,17 @@ impl JsNavigationController {
     pub fn get_initial_state(&self, location: JsValue) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
         let nav_state = self.0.get_initial_state(location);
-        let result: JsNavState = nav_state.into();
+        let result: SerializableNavState = nav_state.into();
 
         serde_wasm_bindgen::to_value(&result).map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
     #[wasm_bindgen(js_name = advanceToNextStep)]
     pub fn advance_to_next_step(&self, state: JsValue) -> Result<JsValue, JsValue> {
-        let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
+        let state: SerializableNavState = serde_wasm_bindgen::from_value(state)?;
         let new_state = self.0.advance_to_next_step(state.into());
 
-        serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
+        serde_wasm_bindgen::to_value(&SerializableNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
@@ -442,11 +508,21 @@ impl JsNavigationController {
         state: JsValue,
     ) -> Result<JsValue, JsValue> {
         let location: UserLocation = serde_wasm_bindgen::from_value(location)?;
-        let state: JsNavState = serde_wasm_bindgen::from_value(state)?;
+        let state: SerializableNavState = serde_wasm_bindgen::from_value(state)?;
         let new_state = self.0.update_user_location(location, state.into());
 
-        serde_wasm_bindgen::to_value(&JsNavState::from(new_state))
+        serde_wasm_bindgen::to_value(&SerializableNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+
+    pub fn get_recording(&self, events: JsValue) -> Result<JsValue, JsValue> {
+        let events: Vec<NavigationRecordingEvent> = serde_wasm_bindgen::from_value(events)?;
+        let recording = self.0.get_recording(events);
+
+        match recording {
+            Ok(recording) => Ok(JsValue::from_str(&recording)),
+            Err(e) => Err(JsValue::from_str(&format!("{:?}", e))),
+        }
     }
 }
 
