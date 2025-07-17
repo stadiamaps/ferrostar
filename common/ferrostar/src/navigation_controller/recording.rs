@@ -6,7 +6,6 @@ use crate::navigation_controller::models::{
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
-
 /// Represents a recorded navigation session with its configuration and events.
 ///
 /// # Fields
@@ -26,11 +25,18 @@ pub struct NavigationRecording {
 }
 
 /// Custom error type for navigation recording operations.
+/// Note: Due to UniFFI limitations, we cannot include the underlying error details.
 #[derive(Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
-pub enum NavigationRecordingError {
-    #[error(transparent)]
-    SerializationError(#[from] serde_json::Error),
+pub enum RecordingError {
+    #[cfg_attr(feature = "std", error("Error serializing navigation recording."))]
+    SerializationError,
+    #[cfg_attr(
+        feature = "std",
+        error("Recording is not allowed for this controller.")
+    )]
+    RecordingNotAllowed,
 }
 
 /// Functionality for the navigation controller that is not exported.
@@ -51,16 +57,12 @@ impl NavigationRecording {
     /// # Returns
     ///
     /// - `Ok(String)` - A JSON string representation of the navigation recording
-    /// - `Err(NavigationRecordingError)` - If there was an error during JSON serialization
-    pub fn to_json(
-        &self,
-        events: Vec<NavigationRecordingEvent>,
-    ) -> Result<String, NavigationRecordingError> {
+    /// - `Err(RecordingError)` - If there was an error during JSON serialization
+    pub fn to_json(&self, events: Vec<NavigationRecordingEvent>) -> Result<String, RecordingError> {
         let mut recording = self.clone();
         recording.events = events;
-        serde_json::to_string(&recording).map_err(NavigationRecordingError::SerializationError)
+        serde_json::to_string(&recording).map_err(|_| RecordingError::SerializationError)
     }
-
 
     /// Records a [`NavState`] update event.
     ///

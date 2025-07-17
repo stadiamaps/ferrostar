@@ -7,6 +7,10 @@ pub mod step_advance;
 #[cfg(test)]
 pub(crate) mod test_helpers;
 
+#[cfg(feature = "wasm-bindgen")]
+use crate::navigation_controller::models::{
+    SerializableNavState, SerializableNavigationControllerConfig,
+};
 use crate::{
     algorithms::{
         advance_step, apply_snapped_course, calculate_trip_progress,
@@ -14,7 +18,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::{NavigationRecordingEvent, TripSummary},
-    navigation_controller::recording::NavigationRecording,
+    navigation_controller::recording::{NavigationRecording, RecordingError},
 };
 use chrono::Utc;
 use geo::{
@@ -26,11 +30,6 @@ use models::{
 };
 use std::clone::Clone;
 use std::sync::Arc;
-
-#[cfg(feature = "wasm-bindgen")]
-use crate::navigation_controller::models::{
-    SerializableNavState, SerializableNavigationControllerConfig,
-};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
@@ -44,8 +43,11 @@ pub trait Navigator: Send + Sync {
     fn get_initial_state(&self, location: UserLocation) -> NavState;
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
-    fn get_recording(&self, events: Vec<NavigationRecordingEvent>) -> String {
-        "Recording not allowed for this controller".to_string()
+    fn get_recording(
+        &self,
+        _events: Vec<NavigationRecordingEvent>,
+    ) -> Result<String, RecordingError> {
+        Err(RecordingError::RecordingNotAllowed)
     }
 }
 
@@ -447,8 +449,11 @@ impl Navigator for RecordingNavigationController {
         NavState::add_recording(new_state, new_recording)
     }
 
-    fn get_recording(&self, events: Vec<NavigationRecordingEvent>) -> String {
-        self.recording.to_json(events).unwrap()
+    fn get_recording(
+        &self,
+        _events: Vec<NavigationRecordingEvent>,
+    ) -> Result<String, RecordingError> {
+        self.recording.to_json(_events)
     }
 }
 
