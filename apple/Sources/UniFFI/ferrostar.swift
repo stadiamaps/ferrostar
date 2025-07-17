@@ -6852,7 +6852,7 @@ public enum SerializableStepAdvanceCondition {
     )
     case distanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16
     )
-    case distanceEntryExit(minimumHorizontalAccuracy: UInt16, distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, hasReachedEndOfCurrentStep: Bool
+    case distanceEntryExit(distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, minimumHorizontalAccuracy: UInt16, hasReachedEndOfCurrentStep: Bool
     )
     case orAdvanceConditions(conditions: [SerializableStepAdvanceCondition]
     )
@@ -6883,7 +6883,7 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
         case 3: return .distanceFromStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
         )
         
-        case 4: return .distanceEntryExit(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), distanceToEndOfStep: try FfiConverterUInt16.read(from: &buf), distanceAfterEndStep: try FfiConverterUInt16.read(from: &buf), hasReachedEndOfCurrentStep: try FfiConverterBool.read(from: &buf)
+        case 4: return .distanceEntryExit(distanceToEndOfStep: try FfiConverterUInt16.read(from: &buf), distanceAfterEndStep: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), hasReachedEndOfCurrentStep: try FfiConverterBool.read(from: &buf)
         )
         
         case 5: return .orAdvanceConditions(conditions: try FfiConverterSequenceTypeSerializableStepAdvanceCondition.read(from: &buf)
@@ -6916,11 +6916,11 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             
         
-        case let .distanceEntryExit(minimumHorizontalAccuracy,distanceToEndOfStep,distanceAfterEndStep,hasReachedEndOfCurrentStep):
+        case let .distanceEntryExit(distanceToEndOfStep,distanceAfterEndStep,minimumHorizontalAccuracy,hasReachedEndOfCurrentStep):
             writeInt(&buf, Int32(4))
-            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             FfiConverterUInt16.write(distanceToEndOfStep, into: &buf)
             FfiConverterUInt16.write(distanceAfterEndStep, into: &buf)
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             FfiConverterBool.write(hasReachedEndOfCurrentStep, into: &buf)
             
         
