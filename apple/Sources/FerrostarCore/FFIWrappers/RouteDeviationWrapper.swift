@@ -2,7 +2,7 @@ import CoreLocation
 import FerrostarCoreFFI
 import Foundation
 
-private class DetectorImpl: RouteDeviationDetector {
+private final class DetectorImpl: RouteDeviationDetector {
     let detectorFunc: (UserLocation, Route, RouteStep) -> RouteDeviation
 
     init(detectorFunc: @escaping (UserLocation, Route, RouteStep) -> RouteDeviation) {
