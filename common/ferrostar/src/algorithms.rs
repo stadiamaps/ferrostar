@@ -20,10 +20,8 @@ use {
     proptest::{collection::vec, prelude::*},
 };
 
-#[cfg(all(test, feature = "std", not(feature = "web-time")))]
-use std::time::SystemTime;
-#[cfg(all(test, feature = "web-time"))]
-use web_time::SystemTime;
+#[cfg(test)]
+use crate::test_utils::{arb_coord, arb_user_loc, make_user_location};
 
 /// Get the index of the closest *segment* to the user's location within a [`LineString`].
 ///
@@ -385,26 +383,6 @@ pub(crate) fn get_linestring(geometry: &[GeographicCoordinate]) -> LineString {
 }
 
 #[cfg(test)]
-/// Creates a user location at the given coordinates,
-/// with all other values set to defaults or (in the case of the timestamp), the current time.
-fn make_user_location(lng: f64, lat: f64) -> UserLocation {
-    UserLocation {
-        coordinates: GeographicCoordinate { lng, lat },
-        horizontal_accuracy: 0.0,
-        course_over_ground: None,
-        timestamp: SystemTime::now(),
-        speed: None,
-    }
-}
-
-#[cfg(test)]
-prop_compose! {
-    fn arb_coord()(x in -180f64..180f64, y in -90f64..90f64) -> Coord {
-        coord! {x: x, y: y}
-    }
-}
-
-#[cfg(test)]
 proptest! {
     #[test]
     fn snap_point_to_line_intersection(
@@ -476,26 +454,26 @@ proptest! {
 
     #[test]
     fn test_geometry_index_empty_linestring(
-        x: f64, y: f64,
+        user_loc in arb_user_loc(0.0)
     ) {
-        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(vec![]));
+        let index = index_of_closest_segment_origin(user_loc, &LineString::new(vec![]));
         prop_assert_eq!(index, None);
     }
 
     #[test]
     fn test_geometry_index_single_coord_invalid_linestring(
-        x: f64, y: f64,
+        coord in arb_coord(),
     ) {
-        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(vec![coord! { x: x, y: y }]));
+        let index = index_of_closest_segment_origin(make_user_location(coord, 0.0), &LineString::new(vec![coord]));
         prop_assert_eq!(index, None);
     }
 
     #[test]
     fn test_geometry_index_is_some_for_reasonable_linestrings(
-        x in -180f64..180f64, y in -90f64..90f64,
+        user_coord in arb_coord(),
         coords in vec(arb_coord(), 2..500)
     ) {
-        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(coords));
+        let index = index_of_closest_segment_origin(make_user_location(user_coord, 0.0), &LineString::new(coords));
 
         // There are at least two points, so we have a valid segment
         prop_assert_ne!(index, None);
@@ -507,7 +485,7 @@ proptest! {
     ) {
         let last_coord = coords.last().unwrap();
         let coord_len = coords.len();
-        let user_location = make_user_location(last_coord.x, last_coord.y);
+        let user_location = make_user_location(*last_coord, 0.0);
         let index = index_of_closest_segment_origin(user_location, &LineString::new(coords));
 
         // There are at least two points, so we have a valid segment
@@ -556,7 +534,7 @@ mod linestring_based_tests {
 
         // Exactly at a point (NB: does not advance until we move *past* the transition point
         // and are closer to the next line segment!)
-        let index = index_of_closest_segment_origin(make_user_location(2.0, 2.0), &line);
+        let index = index_of_closest_segment_origin(make_user_location(COORDS[2], 2.0), &line);
         assert_eq!(index, Some(1));
     }
 
@@ -565,11 +543,15 @@ mod linestring_based_tests {
         let line = LineString::new(COORDS.to_vec());
 
         // Very close to an origin point
-        let index = index_of_closest_segment_origin(make_user_location(1.1, 1.1), &line);
+        let index =
+            index_of_closest_segment_origin(make_user_location(coord!(x: 1.1, y: 1.1), 0.0), &line);
         assert_eq!(index, Some(1));
 
         // Very close to the next point, but not yet "passing" to the next segment!
-        let index = index_of_closest_segment_origin(make_user_location(1.99, 1.99), &line);
+        let index = index_of_closest_segment_origin(
+            make_user_location(coord!(x: 1.99, y: 1.99), 0.0),
+            &line,
+        );
         assert_eq!(index, Some(1));
     }
 
@@ -578,12 +560,18 @@ mod linestring_based_tests {
         let line = LineString::new(COORDS.to_vec());
 
         // "Before" the start
-        let index = index_of_closest_segment_origin(make_user_location(-1.1, -1.1), &line);
+        let index = index_of_closest_segment_origin(
+            make_user_location(coord!(x: -1.1, y: -1.1), 0.0),
+            &line,
+        );
         assert_eq!(index, Some(0));
 
         // "Past" the end (NB: the last index in the list of coords is 4,
         // but we can never advance past n-1)
-        let index = index_of_closest_segment_origin(make_user_location(10.0, 10.0), &line);
+        let index = index_of_closest_segment_origin(
+            make_user_location(coord!(x: 10.0, y: 10.0), 0.0),
+            &line,
+        );
         assert_eq!(index, Some(3));
     }
 }
@@ -662,7 +650,7 @@ mod bearing_snapping_tests {
 
         // The value of the coordinates does not actually matter;
         // we are testing the course snapping
-        let user_location = make_user_location(5.0, 1.0);
+        let user_location = make_user_location(coord!(x: 5.0, y: 1.0), 0.0);
 
         // Apply a course to a user location
         let updated_location = apply_snapped_course(user_location, Some(1), &line);

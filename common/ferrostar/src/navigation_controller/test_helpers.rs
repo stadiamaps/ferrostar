@@ -3,7 +3,7 @@ use crate::routing_adapters::{osrm::OsrmResponseParser, RouteResponseParser};
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
 use chrono::{DateTime, Utc};
-use geo::{point, BoundingRect, Distance, Haversine, LineString, Point};
+use geo::{point, BoundingRect, Coord, Distance, Haversine, LineString, Point};
 use insta::{dynamic_redaction, Settings};
 
 pub enum TestRoute {
@@ -74,15 +74,18 @@ pub fn gen_dummy_route_step(
 ///
 /// # Arguments
 ///
-/// * `coordinates` - A vector of (longitude, latitude) pairs that will be converted to `GeographicCoordinate`s
-pub fn gen_route_step_with_coords(coordinates: Vec<(f64, f64)>) -> RouteStep {
+/// * `coordinates` - A vector of coordinates
+pub fn gen_route_step_with_coords(coordinates: Vec<Coord>) -> RouteStep {
     if coordinates.len() < 2 {
         panic!("A route step requires at least 2 coordinates");
     }
 
     let geo_coordinates: Vec<GeographicCoordinate> = coordinates
         .into_iter()
-        .map(|(lng, lat)| GeographicCoordinate { lng, lat })
+        .map(|coord| GeographicCoordinate {
+            lng: coord.x,
+            lat: coord.y,
+        })
         .collect();
 
     // Calculate the total distance along the route
