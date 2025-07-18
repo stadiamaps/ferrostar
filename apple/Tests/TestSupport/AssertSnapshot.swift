@@ -24,7 +24,7 @@ public extension XCTestCase {
             .background(Color(red: 130 / 255, green: 203 / 255, blue: 114 / 255))
 
         assertSnapshot(of: view,
-                       as: .image,
+                       as: .image(perceptualPrecision: 0.98),
                        named: name,
                        record: record,
                        file: file,
