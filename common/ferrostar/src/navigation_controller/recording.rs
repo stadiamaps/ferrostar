@@ -5,6 +5,9 @@ use crate::navigation_controller::models::{
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+
 /// Represents a recorded navigation session with its configuration and events.
 ///
 /// # Fields
@@ -49,6 +52,12 @@ impl NavigationRecordingBuilder {
             error: e.to_string(),
         })
     }
+
+    pub fn from_json(json: &str) -> Self {
+        serde_json::from_str(json)
+            .map_err(|_| RecordingError::SerializationError)
+            .unwrap()
+    }
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -73,4 +82,52 @@ pub enum RecordingError {
         error("Recording is not enabled for this controller.")
     )]
     RecordingNotEnabled,
+}
+
+#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
+pub struct NavigationReplay(NavigationRecording);
+
+impl NavigationReplay {
+    pub fn new(json: &str) -> Self {
+        Self(NavigationRecording::from_json(json))
+    }
+
+    pub fn get_next_event(&self, current_index: u64) -> Option<NavigationRecordingEvent> {
+        match self.0.events.get(current_index as usize) {
+            Some(event) => Some(event.clone()),
+            None => None,
+        }
+    }
+
+    pub fn get_initial_timestamp(&self) -> i64 {
+        self.0.initial_timestamp
+    }
+}
+
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen(js_name = NavigationReplay)]
+pub struct JsNavigationReplay(NavigationReplay);
+
+#[cfg(feature = "wasm-bindgen")]
+#[wasm_bindgen(js_class = NavigationReplay)]
+impl JsNavigationReplay {
+    #[wasm_bindgen(constructor)]
+    pub fn new(json: JsValue) -> Result<JsNavigationReplay, JsValue> {
+        let json: String = serde_wasm_bindgen::from_value(json)?;
+
+        Ok(JsNavigationReplay(NavigationReplay::new(&json)))
+    }
+
+    #[wasm_bindgen(js_name = getNextEvent)]
+    pub fn get_next_event(&self, current_index: JsValue) -> Result<JsValue, JsValue> {
+        let current_index: u64 = serde_wasm_bindgen::from_value(current_index)?;
+        let next_event = self.0.get_next_event(current_index);
+        serde_wasm_bindgen::to_value(&next_event)
+            .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+
+    #[wasm_bindgen(js_name = getInitialTimestamp)]
+    pub fn get_initial_timestamp(&self) -> Result<JsValue, JsValue> {
+        serde_wasm_bindgen::to_value(&self.0.get_initial_timestamp()).map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
 }
