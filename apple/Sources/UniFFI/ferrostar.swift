@@ -3748,7 +3748,7 @@ public func FfiConverterTypeNavigationControllerConfig_lower(_ value: Navigation
 
 public struct NavigationRecordingEvent {
     /**
-     * The timestamp of the event.
+     * The timestamp of the event in milliseconds since Jan 1, 1970 UTC.
      */
     public var timestamp: Int64
     /**
@@ -3760,7 +3760,7 @@ public struct NavigationRecordingEvent {
     // declare one manually.
     public init(
         /**
-         * The timestamp of the event.
+         * The timestamp of the event in milliseconds since Jan 1, 1970 UTC.
          */timestamp: Int64, 
         /**
          * Data associated with the event.
@@ -6405,13 +6405,13 @@ extension ParsingError: Foundation.LocalizedError {
 
 /**
  * Custom error type for navigation recording operations.
- * Note: Due to UniFFI limitations, we cannot include the underlying error details.
  */
 public enum RecordingError: Swift.Error {
 
     
     
-    case SerializationError
+    case SerializationError(error: String
+    )
     case RecordingNotAllowed
 }
 
@@ -6429,7 +6429,9 @@ public struct FfiConverterTypeRecordingError: FfiConverterRustBuffer {
         
 
         
-        case 1: return .SerializationError
+        case 1: return .SerializationError(
+            error: try FfiConverterString.read(from: &buf)
+            )
         case 2: return .RecordingNotAllowed
 
          default: throw UniffiInternalError.unexpectedEnumCase
@@ -6443,9 +6445,10 @@ public struct FfiConverterTypeRecordingError: FfiConverterRustBuffer {
 
         
         
-        case .SerializationError:
+        case let .SerializationError(error):
             writeInt(&buf, Int32(1))
-        
+            FfiConverterString.write(error, into: &buf)
+            
         
         case .RecordingNotAllowed:
             writeInt(&buf, Int32(2))

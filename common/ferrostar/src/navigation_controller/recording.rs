@@ -25,13 +25,15 @@ pub struct NavigationRecording {
 }
 
 /// Custom error type for navigation recording operations.
-/// Note: Due to UniFFI limitations, we cannot include the underlying error details.
 #[derive(Debug, Serialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum RecordingError {
-    #[cfg_attr(feature = "std", error("Error serializing navigation recording."))]
-    SerializationError,
+    #[cfg_attr(
+        feature = "std",
+        error("Error serializing navigation recording: {error}.")
+    )]
+    SerializationError { error: String },
     #[cfg_attr(
         feature = "std",
         error("Recording is not allowed for this controller.")
@@ -61,7 +63,9 @@ impl NavigationRecording {
     pub fn to_json(&self, events: Vec<NavigationRecordingEvent>) -> Result<String, RecordingError> {
         let mut recording = self.clone();
         recording.events = events;
-        serde_json::to_string(&recording).map_err(|_| RecordingError::SerializationError)
+        serde_json::to_string(&recording).map_err(|e| RecordingError::SerializationError {
+            error: e.to_string(),
+        })
     }
 
     /// Records a [`NavState`] update event.

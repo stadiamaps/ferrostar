@@ -382,7 +382,7 @@ impl From<NavigationControllerConfig> for SerializableNavigationControllerConfig
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub struct NavigationRecordingEvent {
-    /// The timestamp of the event.
+    /// The timestamp of the event in milliseconds since Jan 1, 1970 UTC.
     pub timestamp: i64,
     /// Data associated with the event.
     pub event_data: NavigationRecordingEventData,
