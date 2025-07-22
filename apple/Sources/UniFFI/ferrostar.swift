@@ -6198,10 +6198,7 @@ extension ModelError: Foundation.LocalizedError {
 
 public enum NavigationRecordingEventData {
     
-    case navStateUpdate(
-        /**
-         * Updated Nav state.
-         */navState: SerializableNavState
+    case stateUpdate(tripState: TripState, stepAdvanceCondition: SerializableStepAdvanceCondition
     )
     case routeUpdate(
         /**
@@ -6230,7 +6227,7 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         let variant: Int32 = try readInt(&buf)
         switch variant {
         
-        case 1: return .navStateUpdate(navState: try FfiConverterTypeSerializableNavState.read(from: &buf)
+        case 1: return .stateUpdate(tripState: try FfiConverterTypeTripState.read(from: &buf), stepAdvanceCondition: try FfiConverterTypeSerializableStepAdvanceCondition.read(from: &buf)
         )
         
         case 2: return .routeUpdate(route: try FfiConverterTypeRoute.read(from: &buf)
@@ -6247,9 +6244,10 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         switch value {
         
         
-        case let .navStateUpdate(navState):
+        case let .stateUpdate(tripState,stepAdvanceCondition):
             writeInt(&buf, Int32(1))
-            FfiConverterTypeSerializableNavState.write(navState, into: &buf)
+            FfiConverterTypeTripState.write(tripState, into: &buf)
+            FfiConverterTypeSerializableStepAdvanceCondition.write(stepAdvanceCondition, into: &buf)
             
         
         case let .routeUpdate(route):
@@ -6412,7 +6410,7 @@ public enum RecordingError: Swift.Error {
     
     case SerializationError(error: String
     )
-    case RecordingNotAllowed
+    case RecordingNotEnabled
 }
 
 
@@ -6432,7 +6430,7 @@ public struct FfiConverterTypeRecordingError: FfiConverterRustBuffer {
         case 1: return .SerializationError(
             error: try FfiConverterString.read(from: &buf)
             )
-        case 2: return .RecordingNotAllowed
+        case 2: return .RecordingNotEnabled
 
          default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -6450,7 +6448,7 @@ public struct FfiConverterTypeRecordingError: FfiConverterRustBuffer {
             FfiConverterString.write(error, into: &buf)
             
         
-        case .RecordingNotAllowed:
+        case .RecordingNotEnabled:
             writeInt(&buf, Int32(2))
         
         }
@@ -8665,7 +8663,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 30110) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 5556) {
+    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 40180) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {

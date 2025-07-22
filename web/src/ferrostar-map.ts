@@ -1,7 +1,12 @@
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import maplibregl, { GeolocateControl, Map } from "maplibre-gl";
-import { NavigationController, RouteAdapter, SerializableNavState, TripState } from "@stadiamaps/ferrostar";
+import {
+  NavigationController,
+  RouteAdapter,
+  SerializableNavState,
+  TripState,
+} from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
 import { SimulatedLocationProvider } from "./location";
