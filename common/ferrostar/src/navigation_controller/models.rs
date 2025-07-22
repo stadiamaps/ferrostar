@@ -414,7 +414,7 @@ impl NavigationRecordingEvent {
 
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
     pub fn state_update(serializable_nav_state: SerializableNavState) -> Self {
-        Self::new(NavigationRecordingEventData::NavStateUpdate {
+        Self::new(NavigationRecordingEventData::StateUpdate {
             trip_state: serializable_nav_state.trip_state,
             step_advance_condition: serializable_nav_state.step_advance_condition,
         })
@@ -430,7 +430,7 @@ impl NavigationRecordingEvent {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub enum NavigationRecordingEventData {
-    NavStateUpdate {
+    StateUpdate {
         trip_state: TripState,
         step_advance_condition: SerializableStepAdvanceCondition,
     },
