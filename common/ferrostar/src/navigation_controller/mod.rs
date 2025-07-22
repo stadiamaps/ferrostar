@@ -679,11 +679,13 @@ mod tests {
             );
 
             let final_nav_state = states.into_iter().last().expect("No final nav state?!");
-
-            // TODO: See if there is a better / more "diffable" way to do this
-            insta::assert_yaml_snapshot!(controller
+            let json = controller
                 .get_recording(final_nav_state.recording_events.unwrap())
-                .unwrap());
+                .unwrap();
+
+            // We have to do this to serialize the recording.
+            let value: serde_json::Value = serde_json::from_str(&json).unwrap();
+            insta::assert_yaml_snapshot!(value);
         });
     }
 
