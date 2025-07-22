@@ -21,8 +21,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
 
-    var showCentering: Bool
-    var onCenter: () -> Void
+    var cameraControlState: CameraControlState
 
     var onTapExit: (() -> Void)?
 
@@ -52,8 +51,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
-        showCentering: Bool = false,
-        onCenter: @escaping () -> Void = {},
+        cameraControlState: CameraControlState = .hidden,
         onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
@@ -65,8 +63,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         self.onMute = onMute
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
-        self.showCentering = showCentering
-        self.onCenter = onCenter
+        self.cameraControlState = cameraControlState
         self.onTapExit = onTapExit
 
         progressView = views.progressView
@@ -92,8 +89,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                     showZoom: showZoom,
                     onZoomIn: onZoomIn,
                     onZoomOut: onZoomOut,
-                    showCentering: showCentering,
-                    onCenter: onCenter
+                    cameraControlState: cameraControlState
                 )
                 .innerGrid {
                     topCenter?()
@@ -107,7 +103,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
                 if case .navigating = navigationState?.tripState {
                     VStack {
-                        if !showCentering {
+                        if case .hidden = cameraControlState {
                             currentRoadNameView(navigationState)
                         }
 
