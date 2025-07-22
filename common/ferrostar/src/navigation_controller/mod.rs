@@ -18,7 +18,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::{NavigationRecordingEvent, TripSummary},
-    navigation_controller::recording::{NavigationRecording, RecordingError},
+    navigation_controller::recording::{NavigationRecordingBuilder, RecordingError},
 };
 use chrono::Utc;
 use geo::{
@@ -45,9 +45,9 @@ pub trait Navigator: Send + Sync {
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
     fn get_recording(
         &self,
-        _events: Vec<NavigationRecordingEvent>,
+        #[allow(unused_variables)] events: Vec<NavigationRecordingEvent>,
     ) -> Result<String, RecordingError> {
-        Err(RecordingError::RecordingNotAllowed)
+        Err(RecordingError::RecordingNotEnabled)
     }
 }
 
@@ -105,7 +105,7 @@ impl Navigator for NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return NavState::complete(location, initial_summary);
+            return NavState::complete(location, initial_summary, None);
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -148,7 +148,7 @@ impl Navigator for NavigationController {
             annotation_json,
         };
         let next_advance = Arc::clone(&self.config.step_advance_condition);
-        NavState::new(trip_state, next_advance)
+        NavState::new(trip_state, next_advance, None)
     }
 
     /// Advances navigation to the next step (or finishes the route).
@@ -185,10 +185,14 @@ impl Navigator for NavigationController {
                             &remaining_waypoints,
                         );
 
-                        NavState::new(trip_state, state.step_advance_condition())
+                        NavState::new(
+                            trip_state,
+                            state.step_advance_condition(),
+                            state.recording_events,
+                        )
                     }
                     StepAdvanceStatus::EndOfRoute => {
-                        NavState::complete(user_location, summary.clone())
+                        NavState::complete(user_location, summary, state.recording_events)
                     }
                 }
             }
@@ -213,7 +217,7 @@ impl Navigator for NavigationController {
             } => {
                 // Remaining steps is empty, the route is finished.
                 let Some(current_step) = remaining_steps.first() else {
-                    return NavState::complete(location, summary);
+                    return NavState::complete(location, summary, state.recording_events);
                 };
 
                 // Trim the remaining waypoints if needed.
@@ -248,6 +252,7 @@ impl Navigator for NavigationController {
                         &remaining_waypoints,
                     ),
                     step_advance_result.next_iteration,
+                    state.recording_events,
                 );
 
                 if step_advance_result.should_advance {
@@ -403,18 +408,16 @@ impl NavigationController {
 /// This controller provides the same navigation functionality as [`NavigationController`]
 /// but additionally records all [`NavState`] changes
 /// The recording can be exported as JSON for debugging or testing purposes.
-///
-/// NOTE: Work in Progress
 pub struct RecordingNavigationController {
     pub controller: NavigationController,
-    pub recording: NavigationRecording,
+    pub recording: NavigationRecordingBuilder,
 }
 
 impl RecordingNavigationController {
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
         Self {
             controller: NavigationController::new(route.clone(), config.clone()),
-            recording: NavigationRecording::new(config, route),
+            recording: NavigationRecordingBuilder::new(config, route),
         }
     }
 }
@@ -422,38 +425,32 @@ impl RecordingNavigationController {
 impl Navigator for RecordingNavigationController {
     fn get_initial_state(&self, location: UserLocation) -> NavState {
         let initial_state = self.controller.get_initial_state(location);
-        let new_recording = self
-            .recording
-            .record_nav_state_update(initial_state.clone(), initial_state.clone());
+        let initial_event = NavigationRecordingEvent::state_update(initial_state.clone().into());
 
-        NavState::add_recording(initial_state, new_recording)
+        initial_state.append_recording_event(initial_event)
     }
 
     fn advance_to_next_step(&self, state: NavState) -> NavState {
         let new_state = self.controller.advance_to_next_step(state.clone());
-        let new_recording = self
-            .recording
-            .record_nav_state_update(state, new_state.clone());
+        let event = NavigationRecordingEvent::state_update(new_state.clone().into());
 
-        NavState::add_recording(new_state, new_recording)
+        new_state.append_recording_event(event)
     }
 
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
         let new_state = self
             .controller
             .update_user_location(location, state.clone());
-        let new_recording = self
-            .recording
-            .record_nav_state_update(state, new_state.clone());
+        let event = NavigationRecordingEvent::state_update(new_state.clone().into());
 
-        NavState::add_recording(new_state, new_recording)
+        new_state.append_recording_event(event)
     }
 
     fn get_recording(
         &self,
-        _events: Vec<NavigationRecordingEvent>,
+        events: Vec<NavigationRecordingEvent>,
     ) -> Result<String, RecordingError> {
-        self.recording.to_json(_events)
+        self.recording.to_json(events)
     }
 }
 
@@ -546,7 +543,8 @@ mod tests {
     fn test_full_route_state_snapshot(
         route: Route,
         step_advance_condition: Arc<dyn StepAdvanceCondition>,
-    ) -> Vec<TripState> {
+        should_record: bool,
+    ) -> (Arc<dyn Navigator>, Vec<NavState>) {
         let mut simulation_state =
             location_simulation_from_route(&route, Some(10.0), LocationBias::None)
                 .expect("Unable to create simulation");
@@ -569,7 +567,7 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                 }),
             },
-            false,
+            should_record,
         );
 
         let mut state = controller.get_initial_state(simulation_state.current_location);
@@ -612,7 +610,7 @@ mod tests {
             states.push(new_state);
         }
 
-        states.into_iter().map(|state| state.trip_state()).collect()
+        (controller, states)
     }
 
     // Full simulations for several routes with different settings
@@ -620,59 +618,86 @@ mod tests {
     #[test]
     fn test_extended_exact_distance() {
         nav_controller_insta_settings().bind(|| {
-            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            let (_, states) = test_full_route_state_snapshot(
                 get_test_route(TestRoute::Extended),
                 Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,
-                })
-            ));
+                }),
+                false,
+            );
+            insta::assert_yaml_snapshot!(states
+                .into_iter()
+                .map(|state| state.trip_state())
+                .collect::<Vec<_>>());
         });
     }
 
     #[test]
     fn test_extended_relative_linestring() {
         nav_controller_insta_settings().bind(|| {
-            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            let (_, states) = test_full_route_state_snapshot(
                 get_test_route(TestRoute::Extended),
-                Arc::new(DistanceEntryAndExitCondition::exact())
-            ));
+                Arc::new(DistanceEntryAndExitCondition::exact()),
+                false,
+            );
+            insta::assert_yaml_snapshot!(states
+                .into_iter()
+                .map(|state| state.trip_state())
+                .collect::<Vec<_>>());
         });
     }
 
     #[test]
     fn test_self_intersecting_exact_distance() {
         nav_controller_insta_settings().bind(|| {
-            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            let (_, states) = test_full_route_state_snapshot(
                 get_test_route(TestRoute::SelfIntersecting),
                 Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,
-                })
-            ));
+                }),
+                false,
+            );
+            insta::assert_yaml_snapshot!(states
+                .into_iter()
+                .map(|state| state.trip_state())
+                .collect::<Vec<_>>());
+        });
+    }
         });
     }
 
     #[test]
     fn test_self_intersecting_relative_linestring() {
         nav_controller_insta_settings().bind(|| {
-            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            let (_, states) = test_full_route_state_snapshot(
                 get_test_route(TestRoute::SelfIntersecting),
-                Arc::new(DistanceEntryAndExitCondition::exact())
-            ));
+                Arc::new(DistanceEntryAndExitCondition::exact()),
+                false,
+            );
+            insta::assert_yaml_snapshot!(states
+                .into_iter()
+                .map(|state| state.trip_state())
+                .collect::<Vec<_>>());
         });
     }
 
     #[test]
     fn test_self_intersecting_relative_linestring_min_line_distance() {
         nav_controller_insta_settings().bind(|| {
-            insta::assert_yaml_snapshot!(test_full_route_state_snapshot(
+            let (_, states) = test_full_route_state_snapshot(
                 get_test_route(TestRoute::SelfIntersecting),
                 Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,
-                })
-            ));
+                }),
+                false,
+            );
+            insta::assert_yaml_snapshot!(states
+                .into_iter()
+                .map(|state| state.trip_state())
+                .collect::<Vec<_>>());
         });
     }
 }
