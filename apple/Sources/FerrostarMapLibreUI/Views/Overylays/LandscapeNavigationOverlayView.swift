@@ -20,8 +20,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
 
-    var showCentering: Bool
-    var onCenter: () -> Void
+    var cameraControlState: CameraControlState
 
     var onTapExit: (() -> Void)?
 
@@ -52,8 +51,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
-        showCentering: Bool = false,
-        onCenter: @escaping () -> Void = {},
+        cameraControlState: CameraControlState = .hidden,
         onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
@@ -65,8 +63,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
-        self.showCentering = showCentering
-        self.onCenter = onCenter
+        self.cameraControlState = cameraControlState
         self.onTapExit = onTapExit
 
         progressView = views.progressView
@@ -92,7 +89,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
 
             ZStack(alignment: .bottom) {
                 // Centering will push up the grid. Allowing for the road name
-                if !showCentering {
+                if case .hidden = cameraControlState {
                     HStack {
                         Spacer(minLength: 64)
 
@@ -115,8 +112,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     showZoom: showZoom,
                     onZoomIn: onZoomIn,
                     onZoomOut: onZoomOut,
-                    showCentering: showCentering,
-                    onCenter: onCenter
+                    cameraControlState: cameraControlState
                 )
                 .innerGrid {
                     topCenter?()

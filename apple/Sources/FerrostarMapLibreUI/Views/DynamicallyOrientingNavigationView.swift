@@ -95,7 +95,7 @@ public struct DynamicallyOrientingNavigationView: View,
                     userLayers
                 }
                 .navigationMapViewContentInset(
-                    mapInsets.dynamic(orientation)(geometry)
+                    calculatedMapViewInsets(for: geometry)
                 )
 
                 switch orientation {
@@ -115,8 +115,13 @@ public struct DynamicallyOrientingNavigationView: View,
                         showZoom: true,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
+                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+                            if let overviewCamera = navigationState?.routeOverviewCamera {
+                                camera = overviewCamera
+                            }
+                        } : .showRecenter { // TODO: Third case when not navigating!
+                            camera = navigationCamera
+                        },
                         onTapExit: onTapExit
                     )
                     .innerGrid {
@@ -144,8 +149,13 @@ public struct DynamicallyOrientingNavigationView: View,
                         showZoom: true,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
+                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+                            if let overviewCamera = navigationState?.routeOverviewCamera {
+                                camera = overviewCamera
+                            }
+                        } : .showRecenter { // TODO: Third case when not navigating!
+                            camera = navigationCamera
+                        },
                         onTapExit: onTapExit
                     )
                     .innerGrid {
@@ -164,6 +174,14 @@ public struct DynamicallyOrientingNavigationView: View,
             NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
         ) { _ in
             orientation = UIDevice.current.orientation
+        }
+    }
+
+    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
+        if case .rect = camera.state {
+            .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+        } else {
+            mapInsets.dynamic(orientation)(geometry)
         }
     }
 }
