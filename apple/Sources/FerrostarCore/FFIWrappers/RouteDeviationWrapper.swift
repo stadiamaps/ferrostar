@@ -3,9 +3,9 @@ import FerrostarCoreFFI
 import Foundation
 
 private final class DetectorImpl: RouteDeviationDetector {
-    let detectorFunc: (UserLocation, Route, RouteStep) -> RouteDeviation
+    let detectorFunc: @Sendable (UserLocation, Route, RouteStep) -> RouteDeviation
 
-    init(detectorFunc: @escaping (UserLocation, Route, RouteStep) -> RouteDeviation) {
+    init(detectorFunc: @escaping @Sendable (UserLocation, Route, RouteStep) -> RouteDeviation) {
         self.detectorFunc = detectorFunc
     }
 
@@ -20,7 +20,7 @@ public enum SwiftRouteDeviationTracking {
 
     case staticThreshold(minimumHorizontalAccuracy: UInt16, maxAcceptableDeviation: Double)
 
-    case custom(detector: (UserLocation, Route, RouteStep) -> RouteDeviation)
+    case custom(detector: @Sendable (UserLocation, Route, RouteStep) -> RouteDeviation)
 
     var ffiValue: FerrostarCoreFFI.RouteDeviationTracking {
         switch self {
