@@ -402,17 +402,13 @@ pub struct NavigationRecordingEvent {
     event_data: NavigationRecordingEventData,
 }
 
-#[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationRecordingEvent {
-    #[cfg_attr(feature = "uniffi", uniffi::constructor)]
     pub fn new(event_data: NavigationRecordingEventData) -> Self {
         Self {
             timestamp: Utc::now().timestamp_millis(),
             event_data,
         }
     }
-
-    #[cfg_attr(feature = "uniffi", uniffi::constructor)]
     pub fn state_update(serializable_nav_state: SerializableNavState) -> Self {
         Self::new(NavigationRecordingEventData::StateUpdate {
             trip_state: serializable_nav_state.trip_state,
@@ -420,7 +416,6 @@ impl NavigationRecordingEvent {
         })
     }
 
-    #[cfg_attr(feature = "uniffi", uniffi::constructor)]
     pub fn error(error_message: String) -> Self {
         Self::new(NavigationRecordingEventData::Error { error_message })
     }
