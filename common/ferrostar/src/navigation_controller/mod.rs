@@ -665,6 +665,25 @@ mod tests {
                 .collect::<Vec<_>>());
         });
     }
+
+    #[test]
+    fn test_recording_serialization() {
+        nav_controller_insta_settings().bind(|| {
+            let (controller, states) = test_full_route_state_snapshot(
+                get_test_route(TestRoute::SelfIntersecting),
+                Arc::new(DistanceToEndOfStepCondition {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                }),
+                true,
+            );
+
+            let final_nav_state = states.into_iter().last().expect("No final nav state?!");
+
+            // TODO: See if there is a better / more "diffable" way to do this
+            insta::assert_yaml_snapshot!(controller
+                .get_recording(final_nav_state.recording_events.unwrap())
+                .unwrap());
         });
     }
 
