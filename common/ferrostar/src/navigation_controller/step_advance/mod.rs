@@ -61,6 +61,7 @@ pub trait StepAdvanceCondition: StepAdvanceConditionSerializable + Sync + Send {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum SerializableStepAdvanceCondition {

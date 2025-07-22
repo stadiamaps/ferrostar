@@ -2,9 +2,9 @@ import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import maplibregl, { GeolocateControl, Map } from "maplibre-gl";
 import {
-  JsNavState,
   NavigationController,
   RouteAdapter,
+  SerializableNavState,
   TripState,
 } from "@stadiamaps/ferrostar";
 import "./instructions-view";
@@ -35,7 +35,7 @@ export class FerrostarMap extends LitElement {
   options: object = {};
 
   @state()
-  protected _navState: JsNavState | null = null;
+  protected _navState: SerializableNavState | null = null;
 
   @property({ type: Function, attribute: false })
   onNavigationStart?: (map: Map) => void;
@@ -51,6 +51,15 @@ export class FerrostarMap extends LitElement {
    */
   @property({ type: Object, attribute: false })
   customStyles?: object | null;
+
+  /**
+   * A boolean flag indicating whether recording should occur.
+   *
+   * When set to `true`, the system will perform recording operations.
+   * When set to `false`, recording operations are disabled.
+   */
+  @property({ type: Boolean })
+  should_record: boolean = false;
 
   /**
    * Enables voice guidance via the web speech synthesis API.
@@ -244,7 +253,11 @@ export class FerrostarMap extends LitElement {
     if (this.onNavigationStart && this.map) this.onNavigationStart(this.map);
 
     // Initialize the navigation controller
-    this.navigationController = new NavigationController(route, config, false);
+    this.navigationController = new NavigationController(
+      route,
+      config,
+      this.should_record,
+    );
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
     // Initialize the trip state
@@ -328,6 +341,15 @@ export class FerrostarMap extends LitElement {
     // TODO: Factor out the UI layer from the core
     this.routeAdapter?.free();
     this.routeAdapter = null;
+
+    if (this.should_record) {
+      let recording = this.navigationController?.get_recording(
+        this._navState?.recordingEvents,
+      );
+      // TODO: Figure out how to generate unique filename
+      this.saveJsonStringToFile("recording.json", recording);
+    }
+
     this.navigationController?.free();
     this.navigationController = null;
     this.navStateUpdate(null);
@@ -336,7 +358,16 @@ export class FerrostarMap extends LitElement {
     if (this.onNavigationStop && this.map) this.onNavigationStop(this.map);
   }
 
-  private navStateUpdate(newState: JsNavState | null) {
+  private saveJsonStringToFile(filename: string, jsonString: string) {
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  private navStateUpdate(newState: SerializableNavState | null) {
     this._navState = newState;
     this.onTripStateChange?.(newState?.tripState || null);
   }

@@ -158,6 +158,11 @@ fn create_timestamp_redaction(
                 Ok(_) => "[timestamp]",
                 Err(_) => "[invalid-timestamp]",
             }
+        } else if let Some(timestamp_num) = value.as_i64() {
+            match DateTime::<Utc>::from_timestamp_millis(timestamp_num) {
+                Some(_) => "[timestamp]",
+                None => "[invalid-timestamp]",
+            }
         } else {
             "[unexpected-value]"
         }
@@ -197,6 +202,14 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
     );
     settings.add_redaction(
         ".**.endedAt",
+        dynamic_redaction(create_timestamp_redaction()),
+    );
+    settings.add_redaction(
+        ".**.timestamp",
+        dynamic_redaction(create_timestamp_redaction()),
+    );
+    settings.add_redaction(
+        ".**.initial_timestamp",
         dynamic_redaction(create_timestamp_redaction()),
     );
 
