@@ -198,7 +198,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640748
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -378,7 +378,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640748
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -558,7 +558,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640748
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -738,7 +738,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640748
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -918,7 +918,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640748
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -1098,7 +1098,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640749
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -1278,7 +1278,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640749
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -1458,7 +1458,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640749
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -1638,7 +1638,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640749
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -1818,7 +1818,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640749
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -1998,7 +1998,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640749
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -2178,7 +2178,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640750
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -2358,7 +2358,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640750
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -2538,7 +2538,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640750
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -2718,7 +2718,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640750
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -2898,7 +2898,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640750
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -3078,7 +3078,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640751
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -3258,7 +3258,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640751
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -3438,7 +3438,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640756
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -3618,7 +3618,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640757
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -3798,7 +3798,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640757
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -3978,7 +3978,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640757
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -4158,7 +4158,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640761
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -4338,7 +4338,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640762
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -4518,7 +4518,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640762
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -4698,7 +4698,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640763
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -4858,7 +4858,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640763
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -5018,7 +5018,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640764
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -5178,7 +5178,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640765
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -5338,7 +5338,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640765
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -5498,7 +5498,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640765
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -5658,7 +5658,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640766
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -5818,7 +5818,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640767
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -5978,7 +5978,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640768
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -6138,7 +6138,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640772
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -6298,7 +6298,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640773
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -6458,7 +6458,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640773
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -6618,7 +6618,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640774
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -6778,7 +6778,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640775
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -6938,7 +6938,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640779
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -7098,7 +7098,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640780
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -7258,7 +7258,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640781
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -7418,7 +7418,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640782
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -7578,7 +7578,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640783
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -7738,7 +7738,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640785
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -7898,7 +7898,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640786
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -8058,7 +8058,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640793
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -8218,7 +8218,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640794
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -8378,7 +8378,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640795
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -8538,7 +8538,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640798
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -8698,7 +8698,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640799
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -8858,7 +8858,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640802
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -9018,7 +9018,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640804
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -9178,7 +9178,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640805
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -9338,7 +9338,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640806
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -9498,7 +9498,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640808
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -9658,7 +9658,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640809
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -9818,7 +9818,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640810
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -9978,7 +9978,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640811
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -10138,7 +10138,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640812
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -10298,7 +10298,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640813
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -10458,7 +10458,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640814
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -10618,7 +10618,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640815
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -10778,7 +10778,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640816
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -10938,7 +10938,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640817
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11043,7 +11043,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640818
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11148,7 +11148,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640819
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11253,7 +11253,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640823
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11358,7 +11358,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640824
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11463,7 +11463,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640825
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11568,7 +11568,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640826
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11673,7 +11673,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640827
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11778,7 +11778,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640828
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11883,7 +11883,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640828
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -11988,7 +11988,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640829
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12093,7 +12093,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640830
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12198,7 +12198,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640831
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12303,7 +12303,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640832
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12408,7 +12408,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640833
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12513,7 +12513,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640834
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12618,7 +12618,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640835
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12723,7 +12723,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640836
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12828,7 +12828,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640837
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -12933,7 +12933,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640839
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13038,7 +13038,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640840
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13143,7 +13143,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640841
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13248,7 +13248,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640842
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13353,7 +13353,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640843
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13458,7 +13458,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640844
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13563,7 +13563,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640846
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13668,7 +13668,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640847
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13773,7 +13773,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640848
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13878,7 +13878,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640849
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -13983,7 +13983,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640850
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14088,7 +14088,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640852
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14193,7 +14193,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640853
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14298,7 +14298,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640854
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14403,7 +14403,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640856
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14508,7 +14508,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640857
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14613,7 +14613,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640858
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14718,7 +14718,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640859
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14823,7 +14823,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640861
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -14928,7 +14928,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640862
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15033,7 +15033,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640863
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15138,7 +15138,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640864
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15243,7 +15243,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640866
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15348,7 +15348,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640867
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15453,7 +15453,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640869
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15558,7 +15558,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640870
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15663,7 +15663,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640871
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15768,7 +15768,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640873
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15873,7 +15873,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640874
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -15978,7 +15978,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640876
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16083,7 +16083,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640877
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16184,7 +16184,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640879
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16285,7 +16285,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640880
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16386,7 +16386,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640881
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16487,7 +16487,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640883
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16588,7 +16588,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640884
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16689,7 +16689,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640885
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16790,7 +16790,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640887
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16891,7 +16891,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640889
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -16992,7 +16992,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640890
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition:
@@ -17049,7 +17049,7 @@ events:
               horizontal_accuracy: 0
               speed: ~
             visual_instruction: ~
-    timestamp: 1753210640892
+    timestamp: "[timestamp]"
   - event_data:
       StateUpdate:
         step_advance_condition: Manual
@@ -17069,7 +17069,7 @@ events:
                 degrees: 180
               horizontal_accuracy: 0
               speed: ~
-    timestamp: 1753210640893
+    timestamp: "[timestamp]"
 initial_route:
   bbox:
     ne:
@@ -17307,5 +17307,5 @@ initial_route:
         lat: 45.371508
         lng: -122.585901
       kind: Break
-initial_timestamp: 1753210640748
+initial_timestamp: "[timestamp]"
 version: 0.40.0
