@@ -34,6 +34,7 @@ public struct PortraitNavigationView: View,
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
+    public var bottomLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
     public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
@@ -94,7 +95,7 @@ public struct PortraitNavigationView: View,
                     userLayers
                 }
                 .navigationMapViewContentInset(
-                    mapInsets.portrait(geometry)
+                    calculatedMapViewInsets(for: geometry)
                 )
 
                 PortraitNavigationOverlayView(
@@ -112,8 +113,11 @@ public struct PortraitNavigationView: View,
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
-                    showCentering: !camera.isTrackingUserLocationWithCourse,
-                    onCenter: { camera = navigationCamera },
+                    cameraControlState: camera.isTrackingUserLocationWithCourse ? CameraControlState.showRecenter {
+                        // TODO:
+                    } : .showRecenter { // TODO: Third case when not navigating!
+                        camera = navigationCamera
+                    },
                     onTapExit: onTapExit
                 )
                 .innerGrid {
@@ -126,6 +130,14 @@ public struct PortraitNavigationView: View,
                     bottomTrailing?()
                 }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
+        }
+    }
+
+    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
+        if case .rect = camera.state {
+            .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
+        } else {
+            mapInsets.portrait(geometry)
         }
     }
 }
