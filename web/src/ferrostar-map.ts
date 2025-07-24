@@ -20,7 +20,9 @@ const allowedSystems: Array<DistanceSystem> = [
 ];
 
 const distanceSystemConverter = {
-  fromAttribute(value: string): DistanceSystem {
+  fromAttribute(value: string | null): DistanceSystem | null {
+    if (!value) return null;
+
     if (allowedSystems.includes(value as DistanceSystem)) {
       return value as DistanceSystem;
     }
