@@ -34,7 +34,7 @@
     "lint:fix": "eslint --cache --ext .js,.ts,.html src --fix"
   },
   "dependencies": {
-    "@maptimy/platform-formatters": "^0.6.0",
+    "@maptimy/platform-formatters": "^0.6.1",
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
     "lit": "^3.2.1",
     "maplibre-gl": "^4.5.0 || ^5"
