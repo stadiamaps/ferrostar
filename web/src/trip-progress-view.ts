@@ -1,6 +1,7 @@
 import {
   LocalizedDurationFormatter,
   LocalizedDistanceFormatter,
+  DistanceSystem,
 } from "@maptimy/platform-formatters";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -12,6 +13,12 @@ const DistanceFormatter = LocalizedDistanceFormatter();
 export class TripProgressView extends LitElement {
   @property()
   tripState: any = null;
+
+  @property()
+  system: DistanceSystem = "metric";
+
+  @property()
+  maximumFractionDigits = 2;
 
   static styles = [
     css`
@@ -67,6 +74,8 @@ export class TripProgressView extends LitElement {
           <p class="arrival-text">
             ${DistanceFormatter.format(
               this.tripState.Navigating.progress.distanceRemaining,
+              this.system,
+              this.maximumFractionDigits,
             )}
           </p>
         </div>

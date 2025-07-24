@@ -11,6 +11,25 @@ import "./instructions-view";
 import "./trip-progress-view";
 import { SimulatedLocationProvider } from "./location";
 import CloseSvg from "./assets/directions/close.svg";
+import { DistanceSystem } from "@maptimy/platform-formatters";
+
+const allowedSystems: Array<DistanceSystem> = [
+  "metric",
+  "imperial",
+  "imperialWithYards",
+];
+
+const distanceSystemConverter = {
+  fromAttribute(value: string): DistanceSystem {
+    if (allowedSystems.includes(value as DistanceSystem)) {
+      return value as DistanceSystem;
+    }
+    throw new Error(`Invalid distance system: ${value}`);
+  },
+  toAttribute(value: DistanceSystem): string {
+    return value;
+  },
+};
 
 /**
  * A MapLibre-based map component specialized for navigation.
@@ -76,6 +95,12 @@ export class FerrostarMap extends LitElement {
    */
   @property({ type: Boolean })
   addGeolocateControl: boolean = true;
+
+  @property({ converter: distanceSystemConverter })
+  system?: DistanceSystem;
+
+  @property({ type: Number })
+  maximumFractionDigits?: number;
 
   routeAdapter: RouteAdapter | null = null;
 
@@ -411,6 +436,8 @@ export class FerrostarMap extends LitElement {
             <div id="bottom-component">
               <trip-progress-view
                 .tripState=${this._navState?.tripState}
+                .system=${this.system}
+                .maximumFractionDigits="${this.maximumFractionDigits}"
               ></trip-progress-view>
               <button
                 id="stop-button"
