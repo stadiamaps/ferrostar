@@ -72,7 +72,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
     } from "@stadiamaps/ferrostar-webcomponents";
     import mapLibreGL from "maplibre-gl";
     import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
-    import {Replay} from "./src/replay.js";
+    import {ReplayController} from "./src/replay-controller.js";
 
     // TODO: type + use TypeScript enum
     const config = {
@@ -226,8 +226,8 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
             if (!file) return;
 
             const json = await file.text();
-            const replay = new Replay(json);
-            replay.startReplay();
+            const replay = new ReplayController(json);
+            replay.start();
             replayButton.disabled = false;
         })
 

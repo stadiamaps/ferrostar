@@ -6,7 +6,6 @@ use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "wasm-bindgen")]
-use tsify::serde_wasm_bindgen;
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 /// Represents a recorded navigation session with its configuration and events.
