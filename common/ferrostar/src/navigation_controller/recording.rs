@@ -6,6 +6,7 @@ use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "wasm-bindgen")]
+use tsify::serde_wasm_bindgen;
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
 /// Represents a recorded navigation session with its configuration and events.
@@ -52,12 +53,6 @@ impl NavigationRecordingBuilder {
             error: e.to_string(),
         })
     }
-
-    pub fn from_json(json: &str) -> Self {
-        serde_json::from_str(json)
-            .map_err(|_| RecordingError::SerializationError)
-            .unwrap()
-    }
 }
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -65,6 +60,16 @@ pub struct NavigationRecording {
     #[serde(flatten)]
     recording: NavigationRecordingBuilder,
     events: Vec<NavigationRecordingEvent>,
+}
+
+impl NavigationRecording {
+    pub fn from_json(json: &str) -> Self {
+        serde_json::from_str(json)
+            .map_err(|e| RecordingError::SerializationError {
+                error: e.to_string(),
+            })
+            .unwrap()
+    }
 }
 
 /// Custom error type for navigation recording operations.
@@ -100,7 +105,7 @@ impl NavigationReplay {
     }
 
     pub fn get_initial_timestamp(&self) -> i64 {
-        self.0.initial_timestamp
+        self.0.recording.initial_timestamp
     }
 }
 
@@ -128,6 +133,7 @@ impl JsNavigationReplay {
 
     #[wasm_bindgen(js_name = getInitialTimestamp)]
     pub fn get_initial_timestamp(&self) -> Result<JsValue, JsValue> {
-        serde_wasm_bindgen::to_value(&self.0.get_initial_timestamp()).map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+        serde_wasm_bindgen::to_value(&self.0.get_initial_timestamp())
+            .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 }
