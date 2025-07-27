@@ -1,6 +1,6 @@
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import maplibregl, { GeolocateControl } from "maplibre-gl";
+import maplibregl, { GeolocateControl, Marker } from "maplibre-gl";
 import CloseSvg from "./assets/directions/close.svg";
 import { JsNavState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
@@ -57,6 +57,8 @@ export class FerrostarMap extends LitElement {
    * The geolocate control instance.
    */
   geolocateControl: GeolocateControl | null = null;
+
+  private userLocationMarker: Marker | null = null;
 
   static styles = [
     css`
@@ -171,6 +173,7 @@ export class FerrostarMap extends LitElement {
     }
 
     this.updateCamera();
+    this.renderUserLocationMarker();
   }
 
   private renderRoute() {
@@ -226,6 +229,28 @@ export class FerrostarMap extends LitElement {
     );
   }
 
+  private renderUserLocationMarker() {
+    if (!this.map || !this.navState?.tripState || !("Navigating" in this.navState.tripState)) {
+      return;
+    }
+
+    const userLocation = this.navState.tripState.Navigating.userLocation;
+
+    if (this.userLocationMarker) {
+      this.userLocationMarker.setLngLat([
+        userLocation.coordinates.lng,
+        userLocation.coordinates.lat,
+      ]);
+      return;
+    }
+
+    this.userLocationMarker = new Marker({
+      color: "blue",
+    })
+      .setLngLat([userLocation.coordinates.lng, userLocation.coordinates.lat])
+      .addTo(this.map);
+  }
+
   private updateCamera() {
     const tripState = this.navState?.tripState;
     if (!tripState || !("Navigating" in tripState)) return;
@@ -245,7 +270,20 @@ export class FerrostarMap extends LitElement {
     if (this.map.getSource("route")) this.map.removeSource("route");
   }
 
+  private clearUserLocationMarker() {
+    if (this.userLocationMarker) {
+      this.userLocationMarker.remove();
+      this.userLocationMarker = null;
+    }
+  }
+
+  clearNavigation() {
+    this.clearRoute();
+    this.clearUserLocationMarker();
+  }
+
   private handleStopNavigation() {
+    this.clearNavigation();
     if (this.onStopNavigation) {
       this.onStopNavigation();
     }

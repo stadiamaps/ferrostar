@@ -113,11 +113,8 @@
         ferrostarMap.showNavigationUI = true;
 
         ferrostarMap.onStopNavigation = () => {
-          // Remove the route from the map
-          ferrostarMap.route = null;
-          ferrostarMap.clearRoute();
-          ferrostarMap.handleStopNavigation();
-        }
+          ferrostarCore.stopNavigation();
+        };
 
         ferrostarCore.addEventListener("navstate-change", (event) => {
           ferrostarMap.navState = event.detail.navState;
