@@ -32,7 +32,7 @@ export class FerrostarMap extends LitElement {
   @property({ type: Boolean })
   showNavigationUI: boolean = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   isSimulation: boolean = false;
 
   /**
