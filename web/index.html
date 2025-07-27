@@ -48,18 +48,19 @@
 	See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap vendors.
       -->
     <div class="map-container">
-      <ferrostar-map
-        id="ferrostar"
+      <ferrostar-map id="ferrostar"></ferrostar-map>
+      <ferrostar-core
+        id="ferrostar-core"
         valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
-        styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
         profile="bicycle"
-      ></ferrostar-map>
+      ></ferrostar-core>
       <div class="map-element" id="mapElement"></div>
     </div>
 
     <script type="module">
       import {
         FerrostarMap,
+        FerrostarCore,
         SimulatedLocationProvider,
         BrowserLocationProvider,
       } from "@stadiamaps/ferrostar-webcomponents";
@@ -106,8 +107,21 @@
         });
 
         // Get a reference to the Ferrostar map component
-        const ferrostar = document.getElementById("ferrostar");
-        ferrostar.map = mapInstance;
+        const ferrostarMap = document.getElementById("ferrostar");
+        const ferrostarCore = document.getElementById("ferrostar-core");
+        ferrostarMap.map = mapInstance;
+        ferrostarMap.showNavigationUI = true;
+
+        ferrostarMap.onStopNavigation = () => {
+          // Remove the route from the map
+          ferrostarMap.route = null;
+          ferrostarMap.clearRoute();
+          ferrostarMap.handleStopNavigation();
+        }
+
+        ferrostarCore.addEventListener("navstate-change", (event) => {
+          ferrostarMap.navState = event.detail.navState;
+        });
 
         // Create a search control.
         const searchBox = new MapLibreSearchControl({
@@ -122,43 +136,45 @@
 
             // FIXME: This is a hack basically to support the demo page that should go away.
             if (
-              !ferrostar.locationProvider ||
-              ferrostar.locationProvider instanceof SimulatedLocationProvider
+              !ferrostarCore.locationProvider ||
+              ferrostarCore.locationProvider instanceof
+                SimulatedLocationProvider
             ) {
-              ferrostar.locationProvider = new BrowserLocationProvider();
+              ferrostarCore.locationProvider = new BrowserLocationProvider();
             }
 
             // Fetch the user's current location.
             // If we have a cached one that's no older than 30 seconds,
             // skip waiting for an update and use the slightly stale location.
             const location =
-              await ferrostar.locationProvider.getCurrentLocation(30_000);
+              await ferrostarCore.locationProvider.getCurrentLocation(30_000);
 
             // Use the acquired user location to request the route
-            const routes = await ferrostar.getRoutes(location, waypoints);
+            const routes = await ferrostarCore.getRoutes(location, waypoints);
             const route = routes[0];
+            ferrostarMap.route = route;
 
             // Start the navigation
-            ferrostar.startNavigation(route, config);
+            ferrostarCore.startNavigation(route, config);
           },
         });
 
-        ferrostar.options = {
+        ferrostarCore.options = {
           costing_options: { bicycle: { use_roads: 0.2 } },
         };
-        ferrostar.geolocateOnLoad = false;
+        ferrostarCore.geolocateOnLoad = false;
 
         mapInstance.on("load", (_) => {
           // Post-first-load configuration
           mapInstance.addControl(searchBox, "top-left");
         });
-        ferrostar.onNavigationStart = (map) => {
+        ferrostarCore.onNavigationStart = () => {
           // Remove our search box when navigation starts
-          map.removeControl(searchBox);
+          mapInstance.removeControl(searchBox);
         };
-        ferrostar.onNavigationStop = (map) => {
+        ferrostarCore.onNavigationStop = () => {
           // Put the search box back when we stop
-          map.addControl(searchBox, "top-left");
+          mapInstance.addControl(searchBox, "top-left");
         };
 
         const simulateNavigationButton = document.getElementById("simulate");
@@ -179,7 +195,7 @@
           ];
 
           // Request the route
-          const routes = await ferrostar.getRoutes(
+          const routes = await ferrostarCore.getRoutes(
             initialSimulatedLocation,
             simulatedWaypoints,
           );
@@ -192,13 +208,14 @@
           locationProvider.setSimulatedRoute(route);
 
           // Start the navigation
-          ferrostar.locationProvider = locationProvider;
-          ferrostar.startNavigation(route, config);
+          ferrostarMap.route = route;
+          ferrostarCore.locationProvider = locationProvider;
+          ferrostarCore.startNavigation(route, config);
         });
 
         const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
         voiceGuidanceCheckbox.addEventListener("change", (event) => {
-          ferrostar.useVoiceGuidance = event.target.checked;
+          ferrostarCore.useVoiceGuidance = event.target.checked;
         });
       }
 
