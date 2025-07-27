@@ -106,6 +106,14 @@ impl NavigationReplay {
     pub fn get_initial_timestamp(&self) -> i64 {
         self.0.recording.initial_timestamp
     }
+
+    pub fn get_config(self) -> SerializableNavigationControllerConfig {
+        self.0.recording.config.into()
+    }
+
+    pub fn get_initial_route(self) -> Route {
+        self.0.recording.initial_route
+    }
 }
 
 #[cfg(feature = "wasm-bindgen")]
@@ -133,6 +141,18 @@ impl JsNavigationReplay {
     #[wasm_bindgen(js_name = getInitialTimestamp)]
     pub fn get_initial_timestamp(&self) -> Result<JsValue, JsValue> {
         serde_wasm_bindgen::to_value(&self.0.get_initial_timestamp())
+            .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+
+    #[wasm_bindgen(js_name = getConfig)]
+    pub fn get_config(self) -> Result<JsValue, JsValue> {
+        serde_wasm_bindgen::to_value(&self.0.get_config())
+            .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+
+    #[wasm_bindgen(js_name = getInitialRoute)]
+    pub fn get_initial_route(self) -> Result<JsValue, JsValue> {
+        serde_wasm_bindgen::to_value(&self.0.get_initial_route())
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 }
