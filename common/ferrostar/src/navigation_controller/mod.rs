@@ -512,6 +512,7 @@ impl JsNavigationController {
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
+    #[wasm_bindgen(js_name = getRecording)]
     pub fn get_recording(&self, events: JsValue) -> Result<JsValue, JsValue> {
         let events: Vec<NavigationRecordingEvent> = serde_wasm_bindgen::from_value(events)?;
         let recording = self.0.get_recording(events);

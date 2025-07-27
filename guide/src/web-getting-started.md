@@ -40,20 +40,24 @@ to ensure maximum compatibility across frontend frameworks.
 You can import the components just like other things you’re used to in JavaScript.
 
 ```javascript
-import { FerrostarMap, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
+import { FerrostarMap, FerrostarCore, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
 ```
 
-## Configure the `<ferrostar-map>` component
+## Configure the `<ferrostar-map>` and `ferrostar-core` component
 
 Now you can use Ferrostar in your HTML like this:
 
 ```html
-<ferrostar-map
-  id="ferrostar"
+<!-- Navigation Logic Component-->
+<ferrostar-core
+  id="ferrostar-core"
   valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
   styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
   profile="bicycle"
-></ferrostar-map>
+></ferrostar-core>
+
+<!-- Map Visualization Component -->
+ <ferrostar-map id="ferrostar"></ferrostar-map>
 ```
 
 Here we have used Stadia Maps URLs, which should work without authentication for local development.
@@ -76,7 +80,7 @@ That’s all you need to get started!
 
 ### Configuration explained
 
-`<ferrostar-map>` provides a few properties to configure.
+`<ferrostar-core>` provides a few properties to configure.
 Here are the most important ones:
 
 - `valhallaEndpointUrl`: The Valhalla routing endpoint to use. You can use any reasonably up-to-date Valhalla server, including your own. See [vendors](./vendor.md#routing) for a list of known compatible vendors.
@@ -90,10 +94,13 @@ Here are the most important ones:
 - `onNavigationStart`: Callback when navigation starts.
 - `onNavigationStop`: Callback when navigation ends.
 - `onTripStateChange`: Callback when the trip state changes (most state changes, such as a location update, advancing to the next step, etc.).
-- `customStyles`: Custom CSS to load (the component uses a scoped shadow DOM; use this to load external styles).
 - `useVoiceGuidance`: Enable voice guidance (default: `false`).
 - `geolocateOnLoad`: Geolocate the user on load and zoom the map to their location (default: `true`; you probably want this unless you are simulating locations for testing).
-- `customStyles`: Styles which will apply inside the component (ex: for MapLibre plugins).
+
+`<ferrostar-map>` provides a few properties to configure.
+Here are the most important ones:
+
+- `customStyles`: Custom CSS to load (the component uses a scoped shadow DOM; use this to load external styles).
 
 If you haven’t worked with web components before,
 one quick thing to understand is that the only thing you can configure
@@ -104,7 +111,17 @@ If you’re using a vanilla framework, you will need to get the DOM object
 and then set properties with JavaScript like so:
 
 ```javascript
-const ferrostar = document.getElementById("ferrostar");
+const ferrostarMap = document.getElementById("ferrostar");
+const ferrostarCore = document.getElementById("ferrostar-core");
+
+// Connect map to MapLibre instance
+ferrostarMap.map = mapInstance;
+
+// Link core (or any StateProvider) to map via linkWith method.
+ferrostarMap.linkWith(ferrostarCore)
+
+// Set up location provider
+ferrostarCore.locationProvider = new BrowserLocationProvider();
 
 ferrostar.center = {lng: -122.42, lat: 37.81};
 ferrostar.zoom = 18;
@@ -146,7 +163,7 @@ Use this to get the user’s location in the correct format.
 // Fetch the user's current location.
 // If we have a cached one that's no older than 30 seconds,
 // skip waiting for an update and use the slightly stale location.
-const location = await ferrostar.locationProvider.getCurrentLocation(30_000);
+const location = await ferrostarCore.locationProvider.getCurrentLocation(30_000);
 ```
 
 ## Getting routes
@@ -156,10 +173,13 @@ it’s time to get some routes!
 
 ```typescript
 // Use the acquired user location to request the route
-const routes = await ferrostar.getRoutes(location, waypoints);
+const routes = await ferrostarCore.getRoutes(location, waypoints);
 
 // Select one of the routes; here we just pick the first one.
 const route = routes[0];
+
+// Provide route to map (This will render the route)
+ferrostarMap.route = route;
 ```
 
 ## Starting navigation
@@ -170,7 +190,7 @@ but in the meantime, the [Rust docs](https://docs.rs/ferrostar/latest/ferrostar/
 describe the available options.
 
 ```typescript
-ferrostar.startNavigation(route, {
+ferrostarCore.startNavigation(route, {
   stepAdvanceCondition: {
     DistanceEntryExit: {
       minimumHorizontalAccuracy: 25,

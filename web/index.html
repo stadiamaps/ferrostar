@@ -1,248 +1,231 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ferrostar Web Demo</title>
-    <link rel="stylesheet" href="./src/index.css"/>
+    <link rel="stylesheet" href="./src/index.css" />
     <link
-            href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css"
-            rel="stylesheet"
+      href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css"
+      rel="stylesheet"
     />
     <link
-            href="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/maplibre-search-box.css"
-            rel="stylesheet"
+      href="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/maplibre-search-box.css"
+      rel="stylesheet"
     />
 
     <style>
-        .map-container {
-            position: relative;
-            height: 100%;
-            width: 100%;
-        }
+      .map-container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+      }
 
-        .map-element {
-            height: 100%;
-            width: 100%;
-        }
+      .map-element {
+        height: 100%;
+        width: 100%;
+      }
 
-        #ferrostar {
-            position: absolute;
-        }
+      #ferrostar {
+        position: absolute;
+      }
     </style>
-</head>
-<body>
-<p>
-    Search and select a destination, or
-    <button id="simulate">Simulate Navigation</button>
-</p>
+  </head>
+  <body>
+    <p>
+      Search and select a destination, or
+      <button id="simulate">Simulate Navigation</button>
+    </p>
 
-<p style="margin-top: 0">
-    <input type="checkbox" id="voiceGuidance"/>
-    <label for="voiceGuidance">Enable voice guidance (sound on)</label>
-    <input type="checkbox" id="shouldRecord"/>
-    <label for="shouldRecord">Record</label>
-</p>
+    <p style="margin-top: 0">
+      <input type="checkbox" id="voiceGuidance" />
+      <label for="voiceGuidance">Enable voice guidance (sound on)</label>
+      <input type="checkbox" id="shouldRecord" />
+      <label for="shouldRecord">Record</label>
+    </p>
 
-<p>
-    <button id="replay">Replay Navigation</button>
-    <input type="file" id="replayFile" style="display: none"/>
-</p>
-
-<!--
+    <!--
 This should not require any API key if run via `npm run dev`.
 Learn how to get a free prod API key here: https://docs.stadiamaps.com/authentication/.
 See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap vendors.
 -->
-<div class="map-container">
-    <ferrostar-map
-            id="ferrostar"
-            valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
-            styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
-            profile="bicycle"
-    ></ferrostar-map>
-    <div class="map-element" id="mapElement"></div>
-</div>
+    <div class="map-container">
+      <ferrostar-map id="ferrostar"></ferrostar-map>
+      <ferrostar-core
+        id="ferrostar-core"
+        valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
+        profile="bicycle"
+      ></ferrostar-core>
+      <div class="map-element" id="mapElement"></div>
+    </div>
 
-<script type="module">
-    import {
+    <script type="module">
+      import {
         FerrostarMap,
+        FerrostarCore,
         SimulatedLocationProvider,
         BrowserLocationProvider,
-    } from "@stadiamaps/ferrostar-webcomponents";
-    import mapLibreGL from "maplibre-gl";
-    import {MapLibreSearchControl} from "@stadiamaps/maplibre-search-box";
-    import {ReplayController} from "./src/replay-controller.js";
+      } from "@stadiamaps/ferrostar-webcomponents";
+      import mapLibreGL from "maplibre-gl";
+      import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
 
-    // TODO: type + use TypeScript enum
-    const config = {
+      // TODO: type + use TypeScript enum
+      const config = {
         stepAdvanceCondition: {
-            DistanceEntryExit: {
-                minimumHorizontalAccuracy: 25,
-                distanceToEndOfStep: 30,
-                distanceAfterEndStep: 5,
-                hasReachedEndOfCurrentStep: false,
-            },
+          DistanceEntryExit: {
+            minimumHorizontalAccuracy: 25,
+            distanceToEndOfStep: 30,
+            distanceAfterEndStep: 5,
+            hasReachedEndOfCurrentStep: false,
+          },
         },
         arrivalStepAdvanceCondition: {
-            DistanceToEndOfStep: {
-                distance: 30,
-                minimumHorizontalAccuracy: 25,
-            },
+          DistanceToEndOfStep: {
+            distance: 30,
+            minimumHorizontalAccuracy: 25,
+          },
         },
         routeDeviationTracking: {
-            StaticThreshold: {
-                minimumHorizontalAccuracy: 25,
-                maxAcceptableDeviation: 10.0,
-            },
+          StaticThreshold: {
+            minimumHorizontalAccuracy: 25,
+            maxAcceptableDeviation: 10.0,
+          },
         },
         snappedLocationCourseFiltering: "Raw",
         waypointAdvance: {
-            WaypointWithinRange: 100,
+          WaypointWithinRange: 100,
         },
-    };
+      };
 
-    async function onload() {
+      async function onload() {
         // Set up and customize your map instance as desired
         const mapInstance = new mapLibreGL.Map({
-            container: "mapElement",
-            style: "https://tiles.stadiamaps.com/styles/outdoors.json",
-            center: {lng: -122.42, lat: 37.81},
-            zoom: 16,
-            pitch: 45,
-            attributionControl: {compact: true},
+          container: "mapElement",
+          style: "https://tiles.stadiamaps.com/styles/outdoors.json",
+          center: { lng: -122.42, lat: 37.81 },
+          zoom: 16,
+          pitch: 45,
+          attributionControl: { compact: true },
         });
 
         // Get a reference to the Ferrostar map component
-        const ferrostar = document.getElementById("ferrostar");
-        ferrostar.map = mapInstance;
+        const ferrostarMap = document.getElementById("ferrostar");
+        const ferrostarCore = document.getElementById("ferrostar-core");
+        ferrostarMap.map = mapInstance;
 
         // Create a search control.
         const searchBox = new MapLibreSearchControl({
-            onResultSelected: async (feature) => {
-                const coordinates = feature.geometry.coordinates;
-                const waypoints = [
-                    {
-                        coordinate: {lat: coordinates[1], lng: coordinates[0]},
-                        kind: "Break",
-                    },
-                ];
+          onResultSelected: async (feature) => {
+            const coordinates = feature.geometry.coordinates;
+            const waypoints = [
+              {
+                coordinate: { lat: coordinates[1], lng: coordinates[0] },
+                kind: "Break",
+              },
+            ];
 
-                // FIXME: This is a hack basically to support the demo page that should go away.
-                if (
-                    !ferrostar.locationProvider ||
-                    ferrostar.locationProvider instanceof SimulatedLocationProvider
-                ) {
-                    ferrostar.locationProvider = new BrowserLocationProvider();
-                }
+            // FIXME: This is a hack basically to support the demo page that should go away.
+            if (
+              !ferrostarCore.locationProvider ||
+              ferrostarCore.locationProvider instanceof
+                SimulatedLocationProvider
+            ) {
+              ferrostarCore.locationProvider = new BrowserLocationProvider();
+            }
 
-                // Fetch the user's current location.
-                // If we have a cached one that's no older than 30 seconds,
-                // skip waiting for an update and use the slightly stale location.
-                const location =
-                    await ferrostar.locationProvider.getCurrentLocation(30_000);
+            // Fetch the user's current location.
+            // If we have a cached one that's no older than 30 seconds,
+            // skip waiting for an update and use the slightly stale location.
+            const location =
+              await ferrostarCore.locationProvider.getCurrentLocation(30_000);
 
-                // Use the acquired user location to request the route
-                const routes = await ferrostar.getRoutes(location, waypoints);
-                const route = routes[0];
+            // Use the acquired user location to request the route
+            const routes = await ferrostarCore.getRoutes(location, waypoints);
+            const route = routes[0];
+            ferrostarMap.route = route;
+            ferrostarMap.linkWith(ferrostarCore);
 
-                // Start the navigation
-                ferrostar.startNavigation(route, config);
-            },
+            // Start the navigation
+            ferrostarCore.startNavigation(route, config);
+          },
         });
 
-        ferrostar.options = {
-            costing_options: {bicycle: {use_roads: 0.2}},
+        ferrostarCore.options = {
+          costing_options: { bicycle: { use_roads: 0.2 } },
         };
-        ferrostar.geolocateOnLoad = false;
+        ferrostarMap.geolocateOnLoad = false;
 
         const shouldRecordCheckbox = document.getElementById("shouldRecord");
 
         mapInstance.on("load", (_) => {
-            // Post-first-load configuration
-            mapInstance.addControl(searchBox, "top-left");
+          // Post-first-load configuration
+          mapInstance.addControl(searchBox, "top-left");
         });
-        ferrostar.onNavigationStart = (map) => {
-            // Remove our search box when navigation starts
-            map.removeControl(searchBox);
-            // Prevent user from changing shouldRecord during navigation
-            shouldRecordCheckbox.disabled = true;
+        ferrostarCore.onNavigationStart = () => {
+          // Remove our search box when navigation starts
+          mapInstance.removeControl(searchBox);
+          // Prevent user from changing shouldRecord during navigation
+          shouldRecordCheckbox.disabled = true;
         };
-        ferrostar.onNavigationStop = (map) => {
-            // Put the search box back when we stop
-            map.addControl(searchBox, "top-left");
-            shouldRecordCheckbox.disabled = false;
+        ferrostarCore.onNavigationStop = () => {
+          // Put the search box back when we stop
+          mapInstance.addControl(searchBox, "top-left");
+          shouldRecordCheckbox.disabled = false;
         };
 
         const simulateNavigationButton = document.getElementById("simulate");
 
         shouldRecordCheckbox.addEventListener("change", (event) => {
-            ferrostar.should_record = event.target.checked;
+          ferrostarCore.shouldRecord = event.target.checked;
         });
 
         // Button to start simulated navigation
         simulateNavigationButton.addEventListener("click", async () => {
-            // Simulated location
-            const initialSimulatedLocation = {
-                coordinates: {lat: 37.807770999999995, lng: -122.41970699999999},
-                horizontalAccuracy: 6.0,
-                courseOverGround: null,
-                timestamp: Date.now(),
-                speed: null,
-            };
+          // Simulated location
+          const initialSimulatedLocation = {
+            coordinates: { lat: 37.807770999999995, lng: -122.41970699999999 },
+            horizontalAccuracy: 6.0,
+            courseOverGround: null,
+            timestamp: Date.now(),
+            speed: null,
+          };
 
-            const simulatedWaypoints = [
-                {coordinate: {lat: 37.807587, lng: -122.428411}, kind: "Break"},
-            ];
+          const simulatedWaypoints = [
+            { coordinate: { lat: 37.807587, lng: -122.428411 }, kind: "Break" },
+          ];
 
-            // Request the route
-            const routes = await ferrostar.getRoutes(
-                initialSimulatedLocation,
-                simulatedWaypoints,
-            );
-            const route = routes[0];
+          // Request the route
+          const routes = await ferrostarCore.getRoutes(
+            initialSimulatedLocation,
+            simulatedWaypoints,
+          );
+          const route = routes[0];
+          ferrostarMap.route = route;
 
-            // Set the simulated location provider
-            const locationProvider = new SimulatedLocationProvider();
-            locationProvider.lastLocation = initialSimulatedLocation;
-            locationProvider.warpFactor = 2;
-            locationProvider.setSimulatedRoute(route);
+          // Set the simulated location provider
+          const locationProvider = new SimulatedLocationProvider();
+          locationProvider.lastLocation = initialSimulatedLocation;
+          locationProvider.warpFactor = 2;
+          locationProvider.setSimulatedRoute(route);
 
-            // Start the navigation
-            ferrostar.locationProvider = locationProvider;
-            ferrostar.startNavigation(route, config);
+          // Start the navigation
+          ferrostarMap.linkWith(ferrostarCore, true);
+          ferrostarCore.locationProvider = locationProvider;
+          ferrostarCore.startNavigation(route, config);
         });
-
-        const replayButton = document.getElementById("replay");
-        const replayFile = document.getElementById("replayFile");
-
-        replayButton.addEventListener("click", () => {
-            replayButton.disabled = true;
-            replayFile.click();
-        })
-
-        replayFile.addEventListener("change", async () => {
-            const file = replayFile.files?.[0];
-            if (!file) return;
-
-            const json = await file.text();
-            const replay = new ReplayController(json);
-            replay.start();
-            replayButton.disabled = false;
-        })
 
         const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
         voiceGuidanceCheckbox.addEventListener("change", (event) => {
-            ferrostar.useVoiceGuidance = event.target.checked;
+          ferrostarCore.useVoiceGuidance = event.target.checked;
         });
-    }
+      }
 
-    // Initialize Ferrostar and the control buttons
-    if (document.readyState === "loading") {
+      // Initialize Ferrostar and the control buttons
+      if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", onload);
-    } else {
+      } else {
         onload();
-    }
-</script>
-</body>
+      }
+    </script>
+  </body>
 </html>
