@@ -150,6 +150,7 @@
             const routes = await ferrostarCore.getRoutes(location, waypoints);
             const route = routes[0];
             ferrostarMap.route = route;
+            ferrostarMap.isSimulation = false;
 
             // Start the navigation
             ferrostarCore.startNavigation(route, config);
@@ -206,6 +207,7 @@
 
           // Start the navigation
           ferrostarMap.route = route;
+          ferrostarMap.isSimulation = true;
           ferrostarCore.locationProvider = locationProvider;
           ferrostarCore.startNavigation(route, config);
         });

@@ -32,6 +32,9 @@ export class FerrostarMap extends LitElement {
   @property({ type: Boolean })
   showNavigationUI: boolean = false;
 
+  @property({type: Boolean})
+  isSimulation: boolean = false;
+
   /**
    * Automatically geolocates the user on map load.
    *
@@ -173,7 +176,7 @@ export class FerrostarMap extends LitElement {
     }
 
     this.updateCamera();
-    this.renderUserLocationMarker();
+    if (this.isSimulation) this.renderUserLocationMarker();
   }
 
   private renderRoute() {
@@ -280,10 +283,13 @@ export class FerrostarMap extends LitElement {
   clearNavigation() {
     this.clearRoute();
     this.clearUserLocationMarker();
+    this.route = null;
+    this.navState = null;
   }
 
   private handleStopNavigation() {
     this.clearNavigation();
+    this.isSimulation = false;
     if (this.onStopNavigation) {
       this.onStopNavigation();
     }
