@@ -1,12 +1,11 @@
 import { LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import {
-  JsNavState,
+  SerializableNavState,
   NavigationController,
   RouteAdapter,
   TripState,
 } from "@stadiamaps/ferrostar";
-import { SimulatedLocationProvider } from "./location";
 
 /**
  * A core navigation component that handles navigation logic without UI.
@@ -29,7 +28,7 @@ export class FerrostarCore extends LitElement {
   options: object = {};
 
   @state()
-  protected _navState: JsNavState | null = null;
+  protected _navState: SerializableNavState | null = null;
 
   @property({ type: Function, attribute: false })
   onNavigationStart?: () => void;
@@ -52,7 +51,7 @@ export class FerrostarCore extends LitElement {
 
   constructor() {
     super();
-
+    
     // A workaround for avoiding "Illegal invocation"
     if (this.httpClient === fetch) {
       this.httpClient = this.httpClient.bind(window);
@@ -98,11 +97,7 @@ export class FerrostarCore extends LitElement {
     this.locationProvider.start();
     if (this.onNavigationStart) this.onNavigationStart();
 
-    this.navigationController = new NavigationController(
-      route,
-      config,
-      this.shouldRecord,
-    );
+    this.navigationController = new NavigationController(route, config, this.shouldRecord);
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
     const startingLocation = this.locationProvider.lastLocation
@@ -130,17 +125,15 @@ export class FerrostarCore extends LitElement {
     if (this.onNavigationStop) this.onNavigationStop();
   }
 
-  private navStateUpdate(newState: JsNavState | null) {
+  private navStateUpdate(newState: SerializableNavState | null) {
     this._navState = newState;
     this.onTripStateChange?.(newState?.tripState || null);
-
+    
     // Dispatch event for external listeners
-    this.dispatchEvent(
-      new CustomEvent("navState-change", {
-        detail: { tripState: newState || null },
-        bubbles: true,
-      }),
-    );
+    this.dispatchEvent(new CustomEvent('navState-change', {
+      detail: { navState: newState },
+      bubbles: true
+    }));
   }
 
   private onLocationUpdated() {
@@ -177,10 +170,6 @@ export class FerrostarCore extends LitElement {
         );
       }
     }
-  }
-
-  get navState(): JsNavState | null {
-    return this._navState;
   }
 
   // This component doesn't render anything - it's purely for logic

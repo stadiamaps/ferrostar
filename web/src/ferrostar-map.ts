@@ -2,7 +2,7 @@ import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import maplibregl, { GeolocateControl } from "maplibre-gl";
 import CloseSvg from "./assets/directions/close.svg";
-import { JsNavState } from "@stadiamaps/ferrostar";
+import { SerializableNavState } from "@stadiamaps/ferrostar";
 
 /**
  * A MapLibre-based map component.
@@ -22,7 +22,10 @@ export class FerrostarMap extends LitElement {
   customStyles?: object;
 
   @property()
-  navState: JsNavState | null = null;
+  navState: SerializableNavState | null = null;
+
+  @property({type: Object})
+  route: any = null;
 
   @property({ type: Boolean })
   showNavigationUI: boolean = false;
@@ -97,6 +100,9 @@ export class FerrostarMap extends LitElement {
   }
 
   updated(changedProperties: PropertyValues<this>) {
+    if (changedProperties.has("route")) {
+      this.renderRoute();
+    }
     if (changedProperties.has("navState") && this.navState) {
       this.renderNavState();
     }
@@ -107,7 +113,6 @@ export class FerrostarMap extends LitElement {
       return;
     }
 
-    this.renderRoute();
     this.updateCamera();
   }
 
@@ -115,8 +120,7 @@ export class FerrostarMap extends LitElement {
     // Remove existing route if present
     this.clearRoute();
 
-    const tripState = this.navState.tripState;
-    if (!tripState.Navigating) return;
+    if (!this.navState?.tripState || !("Navigating" in this.navState.tripState)) return;
 
     this.map.addSource("route", {
       type: "geojson",
@@ -125,7 +129,7 @@ export class FerrostarMap extends LitElement {
         properties: {},
         geometry: {
           type: "LineString",
-          coordinates: tripState.Navigating.route.geometry.map(
+          coordinates: this.route.geometry.map(
             (point: { lat: number; lng: number }) => [point.lng, point.lat],
           ),
         },
@@ -166,15 +170,15 @@ export class FerrostarMap extends LitElement {
   }
 
   private updateCamera() {
-    const tripState = this.navState.tripState;
-    if (!tripState.Navigating) return;
+    const tripState = this.navState?.tripState;
+    if (!tripState || !("Navigating" in tripState)) return;
 
     this.map.easeTo({
       center: [
-        tripState.Navigating.location.coordinates.lng,
-        tripState.Navigating.location.coordinates.lat,
+        tripState.Navigating.userLocation.coordinates.lng,
+        tripState.Navigating.userLocation.coordinates.lat,
       ],
-      bearing: tripState.location.courseOverGround.degrees || 0,
+      bearing: tripState.Navigating.userLocation.courseOverGround?.degrees || 0,
     });
   }
 
@@ -203,16 +207,16 @@ export class FerrostarMap extends LitElement {
         ${this.showNavigationUI
           ? html`
               <instructions-view
-                .tripState=${this.navState.tripState}
+                .tripState=${this.navState?.tripState}
               ></instructions-view>
               <div id="bottom-component">
                 <trip-progress-view
-                  .tripState=${this.navState.tripState}
+                  .tripState=${this.navState?.tripState}
                 ></trip-progress-view>
                 <button
                   id="stop-button"
                   @click=${this.handleStopNavigation}
-                  ?hidden=${!this.navState.tripState}
+                  ?hidden=${!this.navState?.tripState}
                 >
                   <img src=${CloseSvg} alt="Stop navigation" class="icon" />
                 </button>
