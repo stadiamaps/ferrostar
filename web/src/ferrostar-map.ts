@@ -233,7 +233,11 @@ export class FerrostarMap extends LitElement {
   }
 
   private renderUserLocationMarker() {
-    if (!this.map || !this.navState?.tripState || !("Navigating" in this.navState.tripState)) {
+    if (
+      !this.map ||
+      !this.navState?.tripState ||
+      !("Navigating" in this.navState.tripState)
+    ) {
       return;
     }
 
