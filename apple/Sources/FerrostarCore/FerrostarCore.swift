@@ -447,7 +447,6 @@ public protocol FerrostarCoreDelegate: AnyObject {
 }
 
 extension FerrostarCore: LocationManagingDelegate {
-    @MainActor
     public func locationManager(_: LocationProviding, didUpdateLocations locations: [UserLocation]) {
         guard let location = locations.last,
               let navState = coreNavState,
