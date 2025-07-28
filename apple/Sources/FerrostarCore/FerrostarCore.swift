@@ -92,6 +92,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     @Published public private(set) var route: Route?
 
     public let annotation: (any AnnotationPublishing)?
+    public let widgetProvider: WidgetProviding?
 
     private let networkSession: URLRequestLoading
     private let routeProvider: RouteProvider
@@ -127,7 +128,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         networkSession: URLRequestLoading,
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
-            .initAVSpeechSynthesizer() // Set up the a standard Apple AV Speech Synth.
+            .initAVSpeechSynthesizer(), // Set up the a standard Apple AV Speech Synth.
+        widgetProvider: WidgetProviding? = nil
     ) {
         self.routeProvider = routeProvider
         self.locationProvider = locationProvider
@@ -135,6 +137,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         self.networkSession = networkSession
         self.annotation = annotation
         self.spokenInstructionObserver = spokenInstructionObserver
+        self.widgetProvider = widgetProvider
 
         super.init()
 
@@ -167,7 +170,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         networkSession: URLRequestLoading = URLSession.shared,
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
-            .initAVSpeechSynthesizer()
+            .initAVSpeechSynthesizer(),
+        widgetProvider: WidgetProviding? = nil
     ) throws {
         guard
             let jsonOptions = try String(
@@ -189,7 +193,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession,
             annotation: annotation,
-            spokenInstructionObserver: spokenInstructionObserver
+            spokenInstructionObserver: spokenInstructionObserver,
+            widgetProvider: widgetProvider
         )
     }
 
@@ -200,7 +205,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         networkSession: URLRequestLoading = URLSession.shared,
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
-            .initAVSpeechSynthesizer()
+            .initAVSpeechSynthesizer(),
+        widgetProvider: WidgetProviding? = nil
     ) {
         self.init(
             routeProvider: .routeAdapter(routeAdapter),
@@ -208,7 +214,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession,
             annotation: annotation,
-            spokenInstructionObserver: spokenInstructionObserver
+            spokenInstructionObserver: spokenInstructionObserver,
+            widgetProvider: widgetProvider
         )
     }
 
@@ -219,7 +226,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
         networkSession: URLRequestLoading = URLSession.shared,
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
-            .initAVSpeechSynthesizer()
+            .initAVSpeechSynthesizer(),
+        widgetProvider: WidgetProviding? = nil
     ) {
         self.init(
             routeProvider: .customProvider(customRouteProvider),
@@ -227,7 +235,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             navigationControllerConfig: navigationControllerConfig,
             networkSession: networkSession,
             annotation: annotation,
-            spokenInstructionObserver: spokenInstructionObserver
+            spokenInstructionObserver: spokenInstructionObserver,
+            widgetProvider: widgetProvider
         )
     }
 
@@ -352,10 +361,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
                 snappedUserLocation: _,
                 remainingSteps: _,
                 remainingWaypoints: remainingWaypoints,
-                progress: _,
+                progress: tripProgress,
                 summary: _,
                 deviation: deviation,
-                visualInstruction: _,
+                visualInstruction: visualInstruction,
                 spokenInstruction: spokenInstruction,
                 annotationJson: _
             ):
@@ -411,6 +420,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
                             }
                         }
                     }
+                }
+
+                // Update the dynamic island if it's being used.
+                if let visualInstruction {
+                    self.widgetProvider?.update(visualInstruction: visualInstruction, tripProgress: tripProgress)
                 }
 
                 if let spokenInstruction,

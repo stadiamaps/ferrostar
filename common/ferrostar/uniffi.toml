@@ -1,3 +1,6 @@
+[bindings.swift]
+generate_codable_conformance = true
+
 [bindings.swift.custom_types.Uuid]
 type_name = "UUID"
 into_custom = "UUID(uuidString: {})!"
