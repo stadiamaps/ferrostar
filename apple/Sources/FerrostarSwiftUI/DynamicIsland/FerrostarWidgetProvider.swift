@@ -32,9 +32,11 @@ public class FerrostarWidgetProvider: WidgetProviding {
         }
     }
 
-    public func terminate() async {
-        await activity?.end()
-        lastUpdateDistance = nil
+    public func terminate() {
+        Task {
+            await activity?.end()
+            lastUpdateDistance = nil
+        }
     }
 
     private func requestOrUpdate(

@@ -343,6 +343,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         queuedUtteranceIDs.removeAll()
         locationProvider.stopUpdating()
         spokenInstructionObserver.stopAndClearQueue()
+        widgetProvider?.terminate()
         lastRecalculationLocation = nil
     }
 
