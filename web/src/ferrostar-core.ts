@@ -1,6 +1,11 @@
 import { LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { JsNavState, NavigationController, RouteAdapter, TripState } from "@stadiamaps/ferrostar";
+import {
+  JsNavState,
+  NavigationController,
+  RouteAdapter,
+  TripState,
+} from "@stadiamaps/ferrostar";
 
 /**
  * A core navigation component that handles navigation logic without UI.
