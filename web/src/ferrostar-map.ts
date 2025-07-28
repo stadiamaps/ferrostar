@@ -13,6 +13,10 @@ import "./trip-progress-view";
 export class FerrostarMap extends LitElement {
   /**
    * The MapLibre map instance.
+   *
+   * You have to explicitly set this value when initializing
+   * the web component to provide your own map instance.
+   *
    */
   @property({ type: Object })
   map!: maplibregl.Map;
@@ -29,9 +33,15 @@ export class FerrostarMap extends LitElement {
   @property({ type: Object })
   route: any = null;
 
+  /**
+   * Determines whether the navigation user interface is displayed.
+   */
   @property({ type: Boolean })
   showNavigationUI: boolean = false;
 
+  /**
+   * Determines whether the navigation is a simulation
+   */
   @property({ type: Boolean })
   isSimulation: boolean = false;
 
@@ -53,6 +63,10 @@ export class FerrostarMap extends LitElement {
   @property({ type: Boolean })
   addGeolocateControl: boolean = true;
 
+  /**
+   * A callback function that is invoked when navigation is stopped.
+   * This function should be provided by the implementer.
+   */
   @property({ type: Function, attribute: false })
   onStopNavigation?: () => void;
 
@@ -162,14 +176,24 @@ export class FerrostarMap extends LitElement {
   }
 
   updated(changedProperties: PropertyValues<this>) {
+    /**
+     * Render the route if changed properties have a route
+     */
     if (changedProperties.has("route")) {
       this.renderRoute();
     }
+
+    /**
+     * Render the navState if changed propertis have a navState
+     */
     if (changedProperties.has("navState") && this.navState) {
       this.renderNavState();
     }
   }
 
+  /**
+   * Renders the current navState on the map.
+   */
   private renderNavState() {
     if (!this.navState || !this.map) {
       return;
@@ -179,6 +203,11 @@ export class FerrostarMap extends LitElement {
     if (this.isSimulation) this.renderUserLocationMarker();
   }
 
+  /**
+   * Renders a route on the map.
+   * If a route already exists, it clears the previous route before rendering a new one.
+   * This method adds two layers to the map: the primary route layer and a border layer.
+   */
   private renderRoute() {
     // Remove existing route if present
     this.clearRoute();
@@ -232,6 +261,10 @@ export class FerrostarMap extends LitElement {
     );
   }
 
+  /**
+   * Renders or updates the user's location marker on the map. If a marker already exists, its position is updated.
+   * Otherwise, a new marker is created and added to the map.
+   */
   private renderUserLocationMarker() {
     if (
       !this.map ||
@@ -258,6 +291,11 @@ export class FerrostarMap extends LitElement {
       .addTo(this.map);
   }
 
+  /**
+   * Updates the camera position and orientation on the map based on the navState.
+   * Adjusts the center of the map to the user's current location and sets the bearing
+   * based on the user's course over ground, if available.
+   */
   private updateCamera() {
     const tripState = this.navState?.tripState;
     if (!tripState || !("Navigating" in tripState)) return;
@@ -271,12 +309,18 @@ export class FerrostarMap extends LitElement {
     });
   }
 
+  /**
+   * Clears the route layers and source from the map if they exist.
+   */
   private clearRoute() {
     if (this.map.getLayer("route")) this.map.removeLayer("route");
     if (this.map.getLayer("route-border")) this.map.removeLayer("route-border");
     if (this.map.getSource("route")) this.map.removeSource("route");
   }
 
+  /**
+   * Removes the user's location marker from the map if it exists and clears the reference.
+   */
   private clearUserLocationMarker() {
     if (this.userLocationMarker) {
       this.userLocationMarker.remove();
@@ -284,6 +328,9 @@ export class FerrostarMap extends LitElement {
     }
   }
 
+  /**
+   * Clears the current navigation state, including route, user location marker, and navigation-related data.
+   */
   clearNavigation() {
     this.clearRoute();
     this.clearUserLocationMarker();
@@ -291,6 +338,10 @@ export class FerrostarMap extends LitElement {
     this.navState = null;
   }
 
+  /**
+   * Handles the logic for stopping the navigation process. It clears the navigation state,
+   * resets the simulation flag, and invokes the optional onStopNavigation callback if provided.
+   */
   private handleStopNavigation() {
     this.clearNavigation();
     this.isSimulation = false;

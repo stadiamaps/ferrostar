@@ -1,11 +1,6 @@
 import { LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import {
-  JsNavState,
-  NavigationController,
-  RouteAdapter,
-  TripState,
-} from "@stadiamaps/ferrostar";
+import { JsNavState, NavigationController, RouteAdapter, TripState } from "@stadiamaps/ferrostar";
 
 /**
  * A core navigation component that handles navigation logic without UI.
@@ -21,9 +16,11 @@ export class FerrostarCore extends LitElement {
   @property({ attribute: false })
   httpClient?: Function = fetch;
 
+  // TODO: type
   @property({ type: Object, attribute: false })
   locationProvider!: any;
 
+  // TODO: type
   @property({ type: Object, attribute: false })
   options: object = {};
 
@@ -39,6 +36,10 @@ export class FerrostarCore extends LitElement {
   @property({ type: Function, attribute: false })
   onTripStateChange?: (newState: TripState | null) => void;
 
+  /**
+   * Enables voice guidance via the web speech synthesis API.
+   * Defaults to false.
+   */
   @property({ type: Boolean })
   useVoiceGuidance: boolean = false;
 
@@ -64,13 +65,17 @@ export class FerrostarCore extends LitElement {
     }
   }
 
+  // TODO: type
   async getRoutes(initialLocation: any, waypoints: any) {
+    // Initialize the route adapter
+    // (NOTE: currently only supports Valhalla, but working toward expansion)
     this.routeAdapter = new RouteAdapter(
       this.valhallaEndpointUrl,
       this.profile,
       JSON.stringify(this.options),
     );
 
+    // Generate the request body
     const routeRequest = this.routeAdapter.generateRequest(
       initialLocation,
       waypoints,
@@ -79,8 +84,11 @@ export class FerrostarCore extends LitElement {
     let url = new URL(routeRequest.get("url"));
     const body = routeRequest.get("body");
 
+    // Send the request to the Valhalla endpoint
+    // FIXME: assert httpClient is not null
     const response = await this.httpClient!(url, {
       method: method,
+      // FIXME: assert body is not null
       body: new Uint8Array(body).buffer,
     });
 
@@ -93,10 +101,12 @@ export class FerrostarCore extends LitElement {
     }
   }
 
+  // TODO: types
   startNavigation(route: any, config: any) {
     this.locationProvider.start();
     if (this.onNavigationStart) this.onNavigationStart();
 
+    // Initialize the navigation controller
     this.navigationController = new NavigationController(
       route,
       config,
@@ -104,6 +114,7 @@ export class FerrostarCore extends LitElement {
     );
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
+    // Initialize the trip state
     const startingLocation = this.locationProvider.lastLocation
       ? this.locationProvider.lastLocation
       : {
@@ -147,13 +158,14 @@ export class FerrostarCore extends LitElement {
       return;
     }
 
+    // Update the trip state with the new location
     const newNavState = this.navigationController.updateUserLocation(
       this.locationProvider.lastLocation,
       this._navState,
     );
     this.navStateUpdate(newNavState);
 
-    // Handle voice guidance
+    // Speak the next instruction if voice guidance is enabled
     const tripState = this._navState?.tripState;
     if (
       this.useVoiceGuidance &&
