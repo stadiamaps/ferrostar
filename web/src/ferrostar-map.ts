@@ -184,7 +184,7 @@ export class FerrostarMap extends LitElement {
     }
 
     /**
-     * Render the navState if changed propertis have a navState
+     * Render the navState if changed properties have a navState
      */
     if (changedProperties.has("navState") && this.navState) {
       this.renderNavState();
