@@ -196,6 +196,13 @@ export class FerrostarMap extends LitElement {
   }
 
   linkWith(eventProvider: any, showUserMarker: boolean = false) {
+    // Check if already linked with an event provider
+    if(this.eventProvider) {
+      console.warn("Already linked with an event provider. Please unlink first.");
+      return;
+    }
+
+    
     this.eventProvider = eventProvider;
     this.showUserMarker = showUserMarker;
     this.onStopNavigation = eventProvider.onStopNavigation;
