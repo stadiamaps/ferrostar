@@ -19,7 +19,10 @@ export interface StateProvider {
    */
   provideState(tripState: TripState): void;
 
-  addEventListener(type: string, callback: (event: CustomEvent) => void): unknown;
+  addEventListener(
+    type: string,
+    callback: (event: CustomEvent) => void,
+  ): unknown;
 
   /**
    * Optional callback for when navigation stops.
