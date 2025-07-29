@@ -63,8 +63,17 @@ jobs:
       run: |
         if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
           echo "Dirty files detected"
+          git diff apple/Sources/UniFFI/ > git-diff.patch
           exit 1
         fi
+
+    - name: Upload Diff Artifacts (on failure)
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: uniffi-diff-analysis
+        path: git-diff.patch
+        retention-days: 7
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
