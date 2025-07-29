@@ -40,13 +40,15 @@
     <p style="margin-top: 0">
       <input type="checkbox" id="voiceGuidance" />
       <label for="voiceGuidance">Enable voice guidance (sound on)</label>
+      <input type="checkbox" id="shouldRecord" />
+      <label for="shouldRecord">Record</label>
     </p>
 
     <!--
-	This should not require any API key if run via `npm run dev`.
-	Learn how to get a free prod API key here: https://docs.stadiamaps.com/authentication/.
-	See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap vendors.
-      -->
+This should not require any API key if run via `npm run dev`.
+Learn how to get a free prod API key here: https://docs.stadiamaps.com/authentication/.
+See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap vendors.
+-->
     <div class="map-container">
       <ferrostar-map
         id="ferrostar"
@@ -148,6 +150,8 @@
         };
         ferrostar.geolocateOnLoad = false;
 
+        const shouldRecordCheckbox = document.getElementById("shouldRecord");
+
         mapInstance.on("load", (_) => {
           // Post-first-load configuration
           mapInstance.addControl(searchBox, "top-left");
@@ -155,13 +159,20 @@
         ferrostar.onNavigationStart = (map) => {
           // Remove our search box when navigation starts
           map.removeControl(searchBox);
+          // Prevent user from changing shouldRecord during navigation
+          shouldRecordCheckbox.disabled = true;
         };
         ferrostar.onNavigationStop = (map) => {
           // Put the search box back when we stop
           map.addControl(searchBox, "top-left");
+          shouldRecordCheckbox.disabled = false;
         };
 
         const simulateNavigationButton = document.getElementById("simulate");
+
+        shouldRecordCheckbox.addEventListener("change", (event) => {
+          ferrostar.should_record = event.target.checked;
+        });
 
         // Button to start simulated navigation
         simulateNavigationButton.addEventListener("click", async () => {
