@@ -159,6 +159,17 @@ export class FerrostarMap extends LitElement {
 
   constructor() {
     super();
+
+    // A workaround for avoiding "Illegal invocation"
+    if (this.httpClient === fetch) {
+      this.httpClient = this.httpClient.bind(window);
+    }
+  }
+
+  updated(changedProperties: PropertyValues<this>) {
+    if (changedProperties.has("locationProvider") && this.locationProvider) {
+      this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
+    }
   }
 
   firstUpdated() {
