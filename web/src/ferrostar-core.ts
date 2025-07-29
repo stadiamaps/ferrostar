@@ -1,7 +1,7 @@
 import { LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import {
-  JsNavState,
+  SerializableNavState,
   NavigationController,
   RouteAdapter,
   TripState,
@@ -30,7 +30,7 @@ export class FerrostarCore extends LitElement {
   options: object = {};
 
   @state()
-  protected _navState: JsNavState | null = null;
+  protected _navState: SerializableNavState | null = null;
 
   @property({ type: Function, attribute: false })
   onNavigationStart?: () => void;
@@ -145,14 +145,14 @@ export class FerrostarCore extends LitElement {
     if (this.onNavigationStop) this.onNavigationStop();
   }
 
-  private navStateUpdate(newState: JsNavState | null) {
+  private navStateUpdate(newState: SerializableNavState | null) {
     this._navState = newState;
     this.onTripStateChange?.(newState?.tripState || null);
 
     // Dispatch event for external listeners
     this.dispatchEvent(
-      new CustomEvent("navstate-change", {
-        detail: { navState: newState },
+      new CustomEvent("tripstate-update", {
+        detail: { tripState: newState?.tripState },
         bubbles: true,
       }),
     );

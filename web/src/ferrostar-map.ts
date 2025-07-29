@@ -2,7 +2,7 @@ import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import maplibregl, { GeolocateControl, Marker } from "maplibre-gl";
 import CloseSvg from "./assets/directions/close.svg";
-import { JsNavState } from "@stadiamaps/ferrostar";
+import { TripState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
 
@@ -28,7 +28,7 @@ export class FerrostarMap extends LitElement {
   customStyles?: object;
 
   @property()
-  navState: JsNavState | null = null;
+  tripState: TripState | null = null;
 
   @property({ type: Object })
   route: any = null;
@@ -184,18 +184,18 @@ export class FerrostarMap extends LitElement {
     }
 
     /**
-     * Render the navState if changed properties have a navState
+     * Render the tripState if changed properties have a tripState
      */
-    if (changedProperties.has("navState") && this.navState) {
-      this.renderNavState();
+    if (changedProperties.has("tripState") && this.tripState) {
+      this.renderTripState();
     }
   }
 
   /**
-   * Renders the current navState on the map.
+   * Renders the current tripState on the map.
    */
-  private renderNavState() {
-    if (!this.navState || !this.map) {
+  private renderTripState() {
+    if (!this.tripState || !this.map) {
       return;
     }
 
@@ -268,13 +268,13 @@ export class FerrostarMap extends LitElement {
   private renderUserLocationMarker() {
     if (
       !this.map ||
-      !this.navState?.tripState ||
-      !("Navigating" in this.navState.tripState)
+      !this.tripState ||
+      !("Navigating" in this.tripState)
     ) {
       return;
     }
 
-    const userLocation = this.navState.tripState.Navigating.userLocation;
+    const userLocation = this.tripState.Navigating.userLocation;
 
     if (this.userLocationMarker) {
       this.userLocationMarker.setLngLat([
@@ -297,7 +297,7 @@ export class FerrostarMap extends LitElement {
    * based on the user's course over ground, if available.
    */
   private updateCamera() {
-    const tripState = this.navState?.tripState;
+    const tripState = this.tripState;
     if (!tripState || !("Navigating" in tripState)) return;
 
     this.map.easeTo({
@@ -335,7 +335,7 @@ export class FerrostarMap extends LitElement {
     this.clearRoute();
     this.clearUserLocationMarker();
     this.route = null;
-    this.navState = null;
+    this.tripState = null;
   }
 
   /**
@@ -363,16 +363,16 @@ export class FerrostarMap extends LitElement {
         ${this.showNavigationUI
           ? html`
               <instructions-view
-                .tripState=${this.navState?.tripState}
+                .tripState=${this.tripState}
               ></instructions-view>
               <div id="bottom-component">
                 <trip-progress-view
-                  .tripState=${this.navState?.tripState}
+                  .tripState=${this.tripState}
                 ></trip-progress-view>
                 <button
                   id="stop-button"
                   @click=${this.handleStopNavigation}
-                  ?hidden=${!this.navState?.tripState}
+                  ?hidden=${!this.tripState}
                 >
                   <img src=${CloseSvg} alt="Stop navigation" class="icon" />
                 </button>
