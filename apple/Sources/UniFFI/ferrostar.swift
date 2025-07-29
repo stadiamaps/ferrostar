@@ -2694,6 +2694,8 @@ extension BoundingBox: Equatable, Hashable {
     }
 }
 
+extension BoundingBox: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -2778,6 +2780,8 @@ extension Congestion: Equatable, Hashable {
         hasher.combine(value)
     }
 }
+
+extension Congestion: Codable {}
 
 
 
@@ -2864,6 +2868,8 @@ extension CourseOverGround: Equatable, Hashable {
     }
 }
 
+extension CourseOverGround: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -2948,6 +2954,8 @@ extension GeographicCoordinate: Equatable, Hashable {
         hasher.combine(lng)
     }
 }
+
+extension GeographicCoordinate: Codable {}
 
 
 
@@ -3045,6 +3053,8 @@ extension Heading: Equatable, Hashable {
         hasher.combine(timestamp)
     }
 }
+
+extension Heading: Codable {}
 
 
 
@@ -3342,6 +3352,8 @@ extension Incident: Equatable, Hashable {
     }
 }
 
+extension Incident: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -3455,6 +3467,8 @@ extension LaneInfo: Equatable, Hashable {
     }
 }
 
+extension LaneInfo: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -3535,6 +3549,8 @@ extension LocationSimulationState: Equatable, Hashable {
         hasher.combine(bias)
     }
 }
+
+extension LocationSimulationState: Codable {}
 
 
 
@@ -3792,6 +3808,8 @@ extension NavigationRecordingEvent: Equatable, Hashable {
     }
 }
 
+extension NavigationRecordingEvent: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -3901,6 +3919,8 @@ extension Route: Equatable, Hashable {
         hasher.combine(steps)
     }
 }
+
+extension Route: Codable {}
 
 
 
@@ -4098,6 +4118,8 @@ extension RouteStep: Equatable, Hashable {
     }
 }
 
+extension RouteStep: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -4190,6 +4212,8 @@ extension SerializableNavState: Equatable, Hashable {
     }
 }
 
+extension SerializableNavState: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -4276,6 +4300,8 @@ extension Speed: Equatable, Hashable {
         hasher.combine(accuracy)
     }
 }
+
+extension Speed: Codable {}
 
 
 
@@ -4401,6 +4427,8 @@ extension SpokenInstruction: Equatable, Hashable {
         hasher.combine(utteranceId)
     }
 }
+
+extension SpokenInstruction: Codable {}
 
 
 
@@ -4597,6 +4625,8 @@ extension TripProgress: Equatable, Hashable {
     }
 }
 
+extension TripProgress: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -4709,6 +4739,8 @@ extension TripSummary: Equatable, Hashable {
     }
 }
 
+extension TripSummary: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -4815,6 +4847,8 @@ extension UserLocation: Equatable, Hashable {
         hasher.combine(speed)
     }
 }
+
+extension UserLocation: Codable {}
 
 
 
@@ -4934,6 +4968,8 @@ extension VisualInstruction: Equatable, Hashable {
         hasher.combine(triggerDistanceBeforeManeuver)
     }
 }
+
+extension VisualInstruction: Codable {}
 
 
 
@@ -5080,6 +5116,8 @@ extension VisualInstructionContent: Equatable, Hashable {
     }
 }
 
+extension VisualInstructionContent: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -5170,6 +5208,8 @@ extension Waypoint: Equatable, Hashable {
         hasher.combine(kind)
     }
 }
+
+extension Waypoint: Codable {}
 
 
 
@@ -5316,6 +5356,8 @@ public func FfiConverterTypeBlockedLane_lower(_ value: BlockedLane) -> RustBuffe
 
 extension BlockedLane: Equatable, Hashable {}
 
+extension BlockedLane: Codable {}
+
 
 
 
@@ -5395,6 +5437,8 @@ public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> R
 
 
 extension CourseFiltering: Equatable, Hashable {}
+
+extension CourseFiltering: Codable {}
 
 
 
@@ -5489,6 +5533,8 @@ public func FfiConverterTypeImpact_lower(_ value: Impact) -> RustBuffer {
 
 
 extension Impact: Equatable, Hashable {}
+
+extension Impact: Codable {}
 
 
 
@@ -5633,6 +5679,8 @@ public func FfiConverterTypeIncidentType_lower(_ value: IncidentType) -> RustBuf
 
 extension IncidentType: Equatable, Hashable {}
 
+extension IncidentType: Codable {}
+
 
 
 
@@ -5697,6 +5745,8 @@ public func FfiConverterTypeInstantiationError_lower(_ value: InstantiationError
 
 
 extension InstantiationError: Equatable, Hashable {}
+
+extension InstantiationError: Codable {}
 
 
 
@@ -5824,6 +5874,8 @@ public func FfiConverterTypeLocationBias_lower(_ value: LocationBias) -> RustBuf
 
 extension LocationBias: Equatable, Hashable {}
 
+extension LocationBias: Codable {}
+
 
 
 
@@ -5938,6 +5990,8 @@ public func FfiConverterTypeManeuverModifier_lower(_ value: ManeuverModifier) ->
 
 
 extension ManeuverModifier: Equatable, Hashable {}
+
+extension ManeuverModifier: Codable {}
 
 
 
@@ -6112,6 +6166,8 @@ public func FfiConverterTypeManeuverType_lower(_ value: ManeuverType) -> RustBuf
 
 extension ManeuverType: Equatable, Hashable {}
 
+extension ManeuverType: Codable {}
+
 
 
 
@@ -6180,6 +6236,8 @@ public func FfiConverterTypeModelError_lower(_ value: ModelError) -> RustBuffer 
 
 
 extension ModelError: Equatable, Hashable {}
+
+extension ModelError: Codable {}
 
 
 
@@ -6280,6 +6338,8 @@ public func FfiConverterTypeNavigationRecordingEventData_lower(_ value: Navigati
 
 
 extension NavigationRecordingEventData: Equatable, Hashable {}
+
+extension NavigationRecordingEventData: Codable {}
 
 
 
@@ -6388,6 +6448,8 @@ public func FfiConverterTypeParsingError_lower(_ value: ParsingError) -> RustBuf
 
 extension ParsingError: Equatable, Hashable {}
 
+extension ParsingError: Codable {}
+
 
 
 
@@ -6472,6 +6534,8 @@ public func FfiConverterTypeRecordingError_lower(_ value: RecordingError) -> Rus
 
 
 extension RecordingError: Equatable, Hashable {}
+
+extension RecordingError: Codable {}
 
 
 
@@ -6567,6 +6631,8 @@ public func FfiConverterTypeRouteDeviation_lower(_ value: RouteDeviation) -> Rus
 
 
 extension RouteDeviation: Equatable, Hashable {}
+
+extension RouteDeviation: Codable {}
 
 
 
@@ -6754,6 +6820,8 @@ public func FfiConverterTypeRouteRequest_lower(_ value: RouteRequest) -> RustBuf
 
 extension RouteRequest: Equatable, Hashable {}
 
+extension RouteRequest: Codable {}
+
 
 
 
@@ -6830,6 +6898,8 @@ public func FfiConverterTypeRoutingRequestGenerationError_lower(_ value: Routing
 
 
 extension RoutingRequestGenerationError: Equatable, Hashable {}
+
+extension RoutingRequestGenerationError: Codable {}
 
 
 
@@ -6956,6 +7026,8 @@ public func FfiConverterTypeSerializableStepAdvanceCondition_lower(_ value: Seri
 
 extension SerializableStepAdvanceCondition: Equatable, Hashable {}
 
+extension SerializableStepAdvanceCondition: Codable {}
+
 
 
 
@@ -7036,6 +7108,8 @@ public func FfiConverterTypeSimulationError_lower(_ value: SimulationError) -> R
 
 
 extension SimulationError: Equatable, Hashable {}
+
+extension SimulationError: Codable {}
 
 
 
@@ -7222,6 +7296,8 @@ public func FfiConverterTypeTripState_lower(_ value: TripState) -> RustBuffer {
 
 extension TripState: Equatable, Hashable {}
 
+extension TripState: Codable {}
+
 
 
 
@@ -7310,6 +7386,8 @@ public func FfiConverterTypeWaypointAdvanceMode_lower(_ value: WaypointAdvanceMo
 
 extension WaypointAdvanceMode: Equatable, Hashable {}
 
+extension WaypointAdvanceMode: Codable {}
+
 
 
 
@@ -7390,6 +7468,8 @@ public func FfiConverterTypeWaypointKind_lower(_ value: WaypointKind) -> RustBuf
 
 
 extension WaypointKind: Equatable, Hashable {}
+
+extension WaypointKind: Codable {}
 
 
 
