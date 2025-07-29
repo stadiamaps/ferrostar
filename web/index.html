@@ -199,7 +199,7 @@
 
           // Start the navigation
           ferrostarMap.route = route;
-          ferrostarMap.linkWith(ferrostarCore, (showUserMarker = true));
+          ferrostarMap.linkWith(ferrostarCore, true);
           ferrostarCore.locationProvider = locationProvider;
           ferrostarCore.startNavigation(route, config);
         });

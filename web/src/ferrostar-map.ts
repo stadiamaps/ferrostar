@@ -23,7 +23,7 @@ export class FerrostarMap extends LitElement {
   map!: maplibregl.Map;
 
   @property({type: Object})
-  eventProvider: any;
+  stateProvider: any;
 
   /**
    *  Styles to load which will apply inside the component
@@ -70,7 +70,7 @@ export class FerrostarMap extends LitElement {
 
   /**
    * A callback function that is invoked when navigation is stopped.
-   * This function should be provided by the implementer.
+   * Optional: This function can be provided by the StateProvider.
    */
   @property({ type: Function, attribute: false })
   onStopNavigation?: () => void;
@@ -198,18 +198,19 @@ export class FerrostarMap extends LitElement {
 
   linkWith(stateProvider: StateProvider, showUserMarker: boolean = false) {
     // Check if already linked with an event provider
-    if(this.eventProvider) {
+    if(this.stateProvider) {
       console.warn("Already linked with an event provider. Please unlink first.");
       return;
     }
 
     
-    this.eventProvider = stateProvider;
+    this.stateProvider = stateProvider;
     this.showUserMarker = showUserMarker;
-    this.onStopNavigation = stateProvider.stopNavigation;
+    this.onStopNavigation = () => stateProvider.stopNavigation?.();
 
     // Listen to tripState updates
-    this.eventProvider.on("tripstate-update", (event: any) => {
+    this.stateProvider.addEventListener("tripstate-update", (event: CustomEvent) => {
+      console.log("Trip state update received:", event.detail.tripState);
       this.tripState = event.detail.tripState;
     });
   }
@@ -368,8 +369,7 @@ export class FerrostarMap extends LitElement {
   private handleStopNavigation() {
     this.clearNavigation();
     this.showUserMarker = false;
-    this.eventProvider?.off("tripstate-update");
-    this.eventProvider = null;
+    this.stateProvider = null;
     if (this.onStopNavigation) {
       this.onStopNavigation();
     }
