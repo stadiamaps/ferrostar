@@ -36,3 +36,11 @@ struct Your_App_WidgetsBundle: WidgetBundle {
     }
 }
 ```
+
+## Customization
+
+You can build your own Dynamic Island in one of two ways.
+
+1. Building a custom `WidgetProvider` that implements it's own logic, `ActivityAttributes` model and widget.
+2. Create a custom version of `FerrostarWidget` that uses the `ActivityConfiguration(for: TripActivityAttributes.self)`.
+The fact you've registered one widget to the attributes model is what hooks it together.
