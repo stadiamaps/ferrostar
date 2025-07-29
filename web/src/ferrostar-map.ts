@@ -21,6 +21,9 @@ export class FerrostarMap extends LitElement {
   @property({ type: Object })
   map!: maplibregl.Map;
 
+  @property({type: Object})
+  eventProvider: any;
+
   /**
    *  Styles to load which will apply inside the component
    */
@@ -40,10 +43,11 @@ export class FerrostarMap extends LitElement {
   showNavigationUI: boolean = false;
 
   /**
-   * Determines whether the navigation is a simulation
+   * Should the user marker be shown on the map.
+   * This is optional and defaults to false.
    */
   @property({ type: Boolean })
-  isSimulation: boolean = false;
+  showUserMarker: boolean = false;
 
   /**
    * Automatically geolocates the user on map load.
@@ -191,6 +195,17 @@ export class FerrostarMap extends LitElement {
     }
   }
 
+  linkWith(eventProvider: any, showUserMarker: boolean = false) {
+    this.eventProvider = eventProvider;
+    this.showUserMarker = showUserMarker;
+    this.onStopNavigation = eventProvider.onStopNavigation;
+
+    // Listen to tripState updates
+    this.eventProvider.on("tripstate-update", (event: any) => {
+      this.tripState = event.detail.tripState;
+    });
+  }
+
   /**
    * Renders the current tripState on the map.
    */
@@ -200,7 +215,7 @@ export class FerrostarMap extends LitElement {
     }
 
     this.updateCamera();
-    if (this.isSimulation) this.renderUserLocationMarker();
+    if (this.showUserMarker) this.renderUserLocationMarker();
   }
 
   /**
@@ -344,7 +359,9 @@ export class FerrostarMap extends LitElement {
    */
   private handleStopNavigation() {
     this.clearNavigation();
-    this.isSimulation = false;
+    this.showUserMarker = false;
+    this.eventProvider?.off("tripstate-update");
+    this.eventProvider = null;
     if (this.onStopNavigation) {
       this.onStopNavigation();
     }

@@ -112,14 +112,6 @@
         ferrostarMap.map = mapInstance;
         ferrostarMap.showNavigationUI = true;
 
-        ferrostarMap.onStopNavigation = () => {
-          ferrostarCore.stopNavigation();
-        };
-
-        ferrostarCore.addEventListener("navstate-change", (event) => {
-          ferrostarMap.navState = event.detail.navState;
-        });
-
         // Create a search control.
         const searchBox = new MapLibreSearchControl({
           onResultSelected: async (feature) => {
@@ -150,7 +142,7 @@
             const routes = await ferrostarCore.getRoutes(location, waypoints);
             const route = routes[0];
             ferrostarMap.route = route;
-            ferrostarMap.isSimulation = false;
+            ferrostarMap.linkWith(ferrostarCore);
 
             // Start the navigation
             ferrostarCore.startNavigation(route, config);
@@ -207,7 +199,7 @@
 
           // Start the navigation
           ferrostarMap.route = route;
-          ferrostarMap.isSimulation = true;
+          ferrostarMap.linkWith(ferrostarCore, showUserMarker = true);
           ferrostarCore.locationProvider = locationProvider;
           ferrostarCore.startNavigation(route, config);
         });
