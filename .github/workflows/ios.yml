@@ -63,7 +63,7 @@ jobs:
       run: |
         if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
           echo "Dirty files detected"
-          echo "Make sure to pull main and/or run ./build-ios.sh in the common directory"
+          echo "Make sure to pull main and then run ./build-ios.sh in the common directory"
           git diff apple/Sources/UniFFI/ > git-diff.log
           exit 1
         fi

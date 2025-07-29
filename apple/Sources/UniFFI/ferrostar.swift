@@ -4212,6 +4212,8 @@ extension SerializableNavState: Equatable, Hashable {
     }
 }
 
+extension SerializableNavState: Codable {}
+
 
 
 #if swift(>=5.8)
@@ -6533,6 +6535,8 @@ public func FfiConverterTypeRecordingError_lower(_ value: RecordingError) -> Rus
 
 extension RecordingError: Equatable, Hashable {}
 
+extension RecordingError: Codable {}
+
 
 
 
@@ -7021,6 +7025,8 @@ public func FfiConverterTypeSerializableStepAdvanceCondition_lower(_ value: Seri
 
 
 extension SerializableStepAdvanceCondition: Equatable, Hashable {}
+
+extension SerializableStepAdvanceCondition: Codable {}
 
 
 
