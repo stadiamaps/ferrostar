@@ -206,11 +206,11 @@ export class FerrostarMap extends LitElement {
     
     this.stateProvider = stateProvider;
     this.showUserMarker = showUserMarker;
+    this.showNavigationUI = true;
     this.onStopNavigation = () => stateProvider.stopNavigation?.();
 
     // Listen to tripState updates
     this.stateProvider.addEventListener("tripstate-update", (event: CustomEvent) => {
-      console.log("Trip state update received:", event.detail.tripState);
       this.tripState = event.detail.tripState;
     });
   }
@@ -369,6 +369,7 @@ export class FerrostarMap extends LitElement {
   private handleStopNavigation() {
     this.clearNavigation();
     this.showUserMarker = false;
+    this.showNavigationUI = false;
     this.stateProvider = null;
     if (this.onStopNavigation) {
       this.onStopNavigation();
