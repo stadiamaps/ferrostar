@@ -1,8 +1,7 @@
 import FerrostarCoreFFI
 
 /// The widget provided is given to ``FerrostarCore/FerrostarCore`` and is called when the navigation state is updated
-/// by a user
-/// update or navitation is stopped.
+/// by a user update or navigation is stopped.
 public protocol WidgetProviding {
     /// Update _or create_ the widget with a new status
     ///
