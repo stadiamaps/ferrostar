@@ -5,6 +5,7 @@ import CloseSvg from "./assets/directions/close.svg";
 import { TripState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
+import { StateProvider as StateProvider } from "./types";
 
 /**
  * A MapLibre-based map component.
@@ -195,7 +196,7 @@ export class FerrostarMap extends LitElement {
     }
   }
 
-  linkWith(eventProvider: any, showUserMarker: boolean = false) {
+  linkWith(stateProvider: StateProvider, showUserMarker: boolean = false) {
     // Check if already linked with an event provider
     if(this.eventProvider) {
       console.warn("Already linked with an event provider. Please unlink first.");
@@ -203,9 +204,9 @@ export class FerrostarMap extends LitElement {
     }
 
     
-    this.eventProvider = eventProvider;
+    this.eventProvider = stateProvider;
     this.showUserMarker = showUserMarker;
-    this.onStopNavigation = eventProvider.onStopNavigation;
+    this.onStopNavigation = stateProvider.stopNavigation;
 
     // Listen to tripState updates
     this.eventProvider.on("tripstate-update", (event: any) => {

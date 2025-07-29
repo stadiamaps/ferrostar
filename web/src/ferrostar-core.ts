@@ -1,17 +1,18 @@
 import { LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import {
-  SerializableNavState,
+  JsNavState,
   NavigationController,
   RouteAdapter,
   TripState,
 } from "@stadiamaps/ferrostar";
+import { StateProvider } from "./types";
 
 /**
  * A core navigation component that handles navigation logic without UI.
  */
 @customElement("ferrostar-core")
-export class FerrostarCore extends LitElement {
+export class FerrostarCore extends LitElement implements StateProvider {
   @property()
   valhallaEndpointUrl: string = "";
 
@@ -30,7 +31,7 @@ export class FerrostarCore extends LitElement {
   options: object = {};
 
   @state()
-  protected _navState: SerializableNavState | null = null;
+  protected _navState: JsNavState | null = null;
 
   @property({ type: Function, attribute: false })
   onNavigationStart?: () => void;
@@ -145,17 +146,22 @@ export class FerrostarCore extends LitElement {
     if (this.onNavigationStop) this.onNavigationStop();
   }
 
-  private navStateUpdate(newState: SerializableNavState | null) {
-    this._navState = newState;
-    this.onTripStateChange?.(newState?.tripState || null);
-
+  provideState(tripState: TripState) {
     // Dispatch event for external listeners
     this.dispatchEvent(
       new CustomEvent("tripstate-update", {
-        detail: { tripState: newState?.tripState },
+        detail: { tripState },
         bubbles: true,
       }),
     );
+  }
+
+  private navStateUpdate(newState: JsNavState | null) {
+    this._navState = newState;
+    this.onTripStateChange?.(newState?.tripState || null);
+    if (!newState) return;
+
+    this.provideState(newState.tripState);
   }
 
   private onLocationUpdated() {
