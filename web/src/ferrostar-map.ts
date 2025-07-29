@@ -23,7 +23,7 @@ export class FerrostarMap extends LitElement {
   map!: maplibregl.Map;
 
   @property({ type: Object })
-  stateProvider: any;
+  stateProvider: StateProvider | null = null;
 
   /**
    *  Styles to load which will apply inside the component
