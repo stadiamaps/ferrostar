@@ -64,7 +64,7 @@ jobs:
         if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
           echo "Dirty files detected"
           echo "Make sure to pull main and/or run ./build-ios.sh in the common directory"
-          git diff apple/Sources/UniFFI/ > git-diff.patch
+          git diff apple/Sources/UniFFI/ > git-diff.log
           exit 1
         fi
 
@@ -73,7 +73,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: uniffi-diff-analysis
-        path: git-diff.patch
+        path: git-diff.log
         retention-days: 7
 
     - name: 'Upload Artifact'
