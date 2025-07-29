@@ -22,7 +22,7 @@ export class FerrostarMap extends LitElement {
   @property({ type: Object })
   map!: maplibregl.Map;
 
-  @property({type: Object})
+  @property({ type: Object })
   stateProvider: any;
 
   /**
@@ -198,21 +198,25 @@ export class FerrostarMap extends LitElement {
 
   linkWith(stateProvider: StateProvider, showUserMarker: boolean = false) {
     // Check if already linked with an event provider
-    if(this.stateProvider) {
-      console.warn("Already linked with an event provider. Please unlink first.");
+    if (this.stateProvider) {
+      console.warn(
+        "Already linked with an event provider. Please unlink first.",
+      );
       return;
     }
 
-    
     this.stateProvider = stateProvider;
     this.showUserMarker = showUserMarker;
     this.showNavigationUI = true;
     this.onStopNavigation = () => stateProvider.stopNavigation?.();
 
     // Listen to tripState updates
-    this.stateProvider.addEventListener("tripstate-update", (event: CustomEvent) => {
-      this.tripState = event.detail.tripState;
-    });
+    this.stateProvider.addEventListener(
+      "tripstate-update",
+      (event: CustomEvent) => {
+        this.tripState = event.detail.tripState;
+      },
+    );
   }
 
   /**
@@ -290,11 +294,7 @@ export class FerrostarMap extends LitElement {
    * Otherwise, a new marker is created and added to the map.
    */
   private renderUserLocationMarker() {
-    if (
-      !this.map ||
-      !this.tripState ||
-      !("Navigating" in this.tripState)
-    ) {
+    if (!this.map || !this.tripState || !("Navigating" in this.tripState)) {
       return;
     }
 
