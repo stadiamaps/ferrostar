@@ -176,7 +176,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         const simulateNavigationButton = document.getElementById("simulate");
 
         shouldRecordCheckbox.addEventListener("change", (event) => {
-          ferrostar.should_record = event.target.checked;
+          ferrostarCore.shouldRecord = event.target.checked;
         });
 
         // Button to start simulated navigation

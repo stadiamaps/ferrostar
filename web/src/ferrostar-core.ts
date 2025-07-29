@@ -1,7 +1,7 @@
 import { LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import {
-  JsNavState,
+  SerializableNavState,
   NavigationController,
   RouteAdapter,
   TripState,
@@ -31,7 +31,7 @@ export class FerrostarCore extends LitElement implements StateProvider {
   options: object = {};
 
   @state()
-  protected _navState: JsNavState | null = null;
+  protected _navState: SerializableNavState | null = null;
 
   @property({ type: Function, attribute: false })
   onNavigationStart?: () => void;
@@ -136,7 +136,21 @@ export class FerrostarCore extends LitElement implements StateProvider {
     );
   }
 
+  private saveRecording() {
+    let recording = this.navigationController?.getRecording(
+      this._navState?.recordingEvents,
+    );
+    const blob = new Blob([recording], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    // TODO: Figure out how to generate a unique filename
+    link.download = "recording.json";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
   async stopNavigation() {
+    if (this.shouldRecord) this.saveRecording();
     this.routeAdapter?.free();
     this.routeAdapter = null;
     this.navigationController?.free();
@@ -156,7 +170,7 @@ export class FerrostarCore extends LitElement implements StateProvider {
     );
   }
 
-  private navStateUpdate(newState: JsNavState | null) {
+  private navStateUpdate(newState: SerializableNavState | null) {
     this._navState = newState;
     this.onTripStateChange?.(newState?.tripState || null);
     if (!newState) return;
