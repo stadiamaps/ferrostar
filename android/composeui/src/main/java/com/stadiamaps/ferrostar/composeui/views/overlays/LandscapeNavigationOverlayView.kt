@@ -104,7 +104,7 @@ fun LandscapeNavigationOverlayView(
           onClickZoomIn = { onClickZoomIn?.invoke() },
           onClickZoomOut = { onClickZoomOut?.invoke() },
           bottomCenter = {
-            views.streetNameView(Modifier, uiState.currentStepRoadName, cameraControlState)
+            views.roadNameView(Modifier, uiState.currentStepRoadName, cameraControlState)
           })
     }
   }
