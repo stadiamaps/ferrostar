@@ -200,6 +200,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
             simulatedWaypoints,
           );
           const route = routes[0];
+          ferrostarMap.route = route;
 
           // Set the simulated location provider
           const locationProvider = new SimulatedLocationProvider();
@@ -208,7 +209,6 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
           locationProvider.setSimulatedRoute(route);
 
           // Start the navigation
-          ferrostarMap.route = route;
           ferrostarMap.linkWith(ferrostarCore, true);
           ferrostarCore.locationProvider = locationProvider;
           ferrostarCore.startNavigation(route, config);

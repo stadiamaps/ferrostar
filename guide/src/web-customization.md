@@ -48,7 +48,7 @@ const waypoints = [{ coordinate: { lat: parseFloat(lat), lng: parseFloat(lon) },
 
 The asynchronous `getRoutes` method on `FerrostarCore`
 will fetch routes from your route provider (ex: a Valhalla server).
-Here’s an example:
+Here’s an example:1
 
 ```javascript
 const core = document.getElementById("core");
