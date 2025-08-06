@@ -112,7 +112,7 @@ and then set properties with JavaScript like so:
 
 ```javascript
 const ferrostarMap = document.getElementById("ferrostar");
-const ferrostarCore = documnet.getElementById("ferrostar-core");
+const ferrostarCore = document.getElementById("ferrostar-core");
 
 // Connect map to MapLibre instance
 ferrostarMap.map = mapInstance;
@@ -120,7 +120,7 @@ ferrostarMap.map = mapInstance;
 // Link core (or any StateProvider) to map via linkWith method.
 ferrostarMap.linkWith(ferrostarCore)
 
-// Set up locaiton provider
+// Set up location provider
 ferrostarCore.locationProvider = new BrowserLocationProvider();
 
 ferrostar.center = {lng: -122.42, lat: 37.81};
