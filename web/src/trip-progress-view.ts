@@ -18,7 +18,7 @@ export class TripProgressView extends LitElement {
   system: DistanceSystem = "metric";
 
   @property()
-  maximumFractionDigits = 2;
+  maxDecimalPlaces = 2;
 
   static styles = [
     css`
@@ -75,7 +75,7 @@ export class TripProgressView extends LitElement {
             ${DistanceFormatter.format(
               this.tripState.Navigating.progress.distanceRemaining,
               this.system,
-              this.maximumFractionDigits,
+              this.maxDecimalPlaces,
             )}
           </p>
         </div>

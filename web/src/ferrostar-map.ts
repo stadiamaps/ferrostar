@@ -101,8 +101,14 @@ export class FerrostarMap extends LitElement {
   @property({ converter: distanceSystemConverter })
   system?: DistanceSystem;
 
+  /**
+   * Specifies the maximum number of digits allowed after the decimal point
+   * when formatting distance. This helps control the precision of fractional values.
+   *
+   * Example: For a value of 2, the number 3.1415 would be rounded as 3.14.
+   */
   @property({ type: Number })
-  maximumFractionDigits?: number;
+  maxDecimalPlaces?: number;
 
   routeAdapter: RouteAdapter | null = null;
 
@@ -433,13 +439,15 @@ export class FerrostarMap extends LitElement {
           <div id="overlay">
             <instructions-view
               .tripState=${this._navState?.tripState}
+              .system=${this.system}
+              .maxDecimalPlaces="${this.maxDecimalPlaces}"
             ></instructions-view>
 
             <div id="bottom-component">
               <trip-progress-view
                 .tripState=${this._navState?.tripState}
                 .system=${this.system}
-                .maximumFractionDigits="${this.maximumFractionDigits}"
+                .maxDecimalPlaces="${this.maxDecimalPlaces}"
               ></trip-progress-view>
               <button
                 id="stop-button"
