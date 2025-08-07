@@ -43,6 +43,10 @@
       <input type="checkbox" id="shouldRecord" />
       <label for="shouldRecord">Record</label>
     </p>
+    <p>
+      <button id="replay">Replay Navigation</button>
+      <input type="file" id="replayFile" style="display: none" />
+    </p>
 
     <!--
 This should not require any API key if run via `npm run dev`.
@@ -68,6 +72,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
       } from "@stadiamaps/ferrostar-webcomponents";
       import mapLibreGL from "maplibre-gl";
       import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
+      import { ReplayController } from "./src/replay-controller.js";
 
       // TODO: type + use TypeScript enum
       const config = {
@@ -109,6 +114,8 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         });
 
         // Get a reference to the Ferrostar map component
+        const mapContainer =
+          document.getElementsByClassName("map-container")[0];
         const ferrostarMap = document.getElementById("ferrostar");
         const ferrostarCore = document.getElementById("ferrostar-core");
         ferrostarMap.map = mapInstance;
@@ -212,6 +219,36 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
           ferrostarMap.linkWith(ferrostarCore, true);
           ferrostarCore.locationProvider = locationProvider;
           ferrostarCore.startNavigation(route, config);
+        });
+
+        const replayButton = document.getElementById("replay");
+        const replayFile = document.getElementById("replayFile");
+
+        replayButton.addEventListener("click", () => {
+          replayButton.disabled = true;
+          replayFile.click();
+        });
+
+        replayFile.addEventListener("change", async () => {
+          const file = replayFile.files?.[0];
+          if (!file) return;
+          const json = await file.text();
+          let replay = new ReplayController(json);
+          ferrostarMap.linkWith(replay, true);
+          replay.onNavigationStart = () => {
+            // Remove our search box when navigation starts
+            mapInstance.removeControl(searchBox);
+            // Prevent user from changing shouldRecord during navigation
+            shouldRecordCheckbox.disabled = true;
+          };
+          replay.onNavigationStop = () => {
+            // Put the search box back when we stop
+            mapInstance.addControl(searchBox, "top-left");
+            shouldRecordCheckbox.disabled = false;
+          };
+          replay.startReplay();
+          console.log("Replay started");
+          replayButton.disabled = false;
         });
 
         const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");

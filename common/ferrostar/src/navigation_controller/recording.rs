@@ -6,7 +6,7 @@ use chrono::Utc;
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "wasm-bindgen")]
-use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+use wasm_bindgen::prelude::*;
 
 /// Represents a recorded navigation session with its configuration and events.
 ///
@@ -107,12 +107,8 @@ impl NavigationReplay {
         self.0.recording.initial_timestamp
     }
 
-    pub fn get_config(self) -> SerializableNavigationControllerConfig {
-        self.0.recording.config.into()
-    }
-
-    pub fn get_initial_route(self) -> Route {
-        self.0.recording.initial_route
+    pub fn get_initial_route(&self) -> Route {
+        self.0.recording.initial_route.clone()
     }
 }
 
@@ -144,14 +140,8 @@ impl JsNavigationReplay {
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
-    #[wasm_bindgen(js_name = getConfig)]
-    pub fn get_config(self) -> Result<JsValue, JsValue> {
-        serde_wasm_bindgen::to_value(&self.0.get_config())
-            .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
-    }
-
     #[wasm_bindgen(js_name = getInitialRoute)]
-    pub fn get_initial_route(self) -> Result<JsValue, JsValue> {
+    pub fn get_initial_route(&self) -> Result<JsValue, JsValue> {
         serde_wasm_bindgen::to_value(&self.0.get_initial_route())
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }

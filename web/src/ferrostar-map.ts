@@ -205,6 +205,7 @@ export class FerrostarMap extends LitElement {
       return;
     }
 
+    console.log(stateProvider);
     this.stateProvider = stateProvider;
     this.showUserMarker = showUserMarker;
     this.showNavigationUI = true;
@@ -215,6 +216,13 @@ export class FerrostarMap extends LitElement {
       "tripstate-update",
       (event: CustomEvent) => {
         this.tripState = event.detail.tripState;
+      },
+    );
+
+    this.stateProvider.addEventListener(
+      "route-update",
+      (event: CustomEvent) => {
+        this.route = event.detail.route;
       },
     );
   }

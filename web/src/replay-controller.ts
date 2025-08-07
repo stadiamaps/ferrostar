@@ -2,44 +2,91 @@ import {
   NavigationRecordingEvent,
   NavigationReplay,
   Route,
-  SerializableNavigationControllerConfig,
+  TripState,
 } from "@stadiamaps/ferrostar";
+import { StateProvider } from "./types";
+import { LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
-export class ReplayController {
+@customElement("replay-controller")
+export class ReplayController extends LitElement implements StateProvider {
   private replay: NavigationReplay;
-  private current_event_index: number = 0;
-  route: Route;
-  config: SerializableNavigationControllerConfig;
-  public onNavStateUpdate: (tripState: any, stepAdvanceCondition: any) => void =
-    () => {};
+  private event: NavigationRecordingEvent;
+  private current_event_index: number;
+  private current_timestamp: number;
+  private route: Route;
+
+  @property({ type: Function, attribute: false })
+  onNavigationStart?: () => void;
+
+  @property({ type: Function, attribute: false })
+  onNavigationStop?: () => void;
 
   constructor(json_str: string) {
+    super();
+
     this.replay = new NavigationReplay(json_str);
     this.route = this.replay.getInitialRoute();
-    this.config = this.replay.getConfig();
+    this.event = this.replay.getNextEvent(0);
+    this.current_timestamp = this.event.timestamp;
+    this.current_event_index = 1;
   }
 
-  start() {
-    this.nextEvent();
+  private delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  stop() {}
+  async startReplay() {
+    if (!this.replay) return;
+    if (!this.route) return;
+    if (!this.event) return;
+    if (this.onNavigationStart) this.onNavigationStart();
+    this.provideRoute(this.route);
 
-  nextEvent() {
-    const event: NavigationRecordingEvent | undefined =
-      this.replay.getNextEvent(this.current_event_index);
-    if (!event) return;
+    while (true) {
+      if ("StateUpdate" in this.event.event_data) {
+        this.provideState(this.event.event_data["StateUpdate"].trip_state);
+      }
 
-    let eventData = event.event_data;
-    if ("StateUpdate" in eventData) {
-      const stateUpdate = eventData["StateUpdate"];
-      this.onNavStateUpdate(
-        stateUpdate.trip_state,
-        stateUpdate.step_advance_condition,
-      );
+      this.event = this.replay.getNextEvent(this.current_event_index);
+      this.current_event_index++;
+      if (!this.event) return;
+
+      await this.delay(this.event.timestamp - this.current_timestamp);
+
+      this.current_timestamp = this.event.timestamp;
     }
+  }
 
-    this.current_event_index++;
-    this.nextEvent();
+  provideState(tripState: TripState) {
+    // Dispatch event for external listeners
+    this.dispatchEvent(
+      new CustomEvent("tripstate-update", {
+        detail: { tripState },
+        bubbles: true,
+      }),
+    );
+  }
+
+  provideRoute(route: Route) {
+    this.dispatchEvent(
+      new CustomEvent("route-update", {
+        detail: { route },
+        bubbles: true,
+      }),
+    );
+  }
+
+  async stopNavigation() {
+    this.replay = null as any;
+    this.event = null as any;
+    this.current_event_index = 0;
+    this.current_timestamp = 0;
+    this.route = null as any;
+    if (this.onNavigationStop) this.onNavigationStop();
+  }
+
+  render() {
+    return null;
   }
 }
