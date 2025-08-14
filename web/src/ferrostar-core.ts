@@ -1,4 +1,4 @@
-import { LitElement, PropertyValues } from "lit";
+import { ReactiveElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import {
   SerializableNavState,
@@ -12,7 +12,7 @@ import { StateProvider } from "./types";
  * A core navigation component that handles navigation logic without UI.
  */
 @customElement("ferrostar-core")
-export class FerrostarCore extends LitElement implements StateProvider {
+export class FerrostarCore extends ReactiveElement implements StateProvider {
   @property()
   valhallaEndpointUrl: string = "";
 
@@ -213,10 +213,5 @@ export class FerrostarCore extends LitElement implements StateProvider {
         );
       }
     }
-  }
-
-  // This component doesn't render anything - it's purely for logic
-  render() {
-    return null;
   }
 }
