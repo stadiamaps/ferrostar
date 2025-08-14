@@ -1,8 +1,7 @@
 # Getting Started on the Web
 
 This section of the guide covers how to integrate Ferrostar into a web app.
-While there are limitations to the
-web [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
+While there are limitations to the web [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
 (notably no background updates),
 PWAs and other mobile-optimized sites
 can be a great solution when a native iOS/Android app is impractical or prohibitively expensive.
@@ -181,7 +180,9 @@ ferrostarMap.route = route;
 ## Starting navigation
 
 Finally, we can start navigating!
-We’re still working on getting full documentation generated in the typescript wrapper, but in the meantime, the [Rust docs](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/struct.NavigationControllerConfig.html) describe the available options.
+We’re still working on getting full documentation generated in the typescript wrapper,
+but in the meantime, the [Rust docs](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/struct.NavigationControllerConfig.html) 
+describe the available options.
 
 ```typescript
 ferrostarCore.startNavigation(route, {
