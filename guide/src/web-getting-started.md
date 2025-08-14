@@ -1,7 +1,8 @@
 # Getting Started on the Web
 
 This section of the guide covers how to integrate Ferrostar into a web app.
-While there are limitations to the web [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
+While there are limitations to the
+web [Geolocation API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation_API)
 (notably no background updates),
 PWAs and other mobile-optimized sites
 can be a great solution when a native iOS/Android app is impractical or prohibitively expensive.
@@ -40,24 +41,16 @@ to ensure maximum compatibility across frontend frameworks.
 You can import the components just like other things you’re used to in JavaScript.
 
 ```javascript
-import { FerrostarMap, FerrostarCore, BrowserLocationProvider } from "@stadiamaps/ferrostar-webcomponents";
+import {FerrostarMap, FerrostarCore, BrowserLocationProvider} from "@stadiamaps/ferrostar-webcomponents";
 ```
 
-## Configure the `<ferrostar-map>` and `ferrostar-core` component
+## Configure the `<ferrostar-map>` component
 
 Now you can use Ferrostar in your HTML like this:
 
 ```html
-<!-- Navigation Logic Component-->
-<ferrostar-core
-  id="ferrostar-core"
-  valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
-  styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
-  profile="bicycle"
-></ferrostar-core>
 
-<!-- Map Visualization Component -->
- <ferrostar-map id="ferrostar"></ferrostar-map>
+<ferrostar-map id="ferrostar"></ferrostar-map>
 ```
 
 Here we have used Stadia Maps URLs, which should work without authentication for local development.
@@ -84,13 +77,10 @@ That’s all you need to get started!
 Here are the most important ones:
 
 - `valhallaEndpointUrl`: The Valhalla routing endpoint to use. You can use any reasonably up-to-date Valhalla server, including your own. See [vendors](./vendor.md#routing) for a list of known compatible vendors.
-- `styleUrl`: The URL of the MapLibre style JSON for the map.
 - `httpClient`: You can set your own fetch-compatible HTTP client to make requests to the routing API (ex: Valhalla).
 - `options`: You can set the costing options for the route provider (ex: Valhalla JSON options).
 - `locationProvider`: Provides locations to the navigation controller.
-  `SimulatedLocationProvider` and `BrowserLocationProvider` are included.
-  See the demo app for an example of how to simulate a route.
-- `configureMap`: Configures the map on first load. This lets you customize the UI, add MapLibre map controls, etc. on load.
+- `SimulatedLocationProvider` and `BrowserLocationProvider` are included. See the demo app for an example of how to simulate a route.
 - `onNavigationStart`: Callback when navigation starts.
 - `onNavigationStop`: Callback when navigation ends.
 - `onTripStateChange`: Callback when the trip state changes (most state changes, such as a location update, advancing to the next step, etc.).
@@ -112,7 +102,13 @@ and then set properties with JavaScript like so:
 
 ```javascript
 const ferrostarMap = document.getElementById("ferrostar");
-const ferrostarCore = document.getElementById("ferrostar-core");
+
+// Create a new FerrostarCore instance.
+let ferrostarCore = new FerrostarCore();
+
+// Set some properties on the core instance.
+ferrostarCore.valhallaEndpointUrl = "https://api.stadiamaps.com/route/v1";
+ferrostarCore.profile = "bicycle";
 
 // Connect map to MapLibre instance
 ferrostarMap.map = mapInstance;
@@ -125,7 +121,7 @@ ferrostarCore.locationProvider = new BrowserLocationProvider();
 
 ferrostar.center = {lng: -122.42, lat: 37.81};
 ferrostar.zoom = 18;
-ferrostar.costingOptions = { bicycle: { use_roads: 0.2 } };
+ferrostar.costingOptions = {bicycle: {use_roads: 0.2}};
 ```
 
 Other frameworks, like Vue, have better support for web components.
@@ -185,9 +181,7 @@ ferrostarMap.route = route;
 ## Starting navigation
 
 Finally, we can start navigating!
-We’re still working on getting full documentation generated in the typescript wrapper,
-but in the meantime, the [Rust docs](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/struct.NavigationControllerConfig.html)
-describe the available options.
+We’re still working on getting full documentation generated in the typescript wrapper, but in the meantime, the [Rust docs](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/struct.NavigationControllerConfig.html) describe the available options.
 
 ```typescript
 ferrostarCore.startNavigation(route, {
