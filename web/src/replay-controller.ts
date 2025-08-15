@@ -5,11 +5,11 @@ import {
   TripState,
 } from "@stadiamaps/ferrostar";
 import { StateProvider } from "./types";
-import { LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { ReactiveElement } from "lit";
+import { property, customElement } from "lit/decorators.js";
 
 @customElement("replay-controller")
-export class ReplayController extends LitElement implements StateProvider {
+export class ReplayController extends ReactiveElement implements StateProvider {
   private replay: NavigationReplay;
   private event: NavigationRecordingEvent;
   private current_event_index: number;
@@ -84,9 +84,5 @@ export class ReplayController extends LitElement implements StateProvider {
     this.current_timestamp = 0;
     this.route = null as any;
     if (this.onNavigationStop) this.onNavigationStop();
-  }
-
-  render() {
-    return null;
   }
 }

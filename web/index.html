@@ -34,7 +34,9 @@
   <body>
     <p>
       Search and select a destination, or
-      <button id="simulate">Simulate Navigation</button>
+      <button id="simulate">Simulate Navigation</button> or
+      <button id="replay">Replay Navigation</button>
+      <input type="file" id="replayFile" style="display: none" />
     </p>
 
     <p style="margin-top: 0">
@@ -42,10 +44,6 @@
       <label for="voiceGuidance">Enable voice guidance (sound on)</label>
       <input type="checkbox" id="shouldRecord" />
       <label for="shouldRecord">Record</label>
-    </p>
-    <p>
-      <button id="replay">Replay Navigation</button>
-      <input type="file" id="replayFile" style="display: none" />
     </p>
 
     <!--
@@ -222,30 +220,35 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         const replayFile = document.getElementById("replayFile");
 
         replayButton.addEventListener("click", () => {
-          replayButton.disabled = true;
           replayFile.click();
         });
 
         replayFile.addEventListener("change", async () => {
           const file = replayFile.files?.[0];
+
           if (!file) return;
+
           const json = await file.text();
           let replay = new ReplayController(json);
           ferrostarMap.linkWith(replay, true);
+
           replay.onNavigationStart = () => {
             // Remove our search box when navigation starts
             mapInstance.removeControl(searchBox);
             // Prevent user from changing shouldRecord during navigation
             shouldRecordCheckbox.disabled = true;
+            // Disable the replay button while replaying
+            replayButton.disabled = true;
           };
+
           replay.onNavigationStop = () => {
             // Put the search box back when we stop
             mapInstance.addControl(searchBox, "top-left");
             shouldRecordCheckbox.disabled = false;
+            replayButton.disabled = false;
           };
-          replay.startReplay();
-          console.log("Replay started");
-          replayButton.disabled = false;
+
+          await replay.startReplay();
         });
 
         const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
