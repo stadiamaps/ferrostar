@@ -26,7 +26,7 @@ data class NavigationViewComponentBuilder(
     internal val progressView:
         @Composable
         (modifier: Modifier, uiState: NavigationUiState, onTapExit: (() -> Unit)?) -> Unit,
-    internal val streetNameView:
+    internal val roadNameView:
         @Composable
         (modifier: Modifier, roadName: String?, cameraControlState: CameraControlState) -> Unit,
     internal val customOverlayView: @Composable (BoxScope.(Modifier) -> Unit)? = null,
@@ -58,7 +58,7 @@ data class NavigationViewComponentBuilder(
                     onTapExit = onTapExit)
               }
             },
-            streetNameView = { modifier, roadName, cameraControlState ->
+            roadNameView = { modifier, roadName, cameraControlState ->
               if (cameraControlState is CameraControlState.ShowRouteOverview) {
                 roadName?.let { roadName ->
                   Row(
@@ -94,12 +94,12 @@ fun NavigationViewComponentBuilder.withProgressView(
   return copy(progressView = progressView)
 }
 
-fun NavigationViewComponentBuilder.withStreetNameView(
-    streetNameView:
+fun NavigationViewComponentBuilder.withRoadNameView(
+    roadNameView:
         @Composable
         (modifier: Modifier, roadName: String?, cameraControlState: CameraControlState) -> Unit
 ): NavigationViewComponentBuilder {
-  return copy(streetNameView = streetNameView)
+  return copy(roadNameView = roadNameView)
 }
 
 fun NavigationViewComponentBuilder.withCustomOverlayView(

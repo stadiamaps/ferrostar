@@ -31,4 +31,4 @@ Breaking down the responsibilities by layer:
 
 As in any hexagonal architecture, you can't skip across multiple layer boundaries.
 
-![The Ferrostar Architecture Diagram](architecture.png)
+![The Ferrostar Architecture Diagram](images/architecture.png)

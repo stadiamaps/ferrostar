@@ -93,6 +93,6 @@ final class SpokenObserverTests: XCTestCase {
             taskExp.fulfill()
         }
 
-        wait(for: [exp, taskExp], timeout: 3.0)
+        wait(for: [exp, taskExp], timeout: 5.0)
     }
 }

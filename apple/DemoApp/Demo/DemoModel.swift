@@ -2,6 +2,7 @@ import Combine
 import CoreLocation
 @preconcurrency import FerrostarCore
 @preconcurrency import FerrostarCoreFFI
+import FerrostarSwiftUI
 import Foundation
 import MapLibreSwiftUI
 
@@ -22,7 +23,7 @@ private extension CLLocation {
 }
 
 private extension FerrostarCore {
-    convenience init(locationProvider: LocationProviding) throws {
+    static func initForDemo(locationProvider: LocationProviding) throws -> FerrostarCore {
         // Configure the navigation session.
         // You have a lot of flexibility here based on your use case.
         let config = SwiftNavigationControllerConfig(
@@ -40,7 +41,7 @@ private extension FerrostarCore {
             snappedLocationCourseFiltering: .snapToRoute
         )
 
-        try self.init(
+        return try FerrostarCore(
             valhallaEndpointUrl: URL(
                 string: "https://api.stadiamaps.com/route/v1?api_key=\(sharedAPIKeys.stadiaMapsAPIKey)"
             )!,
@@ -51,7 +52,8 @@ private extension FerrostarCore {
             // This is how you can set up annotation publishing;
             // We provide "extended OSRM" support out of the box,
             // but this is fully extendable!
-            annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
+            annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM(),
+            widgetProvider: FerrostarWidgetProvider()
         )
     }
 }
@@ -98,7 +100,7 @@ extension DemoModel {
         self.locationProvider = locationProvider
         camera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
         do {
-            core = try FerrostarCore(locationProvider: locationProvider)
+            core = try FerrostarCore.initForDemo(locationProvider: locationProvider)
             core.delegate = navigationDelegate
 
             // Listen to these Publishers in FerrostarCore, and assign to Observable properties.
