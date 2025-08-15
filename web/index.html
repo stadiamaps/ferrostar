@@ -55,11 +55,6 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
 -->
     <div class="map-container">
       <ferrostar-map id="ferrostar"></ferrostar-map>
-      <ferrostar-core
-        id="ferrostar-core"
-        valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
-        profile="bicycle"
-      ></ferrostar-core>
       <div class="map-element" id="mapElement"></div>
     </div>
 
@@ -114,10 +109,12 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         });
 
         // Get a reference to the Ferrostar map component
-        const mapContainer =
-          document.getElementsByClassName("map-container")[0];
         const ferrostarMap = document.getElementById("ferrostar");
-        const ferrostarCore = document.getElementById("ferrostar-core");
+        let ferrostarCore = new FerrostarCore();
+        ferrostarCore.valhallaEndpointUrl =
+          "https://api.stadiamaps.com/route/v1";
+        ferrostarCore.profile = "bicycle";
+
         ferrostarMap.map = mapInstance;
 
         // Create a search control.

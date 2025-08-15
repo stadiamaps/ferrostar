@@ -205,7 +205,6 @@ export class FerrostarMap extends LitElement {
       return;
     }
 
-    console.log(stateProvider);
     this.stateProvider = stateProvider;
     this.showUserMarker = showUserMarker;
     this.showNavigationUI = true;
