@@ -34,7 +34,7 @@ geo = "0.30.0"
 polyline = "0.11.0"
 rand = "0.8.5"
 serde = { version = "1.0.219", features = ["derive"] }
-serde_json = { version = "1.0.140", default-features = false }
+serde_json = { version = "1.0.142", default-features = false }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
 thiserror = "2.0.12"
 uniffi = { workspace = true, optional = true }
