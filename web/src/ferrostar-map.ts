@@ -217,6 +217,13 @@ export class FerrostarMap extends LitElement {
         this.tripState = event.detail.tripState;
       },
     );
+
+    this.stateProvider.addEventListener(
+      "route-update",
+      (event: CustomEvent) => {
+        this.route = event.detail.route;
+      },
+    );
   }
 
   /**
