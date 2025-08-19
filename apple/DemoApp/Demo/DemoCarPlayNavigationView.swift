@@ -19,7 +19,9 @@ struct DemoCarPlayNavigationView: View {
                     navigationState: model.coreState,
                     styleURL: AppDefaults.mapStyleURL,
                     camera: $bindableModel.camera
-                )
+                ) {
+                    model.routePreview
+                }
             }
         }
     }
