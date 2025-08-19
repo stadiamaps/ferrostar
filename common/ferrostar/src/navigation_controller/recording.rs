@@ -1,3 +1,5 @@
+//! Module for recording and replaying navigation sessions.
+
 use crate::models::Route;
 use crate::navigation_controller::models::{
     NavigationControllerConfig, NavigationRecordingEvent, SerializableNavigationControllerConfig,
@@ -8,16 +10,10 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::prelude::*;
 
-/// Represents a recorded navigation session with its configuration and events.
-///
-/// # Fields
-///
-/// * `version` - The version of Ferrostar that created this recording
-/// * `initial_timestamp` - When the navigation session started (in milliseconds)
-/// * `config` - Configuration settings used for the navigation session
-/// * `initial_route` - The route that was initially assigned for navigation
-/// * `events` - A chronological list of all navigation events that occurred
-#[derive(Clone, Serialize, Deserialize)]
+/// A builder struct used to construct a recording of navigation events.
+/// This struct encapsulates necessary data for initializing and configuring
+/// a navigation recording process.
+#[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecordingBuilder {
     pub version: String,
     pub initial_timestamp: i64,
@@ -25,7 +21,6 @@ pub struct NavigationRecordingBuilder {
     pub initial_route: Route,
 }
 
-/// Functionality for the navigation controller that is not exported.
 impl NavigationRecordingBuilder {
     /// Creates a new navigation recorder with route configuration and initial state.
     pub fn new(config: NavigationControllerConfig, initial_route: Route) -> Self {
@@ -38,11 +33,6 @@ impl NavigationRecordingBuilder {
     }
 
     /// Serializes the navigation recording to a JSON string.
-    ///
-    /// # Returns
-    ///
-    /// - `Ok(String)` - A JSON string representation of the navigation recording
-    /// - `Err(RecordingError)` - If there was an error during JSON serialization
     pub fn to_json(&self, events: Vec<NavigationRecordingEvent>) -> Result<String, RecordingError> {
         let recording = NavigationRecording {
             recording: self.clone(),
@@ -54,6 +44,8 @@ impl NavigationRecordingBuilder {
     }
 }
 
+/// Represents a navigation recording, which consists of a builder containing metadata
+/// and a list of navigation events.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecording {
     #[serde(flatten)]
@@ -62,6 +54,7 @@ pub struct NavigationRecording {
 }
 
 impl NavigationRecording {
+    /// Converts a JSON string slice into an instance of the type implementing this method.
     pub fn from_json(json: &str) -> Self {
         serde_json::from_str(json)
             .map_err(|e| RecordingError::SerializationError {
@@ -71,7 +64,16 @@ impl NavigationRecording {
     }
 }
 
-/// Custom error type for navigation recording operations.
+/// Enum `RecordingError` represents the possible errors that can occur during
+/// the recording process in a navigation recording system.
+///
+/// # Variants
+///
+/// - `SerializationError`
+///   Indicates an error occurred during the serialization of a recording.
+///
+/// - `RecordingNotEnabled`
+///   Indicates that recording is not enabled for a specific controller.
 #[derive(Debug, Serialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
@@ -88,6 +90,7 @@ pub enum RecordingError {
     RecordingNotEnabled,
 }
 
+/// A struct that wraps around `NavigationRecording` to provide replay functionality.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct NavigationReplay(NavigationRecording);
 
@@ -96,6 +99,8 @@ impl NavigationReplay {
         Self(NavigationRecording::from_json(json))
     }
 
+    /// Retrieves the next navigation recording event based on the provided current index.
+    /// Returns `None`, if there is no next event.
     pub fn get_next_event(&self, current_index: u64) -> Option<NavigationRecordingEvent> {
         match self.0.events.get(current_index as usize) {
             Some(event) => Some(event.clone()),
@@ -112,6 +117,9 @@ impl NavigationReplay {
     }
 }
 
+/// A WebAssembly-compatible wrapper for `NavigationReplay` that exposes its functionality as a JavaScript object.
+/// This wrapper is required because `NavigationReplay` cannot be directly converted to a JavaScript object
+/// and requires serialization/deserialization of its methods' inputs and outputs.
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = NavigationReplay)]
 pub struct JsNavigationReplay(NavigationReplay);
