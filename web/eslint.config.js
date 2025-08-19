@@ -41,6 +41,13 @@ export default [
       "no-undef": "off",
       "@typescript-eslint/no-unused-vars": "warn",
       "@typescript-eslint/ban-ts-comment": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          args: "none", // Function args can be useful documentation
+          ignoreRestSiblings: true, // Allow `omit` syntax
+        },
+      ],
     },
   },
   prettier,
