@@ -1,4 +1,7 @@
-//! The navigation state machine.
+//! # Documentation for Navigation Module
+//!
+//! The navigation module provides tools for managing route navigation and tracking user progress through a series of steps.
+//! Below is the documentation of the code provided, including its core functionality, traits, and implementations.
 
 pub mod models;
 pub mod recording;
@@ -43,6 +46,8 @@ pub trait Navigator: Send + Sync {
     fn get_initial_state(&self, location: UserLocation) -> NavState;
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
+    /// Attempts to retrieve a recording based on the supplied navigation events.
+    /// Only controllers with recording capabilities should override this implementation.
     fn get_recording(
         &self,
         #[allow(unused_variables)] events: Vec<NavigationRecordingEvent>,
@@ -455,6 +460,8 @@ impl Navigator for RecordingNavigationController {
 }
 
 /// JavaScript wrapper for `NavigationController`.
+/// This wrapper is required because `NavigationController` cannot be directly converted to a JavaScript object
+/// and requires serialization/deserialization of its methods' inputs and outputs.
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = NavigationController)]
 pub struct JsNavigationController(Arc<dyn Navigator>);
