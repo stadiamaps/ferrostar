@@ -31,7 +31,7 @@
     "pack:all": "npm run pack:core && npm pack",
     "publish:core": "wasm-pack publish --access public ../common/ferrostar/pkg",
     "lint": "eslint --cache --ext .js,.ts,.html src",
-    "lint:fix": "eslint --cache --ext .js,.ts,.html src --fix"
+    "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "@maptimy/platform-formatters": "^0.6.0",
