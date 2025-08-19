@@ -1,7 +1,4 @@
-//! # Documentation for Navigation Module
-//!
-//! The navigation module provides tools for managing route navigation and tracking user progress through a series of steps.
-//! Below is the documentation of the code provided, including its core functionality, traits, and implementations.
+//! The navigation state machine.
 
 pub mod models;
 pub mod recording;
