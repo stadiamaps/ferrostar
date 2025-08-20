@@ -1,12 +1,8 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import {
-  DistanceSystem,
-  LocalizedDistanceFormatter,
-} from "@maptimy/platform-formatters";
+import { DistanceSystem } from "@maptimy/platform-formatters";
 import "./maneuver-image";
-
-const DistanceFormatter = LocalizedDistanceFormatter();
+import { formatDistance } from "./util";
 
 @customElement("instructions-view")
 export class InstructionsView extends LitElement {
@@ -72,7 +68,7 @@ export class InstructionsView extends LitElement {
               ${this.tripState.Navigating.visualInstruction.primaryContent.text}
             </p>
             <p class="instruction-text">
-              ${DistanceFormatter.format(
+              ${formatDistance(
                 this.tripState.Navigating.progress.distanceToNextManeuver,
                 this.system,
                 this.maxDecimalPlaces,
