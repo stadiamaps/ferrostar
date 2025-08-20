@@ -6,6 +6,27 @@ import { TripState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
 import { StateProvider as StateProvider } from "./types";
+import { DistanceSystem } from "@maptimy/platform-formatters";
+
+const allowedSystems: Array<DistanceSystem> = [
+  "metric",
+  "imperial",
+  "imperialWithYards",
+];
+
+const distanceSystemConverter = {
+  fromAttribute(value: string | null): DistanceSystem | null {
+    if (!value) return null;
+
+    if (allowedSystems.includes(value as DistanceSystem)) {
+      return value as DistanceSystem;
+    }
+    throw new Error(`Invalid distance system: ${value}`);
+  },
+  toAttribute(value: DistanceSystem): string {
+    return value;
+  },
+};
 
 /**
  * A MapLibre-based map component.
@@ -67,6 +88,18 @@ export class FerrostarMap extends LitElement {
    */
   @property({ type: Boolean })
   addGeolocateControl: boolean = true;
+
+  @property({ converter: distanceSystemConverter })
+  system?: DistanceSystem;
+
+  /**
+   * Specifies the maximum number of digits allowed after the decimal point
+   * when formatting distance. This helps control the precision of fractional values.
+   *
+   * Example: For a value of 2, the number 3.1415 would be rounded as 3.14.
+   */
+  @property({ type: Number })
+  maxDecimalPlaces?: number;
 
   /**
    * A callback function that is invoked when navigation is stopped.
@@ -390,28 +423,33 @@ export class FerrostarMap extends LitElement {
       </style>
       <div id="container">
         <div id="map">
-          <slot></slot>
+          <!-- Fix names/ids; currently this is a breaking change -->
+          <div id="overlay">
+            ${this.showNavigationUI
+              ? html`
+                  <instructions-view
+                    .tripState=${this.tripState}
+                    .system=${this.system}
+                    .maxDecimalPlaces="${this.maxDecimalPlaces}"
+                  ></instructions-view>
+                  <div id="bottom-component">
+                    <trip-progress-view
+                      .tripState=${this.tripState}
+                      .system=${this.system}
+                      .maxDecimalPlaces="${this.maxDecimalPlaces}"
+                    ></trip-progress-view>
+                    <button
+                      id="stop-button"
+                      @click=${this.handleStopNavigation}
+                      ?hidden=${!this.tripState}
+                    >
+                      <img src=${CloseSvg} alt="Stop navigation" class="icon" />
+                    </button>
+                  </div>
+                `
+              : ""}
+          </div>
         </div>
-
-        ${this.showNavigationUI
-          ? html`
-              <instructions-view
-                .tripState=${this.tripState}
-              ></instructions-view>
-              <div id="bottom-component">
-                <trip-progress-view
-                  .tripState=${this.tripState}
-                ></trip-progress-view>
-                <button
-                  id="stop-button"
-                  @click=${this.handleStopNavigation}
-                  ?hidden=${!this.tripState}
-                >
-                  <img src=${CloseSvg} alt="Stop navigation" class="icon" />
-                </button>
-              </div>
-            `
-          : ""}
       </div>
     `;
   }

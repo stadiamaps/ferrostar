@@ -114,6 +114,8 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         ferrostarCore.profile = "bicycle";
 
         ferrostarMap.map = mapInstance;
+        ferrostarMap.system = "imperial";
+        ferrostarMap.maxDecimalPlaces = 2;
 
         // Create a search control.
         const searchBox = new MapLibreSearchControl({
