@@ -90,7 +90,7 @@ pub enum RecordingError {
     RecordingNotEnabled,
 }
 
-/// A struct that wraps around `NavigationRecording` to provide replay functionality.
+/// A wrapper around `NavigationRecording` to facilitate replaying the event stream.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct NavigationReplay(NavigationRecording);
 
