@@ -54,7 +54,7 @@ pub struct NavigationRecording {
 }
 
 impl NavigationRecording {
-    /// Converts a JSON string slice into an instance of the type implementing this method.
+    /// Deserializes a previously saved navigation recording from a JSON string.
     pub fn from_json(json: &str) -> Self {
         serde_json::from_str(json)
             .map_err(|e| RecordingError::SerializationError {
