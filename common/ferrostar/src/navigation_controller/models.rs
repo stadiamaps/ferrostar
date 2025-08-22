@@ -392,6 +392,7 @@ impl From<NavigationControllerConfig> for SerializableNavigationControllerConfig
     }
 }
 
+/// Represents a navigation recording event which contains a timestamp and associated event data.
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
@@ -421,6 +422,9 @@ impl NavigationRecordingEvent {
     }
 }
 
+/// The event type.
+///
+/// For full replayability, we record things like rerouting, and not just location updates.
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
