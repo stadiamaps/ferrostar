@@ -10,9 +10,7 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::prelude::*;
 
-/// A builder struct used to construct a recording of navigation events.
-/// This struct encapsulates necessary data for initializing and configuring
-/// a navigation recording process.
+/// A builder for serializing a navigation recording.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecordingBuilder {
     pub version: String,
