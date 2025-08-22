@@ -44,7 +44,10 @@ impl NavigationRecordingBuilder {
     }
 }
 
-/// Represents a navigation recording, which consists of a builder containing metadata
+/// A navigation session recording.
+///
+/// Internally this contains the full event stream.
+/// TODO: Hints for how you would typically use / interact with this? You can link to other types (and functions) by the way like [`NavigationReplay`] :)
 /// and a list of navigation events.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecording {
