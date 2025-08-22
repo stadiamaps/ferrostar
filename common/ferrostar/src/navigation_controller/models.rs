@@ -422,9 +422,9 @@ impl NavigationRecordingEvent {
     }
 }
 
-/// The `NavigationRecordingEventData` enum represents different types of events
-/// that occur during a navigation recording process. It holds data related
-/// to state updates, route updates, or errors encountered.
+/// The event type.
+///
+/// For full replayability, we record things like rerouting, and not just location updates.
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
