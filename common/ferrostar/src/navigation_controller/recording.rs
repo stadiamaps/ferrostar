@@ -64,16 +64,7 @@ impl NavigationRecording {
     }
 }
 
-/// Enum `RecordingError` represents the possible errors that can occur during
-/// the recording process in a navigation recording system.
-///
-/// # Variants
-///
-/// - `SerializationError`
-///   Indicates an error occurred during the serialization of a recording.
-///
-/// - `RecordingNotEnabled`
-///   Indicates that recording is not enabled for a specific controller.
+/// A session recording error.
 #[derive(Debug, Serialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
