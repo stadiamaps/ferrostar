@@ -44,7 +44,9 @@ pub trait Navigator: Send + Sync {
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
     /// Attempts to retrieve a recording based on the supplied navigation events.
-    /// Only controllers with recording capabilities should override this implementation.
+    ///
+    /// The default implementation returns an error indicating that recording is not enabled.
+    /// Navigation controllers which support recording can provide their own implementation.
     fn get_recording(
         &self,
         #[allow(unused_variables)] events: Vec<NavigationRecordingEvent>,
