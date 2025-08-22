@@ -96,11 +96,24 @@ impl NavigationReplay {
         Self(NavigationRecording::from_json(json))
     }
 
-    pub fn get_next_event(&self, current_index: u64) -> Option<NavigationRecordingEvent> {
+    pub fn get_event_by_index(&self, current_index: u64) -> Option<NavigationRecordingEvent> {
         match self.0.events.get(current_index as usize) {
             Some(event) => Some(event.clone()),
             None => None,
         }
+    }
+
+    pub fn get_all_events(&self) -> Vec<NavigationRecordingEvent> {
+        self.0.events.clone()
+    }
+
+    pub fn get_total_duration(&self) -> i64 {
+        if self.0.events.is_empty() {
+            return 0;
+        }
+        let first_event = self.0.events.first().unwrap();
+        let last_event = self.0.events.last().unwrap();
+        last_event.timestamp() - first_event.timestamp()
     }
 
     pub fn get_initial_timestamp(&self) -> i64 {
@@ -126,11 +139,23 @@ impl JsNavigationReplay {
         Ok(JsNavigationReplay(NavigationReplay::new(&json)))
     }
 
-    #[wasm_bindgen(js_name = getNextEvent)]
-    pub fn get_next_event(&self, current_index: JsValue) -> Result<JsValue, JsValue> {
+    #[wasm_bindgen(js_name = getEventByIndex)]
+    pub fn get_event_by_index(&self, current_index: JsValue) -> Result<JsValue, JsValue> {
         let current_index: u64 = serde_wasm_bindgen::from_value(current_index)?;
-        let next_event = self.0.get_next_event(current_index);
+        let next_event = self.0.get_event_by_index(current_index);
         serde_wasm_bindgen::to_value(&next_event)
+            .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+
+    #[wasm_bindgen(js_name = getAllEvents)]
+    pub fn get_all_events(&self) -> Result<JsValue, JsValue> {
+        serde_wasm_bindgen::to_value(&self.0.get_all_events())
+            .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
+    }
+
+    #[wasm_bindgen(js_name = getTotalDuration)]
+    pub fn get_total_duration(&self) -> Result<JsValue, JsValue> {
+        serde_wasm_bindgen::to_value(&self.0.get_total_duration())
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
