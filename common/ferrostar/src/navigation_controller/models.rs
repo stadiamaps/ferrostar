@@ -392,7 +392,9 @@ impl From<NavigationControllerConfig> for SerializableNavigationControllerConfig
     }
 }
 
-/// Represents a navigation recording event which contains a timestamp and associated event data.
+/// An event that occurs during navigation.
+///
+/// This is used for the optional session recording / telemetry.
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
@@ -433,10 +435,12 @@ pub enum NavigationRecordingEventData {
         trip_state: TripState,
         step_advance_condition: SerializableStepAdvanceCondition,
     },
+    // TODO: Figure out how to record re-routes.
     RouteUpdate {
         /// Updated route.
         route: Route,
     },
+    // TODO: Figure out how to record errors.
     Error {
         /// Error message.
         error_message: String,

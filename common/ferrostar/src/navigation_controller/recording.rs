@@ -13,10 +13,14 @@ use wasm_bindgen::prelude::*;
 /// A builder for serializing a navigation recording.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecordingBuilder {
-    pub version: String,
-    pub initial_timestamp: i64,
-    pub config: SerializableNavigationControllerConfig,
-    pub initial_route: Route,
+    /// Version of ferrostar used.
+    version: String,
+    /// Initial timestamp of the recording.
+    initial_timestamp: i64,
+    /// Configuration of the navigation controller.
+    config: SerializableNavigationControllerConfig,
+    /// Initial route used during navigation.
+    initial_route: Route,
 }
 
 impl NavigationRecordingBuilder {
@@ -51,6 +55,7 @@ impl NavigationRecordingBuilder {
 pub struct NavigationRecording {
     #[serde(flatten)]
     recording: NavigationRecordingBuilder,
+    /// List of navigation events.
     events: Vec<NavigationRecordingEvent>,
 }
 
@@ -70,11 +75,14 @@ impl NavigationRecording {
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum RecordingError {
+    /// Error during serialization.
     #[cfg_attr(
         feature = "std",
         error("Error serializing navigation recording: {error}.")
     )]
     SerializationError { error: String },
+
+    /// Recording is not enabled for this controller.
     #[cfg_attr(
         feature = "std",
         error("Recording is not enabled for this controller.")
