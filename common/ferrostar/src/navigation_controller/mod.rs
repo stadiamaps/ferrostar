@@ -18,7 +18,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::{NavigationRecordingEvent, TripSummary},
-    navigation_controller::recording::{NavigationRecordingBuilder, RecordingError},
+    navigation_controller::recording::{NavigationRecordingMetadata, RecordingError},
 };
 use chrono::Utc;
 use geo::{
@@ -414,14 +414,14 @@ impl NavigationController {
 /// The recording can be exported as JSON for debugging or testing purposes.
 pub struct RecordingNavigationController {
     pub controller: NavigationController,
-    pub recording: NavigationRecordingBuilder,
+    pub recording: NavigationRecordingMetadata,
 }
 
 impl RecordingNavigationController {
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
         Self {
             controller: NavigationController::new(route.clone(), config.clone()),
-            recording: NavigationRecordingBuilder::new(config, route),
+            recording: NavigationRecordingMetadata::new(config, route),
         }
     }
 }

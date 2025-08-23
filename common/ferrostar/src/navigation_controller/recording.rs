@@ -12,7 +12,7 @@ use wasm_bindgen::prelude::*;
 
 /// A builder for serializing a navigation recording.
 #[derive(Serialize, Deserialize, Clone)]
-pub struct NavigationRecordingBuilder {
+pub struct NavigationRecordingMetadata {
     /// Version of ferrostar used.
     version: String,
     /// Initial timestamp of the recording.
@@ -23,7 +23,7 @@ pub struct NavigationRecordingBuilder {
     initial_route: Route,
 }
 
-impl NavigationRecordingBuilder {
+impl NavigationRecordingMetadata {
     /// Creates a new navigation recorder with route configuration and initial state.
     pub fn new(config: NavigationControllerConfig, initial_route: Route) -> Self {
         Self {
@@ -49,13 +49,12 @@ impl NavigationRecordingBuilder {
 /// A navigation session recording.
 ///
 /// Internally this contains the full event stream.
-/// TODO: Hints for how you would typically use / interact with this? You can link to other types (and functions) by the way like [`NavigationReplay`] :)
-/// and a list of navigation events.
+// TODO: Hints for how you would typically use / interact with this? You can link to other types (and functions) by the way like [`NavigationReplay`] :)  and a list of navigation events.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecording {
     #[serde(flatten)]
-    recording: NavigationRecordingBuilder,
-    /// List of navigation events.
+    recording: NavigationRecordingMetadata,
+    /// List of navigation events in order of occurrence.
     events: Vec<NavigationRecordingEvent>,
 }
 
@@ -100,6 +99,7 @@ impl NavigationReplay {
     }
 
     /// Retrieves the next navigation recording event based on the provided current index.
+    ///
     /// Returns `None`, if there is no next event.
     pub fn get_next_event(&self, current_index: u64) -> Option<NavigationRecordingEvent> {
         match self.0.events.get(current_index as usize) {
@@ -118,6 +118,7 @@ impl NavigationReplay {
 }
 
 /// A WebAssembly-compatible wrapper for `NavigationReplay` that exposes its functionality as a JavaScript object.
+///
 /// This wrapper is required because `NavigationReplay` cannot be directly converted to a JavaScript object
 /// and requires serialization/deserialization of its methods' inputs and outputs.
 #[cfg(feature = "wasm-bindgen")]

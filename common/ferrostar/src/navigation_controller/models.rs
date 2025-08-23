@@ -412,6 +412,8 @@ impl NavigationRecordingEvent {
             event_data,
         }
     }
+
+    /// Create a [`NavigationRecordingEventData::StateUpdate`] event from a [`SerializableNavState`]
     pub fn state_update(serializable_nav_state: SerializableNavState) -> Self {
         Self::new(NavigationRecordingEventData::StateUpdate {
             trip_state: serializable_nav_state.trip_state,
@@ -419,6 +421,7 @@ impl NavigationRecordingEvent {
         })
     }
 
+    // TODO: Use this to record errors.
     pub fn error(error_message: String) -> Self {
         Self::new(NavigationRecordingEventData::Error { error_message })
     }
