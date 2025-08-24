@@ -419,6 +419,10 @@ impl NavigationRecordingEvent {
     pub fn error(error_message: String) -> Self {
         Self::new(NavigationRecordingEventData::Error { error_message })
     }
+
+    pub fn timestamp(&self) -> i64 {
+        self.timestamp
+    }
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug)]

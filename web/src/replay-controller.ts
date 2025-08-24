@@ -12,23 +12,36 @@ import { property, customElement, state } from "lit/decorators.js";
 export class ReplayController extends ReactiveElement implements StateProvider {
   private replay: NavigationReplay;
   private current_event: NavigationRecordingEvent;
-  private current_event_index: number;
-  private current_timestamp: number;
   private route: Route;
-  private allEvents: NavigationRecordingEvent[];
-  private totalDuration: number;
-  
+
+  // Has the replay been started at least once
+  @state()
+  private hasStarted: boolean = false;
+
+  // Is the replay currently playing
   @state()
   private isPlaying: boolean = false;
 
-  @state()
-  private isPaused: boolean = false;
-
+  // Playback speed multiplier (1 = normal speed)
   @state()
   private playbackSpeed: number = 1;
 
+  // Percentage of replay completed (0-100)
   @state()
   private currentProgress: number = 0;
+
+  // Index of the current event being processed
+  @state()
+  private current_event_index: number = 0;
+
+  @state()
+  private prev_timestamp: number = 0;
+
+  @state()
+  private total_duration: number = 0;
+
+  @state()
+  private allEvents: NavigationRecordingEvent[] = [];
 
   @property({ type: Function, attribute: false })
   onNavigationStart?: () => void;
@@ -41,62 +54,101 @@ export class ReplayController extends ReactiveElement implements StateProvider {
 
     this.replay = new NavigationReplay(json_str);
     this.route = this.replay.getInitialRoute();
-    this.current_timestamp = 0;
-    this.current_event_index = 0;
-    this.current_event = null as any;
     this.allEvents = this.replay.getAllEvents();
-    this.totalDuration = this.replay.getTotalDuration();
+    this.current_event = null as any;
+    this.total_duration = this.replay.getTotalDuration();
   }
 
-  async play() {
-    if (this.isPlaying) return;
-    
-    this.isPlaying = true;
-    this.isPaused = false;
+  // Apply delay based on timestamps and playback speed
+  private applyDelay() {
+    const delay = (this.current_event.timestamp - this.prev_timestamp) / this.playbackSpeed;
 
-    if (this.current_event_index === 0 && this.onNavigationStart) {
-      this.onNavigationStart();
-      this.provideRoute(this.route);
-    }
-  }
-
-  pause() {
-    if (this.isPaused) return;
-
-    this.isPaused = true;
-    this.isPlaying = false;
-  
-    // TODO: Write something like if last event, run onNavigationStop
-  }
-
-  setPlaybackSpeed(speed: number) {
-    this.playbackSpeed = speed;
-  }
-
-  private delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, delay));
   }
 
   async startReplay() {
     if (!this.replay) return;
     if (!this.route) return;
-    if (this.onNavigationStart) this.onNavigationStart();
-    this.provideRoute(this.route);
 
-    while (true) {
+    // Only run on first play
+    if (!this.hasStarted) {
+      this.hasStarted = true;
+      if (this.onNavigationStart) this.onNavigationStart();
+      this.provideRoute(this.route);
+    }
+
+    while (this.isPlaying) {
+      // Check if we reached the end of the replay
+      if (this.current_event_index >= this.allEvents.length) {
+        this.stopNavigation();
+        return;
+      }
+
+      // Get the next event
       this.current_event = this.replay.getEventByIndex(this.current_event_index);
-      this.current_event_index++;
-      if (!this.current_event) return;
+      if (!this.current_event) {
+        this.stopNavigation();
+        return;
+      }
 
-
+      // Apply the state if it's a state update
       if ("StateUpdate" in this.current_event.event_data) {
         this.provideState(this.current_event.event_data["StateUpdate"].trip_state);
       }
 
-      await this.delay(this.current_event.timestamp - this.current_timestamp);
+      // Update progress and delay for the next event
+      this.currentProgress = (this.current_event_index / this.allEvents.length) * 100;
+      await this.applyDelay();
 
-      this.current_timestamp = this.current_event.timestamp;
+      // If paused during the delay, break the loop
+      if (!this.isPlaying) {
+        break;
+      }
+
+      this.prev_timestamp = this.current_event.timestamp;
+      this.current_event_index++;
     }
+  }
+
+  async play() {
+    if (this.isPlaying) return;
+
+    this.isPlaying = true;
+    await this.startReplay();
+  }
+
+  pause() {
+    if (!this.isPlaying) return;
+
+    this.isPlaying = false;
+  }
+
+  setPlaybackSpeed(speed: number) {
+    if (speed <= 0) return;
+    this.playbackSpeed = speed;
+  }
+
+  seekToIndex(index: number) {
+    if (index < 0 || index >= this.allEvents.length) return;
+
+    this.current_event_index = index;
+    this.current_event = this.replay.getEventByIndex(this.current_event_index);
+    this.currentProgress = (this.current_event_index / this.allEvents.length) * 100;
+
+    // Provide the state of the current event if it's a state update
+    if (this.current_event && "StateUpdate" in this.current_event.event_data) {
+      this.provideState(this.current_event.event_data["StateUpdate"].trip_state);
+    }
+
+    this.prev_timestamp = this.current_event.timestamp;
+  }
+
+  seekToProgress(progress: number) {
+    if (progress < 0 || progress > 100) return;
+
+    // Calculate the index based on progress
+    const index = Math.floor((progress / 100) * this.allEvents.length);
+    this.seekToIndex(index);
   }
 
   provideState(tripState: TripState) {
@@ -123,8 +175,15 @@ export class ReplayController extends ReactiveElement implements StateProvider {
     this.replay = null as any;
     this.current_event = null as any;
     this.current_event_index = 0;
-    this.current_timestamp = 0;
+    this.prev_timestamp = 0;
     this.route = null as any;
+    this.hasStarted = false;
     if (this.onNavigationStop) this.onNavigationStop();
   }
+
+  // Getters for external access
+  get progress() {return this.currentProgress}
+  get speed() {return this.playbackSpeed}
+  get playing() {return this.isPlaying}
+  get duration() {return this.total_duration}
 }
