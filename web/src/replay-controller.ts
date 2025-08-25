@@ -80,7 +80,7 @@ export class ReplayController extends ReactiveElement implements StateProvider {
     while (this.isPlaying) {
       // Check if we reached the end of the replay
       if (this.current_event_index >= this.allEvents.length) {
-        this.stopNavigation();
+        this.pause();
         return;
       }
 
@@ -185,5 +185,6 @@ export class ReplayController extends ReactiveElement implements StateProvider {
   get progress() {return this.currentProgress}
   get speed() {return this.playbackSpeed}
   get playing() {return this.isPlaying}
+  // Return total duration in ms.
   get duration() {return this.total_duration}
 }

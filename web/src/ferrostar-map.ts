@@ -373,7 +373,7 @@ export class FerrostarMap extends LitElement {
    * Handles the logic for stopping the navigation process. It clears the navigation state,
    * resets the simulation flag, and invokes the optional onStopNavigation callback if provided.
    */
-  private handleStopNavigation() {
+  handleStopNavigation() {
     this.clearNavigation();
     this.showUserMarker = false;
     this.showNavigationUI = false;
