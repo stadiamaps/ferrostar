@@ -61,7 +61,8 @@ export class ReplayController extends ReactiveElement implements StateProvider {
 
   // Apply delay based on timestamps and playback speed
   private applyDelay() {
-    const delay = (this.current_event.timestamp - this.prev_timestamp) / this.playbackSpeed;
+    const delay =
+      (this.current_event.timestamp - this.prev_timestamp) / this.playbackSpeed;
 
     return new Promise((resolve) => setTimeout(resolve, delay));
   }
@@ -85,7 +86,9 @@ export class ReplayController extends ReactiveElement implements StateProvider {
       }
 
       // Get the next event
-      this.current_event = this.replay.getEventByIndex(this.current_event_index);
+      this.current_event = this.replay.getEventByIndex(
+        this.current_event_index,
+      );
       if (!this.current_event) {
         this.stopNavigation();
         return;
@@ -93,11 +96,14 @@ export class ReplayController extends ReactiveElement implements StateProvider {
 
       // Apply the state if it's a state update
       if ("StateUpdate" in this.current_event.event_data) {
-        this.provideState(this.current_event.event_data["StateUpdate"].trip_state);
+        this.provideState(
+          this.current_event.event_data["StateUpdate"].trip_state,
+        );
       }
 
       // Update progress and delay for the next event
-      this.currentProgress = (this.current_event_index / this.allEvents.length) * 100;
+      this.currentProgress =
+        (this.current_event_index / this.allEvents.length) * 100;
       await this.applyDelay();
 
       // If paused during the delay, break the loop
@@ -133,11 +139,14 @@ export class ReplayController extends ReactiveElement implements StateProvider {
 
     this.current_event_index = index;
     this.current_event = this.replay.getEventByIndex(this.current_event_index);
-    this.currentProgress = (this.current_event_index / this.allEvents.length) * 100;
+    this.currentProgress =
+      (this.current_event_index / this.allEvents.length) * 100;
 
     // Provide the state of the current event if it's a state update
     if (this.current_event && "StateUpdate" in this.current_event.event_data) {
-      this.provideState(this.current_event.event_data["StateUpdate"].trip_state);
+      this.provideState(
+        this.current_event.event_data["StateUpdate"].trip_state,
+      );
     }
 
     this.prev_timestamp = this.current_event.timestamp;
@@ -182,9 +191,17 @@ export class ReplayController extends ReactiveElement implements StateProvider {
   }
 
   // Getters for external access
-  get progress() {return this.currentProgress}
-  get speed() {return this.playbackSpeed}
-  get playing() {return this.isPlaying}
+  get progress() {
+    return this.currentProgress;
+  }
+  get speed() {
+    return this.playbackSpeed;
+  }
+  get playing() {
+    return this.isPlaying;
+  }
   // Return total duration in ms.
-  get duration() {return this.total_duration}
+  get duration() {
+    return this.total_duration;
+  }
 }
