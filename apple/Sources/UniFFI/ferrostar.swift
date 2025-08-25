@@ -1390,13 +1390,13 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 
 
 /**
- * A struct that wraps around `NavigationRecording` to provide replay functionality.
+ * A wrapper around `NavigationRecording` to facilitate replaying the event stream.
  */
 public protocol NavigationReplayProtocol: AnyObject, Sendable {
     
 }
 /**
- * A struct that wraps around `NavigationRecording` to provide replay functionality.
+ * A wrapper around `NavigationRecording` to facilitate replaying the event stream.
  */
 open class NavigationReplay: NavigationReplayProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
@@ -1525,7 +1525,9 @@ public protocol NavigatorProtocol: AnyObject, Sendable {
     
     /**
      * Attempts to retrieve a recording based on the supplied navigation events.
-     * Only controllers with recording capabilities should override this implementation.
+     *
+     * The default implementation returns an error indicating that recording is not enabled.
+     * Navigation controllers which support recording can provide their own implementation.
      */
     func getRecording(events: [NavigationRecordingEvent]) throws  -> String
     
@@ -1616,7 +1618,9 @@ open func updateUserLocation(location: UserLocation, state: NavState) -> NavStat
     
     /**
      * Attempts to retrieve a recording based on the supplied navigation events.
-     * Only controllers with recording capabilities should override this implementation.
+     *
+     * The default implementation returns an error indicating that recording is not enabled.
+     * Navigation controllers which support recording can provide their own implementation.
      */
 open func getRecording(events: [NavigationRecordingEvent])throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
@@ -3890,7 +3894,9 @@ public func FfiConverterTypeNavigationControllerConfig_lower(_ value: Navigation
 
 
 /**
- * Represents a navigation recording event which contains a timestamp and associated event data.
+ * An event that occurs during navigation.
+ *
+ * This is used for the optional session recording / telemetry.
  */
 public struct NavigationRecordingEvent {
     /**
@@ -6384,9 +6390,9 @@ extension ModelError: Foundation.LocalizedError {
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * The `NavigationRecordingEventData` enum represents different types of events
- * that occur during a navigation recording process. It holds data related
- * to state updates, route updates, or errors encountered.
+ * The event type.
+ *
+ * For full replayability, we record things like rerouting, and not just location updates.
  */
 
 public enum NavigationRecordingEventData {
@@ -6599,23 +6605,20 @@ extension ParsingError: Foundation.LocalizedError {
 
 
 /**
- * Enum `RecordingError` represents the possible errors that can occur during
- * the recording process in a navigation recording system.
- *
- * # Variants
- *
- * - `SerializationError`
- * Indicates an error occurred during the serialization of a recording.
- *
- * - `RecordingNotEnabled`
- * Indicates that recording is not enabled for a specific controller.
+ * A session recording error.
  */
 public enum RecordingError: Swift.Error {
 
     
     
+    /**
+     * Error during serialization.
+     */
     case SerializationError(error: String
     )
+    /**
+     * Recording is not enabled for this controller.
+     */
     case RecordingNotEnabled
 }
 
@@ -8887,7 +8890,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 30110) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 54398) {
+    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 43587) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {
