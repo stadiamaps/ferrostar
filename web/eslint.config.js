@@ -35,7 +35,7 @@ export default [
       ...wcPlugin.configs.recommended.rules,
       "wc/no-constructor-params": "off",
       "lit/no-template-arrow": "off",
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unused-expressions": "warn",
       "@typescript-eslint/no-unsafe-function-type": "warn",
       "no-undef": "off",
