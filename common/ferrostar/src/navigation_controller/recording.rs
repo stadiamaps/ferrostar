@@ -13,7 +13,7 @@ use wasm_bindgen::prelude::*;
 /// A builder for serializing a navigation recording.
 #[derive(Serialize, Deserialize, Clone)]
 pub struct NavigationRecordingMetadata {
-    /// Version of ferrostar used.
+    /// Version of Ferrostar used.
     version: String,
     /// Initial timestamp of the recording.
     initial_timestamp: i64,
