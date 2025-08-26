@@ -74,6 +74,7 @@ export class ReplayController extends ReactiveElement implements StateProvider {
     // Only run on first play
     if (!this.hasStarted) {
       this.hasStarted = true;
+      this.isPlaying = true;
       if (this.onNavigationStart) this.onNavigationStart();
       this.provideRoute(this.route);
     }
@@ -111,6 +112,7 @@ export class ReplayController extends ReactiveElement implements StateProvider {
         break;
       }
 
+      if (!this.current_event) break;
       this.prev_timestamp = this.current_event.timestamp;
       this.current_event_index++;
     }
