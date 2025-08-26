@@ -5,6 +5,7 @@ import {
   NavigationController,
   RouteAdapter,
   TripState,
+  Route,
 } from "@stadiamaps/ferrostar";
 import { StateProvider } from "./types";
 
@@ -22,12 +23,12 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
   @property({ attribute: false })
   httpClient?: Function = fetch;
 
-  // TODO: type
   @property({ type: Object, attribute: false })
+  // @ts-ignore: We don't have a type/interface for this yet
   locationProvider!: any;
 
-  // TODO: type
   @property({ type: Object, attribute: false })
+  // @ts-ignore: We don't have a type/interface for this yet
   options: object = {};
 
   @state()
@@ -71,7 +72,7 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
     }
   }
 
-  // TODO: type
+  // @ts-ignore: We don't have a type/interface for these yet
   async getRoutes(initialLocation: any, waypoints: any) {
     // Initialize the route adapter
     // (NOTE: currently only supports Valhalla, but working toward expansion)
@@ -100,15 +101,15 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
 
     const responseData = new Uint8Array(await response.arrayBuffer());
     try {
-      return this.routeAdapter.parseResponse(responseData);
+      return this.routeAdapter.parseResponse(responseData) as Route[];
     } catch (e) {
       console.error("Error parsing route response:", e);
       throw e;
     }
   }
 
-  // TODO: types
-  startNavigation(route: any, config: any) {
+  // @ts-ignore: We don't have a type/interface for these yet
+  startNavigation(route: Route, config: any) {
     this.locationProvider.start();
     if (this.onNavigationStart) this.onNavigationStart();
 

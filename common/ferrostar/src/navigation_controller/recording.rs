@@ -96,15 +96,15 @@ impl NavigationReplay {
         Self(NavigationRecording::from_json(json))
     }
 
-    pub fn get_event_by_index(&self, current_index: u64) -> Option<NavigationRecordingEvent> {
+    pub fn get_event_by_index(&self, current_index: u64) -> Option<&NavigationRecordingEvent> {
         match self.0.events.get(current_index as usize) {
-            Some(event) => Some(event.clone()),
+            Some(event) => Some(event),
             None => None,
         }
     }
 
-    pub fn get_all_events(&self) -> Vec<NavigationRecordingEvent> {
-        self.0.events.clone()
+    pub fn get_all_events(&self) -> &[NavigationRecordingEvent] {
+        &self.0.events
     }
 
     pub fn get_total_duration(&self) -> i64 {
@@ -120,8 +120,8 @@ impl NavigationReplay {
         self.0.recording.initial_timestamp
     }
 
-    pub fn get_initial_route(&self) -> Route {
-        self.0.recording.initial_route.clone()
+    pub fn get_initial_route(&self) -> &Route {
+        &self.0.recording.initial_route
     }
 }
 

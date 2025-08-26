@@ -362,7 +362,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
           };
 
           stopBtn.onclick = () => {
-            ferrostarMap.handleStopNavigation();
+            ferrostarMap.stopNavigation();
             if (currentProgressInterval) {
               clearInterval(currentProgressInterval);
               currentProgressInterval = null;
@@ -418,7 +418,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
             }
           };
 
-          replay.play();
+          await replay.play();
         });
 
         const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
