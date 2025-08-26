@@ -420,11 +420,6 @@ impl NavigationRecordingEvent {
             step_advance_condition: serializable_nav_state.step_advance_condition,
         })
     }
-
-    // TODO: Use this to record errors.
-    pub fn error(error_message: String) -> Self {
-        Self::new(NavigationRecordingEventData::Error { error_message })
-    }
 }
 
 /// The event type.
@@ -442,10 +437,5 @@ pub enum NavigationRecordingEventData {
     RouteUpdate {
         /// Updated route.
         route: Route,
-    },
-    // TODO: Figure out how to record errors.
-    Error {
-        /// Error message.
-        error_message: String,
     },
 }

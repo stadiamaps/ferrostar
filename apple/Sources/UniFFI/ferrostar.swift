@@ -6404,11 +6404,6 @@ public enum NavigationRecordingEventData {
          * Updated route.
          */route: Route
     )
-    case error(
-        /**
-         * Error message.
-         */errorMessage: String
-    )
 }
 
 
@@ -6432,9 +6427,6 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         case 2: return .routeUpdate(route: try FfiConverterTypeRoute.read(from: &buf)
         )
         
-        case 3: return .error(errorMessage: try FfiConverterString.read(from: &buf)
-        )
-        
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -6452,11 +6444,6 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         case let .routeUpdate(route):
             writeInt(&buf, Int32(2))
             FfiConverterTypeRoute.write(route, into: &buf)
-            
-        
-        case let .error(errorMessage):
-            writeInt(&buf, Int32(3))
-            FfiConverterString.write(errorMessage, into: &buf)
             
         }
     }
