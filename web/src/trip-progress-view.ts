@@ -16,12 +16,12 @@ export class TripProgressView extends LitElement {
   @property()
   system: DistanceSystem = "metric";
 
-    /**
-     * Specifies the maximum number of digits allowed after the decimal point
-     * when formatting distance. This helps control the precision of fractional values.
-     *
-     * Example: For a value of 2, the number 3.1415 would be rounded as 3.14.
-     */
+  /**
+   * Specifies the maximum number of digits allowed after the decimal point
+   * when formatting distance. This helps control the precision of fractional values.
+   *
+   * Example: For a value of 2, the number 3.1415 would be rounded as 3.14.
+   */
   @property()
   maxDecimalPlaces = 2;
 
