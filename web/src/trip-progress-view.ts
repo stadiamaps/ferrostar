@@ -4,7 +4,7 @@ import {
 } from "@maptimy/platform-formatters";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { formatDistance } from "./util";
+import { formatDistance } from "./formatting";
 
 const DurationFormatter = LocalizedDurationFormatter();
 
@@ -16,6 +16,12 @@ export class TripProgressView extends LitElement {
   @property()
   system: DistanceSystem = "metric";
 
+    /**
+     * Specifies the maximum number of digits allowed after the decimal point
+     * when formatting distance. This helps control the precision of fractional values.
+     *
+     * Example: For a value of 2, the number 3.1415 would be rounded as 3.14.
+     */
   @property()
   maxDecimalPlaces = 2;
 

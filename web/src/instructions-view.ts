@@ -2,7 +2,7 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { DistanceSystem } from "@maptimy/platform-formatters";
 import "./maneuver-image";
-import { formatDistance } from "./util";
+import { formatDistance } from "./formatting";
 
 @customElement("instructions-view")
 export class InstructionsView extends LitElement {
