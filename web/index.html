@@ -264,11 +264,15 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
           mapInstance.removeControl(searchBox);
           // Prevent user from changing shouldRecord during navigation
           shouldRecordCheckbox.disabled = true;
+          simulateNavigationButton.disabled = true;
+          replayButton.disabled = true;
         };
         ferrostarCore.onNavigationStop = () => {
           // Put the search box back when we stop
           mapInstance.addControl(searchBox, "top-left");
           shouldRecordCheckbox.disabled = false;
+          simulateNavigationButton.disabled = false;
+          replayButton.disabled = false;
         };
 
         const simulateNavigationButton = document.getElementById("simulate");
@@ -403,6 +407,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
             shouldRecordCheckbox.disabled = true;
             // Disable the replay button while replaying
             replayButton.disabled = true;
+            simulateNavigationButton.disabled = true;
           };
 
           replay.onNavigationStop = () => {
@@ -410,6 +415,7 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
             mapInstance.addControl(searchBox, "top-left");
             shouldRecordCheckbox.disabled = false;
             replayButton.disabled = false;
+            simulateNavigationButton.disabled = false;
             // Reset the controls
             controls.style.display = "none";
             if (currentProgressInterval) {
