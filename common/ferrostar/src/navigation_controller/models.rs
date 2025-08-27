@@ -392,6 +392,9 @@ impl From<NavigationControllerConfig> for SerializableNavigationControllerConfig
     }
 }
 
+/// An event that occurs during navigation.
+///
+/// This is used for the optional session recording / telemetry.
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
@@ -409,18 +412,19 @@ impl NavigationRecordingEvent {
             event_data,
         }
     }
+
+    /// Create a [`NavigationRecordingEventData::StateUpdate`] event from a [`SerializableNavState`]
     pub fn state_update(serializable_nav_state: SerializableNavState) -> Self {
         Self::new(NavigationRecordingEventData::StateUpdate {
             trip_state: serializable_nav_state.trip_state,
             step_advance_condition: serializable_nav_state.step_advance_condition,
         })
     }
-
-    pub fn error(error_message: String) -> Self {
-        Self::new(NavigationRecordingEventData::Error { error_message })
-    }
 }
 
+/// The event type.
+///
+/// For full replayability, we record things like rerouting, and not just location updates.
 #[derive(Clone, Serialize, Deserialize, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
@@ -429,12 +433,9 @@ pub enum NavigationRecordingEventData {
         trip_state: TripState,
         step_advance_condition: SerializableStepAdvanceCondition,
     },
+    // TODO: Figure out how to record re-routes.
     RouteUpdate {
         /// Updated route.
         route: Route,
-    },
-    Error {
-        /// Error message.
-        error_message: String,
     },
 }

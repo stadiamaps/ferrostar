@@ -1389,9 +1389,15 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 
 
 
+/**
+ * A wrapper around `NavigationRecording` to facilitate replaying the event stream.
+ */
 public protocol NavigationReplayProtocol: AnyObject, Sendable {
     
 }
+/**
+ * A wrapper around `NavigationRecording` to facilitate replaying the event stream.
+ */
 open class NavigationReplay: NavigationReplayProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
@@ -1517,6 +1523,12 @@ public protocol NavigatorProtocol: AnyObject, Sendable {
     
     func updateUserLocation(location: UserLocation, state: NavState)  -> NavState
     
+    /**
+     * Attempts to retrieve a recording based on the supplied navigation events.
+     *
+     * The default implementation returns an error indicating that recording is not enabled.
+     * Navigation controllers which support recording can provide their own implementation.
+     */
     func getRecording(events: [NavigationRecordingEvent]) throws  -> String
     
 }
@@ -1604,6 +1616,12 @@ open func updateUserLocation(location: UserLocation, state: NavState) -> NavStat
 })
 }
     
+    /**
+     * Attempts to retrieve a recording based on the supplied navigation events.
+     *
+     * The default implementation returns an error indicating that recording is not enabled.
+     * Navigation controllers which support recording can provide their own implementation.
+     */
 open func getRecording(events: [NavigationRecordingEvent])throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
     uniffi_ferrostar_fn_method_navigator_get_recording(self.uniffiClonePointer(),
@@ -3875,6 +3893,11 @@ public func FfiConverterTypeNavigationControllerConfig_lower(_ value: Navigation
 }
 
 
+/**
+ * An event that occurs during navigation.
+ *
+ * This is used for the optional session recording / telemetry.
+ */
 public struct NavigationRecordingEvent {
     /**
      * The timestamp of the event in milliseconds since Jan 1, 1970 UTC.
@@ -6366,6 +6389,11 @@ extension ModelError: Foundation.LocalizedError {
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * The event type.
+ *
+ * For full replayability, we record things like rerouting, and not just location updates.
+ */
 
 public enum NavigationRecordingEventData {
     
@@ -6375,11 +6403,6 @@ public enum NavigationRecordingEventData {
         /**
          * Updated route.
          */route: Route
-    )
-    case error(
-        /**
-         * Error message.
-         */errorMessage: String
     )
 }
 
@@ -6404,9 +6427,6 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         case 2: return .routeUpdate(route: try FfiConverterTypeRoute.read(from: &buf)
         )
         
-        case 3: return .error(errorMessage: try FfiConverterString.read(from: &buf)
-        )
-        
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -6424,11 +6444,6 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         case let .routeUpdate(route):
             writeInt(&buf, Int32(2))
             FfiConverterTypeRoute.write(route, into: &buf)
-            
-        
-        case let .error(errorMessage):
-            writeInt(&buf, Int32(3))
-            FfiConverterString.write(errorMessage, into: &buf)
             
         }
     }
@@ -6577,14 +6592,20 @@ extension ParsingError: Foundation.LocalizedError {
 
 
 /**
- * Custom error type for navigation recording operations.
+ * A session recording error.
  */
 public enum RecordingError: Swift.Error {
 
     
     
+    /**
+     * Error during serialization.
+     */
     case SerializationError(error: String
     )
+    /**
+     * Recording is not enabled for this controller.
+     */
     case RecordingNotEnabled
 }
 
@@ -8856,7 +8877,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 30110) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 40180) {
+    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 43587) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {
