@@ -420,6 +420,10 @@ impl NavigationRecordingEvent {
             step_advance_condition: serializable_nav_state.step_advance_condition,
         })
     }
+
+    pub fn timestamp(&self) -> i64 {
+        self.timestamp
+    }
 }
 
 /// The event type.

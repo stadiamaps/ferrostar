@@ -30,7 +30,7 @@
     "pack:core": "wasm-pack pack ../common/ferrostar/pkg",
     "pack:all": "npm run pack:core && npm pack",
     "publish:core": "wasm-pack publish --access public ../common/ferrostar/pkg",
-    "lint": "eslint --cache --ext .js,.ts,.html src --max-warnings 17",
+    "lint": "eslint --cache --ext .js,.ts,.html src --max-warnings 11",
     "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {

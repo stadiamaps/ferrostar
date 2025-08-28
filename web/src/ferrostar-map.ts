@@ -2,7 +2,7 @@ import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import maplibregl, { GeolocateControl, Marker } from "maplibre-gl";
 import CloseSvg from "./assets/directions/close.svg";
-import { TripState } from "@stadiamaps/ferrostar";
+import { Route, TripState } from "@stadiamaps/ferrostar";
 import "./instructions-view";
 import "./trip-progress-view";
 import { StateProvider as StateProvider } from "./types";
@@ -35,7 +35,7 @@ export class FerrostarMap extends LitElement {
   tripState: TripState | null = null;
 
   @property({ type: Object })
-  route: any = null;
+  route: Route | null = null;
 
   /**
    * Determines whether the navigation user interface is displayed.
@@ -360,21 +360,15 @@ export class FerrostarMap extends LitElement {
   }
 
   /**
-   * Clears the current navigation state, including route, user location marker, and navigation-related data.
+   * Stops the navigation process, and clears the navigation state.
+   *
+   * This includes resetting the simulation flag,
+   * and invoking the optional onStopNavigation callback if provided.
    */
-  clearNavigation() {
-    this.clearRoute();
+  stopNavigation() {
     this.clearUserLocationMarker();
     this.route = null;
     this.tripState = null;
-  }
-
-  /**
-   * Handles the logic for stopping the navigation process. It clears the navigation state,
-   * resets the simulation flag, and invokes the optional onStopNavigation callback if provided.
-   */
-  private handleStopNavigation() {
-    this.clearNavigation();
     this.showUserMarker = false;
     this.showNavigationUI = false;
     this.stateProvider = null;
@@ -404,7 +398,7 @@ export class FerrostarMap extends LitElement {
                 ></trip-progress-view>
                 <button
                   id="stop-button"
-                  @click=${this.handleStopNavigation}
+                  @click=${this.stopNavigation}
                   ?hidden=${!this.tripState}
                 >
                   <img src=${CloseSvg} alt="Stop navigation" class="icon" />

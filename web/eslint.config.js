@@ -39,8 +39,13 @@ export default [
       "@typescript-eslint/no-unused-expressions": "warn",
       "@typescript-eslint/no-unsafe-function-type": "warn",
       "no-undef": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
-      "@typescript-eslint/ban-ts-comment": "warn",
+      "@typescript-eslint/ban-ts-comment": [
+        "warn",
+        {
+          "ts-ignore": "allow-with-description",
+          "minimumDescriptionLength": 10,
+        },
+      ],
       "@typescript-eslint/no-unused-vars": [
         "error",
         {

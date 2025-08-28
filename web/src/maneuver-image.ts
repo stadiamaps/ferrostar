@@ -1,12 +1,13 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { VisualInstruction } from "@stadiamaps/ferrostar";
 
 const images = import.meta.glob("./assets/directions/*.svg", { eager: true });
 
 @customElement("maneuver-image")
 export class ManeuverImage extends LitElement {
   @property()
-  visualInstruction: any = null;
+  visualInstruction: VisualInstruction | undefined;
 
   static styles = [
     css`
@@ -18,17 +19,17 @@ export class ManeuverImage extends LitElement {
   ];
 
   getManeuverType() {
-    return this.visualInstruction.primaryContent.maneuverType;
+    return this.visualInstruction?.primaryContent.maneuverType;
   }
 
   getManeuverModifier() {
-    return this.visualInstruction.primaryContent.maneuverModifier;
+    return this.visualInstruction?.primaryContent.maneuverModifier;
   }
 
   getImageUrl() {
-    // @ts-ignore
+    // @ts-expect-error: Unknown type due to meta import (not really an issue).
     return images[
-      `./assets/directions/${this.getManeuverType().replaceAll(" ", "_")}_${this.getManeuverModifier().replaceAll(" ", "_")}.svg`
+      `./assets/directions/${this.getManeuverType()?.replaceAll(" ", "_")}_${this.getManeuverModifier()?.replaceAll(" ", "_")}.svg`
     ].default;
   }
 
