@@ -44,19 +44,6 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost {
     public var body: some View {
         GeometryReader { geometry in
             ZStack {
-                if let speedLimit, let speedLimitStyle {
-                    VStack {
-                        HStack {
-                            Spacer()
-
-                            SpeedLimitView(speedLimit: speedLimit, signageStyle: speedLimitStyle)
-                                .padding()
-                        }
-
-                        Spacer()
-                    }
-                }
-
                 NavigationMapView(
                     styleURL: styleURL,
                     camera: $camera,
@@ -69,6 +56,13 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost {
                     userLayers(navigationState)
                 }
                 .navigationMapViewContentInset(calculatedMapViewInsets(for: geometry))
+
+                if let speedLimit, let speedLimitStyle {
+                    SpeedLimitView(speedLimit: speedLimit, signageStyle: speedLimitStyle)
+                        .scaleEffect(scaleFactor(for: geometry))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        .padding(8)
+                }
             }
         }
     }
@@ -89,6 +83,15 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost {
                 bottom: 16,
                 right: 16
             ))
+        }
+    }
+
+    func scaleFactor(for geometry: GeometryProxy) -> CGFloat {
+        switch geometry.size.width {
+        case 0 ..< 375:
+            0.6
+        default:
+            1.0
         }
     }
 }
