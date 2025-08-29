@@ -7,7 +7,7 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-public struct CarPlayNavigationView: View, SpeedLimitViewHost {
+public struct CarPlayNavigationView: View, SpeedLimitViewHost, CurrentRoadNameViewHost {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -19,6 +19,8 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost {
 
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
+
+    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     public var minimumSafeAreaInsets: EdgeInsets
 
@@ -39,6 +41,7 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost {
         _camera = camera
         self.navigationCamera = navigationCamera
         userLayers = { state in mapContent(state).layers }
+        currentRoadNameView = { AnyView(CurrentRoadNameView(currentRoadName: $0?.currentRoadName)) }
     }
 
     public var body: some View {
@@ -62,6 +65,17 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost {
                         .scaleEffect(scaleFactor(for: geometry))
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                         .padding(8)
+                }
+
+                if let currentRoadNameView {
+                    HStack {
+                        Spacer()
+
+                        currentRoadNameView(navigationState)
+                            .scaleEffect(scaleFactor(for: geometry))
+                            .padding(.trailing, geometry.safeAreaInsets.trailing)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                    }
                 }
             }
         }
