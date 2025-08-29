@@ -8,7 +8,8 @@ import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
 public struct DynamicallyOrientingNavigationView: View,
-    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
+    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, NavigationMapViewConfigurable,
+    CurrentRoadNameViewHost, SpeedLimitViewHost
 {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
@@ -21,6 +22,7 @@ public struct DynamicallyOrientingNavigationView: View,
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+    public var routeLayerOverride: ((NavigationState?) -> any StyleLayerCollection)?
 
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
@@ -28,6 +30,10 @@ public struct DynamicallyOrientingNavigationView: View,
     let isMuted: Bool
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
+
+    public var showMute: Bool = true
+    public var showZoom: Bool = true
+    public var showCentering: Bool = true
 
     public var minimumSafeAreaInsets: EdgeInsets
 
@@ -88,10 +94,11 @@ public struct DynamicallyOrientingNavigationView: View,
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    routeLayerOverride: routeLayerOverride,
                     onStyleLoaded: { _ in
                         camera = navigationCamera
-                    }
-                ) {
+                    },
+                ) { _ in
                     userLayers
                 }
                 .navigationMapViewContentInset(
@@ -144,18 +151,12 @@ public struct DynamicallyOrientingNavigationView: View,
                             currentRoadNameView: currentRoadNameView
                         ),
                         isMuted: isMuted,
-                        showMute: navigationState?.isNavigating == true,
+                        showMute: showMute && navigationState?.isNavigating == true,
                         onMute: onTapMute,
-                        showZoom: true,
+                        showZoom: showZoom,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
-                            if let overviewCamera = navigationState?.routeOverviewCamera {
-                                camera = overviewCamera
-                            }
-                        } : .showRecenter { // TODO: Third case when not navigating!
-                            camera = navigationCamera
-                        },
+                        cameraControlState: cameraControlState(),
                         onTapExit: onTapExit
                     )
                     .innerGrid {
@@ -182,6 +183,20 @@ public struct DynamicallyOrientingNavigationView: View,
             .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         } else {
             mapInsets.dynamic(orientation)(geometry)
+        }
+    }
+
+    func cameraControlState() -> CameraControlState {
+        guard showCentering else {
+            return .hidden
+        }
+
+        return camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+            if let overviewCamera = navigationState?.routeOverviewCamera {
+                camera = overviewCamera
+            }
+        } : .showRecenter { // TODO: Third case when not navigating!
+            camera = navigationCamera
         }
     }
 }

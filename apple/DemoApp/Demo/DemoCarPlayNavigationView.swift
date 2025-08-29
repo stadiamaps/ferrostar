@@ -16,9 +16,9 @@ struct DemoCarPlayNavigationView: View {
             } else {
                 @Bindable var bindableModel = model
                 CarPlayNavigationView(
-                    navigationState: model.coreState,
                     styleURL: AppDefaults.mapStyleURL,
-                    camera: $bindableModel.camera
+                    camera: $bindableModel.camera,
+                    navigationState: model.coreState
                 )
             }
         }

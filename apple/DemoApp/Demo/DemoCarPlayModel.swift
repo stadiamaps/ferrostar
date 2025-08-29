@@ -211,10 +211,7 @@ private extension DemoAppState {
         mapTemplate.automaticallyHidesNavigationBar = false
         mapTemplate.leadingNavigationBarButtons = leadingNavigationBarButtons(mapTemplate)
         mapTemplate.trailingNavigationBarButtons = trailingNavigationBarButtons(mapTemplate)
-        mapTemplate
-            .mapButtons = [CarPlayMapButtons.recenterButton { [self] in
-                model.camera = .automotiveNavigation(pitch: 25)
-            }]
+        mapTemplate.mapButtons = mapButtons()
     }
 
     func mapTemplate(_ mapTemplate: CPMapTemplate, selectedPreviewFor _: CPTrip, using routeChoice: CPRouteChoice) {
@@ -229,5 +226,15 @@ private extension DemoAppState {
 
     func mapTemplateDidCancelNavigation(_ mapTemplate: CPMapTemplate) {
         stop(cancelTrip: true, mapTemplate: mapTemplate)
+    }
+
+    func mapButtons() -> [CPMapButton] {
+        let recenterButton = CPMapButton { [weak self] _ in
+            self?.model.camera = .automotiveNavigation(pitch: 25)
+        }
+        recenterButton.image = UIImage(systemName: "location.north.line.fill")
+
+        // Return the list of map buttons.
+        return [recenterButton]
     }
 }

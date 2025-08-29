@@ -25,9 +25,9 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
     var onTapExit: (() -> Void)?
 
-    let showMute: Bool
-    let isMuted: Bool
-    let onMute: () -> Void
+    var showMute: Bool
+    var isMuted: Bool
+    var onMute: () -> Void
 
     // MARK: Configurable Views
 

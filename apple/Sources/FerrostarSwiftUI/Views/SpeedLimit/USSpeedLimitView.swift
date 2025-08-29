@@ -37,6 +37,7 @@ public struct USStyleSpeedLimitView: View {
                 Text("Speed Limit", bundle: .module)
                     .font(.caption.bold())
                     .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.5)
                     .lineLimit(2)
                     .padding(.horizontal, 2)
 
