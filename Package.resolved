@@ -46,6 +46,15 @@
       }
     },
     {
+      "identity" : "swiftui-dsl",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/maplibre/swiftui-dsl",
+      "state" : {
+        "revision" : "ee6839116d5268347ba17c20499f15d35f9ef7de",
+        "version" : "0.14.0"
+      }
+    },
+    {
       "identity" : "xctest-dynamic-overlay",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
