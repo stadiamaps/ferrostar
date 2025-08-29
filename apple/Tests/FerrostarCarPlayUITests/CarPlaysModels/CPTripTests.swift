@@ -14,16 +14,15 @@ struct CPTripTests {
             geometry: [],
             bbox: .init(sw: .init(lat: 0, lng: 0), ne: .init(lat: 1, lng: 1)),
             distance: 123.4,
-            waypoints: [],
+            waypoints: [
+                Waypoint(coordinate: .init(lat: 0.1, lng: 0.2), kind: .break),
+                Waypoint(coordinate: .init(lat: 0.3, lng: 0.4), kind: .break),
+            ],
             steps: []
         )
 
-        let origin = Waypoint(coordinate: .init(lat: 0.1, lng: 0.2), kind: .break)
-        let destination = Waypoint(coordinate: .init(lat: 0.3, lng: 0.4), kind: .break)
-
         let trip = try CPTrip.fromFerrostar(
             routes: [route],
-            waypoints: [origin, destination],
             distanceFormatter: usaDistanceFormatter,
             durationFormatter: DefaultFormatters.durationFormat
         )

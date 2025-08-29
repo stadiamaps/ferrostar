@@ -8,7 +8,8 @@ import SwiftUI
 
 /// A portrait orientation navigation view that includes the InstructionsView at the top.
 public struct PortraitNavigationView: View,
-    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
+    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, NavigationMapViewConfigurable,
+    CurrentRoadNameViewHost, SpeedLimitViewHost
 {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
@@ -19,6 +20,7 @@ public struct PortraitNavigationView: View,
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+    public var routeLayerOverride: ((NavigationState?) -> any StyleLayerCollection)?
 
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
@@ -26,6 +28,10 @@ public struct PortraitNavigationView: View,
     let isMuted: Bool
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
+
+    public var showMute: Bool = true
+    public var showZoom: Bool = true
+    public var showCentering: Bool = true
 
     public var minimumSafeAreaInsets: EdgeInsets
 
@@ -88,10 +94,11 @@ public struct PortraitNavigationView: View,
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    routeLayerOverride: routeLayerOverride,
                     onStyleLoaded: { _ in
                         camera = navigationCamera
-                    }
-                ) {
+                    },
+                ) { _ in
                     userLayers
                 }
                 .navigationMapViewContentInset(

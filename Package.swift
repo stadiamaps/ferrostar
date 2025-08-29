@@ -5,8 +5,8 @@ import PackageDescription
 
 let binaryTarget: Target
 let maplibreSwiftUIDSLPackage: Package.Dependency
-let useLocalFramework = false
-let useLocalMapLibreSwiftUIDSL = false
+let useLocalFramework = true
+let useLocalMapLibreSwiftUIDSL = true
 
 if useLocalFramework {
     binaryTarget = .binaryTarget(
