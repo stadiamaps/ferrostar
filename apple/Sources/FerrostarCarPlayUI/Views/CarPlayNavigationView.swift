@@ -7,7 +7,7 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-public struct CarPlayNavigationView: View, SpeedLimitViewHost, CurrentRoadNameViewHost {
+public struct CarPlayNavigationView: View, SpeedLimitViewHost, CurrentRoadNameViewHost, NavigationMapViewConfigurable {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
     let styleURL: URL
@@ -21,7 +21,9 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost, CurrentRoadNameVi
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
     public var currentRoadNameView: ((NavigationState?) -> AnyView)?
+    public var routeLayerOverride: ((NavigationState?) -> any StyleLayerCollection)?
 
+    public var mapInsets: NavigationMapViewContentInsetBundle
     public var minimumSafeAreaInsets: EdgeInsets
 
     // MARK: Configurable Views
@@ -42,6 +44,7 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost, CurrentRoadNameVi
         self.navigationCamera = navigationCamera
         userLayers = { state in mapContent(state).layers }
         currentRoadNameView = { AnyView(CurrentRoadNameView(currentRoadName: $0?.currentRoadName)) }
+        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -52,10 +55,11 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost, CurrentRoadNameVi
                     camera: $camera,
                     navigationState: navigationState,
                     activity: .carplay,
+                    routeLayerOverride: routeLayerOverride,
                     onStyleLoaded: { _ in
                         camera = navigationCamera
                     }
-                ) {
+                ) { _ in
                     userLayers(navigationState)
                 }
                 .navigationMapViewContentInset(calculatedMapViewInsets(for: geometry))

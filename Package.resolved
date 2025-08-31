@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "c058a28015c1fcb733edae754b09ee9cb8c1984b",
-        "version" : "6.18.0"
+        "revision" : "52421bf02a8b47a179ed11553e80aa400913e55e",
+        "version" : "6.18.1"
       }
     },
     {
@@ -43,15 +43,6 @@
       "state" : {
         "revision" : "0687f71944021d616d34d922343dcef086855920",
         "version" : "600.0.1"
-      }
-    },
-    {
-      "identity" : "swiftui-dsl",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/maplibre/swiftui-dsl",
-      "state" : {
-        "revision" : "ee6839116d5268347ba17c20499f15d35f9ef7de",
-        "version" : "0.14.0"
       }
     },
     {
