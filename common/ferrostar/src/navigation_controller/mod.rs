@@ -18,7 +18,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::{NavigationRecordingEvent, TripSummary},
-    navigation_controller::recording::{NavigationRecordingBuilder, RecordingError},
+    navigation_controller::recording::{NavigationRecordingMetadata, RecordingError},
 };
 use chrono::Utc;
 use geo::{
@@ -43,6 +43,10 @@ pub trait Navigator: Send + Sync {
     fn get_initial_state(&self, location: UserLocation) -> NavState;
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
+    /// Attempts to retrieve a recording based on the supplied navigation events.
+    ///
+    /// The default implementation returns an error indicating that recording is not enabled.
+    /// Navigation controllers which support recording can provide their own implementation.
     fn get_recording(
         &self,
         #[allow(unused_variables)] events: Vec<NavigationRecordingEvent>,
@@ -410,14 +414,14 @@ impl NavigationController {
 /// The recording can be exported as JSON for debugging or testing purposes.
 pub struct RecordingNavigationController {
     pub controller: NavigationController,
-    pub recording: NavigationRecordingBuilder,
+    pub recording: NavigationRecordingMetadata,
 }
 
 impl RecordingNavigationController {
     pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
         Self {
             controller: NavigationController::new(route.clone(), config.clone()),
-            recording: NavigationRecordingBuilder::new(config, route),
+            recording: NavigationRecordingMetadata::new(config, route),
         }
     }
 }
@@ -455,6 +459,8 @@ impl Navigator for RecordingNavigationController {
 }
 
 /// JavaScript wrapper for `NavigationController`.
+/// This wrapper is required because `NavigationController` cannot be directly converted to a JavaScript object
+/// and requires serialization/deserialization of its methods' inputs and outputs.
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = NavigationController)]
 pub struct JsNavigationController(Arc<dyn Navigator>);
@@ -512,6 +518,7 @@ impl JsNavigationController {
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
 
+    #[wasm_bindgen(js_name = getRecording)]
     pub fn get_recording(&self, events: JsValue) -> Result<JsValue, JsValue> {
         let events: Vec<NavigationRecordingEvent> = serde_wasm_bindgen::from_value(events)?;
         let recording = self.0.get_recording(events);

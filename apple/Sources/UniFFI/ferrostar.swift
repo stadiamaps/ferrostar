@@ -1390,6 +1390,125 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 
 
 /**
+ * A wrapper around `NavigationRecording` to facilitate replaying the event stream.
+ */
+public protocol NavigationReplayProtocol: AnyObject, Sendable {
+    
+}
+/**
+ * A wrapper around `NavigationRecording` to facilitate replaying the event stream.
+ */
+open class NavigationReplay: NavigationReplayProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_navigationreplay(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_navigationreplay(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigationReplay: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = NavigationReplay
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationReplay {
+        return NavigationReplay(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: NavigationReplay) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationReplay {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: NavigationReplay, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationReplay_lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationReplay {
+    return try FfiConverterTypeNavigationReplay.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationReplay_lower(_ value: NavigationReplay) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeNavigationReplay.lower(value)
+}
+
+
+
+
+
+
+/**
  * Core interface for navigation functionalities.
  *
  * This trait defines the essential operations for a navigation state manager.
@@ -1404,6 +1523,12 @@ public protocol NavigatorProtocol: AnyObject, Sendable {
     
     func updateUserLocation(location: UserLocation, state: NavState)  -> NavState
     
+    /**
+     * Attempts to retrieve a recording based on the supplied navigation events.
+     *
+     * The default implementation returns an error indicating that recording is not enabled.
+     * Navigation controllers which support recording can provide their own implementation.
+     */
     func getRecording(events: [NavigationRecordingEvent]) throws  -> String
     
 }
@@ -1491,6 +1616,12 @@ open func updateUserLocation(location: UserLocation, state: NavState) -> NavStat
 })
 }
     
+    /**
+     * Attempts to retrieve a recording based on the supplied navigation events.
+     *
+     * The default implementation returns an error indicating that recording is not enabled.
+     * Navigation controllers which support recording can provide their own implementation.
+     */
 open func getRecording(events: [NavigationRecordingEvent])throws  -> String  {
     return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
     uniffi_ferrostar_fn_method_navigator_get_recording(self.uniffiClonePointer(),
@@ -3762,6 +3893,11 @@ public func FfiConverterTypeNavigationControllerConfig_lower(_ value: Navigation
 }
 
 
+/**
+ * An event that occurs during navigation.
+ *
+ * This is used for the optional session recording / telemetry.
+ */
 public struct NavigationRecordingEvent {
     /**
      * The timestamp of the event in milliseconds since Jan 1, 1970 UTC.
@@ -6253,6 +6389,11 @@ extension ModelError: Foundation.LocalizedError {
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * The event type.
+ *
+ * For full replayability, we record things like rerouting, and not just location updates.
+ */
 
 public enum NavigationRecordingEventData {
     
@@ -6262,11 +6403,6 @@ public enum NavigationRecordingEventData {
         /**
          * Updated route.
          */route: Route
-    )
-    case error(
-        /**
-         * Error message.
-         */errorMessage: String
     )
 }
 
@@ -6291,9 +6427,6 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         case 2: return .routeUpdate(route: try FfiConverterTypeRoute.read(from: &buf)
         )
         
-        case 3: return .error(errorMessage: try FfiConverterString.read(from: &buf)
-        )
-        
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -6311,11 +6444,6 @@ public struct FfiConverterTypeNavigationRecordingEventData: FfiConverterRustBuff
         case let .routeUpdate(route):
             writeInt(&buf, Int32(2))
             FfiConverterTypeRoute.write(route, into: &buf)
-            
-        
-        case let .error(errorMessage):
-            writeInt(&buf, Int32(3))
-            FfiConverterString.write(errorMessage, into: &buf)
             
         }
     }
@@ -6464,14 +6592,20 @@ extension ParsingError: Foundation.LocalizedError {
 
 
 /**
- * Custom error type for navigation recording operations.
+ * A session recording error.
  */
 public enum RecordingError: Swift.Error {
 
     
     
+    /**
+     * Error during serialization.
+     */
     case SerializationError(error: String
     )
+    /**
+     * Recording is not enabled for this controller.
+     */
     case RecordingNotEnabled
 }
 
@@ -8743,7 +8877,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 30110) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 40180) {
+    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 43587) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {

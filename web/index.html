@@ -14,6 +14,8 @@
       rel="stylesheet"
     />
 
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
     <style>
       .map-container {
         position: relative;
@@ -29,12 +31,84 @@
       #ferrostar {
         position: absolute;
       }
+
+      .replay-controls {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        display: none;
+        align-items: center;
+        gap: 15px;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        min-width: 500px;
+      }
+
+      .replay-controls.show {
+        display: flex;
+      }
+
+      .control-btn {
+        background: #555;
+        border: none;
+        color: white;
+        padding: 8px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        transition: background 0.2s ease;
+      }
+
+      .control-btn:hover {
+        background: #666;
+      }
+
+      #speedSelect {
+        background: #555;
+        border: 1px solid #666;
+        color: white;
+        padding: 6px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        min-width: 60px;
+      }
+
+      #speedSelect:hover {
+        background: #666;
+      }
+
+      #progressSlider {
+        flex: 1;
+        height: 6px;
+        accent-color: #4caf50;
+        cursor: pointer;
+      }
+
+      #timeDisplay {
+        font-size: 12px;
+        color: #ccc;
+        font-family: monospace;
+        min-width: 90px;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <p>
       Search and select a destination, or
-      <button id="simulate">Simulate Navigation</button>
+      <button id="simulate">Simulate Navigation</button> or
+      <button id="replay">Replay Navigation</button>
+      <input type="file" id="replayFile" style="display: none" />
     </p>
 
     <p style="margin-top: 0">
@@ -44,29 +118,50 @@
       <label for="shouldRecord">Record</label>
     </p>
 
+    <div id="replayControls" class="replay-controls" style="display: none">
+      <button id="playPauseBtn" class="control-btn">
+        <i data-lucide="play"></i>
+      </button>
+      <button id="stopBtn" class="control-btn">
+        <i data-lucide="square"></i>
+      </button>
+      <select id="speedSelect">
+        <option value="0.5">0.5x</option>
+        <option value="1" selected>1x</option>
+        <option value="2">2x</option>
+        <option value="4">4x</option>
+      </select>
+      <input
+        type="range"
+        id="progressSlider"
+        min="0"
+        max="100"
+        value="0"
+        step="0.1"
+      />
+      <span id="timeDisplay">0:00 / 0:00</span>
+    </div>
+
     <!--
 This should not require any API key if run via `npm run dev`.
 Learn how to get a free prod API key here: https://docs.stadiamaps.com/authentication/.
 See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap vendors.
 -->
     <div class="map-container">
-      <ferrostar-map
-        id="ferrostar"
-        valhallaEndpointUrl="https://api.stadiamaps.com/route/v1"
-        styleUrl="https://tiles.stadiamaps.com/styles/outdoors.json"
-        profile="bicycle"
-      ></ferrostar-map>
+      <ferrostar-map id="ferrostar"></ferrostar-map>
       <div class="map-element" id="mapElement"></div>
     </div>
 
     <script type="module">
       import {
         FerrostarMap,
+        FerrostarCore,
         SimulatedLocationProvider,
         BrowserLocationProvider,
       } from "@stadiamaps/ferrostar-webcomponents";
       import mapLibreGL from "maplibre-gl";
       import { MapLibreSearchControl } from "@stadiamaps/maplibre-search-box";
+      import { ReplayController } from "./src/replay-controller.js";
 
       // TODO: type + use TypeScript enum
       const config = {
@@ -108,8 +203,13 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
         });
 
         // Get a reference to the Ferrostar map component
-        const ferrostar = document.getElementById("ferrostar");
-        ferrostar.map = mapInstance;
+        const ferrostarMap = document.getElementById("ferrostar");
+        let ferrostarCore = new FerrostarCore();
+        ferrostarCore.valhallaEndpointUrl =
+          "https://api.stadiamaps.com/route/v1";
+        ferrostarCore.profile = "bicycle";
+
+        ferrostarMap.map = mapInstance;
 
         // Create a search control.
         const searchBox = new MapLibreSearchControl({
@@ -124,31 +224,34 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
 
             // FIXME: This is a hack basically to support the demo page that should go away.
             if (
-              !ferrostar.locationProvider ||
-              ferrostar.locationProvider instanceof SimulatedLocationProvider
+              !ferrostarCore.locationProvider ||
+              ferrostarCore.locationProvider instanceof
+                SimulatedLocationProvider
             ) {
-              ferrostar.locationProvider = new BrowserLocationProvider();
+              ferrostarCore.locationProvider = new BrowserLocationProvider();
             }
 
             // Fetch the user's current location.
             // If we have a cached one that's no older than 30 seconds,
             // skip waiting for an update and use the slightly stale location.
             const location =
-              await ferrostar.locationProvider.getCurrentLocation(30_000);
+              await ferrostarCore.locationProvider.getCurrentLocation(30_000);
 
             // Use the acquired user location to request the route
-            const routes = await ferrostar.getRoutes(location, waypoints);
+            const routes = await ferrostarCore.getRoutes(location, waypoints);
             const route = routes[0];
+            ferrostarMap.route = route;
+            ferrostarMap.linkWith(ferrostarCore);
 
             // Start the navigation
-            ferrostar.startNavigation(route, config);
+            ferrostarCore.startNavigation(route, config);
           },
         });
 
-        ferrostar.options = {
+        ferrostarCore.options = {
           costing_options: { bicycle: { use_roads: 0.2 } },
         };
-        ferrostar.geolocateOnLoad = false;
+        ferrostarMap.geolocateOnLoad = false;
 
         const shouldRecordCheckbox = document.getElementById("shouldRecord");
 
@@ -156,22 +259,26 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
           // Post-first-load configuration
           mapInstance.addControl(searchBox, "top-left");
         });
-        ferrostar.onNavigationStart = (map) => {
+        ferrostarCore.onNavigationStart = () => {
           // Remove our search box when navigation starts
-          map.removeControl(searchBox);
+          mapInstance.removeControl(searchBox);
           // Prevent user from changing shouldRecord during navigation
           shouldRecordCheckbox.disabled = true;
+          simulateNavigationButton.disabled = true;
+          replayButton.disabled = true;
         };
-        ferrostar.onNavigationStop = (map) => {
+        ferrostarCore.onNavigationStop = () => {
           // Put the search box back when we stop
-          map.addControl(searchBox, "top-left");
+          mapInstance.addControl(searchBox, "top-left");
           shouldRecordCheckbox.disabled = false;
+          simulateNavigationButton.disabled = false;
+          replayButton.disabled = false;
         };
 
         const simulateNavigationButton = document.getElementById("simulate");
 
         shouldRecordCheckbox.addEventListener("change", (event) => {
-          ferrostar.should_record = event.target.checked;
+          ferrostarCore.shouldRecord = event.target.checked;
         });
 
         // Button to start simulated navigation
@@ -190,11 +297,12 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
           ];
 
           // Request the route
-          const routes = await ferrostar.getRoutes(
+          const routes = await ferrostarCore.getRoutes(
             initialSimulatedLocation,
             simulatedWaypoints,
           );
           const route = routes[0];
+          ferrostarMap.route = route;
 
           // Set the simulated location provider
           const locationProvider = new SimulatedLocationProvider();
@@ -203,13 +311,126 @@ See https://stadiamaps.github.io/ferrostar/vendors.html for more info on basemap
           locationProvider.setSimulatedRoute(route);
 
           // Start the navigation
-          ferrostar.locationProvider = locationProvider;
-          ferrostar.startNavigation(route, config);
+          ferrostarMap.linkWith(ferrostarCore, true);
+          ferrostarCore.locationProvider = locationProvider;
+          ferrostarCore.startNavigation(route, config);
+        });
+
+        const replayButton = document.getElementById("replay");
+        const replayFile = document.getElementById("replayFile");
+
+        replayButton.addEventListener("click", () => {
+          replayFile.click();
+        });
+
+        let currentProgressInterval = null;
+
+        replayFile.addEventListener("change", async () => {
+          const file = replayFile.files?.[0];
+          if (!file) return;
+
+          if (currentProgressInterval) {
+            clearInterval(currentProgressInterval);
+            currentProgressInterval = null;
+          }
+
+          const json = await file.text();
+          let replay = new ReplayController(json);
+          ferrostarMap.linkWith(replay, true);
+          ferrostarMap.showNavigationUI = false;
+
+          const controls = document.getElementById("replayControls");
+          const slider = document.getElementById("progressSlider");
+          const playBtn = document.getElementById("playPauseBtn");
+          const stopBtn = document.getElementById("stopBtn");
+          const speedSelect = document.getElementById("speedSelect");
+          const timeDisplay = document.getElementById("timeDisplay");
+
+          // Reset controls
+          slider.value = 0;
+          speedSelect.value = "1";
+          playBtn.innerHTML = '<i data-lucide="pause"></i>';
+
+          controls.style.display = "flex";
+          lucide.createIcons();
+
+          playBtn.onclick = () => {
+            if (replay.playing) {
+              replay.pause();
+              playBtn.innerHTML = '<i data-lucide="play"></i>';
+            } else {
+              replay.play();
+              playBtn.innerHTML = '<i data-lucide="pause"></i>';
+            }
+            lucide.createIcons();
+          };
+
+          stopBtn.onclick = () => {
+            ferrostarMap.stopNavigation();
+            if (currentProgressInterval) {
+              clearInterval(currentProgressInterval);
+              currentProgressInterval = null;
+            }
+          };
+          speedSelect.onchange = (e) =>
+            replay.setPlaybackSpeed(parseFloat(e.target.value));
+          slider.oninput = (e) =>
+            replay.seekToProgress(parseFloat(e.target.value));
+
+          currentProgressInterval = setInterval(() => {
+            if (replay.playing) {
+              slider.value = replay.progress;
+              const current = (replay.progress / 100) * replay.duration;
+              const timeRemaining = `${Math.floor(current / 60000)}:${Math.floor(
+                (current / 1000) % 60,
+              )
+                .toString()
+                .padStart(2, "0")}`;
+              const totalTime = `${Math.floor(replay.duration / 60000)}:${Math.floor(
+                (replay.duration / 1000) % 60,
+              )
+                .toString()
+                .padStart(2, "0")}`;
+              timeDisplay.textContent = `${timeRemaining} / ${totalTime}`;
+            } else {
+              if (currentProgressInterval) {
+                clearInterval(currentProgressInterval);
+                currentProgressInterval = null;
+              }
+            }
+          }, 100);
+
+          replay.onNavigationStart = () => {
+            // Remove our search box when navigation starts
+            mapInstance.removeControl(searchBox);
+            // Prevent user from changing shouldRecord during navigation
+            shouldRecordCheckbox.disabled = true;
+            // Disable the replay button while replaying
+            replayButton.disabled = true;
+            simulateNavigationButton.disabled = true;
+          };
+
+          replay.onNavigationStop = () => {
+            // Put the search box back when we stop
+            mapInstance.addControl(searchBox, "top-left");
+            shouldRecordCheckbox.disabled = false;
+            replayButton.disabled = false;
+            simulateNavigationButton.disabled = false;
+            // Reset the controls
+            controls.style.display = "none";
+            if (currentProgressInterval) {
+              clearInterval(currentProgressInterval);
+              currentProgressInterval = null;
+            }
+          };
+
+          await replay.play();
+          replayFile.value = "";
         });
 
         const voiceGuidanceCheckbox = document.getElementById("voiceGuidance");
         voiceGuidanceCheckbox.addEventListener("change", (event) => {
-          ferrostar.useVoiceGuidance = event.target.checked;
+          ferrostarCore.useVoiceGuidance = event.target.checked;
         });
       }
 

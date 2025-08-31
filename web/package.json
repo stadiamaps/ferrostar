@@ -6,7 +6,7 @@
     "CatMe0w <CatMe0w@live.cn> (https://github.com/CatMe0w)",
     "Luke Seelenbinder <luke@stadiamaps.com>"
   ],
-  "version": "0.39.0",
+  "version": "0.40.0",
   "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/ferrostar-webcomponents.js",
@@ -30,8 +30,8 @@
     "pack:core": "wasm-pack pack ../common/ferrostar/pkg",
     "pack:all": "npm run pack:core && npm pack",
     "publish:core": "wasm-pack publish --access public ../common/ferrostar/pkg",
-    "lint": "eslint --cache --ext .js,.ts,.html src",
-    "lint:fix": "eslint --cache --ext .js,.ts,.html src --fix"
+    "lint": "eslint --cache --ext .js,.ts,.html src --max-warnings 11",
+    "lint:fix": "npm run lint -- --fix"
   },
   "dependencies": {
     "@maptimy/platform-formatters": "^0.6.0",
