@@ -119,7 +119,7 @@ public struct LandscapeNavigationView: View,
                     showZoom: showZoom,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
-                    cameraControlState: cameraConrolState(),
+                    cameraControlState: cameraControlState(),
                     onTapExit: onTapExit
                 )
                 .innerGrid {
@@ -144,7 +144,7 @@ public struct LandscapeNavigationView: View,
         }
     }
 
-    func cameraConrolState() -> CameraControlState {
+    func cameraControlState() -> CameraControlState {
         guard showCentering else {
             return .hidden
         }
