@@ -46,6 +46,15 @@
       }
     },
     {
+      "identity" : "swiftui-dsl",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Rallista/swiftui-dsl",
+      "state" : {
+        "branch" : "feat/some-stylelayercollection",
+        "revision" : "bf79afa0c194120be336ac89cc3c1141dc94f6d0"
+      }
+    },
+    {
       "identity" : "xctest-dynamic-overlay",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",

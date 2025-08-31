@@ -30,8 +30,8 @@ if useLocalMapLibreSwiftUIDSL {
     maplibreSwiftUIDSLPackage = .package(path: "../swiftui-dsl")
 } else {
     maplibreSwiftUIDSLPackage = .package(
-        url: "https://github.com/maplibre/swiftui-dsl",
-        branch: "Rallista:feat/some-stylelayercollection"
+        url: "https://github.com/Rallista/swiftui-dsl",
+        branch: "feat/some-stylelayercollection"
     )
 }
 
