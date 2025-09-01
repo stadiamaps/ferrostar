@@ -12,8 +12,8 @@ export function formatDistance(
 ): string {
   const THRESHOLDS: Record<DistanceSystem, number> = {
     metric: 1000,
-    imperial: 1609.34,           // 1 mile
-    imperialWithYards: 1609.34,  // 1 mile
+    imperial: 1609.34, // 1 mile
+    imperialWithYards: 1609.34, // 1 mile
   };
 
   const exceedsThreshold = distanceMeters > THRESHOLDS[system];
