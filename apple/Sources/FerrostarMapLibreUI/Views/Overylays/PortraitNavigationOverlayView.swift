@@ -34,6 +34,7 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
+    var bottomLeading: (() -> AnyView)?
     var bottomTrailing: (() -> AnyView)?
 
     var progressView: (NavigationState?, (() -> Void)?) -> AnyView
@@ -97,6 +98,8 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                     topTrailing?()
                 } midLeading: {
                     midLeading?()
+                } bottomLeading: {
+                    bottomLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
                 }

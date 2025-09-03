@@ -9,7 +9,11 @@ import MapLibreSwiftUI
 @MainActor
 private extension CPBarButton {
     convenience init(appState: DemoAppState, model: DemoCarPlayModel, mapTemplate: CPMapTemplate) {
-        self.init(title: appState.buttonText, handler: appState.handler(model, mapTemplate: mapTemplate))
+        // TODO: Correct this once destination selection works on CarPlay
+        self.init(
+            title: appState.buttonText ?? "Show Preview",
+            handler: appState.handler(model, mapTemplate: mapTemplate)
+        )
     }
 
     convenience init(model: DemoCarPlayModel, mapTemplate: CPMapTemplate) {
@@ -25,11 +29,13 @@ private extension DemoAppState {
             switch self {
             case .idle:
                 model.chooseDestination(mapTemplate)
-            case let .destination(coordinate):
-                Task {
-                    await model.loadRoute(coordinate, mapTemplate)
-                }
             case let .routes(routes):
+                // TODO: Revise this to only work with 1 route returned once/if route selection is added to demo.
+                if let route = routes.first {
+                    model.startNavigationSession(route, mapTemplate: mapTemplate)
+                    return
+                }
+
                 model.preview(routes, mapTemplate: mapTemplate)
             case let .selectedRoute(route):
                 model.startNavigationSession(route, mapTemplate: mapTemplate)
@@ -41,7 +47,7 @@ private extension DemoAppState {
 
     var leadingNavigationBarButtonsEmpty: Bool {
         switch self {
-        case .idle, .destination, .routes:
+        case .idle, .routes:
             false
         case .selectedRoute, .navigating:
             true
@@ -52,7 +58,7 @@ private extension DemoAppState {
         switch self {
         case .idle:
             true
-        case .destination, .routes, .selectedRoute, .navigating:
+        case .routes, .selectedRoute, .navigating:
             false
         }
     }
@@ -98,15 +104,32 @@ private extension DemoAppState {
         }
     }
 
-    func chooseDestination(_ mapTemplate: CPMapTemplate) {
-        model.chooseDestination()
-        updateTemplate(mapTemplate)
+    var speedLimit: Measurement<UnitSpeed>? {
+        model.core.annotation?.speedLimit
     }
 
-    func loadRoute(_ destination: CLLocationCoordinate2D, _ mapTemplate: CPMapTemplate) async {
-        await model.loadRoute(destination)
-        updateTemplate(mapTemplate)
+    func chooseDestination(_ mapTemplate: CPMapTemplate) {
+        // TODO: Replace with CarPlay destination chooser.
+        mapTemplate.present(
+            navigationAlert: .init(titleVariants: ["Choose A Destination"],
+                                   subtitleVariants: ["This is currently only possible using the iOS screen."],
+                                   image: nil,
+                                   primaryAction: .init(title: "Refresh", color: .orange, handler: { _ in
+                                       Task { @MainActor in
+                                           self.updateTemplate(mapTemplate)
+                                           await mapTemplate.dismissNavigationAlert(animated: true)
+                                       }
+                                   }),
+                                   secondaryAction: nil,
+                                   duration: .infinity),
+            animated: true
+        )
     }
+
+//    func loadRoute(_ destination: CLLocationCoordinate2D, _ mapTemplate: CPMapTemplate) async {
+//        await model.loadRoute(destination)
+//        updateTemplate(mapTemplate)
+//    }
 
     func stop(cancelTrip: Bool, mapTemplate: CPMapTemplate?) {
         if cancelTrip {

@@ -1,10 +1,11 @@
 import FerrostarCarPlayUI
 import FerrostarCore
+import FerrostarMapLibreUI
 import MapLibreSwiftUI
 import SwiftUI
 
 struct DemoCarPlayNavigationView: View {
-    @State var model: DemoCarPlayModel
+    @Bindable var model: DemoCarPlayModel
 
     var body: some View {
         ZStack {
@@ -14,11 +15,20 @@ struct DemoCarPlayNavigationView: View {
                     description: Text("error navigating.")
                 )
             } else {
-                @Bindable var bindableModel = model
                 CarPlayNavigationView(
                     styleURL: AppDefaults.mapStyleURL,
-                    camera: $bindableModel.camera,
+                    camera: $model.camera,
                     navigationState: model.coreState
+                ) { _ in
+                    if case let .routes(routes: routes) = model.appState {
+                        for (idx, route) in routes.enumerated() {
+                            RouteStyleLayer(polyline: route.polyline, identifier: "route-\(idx)")
+                        }
+                    }
+                }
+                .navigationSpeedLimit(
+                    speedLimit: model.speedLimit,
+                    speedLimitStyle: .mutcdStyle
                 )
             }
         }

@@ -5,6 +5,13 @@ import CoreLocation
 import FerrostarSwiftUI
 import Foundation
 import MapLibreSwiftUI
+import StadiaMaps
+
+private extension Point {
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: coordinates[1], longitude: coordinates[0])
+    }
+}
 
 private extension MapViewCamera {
     static func currentLocationCamera(locationProvider: LocationProviding) -> MapViewCamera {
@@ -78,11 +85,23 @@ extension DemoModel {
 @MainActor
 @Observable final class DemoModel {
     var errorMessage: String?
-    var appState: DemoAppState = .idle
+    var appState: DemoAppState = .idle {
+        didSet {
+            print("APP STATE IS: \(appState)")
+        }
+    }
+
     let locationProvider: SwitchableLocationProvider
     let core: FerrostarCore
+
+    var lastLocation: CLLocation? {
+        guard let lastCoordinate else { return nil }
+        return CLLocation(latitude: lastCoordinate.latitude, longitude: lastCoordinate.longitude)
+    }
+
     var origin: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
     var destination: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
+
     var selectedRoute: Route?
     var camera: MapViewCamera
 
@@ -165,19 +184,25 @@ extension DemoModel {
         }
     }
 
-    func chooseDestination() {
-        wrap {
-            try appState.setDestination(destination)
-        }
-    }
+    func updateDestination(to point: Point) {
+        Task {
+            await wrap {
+                guard let lastCoordinate else { throw DemoError.noOrigin }
 
-    func loadRoute(_ destination: CLLocationCoordinate2D) async {
-        await wrap {
-            guard let lastCoordinate else { throw DemoError.noOrigin }
-            origin = lastCoordinate
-            let routes = try await routes(from: origin, to: destination)
-            guard !routes.isEmpty else { throw DemoError.noRoutesLoaded }
-            return .routes(routes)
+                destination = point.coordinate
+                origin = lastCoordinate
+
+                let routes = try await routes(from: origin, to: destination)
+                guard !routes.isEmpty else { throw DemoError.noRoutesLoaded }
+
+                if let boundingBox = routes.boundingBox {
+                    camera = .boundingBox(boundingBox, edgePadding: .init(top: 64, left: 32, bottom: 64, right: 32))
+                } else {
+                    camera = .trackUserLocation()
+                }
+
+                return .routes(routes: routes)
+            }
         }
     }
 
@@ -195,6 +220,7 @@ extension DemoModel {
     func stop() {
         wrap {
             selectedRoute = nil
+            camera = .trackUserLocation()
             return stopNavigation()
         }
     }

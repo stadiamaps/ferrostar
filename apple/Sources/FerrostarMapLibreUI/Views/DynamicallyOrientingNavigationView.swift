@@ -42,6 +42,7 @@ public struct DynamicallyOrientingNavigationView: View,
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
+    public var bottomLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
     public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
@@ -165,6 +166,8 @@ public struct DynamicallyOrientingNavigationView: View,
                         topTrailing?()
                     } midLeading: {
                         midLeading?()
+                    } bottomLeading: {
+                        bottomLeading?()
                     } bottomTrailing: {
                         bottomTrailing?()
                     }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
