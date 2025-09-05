@@ -112,8 +112,8 @@ fun TripState.preferredUserLocation() =
     when (this) {
       is TripState.Navigating -> {
         when (this.deviation) {
-          is RouteDeviation.NoDeviation -> this.userLocation
-          is RouteDeviation.OffRoute -> this.snappedUserLocation
+          is RouteDeviation.NoDeviation -> this.snappedUserLocation
+          is RouteDeviation.OffRoute -> this.userLocation
         }
       }
       is TripState.Idle -> this.userLocation
