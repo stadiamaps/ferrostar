@@ -25,7 +25,7 @@ struct DemoCarPlayAppNavigation: View {
             // It's hacky, but allows easily hosting a scene's model into it's appeared scope.
             //
             // Using this as inspiration, a fancy combined SwiftUI NavigationPath + CPInterfaceController delegate could
-            // finely control the template, underlying view (visible only on maps templates) and the assocated view
+            // finely control the template, underlying view (visible only on maps templates) and the associated view
             // model.
             CarPlaySession.shared.registerDelegate(navController)
         }

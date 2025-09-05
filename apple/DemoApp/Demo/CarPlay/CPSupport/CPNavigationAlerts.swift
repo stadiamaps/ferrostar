@@ -7,7 +7,7 @@ extension CPNavigationAlert {
         CPNavigationAlert(
             titleVariants: ["Refresh with Mobile Screen"],
             subtitleVariants: [
-                "If you use the mobile devie to load a route, you can use this to manually refresh.",
+                "If you use the mobile device to load a route, you can use this to manually refresh.",
             ],
             image: nil,
             primaryAction: .init(title: "Refresh", color: .orange, handler: { _ in
