@@ -19,20 +19,8 @@ private extension SwitchableLocationProvider.State {
     }
 }
 
-private extension DemoModel {
-    func selectRoute(from routes: [Route]) {
-        do {
-            guard let route = routes.first else { throw DemoError.noFirstRoute }
-            selectedRoute = route
-            chooseRoute(route)
-        } catch {
-            handleError(error)
-        }
-    }
-}
-
 struct DemoNavigationView: View {
-    @Bindable var model: DemoModel
+    @State var model = DemoModel()
     @State private var isFetchingRoutes = false
 
     var body: some View {
@@ -41,8 +29,8 @@ struct DemoNavigationView: View {
                 styleURL: AppDefaults.mapStyleURL,
                 camera: $model.camera,
                 navigationState: model.coreState,
-                isMuted: model.core.spokenInstructionObserver.isMuted,
-                onTapMute: model.core.spokenInstructionObserver.toggleMute,
+                isMuted: model.isMuted,
+                onTapMute: model.toggleMute,
                 onTapExit: { model.stop() },
                 makeMapContent: {
                     if case let .routes(routes: routes) = model.appState {
@@ -64,24 +52,10 @@ struct DemoNavigationView: View {
             )
             .navigationSpeedLimit(
                 // Configure speed limit signage based on user preference or location
-                speedLimit: model.core.annotation?.speedLimit,
+                speedLimit: model.speedLimit,
                 speedLimitStyle: .mutcdStyle
             )
             .innerGrid(
-                topCenter: {
-                    if let errorMessage = model.errorMessage {
-                        NavigationUIBanner(severity: .error) {
-                            Text(errorMessage)
-                        }
-                        .onTapGesture {
-                            model.errorMessage = nil
-                        }
-                    } else if isFetchingRoutes {
-                        NavigationUIBanner(severity: .loading) {
-                            Text("Loading route...")
-                        }
-                    }
-                },
                 bottomLeading: {
                     VStack {
                         Text(locationLabel)
@@ -93,7 +67,7 @@ struct DemoNavigationView: View {
                         Button {
                             model.toggleLocationSimulation()
                         } label: {
-                            model.locationProvider.type.label
+                            model.locationType.label
                         }
                         .buttonStyle(NavigationUIButtonStyle())
                     }
@@ -111,9 +85,10 @@ struct DemoNavigationView: View {
                                             return
                                         }
 
-                                        model.selectRoute(from: routes)
+//                                        model.selectRoute(from: routes)
                                     case let .selectedRoute(route):
                                         startNavigation(route)
+
                                     case .idle, .navigating:
                                         // Should not reach this.
                                         break
@@ -141,6 +116,20 @@ struct DemoNavigationView: View {
                     model.updateDestination(to: point)
                 }
                 .frame(height: 220)
+            }
+        }
+        .overlay {
+            if let errorMessage = model.errorMessage {
+                NavigationUIBanner(severity: .error) {
+                    Text(errorMessage)
+                }
+                .onTapGesture {
+                    model.errorMessage = nil
+                }
+            } else if isFetchingRoutes {
+                NavigationUIBanner(severity: .loading) {
+                    Text("Loading route...")
+                }
             }
         }
     }

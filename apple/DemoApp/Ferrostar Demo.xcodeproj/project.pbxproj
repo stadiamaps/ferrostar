@@ -14,6 +14,18 @@
 		1611A55B2B2E6E98006B131D /* DemoNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5562B2E6E98006B131D /* DemoNavigationView.swift */; };
 		1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1611A5582B2E6E98006B131D /* DemoApp.swift */; };
 		1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */; };
+		164015502E6B3A1C006DE5B5 /* DemoCarPlayAppNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1640154F2E6B3A17006DE5B5 /* DemoCarPlayAppNavigation.swift */; };
+		164015522E6B3A4A006DE5B5 /* DemoCarPlayNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164015512E6B3A41006DE5B5 /* DemoCarPlayNavigationController.swift */; };
+		164015542E6B3A5F006DE5B5 /* DemoCarPlayScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164015532E6B3A5F006DE5B5 /* DemoCarPlayScene.swift */; };
+		164015562E6B3BAB006DE5B5 /* DemoCarPlaySearchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164015552E6B3BA3006DE5B5 /* DemoCarPlaySearchModel.swift */; };
+		164015582E6B3BC9006DE5B5 /* DemoCarPlaySearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164015572E6B3BC4006DE5B5 /* DemoCarPlaySearchView.swift */; };
+		1640155A2E6B3D20006DE5B5 /* CarPlaySession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164015592E6B3D20006DE5B5 /* CarPlaySession.swift */; };
+		164015682E6B4BA2006DE5B5 /* AppService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164015672E6B4B9C006DE5B5 /* AppService.swift */; };
+		1640156B2E6B4D49006DE5B5 /* MapViewCameraCurrentLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1640156A2E6B4D49006DE5B5 /* MapViewCameraCurrentLocation.swift */; };
+		1640156D2E6B4D90006DE5B5 /* FerrostarDemoInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1640156C2E6B4D90006DE5B5 /* FerrostarDemoInit.swift */; };
+		1640156F2E6B5248006DE5B5 /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1640156E2E6B5248006DE5B5 /* Point.swift */; };
+		164015722E6B546F006DE5B5 /* CarPlayButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164015712E6B546F006DE5B5 /* CarPlayButtons.swift */; };
+		164015752E6B653C006DE5B5 /* CPNavigationAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164015742E6B6534006DE5B5 /* CPNavigationAlerts.swift */; };
 		1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1663679C2B2F6F85008BFF1F /* APIKeys.swift */; };
 		16731E092E380B9500B3E2C9 /* FerrostarCore in Frameworks */ = {isa = PBXBuildFile; productRef = 16731E082E380B9500B3E2C9 /* FerrostarCore */; };
 		16731E0B2E380B9500B3E2C9 /* FerrostarSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 16731E0A2E380B9500B3E2C9 /* FerrostarSwiftUI */; };
@@ -39,7 +51,7 @@
 		FE16E4A62E0CAB0A009D7B83 /* DemoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */; };
 		FE16E4A82E0CAC34009D7B83 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */; };
 		FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */; };
-		FEFEAA1C2E0F570B00101D5B /* DemoCarPlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEFEAA1B2E0F570B00101D5B /* DemoCarPlayModel.swift */; };
+		FEFEAA1C2E0F570B00101D5B /* DemoCarPlayNavigationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEFEAA1B2E0F570B00101D5B /* DemoCarPlayNavigationModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +88,18 @@
 		1611A5562B2E6E98006B131D /* DemoNavigationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoNavigationView.swift; sourceTree = "<group>"; };
 		1611A5582B2E6E98006B131D /* DemoApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoApp.swift; sourceTree = "<group>"; };
 		1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySceneDelegate.swift; sourceTree = "<group>"; };
+		1640154F2E6B3A17006DE5B5 /* DemoCarPlayAppNavigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayAppNavigation.swift; sourceTree = "<group>"; };
+		164015512E6B3A41006DE5B5 /* DemoCarPlayNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayNavigationController.swift; sourceTree = "<group>"; };
+		164015532E6B3A5F006DE5B5 /* DemoCarPlayScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayScene.swift; sourceTree = "<group>"; };
+		164015552E6B3BA3006DE5B5 /* DemoCarPlaySearchModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlaySearchModel.swift; sourceTree = "<group>"; };
+		164015572E6B3BC4006DE5B5 /* DemoCarPlaySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlaySearchView.swift; sourceTree = "<group>"; };
+		164015592E6B3D20006DE5B5 /* CarPlaySession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlaySession.swift; sourceTree = "<group>"; };
+		164015672E6B4B9C006DE5B5 /* AppService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppService.swift; sourceTree = "<group>"; };
+		1640156A2E6B4D49006DE5B5 /* MapViewCameraCurrentLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewCameraCurrentLocation.swift; sourceTree = "<group>"; };
+		1640156C2E6B4D90006DE5B5 /* FerrostarDemoInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FerrostarDemoInit.swift; sourceTree = "<group>"; };
+		1640156E2E6B5248006DE5B5 /* Point.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
+		164015712E6B546F006DE5B5 /* CarPlayButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarPlayButtons.swift; sourceTree = "<group>"; };
+		164015742E6B6534006DE5B5 /* CPNavigationAlerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CPNavigationAlerts.swift; sourceTree = "<group>"; };
 		1663679C2B2F6F85008BFF1F /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		16731E002E380ACF00B3E2C9 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../../Package.swift; sourceTree = "<group>"; };
 		168ECA792B2E8C42007B11DE /* API-Keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "API-Keys.plist"; sourceTree = "<group>"; };
@@ -93,7 +117,7 @@
 		FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoModel.swift; sourceTree = "<group>"; };
 		FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchableLocationProvider.swift; sourceTree = "<group>"; };
-		FEFEAA1B2E0F570B00101D5B /* DemoCarPlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayModel.swift; sourceTree = "<group>"; };
+		FEFEAA1B2E0F570B00101D5B /* DemoCarPlayNavigationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayNavigationModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -146,19 +170,19 @@
 		1611A5522B2E6E98006B131D /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				164015692E6B4D3E006DE5B5 /* Extensions */,
 				1611A5532B2E6E98006B131D /* Assets.xcassets */,
 				1611A5542B2E6E98006B131D /* Preview Content */,
 				1663679B2B2F6F79008BFF1F /* Helpers */,
 				1694E85C2E6636B70026F7FA /* CarPlay */,
 				1694E8602E67BF260026F7FA /* Views */,
 				FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */,
-				FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */,
+				164015672E6B4B9C006DE5B5 /* AppService.swift */,
 				E90D97902B8AF507005E43F8 /* NavigationDelegate.swift */,
-				1611A5562B2E6E98006B131D /* DemoNavigationView.swift */,
+				1611A5582B2E6E98006B131D /* DemoApp.swift */,
+				FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */,
 				FE16E4A02E0CAA61009D7B83 /* DemoError.swift */,
 				FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */,
-				1611A5582B2E6E98006B131D /* DemoApp.swift */,
-				FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -181,6 +205,43 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		1640154D2E6B3A08006DE5B5 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				164015572E6B3BC4006DE5B5 /* DemoCarPlaySearchView.swift */,
+				164015552E6B3BA3006DE5B5 /* DemoCarPlaySearchModel.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
+		1640154E2E6B3A0F006DE5B5 /* Nav */ = {
+			isa = PBXGroup;
+			children = (
+				FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */,
+				FEFEAA1B2E0F570B00101D5B /* DemoCarPlayNavigationModel.swift */,
+			);
+			path = Nav;
+			sourceTree = "<group>";
+		};
+		164015692E6B4D3E006DE5B5 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				1640156E2E6B5248006DE5B5 /* Point.swift */,
+				1640156C2E6B4D90006DE5B5 /* FerrostarDemoInit.swift */,
+				1640156A2E6B4D49006DE5B5 /* MapViewCameraCurrentLocation.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		164015732E6B6525006DE5B5 /* CPSupport */ = {
+			isa = PBXGroup;
+			children = (
+				164015742E6B6534006DE5B5 /* CPNavigationAlerts.swift */,
+				164015712E6B546F006DE5B5 /* CarPlayButtons.swift */,
+			);
+			path = CPSupport;
+			sourceTree = "<group>";
+		};
 		1663679B2B2F6F79008BFF1F /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,9 +255,14 @@
 		1694E85C2E6636B70026F7FA /* CarPlay */ = {
 			isa = PBXGroup;
 			children = (
-				FEFEAA1B2E0F570B00101D5B /* DemoCarPlayModel.swift */,
-				FE0AFFBB2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift */,
+				164015732E6B6525006DE5B5 /* CPSupport */,
 				1621C26C2CE2B42100034BA3 /* CarPlaySceneDelegate.swift */,
+				164015592E6B3D20006DE5B5 /* CarPlaySession.swift */,
+				164015532E6B3A5F006DE5B5 /* DemoCarPlayScene.swift */,
+				164015512E6B3A41006DE5B5 /* DemoCarPlayNavigationController.swift */,
+				1640154F2E6B3A17006DE5B5 /* DemoCarPlayAppNavigation.swift */,
+				1640154D2E6B3A08006DE5B5 /* Search */,
+				1640154E2E6B3A0F006DE5B5 /* Nav */,
 			);
 			path = CarPlay;
 			sourceTree = "<group>";
@@ -204,6 +270,8 @@
 		1694E8602E67BF260026F7FA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */,
+				1611A5562B2E6E98006B131D /* DemoNavigationView.swift */,
 				16EC13722E67E6EC0028A916 /* SearchSheet.swift */,
 			);
 			path = Views;
@@ -364,21 +432,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1640156F2E6B5248006DE5B5 /* Point.swift in Sources */,
 				1611A55B2B2E6E98006B131D /* DemoNavigationView.swift in Sources */,
 				16E972D92E67DFB4001F895D /* Routes+MLNCoordinateBounds.swift in Sources */,
+				164015682E6B4BA2006DE5B5 /* AppService.swift in Sources */,
 				FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */,
+				164015522E6B3A4A006DE5B5 /* DemoCarPlayNavigationController.swift in Sources */,
 				1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */,
+				1640156B2E6B4D49006DE5B5 /* MapViewCameraCurrentLocation.swift in Sources */,
+				164015722E6B546F006DE5B5 /* CarPlayButtons.swift in Sources */,
 				1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */,
 				FE16E4A62E0CAB0A009D7B83 /* DemoModel.swift in Sources */,
+				164015562E6B3BAB006DE5B5 /* DemoCarPlaySearchModel.swift in Sources */,
+				164015582E6B3BC9006DE5B5 /* DemoCarPlaySearchView.swift in Sources */,
 				1611A55D2B2E6E98006B131D /* DemoApp.swift in Sources */,
 				FE0AFFBC2DDD23D500CF4DB8 /* DemoCarPlayNavigationView.swift in Sources */,
+				1640156D2E6B4D90006DE5B5 /* FerrostarDemoInit.swift in Sources */,
 				E90D97912B8AF507005E43F8 /* NavigationDelegate.swift in Sources */,
+				1640155A2E6B3D20006DE5B5 /* CarPlaySession.swift in Sources */,
 				16E972DB2E67E177001F895D /* Route+Polyline.swift in Sources */,
+				164015752E6B653C006DE5B5 /* CPNavigationAlerts.swift in Sources */,
 				FE16E4A32E0CAA73009D7B83 /* DemoAppState.swift in Sources */,
 				16EC13732E67E6EC0028A916 /* SearchSheet.swift in Sources */,
 				FE16E4A82E0CAC34009D7B83 /* AppDefaults.swift in Sources */,
+				164015502E6B3A1C006DE5B5 /* DemoCarPlayAppNavigation.swift in Sources */,
+				164015542E6B3A5F006DE5B5 /* DemoCarPlayScene.swift in Sources */,
 				FE16E4A12E0CAA61009D7B83 /* DemoError.swift in Sources */,
-				FEFEAA1C2E0F570B00101D5B /* DemoCarPlayModel.swift in Sources */,
+				FEFEAA1C2E0F570B00101D5B /* DemoCarPlayNavigationModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

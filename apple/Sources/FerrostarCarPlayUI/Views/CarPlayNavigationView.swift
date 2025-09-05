@@ -64,22 +64,38 @@ public struct CarPlayNavigationView: View, SpeedLimitViewHost, CurrentRoadNameVi
                 }
                 .navigationMapViewContentInset(calculatedMapViewInsets(for: geometry))
 
-                if let speedLimit, let speedLimitStyle {
-                    SpeedLimitView(speedLimit: speedLimit, signageStyle: speedLimitStyle)
-                        .scaleEffect(scaleFactor(for: geometry))
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                        .padding(8)
-                }
+                HStack {
+                    Spacer()
 
-                if let currentRoadNameView {
-                    HStack {
+                    VStack {
+                        if let speedLimit, let speedLimitStyle {
+                            HStack {
+                                Spacer()
+
+                                SpeedLimitView(
+                                    speedLimit: speedLimit,
+                                    signageStyle: speedLimitStyle,
+                                    valueFormatter: formatterCollection.speedValueFormatter,
+                                    unitFormatter: formatterCollection.speedWithUnitsFormatter
+                                )
+                                .scaleEffect(scaleFactor(for: geometry))
+                            }
+                        }
+
                         Spacer()
 
-                        currentRoadNameView(navigationState)
-                            .scaleEffect(scaleFactor(for: geometry))
-                            .padding(.trailing, geometry.safeAreaInsets.trailing)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                        if let currentRoadNameView {
+                            HStack {
+                                Spacer()
+
+                                currentRoadNameView(navigationState)
+                                    .scaleEffect(scaleFactor(for: geometry))
+
+                                Spacer()
+                            }
+                        }
                     }
+                    .background(Color.purple.opacity(0.2))
                 }
             }
         }

@@ -5,7 +5,7 @@ import PackageDescription
 
 let binaryTarget: Target
 let maplibreSwiftUIDSLPackage: Package.Dependency
-let useLocalFramework = false
+let useLocalFramework = true
 let useLocalMapLibreSwiftUIDSL = false
 
 if useLocalFramework {
@@ -30,8 +30,8 @@ if useLocalMapLibreSwiftUIDSL {
     maplibreSwiftUIDSLPackage = .package(path: "../swiftui-dsl")
 } else {
     maplibreSwiftUIDSLPackage = .package(
-        url: "https://github.com/Rallista/swiftui-dsl",
-        branch: "feat/some-stylelayercollection"
+        url: "git@github.com:maplibre/swiftui-dsl.git",
+        .upToNextMinor(from: "0.15.0")
     )
 }
 
