@@ -1,10 +1,11 @@
+import Combine
 import CoreLocation
 import FerrostarCore
 import FerrostarCoreFFI
 import Foundation
 
-@Observable final class SwitchableLocationProvider: LocationProviding {
-    enum State {
+final class SwitchableLocationProvider: LocationProviding {
+    enum State: Equatable {
         case simulated
         case device
     }
@@ -14,11 +15,14 @@ import Foundation
         activityType: .automotiveNavigation,
         allowBackgroundLocationUpdates: false
     )
-    var type: State
+    @Published var type: State
 
     init(simulated: SimulatedLocationProvider, type: SwitchableLocationProvider.State) {
         self.simulated = simulated
         self.type = type
+
+        // Don't do this in a real app, but for the purposes of easy startup/simulation
+        lastLocation = UserLocation(clLocation: AppDefaults.initialLocation)
     }
 
     private var current: LocationProviding {
@@ -30,31 +34,35 @@ import Foundation
         }
     }
 
-    var delegate: (any LocationManagingDelegate)? { get {
-        current.delegate
-    } set {
-        current.delegate = newValue
-    }
+    var delegate: (any LocationManagingDelegate)? {
+        get { current.delegate }
+        set { current.delegate = newValue }
     }
 
     var authorizationStatus: CLAuthorizationStatus {
         current.authorizationStatus
     }
 
-    var lastLocation: FerrostarCoreFFI.UserLocation? {
-        current.lastLocation
-    }
+    @Published var lastLocation: UserLocation?
+    @Published var lastHeading: Heading?
 
-    var lastHeading: FerrostarCoreFFI.Heading? {
-        current.lastHeading
-    }
+    private var cancellables = Set<AnyCancellable>()
 
     func startUpdating() {
         current.startUpdating()
+
+        current.lastLocation.publisher.sink {
+            self.lastLocation = $0
+        }.store(in: &cancellables)
+
+        current.lastHeading.publisher.sink {
+            self.lastHeading = $0
+        }.store(in: &cancellables)
     }
 
     func stopUpdating() {
         current.stopUpdating()
+        cancellables.removeAll()
     }
 
     func use(route: Route) throws {

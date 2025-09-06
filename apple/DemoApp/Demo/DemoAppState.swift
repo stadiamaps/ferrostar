@@ -5,10 +5,9 @@ import CoreLocation
 @preconcurrency import FerrostarCoreFFI
 import Foundation
 
-enum DemoAppState: CustomStringConvertible {
+enum DemoAppState: Equatable, Hashable, CustomStringConvertible {
     case idle
-    case destination(CLLocationCoordinate2D)
-    case routes([Route])
+    case routes(routes: [Route])
     case selectedRoute(Route)
     case navigating
 
@@ -16,9 +15,7 @@ enum DemoAppState: CustomStringConvertible {
         switch self {
         case .idle:
             "Idle"
-        case let .destination(location):
-            "Destination: (\(location)"
-        case let .routes(routes):
+        case let .routes(routes: routes):
             "Routes: \(routes.count)"
         case let .selectedRoute(route):
             "Route: \(route)"
@@ -27,30 +24,14 @@ enum DemoAppState: CustomStringConvertible {
         }
     }
 
-    var buttonText: String {
+    var buttonText: String? {
         switch self {
-        case .idle:
-            "Choose Destination"
-        case .destination:
-            "Load Routes"
+        case .idle, .navigating:
+            nil
         case .routes:
-            "Choose Route"
+            "Select Route 1"
         case .selectedRoute:
             "Start Navigation"
-        case .navigating:
-            "Stop"
-        }
-    }
-}
-
-extension DemoAppState {
-    func setDestination(_ destination: CLLocationCoordinate2D) throws -> DemoAppState {
-        switch self {
-        case .idle:
-            guard destination != kCLLocationCoordinate2DInvalid else { throw DemoError.invalidDestination }
-            return .destination(destination)
-        case .destination(_), .routes(_), .selectedRoute(_), .navigating:
-            throw DemoError.invalidState(self)
         }
     }
 }

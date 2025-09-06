@@ -25,15 +25,16 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
     var onTapExit: (() -> Void)?
 
-    let showMute: Bool
-    let isMuted: Bool
-    let onMute: () -> Void
+    var showMute: Bool
+    var isMuted: Bool
+    var onMute: () -> Void
 
     // MARK: Configurable Views
 
     var topCenter: (() -> AnyView)?
     var topTrailing: (() -> AnyView)?
     var midLeading: (() -> AnyView)?
+    var bottomLeading: (() -> AnyView)?
     var bottomTrailing: (() -> AnyView)?
 
     var progressView: (NavigationState?, (() -> Void)?) -> AnyView
@@ -97,6 +98,8 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                     topTrailing?()
                 } midLeading: {
                     midLeading?()
+                } bottomLeading: {
+                    bottomLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
                 }

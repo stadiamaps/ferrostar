@@ -19,46 +19,26 @@ private extension SwitchableLocationProvider.State {
     }
 }
 
-private extension DemoModel {
-    func selectRoute(from routes: [Route]) {
-        do {
-            guard let route = routes.first else { throw DemoError.noFirstRoute }
-            selectedRoute = route
-            chooseRoute(route)
-        } catch {
-            handleError(error)
-        }
-    }
-}
-
-private extension DemoAppState {
-    var showStateButton: Bool {
-        switch self {
-        case .idle, .destination(_), .routes(_), .selectedRoute:
-            true
-        case .navigating:
-            false
-        }
-    }
-}
-
 struct DemoNavigationView: View {
-    @Bindable var model: DemoModel
+    @State var model = DemoModel()
     @State private var isFetchingRoutes = false
-    @State private var showSearch = false
 
     var body: some View {
-        let locationServicesEnabled = model.locationServicesEnabled
-
         VStack {
             DynamicallyOrientingNavigationView(
                 styleURL: AppDefaults.mapStyleURL,
                 camera: $model.camera,
                 navigationState: model.coreState,
-                isMuted: model.core.spokenInstructionObserver.isMuted,
-                onTapMute: model.core.spokenInstructionObserver.toggleMute,
-                onTapExit: { stopNavigation() },
+                isMuted: model.isMuted,
+                onTapMute: model.toggleMute,
+                onTapExit: { model.stop() },
                 makeMapContent: {
+                    if case let .routes(routes: routes) = model.appState {
+                        for (idx, route) in routes.enumerated() {
+                            RouteStyleLayer(polyline: route.polyline, identifier: "route-\(idx)")
+                        }
+                    }
+
                     let source = ShapeSource(identifier: "userLocation") {
                         // Demonstrate how to add a dynamic overlay;
                         // also incidentally shows the extent of puck lag
@@ -66,30 +46,17 @@ struct DemoNavigationView: View {
                             MLNPointFeature(coordinate: coordinate)
                         }
                     }
+
                     CircleStyleLayer(identifier: "foo", source: source)
                 }
             )
             .navigationSpeedLimit(
                 // Configure speed limit signage based on user preference or location
-                speedLimit: model.core.annotation?.speedLimit,
+                speedLimit: model.speedLimit,
                 speedLimitStyle: .mutcdStyle
             )
             .innerGrid(
-                topCenter: {
-                    if let errorMessage = model.errorMessage {
-                        NavigationUIBanner(severity: .error) {
-                            Text(errorMessage)
-                        }
-                        .onTapGesture {
-                            model.errorMessage = nil
-                        }
-                    } else if isFetchingRoutes {
-                        NavigationUIBanner(severity: .loading) {
-                            Text("Loading route...")
-                        }
-                    }
-                },
-                bottomTrailing: {
+                bottomLeading: {
                     VStack {
                         Text(locationLabel)
                             .font(.caption)
@@ -97,28 +64,37 @@ struct DemoNavigationView: View {
                             .foregroundColor(.white)
                             .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
 
-                        if locationServicesEnabled {
-                            if model.appState.showStateButton {
+                        Button {
+                            model.toggleLocationSimulation()
+                        } label: {
+                            model.locationType.label
+                        }
+                        .buttonStyle(NavigationUIButtonStyle())
+                    }
+                },
+                bottomTrailing: {
+                    VStack {
+                        if model.locationServicesEnabled {
+                            if let buttonText = model.appState.buttonText {
                                 NavigationUIButton {
                                     switch model.appState {
-                                    case .idle:
-                                        showSearch = true
-                                    case let .destination(coordinate):
-                                        Task {
-                                            isFetchingRoutes = true
-                                            await model.loadRoute(coordinate)
-                                            isFetchingRoutes = false
-                                        }
                                     case let .routes(routes):
-                                        model.selectRoute(from: routes)
+                                        // TODO: Revise this to only work with 1 route returned once/if route selection is added to demo.
+                                        if let route = routes.first {
+                                            startNavigation(route)
+                                            return
+                                        }
+
+//                                        model.selectRoute(from: routes)
                                     case let .selectedRoute(route):
                                         startNavigation(route)
-                                    case .navigating:
+
+                                    case .idle, .navigating:
                                         // Should not reach this.
                                         break
                                     }
                                 } label: {
-                                    Text(model.appState.buttonText)
+                                    Text(buttonText)
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.5)
                                         .font(.body.bold())
@@ -131,21 +107,29 @@ struct DemoNavigationView: View {
                                 Text("Enable Location Services")
                             }
                         }
-                        Button {
-                            model.toggleLocationSimulation()
-                        } label: {
-                            model.locationProvider.type.label
-                        }
-                        .buttonStyle(NavigationUIButtonStyle())
                     }
                 }
             )
 
-            if showSearch {
-                model.searchView
-                    .onChange(of: model.destination) { _, _ in
-                        showSearch = false
-                    }
+            if model.appState == .idle {
+                SearchSheet(userLocation: model.lastLocation) { point in
+                    model.updateDestination(to: point)
+                }
+                .frame(height: 220)
+            }
+        }
+        .overlay {
+            if let errorMessage = model.errorMessage {
+                NavigationUIBanner(severity: .error) {
+                    Text(errorMessage)
+                }
+                .onTapGesture {
+                    model.errorMessage = nil
+                }
+            } else if isFetchingRoutes {
+                NavigationUIBanner(severity: .loading) {
+                    Text("Loading route...")
+                }
             }
         }
     }

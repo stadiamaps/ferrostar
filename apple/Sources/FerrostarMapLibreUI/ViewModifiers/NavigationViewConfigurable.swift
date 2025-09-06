@@ -1,47 +1,40 @@
 import FerrostarCore
 import FerrostarCoreFFI
 import FerrostarSwiftUI
+import MapLibreSwiftDSL
 import SwiftUI
 
 public protocol NavigationViewConfigurable where Self: View {
-    // MARK: MapView Config
+    // MARK: Navigation Controls
 
-    var mapInsets: NavigationMapViewContentInsetBundle { get set }
+    var showMute: Bool { get set }
 
-    /// Customize both the landscape NavigationMapView content insets.
+    /// Manage whether the mute control is visible or hidden.
     ///
-    /// - Parameters:
-    ///   - landscape: Generate the content inset for landscape mode with a given geometry proxy.
+    /// - Parameter hidden: The view is hidden if true
     /// - Returns: The modified view.
-    func navigationViewMapContentInset(
-        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
-    ) -> Self
+    func navigationViewMuteControlHidden(_ hidden: Bool) -> Self
 
-    /// Customize both the portrait NavigationMapView content insets.
-    ///
-    /// - Parameters:
-    ///   - portrait: Generate the content inset for portrait mode with a given geometry proxy.
-    /// - Returns: The modified view.
-    func navigationViewMapContentInset(
-        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
-    ) -> Self
+    var showZoom: Bool { get set }
 
-    /// Customize both the landscape and portrait NavigationMapView content insets.
+    /// Manage whether the zoom control is visible or hidden.
     ///
-    /// - Parameters:
-    ///   - landscape: Generate the content inset for landscape mode with a given geometry proxy.
-    ///   - portrait: Generate the content inset for portrait mode with a given geometry proxy.
+    /// - Parameter hidden: The view is hidden if true
     /// - Returns: The modified view.
-    func navigationViewMapContentInset(
-        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode,
-        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
-    ) -> Self
+    func navigationViewZoomControlHidden(_ hidden: Bool) -> Self
+
+    var showCentering: Bool { get set }
+
+    /// Manage whether the centering control is visible or hidden.
+    ///
+    /// - Parameter hidden: The view is hidden if true
+    /// - Returns: The modified view.
+    func navigationViewCenteringControlHidden(_ hidden: Bool) -> Self
 
     // MARK: Navigation Views
 
     var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)? { get set }
     var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)? { get set }
-    var currentRoadNameView: ((NavigationState?) -> AnyView)? { get set }
 
     /// Override the Instructions View with a custom view.
     ///
@@ -59,14 +52,6 @@ public protocol NavigationViewConfigurable where Self: View {
         @ViewBuilder _ progressView: @escaping (NavigationState?, (() -> Void)?) -> some View
     ) -> Self
 
-    /// Override the Current Road Name View with a custom view.
-    ///
-    /// - Parameter currentRoadNameView: The custom current road name view to display.
-    /// - Returns: The modified view.
-    func navigationViewCurrentRoadView(
-        @ViewBuilder _ currentRoadNameView: @escaping (NavigationState?) -> some View
-    ) -> Self
-
     @available(*, deprecated, renamed: "navigationViewCurrentRoadView")
     func navigationCurrentRoadView(
         @ViewBuilder currentRoadNameViewBuilder: @escaping () -> some View
@@ -74,28 +59,21 @@ public protocol NavigationViewConfigurable where Self: View {
 }
 
 public extension NavigationViewConfigurable {
-    func navigationViewMapContentInset(
-        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
-    ) -> Self {
+    func navigationViewMuteControlHidden(_ hidden: Bool) -> Self {
         var mutableSelf = self
-        mutableSelf.mapInsets = NavigationMapViewContentInsetBundle(landscape: landscape)
+        mutableSelf.showMute = !hidden
         return mutableSelf
     }
 
-    func navigationViewMapContentInset(
-        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
-    ) -> Self {
+    func navigationViewZoomControlHidden(_ hidden: Bool) -> Self {
         var mutableSelf = self
-        mutableSelf.mapInsets = NavigationMapViewContentInsetBundle(portrait: portrait)
+        mutableSelf.showZoom = !hidden
         return mutableSelf
     }
 
-    func navigationViewMapContentInset(
-        landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode,
-        portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
-    ) -> Self {
+    func navigationViewCenteringControlHidden(_ hidden: Bool) -> Self {
         var mutableSelf = self
-        mutableSelf.mapInsets = NavigationMapViewContentInsetBundle(landscape: landscape, portrait: portrait)
+        mutableSelf.showCentering = !hidden
         return mutableSelf
     }
 
@@ -113,20 +91,5 @@ public extension NavigationViewConfigurable {
         var mutableSelf = self
         mutableSelf.progressView = { AnyView(progressView($0, $1)) }
         return mutableSelf
-    }
-
-    func navigationViewCurrentRoadView(
-        @ViewBuilder _ currentRoadNameView: @escaping (NavigationState?) -> some View
-    ) -> Self {
-        var mutableSelf = self
-        mutableSelf.currentRoadNameView = { AnyView(currentRoadNameView($0)) }
-        return mutableSelf
-    }
-
-    @available(*, deprecated, renamed: "navigationViewCurrentRoadView")
-    func navigationCurrentRoadView(@ViewBuilder currentRoadNameViewBuilder: @escaping () -> some View) -> Self {
-        navigationViewCurrentRoadView { _ in
-            currentRoadNameViewBuilder()
-        }
     }
 }

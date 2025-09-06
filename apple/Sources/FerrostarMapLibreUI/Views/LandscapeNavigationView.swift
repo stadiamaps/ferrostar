@@ -9,7 +9,8 @@ import SwiftUI
 /// A landscape orientation navigation view that includes the InstructionsView and ``TripProgressView`` on the
 /// leading half of the screen.
 public struct LandscapeNavigationView: View,
-    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
+    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, NavigationMapViewConfigurable,
+    CurrentRoadNameViewHost, SpeedLimitViewHost
 {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
 
@@ -20,6 +21,7 @@ public struct LandscapeNavigationView: View,
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+    public var routeLayerOverride: ((NavigationState?) -> any StyleLayerCollection)?
 
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
@@ -28,6 +30,10 @@ public struct LandscapeNavigationView: View,
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
 
+    public var showMute: Bool = true
+    public var showZoom: Bool = true
+    public var showCentering: Bool = true
+
     public var minimumSafeAreaInsets: EdgeInsets
 
     // MARK: Configurable Views
@@ -35,6 +41,7 @@ public struct LandscapeNavigationView: View,
     public var topCenter: (() -> AnyView)?
     public var topTrailing: (() -> AnyView)?
     public var midLeading: (() -> AnyView)?
+    public var bottomLeading: (() -> AnyView)?
     public var bottomTrailing: (() -> AnyView)?
 
     public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
@@ -87,10 +94,11 @@ public struct LandscapeNavigationView: View,
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    routeLayerOverride: routeLayerOverride,
                     onStyleLoaded: { _ in
                         camera = navigationCamera
-                    }
-                ) {
+                    },
+                ) { _ in
                     userLayers
                 }
                 .navigationMapViewContentInset(
@@ -107,16 +115,12 @@ public struct LandscapeNavigationView: View,
                         currentRoadNameView: currentRoadNameView
                     ),
                     isMuted: isMuted,
-                    showMute: true,
+                    showMute: showMute,
                     onMute: onTapMute,
-                    showZoom: true,
+                    showZoom: showZoom,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
-                    cameraControlState: camera.isTrackingUserLocationWithCourse ? CameraControlState.showRecenter {
-                        // TODO:
-                    } : .showRecenter {
-                        camera = navigationCamera
-                    },
+                    cameraControlState: cameraControlState(),
                     onTapExit: onTapExit
                 )
                 .innerGrid {
@@ -125,6 +129,8 @@ public struct LandscapeNavigationView: View,
                     topTrailing?()
                 } midLeading: {
                     midLeading?()
+                } bottomLeading: {
+                    bottomLeading?()
                 } bottomTrailing: {
                     bottomTrailing?()
                 }
@@ -138,6 +144,18 @@ public struct LandscapeNavigationView: View,
             .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         } else {
             mapInsets.landscape(geometry)
+        }
+    }
+
+    func cameraControlState() -> CameraControlState {
+        guard showCentering else {
+            return .hidden
+        }
+
+        return camera.isTrackingUserLocationWithCourse ? CameraControlState.showRecenter {
+            // TODO:
+        } : .showRecenter {
+            camera = navigationCamera
         }
     }
 }
