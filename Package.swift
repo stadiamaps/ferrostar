@@ -30,7 +30,7 @@ if useLocalMapLibreSwiftUIDSL {
     maplibreSwiftUIDSLPackage = .package(path: "../swiftui-dsl")
 } else {
     maplibreSwiftUIDSLPackage = .package(
-        url: "git@github.com:maplibre/swiftui-dsl.git",
+        url: "https://github.com/maplibre/swiftui-dsl.git",
         .upToNextMinor(from: "0.15.0")
     )
 }
