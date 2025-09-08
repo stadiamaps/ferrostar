@@ -183,15 +183,29 @@ impl StepAdvanceCondition for OrAdvanceConditions {
         current_step: RouteStep,
         next_step: Option<RouteStep>,
     ) -> StepAdvanceResult {
-        let should_advance = self.conditions.iter().any(|c| {
-            c.should_advance_step(user_location, current_step.clone(), next_step.clone())
-                .should_advance
-        });
+        let mut should_advance = false;
+        let mut next_conditions = Vec::with_capacity(self.conditions.len());
+
+        for condition in &self.conditions {
+            let result = condition.should_advance_step(
+                user_location,
+                current_step.clone(),
+                next_step.clone(),
+            );
+            should_advance = should_advance || result.should_advance;
+            next_conditions.push(result.next_iteration);
+        }
 
         StepAdvanceResult {
             should_advance,
             next_iteration: Arc::new(OrAdvanceConditions {
-                conditions: self.conditions.clone(),
+                conditions: if should_advance {
+                    // Reset to fresh conditions when advancing
+                    self.conditions.clone()
+                } else {
+                    // Preserve stateful progress when not advancing
+                    next_conditions
+                },
             }),
         }
     }
@@ -219,15 +233,29 @@ impl StepAdvanceCondition for AndAdvanceConditions {
         current_step: RouteStep,
         next_step: Option<RouteStep>,
     ) -> StepAdvanceResult {
-        let should_advance = self.conditions.iter().all(|c| {
-            c.should_advance_step(user_location, current_step.clone(), next_step.clone())
-                .should_advance
-        });
+        let mut should_advance = true;
+        let mut next_conditions = Vec::with_capacity(self.conditions.len());
+
+        for condition in &self.conditions {
+            let result = condition.should_advance_step(
+                user_location,
+                current_step.clone(),
+                next_step.clone(),
+            );
+            should_advance = should_advance && result.should_advance;
+            next_conditions.push(result.next_iteration);
+        }
 
         StepAdvanceResult {
             should_advance,
             next_iteration: Arc::new(AndAdvanceConditions {
-                conditions: self.conditions.clone(),
+                conditions: if should_advance {
+                    // Reset to fresh conditions when advancing
+                    self.conditions.clone()
+                } else {
+                    // Preserve stateful progress when not advancing
+                    next_conditions
+                },
             }),
         }
     }
@@ -670,6 +698,295 @@ mod tests {
         assert!(
             result2.should_advance,
             "Should advance when user has first reached end of step and then moved away"
+        );
+    }
+
+    #[test]
+    fn test_and_condition_preserves_state() {
+        // Create a stateful condition that we can track
+        let entry_exit_condition = DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 5,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
+
+        // Create an AND condition with just this one condition for simplicity
+        let and_condition = AndAdvanceConditions {
+            conditions: vec![Arc::new(entry_exit_condition)],
+        };
+
+        // First update: User is close to the end of the step
+        let result1 = and_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update"
+        );
+
+        // Get the next iteration and cast it back to check the internal state
+        let next_and_condition = result1.next_iteration;
+
+        // Second update: User moves far away - should advance now
+        let user_location_far = make_user_location(coord!(x: 0.001, y: 0.0005), 5.0);
+        let result2 = next_and_condition.should_advance_step(
+            user_location_far,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            result2.should_advance,
+            "Should advance when stateful condition completes in AND"
+        );
+    }
+
+    #[test]
+    fn test_entry_and_exit_condition_in_and_composite_advance() {
+        // Create a condition that requires proximity to end followed by distance from step
+        let entry_exit_condition = DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 5,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
+
+        // Create a simple condition that's always true when near the end
+        let distance_condition = DistanceToEndOfStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100, // Increased to 100 meters to account for the test location
+        };
+
+        // Create an AND condition combining both
+        let and_condition = AndAdvanceConditions {
+            conditions: vec![Arc::new(entry_exit_condition), Arc::new(distance_condition)],
+        };
+
+        // First update: User is close to the end of the step
+        // Should not advance yet, but should update internal state of the entry/exit condition
+        let result1 = and_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update even when near end of step"
+        );
+
+        // Get the next iteration with updated internal state
+        let next_condition = result1.next_iteration;
+
+        // Second update: User has moved far enough from the route (> 20 meters)
+        // ~55 meters north of the route (0.0005 degrees latitude)
+        let user_location_far = make_user_location(coord!(x: 0.001, y: 0.0005), 5.0);
+
+        // Now should advance because the entry/exit condition has maintained its state
+        // through the AND composite condition
+        let result2 = next_condition.should_advance_step(
+            user_location_far,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            result2.should_advance,
+            "Should advance when stateful condition completes within AND composite"
+        );
+    }
+
+    #[test]
+    fn test_entry_and_exit_condition_in_or_composite_advance() {
+        // Create a condition that requires proximity to end followed by distance from step
+        let entry_exit_condition = DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 5,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
+
+        // Create a condition that will never be true (manual)
+        let manual_condition = ManualStepCondition;
+
+        // Create an OR condition combining both
+        let or_condition = OrAdvanceConditions {
+            conditions: vec![Arc::new(entry_exit_condition), Arc::new(manual_condition)],
+        };
+
+        // First update: User is close to the end of the step
+        // Should not advance yet, but should update internal state of the entry/exit condition
+        let result1 = or_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update even when near end of step"
+        );
+
+        // Get the next iteration with updated internal state
+        let next_condition = result1.next_iteration;
+
+        // Second update: User has moved far enough from the route (> 20 meters)
+        // ~55 meters north of the route (0.0005 degrees latitude)
+        let user_location_far = make_user_location(coord!(x: 0.001, y: 0.0005), 5.0);
+
+        // Now should advance because the entry/exit condition has maintained its state
+        // through the OR composite condition
+        let result2 = next_condition.should_advance_step(
+            user_location_far,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            result2.should_advance,
+            "Should advance when stateful condition completes within OR composite"
+        );
+    }
+
+    #[test]
+    fn test_entry_and_exit_condition_resets_in_and_composite_when_advancing() {
+        // Create a condition that requires proximity to end followed by distance from step
+        let entry_exit_condition = DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 5,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
+
+        // Create a condition that's true for both near and far locations
+        let distance_condition = DistanceToEndOfStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100, // True for both test locations
+        };
+
+        // Create an AND condition combining both
+        let and_condition = AndAdvanceConditions {
+            conditions: vec![Arc::new(entry_exit_condition), Arc::new(distance_condition)],
+        };
+
+        // First update: User is close to the end of the step
+        // Should not advance yet, but should update internal state of the entry/exit condition
+        let result1 = and_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update even when near end of step"
+        );
+
+        // Get the next iteration with updated internal state
+        let next_condition = result1.next_iteration;
+
+        // Second update: User has moved far enough from the route (> 5 meters)
+        // ~55 meters north of the route (0.0005 degrees latitude)
+        let user_location_far = make_user_location(coord!(x: 0.001, y: 0.0005), 5.0);
+
+        // Now should advance because the entry/exit condition has maintained its state
+        // through the AND composite condition
+        let result2 = next_condition.should_advance_step(
+            user_location_far,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            result2.should_advance,
+            "Should advance when stateful condition completes within AND composite"
+        );
+
+        // The key test: verify that the next iteration after advancing has reset conditions
+        let reset_condition = result2.next_iteration;
+
+        // Third update: User is near the end again, but the entry/exit condition should be reset
+        // Since the entry/exit condition is reset, it should start over even though user is at end
+        let result3 = reset_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            !result3.should_advance,
+            "Should not advance immediately after reset - entry/exit condition should restart its two-phase process"
+        );
+    }
+
+    #[test]
+    fn test_entry_and_exit_condition_resets_in_or_composite_when_advancing() {
+        // Create a condition that requires proximity to end followed by distance from step
+        let entry_exit_condition = DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 5,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
+
+        // Create a condition that will never be true (manual)
+        let manual_condition = ManualStepCondition;
+
+        // Create an OR condition combining both
+        let or_condition = OrAdvanceConditions {
+            conditions: vec![Arc::new(entry_exit_condition), Arc::new(manual_condition)],
+        };
+
+        // First update: User is close to the end of the step
+        // Should not advance yet, but should update internal state of the entry/exit condition
+        let result1 = or_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update even when near end of step"
+        );
+
+        // Get the next iteration with updated internal state
+        let next_condition = result1.next_iteration;
+
+        // Second update: User has moved far enough from the route (> 5 meters)
+        // ~55 meters north of the route (0.0005 degrees latitude)
+        let user_location_far = make_user_location(coord!(x: 0.001, y: 0.0005), 5.0);
+
+        // Now should advance because the entry/exit condition has maintained its state
+        let result2 = next_condition.should_advance_step(
+            user_location_far,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            result2.should_advance,
+            "Should advance when stateful condition completes within OR composite"
+        );
+
+        // The key test: verify that the next iteration after advancing has reset conditions
+        let reset_condition = result2.next_iteration;
+
+        // Third update: User is near the end again, but the entry/exit condition should be reset
+        // Since the entry/exit condition is reset, it should start over even though user is at end
+        let result3 = reset_condition.should_advance_step(
+            *LOCATION_NEAR_END_OF_STEP,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+        );
+
+        assert!(
+            !result3.should_advance,
+            "Should not advance immediately after reset - entry/exit condition should restart its two-phase process"
         );
     }
 }
