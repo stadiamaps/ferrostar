@@ -23,6 +23,7 @@ public enum CameraControlState {
 /// use the ``InnerGridView``.
 public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
+    @Environment(\.navigationInnerGridConfiguration) private var gridConfig
 
     var speedLimit: Measurement<UnitSpeed>?
     var speedLimitStyle: SpeedLimitView.SignageStyle?
@@ -36,14 +37,6 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
     let showMute: Bool
     let isMuted: Bool
     let onMute: () -> Void
-
-    // MARK: Customizable Containers
-
-    public var topCenter: (() -> AnyView)?
-    public var topTrailing: (() -> AnyView)?
-    public var midLeading: (() -> AnyView)?
-    public var bottomLeading: (() -> AnyView)?
-    public var bottomTrailing: (() -> AnyView)?
 
     /// The default navigation inner grid view.
     ///
@@ -94,7 +87,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
                     )
                 }
             },
-            topCenter: { topCenter?() },
+            topCenter: { gridConfig.getTopCenter() },
             topTrailing: {
                 // TODO: Extract to a separate view?
                 switch cameraControlState {
@@ -123,7 +116,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
                     NavigationUIMuteButton(isMuted: isMuted, action: onMute)
                 }
             },
-            midLeading: { midLeading?() },
+            midLeading: { gridConfig.getMidLeading() },
             midCenter: {
                 // This view does not allow center content.
                 Spacer()
@@ -135,12 +128,12 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
                     Spacer()
                 }
             },
-            bottomLeading: { bottomLeading?() },
+            bottomLeading: { gridConfig.getBottomLeading() },
             bottomCenter: {
                 // This view does not allow center content to prevent overlaying the puck.
                 Spacer()
             },
-            bottomTrailing: { bottomTrailing?() }
+            bottomTrailing: { gridConfig.getBottomTrailing() }
         )
     }
 }

@@ -8,6 +8,8 @@ import SwiftUI
 
 struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
+    @Environment(\.navigationInnerGridConfiguration) private var gridConfig
+    @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
 
     private let navigationState: NavigationState?
 
@@ -28,23 +30,11 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     let isMuted: Bool
     let onMute: () -> Void
 
-    // MARK: Configurable Views
-
-    var topCenter: (() -> AnyView)?
-    var topTrailing: (() -> AnyView)?
-    var midLeading: (() -> AnyView)?
-    var bottomTrailing: (() -> AnyView)?
-
-    var progressView: (NavigationState?, (() -> Void)?) -> AnyView
-    var instructionsView: (NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView
-    var currentRoadNameView: (NavigationState?) -> AnyView
-
     // NOTE: These don't really follow our usual coding style as they are internal.
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
         speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
-        views: NavigationViewComponentBuilder,
         isMuted: Bool,
         showMute: Bool = true,
         onMute: @escaping () -> Void,
@@ -65,10 +55,6 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.onZoomOut = onZoomOut
         self.cameraControlState = cameraControlState
         self.onTapExit = onTapExit
-
-        progressView = views.progressView
-        instructionsView = views.instructionsView
-        currentRoadNameView = views.currentRoadNameView
     }
 
     var body: some View {
@@ -78,11 +64,15 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     Spacer()
 
                     HStack {
-                        progressView(navigationState, onTapExit)
+                        componentsConfig.getProgressView(navigationState, onTapExit: onTapExit)
                     }
                 }
 
-                instructionsView(navigationState, $isInstructionViewExpanded, .constant(.zero))
+                componentsConfig.getInstructionsView(
+                    navigationState,
+                    isExpanded: $isInstructionViewExpanded,
+                    sizeWhenNotExpanded: .constant(.zero)
+                )
             }
 
             Spacer().frame(width: 16)
@@ -93,7 +83,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     HStack {
                         Spacer(minLength: 64)
 
-                        currentRoadNameView(navigationState)
+                        componentsConfig.getCurrentRoadNameView(navigationState)
 
                         Spacer(minLength: 64)
                     }
@@ -115,13 +105,15 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     cameraControlState: cameraControlState
                 )
                 .innerGrid {
-                    topCenter?()
+                    gridConfig.getTopCenter()
                 } topTrailing: {
-                    topTrailing?()
+                    gridConfig.getTopTrailing()
                 } midLeading: {
-                    midLeading?()
+                    gridConfig.getMidLeading()
+                } bottomLeading: {
+                    gridConfig.getBottomLeading()
                 } bottomTrailing: {
-                    bottomTrailing?()
+                    gridConfig.getBottomTrailing()
                 }
             }
         }
