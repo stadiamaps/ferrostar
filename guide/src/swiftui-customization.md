@@ -41,7 +41,7 @@ in addition to the puck, which snaps to the route line.
 
 ### Customizing the Map View's Content Inset
 
-The content inset is used on the ferrostar NavigationMapView (and MapLibre's SwiftUI-DSL MapView) to control
+The content inset is used on the Ferrostar NavigationMapView (and MapLibre's SwiftUI DSL MapView) to control
 the padding around the center of the map. This is useful for moving the user's puck to the bottom of the screen
 and when landscape, to the trailing half.
 
@@ -83,11 +83,11 @@ The units of the `InstructionsView` are controlled using the formatter settings
 you passed to the `NavigationMapView` (if you’re using it).
 If you’re not using the `NavigationMapView`, you can pass a formatter directly.
 
-The `TripProgressView` included in ferrostar includes a basic layout showing the
+The `TripProgressView` included in Ferrostar includes a basic layout showing the
 progress of the trip, formatted with the specified or default `FormatterCollection`.
 
 The `CurrentRoadNameView` is a route colored label that specifies the name of the road
-the puck is currently on. It's styled to match the default ferrostar route style.
+the puck is currently on. It's styled to match the default Ferrostar route style.
 
 All of these views can be replaced using their view modifier extensions.
 
@@ -121,13 +121,13 @@ However, it's also likely if you were building a custom navigation view that you
 > [!IMPORTANT]
 > This is opt-in only.
 
-If your server is configured to provide speed limits, you can use the `navigationSpeedLimit` view modifier extension.
+If your route provider includes speed limits, you can use the `navigationSpeedLimit` view modifier extension.
 
 ```swift
     DynamicallyOrientingNavigationView(...)
         .navigationSpeedLimit(
             speedLimit: speedLimitMeasurement,
-            speedLimitStyle: .viennaConvention // .mutcdStyle
+            speedLimitStyle: .viennaConvention // Vienna convention = most of the world; you can use .mutcdStyle for the US style
         )
 ```
 
