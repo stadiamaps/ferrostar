@@ -12,7 +12,6 @@ public struct PortraitNavigationView: View {
     @Environment(\.speedLimitConfiguration) private var speedLimitConfig
     @Environment(\.navigationInnerGridConfiguration) private var gridConfig
     @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
-    @Environment(\.navigationMapViewContentInsetConfiguration) private var mapInsetConfig
 
     let styleURL: URL
     @Binding var camera: MapViewCamera
@@ -79,9 +78,6 @@ public struct PortraitNavigationView: View {
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(
-                    calculatedMapViewInsets(for: geometry)
-                )
 
                 PortraitNavigationOverlayView(
                     navigationState: navigationState,
@@ -113,15 +109,6 @@ public struct PortraitNavigationView: View {
                 }
                 .complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
-        }
-    }
-
-    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
-        if case .rect = camera.state {
-            .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
-        } else {
-            // Use convenience accessor that handles fallback automatically
-            mapInsetConfig.getPortraitInset(for: geometry)
         }
     }
 }

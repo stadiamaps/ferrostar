@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "52421bf02a8b47a179ed11553e80aa400913e55e",
-        "version" : "6.18.1"
+        "revision" : "82fd2565148fafa3478a2951bb709414950bda6f",
+        "version" : "6.12.3"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "revision" : "ee133a696dce312da292b00d0944aafaa808eaca",
-        "version" : "0.4.0"
+        "revision" : "68f3ed6c4b62afab27a84425494cb61421a61ac1",
+        "version" : "0.3.1"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "327a93f6c61827cc21c897cc528edad5fc0b6b7e",
-        "version" : "0.15.0"
+        "revision" : "ee6839116d5268347ba17c20499f15d35f9ef7de",
+        "version" : "0.14.0"
       }
     },
     {

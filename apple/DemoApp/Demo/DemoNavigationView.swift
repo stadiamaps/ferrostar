@@ -69,12 +69,21 @@ struct DemoNavigationView: View {
                     CircleStyleLayer(identifier: "foo", source: source)
                 }
             )
+            .navigationMapViewRouteOverlay { state in
+                if let routeGeometry = state?.routeGeometry {
+                    RouteStyleLayer(
+                        polyline: MLNPolylineFeature(coordinates: routeGeometry.map(\.clLocationCoordinate2D)),
+                        identifier: "route-polyline",
+                        style: TravelledRouteStyle()
+                    )
+                }
+            }
             .navigationSpeedLimit(
                 // Configure speed limit signage based on user preference or location
                 speedLimit: model.core.annotation?.speedLimit,
                 speedLimitStyle: .mutcdStyle
             )
-            .innerGrid(
+            .navigationViewInnerGrid(
                 topCenter: {
                     if let errorMessage = model.errorMessage {
                         NavigationUIBanner(severity: .error) {

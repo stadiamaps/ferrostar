@@ -10,7 +10,6 @@ import SwiftUI
 public struct DynamicallyOrientingNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
     @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
-    @Environment(\.navigationMapViewContentInsetConfiguration) private var mapInsetConfig
 
     @State private var orientation = UIDevice.current.orientation
 
@@ -82,9 +81,6 @@ public struct DynamicallyOrientingNavigationView: View {
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(
-                    calculatedMapViewInsets(for: geometry)
-                )
 
                 switch orientation {
                 case .landscapeLeft, .landscapeRight:
@@ -156,15 +152,6 @@ public struct DynamicallyOrientingNavigationView: View {
             NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
         ) { _ in
             orientation = UIDevice.current.orientation
-        }
-    }
-
-    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
-        if case .rect = camera.state {
-            .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
-        } else {
-            // Use convenience accessor that handles fallback automatically
-            mapInsetConfig.getDynamicInset(for: orientation, geometry: geometry)
         }
     }
 }
