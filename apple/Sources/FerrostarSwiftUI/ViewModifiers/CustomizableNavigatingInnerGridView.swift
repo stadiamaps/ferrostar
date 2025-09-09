@@ -126,7 +126,36 @@ public extension View {
     ///   - bottomLeading: The bottom leading view content.
     ///   - bottomTrailing: The bottom trailing view content.
     /// - Returns: A modified view with inner grid configuration in the environment.
+    @available(*, deprecated, renamed: "navigationViewInnerGrid")
     func innerGrid(
+        @ViewBuilder topCenter: @escaping () -> some View = { Spacer() },
+        @ViewBuilder topTrailing: @escaping () -> some View = { Spacer() },
+        @ViewBuilder midLeading: @escaping () -> some View = { Spacer() },
+        @ViewBuilder bottomLeading: @escaping () -> some View = { Spacer() },
+        @ViewBuilder bottomTrailing: @escaping () -> some View = { Spacer() }
+    ) -> some View {
+        modifier(NavigationInnerGridViewModifier(
+            topCenter: { AnyView(topCenter()) },
+            topTrailing: { AnyView(topTrailing()) },
+            midLeading: { AnyView(midLeading()) },
+            bottomLeading: { AnyView(bottomLeading()) },
+            bottomTrailing: { AnyView(bottomTrailing()) }
+        ))
+    }
+
+    /// Customize views on the navigating inner grid view that are not already being used.
+    ///
+    /// This modifier sets inner grid configuration in the environment that can be read
+    /// by child views that conform to CustomizableNavigatingInnerGridView.
+    ///
+    /// - Parameters:
+    ///   - topCenter: The top center view content.
+    ///   - topTrailing: The top trailing view content.
+    ///   - midLeading: The mid leading view content.
+    ///   - bottomLeading: The bottom leading view content.
+    ///   - bottomTrailing: The bottom trailing view content.
+    /// - Returns: A modified view with inner grid configuration in the environment.
+    func navigationViewInnerGrid(
         @ViewBuilder topCenter: @escaping () -> some View = { Spacer() },
         @ViewBuilder topTrailing: @escaping () -> some View = { Spacer() },
         @ViewBuilder midLeading: @escaping () -> some View = { Spacer() },

@@ -130,6 +130,7 @@ public extension View {
     ///
     /// - Parameter landscape: Generate the content inset for landscape mode with a given geometry proxy.
     /// - Returns: A modified view with navigation map content insets configuration in the environment.
+    @available(*, deprecated, renamed: "navigationMapViewContentInset")
     func navigationViewMapContentInset(
         landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
     ) -> some View {
@@ -141,6 +142,7 @@ public extension View {
     ///
     /// - Parameter portrait: Generate the content inset for portrait mode with a given geometry proxy.
     /// - Returns: A modified view with navigation map content insets configuration in the environment.
+    @available(*, deprecated, renamed: "navigationMapViewContentInset")
     func navigationViewMapContentInset(
         portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode
     ) -> some View {
@@ -154,6 +156,7 @@ public extension View {
     ///   - landscape: Generate the content inset for landscape mode with a given geometry proxy.
     ///   - portrait: Generate the content inset for portrait mode with a given geometry proxy.
     /// - Returns: A modified view with navigation map content insets configuration in the environment.
+    @available(*, deprecated, renamed: "navigationMapViewContentInset")
     func navigationViewMapContentInset(
         landscape: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode,
         portrait: @escaping (GeometryProxy) -> NavigationMapViewContentInsetMode

@@ -135,7 +135,6 @@ public struct NavigatingInnerGridView: View {
             },
             bottomTrailing: { gridConfig.getBottomTrailing() }
         )
-        .background(Color.purple.opacity(0.2))
     }
 }
 
