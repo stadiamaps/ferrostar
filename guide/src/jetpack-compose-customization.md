@@ -23,7 +23,47 @@ See the [vendors page](./vendors.md) for some ideas.
 
 ### Camera
 
-TODO: Docs on how this works.
+Ferrostar's Jetpack Compose views provide several forms of camera configuration.
+`DynamicallyOrientingNavigationView` and other built-in composable layouts have two camera parameters:
+`camera` and `navigationCamera`.
+
+`camera` contains the mutable state of the map camera.
+It is bidirectional, so you can mutate this state on your own to set the camera from your app code
+(e.g., your view model may respond to a list selection by changing the map viewport).
+This always reflects the current state of the camera.
+You typically create instances of this camera with the `rememberSaveableMapViewCamera` helper function.
+
+The `navigationCamera` parameter controls the camera to use during active navigation.
+This is a _template value_, not a binding!
+When you start a navigation session, or need to reset the camera (e.g, when the user presses a re-center button
+after manually panning the camera or looking at the route overview),
+the `camera` will be internally reset to the value of `navigationCamera`.
+
+`navigationMapViewCamera` provides a default value, but you can also manually create your own instance of `MapViewCamera`
+for maximal control.
+The default is to keep the location puck toward the bottom of the view,
+but the following code shows how you can change the top padding
+to bring the puck "up" closer to the center of the screen.
+
+```kotlin
+  val camera = rememberSaveableMapViewCamera(MapViewCamera.TrackingUserLocation())
+  val screenOrientation = LocalConfiguration.current.orientation
+  val start = if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) 0.5f else 0.0f
+
+  val cameraPadding = CameraPadding.fractionOfScreen(start = start, top = 0.25f)
+
+  val navigationCamera = MapViewCamera.TrackingUserLocationWithBearing(
+    zoom = NavigationActivity.Automotive.zoom,
+    pitch = NavigationActivity.Automotive.pitch,
+    padding = cameraPadding)
+
+  DynamicallyOrientingNavigationView(
+      modifier = Modifier.fillMaxSize(),
+      styleUrl = AppModule.mapStyleUrl,
+      camera = camera,
+      navigationCamera = navigationCamera,
+	  // ...
+```
 
 ### Adding map layers
 
