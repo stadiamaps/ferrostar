@@ -54,10 +54,10 @@ private struct NavigationMapViewRouteOverlayViewModifier: ViewModifier {
 // MARK: - View Extensions
 
 public extension View {
-    /// Configure navigation view map content insets for landscape orientation.
+    /// Override the map view's route polyline overlay.
     ///
-    /// - Parameter landscape: Generate the content inset for landscape mode with a given geometry proxy.
-    /// - Returns: A modified view with navigation map content insets configuration in the environment.
+    /// - Parameter routeOverlay: The MapView content builder that produces the NavigationMapView's route overlay.
+    /// - Returns: A modified view heirarchy.
     func navigationMapViewRouteOverlay(
         @MapViewContentBuilder routeOverlay: @escaping ((NavigationState?) -> some StyleLayerCollection)
     ) -> some View {
