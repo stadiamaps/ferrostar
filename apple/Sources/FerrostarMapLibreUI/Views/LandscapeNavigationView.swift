@@ -8,38 +8,25 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ``TripProgressView`` on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View,
-    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
-{
+public struct LandscapeNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
+    @Environment(\.speedLimitConfiguration) private var speedLimitConfig
+    @Environment(\.navigationInnerGridConfiguration) private var gridConfig
+    @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
+    @Environment(\.navigationMapViewContentInsetConfiguration) private var mapInsetConfig
 
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
-
-    public var speedLimit: Measurement<UnitSpeed>?
-    public var speedLimitStyle: SpeedLimitView.SignageStyle?
 
     let isMuted: Bool
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets
-
-    // MARK: Configurable Views
-
-    public var topCenter: (() -> AnyView)?
-    public var topTrailing: (() -> AnyView)?
-    public var midLeading: (() -> AnyView)?
-    public var bottomTrailing: (() -> AnyView)?
-
-    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
-    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
-    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     /// Create a landscape navigation view. This view is optimized for display on a landscape screen where the
     /// instructions are on the leading half of the screen
@@ -77,7 +64,6 @@ public struct LandscapeNavigationView: View,
         userLayers = makeMapContent()
         _camera = camera
         self.navigationCamera = navigationCamera
-        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -99,13 +85,8 @@ public struct LandscapeNavigationView: View,
 
                 LandscapeNavigationOverlayView(
                     navigationState: navigationState,
-                    speedLimit: speedLimit,
-                    speedLimitStyle: speedLimitStyle,
-                    views: NavigationViewComponentBuilder(
-                        progressView: progressView,
-                        instructionsView: instructionsView,
-                        currentRoadNameView: currentRoadNameView
-                    ),
+                    speedLimit: speedLimitConfig.speedLimit,
+                    speedLimitStyle: speedLimitConfig.speedLimitStyle,
                     isMuted: isMuted,
                     showMute: true,
                     onMute: onTapMute,
@@ -120,13 +101,15 @@ public struct LandscapeNavigationView: View,
                     onTapExit: onTapExit
                 )
                 .innerGrid {
-                    topCenter?()
+                    gridConfig.getTopCenter()
                 } topTrailing: {
-                    topTrailing?()
+                    gridConfig.getTopTrailing()
                 } midLeading: {
-                    midLeading?()
+                    gridConfig.getMidLeading()
+                } bottomLeading: {
+                    gridConfig.getBottomLeading()
                 } bottomTrailing: {
-                    bottomTrailing?()
+                    gridConfig.getBottomTrailing()
                 }
                 .complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
@@ -137,7 +120,8 @@ public struct LandscapeNavigationView: View,
         if case .rect = camera.state {
             .edgeInset(UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0))
         } else {
-            mapInsets.landscape(geometry)
+            // Use convenience accessor that handles fallback automatically
+            mapInsetConfig.getLandscapeInset(for: geometry)
         }
     }
 }

@@ -6,8 +6,10 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
+struct LandscapeNavigationOverlayView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
+    @Environment(\.navigationInnerGridConfiguration) private var gridConfig
+    @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
 
     private let navigationState: NavigationState?
 
@@ -28,23 +30,11 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     let isMuted: Bool
     let onMute: () -> Void
 
-    // MARK: Configurable Views
-
-    var topCenter: (() -> AnyView)?
-    var topTrailing: (() -> AnyView)?
-    var midLeading: (() -> AnyView)?
-    var bottomTrailing: (() -> AnyView)?
-
-    var progressView: (NavigationState?, (() -> Void)?) -> AnyView
-    var instructionsView: (NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView
-    var currentRoadNameView: (NavigationState?) -> AnyView
-
     // NOTE: These don't really follow our usual coding style as they are internal.
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
         speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
-        views: NavigationViewComponentBuilder,
         isMuted: Bool,
         showMute: Bool = true,
         onMute: @escaping () -> Void,
@@ -65,10 +55,6 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.onZoomOut = onZoomOut
         self.cameraControlState = cameraControlState
         self.onTapExit = onTapExit
-
-        progressView = views.progressView
-        instructionsView = views.instructionsView
-        currentRoadNameView = views.currentRoadNameView
     }
 
     var body: some View {
@@ -78,25 +64,32 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     Spacer()
 
                     HStack {
-                        progressView(navigationState, onTapExit)
+                        componentsConfig.getProgressView(navigationState, onTapExit: onTapExit)
                     }
                 }
 
-                instructionsView(navigationState, $isInstructionViewExpanded, .constant(.zero))
+                componentsConfig.getInstructionsView(
+                    navigationState,
+                    isExpanded: $isInstructionViewExpanded,
+                    sizeWhenNotExpanded: .constant(.zero)
+                )
             }
 
             Spacer().frame(width: 16)
 
             ZStack(alignment: .bottom) {
                 // Centering will push up the grid. Allowing for the road name
-                if case .hidden = cameraControlState {
+                switch cameraControlState {
+                case .hidden, .showRouteOverview:
                     HStack {
                         Spacer(minLength: 64)
 
-                        currentRoadNameView(navigationState)
+                        componentsConfig.getCurrentRoadNameView(navigationState)
 
                         Spacer(minLength: 64)
                     }
+                case .showRecenter:
+                    EmptyView()
                 }
 
                 // The inner content is displayed vertically full screen
@@ -115,13 +108,15 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     cameraControlState: cameraControlState
                 )
                 .innerGrid {
-                    topCenter?()
+                    gridConfig.getTopCenter()
                 } topTrailing: {
-                    topTrailing?()
+                    gridConfig.getTopTrailing()
                 } midLeading: {
-                    midLeading?()
+                    gridConfig.getMidLeading()
+                } bottomLeading: {
+                    gridConfig.getBottomLeading()
                 } bottomTrailing: {
-                    bottomTrailing?()
+                    gridConfig.getBottomTrailing()
                 }
             }
         }

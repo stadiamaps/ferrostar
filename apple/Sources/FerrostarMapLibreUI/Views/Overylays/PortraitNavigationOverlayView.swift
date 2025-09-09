@@ -6,8 +6,10 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
+struct PortraitNavigationOverlayView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
+    @Environment(\.navigationInnerGridConfiguration) private var gridConfig
+    @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
 
     private let navigationState: NavigationState?
 
@@ -29,22 +31,10 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
     let isMuted: Bool
     let onMute: () -> Void
 
-    // MARK: Configurable Views
-
-    var topCenter: (() -> AnyView)?
-    var topTrailing: (() -> AnyView)?
-    var midLeading: (() -> AnyView)?
-    var bottomTrailing: (() -> AnyView)?
-
-    var progressView: (NavigationState?, (() -> Void)?) -> AnyView
-    var instructionsView: (NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView
-    var currentRoadNameView: (NavigationState?) -> AnyView
-
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
         speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
-        views: NavigationViewComponentBuilder,
         isMuted: Bool,
         showMute: Bool = true,
         onMute: @escaping () -> Void,
@@ -65,10 +55,6 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
         self.onZoomOut = onZoomOut
         self.cameraControlState = cameraControlState
         self.onTapExit = onTapExit
-
-        progressView = views.progressView
-        instructionsView = views.instructionsView
-        currentRoadNameView = views.currentRoadNameView
     }
 
     var body: some View {
@@ -92,28 +78,37 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
                     cameraControlState: cameraControlState
                 )
                 .innerGrid {
-                    topCenter?()
+                    gridConfig.getTopCenter()
                 } topTrailing: {
-                    topTrailing?()
+                    gridConfig.getTopTrailing()
                 } midLeading: {
-                    midLeading?()
+                    gridConfig.getMidLeading()
+                } bottomLeading: {
+                    gridConfig.getBottomLeading()
                 } bottomTrailing: {
-                    bottomTrailing?()
+                    gridConfig.getBottomTrailing()
                 }
 
                 if case .navigating = navigationState?.tripState {
                     VStack {
-                        if case .hidden = cameraControlState {
-                            currentRoadNameView(navigationState)
+                        switch cameraControlState {
+                        case .hidden, .showRouteOverview:
+                            componentsConfig.getCurrentRoadNameView(navigationState)
+                        case .showRecenter:
+                            EmptyView()
                         }
 
-                        progressView(navigationState, onTapExit)
+                        componentsConfig.getProgressView(navigationState, onTapExit: onTapExit)
                     }
                 }
             }
             .padding(.top, instructionsViewSizeWhenNotExpanded.height + 16)
 
-            instructionsView(navigationState, $isInstructionViewExpanded, $instructionsViewSizeWhenNotExpanded)
+            componentsConfig.getInstructionsView(
+                navigationState,
+                isExpanded: $isInstructionViewExpanded,
+                sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
+            )
         }
     }
 }
