@@ -57,7 +57,7 @@ public extension View {
     /// Override the map view's route polyline overlay.
     ///
     /// - Parameter routeOverlay: The MapView content builder that produces the NavigationMapView's route overlay.
-    /// - Returns: A modified view heirarchy.
+    /// - Returns: A modified view hierarchy.
     func navigationMapViewRouteOverlay(
         @MapViewContentBuilder routeOverlay: @escaping ((NavigationState?) -> some StyleLayerCollection)
     ) -> some View {
