@@ -31,6 +31,48 @@ You can add your own overlays to the map as well (any class, including `Dynamica
 The `content` closure argument lets you add more layers.
 See the demo app for an example.
 
+### Styling the route polyline
+
+You can customize or replace the built-in route polyline rendering with the `routeOverlayBuilder` parameter
+on all MapLibre composable views.
+Here's an example with `DynamicallyOrientingNavigationView`:
+
+```kotlin
+  DynamicallyOrientingNavigationView(
+      modifier = Modifier.fillMaxSize(),
+      styleUrl = AppModule.mapStyleUrl,
+      camera = camera,
+      viewModel = viewModel,
+      routeOverlayBuilder = RouteOverlayBuilder(
+        navigationPath = { uiState ->
+          uiState.routeGeometry?.let { geometry ->
+		    // BorderedPolyline is part of Ferrostar;
+			// you can also drop down to the raw Polyline and build your own custom style.
+            BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0, color = "#3583dd33")
+          }
+        }),
+	  // ...
+```
+
+## Configuring visual elements of the composable map views
+
+You can configure which controls appear in our MapLibre composable views with the `config` parameter.
+Here's an example with `DynamicallyOrientingNavigationView`:
+
+```kotlin
+  DynamicallyOrientingNavigationView(
+      modifier = Modifier.fillMaxSize(),
+      styleUrl = AppModule.mapStyleUrl,
+      camera = camera,
+      viewModel = viewModel,
+      config = VisualNavigationViewConfig(showMute = true, showZoom = false, showRecenter = true, speedLimitStyle = SignageStyle.MUTCD),
+      // ...
+```
+
+You can also customize or replace the instruction banners, trip progress view, and road name overlays with your own composables.
+These are configurable via the `NavigationComponentBuilder`.
+Instruction banners in particular have a lot of built-in configurablity, which we'll talk about in the next section.
+
 ## Customizing the instruction banners
 
 Ferrostar includes a number of views related to instruction banners.
