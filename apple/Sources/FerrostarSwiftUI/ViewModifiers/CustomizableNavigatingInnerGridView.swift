@@ -113,11 +113,6 @@ private struct NavigationInnerGridViewModifier: ViewModifier {
 
 // MARK: - Type-Safe Extensions
 
-/// Protocol for views that can display customizable inner grid content
-public protocol CustomizableNavigatingInnerGridView where Self: View {
-    // No stored properties - views should read from environment instead
-}
-
 public extension View {
     /// Customize views on the navigating inner grid view that are not already being used.
     ///

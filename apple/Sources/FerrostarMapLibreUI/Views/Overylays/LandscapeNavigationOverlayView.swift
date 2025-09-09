@@ -6,7 +6,7 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
+struct LandscapeNavigationOverlayView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
     @Environment(\.navigationInnerGridConfiguration) private var gridConfig
     @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
@@ -79,7 +79,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
 
             ZStack(alignment: .bottom) {
                 // Centering will push up the grid. Allowing for the road name
-                if case .hidden = cameraControlState {
+                switch cameraControlState {
+                case .hidden, .showRouteOverview:
                     HStack {
                         Spacer(minLength: 64)
 
@@ -87,6 +88,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
 
                         Spacer(minLength: 64)
                     }
+                case .showRecenter:
+                    EmptyView()
                 }
 
                 // The inner content is displayed vertically full screen

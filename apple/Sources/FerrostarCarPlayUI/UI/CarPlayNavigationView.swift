@@ -7,9 +7,7 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-public struct CarPlayNavigationView: View,
-    SpeedLimitViewHost, NavigationViewComponentsHost, NavigationMapViewContentInsetHost
-{
+public struct CarPlayNavigationView: View {
     @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
     @Environment(\.navigationMapViewContentInsetConfiguration) private var mapInsetConfig
 
@@ -50,13 +48,10 @@ public struct CarPlayNavigationView: View,
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(calculatedMapViewInsets(for: geometry))
+                .navigationMapViewContentInset(
+                    mapInsetConfig.getLandscapeInset(for: geometry)
+                )
             }
         }
-    }
-
-    func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
-        // Use convenience accessor that handles fallback automatically
-        mapInsetConfig.getLandscapeInset(for: geometry)
     }
 }

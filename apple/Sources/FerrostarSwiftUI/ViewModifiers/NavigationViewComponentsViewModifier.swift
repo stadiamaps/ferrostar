@@ -1,5 +1,4 @@
 import FerrostarCore
-import FerrostarSwiftUI
 import SwiftUI
 
 // MARK: - Navigation View Components Configuration Environment
@@ -88,11 +87,6 @@ private struct NavigationViewComponentsViewModifier: ViewModifier {
 }
 
 // MARK: - Type-Safe Extensions
-
-/// Protocol for views that can display customizable navigation components
-public protocol NavigationViewComponentsHost where Self: View {
-    // No stored properties - views should read from environment instead
-}
 
 public extension View {
     /// Configure the navigation view components that are displayed during navigation.

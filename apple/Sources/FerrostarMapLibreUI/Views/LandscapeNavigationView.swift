@@ -8,10 +8,7 @@ import SwiftUI
 
 /// A landscape orientation navigation view that includes the InstructionsView and ``TripProgressView`` on the
 /// leading half of the screen.
-public struct LandscapeNavigationView: View,
-    CustomizableNavigatingInnerGridView, NavigationViewComponentsHost, NavigationMapViewContentInsetHost,
-    SpeedLimitViewHost
-{
+public struct LandscapeNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
     @Environment(\.speedLimitConfiguration) private var speedLimitConfig
     @Environment(\.navigationInnerGridConfiguration) private var gridConfig
@@ -88,8 +85,8 @@ public struct LandscapeNavigationView: View,
 
                 LandscapeNavigationOverlayView(
                     navigationState: navigationState,
-                    speedLimit: speedLimitConfig.getSpeedLimit,
-                    speedLimitStyle: speedLimitConfig.getSpeedLimitStyle,
+                    speedLimit: speedLimitConfig.speedLimit,
+                    speedLimitStyle: speedLimitConfig.speedLimitStyle,
                     isMuted: isMuted,
                     showMute: true,
                     onMute: onTapMute,

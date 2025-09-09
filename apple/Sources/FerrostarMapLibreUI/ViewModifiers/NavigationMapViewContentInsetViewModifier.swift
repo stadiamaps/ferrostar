@@ -80,11 +80,6 @@ private struct NavigationMapViewContentInsetViewModifier: ViewModifier {
 
 // MARK: - Type-Safe Extensions
 
-/// Protocol for views that can display customizable navigation map content insets
-public protocol NavigationMapViewContentInsetHost where Self: View {
-    // No stored properties - views should read from environment instead
-}
-
 public extension View {
     /// Configure navigation view map content insets for landscape orientation.
     ///

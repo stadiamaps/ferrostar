@@ -13,6 +13,9 @@ struct DemoApp: App {
                             errorMessage, systemImage: "network.slash",
                             description: Text("error navigating.")
                         )
+                        .onTapGesture {
+                            model.errorMessage = nil
+                        }
                     } else {
                         DemoNavigationView(model: model)
                     }
@@ -22,9 +25,6 @@ struct DemoApp: App {
                         description: Text("Unable to create model.")
                     )
                 }
-            }
-            .onTapGesture {
-                model?.errorMessage = nil
             }
         }
     }

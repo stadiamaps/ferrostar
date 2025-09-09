@@ -7,10 +7,7 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A portrait orientation navigation view that includes the InstructionsView at the top.
-public struct PortraitNavigationView: View,
-    CustomizableNavigatingInnerGridView, NavigationViewComponentsHost, NavigationMapViewContentInsetHost,
-    SpeedLimitViewHost
-{
+public struct PortraitNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
     @Environment(\.speedLimitConfiguration) private var speedLimitConfig
     @Environment(\.navigationInnerGridConfiguration) private var gridConfig
@@ -88,8 +85,8 @@ public struct PortraitNavigationView: View,
 
                 PortraitNavigationOverlayView(
                     navigationState: navigationState,
-                    speedLimit: speedLimitConfig.getSpeedLimit,
-                    speedLimitStyle: speedLimitConfig.getSpeedLimitStyle,
+                    speedLimit: speedLimitConfig.speedLimit,
+                    speedLimitStyle: speedLimitConfig.speedLimitStyle,
                     isMuted: isMuted,
                     showMute: true,
                     onMute: onTapMute,

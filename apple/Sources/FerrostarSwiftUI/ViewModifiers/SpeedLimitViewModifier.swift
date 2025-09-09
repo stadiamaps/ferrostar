@@ -11,18 +11,6 @@ public struct SpeedLimitConfiguration {
         self.speedLimit = speedLimit
         self.speedLimitStyle = speedLimitStyle
     }
-
-    // MARK: - Convenience Accessors
-
-    /// Get the speed limit value, if available.
-    public var getSpeedLimit: Measurement<UnitSpeed>? {
-        speedLimit
-    }
-
-    /// Get the speed limit style.
-    public var getSpeedLimitStyle: SpeedLimitView.SignageStyle {
-        speedLimitStyle
-    }
 }
 
 private struct SpeedLimitConfigurationKey: EnvironmentKey {
@@ -55,11 +43,6 @@ private struct SpeedLimitViewModifier: ViewModifier {
 }
 
 // MARK: - Type-Safe Extensions
-
-/// Protocol for views that can display speed limit information
-public protocol SpeedLimitViewHost where Self: View {
-    // No stored properties - views should read from environment instead
-}
 
 public extension View {
     /// Configure the view hierarchy to display a speed limit with a specific signage style.

@@ -21,7 +21,7 @@ public enum CameraControlState {
 /// When navigation is underway, we use this standardized grid view with pre-defined metadata and interactions.
 /// This is the default UI and can be customized to some extent. If you need more customization,
 /// use the ``InnerGridView``.
-public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView {
+public struct NavigatingInnerGridView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
     @Environment(\.navigationInnerGridConfiguration) private var gridConfig
 
@@ -135,6 +135,7 @@ public struct NavigatingInnerGridView: View, CustomizableNavigatingInnerGridView
             },
             bottomTrailing: { gridConfig.getBottomTrailing() }
         )
+        .background(Color.purple.opacity(0.2))
     }
 }
 

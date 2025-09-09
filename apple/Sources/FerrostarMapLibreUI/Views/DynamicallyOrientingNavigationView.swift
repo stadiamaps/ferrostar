@@ -7,10 +7,7 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View,
-    CustomizableNavigatingInnerGridView, NavigationViewComponentsHost, NavigationMapViewContentInsetHost,
-    SpeedLimitViewHost
-{
+public struct DynamicallyOrientingNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
     @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
     @Environment(\.navigationMapViewContentInsetConfiguration) private var mapInsetConfig
@@ -93,8 +90,8 @@ public struct DynamicallyOrientingNavigationView: View,
                 case .landscapeLeft, .landscapeRight:
                     LandscapeNavigationOverlayView(
                         navigationState: navigationState,
-                        speedLimit: speedLimitConfig.getSpeedLimit,
-                        speedLimitStyle: speedLimitConfig.getSpeedLimitStyle,
+                        speedLimit: speedLimitConfig.speedLimit,
+                        speedLimitStyle: speedLimitConfig.speedLimitStyle,
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
@@ -124,8 +121,8 @@ public struct DynamicallyOrientingNavigationView: View,
                 default:
                     PortraitNavigationOverlayView(
                         navigationState: navigationState,
-                        speedLimit: speedLimitConfig.getSpeedLimit,
-                        speedLimitStyle: speedLimitConfig.getSpeedLimitStyle,
+                        speedLimit: speedLimitConfig.speedLimit,
+                        speedLimitStyle: speedLimitConfig.speedLimitStyle,
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,

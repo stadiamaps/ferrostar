@@ -6,7 +6,7 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
+struct PortraitNavigationOverlayView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
     @Environment(\.navigationInnerGridConfiguration) private var gridConfig
     @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
@@ -91,8 +91,11 @@ struct PortraitNavigationOverlayView: View, CustomizableNavigatingInnerGridView 
 
                 if case .navigating = navigationState?.tripState {
                     VStack {
-                        if case .hidden = cameraControlState {
+                        switch cameraControlState {
+                        case .hidden, .showRouteOverview:
                             componentsConfig.getCurrentRoadNameView(navigationState)
+                        case .showRecenter:
+                            EmptyView()
                         }
 
                         componentsConfig.getProgressView(navigationState, onTapExit: onTapExit)
