@@ -213,6 +213,19 @@ private extension DemoAppState {
         mapTemplate.automaticallyHidesNavigationBar = false
         mapTemplate.leadingNavigationBarButtons = leadingNavigationBarButtons(mapTemplate)
         mapTemplate.trailingNavigationBarButtons = trailingNavigationBarButtons(mapTemplate)
+
+        let cameraState: CameraControlState = if camera.isTrackingUserLocationWithCourse,
+                                                 let overviewCamera = coreState?.routeOverviewCamera
+        {
+            .showRouteOverview { [weak self] in
+                self?.camera = overviewCamera
+            }
+        } else {
+            .showRecenter { [weak self] in
+                self?.camera = .automotiveNavigation(zoom: 15)
+            }
+        }
+
         mapTemplate.mapButtons = [
             CarPlayMapButtons.zoomIn { [weak self] in
                 self?.camera.incrementZoom(by: 1)
@@ -220,16 +233,8 @@ private extension DemoAppState {
             CarPlayMapButtons.zoomOut { [weak self] in
                 self?.camera.incrementZoom(by: -1)
             },
-
-//            CarPlayMapButtons.centerOn(model.)
-        ]
-//        mapTemplate
-//            .mapButtons = [
-//                CarPlayMapButtons.zoomIn(action: zoomIn),
-//                CarPlayMapButtons.zoomOut(action: zoomOut),
-//                CarPlayMapButtons.recenterButton { [self] in
-//                model.camera = .automotiveNavigation(pitch: 25)
-//            }]
+            CarPlayMapButtons.camera(cameraState),
+        ].compactMap { $0 }
     }
 
     func mapTemplate(_ mapTemplate: CPMapTemplate, selectedPreviewFor _: CPTrip, using routeChoice: CPRouteChoice) {

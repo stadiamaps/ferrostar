@@ -46,9 +46,8 @@ class CarPlaySceneDelegate: NSObject, CPTemplateApplicationSceneDelegate {
         let carPlayModel = DemoCarPlayModel(model: model, interfaceController: interfaceController)
         templateApplicationScene.session.model = carPlayModel
 
-        let vc = CarPlayHostingController {
-            DemoCarPlayNavigationView(model: carPlayModel)
-        }
+        let view = DemoCarPlayNavigationView(model: carPlayModel)
+        let vc = UIHostingController(rootView: view)
         window.rootViewController = vc
         window.makeKeyAndVisible()
 

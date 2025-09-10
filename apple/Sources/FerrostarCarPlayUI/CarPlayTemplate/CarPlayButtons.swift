@@ -33,9 +33,8 @@ public enum CarPlayMapButtons {
         return button
     }
 
-    public static func centerOn(
-        _ state: CameraControlState,
-        action _: @escaping () -> Void
+    public static func camera(
+        _ state: CameraControlState
     ) -> CPMapButton? {
         switch state {
         case .hidden:
