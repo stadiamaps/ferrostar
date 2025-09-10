@@ -233,6 +233,7 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
         ".**.durationRemaining",
         dynamic_redaction(create_distance_redaction()),
     );
+    settings.add_redaction(".version", "[version]");
 
     settings
 }
