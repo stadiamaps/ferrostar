@@ -238,6 +238,7 @@ const val simpleRoute =
 
 class ValhallaCoreTest {
   private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
+  private val engine = RoutingEngine.Valhalla(valhallaEndpointUrl, "auto")
 
   @Test
   fun parseValhallaRouteResponse(): TestResult {
@@ -249,9 +250,7 @@ class ValhallaCoreTest {
         }
     val core =
         FerrostarCore(
-            routingEndpointURL = URL(valhallaEndpointUrl),
-            routingEngine = "valhalla",
-            profile = "auto",
+            engine,
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
@@ -303,9 +302,7 @@ class ValhallaCoreTest {
         }
     val core =
         FerrostarCore(
-            routingEndpointURL = URL(valhallaEndpointUrl),
-            routingEngine = "valhalla",
-            profile = "auto",
+            engine,
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
