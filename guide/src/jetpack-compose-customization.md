@@ -86,9 +86,9 @@ Here's an example with `DynamicallyOrientingNavigationView`:
       routeOverlayBuilder = RouteOverlayBuilder(
         navigationPath = { uiState ->
           uiState.routeGeometry?.let { geometry ->
-		    // BorderedPolyline is part of Ferrostar;
-			// you can also drop down to the raw Polyline and build your own custom style.
-            BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0, color = "#3583dd33")
+		    // BorderedPolyline is part of Ferrostar's MapLibre UI package.
+			// You can also drop down to the raw Polyline and build your own custom style.
+            BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0, color = "#3583dd", opacity = 0.7f, borderOpacity = 0.3f)
           }
         }),
 	  // ...
