@@ -9,7 +9,6 @@
 package com.stadiamaps.ferrostar.core
 
 import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
-import java.net.URL
 import java.time.Instant
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
