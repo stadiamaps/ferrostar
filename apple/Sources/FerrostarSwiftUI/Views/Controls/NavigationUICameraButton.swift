@@ -4,10 +4,10 @@ import SwiftUI
 public struct NavigationUICameraButton: View {
     let state: CameraControlState
 
-    /// <#Description#>
+    /// Create a Camera Centering Button
     ///
     /// - Parameters:
-    ///   - state: <#state description#>
+    ///   - state: The current state of the camera control.
     public init(state: CameraControlState) {
         self.state = state
     }
