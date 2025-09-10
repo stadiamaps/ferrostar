@@ -2,7 +2,8 @@ import FerrostarCore
 import MapLibre
 import MapLibreSwiftUI
 
-extension NavigationState {
+public extension NavigationState {
+    /// The MapViewCamera representing an overview of the route.
     var routeOverviewCamera: MapViewCamera? {
         guard let firstCoordinate = routeGeometry.first else {
             return nil

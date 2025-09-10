@@ -1,23 +1,6 @@
 import FerrostarCore
 import SwiftUI
 
-/// Determines which camera control is shown in the navigation inner grid view.
-public enum CameraControlState {
-    /// Don't show any camera control.
-    case hidden
-
-    /// Shows the recenter button.
-    ///
-    /// The action is responsible for resetting the camera
-    /// to a state that follows the user.
-    case showRecenter(() -> Void)
-
-    /// Shows the route overview button.
-    ///
-    /// The action is responsible for transitioning the camera to an overview of the route.
-    case showRouteOverview(() -> Void)
-}
-
 /// When navigation is underway, we use this standardized grid view with pre-defined metadata and interactions.
 /// This is the default UI and can be customized to some extent. If you need more customization,
 /// use the ``InnerGridView``.
@@ -89,28 +72,7 @@ public struct NavigatingInnerGridView: View {
             },
             topCenter: { gridConfig.getTopCenter() },
             topTrailing: {
-                // TODO: Extract to a separate view?
-                switch cameraControlState {
-                case .hidden:
-                    // Nothing
-                    EmptyView()
-                case let .showRecenter(onCenter):
-                    NavigationUIButton(action: onCenter) {
-                        Image(systemName: "location.north.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 18, height: 18)
-                    }
-                    .shadow(radius: 8)
-                case let .showRouteOverview(onRouteOverview):
-                    NavigationUIButton(action: onRouteOverview) {
-                        Image(systemName: "point.bottomleft.forward.to.point.topright.scurvepath")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 18, height: 18)
-                    }
-                    .shadow(radius: 8)
-                }
+                NavigationUICameraButton(state: cameraControlState)
 
                 if showMute {
                     NavigationUIMuteButton(isMuted: isMuted, action: onMute)

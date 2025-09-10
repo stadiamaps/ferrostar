@@ -4,7 +4,7 @@ import MapLibreSwiftUI
 import SwiftUI
 
 struct DemoCarPlayNavigationView: View {
-    @State var model: DemoCarPlayModel
+    @Bindable var model: DemoCarPlayModel
 
     var body: some View {
         ZStack {
@@ -14,12 +14,22 @@ struct DemoCarPlayNavigationView: View {
                     description: Text("error navigating.")
                 )
             } else {
-                @Bindable var bindableModel = model
                 CarPlayNavigationView(
-                    navigationState: model.coreState,
                     styleURL: AppDefaults.mapStyleURL,
-                    camera: $bindableModel.camera
+                    camera: $model.camera,
+                    navigationCamera: .automotiveNavigation(zoom: 14),
+                    navigationState: model.coreState
                 )
+                .navigationSpeedLimit(
+                    // Configure speed limit signage based on user preference or location
+                    speedLimit: model.core.annotation?.speedLimit,
+                    speedLimitStyle: .mutcdStyle
+                )
+                .navigationMapViewContentInset(landscape: { proxy in
+                    // TODO: This needs more testing on real car play screens.
+                    //       If you come up with a solid content inset, feel free to post an issue.
+                    .landscape(within: proxy, verticalPct: 0.7, horizontalPct: 0.95)
+                })
             }
         }
     }
