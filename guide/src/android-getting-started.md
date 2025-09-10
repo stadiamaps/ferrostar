@@ -197,7 +197,7 @@ which will trigger updates.
 
 Before we configure the Ferrostar core, we need to set up an HTTP client.
 This is typically stored as an instance variable in one of your classes (ex: activity).
-We use the popular OkHttp library for this.
+We use the popular OkHttp library for this, but the Core is configured to allow alternatives through the HttpClientProvider interface.
 Here we’ve set up a client with a global timeout of 15 seconds.
 Refer to the [OkHttp documentation](https://square.github.io/okhttp/) for further details on configuration.
 
@@ -205,6 +205,7 @@ Refer to the [OkHttp documentation](https://square.github.io/okhttp/) for furthe
 private val httpClient = OkHttpClient.Builder()
     .callTimeout(Duration.ofSeconds(15))
     .build()
+    .toOkHttpClientProvider()
 ```
 
 ### (Optional) Configure annotation parsing
@@ -231,16 +232,14 @@ private val core =
           locationProvider = locationProvider,
           foregroundServiceManager = foregroundServiceManager,
           navigationControllerConfig =
-              NavigationControllerConfig(
-                  WaypointAdvanceMode.WaypointWithinRange(100.0),
-                  StepAdvanceMode.RelativeLineStringDistance(
-                      minimumHorizontalAccuracy = 25U,
-                      specialAdvanceConditions =
-                          // NOTE: We have not yet put this threshold through extensive real-world
-                          // testing
-                          SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
-                  RouteDeviationTracking.StaticThreshold(15U, 50.0),
-                  CourseFiltering.SNAP_TO_ROUTE)
+            NavigationControllerConfig(
+                WaypointAdvanceMode.WaypointWithinRange(100.0),
+                stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
+                // This is a special condition used for the last two steps of the route. As we can't assume the
+                // user continue moving past the step like the other conditions.
+                stepAdvanceDistanceToEndOfStep(30u, 32u),
+                RouteDeviationTracking.StaticThreshold(15U, 50.0),
+                CourseFiltering.SNAP_TO_ROUTE),
       )
 ```
 

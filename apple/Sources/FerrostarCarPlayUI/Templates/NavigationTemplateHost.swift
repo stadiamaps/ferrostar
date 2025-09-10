@@ -8,7 +8,6 @@ class NavigatingTemplateHost {
     private let formatters: FormatterCollection
     private let units: MKDistanceFormatter.Units
 
-    private var currentTrip: CPTrip?
     private var currentSession: CPNavigationSession?
 
     init(
@@ -51,10 +50,7 @@ class NavigatingTemplateHost {
             durationFormatter: formatters.durationFormatter
         )
 
-        let currentSession = mapTemplate.startNavigationSession(for: currentTrip)
-
-        self.currentTrip = currentTrip
-        self.currentSession = currentSession
+        currentSession = mapTemplate.startNavigationSession(for: currentTrip)
     }
 
     func update(navigationState: NavigationState) {
@@ -62,53 +58,25 @@ class NavigatingTemplateHost {
     }
 
     func update(_ instruction: VisualInstruction, currentStep: RouteStep) {
-        let stepDistance = CarPlayMeasurementLength(units: units, distance: currentStep.distance)
-
-        let maneuvers = [
-            CPManeuver.fromFerrostar(
-                instruction,
-                stepDuration: currentStep.duration,
-                stepDistance: stepDistance.rounded()
-            ),
-        ].compactMap { $0 }
-
-        currentSession?.upcomingManeuvers = maneuvers
+        currentSession?.updateEstimates(instruction: instruction, step: currentStep, units: units)
     }
 
     func cancelTrip() {
         currentSession?.cancelTrip()
         currentSession = nil
-        currentTrip = nil
     }
 
     func completeTrip() {
         currentSession?.finishTrip()
         currentSession = nil
-        currentTrip = nil
     }
 
     private func updateArrival(_ progress: TripProgress?) {
-        guard let currentTrip, let progress else {
+        guard let currentSession, let progress else {
             // TODO: Remove Progress?
             return
         }
 
-        let estimates = CPTravelEstimates.fromFerrostarForTrip(
-            progress: progress,
-            units: units,
-            locale: .current
-        )
-
-        mapTemplate.updateEstimates(estimates, for: currentTrip)
-
-        if let currentManeuer = currentSession?.upcomingManeuvers.first {
-            let estimates = CPTravelEstimates.fromFerrostarForStep(
-                progress: progress,
-                units: units,
-                locale: .current
-            )
-
-            currentSession?.updateEstimates(estimates, for: currentManeuer)
-        }
+        progress.updateUpcomingEstimates(session: currentSession, mapTemplate: mapTemplate, units: units)
     }
 }

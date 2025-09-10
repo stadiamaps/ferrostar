@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.core.extensions
 
+import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.TripState
 
 /**
@@ -11,7 +12,7 @@ fun TripState.progress() =
     when (this) {
       is TripState.Navigating -> this.progress
       is TripState.Complete,
-      TripState.Idle -> null
+      is TripState.Idle -> null
     }
 
 /**
@@ -24,7 +25,7 @@ fun TripState.visualInstruction() =
       when (this) {
         is TripState.Navigating -> this.visualInstruction
         is TripState.Complete,
-        TripState.Idle -> null
+        is TripState.Idle -> null
       }
     } catch (_: NoSuchElementException) {
       null
@@ -39,7 +40,7 @@ fun TripState.deviation() =
     when (this) {
       is TripState.Navigating -> this.deviation
       is TripState.Complete,
-      TripState.Idle -> null
+      is TripState.Idle -> null
     }
 
 /**
@@ -58,7 +59,7 @@ fun TripState.currentRoadName() =
             }
           }
       is TripState.Complete,
-      TripState.Idle -> null
+      is TripState.Idle -> null
     }
 
 /**
@@ -71,7 +72,7 @@ fun TripState.currentStepGeometryIndex() =
     when (this) {
       is TripState.Navigating -> this.currentStepGeometryIndex?.toInt()
       is TripState.Complete,
-      TripState.Idle -> null
+      is TripState.Idle -> null
     }
 
 /**
@@ -83,7 +84,7 @@ fun TripState.remainingSteps() =
     when (this) {
       is TripState.Navigating -> this.remainingSteps
       is TripState.Complete,
-      TripState.Idle -> null
+      is TripState.Idle -> null
     }
 
 /**
@@ -95,5 +96,26 @@ fun TripState.remainingWaypoints() =
     when (this) {
       is TripState.Navigating -> this.remainingWaypoints
       is TripState.Complete,
-      TripState.Idle -> null
+      is TripState.Idle -> null
+    }
+
+/**
+ * Get the UI's preferred representation of User's location from the trip state.
+ *
+ * This will return the snapped user location if there is no deviation from the route. If the user
+ * has deviated, it will return the user's actual raw location, allowing the puck to deviate from
+ * the route line.
+ *
+ * @return The user location (if available and navigating).
+ */
+fun TripState.preferredUserLocation() =
+    when (this) {
+      is TripState.Navigating -> {
+        when (this.deviation) {
+          is RouteDeviation.NoDeviation -> this.snappedUserLocation
+          is RouteDeviation.OffRoute -> this.userLocation
+        }
+      }
+      is TripState.Idle -> this.userLocation
+      is TripState.Complete -> this.userLocation
     }

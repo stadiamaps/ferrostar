@@ -10,7 +10,7 @@ final class DefaultManeuverInstructionViewTests: XCTestCase {
                 text: "Merge Left onto Something",
                 maneuverType: .merge,
                 maneuverModifier: .left,
-                distanceFormatter: americanDistanceFormatter,
+                distanceFormatter: usaDistanceFormatter,
                 distanceToNextManeuver: 1500.0,
                 theme: TestingInstructionRowTheme()
             )

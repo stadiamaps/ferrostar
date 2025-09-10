@@ -9,11 +9,13 @@ import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
+import com.stadiamaps.ferrostar.core.RoutingEngine
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
+import com.stadiamaps.ferrostar.core.http.HttpClientProvider
+import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
-import com.stadiamaps.ferrostar.core.RoutingEngine
 import java.time.Duration
 import java.time.Instant
 import okhttp3.OkHttpClient
@@ -21,10 +23,10 @@ import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
-import uniffi.ferrostar.SpecialAdvanceConditions
-import uniffi.ferrostar.StepAdvanceMode
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.WaypointAdvanceMode
+import uniffi.ferrostar.stepAdvanceDistanceEntryAndExit
+import uniffi.ferrostar.stepAdvanceDistanceToEndOfStep
 
 /**
  * A basic sample of a dependency injection module for the demo app. This is only used to
@@ -73,24 +75,18 @@ object AppModule {
   // TODO: Make this configurable.
   val simulation = true
   val locationProvider: LocationProvider by lazy {
-    if(simulation) {
-        SimulatedLocationProvider().apply {
-            warpFactor = 2u
-            lastLocation =
-                UserLocation(
-                    GeographicCoordinate(51.049315, 13.73552),
-                    1.0,
-                    null,
-                    Instant.now(),
-                    null
-                )
-        }
+    if (simulation) {
+      SimulatedLocationProvider().apply {
+        warpFactor = 2u
+        lastLocation =
+            UserLocation(GeographicCoordinate(51.049315, 13.73552), 1.0, null, Instant.now(), null)
+      }
     } else {
-        FusedLocationProvider(appContext)
+      FusedLocationProvider(appContext)
     }
   }
-  private val httpClient: OkHttpClient by lazy {
-    OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build()
+  private val httpClient: HttpClientProvider by lazy {
+    OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build().toOkHttpClientProvider()
   }
 
   private val foregroundServiceManager: ForegroundServiceManager by lazy {
@@ -114,9 +110,9 @@ object AppModule {
 
     val valhallaEndpoint: String by lazy {
       if (stadiaApiKey != null) {
-          "https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey"
+        "https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey"
       } else {
-          "https://valhalla1.openstreeetmap.de/route"
+        "https://valhalla1.openstreeetmap.de/route"
       }
     }
     var engine: RoutingEngine = RoutingEngine.Valhalla(valhallaEndpoint, "auto")
@@ -124,7 +120,9 @@ object AppModule {
     // GraphHopper API is used instead of valhalla if graphhopperApiKey is specified in
     // local.properties
     if (graphhopperApiKey != null) {
-      engine = RoutingEngine.GraphHopper("https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey", "car")
+      engine =
+          RoutingEngine.GraphHopper(
+              "https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey", "car")
 
       if (true) {
         // use default profile (no custom models)
@@ -151,12 +149,8 @@ object AppModule {
             navigationControllerConfig =
                 NavigationControllerConfig(
                     WaypointAdvanceMode.WaypointWithinRange(100.0),
-                    StepAdvanceMode.RelativeLineStringDistance(
-                        minimumHorizontalAccuracy = 25U,
-                        specialAdvanceConditions =
-                            // NOTE: We have not yet put this threshold through extensive real-world
-                            // testing
-                            SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine(10U)),
+                    stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
+                    stepAdvanceDistanceToEndOfStep(30u, 32u),
                     RouteDeviationTracking.StaticThreshold(15U, 50.0),
                     CourseFiltering.SNAP_TO_ROUTE),
             options = options)

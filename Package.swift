@@ -16,8 +16,8 @@ if useLocalFramework {
         path: "./common/target/ios/libferrostar-rs.xcframework"
     )
 } else {
-    let releaseTag = "0.33.0"
-    let releaseChecksum = "ff3e2a4ad60d7294433f33c12e05250bb06650a4fab1361ece6d17275c5ef48f"
+    let releaseTag = "0.41.0"
+    let releaseChecksum = "a6bb5d4fa1f5ce2f71f2f51d4f562fc609ade23c4cedb4af0352da0d70e97eb3"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url:
@@ -31,7 +31,7 @@ if useLocalMapLibreSwiftUIDSL {
 } else {
     maplibreSwiftUIDSLPackage = .package(
         url: "https://github.com/maplibre/swiftui-dsl",
-        from: "0.10.0"
+        from: "0.12.0"
     )
 }
 
@@ -68,7 +68,7 @@ let package = Package(
         maplibreSwiftUIDSLPackage,
         .package(
             url: "https://github.com/pointfreeco/swift-snapshot-testing",
-            from: "1.17.7"
+            from: "1.18.3"
         ),
     ],
     targets: [
@@ -123,6 +123,7 @@ let package = Package(
                 "FerrostarCore",
                 "FerrostarSwiftUI",
                 "FerrostarCarPlayUI",
+                "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/FerrostarCarPlayUITests"
@@ -164,6 +165,7 @@ let package = Package(
             dependencies: [
                 "FerrostarCore",
                 "FerrostarSwiftUI",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
             path: "apple/Tests/TestSupport"
         ),

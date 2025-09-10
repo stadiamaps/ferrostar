@@ -54,8 +54,6 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgres
  *   [com.stadiamaps.ferrostar.core.DefaultNavigationViewModel] for a common implementation]).
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
- * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
- *   route line.
  * @param routeOverlayBuilder The route overlay builder to use for rendering the route line on the
  *   MapView.
  * @param theme The navigation UI theme to use for the view.
@@ -74,7 +72,6 @@ fun DynamicallyOrientingNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    snapUserLocationToRoute: Boolean = true,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
@@ -104,7 +101,6 @@ fun DynamicallyOrientingNavigationView(
         uiState = uiState,
         mapControls = mapControls,
         locationRequestProperties = locationRequestProperties,
-        snapUserLocationToRoute = snapUserLocationToRoute,
         routeOverlayBuilder = routeOverlayBuilder,
         content = mapContent)
 

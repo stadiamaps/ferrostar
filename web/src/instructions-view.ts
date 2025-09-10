@@ -2,13 +2,14 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { LocalizedDistanceFormatter } from "@maptimy/platform-formatters";
 import "./maneuver-image";
+import { TripState } from "@stadiamaps/ferrostar";
 
 const DistanceFormatter = LocalizedDistanceFormatter();
 
 @customElement("instructions-view")
 export class InstructionsView extends LitElement {
   @property()
-  tripState: any = null;
+  tripState: TripState | null = null;
 
   static styles = [
     css`
@@ -50,22 +51,20 @@ export class InstructionsView extends LitElement {
   ];
 
   render() {
-    // Note - lane information is currently not displayed, even if it is
-    // available.
-    if (this.tripState?.Navigating) {
+    const ts = this.tripState;
+    if (ts && "Navigating" in ts) {
+      const nav = ts.Navigating;
       return html`
         <div class="instructions-view-card">
           <maneuver-image
-            .visualInstruction=${this.tripState.Navigating.visualInstruction}
+            .visualInstruction=${nav.visualInstruction}
           ></maneuver-image>
           <div class="text-container">
             <p class="distance-text">
-              ${this.tripState.Navigating.visualInstruction.primaryContent.text}
+              ${nav.visualInstruction?.primaryContent.text}
             </p>
             <p class="instruction-text">
-              ${DistanceFormatter.format(
-                this.tripState.Navigating.progress.distanceToNextManeuver,
-              )}
+              ${DistanceFormatter.format(nav.progress.distanceToNextManeuver)}
             </p>
           </div>
         </div>

@@ -56,8 +56,6 @@ import kotlinx.coroutines.flow.asStateFlow
  *   [com.stadiamaps.ferrostar.core.DefaultNavigationViewModel] for a common implementation]).
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
- * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
- *   route line.
  * @param routeOverlayBuilder The route overlay builder to use for rendering the route line on the
  *   MapView.
  * @param theme The navigation UI theme to use for the view.
@@ -76,7 +74,6 @@ fun LandscapeNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    snapUserLocationToRoute: Boolean = true,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
@@ -100,7 +97,6 @@ fun LandscapeNavigationView(
         uiState,
         mapControls,
         locationRequestProperties,
-        snapUserLocationToRoute,
         routeOverlayBuilder,
         onMapReadyCallback = { camera.value = navigationCamera },
         mapContent)
@@ -129,17 +125,17 @@ fun LandscapeNavigationView(
   }
 }
 
+val previewViewModel =
+    MockNavigationViewModel(
+        MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
+
 @Preview(
     device =
         "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape")
 @Composable
 private fun LandscapeNavigationViewPreview() {
-  val viewModel =
-      MockNavigationViewModel(
-          MutableStateFlow<NavigationUiState>(NavigationUiState.pedestrianExample()).asStateFlow())
-
   LandscapeNavigationView(
       Modifier.fillMaxSize(),
       styleUrl = "https://demotiles.maplibre.org/style.json",
-      viewModel = viewModel)
+      viewModel = previewViewModel)
 }

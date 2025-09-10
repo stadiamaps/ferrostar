@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "f09b5424a7cf41b411e239e03c06078e37fd39e9",
-        "version" : "6.12.2"
+        "revision" : "52421bf02a8b47a179ed11553e80aa400913e55e",
+        "version" : "6.18.1"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "revision" : "68f3ed6c4b62afab27a84425494cb61421a61ac1",
-        "version" : "0.3.1"
+        "revision" : "ee133a696dce312da292b00d0944aafaa808eaca",
+        "version" : "0.4.0"
       }
     },
     {
@@ -32,8 +32,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-snapshot-testing",
       "state" : {
-        "revision" : "1be8144023c367c5de701a6313ed29a3a10bf59b",
-        "version" : "1.18.3"
+        "revision" : "d7e40607dcd6bc26543f5d9433103f06e0b28f8f",
+        "version" : "1.18.6"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "26eced8a6544f60d9979d35c99217599a97c80d6",
-        "version" : "0.10.0"
+        "revision" : "327a93f6c61827cc21c897cc528edad5fc0b6b7e",
+        "version" : "0.15.0"
       }
     },
     {

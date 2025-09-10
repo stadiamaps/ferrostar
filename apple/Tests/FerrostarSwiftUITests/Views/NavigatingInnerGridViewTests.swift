@@ -12,7 +12,7 @@ final class NavigatingInnerGridViewTests: XCTestCase {
                 isMuted: true,
                 onMute: {},
                 showZoom: true,
-                showCentering: true
+                cameraControlState: .showRecenter {}
             )
             .padding()
         }
@@ -26,7 +26,7 @@ final class NavigatingInnerGridViewTests: XCTestCase {
                 isMuted: false,
                 onMute: {},
                 showZoom: true,
-                showCentering: true
+                cameraControlState: .showRecenter {}
             )
             .environment(\.locale, .init(identifier: "fr_FR"))
             .padding()
@@ -40,9 +40,35 @@ final class NavigatingInnerGridViewTests: XCTestCase {
                 showMute: false,
                 onMute: {},
                 showZoom: true,
-                showCentering: true
+                cameraControlState: .showRecenter {}
             )
             .environment(\.locale, .init(identifier: "fr_FR"))
+            .padding()
+        }
+    }
+
+    func test_CameraControlsHidden() {
+        assertView {
+            NavigatingInnerGridView(
+                isMuted: true,
+                showMute: true,
+                onMute: {},
+                showZoom: true,
+                cameraControlState: .hidden
+            )
+            .padding()
+        }
+    }
+
+    func test_RouteOverviewCameraControl() {
+        assertView {
+            NavigatingInnerGridView(
+                isMuted: true,
+                showMute: true,
+                onMute: {},
+                showZoom: true,
+                cameraControlState: .showRouteOverview {}
+            )
             .padding()
         }
     }

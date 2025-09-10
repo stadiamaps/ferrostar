@@ -22,12 +22,12 @@ jobs:
 
     - name: Check format
       run: swiftformat . --lint
-      
+
   build-ferrostar:
     runs-on: macos-15
     permissions:
       contents: write  # To auto-commit Package.swift and binding changes
-    
+
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ios-build-lib
       cancel-in-progress: true
@@ -50,7 +50,7 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.0'
+        xcode-version: '16.4'
 
     - name: Build iOS XCFramework
       run: ./build-ios.sh --release
@@ -63,8 +63,18 @@ jobs:
       run: |
         if [[ -n "$(git status --porcelain apple/Sources/UniFFI/*)" ]]; then
           echo "Dirty files detected"
+          echo "Make sure to pull main and then run ./build-ios.sh in the common directory"
+          git diff apple/Sources/UniFFI/ > git-diff.log
           exit 1
         fi
+
+    - name: Upload Diff Artifacts (on failure)
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: uniffi-diff-analysis
+        path: git-diff.log
+        retention-days: 7
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
@@ -84,7 +94,7 @@ jobs:
         scheme: [
           "iOS Demo"
         ]
-    
+
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
@@ -104,7 +114,7 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.0'
+        xcode-version: '16.4'
 
     - name: Install xcbeautify
       run: brew install xcbeautify
@@ -116,7 +126,7 @@ jobs:
       run: xcodebuild -scheme "${{ matrix.scheme }}" build -configuration Debug -skipMacroValidation \
         CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO | xcbeautify && exit ${PIPESTATUS[0]}
       working-directory: apple/DemoApp
-      
+
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v4
       with:
@@ -137,7 +147,7 @@ jobs:
         ]
         destination: [
           # TODO: Add more destinations
-          'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.1'
+          'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.6'
         ]
 
     steps:
@@ -159,17 +169,25 @@ jobs:
 
     - uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.0'
+        xcode-version: '16.4'
 
     - name: Install xcbeautify
       run: brew install xcbeautify
 
     - name: Test ${{ matrix.scheme }} on ${{ matrix.destination }}
-      run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' | xcbeautify && exit ${PIPESTATUS[0]}
+      run: xcodebuild -scheme ${{ matrix.scheme }} test -skipMacroValidation -destination '${{ matrix.destination }}' -resultBundlePath ${{ matrix.scheme }}.xcresult | xcbeautify && exit ${PIPESTATUS[0]}
 
-    - name: 'Upload Artifact'
+    - name: 'Upload Package.swift Artifact'
       uses: actions/upload-artifact@v4
       with:
         name: Library-Package.swift
         path: Package.swift
+        retention-days: 5
+
+    - name: 'Upload Test Results Artifact'
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ${{ matrix.scheme }}.xcresult
+        path: ${{ matrix.scheme }}.xcresult
         retention-days: 5

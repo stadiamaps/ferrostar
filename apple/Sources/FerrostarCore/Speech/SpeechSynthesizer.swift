@@ -20,13 +20,13 @@ extension AVSpeechSynthesizer: SpeechSynthesizer {
 }
 
 class PreviewSpeechSynthesizer: SpeechSynthesizer {
-    public var isSpeaking: Bool = false
+    var isSpeaking: Bool = false
 
-    public func speak(_: AVSpeechUtterance) {
+    func speak(_: AVSpeechUtterance) {
         // No action for previews
     }
 
-    public func stopSpeaking(at _: AVSpeechBoundary) -> Bool {
+    func stopSpeaking(at _: AVSpeechBoundary) -> Bool {
         // No action for previews
         true
     }

@@ -10,8 +10,8 @@ and more.
 
 The core documentation is hosted, like every crate, on [docs.rs](https://docs.rs/ferrostar/latest).
 
-The core of a custom navigation experience is the [`NavigationController`](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/struct.NavigationController.html).
-The controller is initialized with a route and configuration.
+The core of a custom navigation experience is the trait [`Navigator`](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/trait.Navigator.html).
+The controller is initialized with a factory function `create_navigator`, which takes route, config, and a boolean indicating whether to enable recording.
 
 You can either construct a route yourself manually,
 or use some of the existing tooling to get started.

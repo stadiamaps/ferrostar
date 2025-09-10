@@ -1,19 +1,31 @@
 import SwiftUI
 
-// This AppDelegate setup is an easy way to share your environment with CarPlay
-class DemoAppDelegate: NSObject, UIApplicationDelegate {
-    let appEnvironment = AppEnvironment()
-}
-
 @main
 struct DemoApp: App {
-    @UIApplicationDelegateAdaptor(DemoAppDelegate.self) private var appDelegate: DemoAppDelegate
+    @State private var model = demoModel
 
     var body: some Scene {
         WindowGroup {
-            DemoNavigationView()
-                .environmentObject(appDelegate.appEnvironment)
-                .environmentObject(appDelegate.appEnvironment.ferrostarCore)
+            ZStack {
+                if let model {
+                    if let errorMessage = model.errorMessage {
+                        ContentUnavailableView(
+                            errorMessage, systemImage: "network.slash",
+                            description: Text("error navigating.")
+                        )
+                        .onTapGesture {
+                            model.errorMessage = nil
+                        }
+                    } else {
+                        DemoNavigationView(model: model)
+                    }
+                } else {
+                    ContentUnavailableView(
+                        "cannot create model", systemImage: "network.slash",
+                        description: Text("Unable to create model.")
+                    )
+                }
+            }
         }
     }
 }

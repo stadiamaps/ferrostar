@@ -33,16 +33,12 @@ import com.stadiamaps.ferrostar.composeui.views.overlays.PortraitNavigationOverl
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.core.boundingBox
-import com.stadiamaps.ferrostar.core.mock.MockNavigationViewModel
-import com.stadiamaps.ferrostar.core.mock.pedestrianExample
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.extensions.cameraControlState
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapControlsForProgressViewHeight
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * A portrait orientation of the navigation view with instructions, default controls and the
@@ -59,8 +55,6 @@ import kotlinx.coroutines.flow.asStateFlow
  *   [com.stadiamaps.ferrostar.core.DefaultNavigationViewModel] for a common implementation]).
  * @param locationRequestProperties The location request properties to use for the map's location
  *   engine.
- * @param snapUserLocationToRoute If true, the user's displayed location will be snapped to the
- *   route line.
  * @param routeOverlayBuilder The route overlay builder to use for rendering the route line on the
  *   MapView.
  * @param theme The navigation UI theme to use for the view.
@@ -79,7 +73,6 @@ fun PortraitNavigationView(
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
         LocationRequestProperties.NavigationDefault(),
-    snapUserLocationToRoute: Boolean = true,
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
@@ -110,7 +103,6 @@ fun PortraitNavigationView(
         uiState,
         mapControls,
         locationRequestProperties,
-        snapUserLocationToRoute,
         routeOverlayBuilder,
         onMapReadyCallback = { camera.value = navigationCamera },
         mapContent)
@@ -145,11 +137,8 @@ fun PortraitNavigationView(
 @Preview(device = Devices.PIXEL_5)
 @Composable
 private fun PortraitNavigationViewPreview() {
-  val viewModel =
-      MockNavigationViewModel(MutableStateFlow(NavigationUiState.pedestrianExample()).asStateFlow())
-
   PortraitNavigationView(
       Modifier.fillMaxSize(),
       styleUrl = "https://demotiles.maplibre.org/style.json",
-      viewModel = viewModel)
+      viewModel = previewViewModel)
 }
