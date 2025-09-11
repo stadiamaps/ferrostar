@@ -39,6 +39,24 @@ enables you to add more layers.
 See the demo app for an example, where we add a little dot showing the raw location
 in addition to the puck, which snaps to the route line.
 
+### Replacing the route polyline overlay
+
+Ferrostar includes a default route polyline overlay that is pre-styled. You can replace it
+using the `navigationMapViewRouteOverlay()` modifier. See `RouteStyleLayer` for the default
+polyline for reference.
+
+```swift
+            .navigationMapViewRouteOverlay { state in
+                if let routeGeometry = state?.routeGeometry {
+                    RouteStyleLayer(
+                        polyline: MLNPolylineFeature(coordinates: routeGeometry.map(\.clLocationCoordinate2D)),
+                        identifier: "route-polyline",
+                        style: MyCustomRouteStyle()
+                    )
+                }
+            }
+```
+
 ### Customizing the Map View's Content Inset
 
 The content inset is used on the Ferrostar NavigationMapView (and MapLibre's SwiftUI DSL MapView) to control
