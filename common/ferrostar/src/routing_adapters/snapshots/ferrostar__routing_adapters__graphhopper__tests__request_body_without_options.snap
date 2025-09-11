@@ -1,0 +1,24 @@
+---
+source: ferrostar/src/routing_adapters/graphhopper.rs
+expression: "generate_body(USER_LOCATION, WAYPOINTS.to_vec(), None)"
+---
+{
+  "locale": "en",
+  "points": [
+    [
+      0.0,
+      0.0
+    ],
+    [
+      1.0,
+      0.0
+    ],
+    [
+      3.0,
+      2.0
+    ]
+  ],
+  "profile": "car",
+  "type": "mapbox",
+  "voice_units": "metric"
+}

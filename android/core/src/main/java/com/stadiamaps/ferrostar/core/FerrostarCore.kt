@@ -2,7 +2,6 @@ package com.stadiamaps.ferrostar.core
 
 import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
-import java.net.URL
 import java.time.Instant
 import java.util.concurrent.Executors
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +26,7 @@ import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
+import uniffi.ferrostar.VoiceUnits
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.createNavigator
 
@@ -69,8 +69,6 @@ private fun Map<String, Any>.toJson(): String =
               (v as? Map<String, Any>)?.toJsonElement()
                   ?: throw IllegalArgumentException("Unsupported map value type: ${v::class}")
             }
-
-            null -> Json.encodeToJsonElement(String.serializer(), "null")
             else -> throw IllegalArgumentException("Unsupported value type: ${v::class}")
           }
         })
@@ -176,8 +174,7 @@ class FerrostarCore(
   var state: StateFlow<NavigationState> = _state.asStateFlow()
 
   constructor(
-      valhallaEndpointURL: URL,
-      profile: String,
+      routingEngine: RoutingEngine,
       httpClient: HttpClientProvider,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
@@ -185,7 +182,19 @@ class FerrostarCore(
       options: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
-          RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile, options.toJson())),
+          when (routingEngine) {
+            is RoutingEngine.GraphHopper ->
+                RouteAdapter.newGraphhopperHttp(
+                    routingEngine.endpoint,
+                    routingEngine.profile,
+                    "en",
+                    VoiceUnits.METRIC,
+                    options.toJson())
+
+            is RoutingEngine.Valhalla ->
+                RouteAdapter.newValhallaHttp(
+                    routingEngine.endpoint, routingEngine.profile, options.toJson())
+          }),
       httpClient,
       locationProvider,
       foregroundServiceManager,
