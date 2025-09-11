@@ -58,10 +58,7 @@ public enum CarPlayMapButtons {
         }
 
         let iconName = isMuted ? "speaker.fill" : "speaker.3.fill"
-
-        let config = UIImage.SymbolConfiguration(paletteColors: [.systemTeal, .systemGray5])
-        button.image = UIImage(systemName: iconName, withConfiguration: config)
-
+        button.image = UIImage(systemName: iconName)
         return button
     }
 }

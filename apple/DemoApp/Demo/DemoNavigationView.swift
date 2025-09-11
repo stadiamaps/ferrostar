@@ -74,7 +74,7 @@ struct DemoNavigationView: View {
                 speedLimit: model.core.annotation?.speedLimit,
                 speedLimitStyle: .mutcdStyle
             )
-            .innerGrid(
+            .navigationViewInnerGrid(
                 topCenter: {
                     if let errorMessage = model.errorMessage {
                         NavigationUIBanner(severity: .error) {
