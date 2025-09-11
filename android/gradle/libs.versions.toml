@@ -1,5 +1,5 @@
 [versions]
-agp = "8.11.0"
+agp = "8.13.0"
 kotlin = "2.2.0"
 cargo-ndk = "0.3.4"
 ktfmt = "0.21.0"                     # 0.22.0 -> https://github.com/cortinico/ktfmt-gradle/issues/413
@@ -14,7 +14,7 @@ androidx-appcompat = "1.7.1"
 androidx-activity-compose = "1.10.1"
 compose = "2025.06.01"
 okhttp = "5.0.0"
-maplibre-compose = "1.0.0"
+maplibre-compose = "1.2.0"
 playServicesLocation = "21.3.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"

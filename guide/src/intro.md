@@ -35,9 +35,10 @@ helping you build the navigation experience your users deserve.
   and offline route generation,
   and there is a rich ecosystem of FOSS software if you're looking to host your own for a smaller deployment.
 
-## Can I use Ferrostar today?
+## Where I use Ferrostar today?
 
-TL;DR?
+Ferrostar supports a wide range of platforms out of the box.
+Some require a bit more manual plumbing than others, so we've put together the following table to explain where we're at.
 
 |                                      | iOS | Android | Web Components | React Native |
 |--------------------------------------|-----|---------|----------------|--------------|
@@ -46,7 +47,7 @@ TL;DR?
 | Voice guidance (platform-native TTS) | ✅   | ✅       | ✅*             | 🚧           |
 | Published packages                   | ✅   | ✅       | ✅              | ❌           |
 
-- Note that TTS and background functionality are severely limited in PWAs due to inherent limitations of the platform.
+- Note: TTS and background functionality are severely limited in PWAs due to inherent limitations of the platform.
 
 ### On iOS and Android
 
