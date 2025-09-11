@@ -4,13 +4,28 @@ import CoreLocation
 @preconcurrency import FerrostarCoreFFI
 import FerrostarSwiftUI
 import Foundation
+import MapLibre
 import MapLibreSwiftUI
+
+private extension BoundingBox {
+    var coordinateBounds: MLNCoordinateBounds {
+        MLNCoordinateBounds(sw: sw.clLocationCoordinate2D, ne: ne.clLocationCoordinate2D)
+    }
+}
 
 private extension MapViewCamera {
     static func currentLocationCamera(locationProvider: LocationProviding) -> MapViewCamera {
         guard let coordinate = locationProvider.lastLocation?.clLocation.coordinate
         else { return MapViewCamera.default() }
         return .center(coordinate, zoom: 14)
+    }
+
+    private static func bounding(bbox: BoundingBox) -> MapViewCamera {
+        boundingBox(bbox.coordinateBounds)
+    }
+
+    static func bounding(route: Route) -> MapViewCamera {
+        bounding(bbox: route.bbox)
     }
 }
 
@@ -75,6 +90,13 @@ extension DemoModel {
 
 @MainActor let demoModel = DemoModel()
 
+// TODO: Something like this?
+// private enum CameraState {
+//    case normal(MapViewCamera)
+//    case preview(Route)
+//    case zoom(MapViewCamera)
+// }
+
 @MainActor
 @Observable final class DemoModel {
     var errorMessage: String?
@@ -83,8 +105,8 @@ extension DemoModel {
     let core: FerrostarCore
     var origin: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
     var destination: CLLocationCoordinate2D = kCLLocationCoordinate2DInvalid
-    var selectedRoute: Route?
-    var camera: MapViewCamera
+    private var selectedRoute: Route?
+    private var demoCamera: MapViewCamera
 
     var coreRoute: Route?
     var coreState: NavigationState?
@@ -98,7 +120,7 @@ extension DemoModel {
         locationProvider: SwitchableLocationProvider
     ) {
         self.locationProvider = locationProvider
-        camera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
+        demoCamera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
         do {
             core = try FerrostarCore.initForDemo(locationProvider: locationProvider)
             core.delegate = navigationDelegate
@@ -119,6 +141,24 @@ extension DemoModel {
     var locationServicesEnabled: Bool { locationProvider.locationServicesEnabled }
     var lastCoordinate: CLLocationCoordinate2D? { locationProvider.lastLocation?.clLocation.coordinate }
     var horizontalAccuracy: Double? { locationProvider.lastLocation?.horizontalAccuracy }
+
+    var selectedRoutePolyline: MLNPolyline? {
+        guard let selectedRouteGeometry = selectedRoute?.geometry else { return nil }
+        return MLNPolylineFeature(coordinates: selectedRouteGeometry.map(\.clLocationCoordinate2D))
+    }
+
+    var camera: MapViewCamera {
+        get {
+            if let selectedRoute {
+                MapViewCamera.bounding(route: selectedRoute)
+            } else {
+                demoCamera
+            }
+        }
+        set {
+            demoCamera = newValue
+        }
+    }
 
     private func routes(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) async throws -> [Route] {
         guard from != kCLLocationCoordinate2DInvalid else { throw DemoError.invalidOrigin }
@@ -189,7 +229,10 @@ extension DemoModel {
     }
 
     func navigate(_ route: Route) {
-        wrap { try startNavigation(on: route) }
+        wrap {
+            selectedRoute = nil // Remove any preview routes.
+            return try startNavigation(on: route)
+        }
     }
 
     func stop() {
