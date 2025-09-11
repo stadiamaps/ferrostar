@@ -38,6 +38,7 @@ public struct USStyleSpeedLimitView: View {
                     .font(.caption.bold())
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
+                    .minimumScaleFactor(0.6)
                     .padding(.horizontal, 2)
 
                 Text(valueFormatter.string(from: speedLimit.value as NSNumber) ?? "")
@@ -48,6 +49,7 @@ public struct USStyleSpeedLimitView: View {
                 Text(speedLimit.unit.symbol)
                     .font(.caption2.bold())
                     .foregroundStyle(Color.secondary)
+                    .minimumScaleFactor(0.6)
                     .padding(.horizontal, 2)
             }
             .foregroundColor(.black)

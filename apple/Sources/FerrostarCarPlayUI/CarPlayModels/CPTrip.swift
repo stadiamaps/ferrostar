@@ -41,24 +41,25 @@ private extension [Waypoint] {
     }
 }
 
-extension CPTrip {
+public extension CPTrip {
     /// Create a new CarPlay Trip definition from the routes and waypoints supplied to/by
     /// Ferrostar. This object is used to outline the various route option metadata and the associated
     /// origin and destination to the user.
     ///
     /// - Parameters:
     ///   - routes: The route's loaded by ferrostar
-    ///   - waypoints: The associated waypoints.
     ///   - distanceFormatter: Used to format the distance metadata associated with a route.
     ///   - durationFormatter: Used to format the duration metadata associated with a route.
     /// - Returns: The CarPlay trip that can be applied used for CPNavigationSession.
     static func fromFerrostar(
         routes: [Route],
-        waypoints: [Waypoint],
         distanceFormatter: Formatter,
         durationFormatter: DateComponentsFormatter
     ) throws -> CPTrip {
-        let (origin, destination) = try waypoints.originDestination()
+        guard let route = routes.first else {
+            throw FerrostarCarPlayError.noRoutes
+        }
+        let (origin, destination) = try route.waypoints.originDestination()
 
         return fromFerrostar(
             routes: routes,
@@ -69,7 +70,7 @@ extension CPTrip {
         )
     }
 
-    public static func fromFerrostar(
+    static func fromFerrostar(
         routes: [Route],
         origin: MKMapItem,
         destination: MKMapItem,
