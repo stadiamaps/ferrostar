@@ -13,7 +13,7 @@ use crate::navigation_controller::models::{
 };
 use crate::{
     algorithms::{
-        advance_step, apply_snapped_course, calculate_trip_progress,
+        advance_step, apply_snapped_course, calculate_trip_progress, distance_between_locations,
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
@@ -21,6 +21,7 @@ use crate::{
     navigation_controller::recording::{NavigationRecordingMetadata, RecordingError},
 };
 use chrono::Utc;
+use core::cmp::Ordering;
 use geo::{
     algorithm::{Distance, Haversine},
     geometry::{LineString, Point},
@@ -79,7 +80,7 @@ pub fn create_navigator(
 ///
 /// Notes for implementing a new platform:
 /// - A controller is bound to a single route; if you want recalculation, create a new instance.
-/// - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutable state.
+/// - This is a pure type (no interior mutability), so a core function of your platform code is responsibly managing mutabl`e state.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct NavigationController {
     route: Route,
@@ -107,20 +108,51 @@ impl Navigator for NavigationController {
             ended_at: None,
         };
 
-        let Some(current_route_step) = remaining_steps.first() else {
-            // Bail early; if we don't have any steps, this is a useless route
-            return NavState::complete(location, initial_summary, None);
-        };
-
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
-        let current_step_linestring = current_route_step.get_linestring();
-        let (current_step_geometry_index, snapped_user_location) =
-            self.snap_user_to_line(location, &current_step_linestring);
+        //
+        // Find the closest step by iterating through all steps, snapping the user to each one,
+        // and calculating the distance between the user's actual location and their snapped location.
+        let closest_step_info = self
+            .route
+            .steps
+            .iter()
+            .enumerate()
+            .map(|(step_index, step)| {
+                let step_linestring = step.get_linestring();
+                let (geometry_index, snapped_location) =
+                    self.snap_user_to_line(location, &step_linestring);
+
+                // Calculate the distance from the user's reported location to the snapped point on the line.
+                let distance_to_line = distance_between_locations(&location, &snapped_location);
+
+                (
+                    step_index,
+                    step,
+                    geometry_index,
+                    snapped_location,
+                    distance_to_line,
+                    step_linestring,
+                )
+            })
+            // Find the step with the minimum distance to the user.
+            .min_by(|a, b| a.4.partial_cmp(&b.4).unwrap_or(Ordering::Equal));
+
+        // Since we already checked that steps is not empty, we can safely unwrap.
+        let (
+            closest_step_index,
+            current_route_step,
+            current_step_geometry_index,
+            snapped_user_location,
+            _, // discard the distance_to_line, it was only for comparison
+            current_step_linestring,
+        ) = closest_step_info.unwrap();
+
+        let updated_remaining_steps = remaining_steps[closest_step_index..].to_vec();
 
         let progress = calculate_trip_progress(
             &snapped_user_location.into(),
             &current_step_linestring,
-            &remaining_steps,
+            &updated_remaining_steps,
         );
         let deviation = self.config.route_deviation_tracking.check_route_deviation(
             location,
@@ -137,11 +169,13 @@ impl Navigator for NavigationController {
         let annotation_json = current_step_geometry_index
             .and_then(|index| current_route_step.get_annotation_at_current_index(index));
 
+        // TODO: still have to remove all skipped waypoints, not just the first
+
         let trip_state = TripState::Navigating {
             current_step_geometry_index,
             user_location: location,
             snapped_user_location,
-            remaining_steps,
+            remaining_steps: updated_remaining_steps,
             // Skip the first waypoint, as it is the current one
             remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
             progress,
@@ -551,10 +585,15 @@ mod tests {
         route: Route,
         step_advance_condition: Arc<dyn StepAdvanceCondition>,
         should_record: bool,
+        route_starting_index: u32,
     ) -> (Arc<dyn Navigator>, Vec<NavState>) {
-        let mut simulation_state =
-            location_simulation_from_route(&route, Some(10.0), LocationBias::None)
-                .expect("Unable to create simulation");
+        let mut simulation_state = location_simulation_from_route(
+            &route,
+            Some(10.0),
+            LocationBias::None,
+            route_starting_index,
+        )
+        .expect("Unable to create simulation");
 
         let controller = create_navigator(
             route,
@@ -632,6 +671,7 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                 }),
                 false,
+                0,
             );
             insta::assert_yaml_snapshot!(states
                 .into_iter()
@@ -647,6 +687,7 @@ mod tests {
                 get_test_route(TestRoute::Extended),
                 Arc::new(DistanceEntryAndExitCondition::exact()),
                 false,
+                0,
             );
             insta::assert_yaml_snapshot!(states
                 .into_iter()
@@ -665,6 +706,7 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                 }),
                 false,
+                0,
             );
             insta::assert_yaml_snapshot!(states
                 .into_iter()
@@ -683,6 +725,7 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                 }),
                 true,
+                0,
             );
 
             let final_nav_state = states.into_iter().last().expect("No final nav state?!");
@@ -703,6 +746,7 @@ mod tests {
                 get_test_route(TestRoute::SelfIntersecting),
                 Arc::new(DistanceEntryAndExitCondition::exact()),
                 false,
+                0,
             );
             insta::assert_yaml_snapshot!(states
                 .into_iter()
@@ -721,6 +765,23 @@ mod tests {
                     minimum_horizontal_accuracy: 0,
                 }),
                 false,
+                0,
+            );
+            insta::assert_yaml_snapshot!(states
+                .into_iter()
+                .map(|state| state.trip_state())
+                .collect::<Vec<_>>());
+        });
+    }
+
+    #[test]
+    fn test_starting_in_the_middle_linestring() {
+        nav_controller_insta_settings().bind(|| {
+            let (_, states) = test_full_route_state_snapshot(
+                get_test_route(TestRoute::Extended),
+                Arc::new(DistanceEntryAndExitCondition::exact()),
+                false,
+                42,
             );
             insta::assert_yaml_snapshot!(states
                 .into_iter()

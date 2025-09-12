@@ -170,7 +170,7 @@ class SimulatedLocationProvider : LocationProvider {
   }
 
   fun setSimulatedRoute(route: Route, bias: LocationBias = LocationBias.None) {
-    simulationState = locationSimulationFromRoute(route, resampleDistance = 10.0, bias)
+    simulationState = locationSimulationFromRoute(route, resampleDistance = 10.0, bias, 0u)
     lastLocation = simulationState?.currentLocation
 
     if (listeners.isNotEmpty() && simulationJob?.isActive != true) {
