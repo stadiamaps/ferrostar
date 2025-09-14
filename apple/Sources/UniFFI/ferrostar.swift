@@ -2646,6 +2646,21 @@ public protocol StepAdvanceConditionProtocol: AnyObject, Sendable {
      */
     func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?)  -> StepAdvanceResult
     
+    /**
+     * Creates a clean instance of this condition with the same configuration but reset state.
+     * This is used by composite conditions (Or/And) to ensure proper state isolation
+     * when any condition triggers advancement.
+     *
+     * **Implementation Requirements:**
+     * - **Stateless conditions**: Return a copy/clone of self
+     * - **Stateful conditions**: Return a new instance with initial state but preserve configuration parameters
+     * - **Composite conditions**: Recursively create fresh instances of all nested conditions
+     *
+     * This method prevents the state leakage bugs that can cause rapid step advancement
+     * and jumping behavior in navigation.
+     */
+    func newInstance()  -> StepAdvanceCondition
+    
 }
 /**
  * When implementing custom step advance logic, this trait allows you to define
@@ -2716,6 +2731,26 @@ open func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, 
         FfiConverterTypeUserLocation_lower(userLocation),
         FfiConverterTypeRouteStep_lower(currentStep),
         FfiConverterOptionTypeRouteStep.lower(nextStep),$0
+    )
+})
+}
+    
+    /**
+     * Creates a clean instance of this condition with the same configuration but reset state.
+     * This is used by composite conditions (Or/And) to ensure proper state isolation
+     * when any condition triggers advancement.
+     *
+     * **Implementation Requirements:**
+     * - **Stateless conditions**: Return a copy/clone of self
+     * - **Stateful conditions**: Return a new instance with initial state but preserve configuration parameters
+     * - **Composite conditions**: Recursively create fresh instances of all nested conditions
+     *
+     * This method prevents the state leakage bugs that can cause rapid step advancement
+     * and jumping behavior in navigation.
+     */
+open func newInstance() -> StepAdvanceCondition  {
+    return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_stepadvancecondition_new_instance(self.uniffiClonePointer(),$0
     )
 })
 }
@@ -4619,15 +4654,16 @@ public struct StepAdvanceResult {
      * The next iteration of the step advance condition.
      *
      * This is what the navigation controller passes to the next instance of [`NavState`](super::NavState) on the completion of
-     * an update (e.g. a user location update). Usually, this value is one of the following:
+     * an update (e.g. a user location update). Use the helper methods on [`StepAdvanceResult`] to ensure proper state handling:
      *
-     * 1. When `should_advance` is true, this should typically be a clean/new instance of the condition.
-     * 2. When the condition is not advancing, but the condition maintains no state, this should be a
-     * clean/new instance of the condition.
-     * 3. When the condition is not advancing and maintains state, this should be a new
-     * instance including the current state of the condition. See [`DistanceEntryAndExitCondition`]
+     * - [`StepAdvanceResult::next()`] - Unified method that takes a boolean and handles state appropriately
+     * - [`StepAdvanceResult::advance()`] - Creates an advancing result with automatically reset state
+     * - [`StepAdvanceResult::no_advance()`] - Creates a non-advancing result preserving current state
      *
-     * IMPORTANT! If the condition advances. This **must** be the clean/default state.
+     * The trait method [`StepAdvanceCondition::new_instance()`] ensures that composite conditions
+     * (Or/And) properly reset all nested conditions when any condition triggers advancement.
+     *
+     * **CRITICAL**: When advancing, this must be a clean/reset state to prevent state leakage between steps.
      */
     public var nextIteration: StepAdvanceCondition
 
@@ -4641,15 +4677,16 @@ public struct StepAdvanceResult {
          * The next iteration of the step advance condition.
          *
          * This is what the navigation controller passes to the next instance of [`NavState`](super::NavState) on the completion of
-         * an update (e.g. a user location update). Usually, this value is one of the following:
+         * an update (e.g. a user location update). Use the helper methods on [`StepAdvanceResult`] to ensure proper state handling:
          *
-         * 1. When `should_advance` is true, this should typically be a clean/new instance of the condition.
-         * 2. When the condition is not advancing, but the condition maintains no state, this should be a
-         * clean/new instance of the condition.
-         * 3. When the condition is not advancing and maintains state, this should be a new
-         * instance including the current state of the condition. See [`DistanceEntryAndExitCondition`]
+         * - [`StepAdvanceResult::next()`] - Unified method that takes a boolean and handles state appropriately
+         * - [`StepAdvanceResult::advance()`] - Creates an advancing result with automatically reset state
+         * - [`StepAdvanceResult::no_advance()`] - Creates a non-advancing result preserving current state
          *
-         * IMPORTANT! If the condition advances. This **must** be the clean/default state.
+         * The trait method [`StepAdvanceCondition::new_instance()`] ensures that composite conditions
+         * (Or/And) properly reset all nested conditions when any condition triggers advancement.
+         *
+         * **CRITICAL**: When advancing, this must be a clean/reset state to prevent state leakage between steps.
          */nextIteration: StepAdvanceCondition) {
         self.shouldAdvance = shouldAdvance
         self.nextIteration = nextIteration
@@ -8896,6 +8933,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 27532) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_stepadvancecondition_new_instance() != 29956) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 60881) {
