@@ -19,7 +19,7 @@ pub mod conditions;
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct StepAdvanceResult {
     /// The step should be advanced.
-    pub should_advance: bool,
+    should_advance: bool,
     /// The next iteration of the step advance condition.
     ///
     /// This is what the navigation controller passes to the next instance of [`NavState`](super::NavState) on the completion of
@@ -37,9 +37,18 @@ pub struct StepAdvanceResult {
 }
 
 impl StepAdvanceResult {
+    /// Whether the step should advance to the next step.
+    ///
+    /// This is used by the navigation controller to determine whether to process the step advance.
+    pub fn should_advance(&self) -> bool {
+        self.should_advance
+    }
+
     /// Creates a step advance result that does not advance to the next step.
     /// Uses the provided next_iteration as-is for preserving stateful progress.
-    pub fn no_advance(next_iteration: Arc<dyn StepAdvanceCondition>) -> Self {
+    ///
+    /// Note: it's up to the caller to determine whether next_interation should reset.
+    pub fn continue_with(next_iteration: Arc<dyn StepAdvanceCondition>) -> Self {
         Self {
             should_advance: false,
             next_iteration,
@@ -47,21 +56,11 @@ impl StepAdvanceResult {
     }
 
     /// Creates a step advance result that advances to the next step.
-    /// Automatically creates a fresh instance of the condition to ensure proper state isolation.
-    pub fn advance(condition: &dyn StepAdvanceCondition) -> Self {
+    /// Automatically creates a new instance of the condition to ensure proper state isolation.
+    pub fn advance_to_new_instance(condition: &dyn StepAdvanceCondition) -> Self {
         Self {
             should_advance: true,
             next_iteration: condition.new_instance(),
-        }
-    }
-
-    /// Creates a step advance result based on the should_advance boolean.
-    /// If advancing, creates a fresh instance. If not advancing, uses the provided next_iteration.
-    pub fn next(should_advance: bool, condition: &dyn StepAdvanceCondition) -> Self {
-        if should_advance {
-            Self::advance(condition)
-        } else {
-            Self::no_advance(condition.new_instance())
         }
     }
 }

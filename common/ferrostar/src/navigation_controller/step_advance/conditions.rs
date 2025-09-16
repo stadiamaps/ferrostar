@@ -36,7 +36,7 @@ impl StepAdvanceCondition for ManualStepCondition {
         current_step: RouteStep,
         next_step: Option<RouteStep>,
     ) -> StepAdvanceResult {
-        StepAdvanceResult::no_advance(Arc::new(ManualStepCondition))
+        StepAdvanceResult::continue_with(Arc::new(ManualStepCondition))
     }
 
     fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
@@ -85,7 +85,11 @@ impl StepAdvanceCondition for DistanceToEndOfStepCondition {
                 )
             };
 
-        StepAdvanceResult::next(should_advance, self)
+        if should_advance {
+            StepAdvanceResult::advance_to_new_instance(self)
+        } else {
+            StepAdvanceResult::continue_with(self.new_instance())
+        }
     }
 
     fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
@@ -146,7 +150,11 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
                     .unwrap_or(false)
             };
 
-        StepAdvanceResult::next(should_advance, self)
+        if should_advance {
+            StepAdvanceResult::advance_to_new_instance(self)
+        } else {
+            StepAdvanceResult::continue_with(self.new_instance())
+        }
     }
 
     fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
@@ -355,11 +363,11 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 .should_advance;
 
             if should_advance {
-                StepAdvanceResult::advance(self)
+                StepAdvanceResult::advance_to_new_instance(self)
             } else {
                 // The condition was not advanced. So we return a fresh iteration
                 // where has_reached_end_of_current_step is still true to re-trigger this part 2 logic.
-                StepAdvanceResult::no_advance(Arc::new(DistanceEntryAndExitCondition {
+                StepAdvanceResult::continue_with(Arc::new(DistanceEntryAndExitCondition {
                     distance_to_end_of_step: self.distance_to_end_of_step,
                     distance_after_end_of_step: self.distance_after_end_of_step,
                     minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
@@ -382,7 +390,7 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                     .should_advance,
             };
 
-            StepAdvanceResult::no_advance(Arc::new(next_iteration))
+            StepAdvanceResult::continue_with(Arc::new(next_iteration))
         }
     }
 

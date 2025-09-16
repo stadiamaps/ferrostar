@@ -247,6 +247,7 @@ impl Navigator for NavigationController {
                     )
                 };
 
+                let should_advance = step_advance_result.should_advance();
                 let intermediate_nav_state = NavState::new(
                     self.create_intermediate_trip_state(
                         state.trip_state(),
@@ -259,7 +260,7 @@ impl Navigator for NavigationController {
                     state.recording_events,
                 );
 
-                if step_advance_result.should_advance {
+                if should_advance {
                     // Advance to the next step
                     return self.advance_to_next_step(intermediate_nav_state);
                 }
