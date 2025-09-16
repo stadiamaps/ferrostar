@@ -225,8 +225,7 @@ Bringing it all together, a typical init looks something like this:
 ```kotlin
 private val core =
       FerrostarCore(
-          valhallaEndpointURL = URL("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY"),
-          profile = "bicycle",
+          routingEngine = RoutingEngine.Valhalla("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY", "auto"),
           httpClient = httpClient,
           locationProvider = locationProvider,
           foregroundServiceManager = foregroundServiceManager,

@@ -9,7 +9,6 @@
 package com.stadiamaps.ferrostar.core
 
 import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
-import java.net.URL
 import java.time.Instant
 import kotlinx.coroutines.test.TestResult
 import kotlinx.coroutines.test.runTest
@@ -238,6 +237,7 @@ const val simpleRoute =
 
 class ValhallaCoreTest {
   private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
+  private val engine = RoutingEngine.Valhalla(valhallaEndpointUrl, "auto")
 
   @Test
   fun parseValhallaRouteResponse(): TestResult {
@@ -249,8 +249,7 @@ class ValhallaCoreTest {
         }
     val core =
         FerrostarCore(
-            valhallaEndpointURL = URL(valhallaEndpointUrl),
-            profile = "auto",
+            engine,
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
@@ -302,8 +301,7 @@ class ValhallaCoreTest {
         }
     val core =
         FerrostarCore(
-            valhallaEndpointURL = URL(valhallaEndpointUrl),
-            profile = "auto",
+            engine,
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),

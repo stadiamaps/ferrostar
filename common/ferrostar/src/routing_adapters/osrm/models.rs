@@ -154,7 +154,7 @@ pub struct RouteStep {
     /// Textual instructions that are displayed as a banner; supported by Mapbox and Valhalla
     #[serde(default, rename = "bannerInstructions")]
     pub banner_instructions: Vec<BannerInstruction>,
-    /// Textual instructions that are displayed as a banner; supported by Mapbox and Stadia Maps
+    /// Voice instructions that are spoken from TTS; supported by Mapbox and Stadia Maps
     #[serde(default, rename = "voiceInstructions")]
     pub voice_instructions: Vec<VoiceInstruction>,
 }
