@@ -36,10 +36,11 @@ impl StepAdvanceCondition for ManualStepCondition {
         current_step: RouteStep,
         next_step: Option<RouteStep>,
     ) -> StepAdvanceResult {
-        StepAdvanceResult {
-            should_advance: false,
-            next_iteration: Arc::new(ManualStepCondition),
-        }
+        StepAdvanceResult::continue_with_state(Arc::new(ManualStepCondition))
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(ManualStepCondition)
     }
 }
 
@@ -84,13 +85,18 @@ impl StepAdvanceCondition for DistanceToEndOfStepCondition {
                 )
             };
 
-        StepAdvanceResult {
-            should_advance,
-            next_iteration: Arc::new(DistanceToEndOfStepCondition {
-                distance: self.distance,
-                minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-            }),
+        if should_advance {
+            StepAdvanceResult::advance_to_new_instance(self)
+        } else {
+            StepAdvanceResult::continue_with_state(self.new_instance())
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceToEndOfStepCondition {
+            distance: self.distance,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+        })
     }
 }
 
@@ -144,13 +150,18 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
                     .unwrap_or(false)
             };
 
-        StepAdvanceResult {
-            should_advance,
-            next_iteration: Arc::new(DistanceFromStepCondition {
-                minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-                distance: self.distance,
-            }),
+        if should_advance {
+            StepAdvanceResult::advance_to_new_instance(self)
+        } else {
+            StepAdvanceResult::continue_with_state(self.new_instance())
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceFromStepCondition {
+            distance: self.distance,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+        })
     }
 }
 
@@ -198,16 +209,26 @@ impl StepAdvanceCondition for OrAdvanceConditions {
 
         StepAdvanceResult {
             should_advance,
-            next_iteration: Arc::new(OrAdvanceConditions {
-                conditions: if should_advance {
-                    // Reset to fresh conditions when advancing
-                    self.conditions.clone()
-                } else {
-                    // Preserve stateful progress when not advancing
-                    next_conditions
-                },
-            }),
+            next_iteration: if should_advance {
+                // When advancing, create fresh instances of all conditions to ensure state isolation
+                self.new_instance()
+            } else {
+                // Preserve stateful progress when not advancing
+                Arc::new(OrAdvanceConditions {
+                    conditions: next_conditions,
+                })
+            },
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(OrAdvanceConditions {
+            conditions: self
+                .conditions
+                .iter()
+                .map(|condition| condition.new_instance())
+                .collect(),
+        })
     }
 }
 
@@ -248,16 +269,26 @@ impl StepAdvanceCondition for AndAdvanceConditions {
 
         StepAdvanceResult {
             should_advance,
-            next_iteration: Arc::new(AndAdvanceConditions {
-                conditions: if should_advance {
-                    // Reset to fresh conditions when advancing
-                    self.conditions.clone()
-                } else {
-                    // Preserve stateful progress when not advancing
-                    next_conditions
-                },
-            }),
+            next_iteration: if should_advance {
+                // When advancing, create fresh instances of all conditions to ensure state isolation
+                self.new_instance()
+            } else {
+                // Preserve stateful progress when not advancing
+                Arc::new(AndAdvanceConditions {
+                    conditions: next_conditions,
+                })
+            },
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(AndAdvanceConditions {
+            conditions: self
+                .conditions
+                .iter()
+                .map(|condition| condition.new_instance())
+                .collect(),
+        })
     }
 }
 
@@ -332,27 +363,16 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 .should_advance;
 
             if should_advance {
-                StepAdvanceResult {
-                    should_advance: true,
-                    next_iteration: Arc::new(DistanceEntryAndExitCondition {
-                        distance_to_end_of_step: self.distance_to_end_of_step,
-                        distance_after_end_of_step: self.distance_after_end_of_step,
-                        minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-                        has_reached_end_of_current_step: false,
-                    }),
-                }
+                StepAdvanceResult::advance_to_new_instance(self)
             } else {
                 // The condition was not advanced. So we return a fresh iteration
                 // where has_reached_end_of_current_step is still true to re-trigger this part 2 logic.
-                StepAdvanceResult {
-                    should_advance: false,
-                    next_iteration: Arc::new(DistanceEntryAndExitCondition {
-                        distance_to_end_of_step: self.distance_to_end_of_step,
-                        distance_after_end_of_step: self.distance_after_end_of_step,
-                        minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-                        has_reached_end_of_current_step: true,
-                    }),
-                }
+                StepAdvanceResult::continue_with_state(Arc::new(DistanceEntryAndExitCondition {
+                    distance_to_end_of_step: self.distance_to_end_of_step,
+                    distance_after_end_of_step: self.distance_after_end_of_step,
+                    minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+                    has_reached_end_of_current_step: true,
+                }))
             }
         } else {
             let distance_to_end = DistanceToEndOfStepCondition {
@@ -370,11 +390,17 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                     .should_advance,
             };
 
-            StepAdvanceResult {
-                should_advance: false,
-                next_iteration: Arc::new(next_iteration),
-            }
+            StepAdvanceResult::continue_with_state(Arc::new(next_iteration))
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceEntryAndExitCondition {
+            distance_to_end_of_step: self.distance_to_end_of_step,
+            distance_after_end_of_step: self.distance_after_end_of_step,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+            has_reached_end_of_current_step: false, // Always reset to initial state
+        })
     }
 }
 
