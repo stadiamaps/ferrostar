@@ -5,15 +5,18 @@ import SwiftUI
 
 public struct NavigationViewComponentsConfiguration {
     public let progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    public let offRouteView: ((NavigationState?) -> AnyView)?
     public let instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
     public let currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     public init(
         progressView: ((NavigationState?, (() -> Void)?) -> AnyView)? = nil,
+        offRouteView: ((NavigationState?) -> AnyView)? = nil,
         instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)? = nil,
         currentRoadNameView: ((NavigationState?) -> AnyView)? = nil
     ) {
         self.progressView = progressView
+        self.offRouteView = offRouteView
         self.instructionsView = instructionsView
         self.currentRoadNameView = currentRoadNameView
     }
@@ -27,6 +30,15 @@ public struct NavigationViewComponentsConfiguration {
             customProgressView(navigationState, onTapExit)
         } else {
             DefaultNavigationViewComponents.defaultProgressView(navigationState, onTapExit)
+        }
+    }
+
+    @ViewBuilder
+    public func getOffRouteView(_ navigationState: NavigationState?) -> some View {
+        if let customOffRouteView = offRouteView {
+            customOffRouteView(navigationState)
+        } else {
+            DefaultNavigationViewComponents.defaultOffRouteView(navigationState)
         }
     }
 
@@ -169,6 +181,12 @@ public enum DefaultNavigationViewComponents {
                 onTapExit: onTapExit
             )
         }
+    }
+
+    @ViewBuilder public static func defaultOffRouteView(
+        _: NavigationState?
+    ) -> some View {
+        OffRouteBannerView()
     }
 
     @ViewBuilder public static func defaultInstructionsView(

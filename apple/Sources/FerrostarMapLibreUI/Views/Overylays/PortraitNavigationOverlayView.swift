@@ -77,7 +77,7 @@ struct PortraitNavigationOverlayView: View {
                     onZoomOut: onZoomOut,
                     cameraControlState: cameraControlState
                 )
-                .innerGrid {
+                .navigationViewInnerGrid {
                     gridConfig.getTopCenter()
                 } topTrailing: {
                     gridConfig.getTopTrailing()
@@ -102,13 +102,29 @@ struct PortraitNavigationOverlayView: View {
                     }
                 }
             }
-            .padding(.top, instructionsViewSizeWhenNotExpanded.height + 16)
+            .padding(.top, topPadding + 16)
 
-            componentsConfig.getInstructionsView(
-                navigationState,
-                isExpanded: $isInstructionViewExpanded,
-                sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
-            )
+            if case .offRoute = navigationState?.currentDeviation {
+                componentsConfig.getOffRouteView(navigationState)
+            } else {
+                componentsConfig.getInstructionsView(
+                    navigationState,
+                    isExpanded: $isInstructionViewExpanded,
+                    sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
+                )
+            }
         }
+    }
+
+    private var topPadding: CGFloat {
+        guard case .navigating = navigationState?.tripState else {
+            return 0
+        }
+
+        if case .offRoute = navigationState?.currentDeviation {
+            return 48
+        }
+
+        return instructionsViewSizeWhenNotExpanded.height
     }
 }
