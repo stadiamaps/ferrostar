@@ -96,7 +96,7 @@ public struct PortraitNavigationView: View {
                     },
                     onTapExit: onTapExit
                 )
-                .innerGrid {
+                .navigationViewInnerGrid {
                     gridConfig.getTopCenter()
                 } topTrailing: {
                     gridConfig.getTopTrailing()
