@@ -47,8 +47,8 @@ impl StepAdvanceResult {
     /// Creates a step advance result that does not advance to the next step.
     /// Uses the provided next_iteration as-is for preserving stateful progress.
     ///
-    /// Note: it's up to the caller to determine whether next_interation should reset.
-    pub fn continue_with(next_iteration: Arc<dyn StepAdvanceCondition>) -> Self {
+    /// Note: it's up to the caller to determine whether next_iteration should reset.
+    pub fn continue_with_state(next_iteration: Arc<dyn StepAdvanceCondition>) -> Self {
         Self {
             should_advance: false,
             next_iteration,

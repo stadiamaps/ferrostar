@@ -36,7 +36,7 @@ impl StepAdvanceCondition for ManualStepCondition {
         current_step: RouteStep,
         next_step: Option<RouteStep>,
     ) -> StepAdvanceResult {
-        StepAdvanceResult::continue_with(Arc::new(ManualStepCondition))
+        StepAdvanceResult::continue_with_state(Arc::new(ManualStepCondition))
     }
 
     fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
@@ -88,7 +88,7 @@ impl StepAdvanceCondition for DistanceToEndOfStepCondition {
         if should_advance {
             StepAdvanceResult::advance_to_new_instance(self)
         } else {
-            StepAdvanceResult::continue_with(self.new_instance())
+            StepAdvanceResult::continue_with_state(self.new_instance())
         }
     }
 
@@ -153,7 +153,7 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
         if should_advance {
             StepAdvanceResult::advance_to_new_instance(self)
         } else {
-            StepAdvanceResult::continue_with(self.new_instance())
+            StepAdvanceResult::continue_with_state(self.new_instance())
         }
     }
 
@@ -367,7 +367,7 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
             } else {
                 // The condition was not advanced. So we return a fresh iteration
                 // where has_reached_end_of_current_step is still true to re-trigger this part 2 logic.
-                StepAdvanceResult::continue_with(Arc::new(DistanceEntryAndExitCondition {
+                StepAdvanceResult::continue_with_state(Arc::new(DistanceEntryAndExitCondition {
                     distance_to_end_of_step: self.distance_to_end_of_step,
                     distance_after_end_of_step: self.distance_after_end_of_step,
                     minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
@@ -390,7 +390,7 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                     .should_advance,
             };
 
-            StepAdvanceResult::continue_with(Arc::new(next_iteration))
+            StepAdvanceResult::continue_with_state(Arc::new(next_iteration))
         }
     }
 
