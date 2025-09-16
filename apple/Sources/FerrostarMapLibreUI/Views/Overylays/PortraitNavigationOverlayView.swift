@@ -15,6 +15,7 @@ struct PortraitNavigationOverlayView: View {
 
     @State private var isInstructionViewExpanded: Bool = false
     @State private var instructionsViewSizeWhenNotExpanded: CGSize = .zero
+    @State private var offRouteViewSizeWhenNotExpanded: CGSize = .zero
 
     var speedLimit: Measurement<UnitSpeed>?
     var speedLimitStyle: SpeedLimitView.SignageStyle?
@@ -77,7 +78,7 @@ struct PortraitNavigationOverlayView: View {
                     onZoomOut: onZoomOut,
                     cameraControlState: cameraControlState
                 )
-                .innerGrid {
+                .navigationViewInnerGrid {
                     gridConfig.getTopCenter()
                 } topTrailing: {
                     gridConfig.getTopTrailing()
@@ -102,13 +103,32 @@ struct PortraitNavigationOverlayView: View {
                     }
                 }
             }
-            .padding(.top, instructionsViewSizeWhenNotExpanded.height + 16)
+            .padding(.top, topPadding + 16)
 
-            componentsConfig.getInstructionsView(
-                navigationState,
-                isExpanded: $isInstructionViewExpanded,
-                sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
-            )
+            if case .offRoute = navigationState?.currentDeviation {
+                componentsConfig.getOffRouteView(
+                    navigationState,
+                    size: $offRouteViewSizeWhenNotExpanded
+                )
+            } else {
+                componentsConfig.getInstructionsView(
+                    navigationState,
+                    isExpanded: $isInstructionViewExpanded,
+                    sizeWhenNotExpanded: $instructionsViewSizeWhenNotExpanded
+                )
+            }
         }
+    }
+
+    private var topPadding: CGFloat {
+        guard case .navigating = navigationState?.tripState else {
+            return 0
+        }
+
+        if case .offRoute = navigationState?.currentDeviation {
+            return offRouteViewSizeWhenNotExpanded.height
+        }
+
+        return instructionsViewSizeWhenNotExpanded.height
     }
 }

@@ -37,6 +37,16 @@
         }
       }
     },
+    "Return to the Route" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return to the Route.."
+          }
+        }
+      }
+    },
     "Speed Limit" : {
       "extractionState" : "manual",
       "localizations" : {
