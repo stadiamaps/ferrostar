@@ -27,6 +27,7 @@ public struct NavigationState: Hashable {
         self.isCalculatingNewRoute = isCalculatingNewRoute
     }
 
+    /// The current progress stats of the trip and current step.
     public var currentProgress: TripProgress? {
         guard case let .navigating(_, _, _, _, _, progress, _, _, _,
                                    _, _) = tripState
@@ -37,6 +38,7 @@ public struct NavigationState: Hashable {
         return progress
     }
 
+    /// An aggregated summary of the trip so far.
     public var currentSummary: TripSummary? {
         switch tripState {
         case let .navigating(_, _, _, _, _, _, summary, _, _, _, _),
@@ -47,14 +49,9 @@ public struct NavigationState: Hashable {
         }
     }
 
-    public var currentVisualInstruction: VisualInstruction? {
-        guard case let .navigating(_, _, _, _, _, _, _, _, visualInstruction, _, _) = tripState else {
-            return nil
-        }
-
-        return visualInstruction
-    }
-
+    /// The steps remaining after the current step.
+    ///
+    /// These are steps from the route that have not yet been travelled.
     public var remainingSteps: [RouteStep]? {
         guard case let .navigating(_, _, _, remainingSteps, _, _, _, _, _, _, _) = tripState else {
             return nil
@@ -63,8 +60,36 @@ public struct NavigationState: Hashable {
         return remainingSteps
     }
 
+    /// The remaining waypoints on the navigation trip.
+    public var remainingWaypoints: [Waypoint]? {
+        guard case let .navigating(_, _, _, _, remainingWaypoints, _, _, _, _, _, _) = tripState else {
+            return nil
+        }
+
+        return remainingWaypoints
+    }
+
+    /// The current route step.
     public var currentStep: RouteStep? {
         remainingSteps?.first
+    }
+
+    /// The current visual instruction.
+    public var currentVisualInstruction: VisualInstruction? {
+        guard case let .navigating(_, _, _, _, _, _, _, _, visualInstruction, _, _) = tripState else {
+            return nil
+        }
+
+        return visualInstruction
+    }
+
+    /// The current route deviation state.
+    public var currentDeviation: RouteDeviation? {
+        guard case let .navigating(_, _, _, _, _, _, _, routeDeviation, _, _, _) = tripState else {
+            return nil
+        }
+
+        return routeDeviation
     }
 
     /// The current geometry segment's annotations in a JSON string.
@@ -78,6 +103,9 @@ public struct NavigationState: Hashable {
         return annotationJson
     }
 
+    /// Is ferrostar currently navigating.
+    ///
+    /// This is equivalent to a ``tripState`` of `.navigating`.
     public var isNavigating: Bool {
         switch tripState {
         case .navigating:
@@ -87,6 +115,7 @@ public struct NavigationState: Hashable {
         }
     }
 
+    /// The road name of the current step if one is specified.
     public var currentRoadName: String? {
         guard case let .navigating(_, _, _, remainingSteps, _, _, _, _, _, _, _) = tripState else {
             return nil

@@ -101,6 +101,11 @@ The units of the `InstructionsView` are controlled using the formatter settings
 you passed to the `NavigationMapView` (if you’re using it).
 If you’re not using the `NavigationMapView`, you can pass a formatter directly.
 
+The `OffRouteBannerView` replaces the instructions view when the user is off route.
+This avoids providing incorrect instructions and should let the user know
+how to resolve the issue until a re-route is successful and the `InstructionsView`
+reappears.
+
 The `TripProgressView` included in Ferrostar includes a basic layout showing the
 progress of the trip, formatted with the specified or default `FormatterCollection`.
 
@@ -113,6 +118,9 @@ All of these views can be replaced using their view modifier extensions.
     DynamicallyOrientingNavigationView(...)
         .navigationViewInstructionView { navigationState, isExpanded, sizeWhenNotExpanded in
             MyCustomTopCenterView(navigationState, isExpanded, sizeWhenNotExpanded)
+        }
+        .navigationViewOffRouteView { navigationState, size in
+            MyCustomOffRouteView(navigationState, size)
         }
         .navigationViewProgressView { navigationState, onTapExit in
             MyCustomProgressView(navigationState, onTapExit)
