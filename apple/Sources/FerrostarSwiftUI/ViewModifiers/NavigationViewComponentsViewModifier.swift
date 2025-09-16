@@ -222,6 +222,9 @@ public enum DefaultNavigationViewComponents {
     @ViewBuilder public static func defaultCurrentRoadNameView(_ navigationState: NavigationState?)
         -> some View
     {
-        CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName)
+        // Only show the road view when on route.
+        if case .noDeviation = navigationState?.currentDeviation {
+            CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName)
+        }
     }
 }
