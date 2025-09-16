@@ -15,6 +15,8 @@ public struct CurrentRoadNameView: View {
         if let currentRoadName, !currentRoadName.isEmpty {
             Text(currentRoadName)
                 .font(theme.textFont)
+                .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.5)
                 .foregroundStyle(theme.textColor)
                 .padding(padding)
                 .background(theme.backgroundColor)
