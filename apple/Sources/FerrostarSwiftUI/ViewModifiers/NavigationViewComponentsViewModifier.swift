@@ -5,13 +5,13 @@ import SwiftUI
 
 public struct NavigationViewComponentsConfiguration {
     public let progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
-    public let offRouteView: ((NavigationState?) -> AnyView)?
+    public let offRouteView: ((NavigationState?, Binding<CGSize>) -> AnyView)?
     public let instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
     public let currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     public init(
         progressView: ((NavigationState?, (() -> Void)?) -> AnyView)? = nil,
-        offRouteView: ((NavigationState?) -> AnyView)? = nil,
+        offRouteView: ((NavigationState?, Binding<CGSize>) -> AnyView)? = nil,
         instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)? = nil,
         currentRoadNameView: ((NavigationState?) -> AnyView)? = nil
     ) {
@@ -34,11 +34,14 @@ public struct NavigationViewComponentsConfiguration {
     }
 
     @ViewBuilder
-    public func getOffRouteView(_ navigationState: NavigationState?) -> some View {
+    public func getOffRouteView(
+        _ navigationState: NavigationState?,
+        size: Binding<CGSize>
+    ) -> some View {
         if let customOffRouteView = offRouteView {
-            customOffRouteView(navigationState)
+            customOffRouteView(navigationState, size)
         } else {
-            DefaultNavigationViewComponents.defaultOffRouteView(navigationState)
+            DefaultNavigationViewComponents.defaultOffRouteView(navigationState, size: size)
         }
     }
 
@@ -184,9 +187,10 @@ public enum DefaultNavigationViewComponents {
     }
 
     @ViewBuilder public static func defaultOffRouteView(
-        _: NavigationState?
+        _: NavigationState?,
+        size: Binding<CGSize>
     ) -> some View {
-        OffRouteBannerView()
+        OffRouteBannerView(size: size)
     }
 
     @ViewBuilder public static func defaultInstructionsView(

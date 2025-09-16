@@ -15,6 +15,7 @@ struct PortraitNavigationOverlayView: View {
 
     @State private var isInstructionViewExpanded: Bool = false
     @State private var instructionsViewSizeWhenNotExpanded: CGSize = .zero
+    @State private var offRouteViewSizeWhenNotExpanded: CGSize = .zero
 
     var speedLimit: Measurement<UnitSpeed>?
     var speedLimitStyle: SpeedLimitView.SignageStyle?
@@ -105,7 +106,10 @@ struct PortraitNavigationOverlayView: View {
             .padding(.top, topPadding + 16)
 
             if case .offRoute = navigationState?.currentDeviation {
-                componentsConfig.getOffRouteView(navigationState)
+                componentsConfig.getOffRouteView(
+                    navigationState,
+                    size: $offRouteViewSizeWhenNotExpanded
+                )
             } else {
                 componentsConfig.getInstructionsView(
                     navigationState,
@@ -122,7 +126,7 @@ struct PortraitNavigationOverlayView: View {
         }
 
         if case .offRoute = navigationState?.currentDeviation {
-            return 48
+            return offRouteViewSizeWhenNotExpanded.height
         }
 
         return instructionsViewSizeWhenNotExpanded.height

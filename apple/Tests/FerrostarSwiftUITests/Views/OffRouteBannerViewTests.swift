@@ -15,7 +15,7 @@ final class OffRouteBannerViewTests: XCTestCase {
         assertView {
             OffRouteBannerView(
                 message: "You are off route, a re-route may be underway but you may also be able to return to the route if you have no data."
-            )
+            ).padding()
         }
     }
 }

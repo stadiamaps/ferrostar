@@ -69,7 +69,10 @@ struct LandscapeNavigationOverlayView: View {
                 }
 
                 if case .offRoute = navigationState?.currentDeviation {
-                    componentsConfig.getOffRouteView(navigationState)
+                    componentsConfig.getOffRouteView(
+                        navigationState,
+                        size: .constant(.zero)
+                    )
                 } else {
                     componentsConfig.getInstructionsView(
                         navigationState,
