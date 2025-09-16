@@ -103,7 +103,7 @@ public struct DynamicallyOrientingNavigationView: View {
                         },
                         onTapExit: onTapExit
                     )
-                    .innerGrid {
+                    .navigationViewInnerGrid {
                         gridConfig.getTopCenter()
                     } topTrailing: {
                         gridConfig.getTopTrailing()
@@ -134,7 +134,7 @@ public struct DynamicallyOrientingNavigationView: View {
                         },
                         onTapExit: onTapExit
                     )
-                    .innerGrid {
+                    .navigationViewInnerGrid {
                         gridConfig.getTopCenter()
                     } topTrailing: {
                         gridConfig.getTopTrailing()
