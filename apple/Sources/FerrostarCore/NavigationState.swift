@@ -103,9 +103,9 @@ public struct NavigationState: Hashable {
         return annotationJson
     }
 
-    /// A convenience determing wheather trip state is navigating.
+    /// Is ferrostar currently navigating.
     ///
-    /// This can also be accessed through the ``tripState`` enum.
+    /// This is equivalent to a ``tripState`` of `.navigating`.
     public var isNavigating: Bool {
         switch tripState {
         case .navigating:
