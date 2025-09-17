@@ -33,6 +33,7 @@
 		FE16E4A32E0CAA73009D7B83 /* DemoAppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */; };
 		FE16E4A62E0CAB0A009D7B83 /* DemoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */; };
 		FE16E4A82E0CAC34009D7B83 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */; };
+		FE7D4EE12E1DB9A100E077CB /* DemoModel+RoutePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE7D4EE02E1DB9A100E077CB /* DemoModel+RoutePreview.swift */; };
 		FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */; };
 		FEFEAA1C2E0F570B00101D5B /* DemoCarPlayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEFEAA1B2E0F570B00101D5B /* DemoCarPlayModel.swift */; };
 /* End PBXBuildFile section */
@@ -85,6 +86,7 @@
 		FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoAppState.swift; sourceTree = "<group>"; };
 		FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoModel.swift; sourceTree = "<group>"; };
 		FE16E4A72E0CAC34009D7B83 /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
+		FE7D4EE02E1DB9A100E077CB /* DemoModel+RoutePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DemoModel+RoutePreview.swift"; sourceTree = "<group>"; };
 		FE9242DA2E0B0D610012C533 /* SwitchableLocationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchableLocationProvider.swift; sourceTree = "<group>"; };
 		FEFEAA1B2E0F570B00101D5B /* DemoCarPlayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoCarPlayModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -150,6 +152,7 @@
 				FE16E4A22E0CAA73009D7B83 /* DemoAppState.swift */,
 				1611A5582B2E6E98006B131D /* DemoApp.swift */,
 				FE16E4A52E0CAB0A009D7B83 /* DemoModel.swift */,
+				FE7D4EE02E1DB9A100E077CB /* DemoModel+RoutePreview.swift */,
 				FE0519162E2059400084240B /* DemoModel+Search.swift */,
 			);
 			path = Demo;
@@ -336,6 +339,7 @@
 				1611A55B2B2E6E98006B131D /* DemoNavigationView.swift in Sources */,
 				FE9242DB2E0B0D610012C533 /* SwitchableLocationProvider.swift in Sources */,
 				1621C26D2CE2B42700034BA3 /* CarPlaySceneDelegate.swift in Sources */,
+				FE7D4EE12E1DB9A100E077CB /* DemoModel+RoutePreview.swift in Sources */,
 				FE0519172E2059400084240B /* DemoModel+Search.swift in Sources */,
 				1663679D2B2F6F85008BFF1F /* APIKeys.swift in Sources */,
 				FE16E4A62E0CAB0A009D7B83 /* DemoModel.swift in Sources */,
