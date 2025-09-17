@@ -21,6 +21,7 @@
 	- [Jetpack Compose](./jetpack-compose-customization.md)
 	- [Android Foreground Services](./android-foreground-service.md)
 	- [Web](./web-customization.md)
+	- [iOS Dynamic Island](./ios-dynamic-island.md)
 	- [iOS CarPlay](./ios-carplay.md)
 	- [Annotations (speed limits, traffic, etc.)](./annotations.md)
 
