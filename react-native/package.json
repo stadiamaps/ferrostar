@@ -9,6 +9,7 @@
     "example:start": "yarn workspace ferrostar-example-react-native start",
     "example:android": "yarn workspace ferrostar-example-react-native android",
     "example:ios": "yarn workspace ferrostar-example-react-native ios",
+    "example:prebuild": "yarn workspace ferrostar-example-react-native prebuild",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",

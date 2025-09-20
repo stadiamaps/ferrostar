@@ -1,11 +1,12 @@
-const {getDefaultConfig} = require('@react-native/metro-config');
-
+// Learn more https://docs.expo.io/guides/customizing-metro
+const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 
 const projectRoot = __dirname;
 const monorepoRoot = path.resolve(projectRoot, '../');
 
-const config = getDefaultConfig(projectRoot);
+/** @type {import('expo/metro-config').MetroConfig} */
+const config = getDefaultConfig(__dirname);
 
 // Only list the packages within your monorepo that your app uses. No need to add anything else.
 // If your monorepo tooling can give you the list of monorepo workspaces linked
@@ -13,12 +14,12 @@ const config = getDefaultConfig(projectRoot);
 const monorepoPackages = {
   '@stadiamaps/ferrostar-uniffi-react-native': path.resolve(
     monorepoRoot,
-    'uniffi',
+    'uniffi'
   ),
   '@stadiamaps/ferrostar-core-react-native': path.resolve(monorepoRoot, 'core'),
   '@stadiamaps/ferrostar-maplibre-react-native': path.resolve(
     monorepoRoot,
-    'maplibreui',
+    'maplibreui'
   ),
 };
 
