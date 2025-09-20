@@ -1,6 +1,5 @@
 import FerrostarCore
 import FerrostarCoreFFI
-import FerrostarSwiftUI
 import SwiftUI
 
 struct InstructionsViewWrapper: View {

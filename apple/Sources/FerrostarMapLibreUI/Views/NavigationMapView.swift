@@ -13,6 +13,11 @@ import SwiftUI
 /// This is the basis of higher level views like
 /// ``DynamicallyOrientingNavigationView``.
 public struct NavigationMapView: View {
+    @Environment(\.navigationMapViewRouteOverlayConfiguration) private var routeConfig
+    @Environment(\.navigationMapViewContentInsetConfiguration) private var contentInsetConfig
+
+    @State private var orientation = UIDevice.current.orientation
+
     let styleURL: URL
     var mapViewContentInset: UIEdgeInsets = .zero
     var onStyleLoaded: (MLNStyle) -> Void
@@ -54,36 +59,37 @@ public struct NavigationMapView: View {
     }
 
     public var body: some View {
-        MapView(
-            styleURL: styleURL,
-            camera: $camera,
-            locationManager: locationManager,
-            activity: activity
-        ) {
-            // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
+        GeometryReader { geometry in
+            MapView(
+                styleURL: styleURL,
+                camera: $camera,
+                locationManager: locationManager,
+                activity: activity
+            ) {
+                // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
+                routeConfig.routeOverlay(navigationState)
 
-            if let routePolyline = navigationState?.routePolyline {
-                RouteStyleLayer(polyline: routePolyline,
-                                identifier: "route-polyline",
-                                style: TravelledRouteStyle())
+                updateCameraIfNeeded()
+
+                // Overlay any additional user layers.
+                userLayers
             }
-
-            if let remainingRoutePolyline = navigationState?.remainingRoutePolyline {
-                RouteStyleLayer(polyline: remainingRoutePolyline,
-                                identifier: "remaining-route-polyline")
+            .mapViewContentInset(calculatedMapViewInsets(for: geometry).uiEdgeInsets)
+            .mapControls {
+                // No controls
             }
-
-            updateCameraIfNeeded()
-
-            // Overlay any additional user layers.
-            userLayers
+            .onStyleLoaded(onStyleLoaded)
+            .ignoresSafeArea(.all)
         }
-        .mapViewContentInset(mapViewContentInset)
-        .mapControls {
-            // No controls
+        .onReceive(
+            NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
+        ) { _ in
+            orientation = UIDevice.current.orientation
         }
-        .onStyleLoaded(onStyleLoaded)
-        .ignoresSafeArea(.all)
+    }
+
+    private func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
+        contentInsetConfig.bundle.dynamicWithCameraState(camera.state, orientation: orientation)(geometry)
     }
 
     private func updateCameraIfNeeded() {

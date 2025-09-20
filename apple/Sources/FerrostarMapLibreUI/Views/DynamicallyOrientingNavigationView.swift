@@ -7,40 +7,28 @@ import MapLibreSwiftUI
 import SwiftUI
 
 /// A navigation view that dynamically switches between portrait and landscape orientations.
-public struct DynamicallyOrientingNavigationView: View,
-    CustomizableNavigatingInnerGridView, NavigationViewConfigurable, SpeedLimitViewHost
-{
+public struct DynamicallyOrientingNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
+    @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
 
     @State private var orientation = UIDevice.current.orientation
 
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
 
-    public var speedLimit: Measurement<UnitSpeed>?
-    public var speedLimitStyle: SpeedLimitView.SignageStyle?
+    // Speed limit and grid configuration now read from environment to avoid struct copying issues
+    @Environment(\.speedLimitConfiguration) private var speedLimitConfig
+    @Environment(\.navigationInnerGridConfiguration) private var gridConfig
 
     let isMuted: Bool
     let onTapMute: () -> Void
     var onTapExit: (() -> Void)?
 
     public var minimumSafeAreaInsets: EdgeInsets
-
-    // MARK: Configurable Views
-
-    public var topCenter: (() -> AnyView)?
-    public var topTrailing: (() -> AnyView)?
-    public var midLeading: (() -> AnyView)?
-    public var bottomTrailing: (() -> AnyView)?
-
-    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
-    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
-    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     /// Create a dynamically orienting navigation view. This view automatically arranges child views for both portrait
     /// and landscape orientations.
@@ -78,7 +66,6 @@ public struct DynamicallyOrientingNavigationView: View,
 
         _camera = camera
         self.navigationCamera = navigationCamera
-        mapInsets = NavigationMapViewContentInsetBundle()
     }
 
     public var body: some View {
@@ -94,68 +81,69 @@ public struct DynamicallyOrientingNavigationView: View,
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(
-                    mapInsets.dynamic(orientation)(geometry)
-                )
 
                 switch orientation {
                 case .landscapeLeft, .landscapeRight:
                     LandscapeNavigationOverlayView(
                         navigationState: navigationState,
-                        speedLimit: speedLimit,
-                        speedLimitStyle: speedLimitStyle,
-                        views: NavigationViewComponentBuilder(
-                            progressView: progressView,
-                            instructionsView: instructionsView,
-                            currentRoadNameView: currentRoadNameView
-                        ),
+                        speedLimit: speedLimitConfig.speedLimit,
+                        speedLimitStyle: speedLimitConfig.speedLimitStyle,
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
                         showZoom: true,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
+                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+                            if let overviewCamera = navigationState?.routeOverviewCamera {
+                                camera = overviewCamera
+                            }
+                        } : .showRecenter { // TODO: Third case when not navigating!
+                            camera = navigationCamera
+                        },
                         onTapExit: onTapExit
                     )
-                    .innerGrid {
-                        topCenter?()
+                    .navigationViewInnerGrid {
+                        gridConfig.getTopCenter()
                     } topTrailing: {
-                        topTrailing?()
+                        gridConfig.getTopTrailing()
                     } midLeading: {
-                        midLeading?()
+                        gridConfig.getMidLeading()
+                    } bottomLeading: {
+                        gridConfig.getBottomLeading()
                     } bottomTrailing: {
-                        bottomTrailing?()
+                        gridConfig.getBottomTrailing()
                     }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
                 default:
                     PortraitNavigationOverlayView(
                         navigationState: navigationState,
-                        speedLimit: speedLimit,
-                        speedLimitStyle: speedLimitStyle,
-                        views: NavigationViewComponentBuilder(
-                            progressView: progressView,
-                            instructionsView: instructionsView,
-                            currentRoadNameView: currentRoadNameView
-                        ),
+                        speedLimit: speedLimitConfig.speedLimit,
+                        speedLimitStyle: speedLimitConfig.speedLimitStyle,
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
                         showZoom: true,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        showCentering: !camera.isTrackingUserLocationWithCourse,
-                        onCenter: { camera = navigationCamera },
+                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+                            if let overviewCamera = navigationState?.routeOverviewCamera {
+                                camera = overviewCamera
+                            }
+                        } : .showRecenter { // TODO: Third case when not navigating!
+                            camera = navigationCamera
+                        },
                         onTapExit: onTapExit
                     )
-                    .innerGrid {
-                        topCenter?()
+                    .navigationViewInnerGrid {
+                        gridConfig.getTopCenter()
                     } topTrailing: {
-                        topTrailing?()
+                        gridConfig.getTopTrailing()
                     } midLeading: {
-                        midLeading?()
+                        gridConfig.getMidLeading()
+                    } bottomLeading: {
+                        gridConfig.getBottomLeading()
                     } bottomTrailing: {
-                        bottomTrailing?()
+                        gridConfig.getBottomTrailing()
                     }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
                 }
             }

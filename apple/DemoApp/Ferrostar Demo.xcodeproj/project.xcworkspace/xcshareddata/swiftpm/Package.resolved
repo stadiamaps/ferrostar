@@ -1,13 +1,22 @@
 {
-  "originHash" : "ca17acfd0cb273a43f2ba08f458fafb42b12891d2edad1441edced01c7832e9e",
+  "originHash" : "46f977e213e19692434410bb273a7df20f7f91dbfeaadd3ed5fbc604b1559fcc",
   "pins" : [
+    {
+      "identity" : "anycodable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Flight-School/AnyCodable",
+      "state" : {
+        "revision" : "862808b2070cd908cb04f9aafe7de83d35f81b05",
+        "version" : "0.6.7"
+      }
+    },
     {
       "identity" : "maplibre-gl-native-distribution",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/maplibre-gl-native-distribution.git",
       "state" : {
-        "revision" : "60d9bb85c94ce6e7fc4406cd32529fd12bdb7809",
-        "version" : "6.14.0"
+        "revision" : "52421bf02a8b47a179ed11553e80aa400913e55e",
+        "version" : "6.18.1"
       }
     },
     {
@@ -15,8 +24,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Kolos65/Mockable.git",
       "state" : {
-        "revision" : "118a0b8934e585b80952586db30bcb72aef45a74",
-        "version" : "0.3.2"
+        "revision" : "ee133a696dce312da292b00d0944aafaa808eaca",
+        "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "stadiamaps-api-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/stadiamaps-api-swift",
+      "state" : {
+        "revision" : "232878311cba0cc43c43e6b7b994215f3d7ea65c",
+        "version" : "7.0.1"
       }
     },
     {
@@ -24,8 +42,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-syntax.git",
       "state" : {
-        "revision" : "0687f71944021d616d34d922343dcef086855920",
-        "version" : "600.0.1"
+        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
+        "version" : "601.0.1"
+      }
+    },
+    {
+      "identity" : "swiftui-autocomplete-search",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stadiamaps/swiftui-autocomplete-search.git",
+      "state" : {
+        "revision" : "6b36baf01f96b72c71b24f3edd248ca9795d845a",
+        "version" : "4.0.0"
       }
     },
     {
@@ -33,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "5bc0284ee86bee29d922c8fac0ea1069dc11227a",
-        "version" : "0.12.0"
+        "revision" : "59fc604dfd9ba68de22b641f91ffc5cd579bc20a",
+        "version" : "0.17.0"
       }
     },
     {
@@ -42,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "39de59b2d47f7ef3ca88a039dff3084688fe27f4",
-        "version" : "1.5.2"
+        "revision" : "b2ed9eabefe56202ee4939dd9fc46b6241c88317",
+        "version" : "1.6.1"
       }
     }
   ],

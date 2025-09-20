@@ -6,8 +6,10 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView {
+struct LandscapeNavigationOverlayView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
+    @Environment(\.navigationInnerGridConfiguration) private var gridConfig
+    @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
 
     private let navigationState: NavigationState?
 
@@ -20,8 +22,7 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     var onZoomIn: () -> Void
     var onZoomOut: () -> Void
 
-    var showCentering: Bool
-    var onCenter: () -> Void
+    var cameraControlState: CameraControlState
 
     var onTapExit: (() -> Void)?
 
@@ -29,31 +30,18 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
     let isMuted: Bool
     let onMute: () -> Void
 
-    // MARK: Configurable Views
-
-    var topCenter: (() -> AnyView)?
-    var topTrailing: (() -> AnyView)?
-    var midLeading: (() -> AnyView)?
-    var bottomTrailing: (() -> AnyView)?
-
-    var progressView: (NavigationState?, (() -> Void)?) -> AnyView
-    var instructionsView: (NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView
-    var currentRoadNameView: (NavigationState?) -> AnyView
-
     // NOTE: These don't really follow our usual coding style as they are internal.
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,
         speedLimitStyle: SpeedLimitView.SignageStyle? = nil,
-        views: NavigationViewComponentBuilder,
         isMuted: Bool,
         showMute: Bool = true,
         onMute: @escaping () -> Void,
         showZoom: Bool = false,
         onZoomIn: @escaping () -> Void = {},
         onZoomOut: @escaping () -> Void = {},
-        showCentering: Bool = false,
-        onCenter: @escaping () -> Void = {},
+        cameraControlState: CameraControlState = .hidden,
         onTapExit: (() -> Void)? = nil
     ) {
         self.navigationState = navigationState
@@ -65,13 +53,8 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
         self.showZoom = showZoom
         self.onZoomIn = onZoomIn
         self.onZoomOut = onZoomOut
-        self.showCentering = showCentering
-        self.onCenter = onCenter
+        self.cameraControlState = cameraControlState
         self.onTapExit = onTapExit
-
-        progressView = views.progressView
-        instructionsView = views.instructionsView
-        currentRoadNameView = views.currentRoadNameView
     }
 
     var body: some View {
@@ -81,25 +64,39 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     Spacer()
 
                     HStack {
-                        progressView(navigationState, onTapExit)
+                        componentsConfig.getProgressView(navigationState, onTapExit: onTapExit)
                     }
                 }
 
-                instructionsView(navigationState, $isInstructionViewExpanded, .constant(.zero))
+                if case .offRoute = navigationState?.currentDeviation {
+                    componentsConfig.getOffRouteView(
+                        navigationState,
+                        size: .constant(.zero)
+                    )
+                } else {
+                    componentsConfig.getInstructionsView(
+                        navigationState,
+                        isExpanded: $isInstructionViewExpanded,
+                        sizeWhenNotExpanded: .constant(.zero)
+                    )
+                }
             }
 
             Spacer().frame(width: 16)
 
             ZStack(alignment: .bottom) {
                 // Centering will push up the grid. Allowing for the road name
-                if !showCentering {
+                switch cameraControlState {
+                case .hidden, .showRouteOverview:
                     HStack {
                         Spacer(minLength: 64)
 
-                        currentRoadNameView(navigationState)
+                        componentsConfig.getCurrentRoadNameView(navigationState)
 
                         Spacer(minLength: 64)
                     }
+                case .showRecenter:
+                    EmptyView()
                 }
 
                 // The inner content is displayed vertically full screen
@@ -115,17 +112,18 @@ struct LandscapeNavigationOverlayView: View, CustomizableNavigatingInnerGridView
                     showZoom: showZoom,
                     onZoomIn: onZoomIn,
                     onZoomOut: onZoomOut,
-                    showCentering: showCentering,
-                    onCenter: onCenter
+                    cameraControlState: cameraControlState
                 )
-                .innerGrid {
-                    topCenter?()
+                .navigationViewInnerGrid {
+                    gridConfig.getTopCenter()
                 } topTrailing: {
-                    topTrailing?()
+                    gridConfig.getTopTrailing()
                 } midLeading: {
-                    midLeading?()
+                    gridConfig.getMidLeading()
+                } bottomLeading: {
+                    gridConfig.getBottomLeading()
                 } bottomTrailing: {
-                    bottomTrailing?()
+                    gridConfig.getBottomTrailing()
                 }
             }
         }

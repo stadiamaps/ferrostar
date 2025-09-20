@@ -119,7 +119,7 @@ impl Route {
                 .legs
                 .iter()
                 .flat_map(|leg| {
-                    // Converts all single value annotation vectors into a single vector witih a value object.
+                    // Converts all single value annotation vectors into a single vector with a value object.
                     let annotations = leg
                         .annotation
                         .as_ref()

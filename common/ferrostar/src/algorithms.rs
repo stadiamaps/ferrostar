@@ -2,14 +2,11 @@
 
 use crate::{
     models::CourseOverGround,
-    navigation_controller::models::{
-        StepAdvanceMode,
-        StepAdvanceStatus::{self, Advanced, EndOfRoute},
-    },
+    navigation_controller::models::StepAdvanceStatus::{self, Advanced, EndOfRoute},
 };
 use crate::{
     models::{GeographicCoordinate, RouteStep, UserLocation},
-    navigation_controller::models::{SpecialAdvanceConditions, TripProgress},
+    navigation_controller::models::TripProgress,
 };
 use geo::{
     Bearing, Closest, Coord, Distance, Euclidean, Geodesic, Haversine, HaversineClosestPoint,
@@ -23,10 +20,8 @@ use {
     proptest::{collection::vec, prelude::*},
 };
 
-#[cfg(all(test, feature = "std", not(feature = "web-time")))]
-use std::time::SystemTime;
-#[cfg(all(test, feature = "web-time"))]
-use web_time::SystemTime;
+#[cfg(test)]
+use crate::test_utils::{arb_coord, arb_user_loc, make_user_location};
 
 /// Get the index of the closest *segment* to the user's location within a [`LineString`].
 ///
@@ -217,7 +212,7 @@ pub fn deviation_from_line(point: &Point, line: &LineString) -> Option<f64> {
     })
 }
 
-fn is_within_threshold_to_end_of_linestring(
+pub(crate) fn is_within_threshold_to_end_of_linestring(
     current_position: &Point,
     current_step_linestring: &LineString,
     threshold: f64,
@@ -233,126 +228,6 @@ fn is_within_threshold_to_end_of_linestring(
         })
 }
 
-/// Determines whether the navigation controller should complete the current route step
-/// and move to the next.
-///
-/// NOTE: The [`UserLocation`] should *not* be snapped.
-pub fn should_advance_to_next_step(
-    current_step_linestring: &LineString,
-    next_route_step: Option<&RouteStep>,
-    user_location: &UserLocation,
-    step_advance_mode: StepAdvanceMode,
-) -> bool {
-    let current_position = Point::from(user_location.coordinates);
-
-    match step_advance_mode {
-        StepAdvanceMode::Manual => false,
-        StepAdvanceMode::DistanceToEndOfStep {
-            distance,
-            minimum_horizontal_accuracy,
-        } => {
-            if user_location.horizontal_accuracy > minimum_horizontal_accuracy.into() {
-                false
-            } else {
-                is_within_threshold_to_end_of_linestring(
-                    &current_position,
-                    current_step_linestring,
-                    f64::from(distance),
-                )
-            }
-        }
-        StepAdvanceMode::RelativeLineStringDistance {
-            minimum_horizontal_accuracy,
-            special_advance_conditions,
-        } => {
-            if user_location.horizontal_accuracy > minimum_horizontal_accuracy.into() {
-                false
-            } else {
-                if let Some(condition) = special_advance_conditions {
-                    match condition {
-                        SpecialAdvanceConditions::AdvanceAtDistanceFromEnd(distance) => {
-                            // Short-circuit: if we are close to the end of the step,
-                            // we may advance early.
-                            if is_within_threshold_to_end_of_linestring(
-                                &current_position,
-                                current_step_linestring,
-                                f64::from(distance),
-                            ) {
-                                return true;
-                            }
-                        }
-                        SpecialAdvanceConditions::MinimumDistanceFromCurrentStepLine(distance) => {
-                            // Short-circuit: do NOT advance if we are within `distance`
-                            // of the current route step.
-                            //
-                            // Historical note: we previously considered checking distance from the
-                            // end of the current step instead, but this actually failed
-                            // the self-intersecting route tests, since the step break isn't
-                            // necessarily near the intersection.
-                            //
-                            // The last step is special and this logic does not apply.
-                            if let Some(next_step) = next_route_step {
-                                // Note this special next_step distance check; otherwise we get stuck at the end!
-                                if next_step.distance > f64::from(distance)
-                                    && deviation_from_line(
-                                        &current_position,
-                                        &current_step_linestring,
-                                    )
-                                    .map_or(true, |deviation| deviation <= f64::from(distance))
-                                {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if let Some(next_step) = next_route_step {
-                    // FIXME: This isn't very efficient to keep doing at the moment
-                    let next_step_linestring = next_step.get_linestring();
-
-                    // Try to snap the user's current location to the current step
-                    // and next step geometries
-                    if let (Some(current_step_closest_point), Some(next_step_closest_point)) = (
-                        snap_point_to_line(&current_position, current_step_linestring),
-                        snap_point_to_line(&current_position, &next_step_linestring),
-                    ) {
-                        // If the user's distance to the snapped location on the *next* step is <=
-                        // the user's distance to the snapped location on the *current* step,
-                        // advance to the next step
-                        Haversine.distance(current_position, next_step_closest_point)
-                            <= Haversine.distance(current_position, current_step_closest_point)
-                    } else {
-                        // The user's location couldn't be mapped to a single point on both the current and next step.
-                        // Fall back to the distance to end of step mode, which has some graceful fallbacks.
-                        // In real-world use, this should only happen for values which are EXTREMELY close together.
-                        should_advance_to_next_step(
-                            current_step_linestring,
-                            None,
-                            user_location,
-                            StepAdvanceMode::DistanceToEndOfStep {
-                                distance: minimum_horizontal_accuracy,
-                                minimum_horizontal_accuracy,
-                            },
-                        )
-                    }
-                } else {
-                    // Trigger arrival when the user gets within a circle of the minimum horizontal accuracy
-                    should_advance_to_next_step(
-                        current_step_linestring,
-                        None,
-                        user_location,
-                        StepAdvanceMode::DistanceToEndOfStep {
-                            distance: minimum_horizontal_accuracy,
-                            minimum_horizontal_accuracy,
-                        },
-                    )
-                }
-            }
-        }
-    }
-}
-
 /// Runs a state machine transformation to advance one step.
 ///
 /// Note that this function is pure and the caller must persist any mutations
@@ -364,7 +239,6 @@ pub(crate) fn advance_step(remaining_steps: &[RouteStep]) -> StepAdvanceStatus {
     match remaining_steps.get(1) {
         Some(new_step) => Advanced {
             step: new_step.clone(),
-            linestring: new_step.get_linestring(),
         },
         None => EndOfRoute,
     }
@@ -509,26 +383,6 @@ pub(crate) fn get_linestring(geometry: &[GeographicCoordinate]) -> LineString {
 }
 
 #[cfg(test)]
-/// Creates a user location at the given coordinates,
-/// with all other values set to defaults or (in the case of the timestamp), the current time.
-fn make_user_location(lng: f64, lat: f64) -> UserLocation {
-    UserLocation {
-        coordinates: GeographicCoordinate { lng, lat },
-        horizontal_accuracy: 0.0,
-        course_over_ground: None,
-        timestamp: SystemTime::now(),
-        speed: None,
-    }
-}
-
-#[cfg(test)]
-prop_compose! {
-    fn arb_coord()(x in -180f64..180f64, y in -90f64..90f64) -> Coord {
-        coord! {x: x, y: y}
-    }
-}
-
-#[cfg(test)]
 proptest! {
     #[test]
     fn snap_point_to_line_intersection(
@@ -568,116 +422,6 @@ proptest! {
     }
 
     #[test]
-    fn should_advance_exact_position(
-        x1: f64, y1: f64,
-        x2: f64, y2: f64,
-        x3: f64, y3: f64,
-        has_next_step: bool,
-        distance: u16, minimum_horizontal_accuracy: u16, excess_inaccuracy in 0f64..,
-        threshold: Option<u16>,
-    ) {
-        if !(x1 == x2 && y1 == y2) && !(x1 == x3 && y1 == y3) {
-            // Guard against:
-            //   1. Invalid linestrings
-            //   2. Invalid tests (we assume that the route isn't a closed loop)
-            let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
-            let next_route_step = if has_next_step {
-                Some(gen_dummy_route_step(x2, y2, x3, y3))
-            } else {
-                None
-            };
-            let exact_user_location = UserLocation {
-                coordinates: *current_route_step.geometry.last().unwrap(), // Exactly at the end location
-                horizontal_accuracy: 0.0,
-                course_over_ground: None,
-                timestamp: SystemTime::now(),
-                speed: None
-            };
-
-            let inaccurate_user_location = UserLocation {
-                horizontal_accuracy: (minimum_horizontal_accuracy as f64) + excess_inaccuracy,
-                ..exact_user_location
-            };
-
-            // Never advance to the next step when StepAdvanceMode is Manual
-            prop_assert!(!should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &exact_user_location, StepAdvanceMode::Manual));
-            prop_assert!(!should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &inaccurate_user_location, StepAdvanceMode::Manual));
-
-            // Always succeeds in the base case in distance to end of step mode
-            let cond = should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &exact_user_location, StepAdvanceMode::DistanceToEndOfStep {
-                distance, minimum_horizontal_accuracy
-            });
-            prop_assert!(cond);
-
-            // Same when looking at the relative distances between the two step geometries
-            let cond = should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &exact_user_location, StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy,
-                special_advance_conditions: threshold.map(|distance| SpecialAdvanceConditions::AdvanceAtDistanceFromEnd(distance))
-            });
-            prop_assert!(cond);
-
-            // Should always fail (unless excess_inaccuracy is zero), as the horizontal accuracy is worse than (>) than the desired error threshold
-            prop_assert_eq!(should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &inaccurate_user_location, StepAdvanceMode::DistanceToEndOfStep {
-                distance, minimum_horizontal_accuracy
-            }), excess_inaccuracy == 0.0, "Expected that the navigation would not advance to the next step except when excess_inaccuracy is 0");
-            prop_assert_eq!(should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &inaccurate_user_location, StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy,
-                special_advance_conditions: threshold.map(|distance| SpecialAdvanceConditions::AdvanceAtDistanceFromEnd(distance))
-            }), excess_inaccuracy == 0.0, "Expected that the navigation would not advance to the next step except when excess_inaccuracy is 0");
-        }
-    }
-
-    #[test]
-    fn should_advance_inexact_position(
-        x1: f64, y1: f64,
-        x2: f64, y2: f64,
-        x3: f64, y3: f64,
-        error in -0.003f64..=0.003f64, has_next_step: bool,
-        distance: u16, minimum_horizontal_accuracy: u16,
-        automatic_advance_distance: Option<u16>,
-    ) {
-        let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
-        let next_route_step = if has_next_step {
-            Some(gen_dummy_route_step(x2, y2, x3, y3))
-        } else {
-            None
-        };
-
-        // Construct a user location that's slightly offset from the transition point with perfect accuracy
-        let end_of_step = *current_route_step.geometry.last().unwrap();
-        let user_location = UserLocation {
-            coordinates: GeographicCoordinate {
-                lng: end_of_step.lng + error,
-                lat: end_of_step.lat + error,
-            },
-            horizontal_accuracy: 0.0,
-            course_over_ground: None,
-            timestamp: SystemTime::now(),
-            speed: None
-        };
-        let user_location_point = Point::from(user_location);
-        let distance_from_end_of_current_step = Haversine.distance(user_location_point, end_of_step.into());
-
-        // Never advance to the next step when StepAdvanceMode is Manual
-        prop_assert!(!should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &user_location, StepAdvanceMode::Manual));
-
-        // Assumes that underlying distance calculations in GeoRust are correct is correct
-        prop_assert_eq!(should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &user_location, StepAdvanceMode::DistanceToEndOfStep {
-            distance, minimum_horizontal_accuracy
-        }), distance_from_end_of_current_step <= distance.into(), "Expected that the step should advance in this case as we are closer to the end of the step than the threshold.");
-
-        // Similar test for automatic advance on the relative line string distance mode
-        if automatic_advance_distance.map_or(false, |advance_distance| {
-            distance_from_end_of_current_step <= advance_distance.into()
-        }) {
-            prop_assert!(should_advance_to_next_step(&current_route_step.get_linestring(), next_route_step.as_ref(), &user_location, StepAdvanceMode::RelativeLineStringDistance {
-                minimum_horizontal_accuracy,
-                special_advance_conditions: automatic_advance_distance.map(|distance| SpecialAdvanceConditions::AdvanceAtDistanceFromEnd(distance)),
-            }), "Expected that the step should advance any time that the haversine distance to the end of the step is within the automatic advance threshold.");
-        }
-    }
-
-    #[test]
     fn test_end_of_step_progress(
         x1 in -180f64..180f64, y1 in -90f64..90f64,
         x2 in -180f64..180f64, y2 in -90f64..90f64,
@@ -710,26 +454,26 @@ proptest! {
 
     #[test]
     fn test_geometry_index_empty_linestring(
-        x: f64, y: f64,
+        user_loc in arb_user_loc(0.0)
     ) {
-        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(vec![]));
+        let index = index_of_closest_segment_origin(user_loc, &LineString::new(vec![]));
         prop_assert_eq!(index, None);
     }
 
     #[test]
     fn test_geometry_index_single_coord_invalid_linestring(
-        x: f64, y: f64,
+        coord in arb_coord(),
     ) {
-        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(vec![coord! { x: x, y: y }]));
+        let index = index_of_closest_segment_origin(make_user_location(coord, 0.0), &LineString::new(vec![coord]));
         prop_assert_eq!(index, None);
     }
 
     #[test]
     fn test_geometry_index_is_some_for_reasonable_linestrings(
-        x in -180f64..180f64, y in -90f64..90f64,
+        user_coord in arb_coord(),
         coords in vec(arb_coord(), 2..500)
     ) {
-        let index = index_of_closest_segment_origin(make_user_location(x, y), &LineString::new(coords));
+        let index = index_of_closest_segment_origin(make_user_location(user_coord, 0.0), &LineString::new(coords));
 
         // There are at least two points, so we have a valid segment
         prop_assert_ne!(index, None);
@@ -741,7 +485,7 @@ proptest! {
     ) {
         let last_coord = coords.last().unwrap();
         let coord_len = coords.len();
-        let user_location = make_user_location(last_coord.x, last_coord.y);
+        let user_location = make_user_location(*last_coord, 0.0);
         let index = index_of_closest_segment_origin(user_location, &LineString::new(coords));
 
         // There are at least two points, so we have a valid segment
@@ -790,7 +534,7 @@ mod linestring_based_tests {
 
         // Exactly at a point (NB: does not advance until we move *past* the transition point
         // and are closer to the next line segment!)
-        let index = index_of_closest_segment_origin(make_user_location(2.0, 2.0), &line);
+        let index = index_of_closest_segment_origin(make_user_location(COORDS[2], 2.0), &line);
         assert_eq!(index, Some(1));
     }
 
@@ -799,11 +543,15 @@ mod linestring_based_tests {
         let line = LineString::new(COORDS.to_vec());
 
         // Very close to an origin point
-        let index = index_of_closest_segment_origin(make_user_location(1.1, 1.1), &line);
+        let index =
+            index_of_closest_segment_origin(make_user_location(coord!(x: 1.1, y: 1.1), 0.0), &line);
         assert_eq!(index, Some(1));
 
         // Very close to the next point, but not yet "passing" to the next segment!
-        let index = index_of_closest_segment_origin(make_user_location(1.99, 1.99), &line);
+        let index = index_of_closest_segment_origin(
+            make_user_location(coord!(x: 1.99, y: 1.99), 0.0),
+            &line,
+        );
         assert_eq!(index, Some(1));
     }
 
@@ -812,12 +560,18 @@ mod linestring_based_tests {
         let line = LineString::new(COORDS.to_vec());
 
         // "Before" the start
-        let index = index_of_closest_segment_origin(make_user_location(-1.1, -1.1), &line);
+        let index = index_of_closest_segment_origin(
+            make_user_location(coord!(x: -1.1, y: -1.1), 0.0),
+            &line,
+        );
         assert_eq!(index, Some(0));
 
         // "Past" the end (NB: the last index in the list of coords is 4,
         // but we can never advance past n-1)
-        let index = index_of_closest_segment_origin(make_user_location(10.0, 10.0), &line);
+        let index = index_of_closest_segment_origin(
+            make_user_location(coord!(x: 10.0, y: 10.0), 0.0),
+            &line,
+        );
         assert_eq!(index, Some(3));
     }
 }
@@ -896,7 +650,7 @@ mod bearing_snapping_tests {
 
         // The value of the coordinates does not actually matter;
         // we are testing the course snapping
-        let user_location = make_user_location(5.0, 1.0);
+        let user_location = make_user_location(coord!(x: 5.0, y: 1.0), 0.0);
 
         // Apply a course to a user location
         let updated_location = apply_snapped_course(user_location, Some(1), &line);

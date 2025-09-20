@@ -7,24 +7,20 @@ import MapLibreSwiftDSL
 import MapLibreSwiftUI
 import SwiftUI
 
-public struct CarPlayNavigationView: View,
-    SpeedLimitViewHost, NavigationViewConfigurable
-{
+public struct CarPlayNavigationView: View {
+    @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
+    @Environment(\.navigationMapViewContentInsetConfiguration) private var mapInsetConfig
+
     private let navigationState: NavigationState?
 
     let styleURL: URL
 
     @Binding public var camera: MapViewCamera
-    public var mapInsets: NavigationMapViewContentInsetBundle
 
     private let userLayers: [StyleLayerDefinition]
 
     public var speedLimit: Measurement<UnitSpeed>?
     public var speedLimitStyle: SpeedLimitView.SignageStyle?
-
-    public var progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
-    public var instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
-    public var currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     public init(
         navigationState: NavigationState?,
@@ -35,7 +31,6 @@ public struct CarPlayNavigationView: View,
         self.navigationState = navigationState
         self.styleURL = styleURL
         _camera = camera
-        mapInsets = NavigationMapViewContentInsetBundle()
         userLayers = makeMapContent()
     }
 
@@ -53,7 +48,9 @@ public struct CarPlayNavigationView: View,
                 ) {
                     userLayers
                 }
-                .navigationMapViewContentInset(mapInsets.landscape(geometry))
+                .navigationMapViewContentInset(
+                    mapInsetConfig.getLandscapeInset(for: geometry)
+                )
             }
         }
     }

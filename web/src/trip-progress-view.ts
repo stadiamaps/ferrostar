@@ -4,6 +4,7 @@ import {
 } from "@maptimy/platform-formatters";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { TripState } from "@stadiamaps/ferrostar";
 
 const DurationFormatter = LocalizedDurationFormatter();
 const DistanceFormatter = LocalizedDistanceFormatter();
@@ -11,7 +12,7 @@ const DistanceFormatter = LocalizedDistanceFormatter();
 @customElement("trip-progress-view")
 export class TripProgressView extends LitElement {
   @property()
-  tripState: any = null;
+  tripState: TripState | null = null;
 
   static styles = [
     css`
@@ -48,26 +49,24 @@ export class TripProgressView extends LitElement {
   }
 
   render() {
-    if (this.tripState?.Navigating) {
+    const ts = this.tripState;
+    if (ts && "Navigating" in ts) {
+      const nav = ts.Navigating;
       return html`
         <div class="progress-view-card">
           <p class="arrival-text">
             ${this.getEstimatedArrival(
-              this.tripState.Navigating.progress.durationRemaining,
+              nav.progress.durationRemaining,
             ).toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
             })}
           </p>
           <p class="arrival-text">
-            ${DurationFormatter.format(
-              this.tripState.Navigating.progress.durationRemaining,
-            )}
+            ${DurationFormatter.format(nav.progress.durationRemaining)}
           </p>
           <p class="arrival-text">
-            ${DistanceFormatter.format(
-              this.tripState.Navigating.progress.distanceRemaining,
-            )}
+            ${DistanceFormatter.format(nav.progress.distanceRemaining)}
           </p>
         </div>
       `;

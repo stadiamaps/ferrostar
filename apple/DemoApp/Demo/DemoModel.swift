@@ -2,6 +2,7 @@ import Combine
 import CoreLocation
 @preconcurrency import FerrostarCore
 @preconcurrency import FerrostarCoreFFI
+import FerrostarSwiftUI
 import Foundation
 import MapLibreSwiftUI
 
@@ -22,20 +23,25 @@ private extension CLLocation {
 }
 
 private extension FerrostarCore {
-    convenience init(locationProvider: LocationProviding) throws {
+    static func initForDemo(locationProvider: LocationProviding) throws -> FerrostarCore {
         // Configure the navigation session.
         // You have a lot of flexibility here based on your use case.
         let config = SwiftNavigationControllerConfig(
             waypointAdvance: .waypointWithinRange(100.0),
-            stepAdvance: .relativeLineStringDistance(
-                minimumHorizontalAccuracy: 32,
-                specialAdvanceConditions: .minimumDistanceFromCurrentStepLine(10)
+            stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
+                distanceToEndOfStep: 30,
+                distanceAfterEndOfStep: 2,
+                minimumHorizontalAccuracy: 32
+            ),
+            arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(
+                distance: 30,
+                minimumHorizontalAccuracy: 32
             ),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
             snappedLocationCourseFiltering: .snapToRoute
         )
 
-        try self.init(
+        return try FerrostarCore(
             valhallaEndpointUrl: URL(
                 string: "https://api.stadiamaps.com/route/v1?api_key=\(sharedAPIKeys.stadiaMapsAPIKey)"
             )!,
@@ -46,7 +52,8 @@ private extension FerrostarCore {
             // This is how you can set up annotation publishing;
             // We provide "extended OSRM" support out of the box,
             // but this is fully extendable!
-            annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM()
+            annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM(),
+            widgetProvider: FerrostarWidgetProvider()
         )
     }
 }
@@ -93,7 +100,7 @@ extension DemoModel {
         self.locationProvider = locationProvider
         camera = MapViewCamera.currentLocationCamera(locationProvider: locationProvider)
         do {
-            core = try FerrostarCore(locationProvider: locationProvider)
+            core = try FerrostarCore.initForDemo(locationProvider: locationProvider)
             core.delegate = navigationDelegate
 
             // Listen to these Publishers in FerrostarCore, and assign to Observable properties.
@@ -135,13 +142,17 @@ extension DemoModel {
         return .idle
     }
 
+    func handleError(_ error: Error, newAppState: DemoAppState = .idle) {
+        errorMessage = error.localizedDescription
+        appState = newAppState
+    }
+
     private func wrap(wrap: () throws -> DemoAppState) {
         do {
             errorMessage = nil
             appState = try wrap()
         } catch {
-            errorMessage = error.localizedDescription
-            appState = .idle
+            handleError(error)
         }
     }
 
@@ -150,8 +161,7 @@ extension DemoModel {
             errorMessage = nil
             appState = try await wrap()
         } catch {
-            errorMessage = error.localizedDescription
-            appState = .idle
+            handleError(error)
         }
     }
 

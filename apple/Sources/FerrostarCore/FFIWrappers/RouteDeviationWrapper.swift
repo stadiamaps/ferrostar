@@ -2,10 +2,10 @@ import CoreLocation
 import FerrostarCoreFFI
 import Foundation
 
-private class DetectorImpl: RouteDeviationDetector {
-    let detectorFunc: (UserLocation, Route, RouteStep) -> RouteDeviation
+private final class DetectorImpl: RouteDeviationDetector {
+    let detectorFunc: @Sendable (UserLocation, Route, RouteStep) -> RouteDeviation
 
-    init(detectorFunc: @escaping (UserLocation, Route, RouteStep) -> RouteDeviation) {
+    init(detectorFunc: @escaping @Sendable (UserLocation, Route, RouteStep) -> RouteDeviation) {
         self.detectorFunc = detectorFunc
     }
 
@@ -20,7 +20,7 @@ public enum SwiftRouteDeviationTracking {
 
     case staticThreshold(minimumHorizontalAccuracy: UInt16, maxAcceptableDeviation: Double)
 
-    case custom(detector: (UserLocation, Route, RouteStep) -> RouteDeviation)
+    case custom(detector: @Sendable (UserLocation, Route, RouteStep) -> RouteDeviation)
 
     var ffiValue: FerrostarCoreFFI.RouteDeviationTracking {
         switch self {
@@ -38,22 +38,4 @@ public enum SwiftRouteDeviationTracking {
             .custom(detector: DetectorImpl(detectorFunc: detectorFunc))
         }
     }
-}
-
-/// A Swift wrapper around `UniFFI.NavigationControllerConfig`.
-public struct SwiftNavigationControllerConfig {
-    public init(waypointAdvance: WaypointAdvanceMode,
-                stepAdvance: StepAdvanceMode,
-                routeDeviationTracking: SwiftRouteDeviationTracking,
-                snappedLocationCourseFiltering: CourseFiltering)
-    {
-        ffiValue = FerrostarCoreFFI.NavigationControllerConfig(
-            waypointAdvance: waypointAdvance,
-            stepAdvance: stepAdvance,
-            routeDeviationTracking: routeDeviationTracking.ffiValue,
-            snappedLocationCourseFiltering: snappedLocationCourseFiltering
-        )
-    }
-
-    var ffiValue: FerrostarCoreFFI.NavigationControllerConfig
 }

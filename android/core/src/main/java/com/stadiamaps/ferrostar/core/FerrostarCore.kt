@@ -1,8 +1,5 @@
 package com.stadiamaps.ferrostar.core
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.adapter
 import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.net.URL
@@ -15,8 +12,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
+import uniffi.ferrostar.NavState
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.Navigator
 import uniffi.ferrostar.Route
@@ -47,10 +49,31 @@ fun NavigationState.isNavigating(): Boolean =
       is TripState.Navigating -> true
     }
 
-private val moshi: Moshi = Moshi.Builder().build()
+private val json = Json { ignoreUnknownKeys = true }
 
-@OptIn(ExperimentalStdlibApi::class)
-private val jsonAdapter: JsonAdapter<Map<String, Any>> = moshi.adapter<Map<String, Any>>()
+private fun Map<String, Any>.toJsonElement(): JsonElement = Json.parseToJsonElement(this.toJson())
+
+private fun Map<String, Any>.toJson(): String =
+    json.encodeToString(
+        MapSerializer(String.serializer(), JsonElement.serializer()),
+        mapValues { (_, v) ->
+          when (v) {
+            is String -> Json.encodeToJsonElement(String.serializer(), v)
+            is Int -> Json.encodeToJsonElement(Int.serializer(), v)
+            is Boolean -> Json.encodeToJsonElement(Boolean.serializer(), v)
+            is Double -> Json.encodeToJsonElement(Double.serializer(), v)
+            is Float -> Json.encodeToJsonElement(Float.serializer(), v)
+            is Long -> Json.encodeToJsonElement(Long.serializer(), v)
+            is Map<*, *> -> {
+              @Suppress("UNCHECKED_CAST")
+              (v as? Map<String, Any>)?.toJsonElement()
+                  ?: throw IllegalArgumentException("Unsupported map value type: ${v::class}")
+            }
+
+            null -> Json.encodeToJsonElement(String.serializer(), "null")
+            else -> throw IllegalArgumentException("Unsupported value type: ${v::class}")
+          }
+        })
 
 /**
  * This is the entrypoint for end users of Ferrostar on Android, and is responsible for "driving"
@@ -134,6 +157,7 @@ class FerrostarCore(
   private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
   private var _navigationController: Navigator? = null
+  private val _navState: MutableStateFlow<NavState?> = MutableStateFlow(null)
   private var _state: MutableStateFlow<NavigationState> = MutableStateFlow(NavigationState())
   private var _routeRequestInFlight = false
   private var _lastAutomaticRecalculation: Long? = null
@@ -161,8 +185,7 @@ class FerrostarCore(
       options: Map<String, Any> = emptyMap(),
   ) : this(
       RouteProvider.RouteAdapter(
-          RouteAdapter.newValhallaHttp(
-              valhallaEndpointURL.toString(), profile, jsonAdapter.toJson(options))),
+          RouteAdapter.newValhallaHttp(valhallaEndpointURL.toString(), profile, options.toJson())),
       httpClient,
       locationProvider,
       foregroundServiceManager,
@@ -257,11 +280,12 @@ class FerrostarCore(
         locationProvider.lastLocation
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
-    val initialTripState = controller.getInitialState(startingLocation)
-    val newState = NavigationState(tripState = initialTripState, route.geometry, false)
-    handleStateUpdate(initialTripState, startingLocation)
+    val initialNavState = controller.getInitialState(startingLocation)
+    val newState = NavigationState(tripState = initialNavState.tripState, route.geometry, false)
+    handleStateUpdate(initialNavState, startingLocation)
 
     _navigationController = controller
+    _navState.value = initialNavState
     _state.value = newState
 
     locationProvider.addListener(this, _executor)
@@ -295,13 +319,13 @@ class FerrostarCore(
     spokenInstructionObserver?.stopAndClearQueue()
 
     _navigationController = controller
-    _state.update {
-      val newState = controller.getInitialState(startingLocation)
 
-      handleStateUpdate(newState, startingLocation)
+    val newState = controller.getInitialState(startingLocation)
 
-      NavigationState(tripState = newState, route.geometry, false)
-    }
+    handleStateUpdate(newState, startingLocation)
+
+    _navState.update { newState }
+    _state.update { NavigationState(tripState = newState.tripState, route.geometry, false) }
   }
 
   fun advanceToNextStep() {
@@ -309,12 +333,15 @@ class FerrostarCore(
     val location = _lastLocation
 
     if (controller != null && location != null) {
-      _state.update { currentValue ->
-        val newState = controller.advanceToNextStep(state = currentValue.tripState)
-
+      _navState.value?.let {
+        val newState = controller.advanceToNextStep(state = it)
         handleStateUpdate(newState, location)
 
-        NavigationState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
+        _navState.update { newState }
+        _state.update { currentState ->
+          NavigationState(
+              tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
+        }
       }
     }
   }
@@ -338,9 +365,10 @@ class FerrostarCore(
    * This is where reactions are triggered in response to a state change (ex: initiating
    * recalculation as the user goes off route).
    */
-  private fun handleStateUpdate(newState: TripState, location: UserLocation) {
-    if (newState is TripState.Navigating) {
-      if (newState.deviation is RouteDeviation.OffRoute) {
+  private fun handleStateUpdate(newState: NavState, location: UserLocation) {
+    val tripState = newState.tripState
+    if (tripState is TripState.Navigating) {
+      if (tripState.deviation is RouteDeviation.OffRoute) {
         if (!_routeRequestInFlight && // We can't have a request in flight already
             _lastAutomaticRecalculation?.let {
               // Ensure a minimum cool down before a new route fetch
@@ -353,8 +381,8 @@ class FerrostarCore(
             } != false) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
-                  this, newState.deviation.deviationFromRouteLine, newState.remainingWaypoints)
-                  ?: CorrectiveAction.GetNewRoutes(newState.remainingWaypoints)
+                  this, tripState.deviation.deviationFromRouteLine, tripState.remainingWaypoints)
+                  ?: CorrectiveAction.GetNewRoutes(tripState.remainingWaypoints)
           when (action) {
             is CorrectiveAction.DoNothing -> {
               // Do nothing
@@ -393,10 +421,10 @@ class FerrostarCore(
         }
       }
 
-      if (newState.spokenInstruction != null) {
-        if (!_queuedUtteranceIds.contains(newState.spokenInstruction.utteranceId)) {
-          _queuedUtteranceIds.add(newState.spokenInstruction.utteranceId)
-          spokenInstructionObserver?.onSpokenInstructionTrigger(newState.spokenInstruction)
+      if (tripState.spokenInstruction != null) {
+        if (!_queuedUtteranceIds.contains(tripState.spokenInstruction.utteranceId)) {
+          _queuedUtteranceIds.add(tripState.spokenInstruction.utteranceId)
+          spokenInstructionObserver?.onSpokenInstructionTrigger(tripState.spokenInstruction)
         }
       }
     }
@@ -410,13 +438,15 @@ class FerrostarCore(
     val controller = _navigationController
 
     if (controller != null) {
-      _state.update { currentValue ->
-        val newState =
-            controller.updateUserLocation(location = location, state = currentValue.tripState)
-
+      _navState.value?.let {
+        val newState = controller.updateUserLocation(location = location, state = it)
         handleStateUpdate(newState, location)
 
-        NavigationState(tripState = newState, currentValue.routeGeometry, isCalculatingNewRoute)
+        _navState.update { newState }
+        _state.update { currentState ->
+          NavigationState(
+              tripState = newState.tripState, currentState.routeGeometry, isCalculatingNewRoute)
+        }
       }
     }
   }
