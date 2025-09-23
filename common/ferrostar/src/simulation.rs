@@ -130,56 +130,61 @@ pub fn location_simulation_from_coordinates(
     coordinates: &[GeographicCoordinate],
     resample_distance: Option<f64>,
     bias: LocationBias,
+    route_starting_index: u32,
 ) -> Result<LocationSimulationState, SimulationError> {
-    if let Some((current, rest)) = coordinates.split_first() {
-        if let Some(next) = rest.first() {
-            let (jittered_current, bearing) = add_lateral_offset(*current, *next, &bias);
+    if let Some(current) = coordinates.get(route_starting_index as usize) {
+        if let Some((_, rest)) = coordinates.split_first() {
+            if let Some(next) = rest.first() {
+                let (jittered_current, bearing) = add_lateral_offset(*current, *next, &bias);
 
-            let accuracy = match bias {
-                LocationBias::None => 0.0,
-                LocationBias::Left(m) | LocationBias::Right(m) | LocationBias::Random(m) => m,
-            };
+                let accuracy = match bias {
+                    LocationBias::None => 0.0,
+                    LocationBias::Left(m) | LocationBias::Right(m) | LocationBias::Random(m) => m,
+                };
 
-            let current_location = UserLocation {
-                coordinates: jittered_current,
-                horizontal_accuracy: accuracy,
-                course_over_ground: Some(CourseOverGround::new(bearing, Some(5))),
-                timestamp: SystemTime::now(),
-                speed: None,
-            };
-            let remaining_locations = if let Some(distance) = resample_distance {
-                // Interpolate so that there are no points further apart than the resample distance.
-                let coords: Vec<_> = rest
-                    .iter()
-                    .map(|coord| {
-                        coord! {
-                            x: coord.lng,
-                            y: coord.lat
-                        }
-                    })
-                    .collect();
-                let linestring: LineString = coords.into();
-                let densified_linestring = Haversine.densify(&linestring, distance);
-                densified_linestring
-                    .points()
-                    .map(|point| GeographicCoordinate {
-                        // We truncate the value to 6 digits of precision
-                        // in line with standard navigation API practice.
-                        // Nobody needs precision beyond this point,
-                        // and it makes testing very annoying.
-                        lat: trunc_float(point.y(), 6),
-                        lng: trunc_float(point.x(), 6),
-                    })
-                    .collect()
+                let current_location = UserLocation {
+                    coordinates: jittered_current,
+                    horizontal_accuracy: accuracy,
+                    course_over_ground: Some(CourseOverGround::new(bearing, Some(5))),
+                    timestamp: SystemTime::now(),
+                    speed: None,
+                };
+                let remaining_locations = if let Some(distance) = resample_distance {
+                    // Interpolate so that there are no points further apart than the resample distance.
+                    let coords: Vec<_> = rest
+                        .iter()
+                        .map(|coord| {
+                            coord! {
+                                x: coord.lng,
+                                y: coord.lat
+                            }
+                        })
+                        .collect();
+                    let linestring: LineString = coords.into();
+                    let densified_linestring = Haversine.densify(&linestring, distance);
+                    densified_linestring
+                        .points()
+                        .map(|point| GeographicCoordinate {
+                            // We truncate the value to 6 digits of precision
+                            // in line with standard navigation API practice.
+                            // Nobody needs precision beyond this point,
+                            // and it makes testing very annoying.
+                            lat: trunc_float(point.y(), 6),
+                            lng: trunc_float(point.x(), 6),
+                        })
+                        .collect()
+                } else {
+                    Vec::from(rest)
+                };
+
+                Ok(LocationSimulationState {
+                    current_location,
+                    remaining_locations,
+                    bias,
+                })
             } else {
-                Vec::from(rest)
-            };
-
-            Ok(LocationSimulationState {
-                current_location,
-                remaining_locations,
-                bias,
-            })
+                Err(SimulationError::NotEnoughPoints)
+            }
         } else {
             Err(SimulationError::NotEnoughPoints)
         }
@@ -196,10 +201,16 @@ pub fn location_simulation_from_route(
     route: &Route,
     resample_distance: Option<f64>,
     bias: LocationBias,
+    route_starting_index: u32,
 ) -> Result<LocationSimulationState, SimulationError> {
     // This function is purely a convenience for now,
     // but we eventually expand the simulation to be aware of route timing
-    location_simulation_from_coordinates(&route.geometry, resample_distance, bias)
+    location_simulation_from_coordinates(
+        &route.geometry,
+        resample_distance,
+        bias,
+        route_starting_index,
+    )
 }
 
 /// Creates a location simulation from a polyline.
@@ -220,7 +231,7 @@ pub fn location_simulation_from_polyline(
         .coords()
         .map(|c| GeographicCoordinate::from(*c))
         .collect();
-    location_simulation_from_coordinates(&coordinates, resample_distance, bias)
+    location_simulation_from_coordinates(&coordinates, resample_distance, bias, 0)
 }
 
 fn add_lateral_offset(
@@ -323,7 +334,7 @@ pub fn js_location_simulation_from_coordinates(
     let coordinates: Vec<GeographicCoordinate> = serde_wasm_bindgen::from_value(coordinates)
         .map_err(|error| JsValue::from_str(&error.to_string()))?;
 
-    location_simulation_from_coordinates(&coordinates, resample_distance, bias)
+    location_simulation_from_coordinates(&coordinates, resample_distance, bias, 0)
         .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
         .map_err(|error| JsValue::from_str(&error.to_string()))
 }
@@ -339,7 +350,7 @@ pub fn js_location_simulation_from_route(
     let route: Route = serde_wasm_bindgen::from_value(route)
         .map_err(|error| JsValue::from_str(&error.to_string()))?;
 
-    location_simulation_from_route(&route, resample_distance, bias)
+    location_simulation_from_route(&route, resample_distance, bias, 0)
         .map(|state| serde_wasm_bindgen::to_value(&state).unwrap())
         .map_err(|error| JsValue::from_str(&error.to_string()))
 }
@@ -396,6 +407,7 @@ mod tests {
             ],
             resample_distance,
             LocationBias::None,
+            0,
         )
         .expect("Unable to initialize simulation");
 
@@ -495,7 +507,7 @@ mod tests {
             },
         ];
 
-        let state = location_simulation_from_coordinates(&coordinates, None, bias.clone())
+        let state = location_simulation_from_coordinates(&coordinates, None, bias.clone(), 0)
             .expect("Failed to create simulation");
 
         if matches!(bias, LocationBias::None) {
@@ -537,7 +549,7 @@ mod tests {
         ];
 
         let mut state =
-            location_simulation_from_coordinates(&coordinates, None, LocationBias::Random(4.0))
+            location_simulation_from_coordinates(&coordinates, None, LocationBias::Random(4.0), 0)
                 .expect("Failed to create simulation");
 
         let first_point: Point = state.current_location.coordinates.into();
