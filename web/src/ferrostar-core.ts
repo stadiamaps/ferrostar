@@ -55,7 +55,8 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
   shouldRecord: boolean = false;
 
   routeAdapter: RouteAdapter | null = null;
-  navigationSession: NavigationSession | NavigationSessionRecording | null = null;
+  navigationSession: NavigationSession | NavigationSessionRecording | null =
+    null;
   lastSpokenUtteranceId: string | null = null;
 
   constructor() {
