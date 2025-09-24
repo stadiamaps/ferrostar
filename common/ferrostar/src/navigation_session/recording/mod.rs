@@ -78,7 +78,7 @@ mod tests {
         nav_controller_insta_settings().bind(|| {
             let route = get_test_route(TestRoute::SelfIntersecting);
             let config = get_test_navigation_controller_config(
-                get_test_step_advance_condition()
+                get_test_step_advance_condition(0)
             );
             let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
             let session = NavigationSession::new_with_observers(

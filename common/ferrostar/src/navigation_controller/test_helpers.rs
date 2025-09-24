@@ -33,9 +33,9 @@ pub fn get_test_navigation_controller_config(
     }
 }
 
-pub fn get_test_step_advance_condition() -> Arc<dyn StepAdvanceCondition> {
+pub fn get_test_step_advance_condition(distance: u16) -> Arc<dyn StepAdvanceCondition> {
     Arc::new(DistanceToEndOfStepCondition {
-        distance: 5,
+        distance,
         minimum_horizontal_accuracy: 0,
     })
 }
