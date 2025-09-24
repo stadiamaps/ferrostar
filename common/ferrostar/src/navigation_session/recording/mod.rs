@@ -3,7 +3,10 @@ use crate::{
     navigation_controller::models::{
         NavState, NavigationControllerConfig, NavigationRecordingEvent,
     },
-    navigation_session::{recording::models::{NavigationRecordingMetadata, RecordingError}, NavigationObserver},
+    navigation_session::{
+        recording::models::{NavigationRecordingMetadata, RecordingError},
+        NavigationObserver,
+    },
 };
 use std::sync::Mutex;
 
@@ -71,19 +74,29 @@ impl NavigationObserver for NavigationRecorder {
 mod tests {
     use std::sync::Arc;
 
-    use crate::{navigation_controller::{test_helpers::{get_test_navigation_controller_config, get_test_route, get_test_step_advance_condition, nav_controller_insta_settings, TestRoute}, NavigationController}, navigation_session::{recording::NavigationRecorder, test_helpers::test_full_route_state_snapshot, NavigationSession}};
+    use crate::{
+        navigation_controller::{
+            test_helpers::{
+                get_test_navigation_controller_config, get_test_route,
+                get_test_step_advance_condition, nav_controller_insta_settings, TestRoute,
+            },
+            NavigationController,
+        },
+        navigation_session::{
+            recording::NavigationRecorder, test_helpers::test_full_route_state_snapshot,
+            NavigationSession,
+        },
+    };
 
     #[test]
     fn test_recording_serialization() {
         nav_controller_insta_settings().bind(|| {
             let route = get_test_route(TestRoute::SelfIntersecting);
-            let config = get_test_navigation_controller_config(
-                get_test_step_advance_condition(0)
-            );
+            let config = get_test_navigation_controller_config(get_test_step_advance_condition(0));
             let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
             let session = NavigationSession::new_with_observers(
                 Arc::new(NavigationController::new(route.clone(), config)),
-                vec![recorder.clone()]
+                vec![recorder.clone()],
             );
             let _ = test_full_route_state_snapshot(route, session);
 

@@ -463,12 +463,13 @@ impl JsNavigationController {
 mod tests {
     use super::step_advance::StepAdvanceCondition;
     use super::*;
-    use crate::deviation_detection::{RouteDeviation};
+    use crate::deviation_detection::RouteDeviation;
     use crate::navigation_controller::step_advance::conditions::{
         DistanceEntryAndExitCondition, DistanceToEndOfStepCondition,
     };
     use crate::navigation_controller::test_helpers::{
-        get_test_navigation_controller_config, get_test_route, nav_controller_insta_settings, TestRoute
+        get_test_navigation_controller_config, get_test_route, nav_controller_insta_settings,
+        TestRoute,
     };
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
@@ -486,9 +487,7 @@ mod tests {
 
         let controller = create_navigator(
             route,
-            get_test_navigation_controller_config(
-                step_advance_condition
-            ),
+            get_test_navigation_controller_config(step_advance_condition),
             should_record,
         );
 

@@ -1,4 +1,13 @@
-use crate::{deviation_detection::RouteDeviation, models::Route, navigation_controller::{models::{NavState, TripState}, Navigator}, navigation_session::NavigationSession, simulation::{advance_location_simulation, location_simulation_from_route, LocationBias}};
+use crate::{
+    deviation_detection::RouteDeviation,
+    models::Route,
+    navigation_controller::{
+        models::{NavState, TripState},
+        Navigator,
+    },
+    navigation_session::NavigationSession,
+    simulation::{advance_location_simulation, location_simulation_from_route, LocationBias},
+};
 
 pub(crate) fn test_full_route_state_snapshot(
     route: Route,
@@ -12,8 +21,7 @@ pub(crate) fn test_full_route_state_snapshot(
     let mut states = vec![state.clone()];
     loop {
         let new_simulation_state = advance_location_simulation(&simulation_state);
-        let new_state =
-            session.update_user_location(new_simulation_state.current_location, state);
+        let new_state = session.update_user_location(new_simulation_state.current_location, state);
 
         match new_state.trip_state() {
             TripState::Idle { .. } => {}

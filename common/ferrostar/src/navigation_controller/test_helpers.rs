@@ -2,7 +2,9 @@ use std::sync::Arc;
 
 use crate::deviation_detection::RouteDeviationTracking;
 use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoint, WaypointKind};
-use crate::navigation_controller::models::{CourseFiltering, NavigationControllerConfig, WaypointAdvanceMode};
+use crate::navigation_controller::models::{
+    CourseFiltering, NavigationControllerConfig, WaypointAdvanceMode,
+};
 use crate::navigation_controller::step_advance::conditions::DistanceToEndOfStepCondition;
 use crate::navigation_controller::step_advance::StepAdvanceCondition;
 use crate::routing_adapters::{osrm::OsrmResponseParser, RouteResponseParser};
