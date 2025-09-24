@@ -1534,7 +1534,7 @@ public protocol NavigationRecorderProtocol: AnyObject, Sendable {
     
     func getEvents()  -> [NavigationRecordingEvent]
     
-    func getRecording()  -> String
+    func getRecording() throws  -> String
     
 }
 open class NavigationRecorder: NavigationRecorderProtocol, @unchecked Sendable {
@@ -1596,8 +1596,8 @@ open func getEvents() -> [NavigationRecordingEvent]  {
 })
 }
     
-open func getRecording() -> String  {
-    return try!  FfiConverterString.lift(try! rustCall() {
+open func getRecording()throws  -> String  {
+    return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
     uniffi_ferrostar_fn_method_navigationrecorder_get_recording(self.uniffiClonePointer(),$0
     )
 })
@@ -1782,6 +1782,12 @@ public func FfiConverterTypeNavigationReplay_lower(_ value: NavigationReplay) ->
 
 public protocol NavigationSessionProtocol: AnyObject, Sendable {
     
+    func advanceToNextStep(state: NavState)  -> NavState
+    
+    func getInitialState(location: UserLocation)  -> NavState
+    
+    func updateUserLocation(location: UserLocation, state: NavState)  -> NavState
+    
 }
 open class NavigationSession: NavigationSessionProtocol, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
@@ -1852,8 +1858,35 @@ public static func newWithObservers(controller: Navigator, observers: [Navigatio
     
 
     
+open func advanceToNextStep(state: NavState) -> NavState  {
+    return try!  FfiConverterTypeNavState_lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationsession_advance_to_next_step(self.uniffiClonePointer(),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+})
+}
+    
+open func getInitialState(location: UserLocation) -> NavState  {
+    return try!  FfiConverterTypeNavState_lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationsession_get_initial_state(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation_lower(location),$0
+    )
+})
+}
+    
+open func updateUserLocation(location: UserLocation, state: NavState) -> NavState  {
+    return try!  FfiConverterTypeNavState_lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationsession_update_user_location(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation_lower(location),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+})
+}
+    
 
 }
+extension NavigationSession: NavigatorProtocol {}
+
 
 
 #if swift(>=5.8)
@@ -9286,7 +9319,16 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigationrecorder_get_events() != 7075) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording() != 26509) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording() != 65086) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationsession_advance_to_next_step() != 37398) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationsession_get_initial_state() != 29127) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationsession_update_user_location() != 3978) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 17041) {
