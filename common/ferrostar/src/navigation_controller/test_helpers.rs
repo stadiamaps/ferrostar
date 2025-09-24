@@ -1,10 +1,44 @@
+use std::sync::Arc;
+
+use crate::deviation_detection::RouteDeviationTracking;
 use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoint, WaypointKind};
+use crate::navigation_controller::models::{CourseFiltering, NavigationControllerConfig, WaypointAdvanceMode};
+use crate::navigation_controller::step_advance::conditions::DistanceToEndOfStepCondition;
+use crate::navigation_controller::step_advance::StepAdvanceCondition;
 use crate::routing_adapters::{osrm::OsrmResponseParser, RouteResponseParser};
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
 use chrono::{DateTime, Utc};
 use geo::{point, BoundingRect, Coord, Distance, Haversine, LineString, Point};
 use insta::{dynamic_redaction, Settings};
+
+pub fn get_test_navigation_controller_config(
+    step_advance_condition: Arc<dyn StepAdvanceCondition>,
+) -> NavigationControllerConfig {
+    NavigationControllerConfig {
+        waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
+        // Careful setup: if the user is ever off the route
+        // (ex: because of an improper automatic step advance),
+        // we want to know about it.
+        route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: 0,
+            max_acceptable_deviation: 0.0,
+        },
+        snapped_location_course_filtering: CourseFiltering::Raw,
+        step_advance_condition,
+        arrival_step_advance_condition: Arc::new(DistanceToEndOfStepCondition {
+            distance: 5,
+            minimum_horizontal_accuracy: 0,
+        }),
+    }
+}
+
+pub fn get_test_step_advance_condition() -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceToEndOfStepCondition {
+        distance: 5,
+        minimum_horizontal_accuracy: 0,
+    })
+}
 
 pub enum TestRoute {
     /// Gets a longer + more complex route.

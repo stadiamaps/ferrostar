@@ -457,30 +457,18 @@ impl JsNavigationController {
         serde_wasm_bindgen::to_value(&SerializableNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
-
-    #[wasm_bindgen(js_name = getRecording)]
-    pub fn get_recording(&self, events: JsValue) -> Result<JsValue, JsValue> {
-        let events: Vec<NavigationRecordingEvent> = serde_wasm_bindgen::from_value(events)?;
-        let recording = self.0.get_recording(events);
-
-        match recording {
-            Ok(recording) => Ok(JsValue::from_str(&recording)),
-            Err(e) => Err(JsValue::from_str(&format!("{:?}", e))),
-        }
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::step_advance::StepAdvanceCondition;
     use super::*;
-    use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-    use crate::navigation_controller::models::CourseFiltering;
+    use crate::deviation_detection::{RouteDeviation};
     use crate::navigation_controller::step_advance::conditions::{
         DistanceEntryAndExitCondition, DistanceToEndOfStepCondition,
     };
     use crate::navigation_controller::test_helpers::{
-        get_test_route, nav_controller_insta_settings, TestRoute,
+        get_test_navigation_controller_config, get_test_route, nav_controller_insta_settings, TestRoute
     };
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
@@ -498,22 +486,9 @@ mod tests {
 
         let controller = create_navigator(
             route,
-            NavigationControllerConfig {
-                waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
-                // Careful setup: if the user is ever off the route
-                // (ex: because of an improper automatic step advance),
-                // we want to know about it.
-                route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
-                    minimum_horizontal_accuracy: 0,
-                    max_acceptable_deviation: 0.0,
-                },
-                snapped_location_course_filtering: CourseFiltering::Raw,
-                step_advance_condition,
-                arrival_step_advance_condition: Arc::new(DistanceToEndOfStepCondition {
-                    distance: 5,
-                    minimum_horizontal_accuracy: 0,
-                }),
-            },
+            get_test_navigation_controller_config(
+                step_advance_condition
+            ),
             should_record,
         );
 

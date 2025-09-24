@@ -3,7 +3,7 @@ use crate::{
     navigation_controller::models::{
         NavState, NavigationControllerConfig, NavigationRecordingEvent,
     },
-    navigation_session::{recording::models::NavigationRecordingMetadata, NavigationObserver},
+    navigation_session::{recording::models::{NavigationRecordingMetadata, RecordingError}, NavigationObserver},
 };
 use std::sync::Mutex;
 
@@ -33,9 +33,9 @@ impl NavigationRecorder {
         self.events.lock().unwrap().clone()
     }
 
-    pub fn get_recording(&self) -> String {
+    pub fn get_recording(&self) -> Result<String, RecordingError> {
         let events = self.get_events();
-        serde_json::to_string(&events).unwrap()
+        self.recording.to_json(events)
     }
 }
 
@@ -69,9 +69,27 @@ impl NavigationObserver for NavigationRecorder {
 
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
+
+    use crate::{navigation_controller::{test_helpers::{get_test_navigation_controller_config, get_test_route, get_test_step_advance_condition, nav_controller_insta_settings, TestRoute}, NavigationController}, navigation_session::{recording::NavigationRecorder, test_helpers::test_full_route_state_snapshot, NavigationSession}};
 
     #[test]
     fn test_recording_serialization() {
-        todo!("test the recorder")
+        nav_controller_insta_settings().bind(|| {
+            let route = get_test_route(TestRoute::SelfIntersecting);
+            let config = get_test_navigation_controller_config(
+                get_test_step_advance_condition()
+            );
+            let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
+            let session = NavigationSession::new_with_observers(
+                Arc::new(NavigationController::new(route.clone(), config)),
+                vec![recorder.clone()]
+            );
+            let _ = test_full_route_state_snapshot(route, session);
+
+            let json = recorder.get_recording().unwrap();
+            let value: serde_json::Value = serde_json::from_str(&json).unwrap();
+            insta::assert_yaml_snapshot!(value);
+        })
     }
 }

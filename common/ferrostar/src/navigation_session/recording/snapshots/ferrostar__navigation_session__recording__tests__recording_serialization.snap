@@ -1,5 +1,5 @@
 ---
-source: ferrostar/src/navigation_controller/mod.rs
+source: ferrostar/src/navigation_session/recording/mod.rs
 expression: value
 ---
 config:
@@ -14,7 +14,7 @@ config:
   snapped_location_course_filtering: Raw
   step_advance_condition:
     DistanceToEndOfStep:
-      distance: 0
+      distance: 5
       minimum_horizontal_accuracy: 0
   waypoint_advance:
     WaypointWithinRange: 100
@@ -23,7 +23,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -203,7 +203,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -383,7 +383,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -563,7 +563,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -743,7 +743,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -923,7 +923,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -1103,7 +1103,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -1283,7 +1283,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -1463,7 +1463,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -1643,7 +1643,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -1823,7 +1823,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -2003,7 +2003,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -2183,7 +2183,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -2363,7 +2363,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -2543,7 +2543,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -2723,7 +2723,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -2903,7 +2903,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -3083,7 +3083,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -3263,7 +3263,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -3443,7 +3443,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -3623,7 +3623,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -3803,7 +3803,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -3983,7 +3983,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -4163,7 +4163,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -4343,7 +4343,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -4523,7 +4523,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -4703,7 +4703,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -4863,7 +4863,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -5023,7 +5023,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -5183,7 +5183,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -5343,7 +5343,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -5503,7 +5503,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -5663,7 +5663,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -5823,7 +5823,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -5983,7 +5983,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -6143,7 +6143,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -6303,7 +6303,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -6463,7 +6463,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -6623,7 +6623,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -6783,7 +6783,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -6943,7 +6943,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -7103,7 +7103,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -7263,7 +7263,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -7423,7 +7423,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -7583,7 +7583,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -7743,7 +7743,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -7903,7 +7903,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -8063,7 +8063,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -8223,7 +8223,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -8383,7 +8383,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -8543,7 +8543,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -8703,7 +8703,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -8863,7 +8863,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -9023,7 +9023,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -9183,7 +9183,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -9343,7 +9343,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -9503,7 +9503,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -9663,7 +9663,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -9823,7 +9823,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -9983,7 +9983,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -10143,7 +10143,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -10303,7 +10303,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -10463,7 +10463,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -10623,7 +10623,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -10783,7 +10783,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:
@@ -10943,7 +10943,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:

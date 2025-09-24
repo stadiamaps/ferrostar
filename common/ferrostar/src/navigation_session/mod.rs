@@ -5,7 +5,11 @@ use crate::{
     navigation_controller::{models::NavState, Navigator},
 };
 
+#[cfg(test)]
+pub(crate) mod test_helpers;
+
 pub mod recording;
+pub mod specialized;
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait NavigationObserver: Send + Sync {
@@ -42,6 +46,7 @@ impl NavigationSession {
     }
 }
 
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 impl Navigator for NavigationSession {
     fn get_initial_state(&self, location: UserLocation) -> NavState {
         let state = self.controller.get_initial_state(location);

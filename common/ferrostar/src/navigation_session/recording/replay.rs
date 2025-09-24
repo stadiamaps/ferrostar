@@ -3,6 +3,9 @@ use crate::{
     navigation_session::recording::models::NavigationRecording,
 };
 
+#[cfg(feature = "wasm-bindgen")]
+use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+
 /// A wrapper around `NavigationRecording` to facilitate replaying the event stream.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 pub struct NavigationReplay(NavigationRecording);
