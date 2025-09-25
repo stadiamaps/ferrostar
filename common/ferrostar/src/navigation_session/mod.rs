@@ -8,6 +8,7 @@ use crate::{
 #[cfg(test)]
 pub(crate) mod test_helpers;
 
+pub mod caching;
 pub mod recording;
 pub mod specialized;
 
