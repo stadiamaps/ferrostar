@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    models::UserLocation,
+    models::{Route, UserLocation},
     navigation_controller::{models::NavState, Navigator},
 };
 
@@ -17,6 +17,12 @@ pub trait NavigationObserver: Send + Sync {
     fn on_get_initial_state(&self, state: NavState);
     fn on_user_location_update(&self, location: UserLocation, state: NavState);
     fn on_advance_to_next_step(&self, state: NavState);
+    fn on_route_available(
+        &self,
+        #[allow(unused_variables)] route: &Route
+    ) {
+        // Default no-op implementation
+    }
 }
 
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
@@ -49,9 +55,15 @@ impl NavigationSession {
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl Navigator for NavigationSession {
+    fn route(&self) -> Route {
+        self.controller.route()
+    }
+
     fn get_initial_state(&self, location: UserLocation) -> NavState {
+        let route = self.route();
         let state = self.controller.get_initial_state(location);
         for observer in &self.observers {
+            observer.on_route_available(&route);
             observer.on_get_initial_state(state.clone());
         }
         state
