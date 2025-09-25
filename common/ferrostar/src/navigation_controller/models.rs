@@ -28,7 +28,6 @@ pub struct NavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
-    pub recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 impl NavState {
@@ -36,35 +35,25 @@ impl NavState {
     pub fn new(
         trip_state: TripState,
         step_advance_condition: Arc<dyn StepAdvanceCondition>,
-        recording_events: Option<Vec<NavigationRecordingEvent>>,
     ) -> Self {
         Self {
             trip_state,
             step_advance_condition,
-            recording_events,
         }
     }
 
     /// Creates a new idle navigation state (no trip currently in progress, but still tracking the user's location).
-    pub fn idle(
-        user_location: Option<UserLocation>,
-        recording_events: Option<Vec<NavigationRecordingEvent>>,
-    ) -> Self {
+    pub fn idle(user_location: Option<UserLocation>) -> Self {
         Self {
             trip_state: TripState::Idle { user_location },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
-            recording_events,
         }
     }
 
     /// Creates a navigation state indicating the trip is complete (arrived at the destination but still tracking the user's location).
     ///
     /// The summary is retained as a snapshot (the caller should have this from the last known state).
-    pub fn complete(
-        user_location: UserLocation,
-        last_summary: TripSummary,
-        recording_events: Option<Vec<NavigationRecordingEvent>>,
-    ) -> Self {
+    pub fn complete(user_location: UserLocation, last_summary: TripSummary) -> Self {
         Self {
             trip_state: TripState::Complete {
                 user_location,
@@ -74,24 +63,6 @@ impl NavState {
                 },
             },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
-            recording_events,
-        }
-    }
-
-    /// Records a navigation event.
-    ///
-    /// NOTE: This will *always* record events passed.
-    /// If internally the list of recording_events is `None`, it will create a new empty `Some(Vec<_>)`.
-    /// The assumption is that the caller knows what they are doing, and, for example,
-    /// a regular `Navigator` will not call this accidentally.
-    pub fn append_recording_event(self, event: NavigationRecordingEvent) -> Self {
-        let mut recording_events = self.recording_events.unwrap_or_default();
-
-        recording_events.push(event);
-
-        Self {
-            recording_events: Some(recording_events),
-            ..self
         }
     }
 
@@ -115,7 +86,6 @@ pub struct SerializableNavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: SerializableStepAdvanceCondition,
-    recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 impl From<SerializableNavState> for NavState {
@@ -123,7 +93,6 @@ impl From<SerializableNavState> for NavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.into(),
-            recording_events: value.recording_events,
         }
     }
 }
@@ -133,7 +102,6 @@ impl From<NavState> for SerializableNavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.to_js(),
-            recording_events: value.recording_events,
         }
     }
 }
@@ -400,9 +368,9 @@ impl From<NavigationControllerConfig> for SerializableNavigationControllerConfig
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 pub struct NavigationRecordingEvent {
     /// The timestamp of the event in milliseconds since Jan 1, 1970 UTC.
-    timestamp: i64,
+    pub timestamp: i64,
     /// Data associated with the event.
-    event_data: NavigationRecordingEventData,
+    pub event_data: NavigationRecordingEventData,
 }
 
 impl NavigationRecordingEvent {

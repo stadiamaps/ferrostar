@@ -1,5 +1,5 @@
 ---
-source: ferrostar/src/navigation_controller/mod.rs
+source: ferrostar/src/navigation_session/recording/mod.rs
 expression: value
 ---
 config:
