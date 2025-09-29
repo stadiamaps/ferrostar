@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     models::{Route, UserLocation},
-    navigation_controller::{models::NavState, Navigator},
+    navigation_controller::{models::{NavState, NavigationControllerConfig}, NavigationController, Navigator},
 };
 
 #[cfg(test)]
@@ -12,17 +12,12 @@ pub mod caching;
 pub mod recording;
 pub mod specialized;
 
-#[cfg_attr(feature = "uniffi", uniffi::export)]
+#[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait NavigationObserver: Send + Sync {
     fn on_get_initial_state(&self, state: NavState);
     fn on_user_location_update(&self, location: UserLocation, state: NavState);
     fn on_advance_to_next_step(&self, state: NavState);
-    fn on_route_available(
-        &self,
-        #[allow(unused_variables)] route: &Route
-    ) {
-        // Default no-op implementation
-    }
+    fn on_route_available(&self, route: Route);
 }
 
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
@@ -34,15 +29,7 @@ pub struct NavigationSession {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationSession {
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
-    pub fn new(controller: Arc<dyn Navigator>) -> Self {
-        Self {
-            controller,
-            observers: vec![],
-        }
-    }
-
-    #[cfg_attr(feature = "uniffi", uniffi::constructor)]
-    pub fn new_with_observers(
+    pub fn new(
         controller: Arc<dyn Navigator>,
         observers: Vec<Arc<dyn NavigationObserver>>,
     ) -> Self {
@@ -60,10 +47,9 @@ impl Navigator for NavigationSession {
     }
 
     fn get_initial_state(&self, location: UserLocation) -> NavState {
-        let route = self.route();
         let state = self.controller.get_initial_state(location);
         for observer in &self.observers {
-            observer.on_route_available(&route);
+            observer.on_route_available(self.route());
             observer.on_get_initial_state(state.clone());
         }
         state
@@ -84,4 +70,21 @@ impl Navigator for NavigationSession {
         }
         state
     }
+}
+
+/// Creates a new navigation session for the given route and configuration.
+///
+/// It returns an Arc-wrapped trait object implementing `Navigator`.
+/// If `should_record` is true, it creates a controller with event recording enabled.
+#[cfg_attr(feature = "uniffi", uniffi::export)]
+pub fn create_navigation_session(
+    route: Route,
+    config: NavigationControllerConfig,
+    observers: Vec<Arc<dyn NavigationObserver>>,
+) -> NavigationSession {
+    // Creates a navigation session with a controller and observers.
+    NavigationSession::new(
+        Arc::new(NavigationController::new(route, config)),
+       observers,
+    )
 }

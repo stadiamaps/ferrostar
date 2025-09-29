@@ -60,15 +60,18 @@ pub fn create_navigator(
 
         // Creates a navigation controller with a wrapper that records events.
         // Arc::new(RecordingNavigationController::new(route, config))
-        Arc::new(NavigationSession::new_with_observers(
+        Arc::new(NavigationSession::new(
             Arc::new(NavigationController::new(route, config)),
             vec![recorder],
         ))
     } else {
         // Creates a normal navigation controller.
-        Arc::new(NavigationSession::new(Arc::new(NavigationController::new(
-            route, config,
-        ))))
+        Arc::new(
+            NavigationSession::new(Arc::new(NavigationController::new(
+                route, config,
+            )),
+            vec![])
+        )
     }
 }
 

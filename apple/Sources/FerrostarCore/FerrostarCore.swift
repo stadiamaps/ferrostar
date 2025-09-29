@@ -13,6 +13,8 @@ enum FerrostarCoreError: Error, Equatable {
     case invalidRequestUrl
     /// Invalid (non-2xx) HTTP status
     case httpStatusCode(Int)
+    /// A precondition was not met, and the action was not possible
+    case notPossible(_ reason: String?)
 }
 
 /// Corrective action to take when the user deviates from the route.
@@ -67,7 +69,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 /// NOTE: it is the responsibility of the caller to ensure that the location provider is authorized to get
 /// live user location with high precision.
 // TODO: See about making FerrostarCore its own actor; then we can verify that we've published things back on the main actor. Need to see if this is possible with obj-c interop. See https://github.com/apple/swift-evolution/blob/main/proposals/0306-actors.md#actor-interoperability-with-objective-c
-@objc public class FerrostarCore: NSObject, ObservableObject {
+@objc public class FerrostarCore: NSObject {
     /// The delegate which will receive Ferrostar core events.
     public weak var delegate: FerrostarCoreDelegate?
 
@@ -97,7 +99,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private let networkSession: URLRequestLoading
     private let routeProvider: RouteProvider
     private let locationProvider: LocationProviding
-    private var navigationController: NavigatorProtocol?
+
+    private let sessionBuilder: FerrostarSessionBuilder
+    private var navigationSession: NavigationSession?
+
     private var routeRequestInFlight = false
     private var lastAutomaticRecalculation: Date?
     private var lastLocation: UserLocation?
@@ -106,7 +111,33 @@ public protocol FerrostarCoreDelegate: AnyObject {
     private var recalculationTask: Task<Void, Never>?
     private var queuedUtteranceIDs: Set<UUID> = Set()
 
-    private var config: SwiftNavigationControllerConfig
+    public init(
+        routeProvider: RouteProvider,
+        locationProvider: LocationProviding,
+        sessionBuilder: FerrostarSessionBuilder,
+        networkSession: URLRequestLoading,
+        annotation: (any AnnotationPublishing)? = nil,
+        spokenInstructionObserver: SpokenInstructionObserver =
+            .initAVSpeechSynthesizer(), // Set up the a standard Apple AV Speech Synth.
+        widgetProvider: WidgetProviding? = nil
+    ) {
+        self.routeProvider = routeProvider
+        self.locationProvider = locationProvider
+        self.networkSession = networkSession
+        self.annotation = annotation
+        self.spokenInstructionObserver = spokenInstructionObserver
+        self.widgetProvider = widgetProvider
+
+        self.sessionBuilder = sessionBuilder
+
+        super.init()
+
+        // Location provider setup
+        locationProvider.delegate = self
+
+        // Annotation publisher setup
+        self.annotation?.configure($state)
+    }
 
     /// Initializes a core instance with the given parameters.
     ///
@@ -121,7 +152,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///   - networkSession: The network session to run route fetches on. A custom ``RouteProvider`` may not use this.
     ///   - annotation: An implementation of the annotation publisher that transforms custom annotation JSON into
     /// published values of defined swift types.
-    public init(
+    public convenience init(
         routeProvider: RouteProvider,
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
@@ -131,21 +162,19 @@ public protocol FerrostarCoreDelegate: AnyObject {
             .initAVSpeechSynthesizer(), // Set up the a standard Apple AV Speech Synth.
         widgetProvider: WidgetProviding? = nil
     ) {
-        self.routeProvider = routeProvider
-        self.locationProvider = locationProvider
-        config = navigationControllerConfig
-        self.networkSession = networkSession
-        self.annotation = annotation
-        self.spokenInstructionObserver = spokenInstructionObserver
-        self.widgetProvider = widgetProvider
+        let sessionBuilder = FerrostarSessionBuilder(
+            config: navigationControllerConfig
+        )
 
-        super.init()
-
-        // Location provider setup
-        locationProvider.delegate = self
-
-        // Annotation publisher setup
-        self.annotation?.configure($state)
+        self.init(
+            routeProvider: routeProvider,
+            locationProvider: locationProvider,
+            sessionBuilder: sessionBuilder,
+            networkSession: networkSession,
+            annotation: annotation,
+            spokenInstructionObserver: spokenInstructionObserver,
+            widgetProvider: widgetProvider
+        )
     }
 
     /// Initializes a core instance for a Valhalla API accessed over HTTP.
@@ -212,6 +241,27 @@ public protocol FerrostarCoreDelegate: AnyObject {
             routeProvider: .routeAdapter(routeAdapter),
             locationProvider: locationProvider,
             navigationControllerConfig: navigationControllerConfig,
+            networkSession: networkSession,
+            annotation: annotation,
+            spokenInstructionObserver: spokenInstructionObserver,
+            widgetProvider: widgetProvider
+        )
+    }
+
+    public convenience init(
+        customRouteProvider: CustomRouteProvider,
+        locationProvider: LocationProviding,
+        sessionBuilder: FerrostarSessionBuilder,
+        networkSession: URLRequestLoading = URLSession.shared,
+        annotation: (any AnnotationPublishing)? = nil,
+        spokenInstructionObserver: SpokenInstructionObserver =
+            .initAVSpeechSynthesizer(),
+        widgetProvider: WidgetProviding? = nil
+    ) {
+        self.init(
+            routeProvider: .customProvider(customRouteProvider),
+            locationProvider: locationProvider,
+            sessionBuilder: sessionBuilder,
             networkSession: networkSession,
             annotation: annotation,
             spokenInstructionObserver: spokenInstructionObserver,
@@ -298,20 +348,49 @@ public protocol FerrostarCoreDelegate: AnyObject {
         }
         // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
 
-        // Apply the new config if one was provided to override.
-        self.config = config ?? self.config
-
-        // Configure the navigation controller. This is required to build the initial state.
-        let controller = createNavigator(
-            route: route, config: self.config.ffiValue, shouldRecord: false
-        )
-        navigationController = controller
+        // Create the navigation session.
+        let navigationSession = sessionBuilder.create(for: route, with: config?.ffiValue)
+        self.navigationSession = navigationSession
 
         locationProvider.startUpdating()
 
         self.route = route
 
-        let navState = controller.getInitialState(location: location)
+        let navState = navigationSession.getInitialState(location: location)
+        coreNavState = navState
+        state = NavigationState(
+            navState: navState,
+            routeGeometry: route.geometry
+        )
+
+        DispatchQueue.main.async {
+            self.update(navState, location: location)
+        }
+    }
+
+    /// Resume Navigation from an exsiting session
+    ///
+    /// **Warning!** This is currently experimental and has several rough edges. Feedback is encouraged.
+    ///
+    /// - Parameter userLocation: The user's current location.
+    public func resumeNavigation(
+        userLocation: UserLocation? = nil,
+    ) throws {
+        // This is technically possible, so we need to check and throw, but
+        // it should be rather difficult to get a location fix, get a route,
+        // and then somehow this property go nil again.
+        guard let location = userLocation ?? locationProvider.lastLocation else {
+            throw FerrostarCoreError.userLocationUnknown
+        }
+        // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
+
+        let (navigationSession, route, navState) = try sessionBuilder.createResume()
+        self.navigationSession = navigationSession
+
+        locationProvider.startUpdating()
+
+        self.route = route
+
         coreNavState = navState
         state = NavigationState(
             navState: navState,
@@ -324,12 +403,12 @@ public protocol FerrostarCoreDelegate: AnyObject {
     }
 
     public func advanceToNextStep() {
-        guard let controller = navigationController, let state = coreNavState, let lastLocation
+        guard let session = navigationSession, let state = coreNavState, let lastLocation
         else {
             return
         }
 
-        let newState = controller.advanceToNextStep(state: state)
+        let newState = session.advanceToNextStep(state: state)
         update(newState, location: lastLocation)
     }
 
@@ -337,7 +416,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
 
     /// Stops navigation and stops requesting location updates (to save battery).
     public func stopNavigation() {
-        navigationController = nil
+        navigationSession = nil
         route = nil
         state = nil
         queuedUtteranceIDs.removeAll()
@@ -409,7 +488,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                                 } else if let route = routes.first {
                                     // Default behavior when no delegate is assigned:
                                     // accept the first route, as this is what most users want when they go off route.
-                                    try self.startNavigation(route: route, config: self.config)
+                                    try self.startNavigation(route: route)
                                 }
                             } catch {
                                 // Do nothing; this exists to enable us to run what amounts to an "async defer"
@@ -451,7 +530,7 @@ extension FerrostarCore: LocationManagingDelegate {
     public func locationManager(_: LocationProviding, didUpdateLocations locations: [UserLocation]) {
         guard let location = locations.last,
               let navState = coreNavState,
-              let newState = navigationController?.updateUserLocation(
+              let newState = navigationSession?.updateUserLocation(
                   location: location, state: navState
               )
         else {

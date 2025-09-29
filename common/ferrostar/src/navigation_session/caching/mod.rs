@@ -6,10 +6,10 @@ use crate::{models::{Route, UserLocation}, navigation_controller::models::NavSta
 
 pub mod models;
 
-#[cfg_attr(feature = "uniffi", uniffi::export)]
+#[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait NavigationCache: Send + Sync {
-    fn save(&self, record: NavigationSessionRecord);
-    fn load(&self) -> Option<NavigationSessionRecord>;
+    fn save(&self, record: Vec<u8>);
+    fn load(&self) -> Option<Vec<u8>>;
     fn delete(&self);
 }
 
@@ -23,29 +23,47 @@ struct NavigationSessionCache {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationSessionCache {
 
+    #[cfg_attr(feature = "uniffi", uniffi::constructor)]
+    pub fn new(config: NavigationCachingConfig, cache: Arc<dyn NavigationCache>) -> Self {
+        Self {
+            config,
+            cache,
+            current_record: Mutex::new(None),
+        }
+    }
+
+    /// Check if the navigation session can be resumed.
+    pub fn can_resume(&self) -> bool {
+        self.current_record.lock().unwrap().is_some()
+    }
+
     /// Load the navigation session record from the cache if it exists and is not stale.
     pub fn load(&self) -> Option<NavigationSessionRecord> {
-        let record = self.cache.load();
-        if let Some(record) = record {
-            let age = Utc::now() - record.saved_at;
-            let max_age = Duration::seconds(self.config.max_age_seconds);
+        let record = self.cache.load()
+            .and_then(|data| serde_json::from_slice(&data).ok())
+            .and_then(|record: NavigationSessionRecord| {
+                let age = Utc::now() - record.saved_at;
+                let max_age = Duration::seconds(self.config.max_age_seconds);
 
-            if age > max_age {
-                // The record is stale. Delete it from the cache.
-                self.cache.delete();
-                None
-            } else {
-                Some(record)
-            }
-        } else {
-            None
+                if age > max_age {
+                    // The record is stale. Delete it from the cache.
+                    self.cache.delete();
+                    None
+                } else {
+                    Some(record)
+                }
+            });
+
+        if let Some(current_record) = &record {
+            self.current_record.lock().unwrap().replace(current_record.clone());
         }
+        record
     }
 }
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationObserver for NavigationSessionCache {
-    fn on_route_available(&self, route: &Route) {
+    fn on_route_available(&self, route: Route) {
         if let Ok(mut record) = self.current_record.lock() {
             *record = Some(NavigationSessionRecord {
                 saved_at: Utc::now(),
@@ -92,14 +110,14 @@ impl NavigationSessionCache {
 
         let record_to_cache = self.current_record.lock()
             .ok()
-            .and_then(|record| {
-                record.as_ref().map(|record| {
-                    let mut record = record.clone();
+            .and_then(|mut record| {
+                record.as_mut().map(|record| {
                     record.saved_at = Utc::now();
                     record.trip_state = Some(state.trip_state());
-                    record
+                    record.clone() // Clone for serialization
                 })
-            });
+            })
+            .and_then(|record| serde_json::to_vec(&record).ok());
 
         if let Some(record) = record_to_cache {
             self.cache.save(record);

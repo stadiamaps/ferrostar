@@ -42,7 +42,15 @@ impl NavigationRecorder {
     }
 }
 
+#[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationObserver for NavigationRecorder {
+    fn on_route_available(
+        &self,
+        #[allow(unused_variables)] route: Route,
+    ) {
+        // Implement the logic for on_route_available
+    }
+
     fn on_get_initial_state(&self, state: NavState) {
         let event = NavigationRecordingEvent::state_update(state.into());
         if let Ok(mut events) = self.events.lock() {
@@ -94,7 +102,7 @@ mod tests {
             let route = get_test_route(TestRoute::SelfIntersecting);
             let config = get_test_navigation_controller_config(get_test_step_advance_condition(0));
             let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
-            let session = NavigationSession::new_with_observers(
+            let session = NavigationSession::new(
                 Arc::new(NavigationController::new(route.clone(), config)),
                 vec![recorder.clone()],
             );
