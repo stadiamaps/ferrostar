@@ -292,10 +292,8 @@ class FerrostarCore(
   /**
    * Resumes a previously started navigation session from the last known state.
    *
-   * This is useful if your app was killed in the background and you want to resume navigation
-   * without losing state. Note that this will only work if you had previously enabled caching in
-   * the [sessionBuilder] used to create this instance of [FerrostarCore], and if there was a valid
-   * cached session.
+   * Important! This feature is experimental and may exhibit unexpected behavior. Please report any
+   * issues you encounter to help us improve it.
    *
    * @throws NoCachedSession if there is no cached session to resume from.
    * @throws UserLocationUnknown if the location provider has no last known location.

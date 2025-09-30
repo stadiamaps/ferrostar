@@ -349,7 +349,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
 
         // Create the navigation session.
-        let navigationSession = sessionBuilder.create(for: route, with: config?.ffiValue)
+        let navigationSession = sessionBuilder.build(for: route, with: config?.ffiValue)
         self.navigationSession = navigationSession
 
         locationProvider.startUpdating()
@@ -368,9 +368,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
         }
     }
 
-    /// Resume Navigation from an exsiting session
+    /// Resumes a previously started navigation session from the last known state.
     ///
-    /// **Warning!** This is currently experimental and has several rough edges. Feedback is encouraged.
+    /// **Important! This feature is experimental and may exhibit unexpected behavior. Please
+    /// report any issues you encounter to help us improve it.**
     ///
     /// - Parameter userLocation: The user's current location.
     public func resumeNavigation(
@@ -384,7 +385,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
         }
         // TODO: We should be able to circumvent this and simply start updating, wait and start nav.
 
-        let (navigationSession, route, navState) = try sessionBuilder.createResume()
+        let (navigationSession, route, navState) = try sessionBuilder.buildResumedSession()
         self.navigationSession = navigationSession
 
         locationProvider.startUpdating()
