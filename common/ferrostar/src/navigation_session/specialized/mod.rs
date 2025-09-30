@@ -4,8 +4,10 @@
 //! where trait object complexity needs to be avoided and specific use cases can be
 //! directly implemented for better performance and usability.
 
+#[cfg(feature = "wasm-bindgen")]
 use std::sync::Arc;
 
+#[cfg(feature = "wasm-bindgen")]
 use crate::{
     models::{Route, UserLocation},
     navigation_controller::{
@@ -36,7 +38,7 @@ impl JsNavigationSession {
             serde_wasm_bindgen::from_value(config)?;
 
         let controller = Arc::new(NavigationController::new(route, config.into()));
-        let session = NavigationSession::new(controller);
+        let session = NavigationSession::new(controller, vec![]);
 
         Ok(JsNavigationSession { session })
     }
@@ -102,7 +104,7 @@ impl JsNavigationSessionRecording {
 
         // Use the same recorder instance for both observer and direct access
         let observers: Vec<Arc<dyn NavigationObserver>> = vec![recorder.clone()];
-        let session = NavigationSession::new_with_observers(controller, observers);
+        let session = NavigationSession::new(controller, observers);
 
         Ok(JsNavigationSessionRecording { session, recorder })
     }

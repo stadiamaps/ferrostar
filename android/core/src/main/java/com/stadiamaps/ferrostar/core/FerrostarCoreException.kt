@@ -11,6 +11,9 @@ open class FerrostarCoreException : Exception {
 class InvalidStatusCodeException(val statusCode: Int) :
     FerrostarCoreException("Route request failed with status code $statusCode")
 
+class NoCachedSession :
+    FerrostarCoreException(message = "A resumable cached session snapshot was not found")
+
 class NoResponseBodyException :
     FerrostarCoreException("Route request was successful but had no body bytes")
 

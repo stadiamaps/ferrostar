@@ -17,7 +17,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
-    navigation_session::{recording::NavigationRecorder, NavigationSession},
+    navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
 };
 use chrono::Utc;
 use geo::{
@@ -39,6 +39,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 /// around [`NavigationController`] in a composable manner.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait Navigator: Send + Sync {
+    fn route(&self) -> Route;
     fn get_initial_state(&self, location: UserLocation) -> NavState;
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
@@ -54,20 +55,20 @@ pub fn create_navigator(
     config: NavigationControllerConfig,
     should_record: bool,
 ) -> Arc<dyn Navigator> {
-    if should_record {
-        let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
-
-        // Creates a navigation controller with a wrapper that records events.
-        Arc::new(NavigationSession::new_with_observers(
-            Arc::new(NavigationController::new(route, config)),
-            vec![recorder],
-        ))
+    let observers: Vec<Arc<dyn NavigationObserver>> = if should_record {
+        vec![Arc::new(NavigationRecorder::new(
+            route.clone(),
+            config.clone(),
+        ))]
     } else {
-        // Creates a normal navigation controller.
-        Arc::new(NavigationSession::new(Arc::new(NavigationController::new(
-            route, config,
-        ))))
-    }
+        vec![]
+    };
+
+    // Creates a normal navigation controller.
+    Arc::new(NavigationSession::new(
+        Arc::new(NavigationController::new(route, config)),
+        observers,
+    ))
 }
 
 /// Manages the navigation lifecycle through a route,
@@ -92,6 +93,11 @@ impl NavigationController {
 }
 
 impl Navigator for NavigationController {
+    /// The route associated with this controller.
+    fn route(&self) -> Route {
+        self.route.clone()
+    }
+
     /// Returns initial trip state as if the user had just started the route with no progress.
     fn get_initial_state(&self, location: UserLocation) -> NavState {
         let remaining_steps = self.route.steps.clone();
