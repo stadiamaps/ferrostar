@@ -14,22 +14,19 @@ import uniffi.ferrostar.createNavigationSession
 /**
  * Create a navigation session builder.
  *
- * This class generates navigation sessions inside FerrostarCore when navigation
- * starts or resumes.
+ * This class generates navigation sessions inside FerrostarCore when navigation starts or resumes.
  *
  * @param config The default Navigation Controller configuration.
  */
-class FerrostarSessionBuilder(
-    private var config: NavigationControllerConfig
-) {
+class FerrostarSessionBuilder(private var config: NavigationControllerConfig) {
 
   private var caching: NavigationSessionCache? = null
   private var recorder: NavigationRecorder? = null
   private var custom = emptyList<NavigationObserver>()
 
   /**
-   * Determine if there's a valid navigation snapshot.
-   * This is a getter that checks the cache, so use it sparingly.
+   * Determine if there's a valid navigation snapshot. This is a getter that checks the cache, so
+   * use it sparingly.
    *
    * @return True if there's a fresh snapshot, false otherwise.
    */
@@ -45,7 +42,10 @@ class FerrostarSessionBuilder(
    * @param cache The platform specific caching
    * @return The modified session builder.
    */
-  fun withCaching(config: NavigationCachingConfig, cache: NavigationCache): FerrostarSessionBuilder {
+  fun withCaching(
+      config: NavigationCachingConfig,
+      cache: NavigationCache
+  ): FerrostarSessionBuilder {
     this.caching = NavigationSessionCache(config, cache)
     return this
   }
@@ -53,9 +53,9 @@ class FerrostarSessionBuilder(
   /**
    * Add a navigation session recorder to the session.
    *
-   * The navigation session recorder logs every navigation event for playback
-   * in the Ferrostar web project. This is useful for detailed debugging and
-   * analysis, but should be disabled in production as it's a very expensive system.
+   * The navigation session recorder logs every navigation event for playback in the Ferrostar web
+   * project. This is useful for detailed debugging and analysis, but should be disabled in
+   * production as it's a very expensive system.
    *
    * @param recorder The navigation session recorder.
    * @return The modified session builder.
@@ -85,23 +85,11 @@ class FerrostarSessionBuilder(
     return Triple(session, record.route, navState)
   }
 
-  fun build(
-    route: Route,
-    config: NavigationControllerConfig? = null
-  ): NavigationSession {
-    val observers: List<NavigationObserver> = listOfNotNull(
-        caching,
-        recorder
-    ) + custom
+  fun build(route: Route, config: NavigationControllerConfig? = null): NavigationSession {
+    val observers: List<NavigationObserver> = listOfNotNull(caching, recorder) + custom
 
-    config?.let {
-        this.config = it
-    }
+    config?.let { this.config = it }
 
-    return createNavigationSession(
-        route,
-        config ?: this.config,
-        observers
-    )
+    return createNavigationSession(route, config ?: this.config, observers)
   }
 }

@@ -10,16 +10,16 @@ import uniffi.ferrostar.stepAdvanceDistanceToEndOfStep
 
 fun NavigationControllerConfig.Companion.demoConfig(): NavigationControllerConfig {
   return NavigationControllerConfig(
-    WaypointAdvanceMode.WaypointWithinRange(100.0),
-    stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
-    stepAdvanceDistanceToEndOfStep(30u, 32u),
-    RouteDeviationTracking.StaticThreshold(15U, 50.0),
-    CourseFiltering.SNAP_TO_ROUTE)
+      WaypointAdvanceMode.WaypointWithinRange(100.0),
+      stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
+      stepAdvanceDistanceToEndOfStep(30u, 32u),
+      RouteDeviationTracking.StaticThreshold(15U, 50.0),
+      CourseFiltering.SNAP_TO_ROUTE)
 }
 
 fun NavigationCachingConfig.Companion.demoConfig(): NavigationCachingConfig {
   return NavigationCachingConfig(
-    cacheIntervalSeconds = 300L,
-    maxAgeSeconds = 86400L,
+      cacheIntervalSeconds = 300L,
+      maxAgeSeconds = 86400L,
   )
 }

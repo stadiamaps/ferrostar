@@ -21,7 +21,6 @@ import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavState
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.NavigationSession
-import uniffi.ferrostar.Navigator
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
 import uniffi.ferrostar.RouteDeviation
@@ -29,7 +28,6 @@ import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
 import uniffi.ferrostar.Waypoint
-import uniffi.ferrostar.createNavigator
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
 data class NavigationState(
@@ -94,7 +92,8 @@ class FerrostarCore(
     val locationProvider: LocationProvider,
     val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
-    val sessionBuilder: FerrostarSessionBuilder = FerrostarSessionBuilder(navigationControllerConfig),
+    val sessionBuilder: FerrostarSessionBuilder =
+        FerrostarSessionBuilder(navigationControllerConfig),
 ) : LocationUpdateListener {
   companion object {
     private const val TAG = "FerrostarCore"
@@ -311,8 +310,8 @@ class FerrostarCore(
     _navigationSession = navigationSession
 
     val startingLocation =
-      locationProvider.lastLocation
-        ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
+        locationProvider.lastLocation
+            ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
     val newState = NavigationState(tripState = navState.tripState, route.geometry, false)
     handleStateUpdate(navState, startingLocation)
