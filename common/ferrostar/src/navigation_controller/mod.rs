@@ -39,6 +39,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 /// around [`NavigationController`] in a composable manner.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait Navigator: Send + Sync {
+    fn route(&self) -> Route;
     fn get_initial_state(&self, location: UserLocation) -> NavState;
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
@@ -59,15 +60,16 @@ pub fn create_navigator(
 
         // Creates a navigation controller with a wrapper that records events.
         // Arc::new(RecordingNavigationController::new(route, config))
-        Arc::new(NavigationSession::new_with_observers(
+        Arc::new(NavigationSession::new(
             Arc::new(NavigationController::new(route, config)),
             vec![recorder],
         ))
     } else {
         // Creates a normal navigation controller.
-        Arc::new(NavigationSession::new(Arc::new(NavigationController::new(
-            route, config,
-        ))))
+        Arc::new(NavigationSession::new(
+            Arc::new(NavigationController::new(route, config)),
+            vec![],
+        ))
     }
 }
 
@@ -93,6 +95,11 @@ impl NavigationController {
 }
 
 impl Navigator for NavigationController {
+    /// The route associated with this controller.
+    fn route(&self) -> Route {
+        self.route.clone()
+    }
+
     /// Returns initial trip state as if the user had just started the route with no progress.
     fn get_initial_state(&self, location: UserLocation) -> NavState {
         let remaining_steps = self.route.steps.clone();

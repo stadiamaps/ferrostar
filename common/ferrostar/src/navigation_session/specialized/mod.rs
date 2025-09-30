@@ -36,7 +36,7 @@ impl JsNavigationSession {
             serde_wasm_bindgen::from_value(config)?;
 
         let controller = Arc::new(NavigationController::new(route, config.into()));
-        let session = NavigationSession::new(controller);
+        let session = NavigationSession::new(controller, vec![]);
 
         Ok(JsNavigationSession { session })
     }
@@ -102,7 +102,7 @@ impl JsNavigationSessionRecording {
 
         // Use the same recorder instance for both observer and direct access
         let observers: Vec<Arc<dyn NavigationObserver>> = vec![recorder.clone()];
-        let session = NavigationSession::new_with_observers(controller, observers);
+        let session = NavigationSession::new(controller, observers);
 
         Ok(JsNavigationSessionRecording { session, recorder })
     }
