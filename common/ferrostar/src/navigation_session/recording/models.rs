@@ -3,11 +3,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     models::Route,
-    navigation_controller::models::{
-        NavigationControllerConfig, NavigationRecordingEvent,
-        SerializableNavigationControllerConfig,
-    },
+    navigation_controller::{models::{
+        NavigationControllerConfig, SerializableNavState, SerializableNavigationControllerConfig, TripState
+    }, step_advance::SerializableStepAdvanceCondition},
 };
+
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
 
 /// A builder for serializing a navigation recording.
 #[derive(Serialize, Deserialize, Clone)]
@@ -86,4 +88,56 @@ pub enum RecordingError {
         error("Recording is not enabled for this controller.")
     )]
     RecordingNotEnabled,
+}
+
+/// An event that occurs during navigation.
+///
+/// This is used for the optional session recording / telemetry.
+#[derive(Clone, Serialize, Deserialize, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+pub struct NavigationRecordingEvent {
+    /// The timestamp of the event in milliseconds since Jan 1, 1970 UTC.
+    pub timestamp: i64,
+    /// Data associated with the event.
+    pub event_data: NavigationRecordingEventData,
+}
+
+impl NavigationRecordingEvent {
+    pub fn new(event_data: NavigationRecordingEventData) -> Self {
+        Self {
+            timestamp: Utc::now().timestamp_millis(),
+            event_data,
+        }
+    }
+
+    /// Create a [`NavigationRecordingEventData::StateUpdate`] event from a [`SerializableNavState`]
+    pub fn state_update(serializable_nav_state: SerializableNavState) -> Self {
+        Self::new(NavigationRecordingEventData::StateUpdate {
+            trip_state: serializable_nav_state.trip_state,
+            step_advance_condition: serializable_nav_state.step_advance_condition,
+        })
+    }
+
+    pub fn timestamp(&self) -> i64 {
+        self.timestamp
+    }
+}
+
+/// The event type.
+///
+/// For full replayability, we record things like rerouting, and not just location updates.
+#[derive(Clone, Serialize, Deserialize, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+pub enum NavigationRecordingEventData {
+    StateUpdate {
+        trip_state: TripState,
+        step_advance_condition: SerializableStepAdvanceCondition,
+    },
+    // TODO: Figure out how to record re-routes.
+    RouteUpdate {
+        /// Updated route.
+        route: Route,
+    },
 }

@@ -1,6 +1,6 @@
 use crate::{
-    models::Route, navigation_controller::models::NavigationRecordingEvent,
-    navigation_session::recording::models::NavigationRecording,
+    models::Route,
+    navigation_session::recording::models::{NavigationRecording, NavigationRecordingEvent},
 };
 
 #[cfg(feature = "wasm-bindgen")]

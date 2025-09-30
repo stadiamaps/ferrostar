@@ -1623,7 +1623,7 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 
 
 
-public protocol NavigationObserverProtocol: AnyObject, Sendable {
+public protocol NavigationObserver: AnyObject, Sendable {
     
     func onGetInitialState(state: NavState) 
     
@@ -1634,7 +1634,7 @@ public protocol NavigationObserverProtocol: AnyObject, Sendable {
     func onRouteAvailable(route: Route) 
     
 }
-open class NavigationObserver: NavigationObserverProtocol, @unchecked Sendable {
+open class NavigationObserverImpl: NavigationObserver, @unchecked Sendable {
     fileprivate let pointer: UnsafeMutableRawPointer!
 
     /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
@@ -1719,20 +1719,145 @@ open func onRouteAvailable(route: Route)  {try! rustCall() {
 }
 
 
+// Put the implementation in a struct so we don't pollute the top-level namespace
+fileprivate struct UniffiCallbackInterfaceNavigationObserver {
+
+    // Create the VTable using a series of closures.
+    // Swift automatically converts these into C callback functions.
+    //
+    // This creates 1-element array, since this seems to be the only way to construct a const
+    // pointer that we can pass to the Rust code.
+    static let vtable: [UniffiVTableCallbackInterfaceNavigationObserver] = [UniffiVTableCallbackInterfaceNavigationObserver(
+        onGetInitialState: { (
+            uniffiHandle: UInt64,
+            state: RustBuffer,
+            uniffiOutReturn: UnsafeMutableRawPointer,
+            uniffiCallStatus: UnsafeMutablePointer<RustCallStatus>
+        ) in
+            let makeCall = {
+                () throws -> () in
+                guard let uniffiObj = try? FfiConverterTypeNavigationObserver.handleMap.get(handle: uniffiHandle) else {
+                    throw UniffiInternalError.unexpectedStaleHandle
+                }
+                return uniffiObj.onGetInitialState(
+                     state: try FfiConverterTypeNavState_lift(state)
+                )
+            }
+
+            
+            let writeReturn = { () }
+            uniffiTraitInterfaceCall(
+                callStatus: uniffiCallStatus,
+                makeCall: makeCall,
+                writeReturn: writeReturn
+            )
+        },
+        onUserLocationUpdate: { (
+            uniffiHandle: UInt64,
+            location: RustBuffer,
+            state: RustBuffer,
+            uniffiOutReturn: UnsafeMutableRawPointer,
+            uniffiCallStatus: UnsafeMutablePointer<RustCallStatus>
+        ) in
+            let makeCall = {
+                () throws -> () in
+                guard let uniffiObj = try? FfiConverterTypeNavigationObserver.handleMap.get(handle: uniffiHandle) else {
+                    throw UniffiInternalError.unexpectedStaleHandle
+                }
+                return uniffiObj.onUserLocationUpdate(
+                     location: try FfiConverterTypeUserLocation_lift(location),
+                     state: try FfiConverterTypeNavState_lift(state)
+                )
+            }
+
+            
+            let writeReturn = { () }
+            uniffiTraitInterfaceCall(
+                callStatus: uniffiCallStatus,
+                makeCall: makeCall,
+                writeReturn: writeReturn
+            )
+        },
+        onAdvanceToNextStep: { (
+            uniffiHandle: UInt64,
+            state: RustBuffer,
+            uniffiOutReturn: UnsafeMutableRawPointer,
+            uniffiCallStatus: UnsafeMutablePointer<RustCallStatus>
+        ) in
+            let makeCall = {
+                () throws -> () in
+                guard let uniffiObj = try? FfiConverterTypeNavigationObserver.handleMap.get(handle: uniffiHandle) else {
+                    throw UniffiInternalError.unexpectedStaleHandle
+                }
+                return uniffiObj.onAdvanceToNextStep(
+                     state: try FfiConverterTypeNavState_lift(state)
+                )
+            }
+
+            
+            let writeReturn = { () }
+            uniffiTraitInterfaceCall(
+                callStatus: uniffiCallStatus,
+                makeCall: makeCall,
+                writeReturn: writeReturn
+            )
+        },
+        onRouteAvailable: { (
+            uniffiHandle: UInt64,
+            route: RustBuffer,
+            uniffiOutReturn: UnsafeMutableRawPointer,
+            uniffiCallStatus: UnsafeMutablePointer<RustCallStatus>
+        ) in
+            let makeCall = {
+                () throws -> () in
+                guard let uniffiObj = try? FfiConverterTypeNavigationObserver.handleMap.get(handle: uniffiHandle) else {
+                    throw UniffiInternalError.unexpectedStaleHandle
+                }
+                return uniffiObj.onRouteAvailable(
+                     route: try FfiConverterTypeRoute_lift(route)
+                )
+            }
+
+            
+            let writeReturn = { () }
+            uniffiTraitInterfaceCall(
+                callStatus: uniffiCallStatus,
+                makeCall: makeCall,
+                writeReturn: writeReturn
+            )
+        },
+        uniffiFree: { (uniffiHandle: UInt64) -> () in
+            let result = try? FfiConverterTypeNavigationObserver.handleMap.remove(handle: uniffiHandle)
+            if result == nil {
+                print("Uniffi callback interface NavigationObserver: handle missing in uniffiFree")
+            }
+        }
+    )]
+}
+
+private func uniffiCallbackInitNavigationObserver() {
+    uniffi_ferrostar_fn_init_callback_vtable_navigationobserver(UniffiCallbackInterfaceNavigationObserver.vtable)
+}
+
+
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
 public struct FfiConverterTypeNavigationObserver: FfiConverter {
+    fileprivate static let handleMap = UniffiHandleMap<NavigationObserver>()
 
     typealias FfiType = UnsafeMutableRawPointer
     typealias SwiftType = NavigationObserver
 
     public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationObserver {
-        return NavigationObserver(unsafeFromRawPointer: pointer)
+        return NavigationObserverImpl(unsafeFromRawPointer: pointer)
     }
 
     public static func lower(_ value: NavigationObserver) -> UnsafeMutableRawPointer {
-        return value.uniffiClonePointer()
+        guard let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: handleMap.insert(obj: value))) else {
+            fatalError("Cast to UnsafeMutableRawPointer failed")
+        }
+        return ptr
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationObserver {
@@ -1778,6 +1903,14 @@ public protocol NavigationRecorderProtocol: AnyObject, Sendable {
     func getEvents()  -> [NavigationRecordingEvent]
     
     func getRecording() throws  -> String
+    
+    func onAdvanceToNextStep(state: NavState) 
+    
+    func onGetInitialState(state: NavState) 
+    
+    func onRouteAvailable(route: Route) 
+    
+    func onUserLocationUpdate(location: UserLocation, state: NavState) 
     
 }
 open class NavigationRecorder: NavigationRecorderProtocol, @unchecked Sendable {
@@ -1846,8 +1979,39 @@ open func getRecording()throws  -> String  {
 })
 }
     
+open func onAdvanceToNextStep(state: NavState)  {try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationrecorder_on_advance_to_next_step(self.uniffiClonePointer(),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+}
+}
+    
+open func onGetInitialState(state: NavState)  {try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationrecorder_on_get_initial_state(self.uniffiClonePointer(),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+}
+}
+    
+open func onRouteAvailable(route: Route)  {try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationrecorder_on_route_available(self.uniffiClonePointer(),
+        FfiConverterTypeRoute_lower(route),$0
+    )
+}
+}
+    
+open func onUserLocationUpdate(location: UserLocation, state: NavState)  {try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationrecorder_on_user_location_update(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation_lower(location),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+}
+}
+    
 
 }
+extension NavigationRecorder: NavigationObserver {}
+
 
 
 #if swift(>=5.8)
@@ -2320,7 +2484,7 @@ open func onUserLocationUpdate(location: UserLocation, state: NavState)  {try! r
     
 
 }
-extension NavigationSessionCache: NavigationObserverProtocol {}
+extension NavigationSessionCache: NavigationObserver {}
 
 
 
@@ -9945,7 +10109,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 18551) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_navigation_session() != 15400) {
+    if (uniffi_ferrostar_checksum_func_create_navigation_session() != 25334) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_create_navigator() != 1507) {
@@ -10020,6 +10184,18 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording() != 65086) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_advance_to_next_step() != 4393) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_get_initial_state() != 12863) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_route_available() != 45639) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_user_location_update() != 14085) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_ferrostar_checksum_method_navigationsession_advance_to_next_step() != 37398) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -10086,7 +10262,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 60881) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationsession_new() != 9341) {
+    if (uniffi_ferrostar_checksum_constructor_navigationsession_new() != 3371) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_navigationsessioncache_new() != 16270) {
@@ -10100,6 +10276,7 @@ private let initializationResult: InitializationResult = {
     }
 
     uniffiCallbackInitNavigationCache()
+    uniffiCallbackInitNavigationObserver()
     uniffiCallbackInitRouteDeviationDetector()
     uniffiCallbackInitRouteRequestGenerator()
     uniffiCallbackInitRouteResponseParser()
