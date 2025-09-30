@@ -74,9 +74,9 @@ public struct CarPlayNavigationView: View {
                 CarPlayNavigationOverlayView(
                     navigationState: navigationState,
                     cameraControlState: camera.isTrackingUserLocationWithCourse ? CameraControlState.showRecenter {
-                        // TODO:
+                        // Does nothing on CarPlay
                     } : .showRecenter {
-                        camera = navigationCamera
+                        // Does nothing on CarPlay
                     },
                 )
                 .innerGrid {
