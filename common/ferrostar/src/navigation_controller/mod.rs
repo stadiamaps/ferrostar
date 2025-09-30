@@ -58,7 +58,6 @@ pub fn create_navigator(
         let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
 
         // Creates a navigation controller with a wrapper that records events.
-        // Arc::new(RecordingNavigationController::new(route, config))
         Arc::new(NavigationSession::new_with_observers(
             Arc::new(NavigationController::new(route, config)),
             vec![recorder],
