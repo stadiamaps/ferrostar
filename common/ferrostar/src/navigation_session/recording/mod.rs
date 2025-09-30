@@ -1,10 +1,10 @@
 use crate::{
     models::{Route, UserLocation},
-    navigation_controller::models::{
-        NavState, NavigationControllerConfig, NavigationRecordingEvent,
-    },
+    navigation_controller::models::{NavState, NavigationControllerConfig},
     navigation_session::{
-        recording::models::{NavigationRecordingMetadata, RecordingError},
+        recording::models::{
+            NavigationRecordingEvent, NavigationRecordingMetadata, RecordingError,
+        },
         NavigationObserver,
     },
 };
