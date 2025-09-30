@@ -15,7 +15,7 @@ pub mod caching;
 pub mod recording;
 pub mod specialized;
 
-#[cfg_attr(feature = "uniffi", uniffi::export)]
+#[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait NavigationObserver: Send + Sync {
     fn on_get_initial_state(&self, state: NavState);
     fn on_user_location_update(&self, location: UserLocation, state: NavState);
