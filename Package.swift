@@ -17,7 +17,7 @@ if useLocalFramework {
     )
 } else {
     let releaseTag = "0.43.0"
-    let releaseChecksum = "349a14a9560b2ebcde0d732bea1e13fbfdc024ceed6ba9df95678d03d224817c"
+    let releaseChecksum = "cbf3048b688f285bec313fbbcad873293bccbc4706cebfa9f1dd434aa0099271"
     binaryTarget = .binaryTarget(
         name: "FerrostarCoreRS",
         url:
