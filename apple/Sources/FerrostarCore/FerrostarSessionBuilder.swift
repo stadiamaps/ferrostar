@@ -64,6 +64,9 @@ public class FerrostarSessionBuilder {
         return self
     }
 
+    /// Builds a session using persisted data.
+    ///
+    /// Throws if there is no previously saved session.
     func buildResumedSession() throws(FerrostarCoreError) -> (NavigationSession, Route, NavState) {
         guard let snapshot = caching?.load(), let tripState = snapshot.tripState else {
             // TODO: log is stale.
