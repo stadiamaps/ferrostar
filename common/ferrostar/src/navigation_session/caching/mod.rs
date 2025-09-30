@@ -2,6 +2,7 @@ use std::sync::{Arc, Mutex};
 
 use chrono::{Duration, Utc};
 
+#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
 use crate::{
     models::{Route, UserLocation},
     navigation_controller::models::NavState,
@@ -13,6 +14,7 @@ use crate::{
 
 pub mod models;
 
+#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
 #[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait NavigationCache: Send + Sync {
     fn save(&self, record: Vec<u8>);
@@ -20,6 +22,7 @@ pub trait NavigationCache: Send + Sync {
     fn delete(&self);
 }
 
+#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 struct NavigationSessionCache {
     config: NavigationCachingConfig,
@@ -27,6 +30,7 @@ struct NavigationSessionCache {
     current_record: Mutex<Option<NavigationSessionSnapshot>>,
 }
 
+#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationSessionCache {
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
@@ -72,6 +76,7 @@ impl NavigationSessionCache {
     }
 }
 
+#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationObserver for NavigationSessionCache {
     fn on_route_available(&self, route: Route) {
@@ -116,6 +121,7 @@ impl NavigationObserver for NavigationSessionCache {
     }
 }
 
+#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
 impl NavigationSessionCache {
     fn handle_update(&self, state: NavState, should_cache: bool) {
         if !should_cache {

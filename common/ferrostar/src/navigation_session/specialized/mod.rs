@@ -4,8 +4,10 @@
 //! where trait object complexity needs to be avoided and specific use cases can be
 //! directly implemented for better performance and usability.
 
+#[cfg(feature = "wasm-bindgen")]
 use std::sync::Arc;
 
+#[cfg(feature = "wasm-bindgen")]
 use crate::{
     models::{Route, UserLocation},
     navigation_controller::{

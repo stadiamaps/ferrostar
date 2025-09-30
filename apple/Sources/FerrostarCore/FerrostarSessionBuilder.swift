@@ -65,13 +65,13 @@ public class FerrostarSessionBuilder {
     }
 
     func buildResumedSession() throws(FerrostarCoreError) -> (NavigationSession, Route, NavState) {
-        guard let snapshot = caching?.load(), let tripState = record.tripState else {
+        guard let snapshot = caching?.load(), let tripState = snapshot.tripState else {
             // TODO: log is stale.
-            throw FerrostarCoreError.notPossible("No cached navigation session to resume from.")
+            throw FerrostarCoreError.noCachedSession
         }
 
-        let route = record.route
-        let session = create(for: route)
+        let route = snapshot.route
+        let session = build(for: route)
         let navState = NavState(tripState: tripState, stepAdvanceCondition: config.ffiValue.stepAdvanceCondition)
 
         return (session, route, navState)
