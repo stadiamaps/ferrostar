@@ -10,7 +10,7 @@ pub struct NavigationCachingConfig {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-pub struct NavigationSessionRecord {
+pub struct NavigationSessionSnapshot {
     pub saved_at: UtcDateTime,
     pub route: Route,
     pub trip_state: Option<TripState>,

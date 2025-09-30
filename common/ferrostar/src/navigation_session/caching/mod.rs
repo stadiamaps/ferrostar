@@ -6,7 +6,7 @@ use crate::{
     models::{Route, UserLocation},
     navigation_controller::models::NavState,
     navigation_session::{
-        caching::models::{NavigationCachingConfig, NavigationSessionRecord},
+        caching::models::{NavigationCachingConfig, NavigationSessionSnapshot},
         NavigationObserver,
     },
 };
@@ -24,7 +24,7 @@ pub trait NavigationCache: Send + Sync {
 struct NavigationSessionCache {
     config: NavigationCachingConfig,
     cache: Arc<dyn NavigationCache>,
-    current_record: Mutex<Option<NavigationSessionRecord>>,
+    current_record: Mutex<Option<NavigationSessionSnapshot>>,
 }
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
@@ -44,12 +44,12 @@ impl NavigationSessionCache {
     }
 
     /// Load the navigation session record from the cache if it exists and is not stale.
-    pub fn load(&self) -> Option<NavigationSessionRecord> {
+    pub fn load(&self) -> Option<NavigationSessionSnapshot> {
         let record = self
             .cache
             .load()
             .and_then(|data| serde_json::from_slice(&data).ok())
-            .and_then(|record: NavigationSessionRecord| {
+            .and_then(|record: NavigationSessionSnapshot| {
                 let age = Utc::now() - record.saved_at;
                 let max_age = Duration::seconds(self.config.max_age_seconds);
 
@@ -76,7 +76,7 @@ impl NavigationSessionCache {
 impl NavigationObserver for NavigationSessionCache {
     fn on_route_available(&self, route: Route) {
         if let Ok(mut record) = self.current_record.lock() {
-            *record = Some(NavigationSessionRecord {
+            *record = Some(NavigationSessionSnapshot {
                 saved_at: Utc::now(),
                 route: route.clone(),
                 trip_state: None,

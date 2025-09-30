@@ -17,7 +17,7 @@ use crate::{
     },
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
-    navigation_session::{recording::NavigationRecorder, NavigationSession},
+    navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
 };
 use chrono::Utc;
 use geo::{
@@ -55,22 +55,20 @@ pub fn create_navigator(
     config: NavigationControllerConfig,
     should_record: bool,
 ) -> Arc<dyn Navigator> {
-    if should_record {
-        let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
-
-        // Creates a navigation controller with a wrapper that records events.
-        // Arc::new(RecordingNavigationController::new(route, config))
-        Arc::new(NavigationSession::new(
-            Arc::new(NavigationController::new(route, config)),
-            vec![recorder],
-        ))
+    let observers: Vec<Arc<dyn NavigationObserver>> = if should_record {
+        vec![Arc::new(NavigationRecorder::new(
+            route.clone(),
+            config.clone(),
+        ))]
     } else {
-        // Creates a normal navigation controller.
-        Arc::new(NavigationSession::new(
-            Arc::new(NavigationController::new(route, config)),
-            vec![],
-        ))
-    }
+        vec![]
+    };
+
+    // Creates a normal navigation controller.
+    Arc::new(NavigationSession::new(
+        Arc::new(NavigationController::new(route, config)),
+        observers,
+    ))
 }
 
 /// Manages the navigation lifecycle through a route,

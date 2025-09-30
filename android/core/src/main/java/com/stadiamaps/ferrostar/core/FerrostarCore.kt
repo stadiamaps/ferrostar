@@ -20,6 +20,7 @@ import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavState
 import uniffi.ferrostar.NavigationControllerConfig
+import uniffi.ferrostar.NavigationSession
 import uniffi.ferrostar.Navigator
 import uniffi.ferrostar.Route
 import uniffi.ferrostar.RouteAdapter
@@ -93,6 +94,7 @@ class FerrostarCore(
     val locationProvider: LocationProvider,
     val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
+    val sessionBuilder: FerrostarSessionBuilder = FerrostarSessionBuilder(navigationControllerConfig),
 ) : LocationUpdateListener {
   companion object {
     private const val TAG = "FerrostarCore"
@@ -156,7 +158,8 @@ class FerrostarCore(
 
   private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
-  private var _navigationController: Navigator? = null
+
+  private var _navigationSession: NavigationSession? = null
   private val _navState: MutableStateFlow<NavState?> = MutableStateFlow(null)
   private var _state: MutableStateFlow<NavigationState> = MutableStateFlow(NavigationState())
   private var _routeRequestInFlight = false
@@ -270,22 +273,51 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
-    val controller: Navigator =
-        createNavigator(
-            route,
-            _config,
-            false,
-        )
+    val navigationSession = sessionBuilder.build(route, config)
+    _navigationSession = navigationSession
+
     val startingLocation =
         locationProvider.lastLocation
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
-    val initialNavState = controller.getInitialState(startingLocation)
+    val initialNavState = navigationSession.getInitialState(startingLocation)
     val newState = NavigationState(tripState = initialNavState.tripState, route.geometry, false)
     handleStateUpdate(initialNavState, startingLocation)
 
-    _navigationController = controller
     _navState.value = initialNavState
+    _state.value = newState
+
+    locationProvider.addListener(this, _executor)
+  }
+
+  /**
+   * Resumes a previously started navigation session from the last known state.
+   *
+   * This is useful if your app was killed in the background and you want to resume navigation
+   * without losing state. Note that this will only work if you had previously enabled caching in
+   * the [sessionBuilder] used to create this instance of [FerrostarCore], and if there was a valid
+   * cached session.
+   *
+   * @throws NoCachedSession if there is no cached session to resume from.
+   * @throws UserLocationUnknown if the location provider has no last known location.
+   */
+  fun resumeNavigation() {
+    stopNavigation()
+
+    // Start the foreground notification service
+    foregroundServiceManager?.startService(this::stopNavigation)
+
+    val (navigationSession, route, navState) = sessionBuilder.buildResumedSession()
+    _navigationSession = navigationSession
+
+    val startingLocation =
+      locationProvider.lastLocation
+        ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
+
+    val newState = NavigationState(tripState = navState.tripState, route.geometry, false)
+    handleStateUpdate(navState, startingLocation)
+
+    _navState.value = navState
     _state.value = newState
 
     locationProvider.addListener(this, _executor)
@@ -305,12 +337,9 @@ class FerrostarCore(
     // Apply the new config if provided, otherwise use the original.
     _config = config ?: _config
 
-    val controller: Navigator =
-        createNavigator(
-            route,
-            _config,
-            false,
-        )
+    val navigationSession = sessionBuilder.build(route, config)
+    _navigationSession = navigationSession
+
     val startingLocation =
         locationProvider.lastLocation
             ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
@@ -318,9 +347,7 @@ class FerrostarCore(
     _queuedUtteranceIds.clear()
     spokenInstructionObserver?.stopAndClearQueue()
 
-    _navigationController = controller
-
-    val newState = controller.getInitialState(startingLocation)
+    val newState = navigationSession.getInitialState(startingLocation)
 
     handleStateUpdate(newState, startingLocation)
 
@@ -329,12 +356,12 @@ class FerrostarCore(
   }
 
   fun advanceToNextStep() {
-    val controller = _navigationController
+    val session = _navigationSession
     val location = _lastLocation
 
-    if (controller != null && location != null) {
+    if (session != null && location != null) {
       _navState.value?.let {
-        val newState = controller.advanceToNextStep(state = it)
+        val newState = session.advanceToNextStep(state = it)
         handleStateUpdate(newState, location)
 
         _navState.update { newState }
@@ -351,8 +378,8 @@ class FerrostarCore(
     if (stopLocationUpdates) {
       locationProvider.removeListener(this)
     }
-    _navigationController?.destroy()
-    _navigationController = null
+    _navigationSession?.destroy()
+    _navigationSession = null
     _state.value = NavigationState()
     _queuedUtteranceIds.clear()
     spokenInstructionObserver?.stopAndClearQueue()
@@ -435,11 +462,11 @@ class FerrostarCore(
 
   override fun onLocationUpdated(location: UserLocation) {
     _lastLocation = location
-    val controller = _navigationController
+    val session = _navigationSession
 
-    if (controller != null) {
+    if (session != null) {
       _navState.value?.let {
-        val newState = controller.updateUserLocation(location = location, state = it)
+        val newState = session.updateUserLocation(location = location, state = it)
         handleStateUpdate(newState, location)
 
         _navState.update { newState }

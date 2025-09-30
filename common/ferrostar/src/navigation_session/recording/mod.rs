@@ -2,7 +2,9 @@ use crate::{
     models::{Route, UserLocation},
     navigation_controller::models::{NavState, NavigationControllerConfig},
     navigation_session::{
-        recording::models::{NavigationRecordingEvent, NavigationRecordingMetadata, RecordingError},
+        recording::models::{
+            NavigationRecordingEvent, NavigationRecordingMetadata, RecordingError,
+        },
         NavigationObserver,
     },
 };
@@ -43,7 +45,7 @@ impl NavigationRecorder {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationObserver for NavigationRecorder {
     fn on_route_available(&self, #[allow(unused_variables)] route: Route) {
-        // Implement the logic for on_route_available
+        // TODO: We could capture the route on the recording if desired.
     }
 
     fn on_get_initial_state(&self, state: NavState) {

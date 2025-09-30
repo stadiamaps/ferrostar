@@ -13,8 +13,8 @@ enum FerrostarCoreError: Error, Equatable {
     case invalidRequestUrl
     /// Invalid (non-2xx) HTTP status
     case httpStatusCode(Int)
-    /// A precondition was not met, and the action was not possible
-    case notPossible(_ reason: String?)
+    /// A resumable cached session was not found. Enable navigation session caching.
+    case noCachedSession
 }
 
 /// Corrective action to take when the user deviates from the route.

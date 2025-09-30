@@ -3,9 +3,13 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     models::Route,
-    navigation_controller::{models::{
-        NavigationControllerConfig, SerializableNavState, SerializableNavigationControllerConfig, TripState
-    }, step_advance::SerializableStepAdvanceCondition},
+    navigation_controller::{
+        models::{
+            NavigationControllerConfig, SerializableNavState,
+            SerializableNavigationControllerConfig, TripState,
+        },
+        step_advance::SerializableStepAdvanceCondition,
+    },
 };
 
 #[cfg(feature = "wasm-bindgen")]

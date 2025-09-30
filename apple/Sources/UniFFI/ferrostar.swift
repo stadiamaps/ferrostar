@@ -2361,7 +2361,7 @@ public protocol NavigationSessionCacheProtocol: AnyObject, Sendable {
     /**
      * Load the navigation session record from the cache if it exists and is not stale.
      */
-    func load()  -> NavigationSessionRecord?
+    func load()  -> NavigationSessionSnapshot?
     
     func onAdvanceToNextStep(state: NavState) 
     
@@ -2446,8 +2446,8 @@ open func canResume() -> Bool  {
     /**
      * Load the navigation session record from the cache if it exists and is not stale.
      */
-open func load() -> NavigationSessionRecord?  {
-    return try!  FfiConverterOptionTypeNavigationSessionRecord.lift(try! rustCall() {
+open func load() -> NavigationSessionSnapshot?  {
+    return try!  FfiConverterOptionTypeNavigationSessionSnapshot.lift(try! rustCall() {
     uniffi_ferrostar_fn_method_navigationsessioncache_load(self.uniffiClonePointer(),$0
     )
 })
@@ -5106,7 +5106,7 @@ public func FfiConverterTypeNavigationRecordingEvent_lower(_ value: NavigationRe
 }
 
 
-public struct NavigationSessionRecord {
+public struct NavigationSessionSnapshot {
     public var savedAt: UtcDateTime
     public var route: Route
     public var tripState: TripState?
@@ -5121,12 +5121,12 @@ public struct NavigationSessionRecord {
 }
 
 #if compiler(>=6)
-extension NavigationSessionRecord: Sendable {}
+extension NavigationSessionSnapshot: Sendable {}
 #endif
 
 
-extension NavigationSessionRecord: Equatable, Hashable {
-    public static func ==(lhs: NavigationSessionRecord, rhs: NavigationSessionRecord) -> Bool {
+extension NavigationSessionSnapshot: Equatable, Hashable {
+    public static func ==(lhs: NavigationSessionSnapshot, rhs: NavigationSessionSnapshot) -> Bool {
         if lhs.savedAt != rhs.savedAt {
             return false
         }
@@ -5146,24 +5146,24 @@ extension NavigationSessionRecord: Equatable, Hashable {
     }
 }
 
-extension NavigationSessionRecord: Codable {}
+extension NavigationSessionSnapshot: Codable {}
 
 
 
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public struct FfiConverterTypeNavigationSessionRecord: FfiConverterRustBuffer {
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationSessionRecord {
+public struct FfiConverterTypeNavigationSessionSnapshot: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationSessionSnapshot {
         return
-            try NavigationSessionRecord(
+            try NavigationSessionSnapshot(
                 savedAt: FfiConverterTypeUtcDateTime.read(from: &buf), 
                 route: FfiConverterTypeRoute.read(from: &buf), 
                 tripState: FfiConverterOptionTypeTripState.read(from: &buf)
         )
     }
 
-    public static func write(_ value: NavigationSessionRecord, into buf: inout [UInt8]) {
+    public static func write(_ value: NavigationSessionSnapshot, into buf: inout [UInt8]) {
         FfiConverterTypeUtcDateTime.write(value.savedAt, into: &buf)
         FfiConverterTypeRoute.write(value.route, into: &buf)
         FfiConverterOptionTypeTripState.write(value.tripState, into: &buf)
@@ -5174,15 +5174,15 @@ public struct FfiConverterTypeNavigationSessionRecord: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeNavigationSessionRecord_lift(_ buf: RustBuffer) throws -> NavigationSessionRecord {
-    return try FfiConverterTypeNavigationSessionRecord.lift(buf)
+public func FfiConverterTypeNavigationSessionSnapshot_lift(_ buf: RustBuffer) throws -> NavigationSessionSnapshot {
+    return try FfiConverterTypeNavigationSessionSnapshot.lift(buf)
 }
 
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeNavigationSessionRecord_lower(_ value: NavigationSessionRecord) -> RustBuffer {
-    return FfiConverterTypeNavigationSessionRecord.lower(value)
+public func FfiConverterTypeNavigationSessionSnapshot_lower(_ value: NavigationSessionSnapshot) -> RustBuffer {
+    return FfiConverterTypeNavigationSessionSnapshot.lower(value)
 }
 
 
@@ -9027,8 +9027,8 @@ fileprivate struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffe
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-fileprivate struct FfiConverterOptionTypeNavigationSessionRecord: FfiConverterRustBuffer {
-    typealias SwiftType = NavigationSessionRecord?
+fileprivate struct FfiConverterOptionTypeNavigationSessionSnapshot: FfiConverterRustBuffer {
+    typealias SwiftType = NavigationSessionSnapshot?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
         guard let value = value else {
@@ -9036,13 +9036,13 @@ fileprivate struct FfiConverterOptionTypeNavigationSessionRecord: FfiConverterRu
             return
         }
         writeInt(&buf, Int8(1))
-        FfiConverterTypeNavigationSessionRecord.write(value, into: &buf)
+        FfiConverterTypeNavigationSessionSnapshot.write(value, into: &buf)
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
-        case 1: return try FfiConverterTypeNavigationSessionRecord.read(from: &buf)
+        case 1: return try FfiConverterTypeNavigationSessionSnapshot.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -10211,7 +10211,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 41390) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 35405) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 25289) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_advance_to_next_step() != 46628) {
