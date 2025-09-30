@@ -4,9 +4,7 @@ use super::step_advance::conditions::ManualStepCondition;
 use super::step_advance::{SerializableStepAdvanceCondition, StepAdvanceCondition};
 use crate::algorithms::distance_between_locations;
 use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-use crate::models::{
-    Route, RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint,
-};
+use crate::models::{RouteStep, SpokenInstruction, UserLocation, VisualInstruction, Waypoint};
 
 #[cfg(feature = "alloc")]
 use alloc::vec::Vec;
@@ -28,7 +26,6 @@ pub struct NavState {
     trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
     step_advance_condition: Arc<dyn StepAdvanceCondition>,
-    pub recording_events: Option<Vec<NavigationRecordingEvent>>,
 }
 
 impl NavState {
@@ -36,35 +33,25 @@ impl NavState {
     pub fn new(
         trip_state: TripState,
         step_advance_condition: Arc<dyn StepAdvanceCondition>,
-        recording_events: Option<Vec<NavigationRecordingEvent>>,
     ) -> Self {
         Self {
             trip_state,
             step_advance_condition,
-            recording_events,
         }
     }
 
     /// Creates a new idle navigation state (no trip currently in progress, but still tracking the user's location).
-    pub fn idle(
-        user_location: Option<UserLocation>,
-        recording_events: Option<Vec<NavigationRecordingEvent>>,
-    ) -> Self {
+    pub fn idle(user_location: Option<UserLocation>) -> Self {
         Self {
             trip_state: TripState::Idle { user_location },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
-            recording_events,
         }
     }
 
     /// Creates a navigation state indicating the trip is complete (arrived at the destination but still tracking the user's location).
     ///
     /// The summary is retained as a snapshot (the caller should have this from the last known state).
-    pub fn complete(
-        user_location: UserLocation,
-        last_summary: TripSummary,
-        recording_events: Option<Vec<NavigationRecordingEvent>>,
-    ) -> Self {
+    pub fn complete(user_location: UserLocation, last_summary: TripSummary) -> Self {
         Self {
             trip_state: TripState::Complete {
                 user_location,
@@ -74,24 +61,6 @@ impl NavState {
                 },
             },
             step_advance_condition: Arc::new(ManualStepCondition {}), // No op condition.
-            recording_events,
-        }
-    }
-
-    /// Records a navigation event.
-    ///
-    /// NOTE: This will *always* record events passed.
-    /// If internally the list of recording_events is `None`, it will create a new empty `Some(Vec<_>)`.
-    /// The assumption is that the caller knows what they are doing, and, for example,
-    /// a regular `Navigator` will not call this accidentally.
-    pub fn append_recording_event(self, event: NavigationRecordingEvent) -> Self {
-        let mut recording_events = self.recording_events.unwrap_or_default();
-
-        recording_events.push(event);
-
-        Self {
-            recording_events: Some(recording_events),
-            ..self
         }
     }
 
@@ -112,10 +81,9 @@ impl NavState {
 #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct SerializableNavState {
-    trip_state: TripState,
+    pub(crate) trip_state: TripState,
     // This has to be here because we actually do need to update the internal state that changes throughout navigation.
-    step_advance_condition: SerializableStepAdvanceCondition,
-    recording_events: Option<Vec<NavigationRecordingEvent>>,
+    pub(crate) step_advance_condition: SerializableStepAdvanceCondition,
 }
 
 impl From<SerializableNavState> for NavState {
@@ -123,7 +91,6 @@ impl From<SerializableNavState> for NavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.into(),
-            recording_events: value.recording_events,
         }
     }
 }
@@ -133,7 +100,6 @@ impl From<NavState> for SerializableNavState {
         Self {
             trip_state: value.trip_state,
             step_advance_condition: value.step_advance_condition.to_js(),
-            recording_events: value.recording_events,
         }
     }
 }
@@ -390,56 +356,4 @@ impl From<NavigationControllerConfig> for SerializableNavigationControllerConfig
             snapped_location_course_filtering: config.snapped_location_course_filtering,
         }
     }
-}
-
-/// An event that occurs during navigation.
-///
-/// This is used for the optional session recording / telemetry.
-#[derive(Clone, Serialize, Deserialize, Debug)]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
-pub struct NavigationRecordingEvent {
-    /// The timestamp of the event in milliseconds since Jan 1, 1970 UTC.
-    timestamp: i64,
-    /// Data associated with the event.
-    event_data: NavigationRecordingEventData,
-}
-
-impl NavigationRecordingEvent {
-    pub fn new(event_data: NavigationRecordingEventData) -> Self {
-        Self {
-            timestamp: Utc::now().timestamp_millis(),
-            event_data,
-        }
-    }
-
-    /// Create a [`NavigationRecordingEventData::StateUpdate`] event from a [`SerializableNavState`]
-    pub fn state_update(serializable_nav_state: SerializableNavState) -> Self {
-        Self::new(NavigationRecordingEventData::StateUpdate {
-            trip_state: serializable_nav_state.trip_state,
-            step_advance_condition: serializable_nav_state.step_advance_condition,
-        })
-    }
-
-    pub fn timestamp(&self) -> i64 {
-        self.timestamp
-    }
-}
-
-/// The event type.
-///
-/// For full replayability, we record things like rerouting, and not just location updates.
-#[derive(Clone, Serialize, Deserialize, Debug)]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
-#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
-pub enum NavigationRecordingEventData {
-    StateUpdate {
-        trip_state: TripState,
-        step_advance_condition: SerializableStepAdvanceCondition,
-    },
-    // TODO: Figure out how to record re-routes.
-    RouteUpdate {
-        /// Updated route.
-        route: Route,
-    },
 }

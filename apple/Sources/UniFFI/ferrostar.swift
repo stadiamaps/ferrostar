@@ -1389,6 +1389,278 @@ public func FfiConverterTypeNavigationController_lower(_ value: NavigationContro
 
 
 
+public protocol NavigationObserverProtocol: AnyObject, Sendable {
+    
+    func onGetInitialState(state: NavState) 
+    
+    func onUserLocationUpdate(location: UserLocation, state: NavState) 
+    
+    func onAdvanceToNextStep(state: NavState) 
+    
+}
+open class NavigationObserver: NavigationObserverProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_navigationobserver(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_navigationobserver(pointer, $0) }
+    }
+
+    
+
+    
+open func onGetInitialState(state: NavState)  {try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationobserver_on_get_initial_state(self.uniffiClonePointer(),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+}
+}
+    
+open func onUserLocationUpdate(location: UserLocation, state: NavState)  {try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationobserver_on_user_location_update(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation_lower(location),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+}
+}
+    
+open func onAdvanceToNextStep(state: NavState)  {try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationobserver_on_advance_to_next_step(self.uniffiClonePointer(),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+}
+}
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigationObserver: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = NavigationObserver
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationObserver {
+        return NavigationObserver(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: NavigationObserver) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationObserver {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: NavigationObserver, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationObserver_lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationObserver {
+    return try FfiConverterTypeNavigationObserver.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationObserver_lower(_ value: NavigationObserver) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeNavigationObserver.lower(value)
+}
+
+
+
+
+
+
+public protocol NavigationRecorderProtocol: AnyObject, Sendable {
+    
+    func getEvents()  -> [NavigationRecordingEvent]
+    
+    func getRecording() throws  -> String
+    
+}
+open class NavigationRecorder: NavigationRecorderProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_navigationrecorder(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_navigationrecorder(pointer, $0) }
+    }
+
+    
+
+    
+open func getEvents() -> [NavigationRecordingEvent]  {
+    return try!  FfiConverterSequenceTypeNavigationRecordingEvent.lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationrecorder_get_events(self.uniffiClonePointer(),$0
+    )
+})
+}
+    
+open func getRecording()throws  -> String  {
+    return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
+    uniffi_ferrostar_fn_method_navigationrecorder_get_recording(self.uniffiClonePointer(),$0
+    )
+})
+}
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigationRecorder: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = NavigationRecorder
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationRecorder {
+        return NavigationRecorder(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: NavigationRecorder) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationRecorder {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: NavigationRecorder, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecorder_lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationRecorder {
+    return try FfiConverterTypeNavigationRecorder.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationRecorder_lower(_ value: NavigationRecorder) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeNavigationRecorder.lower(value)
+}
+
+
+
+
+
+
 /**
  * A wrapper around `NavigationRecording` to facilitate replaying the event stream.
  */
@@ -1508,6 +1780,169 @@ public func FfiConverterTypeNavigationReplay_lower(_ value: NavigationReplay) ->
 
 
 
+public protocol NavigationSessionProtocol: AnyObject, Sendable {
+    
+    func advanceToNextStep(state: NavState)  -> NavState
+    
+    func getInitialState(location: UserLocation)  -> NavState
+    
+    func updateUserLocation(location: UserLocation, state: NavState)  -> NavState
+    
+}
+open class NavigationSession: NavigationSessionProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_navigationsession(self.pointer, $0) }
+    }
+public convenience init(controller: Navigator) {
+    let pointer =
+        try! rustCall() {
+    uniffi_ferrostar_fn_constructor_navigationsession_new(
+        FfiConverterTypeNavigator_lower(controller),$0
+    )
+}
+    self.init(unsafeFromRawPointer: pointer)
+}
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_navigationsession(pointer, $0) }
+    }
+
+    
+public static func newWithObservers(controller: Navigator, observers: [NavigationObserver]) -> NavigationSession  {
+    return try!  FfiConverterTypeNavigationSession_lift(try! rustCall() {
+    uniffi_ferrostar_fn_constructor_navigationsession_new_with_observers(
+        FfiConverterTypeNavigator_lower(controller),
+        FfiConverterSequenceTypeNavigationObserver.lower(observers),$0
+    )
+})
+}
+    
+
+    
+open func advanceToNextStep(state: NavState) -> NavState  {
+    return try!  FfiConverterTypeNavState_lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationsession_advance_to_next_step(self.uniffiClonePointer(),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+})
+}
+    
+open func getInitialState(location: UserLocation) -> NavState  {
+    return try!  FfiConverterTypeNavState_lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationsession_get_initial_state(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation_lower(location),$0
+    )
+})
+}
+    
+open func updateUserLocation(location: UserLocation, state: NavState) -> NavState  {
+    return try!  FfiConverterTypeNavState_lift(try! rustCall() {
+    uniffi_ferrostar_fn_method_navigationsession_update_user_location(self.uniffiClonePointer(),
+        FfiConverterTypeUserLocation_lower(location),
+        FfiConverterTypeNavState_lower(state),$0
+    )
+})
+}
+    
+
+}
+extension NavigationSession: NavigatorProtocol {}
+
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNavigationSession: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = NavigationSession
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationSession {
+        return NavigationSession(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: NavigationSession) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NavigationSession {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: NavigationSession, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationSession_lift(_ pointer: UnsafeMutableRawPointer) throws -> NavigationSession {
+    return try FfiConverterTypeNavigationSession.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNavigationSession_lower(_ value: NavigationSession) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeNavigationSession.lower(value)
+}
+
+
+
+
+
+
 /**
  * Core interface for navigation functionalities.
  *
@@ -1522,14 +1957,6 @@ public protocol NavigatorProtocol: AnyObject, Sendable {
     func advanceToNextStep(state: NavState)  -> NavState
     
     func updateUserLocation(location: UserLocation, state: NavState)  -> NavState
-    
-    /**
-     * Attempts to retrieve a recording based on the supplied navigation events.
-     *
-     * The default implementation returns an error indicating that recording is not enabled.
-     * Navigation controllers which support recording can provide their own implementation.
-     */
-    func getRecording(events: [NavigationRecordingEvent]) throws  -> String
     
 }
 /**
@@ -1612,20 +2039,6 @@ open func updateUserLocation(location: UserLocation, state: NavState) -> NavStat
     uniffi_ferrostar_fn_method_navigator_update_user_location(self.uniffiClonePointer(),
         FfiConverterTypeUserLocation_lower(location),
         FfiConverterTypeNavState_lower(state),$0
-    )
-})
-}
-    
-    /**
-     * Attempts to retrieve a recording based on the supplied navigation events.
-     *
-     * The default implementation returns an error indicating that recording is not enabled.
-     * Navigation controllers which support recording can provide their own implementation.
-     */
-open func getRecording(events: [NavigationRecordingEvent])throws  -> String  {
-    return try  FfiConverterString.lift(try rustCallWithError(FfiConverterTypeRecordingError_lift) {
-    uniffi_ferrostar_fn_method_navigator_get_recording(self.uniffiClonePointer(),
-        FfiConverterSequenceTypeNavigationRecordingEvent.lower(events),$0
     )
 })
 }
@@ -3767,14 +4180,12 @@ public func FfiConverterTypeLocationSimulationState_lower(_ value: LocationSimul
 public struct NavState {
     public var tripState: TripState
     public var stepAdvanceCondition: StepAdvanceCondition
-    public var recordingEvents: [NavigationRecordingEvent]?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(tripState: TripState, stepAdvanceCondition: StepAdvanceCondition, recordingEvents: [NavigationRecordingEvent]?) {
+    public init(tripState: TripState, stepAdvanceCondition: StepAdvanceCondition) {
         self.tripState = tripState
         self.stepAdvanceCondition = stepAdvanceCondition
-        self.recordingEvents = recordingEvents
     }
 }
 
@@ -3792,15 +4203,13 @@ public struct FfiConverterTypeNavState: FfiConverterRustBuffer {
         return
             try NavState(
                 tripState: FfiConverterTypeTripState.read(from: &buf), 
-                stepAdvanceCondition: FfiConverterTypeStepAdvanceCondition.read(from: &buf), 
-                recordingEvents: FfiConverterOptionSequenceTypeNavigationRecordingEvent.read(from: &buf)
+                stepAdvanceCondition: FfiConverterTypeStepAdvanceCondition.read(from: &buf)
         )
     }
 
     public static func write(_ value: NavState, into buf: inout [UInt8]) {
         FfiConverterTypeTripState.write(value.tripState, into: &buf)
         FfiConverterTypeStepAdvanceCondition.write(value.stepAdvanceCondition, into: &buf)
-        FfiConverterOptionSequenceTypeNavigationRecordingEvent.write(value.recordingEvents, into: &buf)
     }
 }
 
@@ -4346,14 +4755,12 @@ public func FfiConverterTypeRouteStep_lower(_ value: RouteStep) -> RustBuffer {
 public struct SerializableNavState {
     public var tripState: TripState
     public var stepAdvanceCondition: SerializableStepAdvanceCondition
-    public var recordingEvents: [NavigationRecordingEvent]?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
-    public init(tripState: TripState, stepAdvanceCondition: SerializableStepAdvanceCondition, recordingEvents: [NavigationRecordingEvent]?) {
+    public init(tripState: TripState, stepAdvanceCondition: SerializableStepAdvanceCondition) {
         self.tripState = tripState
         self.stepAdvanceCondition = stepAdvanceCondition
-        self.recordingEvents = recordingEvents
     }
 }
 
@@ -4370,16 +4777,12 @@ extension SerializableNavState: Equatable, Hashable {
         if lhs.stepAdvanceCondition != rhs.stepAdvanceCondition {
             return false
         }
-        if lhs.recordingEvents != rhs.recordingEvents {
-            return false
-        }
         return true
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(tripState)
         hasher.combine(stepAdvanceCondition)
-        hasher.combine(recordingEvents)
     }
 }
 
@@ -4395,15 +4798,13 @@ public struct FfiConverterTypeSerializableNavState: FfiConverterRustBuffer {
         return
             try SerializableNavState(
                 tripState: FfiConverterTypeTripState.read(from: &buf), 
-                stepAdvanceCondition: FfiConverterTypeSerializableStepAdvanceCondition.read(from: &buf), 
-                recordingEvents: FfiConverterOptionSequenceTypeNavigationRecordingEvent.read(from: &buf)
+                stepAdvanceCondition: FfiConverterTypeSerializableStepAdvanceCondition.read(from: &buf)
         )
     }
 
     public static func write(_ value: SerializableNavState, into buf: inout [UInt8]) {
         FfiConverterTypeTripState.write(value.tripState, into: &buf)
         FfiConverterTypeSerializableStepAdvanceCondition.write(value.stepAdvanceCondition, into: &buf)
-        FfiConverterOptionSequenceTypeNavigationRecordingEvent.write(value.recordingEvents, into: &buf)
     }
 }
 
@@ -8106,30 +8507,6 @@ fileprivate struct FfiConverterOptionSequenceTypeLaneInfo: FfiConverterRustBuffe
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-fileprivate struct FfiConverterOptionSequenceTypeNavigationRecordingEvent: FfiConverterRustBuffer {
-    typealias SwiftType = [NavigationRecordingEvent]?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterSequenceTypeNavigationRecordingEvent.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterSequenceTypeNavigationRecordingEvent.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
 fileprivate struct FfiConverterOptionTypeUtcDateTime: FfiConverterRustBuffer {
     typealias SwiftType = UtcDateTime?
 
@@ -8171,6 +8548,31 @@ fileprivate struct FfiConverterSequenceString: FfiConverterRustBuffer {
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             seq.append(try FfiConverterString.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeNavigationObserver: FfiConverterRustBuffer {
+    typealias SwiftType = [NavigationObserver]
+
+    public static func write(_ value: [NavigationObserver], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeNavigationObserver.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [NavigationObserver] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [NavigationObserver]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeNavigationObserver.read(from: &buf))
         }
         return seq
     }
@@ -8905,6 +9307,30 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_step_advance_or() != 26194) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_get_initial_state() != 39234) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_user_location_update() != 471) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_advance_to_next_step() != 22377) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_events() != 7075) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording() != 65086) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationsession_advance_to_next_step() != 37398) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationsession_get_initial_state() != 29127) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_method_navigationsession_update_user_location() != 3978) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 17041) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -8912,9 +9338,6 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 30110) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_ferrostar_checksum_method_navigator_get_recording() != 43587) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {
@@ -8939,6 +9362,12 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 60881) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_constructor_navigationsession_new() != 60531) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_constructor_navigationsession_new_with_observers() != 9727) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 32290) {

@@ -13,12 +13,7 @@ use proptest::prelude::*;
 #[cfg(test)]
 use crate::test_utils::{arb_coord, make_user_location};
 
-#[cfg(feature = "wasm-bindgen")]
-use serde::{Deserialize, Serialize};
-
 use super::SerializableStepAdvanceCondition;
-#[cfg(feature = "wasm-bindgen")]
-use tsify::Tsify;
 
 /// Never advances to the next step automatically;
 /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
