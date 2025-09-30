@@ -82,7 +82,8 @@ impl NavigationObserver for NavigationSessionCache {
                 trip_state: None,
             });
         }
-        // Ignore caching, that first cache is handled by the on_get_initial_state method
+        // We don't need to cache the snapshot here because it will be cached immediately after
+        // when on_get_initial_state is called. See `NavigationSession` for observer sequences.
     }
 
     fn on_get_initial_state(&self, state: NavState) {
