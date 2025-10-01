@@ -143,7 +143,7 @@ Here's an example with `DynamicallyOrientingNavigationView`:
 ```
 
 You can also customize or replace the instruction banners, trip progress view, and road name overlays with your own composables.
-These are configurable via the `NavigationComponentBuilder`.
+These are configurable via the `NavigationViewComponentBuilder`.
 Instruction banners in particular have a lot of built-in configurablity, which we'll talk about in the next section.
 
 ## Customizing the instruction banners
