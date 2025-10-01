@@ -6,14 +6,26 @@ so Ferrostar lets you customize many important aspects of navigation.
 These options are surfaced when calling `startNavigation` on most platforms.
 The higher-level platform interfaces wrap [`NavigationControllerConfig`](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/struct.NavigationControllerConfig.html) in the Rust core.
 
-## `StepAdvanceMode`
+## Step Advance Conditions
 
-The step advance mode describes when a maneuver is “complete”
-and navigation should advance to the next step.
-We have a few built-in variants in the core,
-which you can find in the [Rust documentation](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/models/enum.StepAdvanceMode.html).
-It’s worth having a careful read over these to understand the various behaviors.
-The high-level platform wrappers also have docs which should show in your IDE documentation panel/popups.
+We determine when a maneuver is "complete" using step advance conditions.
+We include some built-in conditions that we think will enable building a good user experience
+for most modes of travel.
+
+Ferrostar comes bundled with several step advance strategies,
+which you can read about in the [Rust docs](https://docs.rs/ferrostar/latest/ferrostar/navigation_controller/step_advance/index.html).
+Look through the Functions section first, as you'll find similarly named top-level functions
+in your platform SDK (Swift, Kotlin, etc.).
+It’s worth having a careful read over the documentation to understand the various behaviors.
+
+The distance-based entry and exit is usually a good starting point.
+This requires that the user both enter _and_ exit an area near the transition point.
+If all you need is a simple "checkpoint" style that determines if the user is "close enough"
+the distance to end of step, and distance from step geometry modes are a good candidate.
+
+If you need more flexiblitity,
+you can compose multilpe conditions together to make more complex decision rules,
+or even write your own logic entirely using the `StepAdvanceCondition` trait.
 
 <div class="warning">
 
