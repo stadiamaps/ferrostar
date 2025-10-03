@@ -142,7 +142,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// Initializes a core instance with the given parameters.
     ///
     /// This designated initializer is the most flexible, but the convenience ones may be easier to use.
-    /// for common configuraitons.
+    /// for common configurations.
     ///
     /// - Parameters:
     ///   - routeProvider: The route provider is responsible for fetching routes from a server or locally.

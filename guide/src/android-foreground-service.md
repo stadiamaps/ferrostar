@@ -49,7 +49,7 @@ See the demo app's call to request these permissions in your composable app.
 
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-        // TODO: Handle permission fialures.
+        // TODO: Handle permission failures.
       }
 ```
 

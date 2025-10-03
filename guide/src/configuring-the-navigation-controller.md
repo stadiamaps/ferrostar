@@ -24,7 +24,7 @@ If all you need is a simple "checkpoint" style that determines if the user is "c
 the distance to end of step, and distance from step geometry modes are a good candidate.
 
 If you need more flexiblitity,
-you can compose multilpe conditions together to make more complex decision rules,
+you can compose multiple conditions together to make more complex decision rules,
 or even write your own logic entirely using the `StepAdvanceCondition` trait.
 
 <div class="warning">
