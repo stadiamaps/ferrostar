@@ -38,7 +38,7 @@ serde_json = { version = "1.0.145", default-features = false }
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
 thiserror = "2.0.12"
 uniffi = { workspace = true, optional = true }
-uuid = { version = "1.17.0", features = ["v4", "serde"] }
+uuid = { version = "1.18.1", features = ["v4", "serde"] }
 getrandom = { version = "0.3.3", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
