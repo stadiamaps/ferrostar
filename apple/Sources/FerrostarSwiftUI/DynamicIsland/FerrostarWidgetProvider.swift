@@ -15,7 +15,11 @@ public class FerrostarWidgetProvider: WidgetProviding {
         // No def
     }
 
-    public func update(visualInstruction: VisualInstruction, tripProgress: TripProgress) {
+    public func update(
+        visualInstruction: VisualInstruction,
+        spokenInstruction: SpokenInstruction?,
+        tripProgress: TripProgress
+    ) {
         let currentDistance = tripProgress.distanceToNextManeuver
 
         // Check if we should update based on distance threshold
@@ -24,7 +28,11 @@ public class FerrostarWidgetProvider: WidgetProviding {
 
             Task {
                 do {
-                    try await requestOrUpdate(visualInstruction: visualInstruction, tripProgress: tripProgress)
+                    try await requestOrUpdate(
+                        visualInstruction: visualInstruction,
+                        spokenInstruction: spokenInstruction,
+                        tripProgress: tripProgress
+                    )
                 } catch {
                     logger.error("Failed to update Dynamic Island activity: \(error.localizedDescription)")
                 }
@@ -41,23 +49,32 @@ public class FerrostarWidgetProvider: WidgetProviding {
 
     private func requestOrUpdate(
         visualInstruction: VisualInstruction,
+        spokenInstruction: SpokenInstruction?,
         tripProgress: TripProgress
     ) async throws {
         let newState = TripActivityAttributes.ContentState(
             instruction: visualInstruction,
             distanceToNextManeuver: tripProgress.distanceToNextManeuver
         )
+        let content = ActivityContent(state: newState, staleDate: nil)
 
         guard let activity else {
-            activity = try Activity.request(
-                attributes: .init(),
-                content: .init(state: newState, staleDate: nil)
-            )
+            activity = try Activity.request(attributes: .init(), content: content)
             return
         }
 
-        // The activity already exists.
-        await activity.update(using: newState)
+        if let spokenInstruction {
+            await activity.update(
+                content,
+                alertConfiguration: AlertConfiguration(
+                    title: "",
+                    body: "\(spokenInstruction.text)",
+                    sound: .default
+                )
+            )
+        } else {
+            await activity.update(content)
+        }
     }
 
     private func shouldUpdate(currentDistance: CLLocationDistance) -> Bool {

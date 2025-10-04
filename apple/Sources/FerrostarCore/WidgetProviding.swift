@@ -7,8 +7,10 @@ public protocol WidgetProviding {
     ///
     /// - Parameters:
     ///   - visualInstruction: The latest visual instruction provided by the navigation state.
+    ///   - spokenInstruction: An optional spoken instruction if there is one. This will trigger an alert to wake the
+    /// screen on the update.
     ///   - tripProgress: The latest trip progress provided by the navigation state.
-    func update(visualInstruction: VisualInstruction, tripProgress: TripProgress)
+    func update(visualInstruction: VisualInstruction, spokenInstruction: SpokenInstruction?, tripProgress: TripProgress)
 
     /// Terminate the session.
     func terminate()
