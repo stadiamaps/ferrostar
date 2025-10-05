@@ -77,7 +77,7 @@ public struct CarPlayNavigationView: View {
                         // Does nothing on CarPlay
                     } : .showRecenter {
                         // Does nothing on CarPlay
-                    },
+                    }
                 )
                 .navigationViewInnerGrid {
                     gridConfig.getTopCenter()
