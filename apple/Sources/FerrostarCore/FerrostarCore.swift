@@ -375,7 +375,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// - Parameter userLocation: The user's current location.
     public func resumeNavigation(
-        userLocation: UserLocation? = nil,
+        userLocation: UserLocation? = nil
     ) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
