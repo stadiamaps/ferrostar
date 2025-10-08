@@ -157,7 +157,7 @@ impl From<SerializableStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
             } => Arc::new(DistanceFromStepCondition {
                 distance,
                 minimum_horizontal_accuracy,
-                calculate_while_off_route
+                calculate_while_off_route,
             }),
             SerializableStepAdvanceCondition::DistanceEntryExit {
                 minimum_horizontal_accuracy,

@@ -530,7 +530,9 @@ mod tests {
             user_location,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
-            RouteDeviation::OffRoute { deviation_from_route_line: 10.0 },
+            RouteDeviation::OffRoute {
+                deviation_from_route_line: 10.0,
+            },
         );
 
         assert!(
@@ -557,7 +559,9 @@ mod tests {
             user_location,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
-            RouteDeviation::OffRoute { deviation_from_route_line: 10.0 },
+            RouteDeviation::OffRoute {
+                deviation_from_route_line: 10.0,
+            },
         );
 
         assert!(
