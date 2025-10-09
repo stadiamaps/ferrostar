@@ -1,7 +1,7 @@
 import FerrostarCoreFFI
 import Foundation
 
-public class UserDefaultsNavigationCache: NavigationCache {
+public final class UserDefaultsNavigationCache: NavigationCache, @unchecked Sendable {
     private let userDefaults: UserDefaults
     private let key: String
 

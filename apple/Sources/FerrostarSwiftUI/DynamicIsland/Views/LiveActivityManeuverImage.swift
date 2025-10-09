@@ -23,3 +23,15 @@ struct LiveActivityManeuverImage: View {
         )
     )
 }
+
+#Preview("minimal") {
+    VStack {
+        LiveActivityManeuverImage(
+            state: .init(
+                instruction: VisualInstructionFactory().build(),
+                distanceToNextManeuver: 123
+            )
+        )
+        .frame(width: 24, height: 24)
+    }
+}

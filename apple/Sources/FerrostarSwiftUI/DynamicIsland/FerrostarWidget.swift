@@ -52,9 +52,7 @@ public struct FerrostarWidget: Widget {
 
                 // TODO: End Navigation if Arrived
 //                DynamicIslandExpandedRegion(.bottom) {
-//                    InstructionsView(
-//                        visualInstruction: context.state.instruction
-//                    )
+//
 //                }
             } compactLeading: {
                 LiveActivityManeuverImage(state: context.state)
@@ -63,13 +61,10 @@ public struct FerrostarWidget: Widget {
                     Text(verbatim: distance)
                 }
             } minimal: {
-                VStack {
-                    LiveActivityManeuverImage(state: context.state)
-
-                    if let distance = distanceFormatter.string(for: context.state.distanceToNextManeuver) {
-                        Text(verbatim: distance)
-                    }
-                }
+                LiveActivityMinimalView(
+                    state: context.state,
+                    distanceFormatter: distanceFormatter
+                )
             }
             .keylineTint(.blue)
         }
