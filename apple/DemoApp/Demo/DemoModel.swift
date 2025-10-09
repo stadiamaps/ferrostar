@@ -34,7 +34,7 @@ private extension FerrostarCore {
                 minimumHorizontalAccuracy: 32
             ),
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(
-                distance: 30,
+                distance: 10,
                 minimumHorizontalAccuracy: 32
             ),
             routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
