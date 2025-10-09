@@ -257,7 +257,12 @@ impl Navigator for NavigationController {
 
                 if should_advance {
                     // Advance to the next step
-                    return self.advance_to_next_step(intermediate_nav_state);
+                    let updated_state = self.advance_to_next_step(intermediate_nav_state);
+                    // TODO: Special handling for the final step?
+                    // TODO: Manual step advance may not expect this "speed running" behavior!
+                    // TODO: Ensure that we are careful about calling this when the user is off the route. Probably obsoleted by Jacob's PR
+                    
+                    return self.update_user_location(location, updated_state);
                 }
 
                 intermediate_nav_state
