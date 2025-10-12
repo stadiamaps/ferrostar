@@ -16158,7 +16158,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.372233
@@ -16259,7 +16263,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.372156
@@ -16360,7 +16368,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.372079
@@ -16461,7 +16473,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.372001
@@ -16562,7 +16578,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.371924
@@ -16663,7 +16683,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.371846
@@ -16764,7 +16788,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.371762
@@ -16865,7 +16893,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.371677
@@ -16966,7 +16998,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.371593
@@ -17023,7 +17059,11 @@ events:
                 road_name: Cascade Highway
                 spoken_instructions: []
                 visual_instructions: []
-            remaining_waypoints: []
+            remaining_waypoints:
+              - coordinate:
+                  lat: 45.371508
+                  lng: -122.585901
+                kind: Break
             snapped_user_location:
               coordinates:
                 lat: 45.371508

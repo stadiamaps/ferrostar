@@ -8671,8 +8671,19 @@ public enum WaypointAdvanceMode {
     
     /**
      * Advance when the waypoint is within a certain range of meters from the user's location.
+     *
+     * This condition is potentially more rigorous, requiring the user to actually visit within
+     * a range of every waypoint regardless of step advance.
      */
     case waypointWithinRange(Double
+    )
+    /**
+     * Advance when a waypoint is within a certain range of meters of any point on the advancing step.
+     *
+     * This condition considers the step being advanced, not the user's location. As a result,
+     * it can recover when your step advance conditions allow the user to skip forward on the route.
+     */
+    case waypointAlongAdvancingStep(Double
     )
 }
 
@@ -8694,6 +8705,9 @@ public struct FfiConverterTypeWaypointAdvanceMode: FfiConverterRustBuffer {
         case 1: return .waypointWithinRange(try FfiConverterDouble.read(from: &buf)
         )
         
+        case 2: return .waypointAlongAdvancingStep(try FfiConverterDouble.read(from: &buf)
+        )
+        
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -8704,6 +8718,11 @@ public struct FfiConverterTypeWaypointAdvanceMode: FfiConverterRustBuffer {
         
         case let .waypointWithinRange(v1):
             writeInt(&buf, Int32(1))
+            FfiConverterDouble.write(v1, into: &buf)
+            
+        
+        case let .waypointAlongAdvancingStep(v1):
+            writeInt(&buf, Int32(2))
             FfiConverterDouble.write(v1, into: &buf)
             
         }

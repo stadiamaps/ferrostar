@@ -1,6 +1,6 @@
 ---
 source: ferrostar/src/navigation_controller/mod.rs
-expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfIntersecting),\nArc::new(DistanceEntryAndExitCondition::new(0, 0, 0)))"
+expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>>()"
 ---
 - Navigating:
     current_step_geometry_index: 0
@@ -15309,7 +15309,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "82.9611735228"
       distanceRemaining: "82.9611735228"
@@ -15402,7 +15406,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "74.1490864533"
       distanceRemaining: "74.1490864533"
@@ -15495,7 +15503,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "65.3323936046"
       distanceRemaining: "65.3323936046"
@@ -15588,7 +15600,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "56.3779245157"
       distanceRemaining: "56.3779245157"
@@ -15681,7 +15697,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "47.5612316665"
       distanceRemaining: "47.5612316665"
@@ -15774,7 +15794,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "38.6426041290"
       distanceRemaining: "38.6426041290"
@@ -15867,7 +15891,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "29.0244702987"
       distanceRemaining: "29.0244702987"
@@ -15960,7 +15988,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "19.3038707696"
       distanceRemaining: "19.3038707696"
@@ -16053,7 +16085,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "9.7205995291"
       distanceRemaining: "9.7205995291"
@@ -16102,7 +16138,11 @@ expression: "test_full_route_state_snapshot(get_test_route(TestRoute::SelfInters
         spoken_instructions: []
         annotations: ~
         incidents: []
-    remaining_waypoints: []
+    remaining_waypoints:
+      - coordinate:
+          lat: 45.371508
+          lng: -122.585901
+        kind: Break
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "0.0000000000"

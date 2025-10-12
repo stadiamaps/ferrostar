@@ -2,6 +2,7 @@
 
 pub mod models;
 pub mod step_advance;
+pub mod waypoint_advance;
 
 #[cfg(test)]
 pub(crate) mod test_helpers;
@@ -18,16 +19,12 @@ use crate::{
     deviation_detection::RouteDeviation,
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
+    navigation_controller::waypoint_advance::{WaypointAdvanceChecker, WaypointCheckEvent},
     navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
 };
 use chrono::Utc;
-use geo::{
-    algorithm::{Distance, Haversine},
-    geometry::{LineString, Point},
-};
-use models::{
-    NavState, NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode,
-};
+use geo::geometry::LineString;
+use models::{NavState, NavigationControllerConfig, StepAdvanceStatus, TripState};
 use std::clone::Clone;
 use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
@@ -179,6 +176,15 @@ impl Navigator for NavigationController {
                 let update = advance_step(remaining_steps);
                 match update {
                     StepAdvanceStatus::Advanced { step: current_step } => {
+                        // Trim the remaining waypoints if needed.
+                        let remaining_waypoints = self
+                            .has_new_waypoints_from_advance(
+                                &state.trip_state(),
+                                &current_step,
+                                WaypointCheckEvent::LocationUpdated,
+                            )
+                            .unwrap_or(remaining_waypoints.clone());
+
                         // Apply the updates
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
@@ -224,13 +230,13 @@ impl Navigator for NavigationController {
                 };
 
                 // Trim the remaining waypoints if needed.
-                let remaining_waypoints = if self.should_advance_waypoint(&state.trip_state()) {
-                    let mut remaining_waypoints = remaining_waypoints.clone();
-                    remaining_waypoints.remove(0);
-                    remaining_waypoints
-                } else {
-                    remaining_waypoints.clone()
-                };
+                let remaining_waypoints = self
+                    .has_new_waypoints_from_advance(
+                        &state.trip_state(),
+                        &current_step,
+                        WaypointCheckEvent::LocationUpdated,
+                    )
+                    .unwrap_or(remaining_waypoints.clone());
 
                 let deviation = self.config.route_deviation_tracking.check_route_deviation(
                     location,
@@ -390,27 +396,17 @@ impl NavigationController {
         (current_step_geometry_index, snapped_with_course)
     }
 
-    /// Determines if the navigation controller should advance to the next waypoint.
-    fn should_advance_waypoint(&self, state: &TripState) -> bool {
-        match state {
-            TripState::Navigating {
-                snapped_user_location,
-                ref remaining_waypoints,
-                ..
-            } => {
-                // Update remaining waypoints
-                remaining_waypoints.first().is_some_and(|waypoint| {
-                    let current_location: Point = snapped_user_location.coordinates.into();
-                    let next_waypoint: Point = waypoint.coordinate.into();
-                    match self.config.waypoint_advance {
-                        WaypointAdvanceMode::WaypointWithinRange(range) => {
-                            Haversine.distance(current_location, next_waypoint) < range
-                        }
-                    }
-                })
-            }
-            TripState::Idle { .. } | TripState::Complete { .. } => false,
-        }
+    /// Process waypoint advance us
+    fn has_new_waypoints_from_advance(
+        &self,
+        state: &TripState,
+        current_step: &RouteStep,
+        event: WaypointCheckEvent,
+    ) -> Option<Vec<Waypoint>> {
+        let checker = WaypointAdvanceChecker {
+            mode: self.config.waypoint_advance,
+        };
+        checker.has_new_waypoints(state, current_step, event)
     }
 }
 
