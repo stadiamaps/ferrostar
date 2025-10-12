@@ -1,7 +1,7 @@
 use crate::models::RouteStep;
 use crate::navigation_controller::models::WaypointAdvanceMode;
 use crate::navigation_controller::TripState;
-use crate::Waypoint;
+use crate::navigation_controller::Waypoint;
 use geo::{Closest, Distance, Haversine, HaversineClosestPoint, Point};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
