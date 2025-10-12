@@ -64,17 +64,22 @@ public class FerrostarWidgetProvider: WidgetProviding {
         }
 
         if let spokenInstruction {
-            await activity.update(
-                content,
-                alertConfiguration: AlertConfiguration(
-                    title: "",
-                    body: "\(spokenInstruction.text)",
-                    sound: .default
-                )
-            )
-        } else {
-            await activity.update(content)
+            logger.debug("Alert w/ \(spokenInstruction.text)")
         }
+
+        // TODO: Evaluate Apple Maps (others) to determine the best strategy here.
+//        if let spokenInstruction {
+//            await activity.update(
+//                content,
+//                alertConfiguration: AlertConfiguration(
+//                    title: "",
+//                    body: "\(spokenInstruction.text)",
+//                    sound: .named("None")
+//                )
+//            )
+//        } else {
+        await activity.update(content)
+//        }
     }
 
     private func shouldUpdate(currentDistance: CLLocationDistance) -> Bool {
