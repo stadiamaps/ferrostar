@@ -116,7 +116,12 @@ mod tests {
     };
     use geo::{coord, Destination};
     use proptest::prelude::*;
+
+    #[cfg(all(test, feature = "std", not(feature = "web-time")))]
     use std::time::SystemTime;
+
+    #[cfg(all(test, feature = "web-time"))]
+    use web_time::SystemTime;
 
     fn create_user_location(lng: f64, lat: f64) -> crate::models::UserLocation {
         crate::models::UserLocation {
