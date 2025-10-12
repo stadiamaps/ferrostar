@@ -15,6 +15,7 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
+    deviation_detection::RouteDeviation,
     models::{Route, RouteStep, UserLocation, Waypoint},
     navigation_controller::models::TripSummary,
     navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
@@ -171,6 +172,7 @@ impl Navigator for NavigationController {
                 user_location,
                 ref remaining_steps,
                 ref remaining_waypoints,
+                ref deviation,
                 summary,
                 ..
             } => {
@@ -189,6 +191,7 @@ impl Navigator for NavigationController {
                             &current_step,
                             &remaining_steps,
                             &remaining_waypoints,
+                            &deviation,
                         );
 
                         NavState::new(trip_state, state.step_advance_condition())
@@ -229,17 +232,29 @@ impl Navigator for NavigationController {
                     remaining_waypoints.clone()
                 };
 
+                let deviation = self.config.route_deviation_tracking.check_route_deviation(
+                    location,
+                    &self.route,
+                    current_step,
+                );
+
                 // Get the step advance condition result.
                 let next_step = remaining_steps.get(1).cloned();
                 let step_advance_result = if remaining_steps.len() <= 2 {
                     self.config
                         .arrival_step_advance_condition
-                        .should_advance_step(location, current_step.clone(), next_step)
+                        .should_advance_step(
+                            location,
+                            current_step.clone(),
+                            next_step,
+                            deviation.clone(),
+                        )
                 } else {
                     state.step_advance_condition().should_advance_step(
                         location,
                         current_step.clone(),
                         next_step,
+                        deviation.clone(),
                     )
                 };
 
@@ -251,6 +266,7 @@ impl Navigator for NavigationController {
                         current_step,
                         &remaining_steps,
                         &remaining_waypoints,
+                        &deviation,
                     ),
                     step_advance_result.next_iteration,
                 );
@@ -289,6 +305,7 @@ impl NavigationController {
         current_step: &RouteStep,
         remaining_steps: &Vec<RouteStep>,
         remaining_waypoints: &Vec<Waypoint>,
+        deviation: &RouteDeviation,
     ) -> TripState {
         match trip_state {
             TripState::Navigating {
@@ -301,12 +318,6 @@ impl NavigationController {
                 let current_step_linestring = current_step.get_linestring();
                 let (current_step_geometry_index, snapped_user_location) =
                     self.snap_user_to_line(*location, &current_step_linestring);
-
-                let deviation = self.config.route_deviation_tracking.check_route_deviation(
-                    *location,
-                    &self.route,
-                    current_step,
-                );
 
                 // Update trip summary with accumulated distance
                 let updated_summary = previous_summary.update(
@@ -339,7 +350,7 @@ impl NavigationController {
                     remaining_waypoints: remaining_waypoints.clone(),
                     progress,
                     summary: updated_summary,
-                    deviation,
+                    deviation: deviation.clone(),
                     visual_instruction,
                     spoken_instruction,
                     annotation_json,
