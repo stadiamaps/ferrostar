@@ -30,14 +30,14 @@ private extension FerrostarCore {
             waypointAdvance: .waypointWithinRange(100.0),
             stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(
                 distanceToEndOfStep: 30,
-                distanceAfterEndOfStep: 2,
+                distanceAfterEndOfStep: 5,
                 minimumHorizontalAccuracy: 32
             ),
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(
                 distance: 10,
                 minimumHorizontalAccuracy: 32
             ),
-            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
+            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 15, maxAcceptableDeviation: 50),
             snappedLocationCourseFiltering: .snapToRoute
         )
 

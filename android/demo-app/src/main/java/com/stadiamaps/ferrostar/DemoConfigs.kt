@@ -12,7 +12,7 @@ fun NavigationControllerConfig.Companion.demoConfig(): NavigationControllerConfi
   return NavigationControllerConfig(
       WaypointAdvanceMode.WaypointWithinRange(100.0),
       stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
-      stepAdvanceDistanceToEndOfStep(30u, 32u),
+      stepAdvanceDistanceToEndOfStep(10u, 32u),
       RouteDeviationTracking.StaticThreshold(15U, 50.0),
       CourseFiltering.SNAP_TO_ROUTE)
 }
