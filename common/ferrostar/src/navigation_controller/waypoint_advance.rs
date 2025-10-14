@@ -113,10 +113,7 @@ impl WaypointAdvanceChecker {
         linestring: &geo::LineString,
         range: f64,
     ) -> bool {
-        if let Some(diff) = deviation_from_line(waypoint, linestring) {
-            diff <= range
-        } else {
-            false
+        deviation_from_line(waypoint, linestring).is_some_and(|diff| diff <= range)
         }
     }
 }
