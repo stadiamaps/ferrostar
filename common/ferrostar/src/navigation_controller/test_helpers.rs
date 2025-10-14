@@ -285,7 +285,6 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
 /// # Parameters
 ///
 /// * `user_location` - The user's current location
-/// * `current_step` - The current route step being navigated
 /// * `remaining_waypoints` - The remaining waypoints in the trip
 pub fn get_navigating_trip_state(
     user_location: UserLocation,

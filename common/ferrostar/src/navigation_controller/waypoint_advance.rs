@@ -27,7 +27,6 @@ impl WaypointAdvanceChecker {
     /// # Parameters
     ///
     /// * `state` - The current trip state.
-    /// * `current_step` - The current route step being navigated.
     /// * `event` - The event that triggered the waypoint check.
     pub fn get_new_waypoints(
         &self,
