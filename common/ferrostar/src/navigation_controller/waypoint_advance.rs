@@ -41,61 +41,59 @@ impl WaypointAdvanceChecker {
             } => {
                 match self.mode {
                     WaypointAdvanceMode::WaypointWithinRange(range) => {
-                        if event == WaypointCheckEvent::LocationUpdated {
-                            // Only advance waypoints if there are more than 1 remaining
-                            // (never remove the final destination waypoint)
-                            if remaining_waypoints.len() <= 1 {
-                                return WaypointAdvanceResult::Unchanged;
-                            }
-
-                            remaining_waypoints.first().map_or(
-                                WaypointAdvanceResult::Unchanged,
-                                |waypoint| {
-                                    let current_location: Point = user_location.coordinates.into();
-                                    let next_waypoint: Point = waypoint.coordinate.into();
-                                    let distance =
-                                        Haversine.distance(current_location, next_waypoint);
-                                    if distance < range {
-                                        // Slice the remaining waypoints starting from the second element
-                                        WaypointAdvanceResult::Changed(
-                                            remaining_waypoints[1..].to_vec(),
-                                        )
-                                    } else {
-                                        WaypointAdvanceResult::Unchanged
-                                    }
-                                },
-                            )
-                        } else {
-                            WaypointAdvanceResult::Unchanged
+                        if event != WaypointCheckEvent::LocationUpdated {
+                            return WaypointAdvanceResult::Unchanged;
                         }
+
+                        // Only advance waypoints if there are more than 1 remaining
+                        // (never remove the final destination waypoint)
+                        if remaining_waypoints.len() <= 1 {
+                            return WaypointAdvanceResult::Unchanged;
+                        }
+
+                        remaining_waypoints.first().map_or(
+                            WaypointAdvanceResult::Unchanged,
+                            |waypoint| {
+                                let current_location: Point = user_location.coordinates.into();
+                                let next_waypoint: Point = waypoint.coordinate.into();
+                                let distance = Haversine.distance(current_location, next_waypoint);
+                                if distance < range {
+                                    // Slice the remaining waypoints starting from the second element
+                                    WaypointAdvanceResult::Changed(
+                                        remaining_waypoints[1..].to_vec(),
+                                    )
+                                } else {
+                                    WaypointAdvanceResult::Unchanged
+                                }
+                            },
+                        )
                     }
                     WaypointAdvanceMode::WaypointAlongAdvancingStep(range) => {
-                        if let WaypointCheckEvent::StepAdvanced(current_step) = event {
-                            let step_linestring = current_step.get_linestring();
-                            let mut filtered_waypoints: Vec<Waypoint> = remaining_waypoints
-                                .iter()
-                                .filter(|waypoint| {
-                                    let waypoint_point: Point = waypoint.coordinate.into();
-                                    !self.is_waypoint_within_range_of_linestring(
-                                        &waypoint_point,
-                                        &step_linestring,
-                                        range,
-                                    )
-                                })
-                                .cloned()
-                                .collect();
+                        let WaypointCheckEvent::StepAdvanced(current_step) = event else {
+                            return WaypointAdvanceResult::Unchanged;
+                        };
 
-                            // Never remove the last waypoint (destination)
-                            if filtered_waypoints.is_empty() && !remaining_waypoints.is_empty() {
-                                filtered_waypoints
-                                    .push(remaining_waypoints.last().unwrap().clone());
-                            }
+                        let step_linestring = current_step.get_linestring();
+                        let mut filtered_waypoints: Vec<Waypoint> = remaining_waypoints
+                            .iter()
+                            .filter(|waypoint| {
+                                let waypoint_point: Point = waypoint.coordinate.into();
+                                let is_beyond_range =
+                                    deviation_from_line(&waypoint_point, &step_linestring)
+                                        .is_some_and(|diff| diff > range);
+                                // Only keep waypoints that are beyond the range
+                                is_beyond_range
+                            })
+                            .cloned()
+                            .collect();
 
-                            if filtered_waypoints.len() != remaining_waypoints.len() {
-                                WaypointAdvanceResult::Changed(filtered_waypoints)
-                            } else {
-                                WaypointAdvanceResult::Unchanged
-                            }
+                        // Never remove the last waypoint (destination)
+                        if filtered_waypoints.is_empty() && !remaining_waypoints.is_empty() {
+                            filtered_waypoints.push(remaining_waypoints.last().unwrap().clone());
+                        }
+
+                        if filtered_waypoints.len() != remaining_waypoints.len() {
+                            WaypointAdvanceResult::Changed(filtered_waypoints)
                         } else {
                             WaypointAdvanceResult::Unchanged
                         }
@@ -103,17 +101,6 @@ impl WaypointAdvanceChecker {
                 }
             }
             TripState::Complete { .. } | TripState::Idle { .. } => WaypointAdvanceResult::Unchanged,
-        }
-    }
-
-    /// Helper function to check if a waypoint is within range of any point on a linestring
-    pub(crate) fn is_waypoint_within_range_of_linestring(
-        &self,
-        waypoint: &Point,
-        linestring: &geo::LineString,
-        range: f64,
-    ) -> bool {
-        deviation_from_line(waypoint, linestring).is_some_and(|diff| diff <= range)
         }
     }
 }
