@@ -1,13 +1,20 @@
+use crate::algorithms::deviation_from_line;
 use crate::models::RouteStep;
 use crate::navigation_controller::models::WaypointAdvanceMode;
 use crate::navigation_controller::TripState;
 use crate::navigation_controller::Waypoint;
-use geo::{Closest, Distance, Haversine, HaversineClosestPoint, Point};
+use geo::{Distance, Haversine, Point};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub(crate) enum WaypointCheckEvent {
     LocationUpdated,
-    StepAdvanced,
+    StepAdvanced(RouteStep),
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub(crate) enum WaypointAdvanceResult {
+    Unchanged,
+    Changed(Vec<Waypoint>),
 }
 
 pub(crate) struct WaypointAdvanceChecker {
@@ -22,12 +29,11 @@ impl WaypointAdvanceChecker {
     /// * `state` - The current trip state.
     /// * `current_step` - The current route step being navigated.
     /// * `event` - The event that triggered the waypoint check.
-    pub fn has_new_waypoints(
+    pub fn get_new_waypoints(
         &self,
         state: &TripState,
-        current_step: &RouteStep,
         event: WaypointCheckEvent,
-    ) -> Option<Vec<Waypoint>> {
+    ) -> WaypointAdvanceResult {
         match state {
             TripState::Navigating {
                 ref user_location,
@@ -36,26 +42,36 @@ impl WaypointAdvanceChecker {
             } => {
                 match self.mode {
                     WaypointAdvanceMode::WaypointWithinRange(range) => {
-                        // Only advance waypoints if there are more than 1 remaining
-                        // (never remove the final destination waypoint)
-                        if remaining_waypoints.len() <= 1 {
-                            return None;
-                        }
-
-                        remaining_waypoints.first().and_then(|waypoint| {
-                            let current_location: Point = user_location.coordinates.into();
-                            let next_waypoint: Point = waypoint.coordinate.into();
-                            let distance = Haversine.distance(current_location, next_waypoint);
-                            if distance < range {
-                                // Slice the remaining waypoints starting from the second element
-                                Some(remaining_waypoints[1..].to_vec())
-                            } else {
-                                None
+                        if event == WaypointCheckEvent::LocationUpdated {
+                            // Only advance waypoints if there are more than 1 remaining
+                            // (never remove the final destination waypoint)
+                            if remaining_waypoints.len() <= 1 {
+                                return WaypointAdvanceResult::Unchanged;
                             }
-                        })
+
+                            remaining_waypoints.first().map_or(
+                                WaypointAdvanceResult::Unchanged,
+                                |waypoint| {
+                                    let current_location: Point = user_location.coordinates.into();
+                                    let next_waypoint: Point = waypoint.coordinate.into();
+                                    let distance =
+                                        Haversine.distance(current_location, next_waypoint);
+                                    if distance < range {
+                                        // Slice the remaining waypoints starting from the second element
+                                        WaypointAdvanceResult::Changed(
+                                            remaining_waypoints[1..].to_vec(),
+                                        )
+                                    } else {
+                                        WaypointAdvanceResult::Unchanged
+                                    }
+                                },
+                            )
+                        } else {
+                            WaypointAdvanceResult::Unchanged
+                        }
                     }
                     WaypointAdvanceMode::WaypointAlongAdvancingStep(range) => {
-                        if event == WaypointCheckEvent::StepAdvanced {
+                        if let WaypointCheckEvent::StepAdvanced(current_step) = event {
                             let step_linestring = current_step.get_linestring();
                             let mut filtered_waypoints: Vec<Waypoint> = remaining_waypoints
                                 .iter()
@@ -77,17 +93,17 @@ impl WaypointAdvanceChecker {
                             }
 
                             if filtered_waypoints.len() != remaining_waypoints.len() {
-                                Some(filtered_waypoints)
+                                WaypointAdvanceResult::Changed(filtered_waypoints)
                             } else {
-                                None
+                                WaypointAdvanceResult::Unchanged
                             }
                         } else {
-                            None
+                            WaypointAdvanceResult::Unchanged
                         }
                     }
                 }
             }
-            TripState::Complete { .. } | TripState::Idle { .. } => None,
+            TripState::Complete { .. } | TripState::Idle { .. } => WaypointAdvanceResult::Unchanged,
         }
     }
 
@@ -98,11 +114,10 @@ impl WaypointAdvanceChecker {
         linestring: &geo::LineString,
         range: f64,
     ) -> bool {
-        match linestring.haversine_closest_point(waypoint) {
-            Closest::Intersection(closest_point) | Closest::SinglePoint(closest_point) => {
-                Haversine.distance(*waypoint, closest_point) < range
-            }
-            Closest::Indeterminate => false,
+        if let Some(diff) = deviation_from_line(waypoint, linestring) {
+            diff <= range
+        } else {
+            false
         }
     }
 }
@@ -171,7 +186,7 @@ mod tests {
         #[test]
         fn test_waypoint_within_range_always_advances(
             user_lng in -180.0..180.0,
-            user_lat in -85.0..85.0,
+            user_lat in -90.0..90.0,
             range_meters in 200.0..1000.0,
             waypoint_range_meters in 10.0..199.9,
             num_waypoints in 3usize..10,
@@ -190,27 +205,23 @@ mod tests {
                 num_waypoints,
             );
 
-            // This waypoint mode doesn't care about the current step.
-            let current_step = gen_route_step_with_coords(vec![
-                coord! { x: user_lng, y: user_lat },
-                coord! { x: user_lng + 0.01, y: user_lat + 0.01 },
-            ]);
-
             let state = get_navigating_trip_state(
                 user_location,
-                current_step.clone(),
                 waypoints.clone(),
             );
 
-            let result = checker.has_new_waypoints(
+            let result = checker.get_new_waypoints(
                 &state,
-                &current_step,
                 WaypointCheckEvent::LocationUpdated
             );
 
             // Should always advance the first waypoint since offsets are small and range is large
-            prop_assert!(result.is_some());
-            let new_waypoints = result.unwrap();
+            let new_waypoints = if let WaypointAdvanceResult::Changed(waypoints) = result {
+                waypoints
+            } else {
+                prop_assert!(false, "Expected WaypointAdvanceResult::Changed, got {:?}", result);
+                unreachable!()
+            };
             prop_assert_eq!(new_waypoints.len(), waypoints.len() - 1);
             // Verify it's the correct remaining waypoints
             for (i, waypoint) in new_waypoints.iter().enumerate() {
@@ -221,10 +232,10 @@ mod tests {
         /// Test WaypointWithinRange mode out of range, don't advance
         #[test]
         fn test_waypoint_within_range_never_advances(
-            user_lng in -179.0..179.0,
-            user_lat in -84.0..84.0,
+            user_lng in -180.0..180.0,
+            user_lat in -90.0..90.0,
             range_meters in 10.0..100.0,
-            waypoint_range_meters in 101.0..5000.0,
+            diff in 0.1..5000.0,
             num_waypoints in 2usize..5,
         ) {
             let checker = WaypointAdvanceChecker {
@@ -237,29 +248,22 @@ mod tests {
             let waypoints = create_waypoints_at_distance(
                 user_lng,
                 user_lat,
-                waypoint_range_meters,
+                range_meters + diff,
                 num_waypoints,
             );
 
-            let current_step = gen_route_step_with_coords(vec![
-                coord! { x: user_lng, y: user_lat },
-                coord! { x: user_lng + 0.01, y: user_lat + 0.01 },
-            ]);
-
             let state = get_navigating_trip_state(
                 user_location,
-                current_step.clone(),
                 waypoints,
             );
 
-            let result = checker.has_new_waypoints(
+            let result = checker.get_new_waypoints(
                 &state,
-                &current_step,
                 WaypointCheckEvent::LocationUpdated
             );
 
             // Should never advance waypoints when they're guaranteed to be far away
-            prop_assert!(result.is_none());
+            prop_assert!(matches!(result, WaypointAdvanceResult::Unchanged));
         }
 
         /// Test WaypointAlongAdvancingStep mode within range of step.
@@ -300,19 +304,21 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
-                current_step.clone(),
                 waypoints.clone(),
             );
 
-            let result = checker.has_new_waypoints(
+            let result = checker.get_new_waypoints(
                 &state,
-                &current_step,
-                WaypointCheckEvent::StepAdvanced
+                WaypointCheckEvent::StepAdvanced(current_step.clone())
             );
 
             // Should always advance since intermediate waypoints are very close to step line
-            prop_assert!(result.is_some());
-            let new_waypoints = result.unwrap();
+            let new_waypoints = if let WaypointAdvanceResult::Changed(waypoints) = result {
+                waypoints
+            } else {
+                prop_assert!(false, "Expected WaypointAdvanceResult::Changed, got {:?}", result);
+                unreachable!()
+            };
 
             // Should only have the destination waypoint remaining
             prop_assert_eq!(new_waypoints.len(), 1);
@@ -322,12 +328,10 @@ mod tests {
         /// Test WaypointAlongAdvancingStep mode out of range of step, should never advance
         #[test]
         fn test_waypoint_along_step_never_advances(
-            step_start_lng in -179.0..179.0,
-            step_start_lat in -84.0..84.0,
-            step_end_lng in -179.0..179.0,
-            step_end_lat in -84.0..84.0,
-            range_meters in 10.0..100.0,
-            waypoint_range_meters in 101.0..10000.0, // Distance from step line in meters (guaranteed out of range)
+            step_start_lng in -180.0..180.0,
+            step_start_lat in -90.0..90.0,
+            range_meters in 0.1..1000.0,
+            diff_meters in 112.0..10000.0, // Has to exceed the length of the step (~111 meters).
             num_waypoints in 2usize..5,
         ) {
             let checker = WaypointAdvanceChecker {
@@ -336,46 +340,46 @@ mod tests {
 
             let user_location = create_user_location(step_start_lng, step_start_lat);
 
-            // Create a step with a line
+            let step_end_lng = step_start_lng + 0.001; // ~111 meters east
+            let step_end_lat = step_start_lat;
+
             let current_step = gen_route_step_with_coords(vec![
                 coord! { x: step_start_lng, y: step_start_lat },
                 coord! { x: step_end_lng, y: step_end_lat },
             ]);
 
-            // Create waypoints far from the step line (guaranteed out of range)
             let mid_lng = (step_start_lng + step_end_lng) / 2.0;
             let mid_lat = (step_start_lat + step_end_lat) / 2.0;
 
+            // Create waypoints outside of the range by diff_meters
             let waypoints = create_waypoints_at_distance(
                 mid_lng,
                 mid_lat,
-                waypoint_range_meters,
+                range_meters + diff_meters,
                 num_waypoints,
             );
 
             let state = get_navigating_trip_state(
                 user_location,
-                current_step.clone(),
                 waypoints,
             );
 
-            let result = checker.has_new_waypoints(
+            let result = checker.get_new_waypoints(
                 &state,
-                &current_step,
-                WaypointCheckEvent::StepAdvanced
+                WaypointCheckEvent::StepAdvanced(current_step)
             );
 
             // Should never advance waypoints when they're guaranteed to be far from step
-            prop_assert!(result.is_none());
+            prop_assert!(matches!(result, WaypointAdvanceResult::Unchanged));
         }
 
         /// Test that single waypoints (destinations) are never advanced in WaypointWithinRange mode
         #[test]
         fn test_single_waypoint_never_advanced_within_range(
             user_lng in -180.0..180.0,
-            user_lat in -85.0..85.0,
-            range_meters in 5.0..50.0,
-            waypoint_range_meters in 5.0..50.0, // Match to range.
+            user_lat in -90.0..90.0,
+            range_meters in 0.1..1000.0,
+            diff_meters in 0.0..1000.0, // diff can be within or outside of range.
         ) {
             let checker = WaypointAdvanceChecker {
                 mode: WaypointAdvanceMode::WaypointWithinRange(range_meters),
@@ -383,43 +387,32 @@ mod tests {
 
             let user_location = create_user_location(user_lng, user_lat);
 
-            // Create single waypoint close to user (within range)
-            let waypoints = create_waypoints_at_distance(
-                user_lng,
-                user_lat,
-                waypoint_range_meters,
-                1,
-            );
-
-            let current_step = gen_route_step_with_coords(vec![
-                coord! { x: user_lng, y: user_lat },
-                coord! { x: user_lng + 0.01, y: user_lat + 0.01 },
-            ]);
+            // Create waypoints on the user's location or any distance from it.
+            let waypoints = create_waypoints_at_distance(user_lng, user_lat, diff_meters, 1);
 
             let state = get_navigating_trip_state(
                 user_location,
-                current_step.clone(),
                 waypoints.clone(),
             );
 
-            let result = checker.has_new_waypoints(
+            let result = checker.get_new_waypoints(
                 &state,
-                &current_step,
                 WaypointCheckEvent::LocationUpdated
             );
 
             // Should NEVER advance a single waypoint (destination), even if within range
-            prop_assert!(result.is_none());
+            prop_assert!(result == WaypointAdvanceResult::Unchanged);
         }
 
         /// Test that single waypoints (destinations) are never advanced in WaypointAlongAdvancingStep mode
         #[test]
         fn test_single_waypoint_never_advanced_along_step(
             step_start_lng in -180.0..180.0,
-            step_start_lat in -85.0..85.0,
+            step_start_lat in -90.0..90.0,
             step_end_lng in -180.0..180.0,
-            step_end_lat in -85.0..85.0,
-            range_meters in 50.0..1000.0, // Detection range in meters
+            step_end_lat in -90.0..90.0,
+            range_meters in 0.1..1000.0,
+            diff_meters in 0.0..1000.0, // diff can be within or outside of range.
         ) {
             let checker = WaypointAdvanceChecker {
                 mode: WaypointAdvanceMode::WaypointAlongAdvancingStep(range_meters),
@@ -433,26 +426,24 @@ mod tests {
                 coord! { x: step_end_lng, y: step_end_lat },
             ]);
 
-            // Create single waypoint very close to the step line (definitely within range)
             let mid_lng = (step_start_lng + step_end_lng) / 2.0;
             let mid_lat = (step_start_lat + step_end_lat) / 2.0;
-            // Use 10 meters from midpoint to guarantee it's within range
-            let waypoints = create_waypoints_at_distance(mid_lng, mid_lat, 10.0, 1);
+
+            // Create waypoints within and outside of the range of the step's midpoint
+            let waypoints = create_waypoints_at_distance(mid_lng, mid_lat, diff_meters, 1);
 
             let state = get_navigating_trip_state(
                 user_location,
-                current_step.clone(),
                 waypoints.clone(),
             );
 
-            let result = checker.has_new_waypoints(
+            let result = checker.get_new_waypoints(
                 &state,
-                &current_step,
-                WaypointCheckEvent::StepAdvanced
+                WaypointCheckEvent::StepAdvanced(current_step)
             );
 
             // Should never advance a single waypoint (destination), even if on the step line
-            prop_assert!(result.is_none());
+            prop_assert!(result == WaypointAdvanceResult::Unchanged);
         }
     }
 }

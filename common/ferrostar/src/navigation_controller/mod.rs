@@ -18,8 +18,10 @@ use crate::{
     },
     deviation_detection::RouteDeviation,
     models::{Route, RouteStep, UserLocation, Waypoint},
-    navigation_controller::models::TripSummary,
-    navigation_controller::waypoint_advance::{WaypointAdvanceChecker, WaypointCheckEvent},
+    navigation_controller::{
+        models::TripSummary,
+        waypoint_advance::{WaypointAdvanceChecker, WaypointAdvanceResult, WaypointCheckEvent},
+    },
     navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
 };
 use chrono::Utc;
@@ -177,13 +179,14 @@ impl Navigator for NavigationController {
                 match update {
                     StepAdvanceStatus::Advanced { step: current_step } => {
                         // Trim the remaining waypoints if needed.
-                        let remaining_waypoints = self
-                            .has_new_waypoints_from_advance(
-                                &state.trip_state(),
-                                &current_step,
-                                WaypointCheckEvent::LocationUpdated,
-                            )
-                            .unwrap_or(remaining_waypoints.clone());
+                        let waypoints_result = self.get_new_waypoints(
+                            &state.trip_state(),
+                            WaypointCheckEvent::StepAdvanced(current_step.clone()),
+                        );
+                        let remaining_waypoints = match waypoints_result {
+                            WaypointAdvanceResult::Unchanged => remaining_waypoints.clone(),
+                            WaypointAdvanceResult::Changed(new_waypoints) => new_waypoints,
+                        };
 
                         // Apply the updates
                         let mut remaining_steps = remaining_steps.clone();
@@ -230,13 +233,12 @@ impl Navigator for NavigationController {
                 };
 
                 // Trim the remaining waypoints if needed.
-                let remaining_waypoints = self
-                    .has_new_waypoints_from_advance(
-                        &state.trip_state(),
-                        &current_step,
-                        WaypointCheckEvent::LocationUpdated,
-                    )
-                    .unwrap_or(remaining_waypoints.clone());
+                let waypoints_result = self
+                    .get_new_waypoints(&state.trip_state(), WaypointCheckEvent::LocationUpdated);
+                let remaining_waypoints = match waypoints_result {
+                    WaypointAdvanceResult::Unchanged => remaining_waypoints.clone(),
+                    WaypointAdvanceResult::Changed(new_waypoints) => new_waypoints,
+                };
 
                 let deviation = self.config.route_deviation_tracking.check_route_deviation(
                     location,
@@ -397,16 +399,15 @@ impl NavigationController {
     }
 
     /// Process waypoint advance us
-    fn has_new_waypoints_from_advance(
+    fn get_new_waypoints(
         &self,
         state: &TripState,
-        current_step: &RouteStep,
         event: WaypointCheckEvent,
-    ) -> Option<Vec<Waypoint>> {
+    ) -> WaypointAdvanceResult {
         let checker = WaypointAdvanceChecker {
             mode: self.config.waypoint_advance,
         };
-        checker.has_new_waypoints(state, current_step, event)
+        checker.get_new_waypoints(state, event)
     }
 }
 
