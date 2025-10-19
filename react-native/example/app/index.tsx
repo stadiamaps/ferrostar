@@ -2,8 +2,8 @@ import { StyleSheet, View, Button, Text } from 'react-native';
 import {
   CourseFiltering,
   RouteDeviationTracking,
-  SpecialAdvanceConditions,
-  StepAdvanceMode,
+  stepAdvanceDistanceEntryAndExit,
+  stepAdvanceDistanceToEndOfStep,
   WaypointAdvanceMode,
   WaypointKind,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
@@ -23,17 +23,14 @@ export default function Index() {
   const core = useMemo(
     () =>
       new FerrostarCore('https://valhalla1.openstreetmap.de/route', 'auto', {
-        stepAdvance: StepAdvanceMode.RelativeLineStringDistance.new({
-          minimumHorizontalAccuracy: 25,
-          specialAdvanceConditions:
-            SpecialAdvanceConditions.MinimumDistanceFromCurrentStepLine.new(10),
-        }),
-        routeDeviationTracking: RouteDeviationTracking.StaticThreshold.new({
+        waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
+        stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
+        arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
+        routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
           minimumHorizontalAccuracy: 15,
           maxAcceptableDeviation: 50,
         }),
         snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
-        waypointAdvance: WaypointAdvanceMode.WaypointWithinRange.new(50),
       }),
     []
   );

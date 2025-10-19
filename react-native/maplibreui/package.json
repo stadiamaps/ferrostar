@@ -62,7 +62,9 @@
     "dts": true,
     "external": [
       "react",
-      "react-native"
+      "react-native",
+      "@maplibre/maplibre-react-native",
+      "react-native-svg"
     ]
   },
   "packageManager": "yarn@3.6.1"
