@@ -285,7 +285,7 @@ impl Navigator for NavigationController {
                     let updated_state = self.advance_to_next_step(intermediate_nav_state);
 
                     if is_arriving {
-                        return updated_state
+                        return updated_state;
                     } else {
                         // Recurse ("speed run" behavior)
                         return self.update_user_location(location, updated_state);
