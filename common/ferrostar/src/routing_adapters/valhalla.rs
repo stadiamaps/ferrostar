@@ -1,7 +1,7 @@
 //! High-level HTTP request generation for Valhalla HTTP APIs.
 
 use super::{RouteRequest, RoutingRequestGenerationError};
-use crate::models::{UserLocation, Waypoint, WaypointKind};
+use crate::models::{GeographicCoordinate, UserLocation, Waypoint, WaypointKind};
 use crate::routing_adapters::RouteRequestGenerator;
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
@@ -15,16 +15,131 @@ use alloc::{
     string::{String, ToString},
     vec::Vec,
 };
+use serde::{Deserialize, Serialize};
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
+
+/// Waypoint properties supported by Valhalla servers.
+///
+/// Our docstrings are short here, since Valhalla is the final authority.
+/// Refer to <https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations>
+/// for more details, including default values.
+/// Other Valhalla-based APIs such as Stadia Maps or Mapbox may have slightly different defaults.
+/// Refer to your vendor's documentation when in doubt.
+///
+/// NOTE: Waypoint properties will NOT currently be echoed back by Valhalla-based servers,
+/// so these are sent to the server one time.
+#[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct ValhallaWaypointProperties {
+    /// Preferred direction of travel for the start from the location.
+    pub heading: Option<u16>,
+    /// How close in degrees a given street's angle must be
+    /// in order for it to be considered as in the same direction of the heading parameter.
+    pub heading_tolerance: Option<u16>,
+    /// Minimum number of nodes (intersections) reachable for a given edge
+    /// (road between intersections) to consider that edge as belonging to a connected region.
+    /// Disconnected edges are ignored.
+    pub minimum_reachability: Option<u16>,
+    /// The number of meters about this input location within which edges
+    /// will be considered as candidates for said location.
+    /// If there are no candidates within this distance,
+    /// it will return the closest candidate within reason.
+    pub radius: Option<u16>,
+    /// Determines whether the location should be visited from the same, opposite or either side of the road,
+    /// with respect to the side of the road the given locale drives on.
+    ///
+    /// NOTE: If the location is not offset from the road centerline,
+    /// or is very close to an intersection, this option has no effect!
+    pub preferred_side: Option<ValhallaWaypointPreferredSide>,
+    // TODO: display_lat + display_lon
+    // TODO: search_cutoff
+    // TODO: node_snap_tolerance
+    // TODO: street_side_tolerance
+    // TODO: street_side_max_distance
+    // TODO: street_side_cutoff
+    // TODO: search_filter
+}
+
+impl Waypoint {
+    /// A convenience constructor for creating waypoints with Valhalla rich location properties.
+    pub fn new_with_valhalla_properties(
+        coordinate: GeographicCoordinate,
+        kind: WaypointKind,
+        properties: ValhallaWaypointProperties,
+    ) -> Self {
+        Self {
+            coordinate,
+            kind,
+            properties: Some(serde_json::to_vec(&properties).expect("Serialization of Valhalla waypoint properties failed. This is a bug in Ferrostar; please open an issue report on GitHub."))
+        }
+    }
+}
+
+/// A convenience helper for creating waypoints with Valhalla rich location properties.
+///
+/// Regrettably this must live as a top-level function unless constructors for record types lands
+/// in UniFFI:
+/// <https://github.com/mozilla/uniffi-rs/issues/1935>.
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn create_waypoint_with_valhalla_properties(
+    coordinate: GeographicCoordinate,
+    kind: WaypointKind,
+    properties: ValhallaWaypointProperties,
+) -> Waypoint {
+    Waypoint::new_with_valhalla_properties(coordinate, kind, properties)
+}
+
+/// Specifies a preferred side for departing from / arriving at a location.
+///
+/// Examples:
+/// - Germany drives on the right side of the road. A value of `same` will only allow leaving
+///   or arriving at a location such that it is on your right.
+/// - Australia drives on the left side of the road. Passing a value of `same` will only allow
+///   leaving or arriving at a location such that it is on your left.
+#[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[serde(rename_all = "lowercase")]
+pub enum ValhallaWaypointPreferredSide {
+    /// You must depart from or arrive at the location on the _same_ side as you drive.
+    Same,
+    /// You must depart from or arrive at the location on the _opposite_ side as you drive.
+    Opposite,
+    /// No preference; you can depart or arrive from any direction.
+    Either,
+}
 
 /// A route request generator for Valhalla backends operating over HTTP.
 ///
-/// Valhalla supports the [`WaypointKind`] field of [`Waypoint`]s. Variants have the same meaning as their
-/// [`type` strings in Valhalla API](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations)
-/// having the same name.
+/// # Rich waypoint support
+///
+/// Valhalla-compatible backends like Stadia Maps support a dozen or so
+/// extra waypoint properties which help you specify better routes.
+///
+/// ## [`WaypointKind`]
+///
+/// The waypoint kind field of [`Waypoint`] carries the same meaning as the respective
+/// [`type` strings in Valhalla API](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations).
+///
+/// ## Additional properties
+///
+/// Additional properties are supported via the [`Waypoint`] `properties` field.
+/// To enforce type safety and make it easier to use, we provide the [`ValhallaWaypointProperties`] struct.
+/// Internally, `generate_request` will first deserialize `properties` into this.
+/// If `properties` are in an invalid format, `generate_request` will fail.
+///
+/// # Examples
 ///
 /// ```
 /// use serde_json::{json, Map, Value};
-/// use ferrostar::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
+/// use ferrostar::models::{GeographicCoordinate, UserLocation, Waypoint, WaypointKind};
+/// use crate::ferrostar::routing_adapters::RouteRequestGenerator;
+/// use ferrostar::routing_adapters::valhalla::{ValhallaHttpRequestGenerator, ValhallaWaypointPreferredSide, ValhallaWaypointProperties};
 /// let options: Map<String, Value> = json!({
 ///     "costing_options": {
 ///         "low_speed_vehicle": {
@@ -33,6 +148,35 @@ use alloc::{
 ///     }
 /// }).as_object().unwrap().to_owned();;
 /// let request_generator = ValhallaHttpRequestGenerator::new("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(), "low_speed_vehicle".to_string(), options);
+///
+/// // Generate a request...
+///
+/// // User location (probably comes from a GPS; this is just test code)
+/// let user_location = UserLocation {
+///     coordinates: GeographicCoordinate {
+///         lng: 0.0,
+///         lat: 0.0,
+///     },
+///     horizontal_accuracy: 0.0,
+///     course_over_ground: None,
+///     timestamp: std::time::SystemTime::now(),
+///     speed: None,
+/// };
+///
+/// // Waypoints
+/// let waypoints = vec![
+///     Waypoint::new_with_valhalla_properties(
+///         GeographicCoordinate { lat: 2.0, lng: 3.0 },
+///         WaypointKind::Break,
+///         ValhallaWaypointProperties {
+///             preferred_side: Some(ValhallaWaypointPreferredSide::Same),
+///             ..Default::default()
+///         },
+///     ),
+/// ];
+///
+/// let request = request_generator.generate_request(user_location, waypoints);
+/// assert!(request.is_ok(), "If we did everything correctly, we should have gotten a valid request");
 /// ```
 #[derive(Debug)]
 pub struct ValhallaHttpRequestGenerator {
@@ -155,6 +299,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
         } else {
             let headers =
                 HashMap::from([("Content-Type".to_string(), "application/json".to_string())]);
+            // TODO: Figure out how / if we want waypoint properties for the initial location
             let mut start = json!({
                 "lat": user_location.coordinates.lat,
                 "lon": user_location.coordinates.lng,
@@ -166,18 +311,29 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                 start["heading"] = course.degrees.into();
             }
 
-            let locations: Vec<JsonValue> = core::iter::once(start)
-                .chain(waypoints.iter().map(|waypoint| {
-                    json!({
+            let waypoints: Vec<_> = waypoints
+                .into_iter()
+                .map(|waypoint| {
+                    let intermediate = json!({
                         "lat": waypoint.coordinate.lat,
                         "lon": waypoint.coordinate.lng,
                         "type": match waypoint.kind {
                             WaypointKind::Break => "break",
                             WaypointKind::Via => "via",
                         },
-                    })
-                }))
-                .collect();
+                    });
+                    Ok(merge_optional_waypoint_properties(
+                        intermediate,
+                        if let Some(props) = waypoint.properties.as_deref() {
+                            serde_json::from_slice(props)?
+                        } else {
+                            None
+                        },
+                    ))
+                })
+                .collect::<Result<_, RoutingRequestGenerationError>>()?;
+
+            let locations: Vec<JsonValue> = core::iter::once(start).chain(waypoints).collect();
 
             // NOTE: We currently use the OSRM format, as it is the richest one.
             // Though it would be nice to use PBF if we can get the required data.
@@ -214,12 +370,54 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
     }
 }
 
+fn merge_optional_waypoint_properties(
+    location: JsonValue,
+    waypoint_properties: Option<ValhallaWaypointProperties>,
+) -> JsonValue {
+    let Some(ValhallaWaypointProperties {
+        heading,
+        heading_tolerance,
+        minimum_reachability,
+        radius,
+        preferred_side,
+    }) = waypoint_properties
+    else {
+        return location;
+    };
+
+    let mut result = location;
+
+    if let Some(heading) = heading {
+        result["heading"] = heading.into();
+    }
+
+    if let Some(heading_tolerance) = heading_tolerance {
+        result["heading_tolerance"] = heading_tolerance.into();
+    }
+
+    if let Some(minimum_reachability) = minimum_reachability {
+        result["minimum_reachability"] = minimum_reachability.into();
+    }
+
+    if let Some(radius) = radius {
+        result["radius"] = radius.into();
+    }
+
+    if let Some(preferred_side) = preferred_side {
+        result["preferred_side"] =
+            serde_json::to_value(&preferred_side).expect("This should never fail");
+    }
+
+    result
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::models::{CourseOverGround, GeographicCoordinate};
     use assert_json_diff::assert_json_include;
     use serde_json::{from_slice, json};
+    use std::sync::LazyLock;
 
     #[cfg(all(feature = "std", not(feature = "web-time")))]
     use std::time::SystemTime;
@@ -245,16 +443,23 @@ mod tests {
         timestamp: SystemTime::UNIX_EPOCH,
         speed: None,
     };
-    const WAYPOINTS: [Waypoint; 2] = [
-        Waypoint {
-            coordinate: GeographicCoordinate { lat: 0.0, lng: 1.0 },
-            kind: WaypointKind::Break,
-        },
-        Waypoint {
-            coordinate: GeographicCoordinate { lat: 2.0, lng: 3.0 },
-            kind: WaypointKind::Break,
-        },
-    ];
+    static WAYPOINTS: LazyLock<[Waypoint; 2]> = LazyLock::new(|| {
+        [
+            Waypoint {
+                coordinate: GeographicCoordinate { lat: 0.0, lng: 1.0 },
+                kind: WaypointKind::Break,
+                properties: None,
+            },
+            Waypoint::new_with_valhalla_properties(
+                GeographicCoordinate { lat: 2.0, lng: 3.0 },
+                WaypointKind::Break,
+                ValhallaWaypointProperties {
+                    preferred_side: Some(ValhallaWaypointPreferredSide::Same),
+                    ..Default::default()
+                },
+            ),
+        ]
+    });
 
     #[test]
     fn not_enough_locations() {
@@ -352,6 +557,7 @@ mod tests {
                     {
                         "lat": 2.0,
                         "lon": 3.0,
+                        "preferred_side": "same",
                     }
                 ],
             })
@@ -469,6 +675,7 @@ mod tests {
                     {
                         "lat": 2.0,
                         "lon": 3.0,
+                        "preferred_side": "same",
                     }
                 ],
             })

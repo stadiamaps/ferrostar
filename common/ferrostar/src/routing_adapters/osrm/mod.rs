@@ -8,6 +8,7 @@ use crate::models::{
     AnyAnnotationValue, GeographicCoordinate, Incident, LaneInfo, RouteStep, SpokenInstruction,
     VisualInstruction, VisualInstructionContent, Waypoint, WaypointKind,
 };
+use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
 use crate::routing_adapters::utilities::get_coordinates_from_geometry;
 use crate::routing_adapters::{
     osrm::models::{
@@ -27,6 +28,13 @@ use uuid::Uuid;
 ///
 /// The parser is NOT limited to only the standard OSRM format; many Valhalla/Mapbox tags are also
 /// parsed and are included in the final route.
+///
+/// # Waypoint properties
+///
+/// This adapter knows about properties defined in [`OsrmWaypointProperties`].
+/// However, some servers (like the Valhalla derivatives run by Stadia Maps and Mapbox)
+/// **may not echo back all rich location properties in OSRM mode**.
+/// Keep this in mind when designing your rerouting flow.
 #[derive(Debug)]
 pub struct OsrmResponseParser {
     polyline_precision: u32,
@@ -61,7 +69,7 @@ impl Route {
     ///
     /// # Arguments
     /// * `route` - The OSRM route.
-    /// * `waypoints` - The OSRM waypoints.
+    /// * `waypoints` - The OSRM waypoints. Properties, if present, are a JSON serialized [`OsrmWaypointProperties`] object.
     /// * `polyline_precision` - The precision of the polyline.
     pub fn from_osrm(
         route: &OsrmRoute,
@@ -75,7 +83,7 @@ impl Route {
             .collect();
 
         let waypoints: Vec<_> = waypoints
-            .iter()
+            .into_iter()
             .enumerate()
             .map(|(idx, waypoint)| Waypoint {
                 coordinate: GeographicCoordinate {
@@ -86,6 +94,15 @@ impl Route {
                     WaypointKind::Via
                 } else {
                     WaypointKind::Break
+                },
+                properties: if waypoint.name.is_some() || waypoint.distance.is_some() {
+                    serde_json::to_vec(&OsrmWaypointProperties {
+                        name: waypoint.name.clone(),
+                        distance: waypoint.distance,
+                    })
+                    .ok()
+                } else {
+                    None
                 },
             })
             .collect();
@@ -327,6 +344,7 @@ impl RouteStep {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::test_utils::redact_properties;
 
     const STANDARD_OSRM_POLYLINE6_RESPONSE: &str =
         include_str!("fixtures/standard_osrm_polyline6_response.json");
@@ -344,7 +362,9 @@ mod tests {
         let routes = parser
             .parse_response(STANDARD_OSRM_POLYLINE6_RESPONSE.into())
             .expect("Unable to parse OSRM response");
-        insta::assert_yaml_snapshot!(routes);
+        insta::assert_yaml_snapshot!(routes, {
+            "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+        });
     }
 
     #[test]
@@ -355,7 +375,8 @@ mod tests {
             .expect("Unable to parse Valhalla OSRM response");
 
         insta::assert_yaml_snapshot!(routes, {
-            ".**.annotations" => "redacted annotations json strings vec"
+            ".**.annotations" => "redacted annotations json strings vec",
+            "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
     }
 
@@ -367,7 +388,8 @@ mod tests {
             .expect("Unable to parse Valhalla OSRM response");
 
         insta::assert_yaml_snapshot!(routes, {
-            ".**.annotations" => "redacted annotations json strings vec"
+            ".**.annotations" => "redacted annotations json strings vec",
+            "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
     }
 
@@ -448,7 +470,8 @@ mod tests {
             .expect("Unable to parse OSRM response");
 
         insta::assert_yaml_snapshot!(routes, {
-            ".**.annotations" => "redacted annotations json strings vec"
+            ".**.annotations" => "redacted annotations json strings vec",
+            "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
     }
 

@@ -218,14 +218,17 @@ expression: routes
         lat: 28.795656
         lng: -82.036056
       kind: Break
+      properties: "{\"name\":\"\",\"distance\":0.095}"
     - coordinate:
         lat: 28.795446
         lng: -82.035862
       kind: Via
+      properties: "{\"name\":\"\",\"distance\":0.0}"
     - coordinate:
         lat: 28.790106
         lng: -82.018021
       kind: Break
+      properties: "{\"name\":\"\",\"distance\":4.898}"
   steps:
     - geometry:
         - lat: 28.795656

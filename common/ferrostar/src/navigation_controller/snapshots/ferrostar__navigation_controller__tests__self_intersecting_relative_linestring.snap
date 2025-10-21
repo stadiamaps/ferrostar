@@ -161,6 +161,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "264.8395987781"
       distanceRemaining: "1073.1055987781"
@@ -333,6 +334,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "227.5923547378"
       distanceRemaining: "1035.8583547378"
@@ -505,6 +507,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "218.6887779034"
       distanceRemaining: "1026.9547779034"
@@ -677,6 +680,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "209.7852010700"
       distanceRemaining: "1018.0512010700"
@@ -849,6 +853,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "200.8816242362"
       distanceRemaining: "1009.1476242362"
@@ -1021,6 +1026,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "192.0518152323"
       distanceRemaining: "1000.3178152323"
@@ -1193,6 +1199,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "183.1482383989"
       distanceRemaining: "991.4142383989"
@@ -1365,6 +1372,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "174.2446615655"
       distanceRemaining: "982.5106615655"
@@ -1537,6 +1545,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "165.2147284418"
       distanceRemaining: "973.4807284418"
@@ -1709,6 +1718,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "156.1847953192"
       distanceRemaining: "964.4507953192"
@@ -1881,6 +1891,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "147.1548621959"
       distanceRemaining: "955.4208621959"
@@ -2053,6 +2064,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "138.1249290733"
       distanceRemaining: "946.3909290733"
@@ -2225,6 +2237,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "129.0738930874"
       distanceRemaining: "937.3398930874"
@@ -2397,6 +2410,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "120.0439599648"
       distanceRemaining: "928.3099599648"
@@ -2569,6 +2583,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "111.0140268425"
       distanceRemaining: "919.2800268425"
@@ -2741,6 +2756,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "101.9840937189"
       distanceRemaining: "910.2500937189"
@@ -2913,6 +2929,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "92.9541605963"
       distanceRemaining: "901.2201605963"
@@ -3085,6 +3102,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "83.9242274730"
       distanceRemaining: "892.1902274730"
@@ -3257,6 +3275,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "74.5736109559"
       distanceRemaining: "882.8396109559"
@@ -3429,6 +3448,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "65.2754963308"
       distanceRemaining: "873.5414963308"
@@ -3601,6 +3621,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "55.9248798123"
       distanceRemaining: "864.1908798123"
@@ -3773,6 +3794,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "46.5742632941"
       distanceRemaining: "854.8402632941"
@@ -3945,6 +3967,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "37.3499641799"
       distanceRemaining: "845.6159641799"
@@ -4117,6 +4140,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "27.9993476617"
       distanceRemaining: "836.2653476617"
@@ -4289,6 +4313,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "18.6487311432"
       distanceRemaining: "826.9147311432"
@@ -4461,6 +4486,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "9.3506165182"
       distanceRemaining: "817.6166165182"
@@ -4633,6 +4659,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "808.2660000000"
@@ -4785,6 +4812,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "284.7579234815"
       distanceRemaining: "798.0239234815"
@@ -4937,6 +4965,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "274.9377423924"
       distanceRemaining: "788.2037423924"
@@ -5089,6 +5118,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "265.0792830217"
       distanceRemaining: "778.3452830217"
@@ -5241,6 +5271,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "255.2975161946"
       distanceRemaining: "768.5635161946"
@@ -5393,6 +5424,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "245.4006425611"
       distanceRemaining: "758.6666425611"
@@ -5545,6 +5577,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "235.6188757340"
       distanceRemaining: "748.8848757340"
@@ -5697,6 +5730,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "225.7220021013"
       distanceRemaining: "738.9880021013"
@@ -5849,6 +5883,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "215.9402352742"
       distanceRemaining: "729.2062352742"
@@ -6001,6 +6036,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "206.0817759023"
       distanceRemaining: "719.3477759023"
@@ -6153,6 +6189,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "196.2615948133"
       distanceRemaining: "709.5275948133"
@@ -6305,6 +6342,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "186.4031354425"
       distanceRemaining: "699.6691354425"
@@ -6457,6 +6495,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "181.2589504177"
       distanceRemaining: "694.5249504177"
@@ -6609,6 +6648,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "176.1926282807"
       distanceRemaining: "689.4586282807"
@@ -6761,6 +6801,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "170.8311970843"
       distanceRemaining: "684.0971970843"
@@ -6913,6 +6954,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "165.4537934017"
       distanceRemaining: "678.7197934017"
@@ -7065,6 +7107,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "157.6040264657"
       distanceRemaining: "670.8700264657"
@@ -7217,6 +7260,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "149.1417178594"
       distanceRemaining: "662.4077178594"
@@ -7369,6 +7413,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "143.3524756568"
       distanceRemaining: "656.6184756568"
@@ -7521,6 +7566,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "136.2375204956"
       distanceRemaining: "649.5035204956"
@@ -7673,6 +7719,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "128.0921403846"
       distanceRemaining: "641.3581403846"
@@ -7825,6 +7872,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "121.8254999426"
       distanceRemaining: "635.0914999426"
@@ -7977,6 +8025,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "115.3827516980"
       distanceRemaining: "628.6487516980"
@@ -8129,6 +8178,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "107.4541144948"
       distanceRemaining: "620.7201144948"
@@ -8281,6 +8331,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "101.4192857420"
       distanceRemaining: "614.6852857420"
@@ -8433,6 +8484,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "95.2832626244"
       distanceRemaining: "608.5492626244"
@@ -8585,6 +8637,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "87.5461199658"
       distanceRemaining: "600.8121199658"
@@ -8737,6 +8790,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "80.6976443334"
       distanceRemaining: "593.9636443334"
@@ -8889,6 +8943,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "73.7119724167"
       distanceRemaining: "586.9779724167"
@@ -9041,6 +9096,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "66.8634967838"
       distanceRemaining: "580.1294967838"
@@ -9193,6 +9249,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "61.4476317227"
       distanceRemaining: "574.7136317227"
@@ -9345,6 +9402,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "56.1257490642"
       distanceRemaining: "569.3917490642"
@@ -9497,6 +9555,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "47.2707588297"
       distanceRemaining: "560.5367588297"
@@ -9649,6 +9708,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "41.6320194180"
       distanceRemaining: "554.8980194180"
@@ -9801,6 +9861,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "35.9207776558"
       distanceRemaining: "549.1867776558"
@@ -9953,6 +10014,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "27.0097298482"
       distanceRemaining: "540.2757298482"
@@ -10105,6 +10167,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "21.5605944620"
       distanceRemaining: "534.8265944620"
@@ -10257,6 +10320,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "16.1413434833"
       distanceRemaining: "529.4073434833"
@@ -10409,6 +10473,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "8.0706717410"
       distanceRemaining: "521.3366717410"
@@ -10561,6 +10626,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "513.2660000000"
@@ -10658,6 +10724,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "503.7768254669"
       distanceRemaining: "503.7768254669"
@@ -10755,6 +10822,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "494.1561977968"
       distanceRemaining: "494.1561977968"
@@ -10852,6 +10920,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "486.5705159820"
       distanceRemaining: "486.5705159820"
@@ -10949,6 +11018,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "479.0385209740"
       distanceRemaining: "479.0385209740"
@@ -11046,6 +11116,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "472.5097693777"
       distanceRemaining: "472.5097693777"
@@ -11143,6 +11214,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "466.0574480209"
       distanceRemaining: "466.0574480209"
@@ -11240,6 +11312,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "459.9757288255"
       distanceRemaining: "459.9757288255"
@@ -11337,6 +11410,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "452.5579668041"
       distanceRemaining: "452.5579668041"
@@ -11434,6 +11508,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "445.1333972916"
       distanceRemaining: "445.1333972916"
@@ -11531,6 +11606,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "437.7156352702"
       distanceRemaining: "437.7156352702"
@@ -11628,6 +11704,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "428.8150022276"
       distanceRemaining: "428.8150022276"
@@ -11725,6 +11802,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "420.0139063537"
       distanceRemaining: "420.0139063537"
@@ -11822,6 +11900,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "411.1531530227"
       distanceRemaining: "411.1531530227"
@@ -11919,6 +11998,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "402.2525199807"
       distanceRemaining: "402.2525199807"
@@ -12016,6 +12096,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "392.4129287528"
       distanceRemaining: "392.4129287528"
@@ -12113,6 +12194,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "382.6723277675"
       distanceRemaining: "382.6723277675"
@@ -12210,6 +12292,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "372.8327365396"
       distanceRemaining: "372.8327365396"
@@ -12307,6 +12390,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "363.0338716126"
       distanceRemaining: "363.0338716126"
@@ -12404,6 +12488,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "353.2932706279"
       distanceRemaining: "353.2932706279"
@@ -12501,6 +12586,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "343.4536793999"
       distanceRemaining: "343.4536793999"
@@ -12598,6 +12684,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "335.1149726231"
       distanceRemaining: "335.1149726231"
@@ -12695,6 +12782,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "326.8748672816"
       distanceRemaining: "326.8748672816"
@@ -12792,6 +12880,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "318.5361605053"
       distanceRemaining: "318.5361605053"
@@ -12889,6 +12978,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "310.2960551632"
       distanceRemaining: "310.2960551632"
@@ -12986,6 +13076,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "301.9573483869"
       distanceRemaining: "301.9573483869"
@@ -13083,6 +13174,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "292.5470921441"
       distanceRemaining: "292.5470921441"
@@ -13180,6 +13272,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "283.1368359008"
       distanceRemaining: "283.1368359008"
@@ -13277,6 +13370,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "273.7904240821"
       distanceRemaining: "273.7904240821"
@@ -13374,6 +13468,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "264.3801678394"
       distanceRemaining: "264.3801678394"
@@ -13471,6 +13566,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "254.9699115960"
       distanceRemaining: "254.9699115960"
@@ -13568,6 +13664,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "245.5596553532"
       distanceRemaining: "245.5596553532"
@@ -13665,6 +13762,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "237.0455039623"
       distanceRemaining: "237.0455039623"
@@ -13762,6 +13860,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "228.2864126007"
       distanceRemaining: "228.2864126007"
@@ -13859,6 +13958,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "219.5867887537"
       distanceRemaining: "219.5867887537"
@@ -13956,6 +14056,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "210.8276973921"
       distanceRemaining: "210.8276973921"
@@ -14053,6 +14154,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "202.1280735450"
       distanceRemaining: "202.1280735450"
@@ -14150,6 +14252,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "193.3689821834"
       distanceRemaining: "193.3689821834"
@@ -14247,6 +14350,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "183.5271339889"
       distanceRemaining: "183.5271339889"
@@ -14344,6 +14448,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "173.7843471521"
       distanceRemaining: "173.7843471521"
@@ -14441,6 +14546,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "163.9831170365"
       distanceRemaining: "163.9831170365"
@@ -14538,6 +14644,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "154.1412688413"
       distanceRemaining: "154.1412688413"
@@ -14635,6 +14742,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "145.2064661903"
       distanceRemaining: "145.2064661903"
@@ -14732,6 +14840,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "136.2039340372"
       distanceRemaining: "136.2039340372"
@@ -14829,6 +14938,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "127.2691313857"
       distanceRemaining: "127.2691313857"
@@ -14926,6 +15036,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "118.2665992326"
       distanceRemaining: "118.2665992326"
@@ -15023,6 +15134,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "109.3317965824"
       distanceRemaining: "109.3317965824"
@@ -15120,6 +15232,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "100.5197095129"
       distanceRemaining: "100.5197095129"
@@ -15217,6 +15330,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "91.7732605916"
       distanceRemaining: "91.7732605916"
@@ -15314,6 +15428,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "82.9611735228"
       distanceRemaining: "82.9611735228"
@@ -15411,6 +15526,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "74.1490864533"
       distanceRemaining: "74.1490864533"
@@ -15508,6 +15624,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "65.3323936046"
       distanceRemaining: "65.3323936046"
@@ -15605,6 +15722,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "56.3779245157"
       distanceRemaining: "56.3779245157"
@@ -15702,6 +15820,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "47.5612316665"
       distanceRemaining: "47.5612316665"
@@ -15799,6 +15918,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "38.6426041290"
       distanceRemaining: "38.6426041290"
@@ -15896,6 +16016,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "29.0244702987"
       distanceRemaining: "29.0244702987"
@@ -15993,6 +16114,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "19.3038707696"
       distanceRemaining: "19.3038707696"
@@ -16090,6 +16212,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "9.7205995291"
       distanceRemaining: "9.7205995291"
@@ -16143,6 +16266,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 45.371508
           lng: -122.585901
         kind: Break
+        properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "0.0000000000"
