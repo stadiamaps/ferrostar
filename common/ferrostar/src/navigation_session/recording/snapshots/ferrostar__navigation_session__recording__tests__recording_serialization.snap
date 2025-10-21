@@ -10943,7 +10943,7 @@ events:
       StateUpdate:
         step_advance_condition:
           DistanceToEndOfStep:
-            distance: 0
+            distance: 5
             minimum_horizontal_accuracy: 0
         trip_state:
           Navigating:

@@ -248,7 +248,8 @@ impl Navigator for NavigationController {
 
                 // Get the step advance condition result.
                 let next_step = remaining_steps.get(1).cloned();
-                let step_advance_result = if remaining_steps.len() <= 2 {
+                let is_arriving = remaining_steps.len() <= 2;
+                let step_advance_result = if is_arriving {
                     self.config
                         .arrival_step_advance_condition
                         .should_advance_step(
@@ -282,10 +283,13 @@ impl Navigator for NavigationController {
                 if should_advance {
                     // Advance to the next step
                     let updated_state = self.advance_to_next_step(intermediate_nav_state);
-                    // TODO: Special handling for the final step?
-                    // TODO: Ensure that we are careful about calling this when the user is off the route. Probably obsoleted by Jacob's PR
 
-                    return self.update_user_location(location, updated_state);
+                    if is_arriving {
+                        return updated_state
+                    } else {
+                        // Recurse ("speed run" behavior)
+                        return self.update_user_location(location, updated_state);
+                    }
                 }
 
                 intermediate_nav_state
