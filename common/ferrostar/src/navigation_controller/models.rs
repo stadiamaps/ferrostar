@@ -285,7 +285,15 @@ pub enum CourseFiltering {
 #[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 pub enum WaypointAdvanceMode {
     /// Advance when the waypoint is within a certain range of meters from the user's location.
+    ///
+    /// This condition is potentially more rigorous, requiring the user to actually visit within
+    /// a range of every waypoint regardless of step advance.
     WaypointWithinRange(f64),
+    /// Advance when a waypoint is within a certain range of meters of any point on the advancing step.
+    ///
+    /// This condition considers the step being advanced, not the user's location. As a result,
+    /// it can recover when your step advance conditions allow the user to skip forward on the route.
+    WaypointAlongAdvancingStep(f64),
 }
 
 #[derive(Clone)]

@@ -2,6 +2,7 @@
 
 pub mod models;
 pub mod step_advance;
+pub mod waypoint_advance;
 
 #[cfg(test)]
 pub(crate) mod test_helpers;
@@ -15,18 +16,17 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
+    deviation_detection::RouteDeviation,
     models::{Route, RouteStep, UserLocation, Waypoint},
-    navigation_controller::models::TripSummary,
+    navigation_controller::{
+        models::TripSummary,
+        waypoint_advance::{WaypointAdvanceChecker, WaypointAdvanceResult, WaypointCheckEvent},
+    },
     navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
 };
 use chrono::Utc;
-use geo::{
-    algorithm::{Distance, Haversine},
-    geometry::{LineString, Point},
-};
-use models::{
-    NavState, NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode,
-};
+use geo::geometry::LineString;
+use models::{NavState, NavigationControllerConfig, StepAdvanceStatus, TripState};
 use std::clone::Clone;
 use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
@@ -171,12 +171,23 @@ impl Navigator for NavigationController {
                 user_location,
                 ref remaining_steps,
                 ref remaining_waypoints,
+                ref deviation,
                 summary,
                 ..
             } => {
                 let update = advance_step(remaining_steps);
                 match update {
                     StepAdvanceStatus::Advanced { step: current_step } => {
+                        // Trim the remaining waypoints if needed.
+                        let waypoints_result = self.get_new_waypoints(
+                            &state.trip_state(),
+                            WaypointCheckEvent::StepAdvanced(current_step.clone()),
+                        );
+                        let remaining_waypoints = match waypoints_result {
+                            WaypointAdvanceResult::Unchanged => remaining_waypoints.clone(),
+                            WaypointAdvanceResult::Changed(new_waypoints) => new_waypoints,
+                        };
+
                         // Apply the updates
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
@@ -189,6 +200,7 @@ impl Navigator for NavigationController {
                             &current_step,
                             &remaining_steps,
                             &remaining_waypoints,
+                            &deviation,
                         );
 
                         NavState::new(trip_state, state.step_advance_condition())
@@ -221,25 +233,36 @@ impl Navigator for NavigationController {
                 };
 
                 // Trim the remaining waypoints if needed.
-                let remaining_waypoints = if self.should_advance_waypoint(&state.trip_state()) {
-                    let mut remaining_waypoints = remaining_waypoints.clone();
-                    remaining_waypoints.remove(0);
-                    remaining_waypoints
-                } else {
-                    remaining_waypoints.clone()
+                let waypoints_result = self
+                    .get_new_waypoints(&state.trip_state(), WaypointCheckEvent::LocationUpdated);
+                let remaining_waypoints = match waypoints_result {
+                    WaypointAdvanceResult::Unchanged => remaining_waypoints.clone(),
+                    WaypointAdvanceResult::Changed(new_waypoints) => new_waypoints,
                 };
+
+                let deviation = self.config.route_deviation_tracking.check_route_deviation(
+                    location,
+                    &self.route,
+                    current_step,
+                );
 
                 // Get the step advance condition result.
                 let next_step = remaining_steps.get(1).cloned();
                 let step_advance_result = if remaining_steps.len() <= 2 {
                     self.config
                         .arrival_step_advance_condition
-                        .should_advance_step(location, current_step.clone(), next_step)
+                        .should_advance_step(
+                            location,
+                            current_step.clone(),
+                            next_step,
+                            deviation.clone(),
+                        )
                 } else {
                     state.step_advance_condition().should_advance_step(
                         location,
                         current_step.clone(),
                         next_step,
+                        deviation.clone(),
                     )
                 };
 
@@ -251,6 +274,7 @@ impl Navigator for NavigationController {
                         current_step,
                         &remaining_steps,
                         &remaining_waypoints,
+                        &deviation,
                     ),
                     step_advance_result.next_iteration,
                 );
@@ -294,6 +318,7 @@ impl NavigationController {
         current_step: &RouteStep,
         remaining_steps: &Vec<RouteStep>,
         remaining_waypoints: &Vec<Waypoint>,
+        deviation: &RouteDeviation,
     ) -> TripState {
         match trip_state {
             TripState::Navigating {
@@ -306,12 +331,6 @@ impl NavigationController {
                 let current_step_linestring = current_step.get_linestring();
                 let (current_step_geometry_index, snapped_user_location) =
                     self.snap_user_to_line(*location, &current_step_linestring);
-
-                let deviation = self.config.route_deviation_tracking.check_route_deviation(
-                    *location,
-                    &self.route,
-                    current_step,
-                );
 
                 // Update trip summary with accumulated distance
                 let updated_summary = previous_summary.update(
@@ -344,7 +363,7 @@ impl NavigationController {
                     remaining_waypoints: remaining_waypoints.clone(),
                     progress,
                     summary: updated_summary,
-                    deviation,
+                    deviation: deviation.clone(),
                     visual_instruction,
                     spoken_instruction,
                     annotation_json,
@@ -384,27 +403,16 @@ impl NavigationController {
         (current_step_geometry_index, snapped_with_course)
     }
 
-    /// Determines if the navigation controller should advance to the next waypoint.
-    fn should_advance_waypoint(&self, state: &TripState) -> bool {
-        match state {
-            TripState::Navigating {
-                snapped_user_location,
-                ref remaining_waypoints,
-                ..
-            } => {
-                // Update remaining waypoints
-                remaining_waypoints.first().is_some_and(|waypoint| {
-                    let current_location: Point = snapped_user_location.coordinates.into();
-                    let next_waypoint: Point = waypoint.coordinate.into();
-                    match self.config.waypoint_advance {
-                        WaypointAdvanceMode::WaypointWithinRange(range) => {
-                            Haversine.distance(current_location, next_waypoint) < range
-                        }
-                    }
-                })
-            }
-            TripState::Idle { .. } | TripState::Complete { .. } => false,
-        }
+    /// Process waypoint advance us
+    fn get_new_waypoints(
+        &self,
+        state: &TripState,
+        event: WaypointCheckEvent,
+    ) -> WaypointAdvanceResult {
+        let checker = WaypointAdvanceChecker {
+            mode: self.config.waypoint_advance,
+        };
+        checker.get_new_waypoints(state, event)
     }
 }
 

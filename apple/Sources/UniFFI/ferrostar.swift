@@ -3052,6 +3052,10 @@ public protocol RouteDeviationDetector: AnyObject, Sendable {
      * NOTE: This function has a single responsibility.
      * Side-effects like whether to recalculate a route are left to higher levels,
      * and implementations should only be concerned with determining the facts.
+     *
+     * IMPORTANT: If you are short circuiting [`StepAdvanceCondition`]'s to allow
+     * skipping steps, you must always fall back to checking the deviation from the
+     * full route line.
      */
     func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep)  -> RouteDeviation
     
@@ -3121,6 +3125,10 @@ open class RouteDeviationDetectorImpl: RouteDeviationDetector, @unchecked Sendab
      * NOTE: This function has a single responsibility.
      * Side-effects like whether to recalculate a route are left to higher levels,
      * and implementations should only be concerned with determining the facts.
+     *
+     * IMPORTANT: If you are short circuiting [`StepAdvanceCondition`]'s to allow
+     * skipping steps, you must always fall back to checking the deviation from the
+     * full route line.
      */
 open func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation  {
     return try!  FfiConverterTypeRouteDeviation_lift(try! rustCall() {
@@ -3665,7 +3673,7 @@ public protocol StepAdvanceConditionProtocol: AnyObject, Sendable {
      * The step advance condition can choose based on its outcome and internal state
      * whether to advance to the next step or not.
      */
-    func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?)  -> StepAdvanceResult
+    func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?, routeDeviation: RouteDeviation)  -> StepAdvanceResult
     
     /**
      * Creates a clean instance of this condition with the same configuration but reset state.
@@ -3746,12 +3754,13 @@ open class StepAdvanceCondition: StepAdvanceConditionProtocol, @unchecked Sendab
      * The step advance condition can choose based on its outcome and internal state
      * whether to advance to the next step or not.
      */
-open func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?) -> StepAdvanceResult  {
+open func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?, routeDeviation: RouteDeviation) -> StepAdvanceResult  {
     return try!  FfiConverterTypeStepAdvanceResult_lift(try! rustCall() {
     uniffi_ferrostar_fn_method_stepadvancecondition_should_advance_step(self.uniffiClonePointer(),
         FfiConverterTypeUserLocation_lower(userLocation),
         FfiConverterTypeRouteStep_lower(currentStep),
-        FfiConverterOptionTypeRouteStep.lower(nextStep),$0
+        FfiConverterOptionTypeRouteStep.lower(nextStep),
+        FfiConverterTypeRouteDeviation_lower(routeDeviation),$0
     )
 })
 }
@@ -8253,7 +8262,7 @@ public enum SerializableStepAdvanceCondition {
     case manual
     case distanceToEndOfStep(distance: UInt16, minimumHorizontalAccuracy: UInt16
     )
-    case distanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16
+    case distanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculateWhileOffRoute: Bool
     )
     case distanceEntryExit(distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, minimumHorizontalAccuracy: UInt16, hasReachedEndOfCurrentStep: Bool
     )
@@ -8283,7 +8292,7 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
         case 2: return .distanceToEndOfStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
         )
         
-        case 3: return .distanceFromStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf)
+        case 3: return .distanceFromStep(distance: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), calculateWhileOffRoute: try FfiConverterBool.read(from: &buf)
         )
         
         case 4: return .distanceEntryExit(distanceToEndOfStep: try FfiConverterUInt16.read(from: &buf), distanceAfterEndStep: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), hasReachedEndOfCurrentStep: try FfiConverterBool.read(from: &buf)
@@ -8313,10 +8322,11 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             
         
-        case let .distanceFromStep(distance,minimumHorizontalAccuracy):
+        case let .distanceFromStep(distance,minimumHorizontalAccuracy,calculateWhileOffRoute):
             writeInt(&buf, Int32(3))
             FfiConverterUInt16.write(distance, into: &buf)
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+            FfiConverterBool.write(calculateWhileOffRoute, into: &buf)
             
         
         case let .distanceEntryExit(distanceToEndOfStep,distanceAfterEndStep,minimumHorizontalAccuracy,hasReachedEndOfCurrentStep):
@@ -8661,8 +8671,19 @@ public enum WaypointAdvanceMode {
     
     /**
      * Advance when the waypoint is within a certain range of meters from the user's location.
+     *
+     * This condition is potentially more rigorous, requiring the user to actually visit within
+     * a range of every waypoint regardless of step advance.
      */
     case waypointWithinRange(Double
+    )
+    /**
+     * Advance when a waypoint is within a certain range of meters of any point on the advancing step.
+     *
+     * This condition considers the step being advanced, not the user's location. As a result,
+     * it can recover when your step advance conditions allow the user to skip forward on the route.
+     */
+    case waypointAlongAdvancingStep(Double
     )
 }
 
@@ -8684,6 +8705,9 @@ public struct FfiConverterTypeWaypointAdvanceMode: FfiConverterRustBuffer {
         case 1: return .waypointWithinRange(try FfiConverterDouble.read(from: &buf)
         )
         
+        case 2: return .waypointAlongAdvancingStep(try FfiConverterDouble.read(from: &buf)
+        )
+        
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -8694,6 +8718,11 @@ public struct FfiConverterTypeWaypointAdvanceMode: FfiConverterRustBuffer {
         
         case let .waypointWithinRange(v1):
             writeInt(&buf, Int32(1))
+            FfiConverterDouble.write(v1, into: &buf)
+            
+        
+        case let .waypointAlongAdvancingStep(v1):
+            writeInt(&buf, Int32(2))
             FfiConverterDouble.write(v1, into: &buf)
             
         }
@@ -10040,11 +10069,12 @@ public func stepAdvanceDistanceEntryAndExit(distanceToEndOfStep: UInt16, distanc
  * This advances to the next step when the user is at least `distance` meters away _from_ any point on the current route step geometry.
  * Does not advance unless the reported location accuracy is `minimum_horizontal_accuracy` meters or better.
  */
-public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
+public func stepAdvanceDistanceFromStep(distance: UInt16, minimumHorizontalAccuracy: UInt16, calculateWhileOffRoute: Bool) -> StepAdvanceCondition  {
     return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
     uniffi_ferrostar_fn_func_step_advance_distance_from_step(
         FfiConverterUInt16.lower(distance),
-        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),
+        FfiConverterBool.lower(calculateWhileOffRoute),$0
     )
 })
 }
@@ -10145,7 +10175,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 48000) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 42108) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 45697) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 39292) {
@@ -10244,7 +10274,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 34481) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 50476) {
+    if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 40148) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 63458) {
@@ -10253,7 +10283,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 44735) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 27532) {
+    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 62754) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_stepadvancecondition_new_instance() != 29956) {

@@ -375,7 +375,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///
     /// - Parameter userLocation: The user's current location.
     public func resumeNavigation(
-        userLocation: UserLocation? = nil,
+        userLocation: UserLocation? = nil
     ) throws {
         // This is technically possible, so we need to check and throw, but
         // it should be rather difficult to get a location fix, get a route,
@@ -436,6 +436,8 @@ public protocol FerrostarCoreDelegate: AnyObject {
             self.state?.tripState = state.tripState
 
             switch state.tripState {
+            case .idle(userLocation: _):
+                break
             case let .navigating(
                 currentStepGeometryIndex: _,
                 userLocation: _,
@@ -503,15 +505,15 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     }
                 }
 
-                // Update the dynamic island if it's being used.
-                if let visualInstruction {
-                    self.widgetProvider?.update(visualInstruction: visualInstruction, tripProgress: tripProgress)
-                }
-
+                var spokenInstructionToAlert: SpokenInstruction?
                 if let spokenInstruction,
                    !self.queuedUtteranceIDs.contains(spokenInstruction.utteranceId)
                 {
                     self.queuedUtteranceIDs.insert(spokenInstruction.utteranceId)
+
+                    // Only set the spoken instruction to alert when it's queued here.
+                    // Otherwise we'll ignore it.
+                    spokenInstructionToAlert = spokenInstruction
 
                     // This sholud not happen on the main queue as it can block;
                     // we'll probably remove the need for this eventually
@@ -520,8 +522,19 @@ public protocol FerrostarCoreDelegate: AnyObject {
                         self.spokenInstructionObserver.spokenInstructionTriggered(spokenInstruction)
                     }
                 }
-            default:
-                break
+
+                // Update the dynamic island if it's being used.
+                if let visualInstruction {
+                    self.widgetProvider?.update(
+                        visualInstruction: visualInstruction,
+                        spokenInstruction: spokenInstructionToAlert,
+                        tripProgress: tripProgress
+                    )
+                }
+            case .complete(userLocation: _, summary: _):
+                // End the widget session if the route is completed, regardless of whether stop is called.
+                // This avoids a dangling LiveActivity the user must close.
+                self.widgetProvider?.terminate()
             }
         }
     }
