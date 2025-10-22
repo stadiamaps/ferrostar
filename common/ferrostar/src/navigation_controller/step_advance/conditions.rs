@@ -4,7 +4,7 @@ use super::{StepAdvanceCondition, StepAdvanceConditionSerializable, StepAdvanceR
 use crate::{
     algorithms::{deviation_from_line, is_within_threshold_to_end_of_linestring},
     deviation_detection::RouteDeviation,
-    models::{RouteStep, UserLocation}, navigation_controller::models::TripState,
+    navigation_controller::models::TripState,
 };
 use geo::Point;
 
@@ -59,6 +59,23 @@ pub struct DistanceToEndOfStepCondition {
 
 impl StepAdvanceCondition for DistanceToEndOfStepCondition {
     fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
+        self.should_advance_inner(&trip_state)
+            .unwrap_or(StepAdvanceResult::continue_with_state(self.new_instance()))
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceToEndOfStepCondition {
+            distance: self.distance,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+        })
+    }
+}
+
+impl DistanceToEndOfStepCondition {
+    fn should_advance_inner(&self, trip_state: &TripState) -> Option<StepAdvanceResult> {
+        let user_location = trip_state.user_location()?;
+        let current_step = trip_state.current_step()?;
+
         let should_advance =
             if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
                 false
@@ -70,18 +87,13 @@ impl StepAdvanceCondition for DistanceToEndOfStepCondition {
                 )
             };
 
-        if should_advance {
+        let result = if should_advance {
             StepAdvanceResult::advance_to_new_instance(self)
         } else {
             StepAdvanceResult::continue_with_state(self.new_instance())
-        }
-    }
+        };
 
-    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
-        Arc::new(DistanceToEndOfStepCondition {
-            distance: self.distance,
-            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-        })
+        Some(result)
     }
 }
 
@@ -330,7 +342,6 @@ impl DistanceEntryAndExitCondition {
 }
 
 impl StepAdvanceCondition for DistanceEntryAndExitCondition {
-    #[allow(unused_variables)]
     fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
         if self.has_reached_end_of_current_step {
             let distance_from_end = DistanceFromStepCondition {
@@ -340,7 +351,7 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
             };
 
             let should_advance = distance_from_end
-                .should_advance_step(user_location, current_step, next_step, route_deviation)
+                .should_advance_step(trip_state)
                 .should_advance;
 
             if should_advance {
@@ -367,7 +378,7 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 distance_to_end_of_step: self.distance_to_end_of_step,
                 distance_after_end_of_step: self.distance_after_end_of_step,
                 has_reached_end_of_current_step: distance_to_end
-                    .should_advance_step(user_location, current_step, next_step, route_deviation)
+                    .should_advance_step(trip_state)
                     .should_advance,
             };
 
