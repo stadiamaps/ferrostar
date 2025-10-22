@@ -239,6 +239,47 @@ pub enum TripState {
     },
 }
 
+impl TripState {
+    pub(crate) fn user_location(&self) -> Option<UserLocation> {
+        match self {
+            TripState::Navigating { user_location, .. } => Some(user_location.clone()),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn snapped_user_location (&self) -> Option<UserLocation> {
+        match self {
+            TripState::Navigating { snapped_user_location, .. } => Some(snapped_user_location.clone()),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn current_step(&self) -> Option<RouteStep> {
+        match self {
+            TripState::Navigating { remaining_steps, .. } => remaining_steps.first().cloned(),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn next_step(&self) -> Option<RouteStep> {
+        self.get_step(1)
+    }
+
+    pub(crate) fn get_step(&self, index: usize) -> Option<RouteStep> {
+        match self {
+            TripState::Navigating { remaining_steps, .. } => remaining_steps.get(index).cloned(),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn deviation(&self) -> Option<RouteDeviation> {
+        match self {
+            TripState::Navigating { deviation, .. } => Some(deviation.clone()),
+            _ => None,
+        }
+    }
+}
+
 #[allow(clippy::large_enum_variant)]
 pub enum StepAdvanceStatus {
     /// Navigation has advanced, and the information on the next step is embedded.

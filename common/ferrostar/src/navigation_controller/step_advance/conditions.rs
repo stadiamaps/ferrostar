@@ -4,7 +4,7 @@ use super::{StepAdvanceCondition, StepAdvanceConditionSerializable, StepAdvanceR
 use crate::{
     algorithms::{deviation_from_line, is_within_threshold_to_end_of_linestring},
     deviation_detection::RouteDeviation,
-    models::{RouteStep, UserLocation},
+    models::{RouteStep, UserLocation}, navigation_controller::models::TripState,
 };
 use geo::Point;
 
@@ -26,13 +26,7 @@ pub struct ManualStepCondition;
 
 impl StepAdvanceCondition for ManualStepCondition {
     #[allow(unused_variables)]
-    fn should_advance_step(
-        &self,
-        user_location: UserLocation,
-        current_step: RouteStep,
-        next_step: Option<RouteStep>,
-        route_deviation: RouteDeviation,
-    ) -> StepAdvanceResult {
+    fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
         StepAdvanceResult::continue_with_state(Arc::new(ManualStepCondition))
     }
 
@@ -64,14 +58,7 @@ pub struct DistanceToEndOfStepCondition {
 }
 
 impl StepAdvanceCondition for DistanceToEndOfStepCondition {
-    #[allow(unused_variables)]
-    fn should_advance_step(
-        &self,
-        user_location: UserLocation,
-        current_step: RouteStep,
-        next_step: Option<RouteStep>,
-        route_deviation: RouteDeviation,
-    ) -> StepAdvanceResult {
+    fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
         let should_advance =
             if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
                 false
@@ -130,19 +117,34 @@ pub struct DistanceFromStepCondition {
 }
 
 impl StepAdvanceCondition for DistanceFromStepCondition {
-    #[allow(unused_variables)]
-    fn should_advance_step(
+    fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
+        self.should_advance_inner(&trip_state)
+            .unwrap_or(StepAdvanceResult::continue_with_state(self.new_instance()))
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceFromStepCondition {
+            distance: self.distance,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+            calculate_while_off_route: self.calculate_while_off_route,
+        })
+    }
+}
+
+impl DistanceFromStepCondition {
+    fn should_advance_inner(
         &self,
-        user_location: UserLocation,
-        current_step: RouteStep,
-        next_step: Option<RouteStep>,
-        route_deviation: RouteDeviation,
-    ) -> StepAdvanceResult {
+        trip_state: &TripState,
+    ) -> Option<StepAdvanceResult> {
+        let deviation = trip_state.deviation()?;
+        let user_location = trip_state.user_location()?;
+        let current_step = trip_state.current_step()?;
+
         // If the user is not on route & we don't allow calculating while off route, don't advance
         // Else if, the user location is not within the minimum horizontal accuracy, don't advance
         // Else if, the user location is within the minimum horizontal accuracy, advance
         let should_advance =
-            if !self.calculate_while_off_route && route_deviation != RouteDeviation::NoDeviation {
+            if !self.calculate_while_off_route && deviation != RouteDeviation::NoDeviation {
                 false
             } else if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
                 false
@@ -155,19 +157,13 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
                     .unwrap_or(false)
             };
 
-        if should_advance {
+        let result = if should_advance {
             StepAdvanceResult::advance_to_new_instance(self)
         } else {
             StepAdvanceResult::continue_with_state(self.new_instance())
-        }
-    }
+        };
 
-    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
-        Arc::new(DistanceFromStepCondition {
-            distance: self.distance,
-            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-            calculate_while_off_route: self.calculate_while_off_route,
-        })
+        Some(result)
     }
 }
 
@@ -195,23 +191,12 @@ pub struct OrAdvanceConditions {
 }
 
 impl StepAdvanceCondition for OrAdvanceConditions {
-    fn should_advance_step(
-        &self,
-        user_location: UserLocation,
-        current_step: RouteStep,
-        next_step: Option<RouteStep>,
-        route_deviation: RouteDeviation,
-    ) -> StepAdvanceResult {
+    fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
         let mut should_advance = false;
         let mut next_conditions = Vec::with_capacity(self.conditions.len());
 
         for condition in &self.conditions {
-            let result = condition.should_advance_step(
-                user_location,
-                current_step.clone(),
-                next_step.clone(),
-                route_deviation.clone(),
-            );
+            let result = condition.should_advance_step(trip_state.clone());
             should_advance = should_advance || result.should_advance;
             next_conditions.push(result.next_iteration);
         }
@@ -257,23 +242,12 @@ pub struct AndAdvanceConditions {
 }
 
 impl StepAdvanceCondition for AndAdvanceConditions {
-    fn should_advance_step(
-        &self,
-        user_location: UserLocation,
-        current_step: RouteStep,
-        next_step: Option<RouteStep>,
-        route_deviation: RouteDeviation,
-    ) -> StepAdvanceResult {
+    fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
         let mut should_advance = true;
         let mut next_conditions = Vec::with_capacity(self.conditions.len());
 
         for condition in &self.conditions {
-            let result = condition.should_advance_step(
-                user_location,
-                current_step.clone(),
-                next_step.clone(),
-                route_deviation.clone(),
-            );
+            let result = condition.should_advance_step(trip_state.clone());
             should_advance = should_advance && result.should_advance;
             next_conditions.push(result.next_iteration);
         }
@@ -357,13 +331,7 @@ impl DistanceEntryAndExitCondition {
 
 impl StepAdvanceCondition for DistanceEntryAndExitCondition {
     #[allow(unused_variables)]
-    fn should_advance_step(
-        &self,
-        user_location: UserLocation,
-        current_step: RouteStep,
-        next_step: Option<RouteStep>,
-        route_deviation: RouteDeviation,
-    ) -> StepAdvanceResult {
+    fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult {
         if self.has_reached_end_of_current_step {
             let distance_from_end = DistanceFromStepCondition {
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,

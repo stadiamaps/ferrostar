@@ -2,10 +2,10 @@
 use crate::{
     deviation_detection::RouteDeviation,
     models::{RouteStep, UserLocation},
-    navigation_controller::step_advance::conditions::{
+    navigation_controller::{models::TripState, step_advance::conditions::{
         AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceFromStepCondition,
         DistanceToEndOfStepCondition, ManualStepCondition, OrAdvanceConditions,
-    },
+    }},
 };
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -83,13 +83,7 @@ pub trait StepAdvanceCondition: StepAdvanceConditionSerializable + Sync + Send {
     /// This callback method is used by a step advance condition to receive step updates.
     /// The step advance condition can choose based on its outcome and internal state
     /// whether to advance to the next step or not.
-    fn should_advance_step(
-        &self,
-        user_location: UserLocation,
-        current_step: RouteStep,
-        next_step: Option<RouteStep>,
-        route_deviation: RouteDeviation,
-    ) -> StepAdvanceResult;
+    fn should_advance_step(&self, trip_state: TripState) -> StepAdvanceResult;
 
     /// Creates a clean instance of this condition with the same configuration but reset state.
     /// This is used by composite conditions (Or/And) to ensure proper state isolation
