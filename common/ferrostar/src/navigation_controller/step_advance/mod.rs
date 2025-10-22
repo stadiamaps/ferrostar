@@ -1,11 +1,10 @@
 //! Step advance condition traits and implementations.
-use crate::{
-    deviation_detection::RouteDeviation,
-    models::{RouteStep, UserLocation},
-    navigation_controller::{models::TripState, step_advance::conditions::{
+use crate::navigation_controller::{
+    models::TripState,
+    step_advance::conditions::{
         AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceFromStepCondition,
         DistanceToEndOfStepCondition, ManualStepCondition, OrAdvanceConditions,
-    }},
+    },
 };
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;

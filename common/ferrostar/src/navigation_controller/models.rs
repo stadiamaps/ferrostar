@@ -247,16 +247,21 @@ impl TripState {
         }
     }
 
-    pub(crate) fn snapped_user_location (&self) -> Option<UserLocation> {
+    pub(crate) fn snapped_user_location(&self) -> Option<UserLocation> {
         match self {
-            TripState::Navigating { snapped_user_location, .. } => Some(snapped_user_location.clone()),
+            TripState::Navigating {
+                snapped_user_location,
+                ..
+            } => Some(snapped_user_location.clone()),
             _ => None,
         }
     }
 
     pub(crate) fn current_step(&self) -> Option<RouteStep> {
         match self {
-            TripState::Navigating { remaining_steps, .. } => remaining_steps.first().cloned(),
+            TripState::Navigating {
+                remaining_steps, ..
+            } => remaining_steps.first().cloned(),
             _ => None,
         }
     }
@@ -267,7 +272,9 @@ impl TripState {
 
     pub(crate) fn get_step(&self, index: usize) -> Option<RouteStep> {
         match self {
-            TripState::Navigating { remaining_steps, .. } => remaining_steps.get(index).cloned(),
+            TripState::Navigating {
+                remaining_steps, ..
+            } => remaining_steps.get(index).cloned(),
             _ => None,
         }
     }
