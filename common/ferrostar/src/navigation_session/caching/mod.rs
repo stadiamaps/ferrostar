@@ -1,8 +1,10 @@
+#[cfg(feature = "uniffi")]
 use std::sync::{Arc, Mutex};
 
+#[cfg(feature = "uniffi")]
 use chrono::{Duration, Utc};
 
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
+#[cfg(feature = "uniffi")]
 use crate::{
     models::{Route, UserLocation},
     navigation_controller::models::NavState,
@@ -14,7 +16,7 @@ use crate::{
 
 pub mod models;
 
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
+#[cfg(feature = "uniffi")]
 #[cfg_attr(feature = "uniffi", uniffi::export(with_foreign))]
 pub trait NavigationCache: Send + Sync {
     fn save(&self, record: Vec<u8>);
@@ -22,7 +24,7 @@ pub trait NavigationCache: Send + Sync {
     fn delete(&self);
 }
 
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
+#[cfg(feature = "uniffi")]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
 struct NavigationSessionCache {
     config: NavigationCachingConfig,
@@ -30,7 +32,7 @@ struct NavigationSessionCache {
     current_record: Mutex<Option<NavigationSessionSnapshot>>,
 }
 
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
+#[cfg(feature = "uniffi")]
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationSessionCache {
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
@@ -76,26 +78,10 @@ impl NavigationSessionCache {
     }
 }
 
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
+#[cfg(feature = "uniffi")]
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationObserver for NavigationSessionCache {
-    fn on_route_available(&self, route: Route) {
-        if let Ok(mut record) = self.current_record.lock() {
-            *record = Some(NavigationSessionSnapshot {
-                saved_at: Utc::now(),
-                route: route.clone(),
-                trip_state: None,
-            });
-        }
-        // We don't need to cache the snapshot here because it will be cached immediately after
-        // when on_get_initial_state is called. See `NavigationSession` for observer sequences.
-    }
-
     fn on_get_initial_state(&self, state: NavState) {
-        self.handle_update(state, true)
-    }
-
-    fn on_advance_to_next_step(&self, state: NavState) {
         self.handle_update(state, true)
     }
 
@@ -119,9 +105,25 @@ impl NavigationObserver for NavigationSessionCache {
 
         self.handle_update(state, should_cache);
     }
+
+    fn on_advance_to_next_step(&self, state: NavState) {
+        self.handle_update(state, true)
+    }
+
+    fn on_route_available(&self, route: Route) {
+        if let Ok(mut record) = self.current_record.lock() {
+            *record = Some(NavigationSessionSnapshot {
+                saved_at: Utc::now(),
+                route: route.clone(),
+                trip_state: None,
+            });
+        }
+        // We don't need to cache the snapshot here because it will be cached immediately after
+        // when on_get_initial_state is called. See `NavigationSession` for observer sequences.
+    }
 }
 
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
+#[cfg(feature = "uniffi")]
 impl NavigationSessionCache {
     fn handle_update(&self, state: NavState, should_cache: bool) {
         if !should_cache {

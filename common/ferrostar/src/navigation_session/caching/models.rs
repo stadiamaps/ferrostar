@@ -1,18 +1,21 @@
+#[cfg(feature = "uniffi")]
 use serde::{Deserialize, Serialize};
 
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
+#[cfg(feature = "uniffi")]
 use crate::{models::Route, navigation_controller::models::TripState, UtcDateTime};
 
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
+#[cfg(feature = "uniffi")]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 pub struct NavigationCachingConfig {
     pub cache_interval_seconds: i64,
     pub max_age_seconds: i64,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-#[cfg(all(feature = "uniffi", not(feature = "wasm_js")))]
-#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg(feature = "uniffi")]
+#[cfg_attr(
+    feature = "uniffi",
+    derive(uniffi::Record, Debug, Clone, Serialize, Deserialize)
+)]
 pub struct NavigationSessionSnapshot {
     pub saved_at: UtcDateTime,
     pub route: Route,
