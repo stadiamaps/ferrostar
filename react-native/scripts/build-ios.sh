@@ -11,3 +11,5 @@ yarn workspace @stadiamaps/ferrostar-uniffi-react-native codegen
 yarn workspace @stadiamaps/ferrostar-core-react-native prepare
 
 yarn workspace @stadiamaps/ferrostar-maplibre-react-native prepare
+
+yarn workspace @stadiamaps/ferrostar-example-react-native expo prebuild
