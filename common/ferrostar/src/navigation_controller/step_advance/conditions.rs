@@ -326,7 +326,7 @@ pub struct DistanceEntryAndExitCondition {
     /// Values larger than this cannot ever trigger a step advance.
     pub(super) minimum_horizontal_accuracy: u16,
     /// Internal state for tracking when the user is within `distance_to_end_of_step` meters from the end of the step.
-    /// This allows for stateful advance only after entering a reasonable radues of the goal
+    /// This allows for stateful advance only after entering a reasonable radius of the goal
     /// and then exiting the area by a separate trigger threshold.
     pub(super) has_reached_end_of_current_step: bool,
     // TODO: Do we want a speed multiplier
