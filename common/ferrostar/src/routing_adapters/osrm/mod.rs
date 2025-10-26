@@ -31,6 +31,7 @@ use uuid::Uuid;
 ///
 /// # Waypoint properties
 ///
+/// Waypoint properties will always be returned as UTF-8 encoded JSON bytes.
 /// This adapter knows about properties defined in [`OsrmWaypointProperties`].
 /// However, some servers (like the Valhalla derivatives run by Stadia Maps and Mapbox)
 /// **may not echo back all rich location properties in OSRM mode**.
@@ -96,11 +97,13 @@ impl Route {
                     WaypointKind::Break
                 },
                 properties: if waypoint.name.is_some() || waypoint.distance.is_some() {
-                    serde_json::to_vec(&OsrmWaypointProperties {
-                        name: waypoint.name.clone(),
-                        distance: waypoint.distance,
-                    })
-                    .ok()
+                    Some(
+                        serde_json::to_vec(&OsrmWaypointProperties {
+                            name: waypoint.name.clone(),
+                            distance: waypoint.distance,
+                        })
+                        .expect("Infallible JSON serialization"),
+                    )
                 } else {
                     None
                 },

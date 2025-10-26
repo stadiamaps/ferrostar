@@ -16,6 +16,7 @@ use alloc::{
     vec::Vec,
 };
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
@@ -29,7 +30,7 @@ use tsify::Tsify;
 ///
 /// NOTE: Waypoint properties will NOT currently be echoed back by Valhalla-based servers,
 /// so these are sent to the server one time.
-#[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Default, Serialize, Deserialize)]
+#[derive(Copy, Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
@@ -51,16 +52,37 @@ pub struct ValhallaWaypointProperties {
     /// Determines whether the location should be visited from the same, opposite or either side of the road,
     /// with respect to the side of the road the given locale drives on.
     ///
-    /// NOTE: If the location is not offset from the road centerline,
+    /// NOTE: If the location is not offset from the road centerline
     /// or is very close to an intersection, this option has no effect!
     pub preferred_side: Option<ValhallaWaypointPreferredSide>,
-    // TODO: display_lat + display_lon
-    // TODO: search_cutoff
-    // TODO: node_snap_tolerance
-    // TODO: street_side_tolerance
-    // TODO: street_side_max_distance
-    // TODO: street_side_cutoff
-    // TODO: search_filter
+    /// Latitude of the map location in degrees.
+    ///
+    /// If provided, the waypoint location will still be used for routing,
+    /// but these coordinates will determine the side of the street.
+    pub display_coordinate: Option<GeographicCoordinate>,
+    /// The cutoff at which we will assume the input is too far away from civilization
+    /// to be worth correlating to the nearest graph elements.
+    pub search_cutoff: Option<u32>,
+    /// During edge correlation, this is the tolerance used to determine whether to snap
+    /// to the intersection rather than along the street.
+    /// If the snap location is within this distance from the intersection,
+    /// the intersection is used instead.
+    pub node_snap_tolerance: Option<u16>,
+    /// A tolerance in meters from the edge centerline used for determining the side of the street
+    /// that the location is on.
+    /// If the distance to the centerline is less than this tolerance,
+    /// no side will be inferred.
+    /// Otherwise, the left or right side will be selected depending on the direction of travel.
+    pub street_side_tolerance: Option<u16>,
+    /// The max distance in meters that the input coordinates or display lat/lon can be
+    /// from the edge centerline for them to be used for determining the side of the street.
+    /// Beyond this distance, no street side is inferred.
+    pub street_side_max_distance: Option<u16>,
+    /// Disables the `preferred_side` when set to `same` or `opposite`
+    /// if the edge has a road class less than that provided by `street_side_cutoff`.
+    pub street_side_cutoff: Option<ValhallaRoadClass>,
+    /// A set of optional filters to exclude candidate edges based on their attributes.
+    pub search_filter: Option<ValhallaLocationSearchFilter>,
 }
 
 impl Waypoint {
@@ -104,7 +126,7 @@ pub fn create_waypoint_with_valhalla_properties(
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
-#[serde(rename_all = "lowercase")]
+#[serde(rename_all = "snake_case")]
 pub enum ValhallaWaypointPreferredSide {
     /// You must depart from or arrive at the location on the _same_ side as you drive.
     Same,
@@ -112,6 +134,55 @@ pub enum ValhallaWaypointPreferredSide {
     Opposite,
     /// No preference; you can depart or arrive from any direction.
     Either,
+}
+
+/// A road class in the Valhalla taxonomy.
+///
+/// These are ordered from highest (fastest travel speed) to lowest.
+#[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[serde(rename_all = "snake_case")]
+pub enum ValhallaRoadClass {
+    Motorway,
+    Trunk,
+    Primary,
+    Secondary,
+    Tertiary,
+    Unclassified,
+    Residential,
+    ServiceOther,
+}
+
+/// A set of optional filters to exclude candidate edges based on their attributes.
+#[skip_serializing_none]
+#[derive(Copy, Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[serde(rename_all = "snake_case")]
+pub struct ValhallaLocationSearchFilter {
+    /// Whether to exclude roads marked as tunnels.
+    pub exclude_tunnel: Option<bool>,
+    /// Whether to exclude roads marked as bridges.
+    pub exclude_bridge: Option<bool>,
+    /// Whether to exclude roads with tolls.
+    pub exclude_tolls: Option<bool>,
+    /// Whether to exclude ferries.
+    pub exclude_ferry: Option<bool>,
+    /// Whether to exclude roads marked as ramps.
+    pub exclude_ramp: Option<bool>,
+    /// Whether to exclude roads marked as closed due to a live traffic closure.
+    pub exclude_closures: Option<bool>,
+    /// The lowest road class allowed.
+    pub min_road_class: Option<ValhallaRoadClass>,
+    /// The highest road class allowed.
+    pub max_road_class: Option<ValhallaRoadClass>,
+    /// If specified, will only consider edges that are on or traverse the passed floor level.
+    /// It will set `search_cutoff` to a default value of 300 meters if no cutoff value is passed.
+    /// Additionally, if a `search_cutoff` is passed, it will be clamped to 1000 meters.
+    pub level: Option<f32>,
 }
 
 /// A route request generator for Valhalla backends operating over HTTP.
@@ -380,6 +451,13 @@ fn merge_optional_waypoint_properties(
         minimum_reachability,
         radius,
         preferred_side,
+        display_coordinate,
+        search_cutoff,
+        node_snap_tolerance,
+        street_side_tolerance,
+        street_side_max_distance,
+        street_side_cutoff,
+        search_filter,
     }) = waypoint_properties
     else {
         return location;
@@ -408,6 +486,37 @@ fn merge_optional_waypoint_properties(
             serde_json::to_value(&preferred_side).expect("This should never fail");
     }
 
+    if let Some(display_coordinate) = display_coordinate {
+        result["display_lat"] = display_coordinate.lat.into();
+        result["display_lon"] = display_coordinate.lng.into();
+    }
+
+    if let Some(search_cutoff) = search_cutoff {
+        result["search_cutoff"] = search_cutoff.into();
+    }
+
+    if let Some(node_snap_tolerance) = node_snap_tolerance {
+        result["node_snap_tolerance"] = node_snap_tolerance.into();
+    }
+
+    if let Some(street_side_tolerance) = street_side_tolerance {
+        result["street_side_tolerance"] = street_side_tolerance.into();
+    }
+
+    if let Some(street_side_max_distance) = street_side_max_distance {
+        result["street_side_max_distance"] = street_side_max_distance.into();
+    }
+
+    if let Some(street_side_cutoff) = street_side_cutoff {
+        result["street_side_cutoff"] =
+            serde_json::to_value(&street_side_cutoff).expect("This should never fail");
+    }
+
+    if let Some(search_filter) = search_filter {
+        result["search_filter"] =
+            serde_json::to_value(&search_filter).expect("This should never fail");
+    }
+
     result
 }
 
@@ -421,7 +530,6 @@ mod tests {
 
     #[cfg(all(feature = "std", not(feature = "web-time")))]
     use std::time::SystemTime;
-
     #[cfg(feature = "web-time")]
     use web_time::SystemTime;
     const ENDPOINT_URL: &str = "https://api.stadiamaps.com/route/v1";
@@ -455,6 +563,11 @@ mod tests {
                 WaypointKind::Break,
                 ValhallaWaypointProperties {
                     preferred_side: Some(ValhallaWaypointPreferredSide::Same),
+                    search_filter: Some(ValhallaLocationSearchFilter {
+                        exclude_bridge: Some(true),
+                        min_road_class: Some(ValhallaRoadClass::Residential),
+                        ..Default::default()
+                    }),
                     ..Default::default()
                 },
             ),
@@ -558,6 +671,10 @@ mod tests {
                         "lat": 2.0,
                         "lon": 3.0,
                         "preferred_side": "same",
+                        "search_filter": {
+                            "exclude_bridge": true,
+                            "min_road_class": "residential",
+                        }
                     }
                 ],
             })
@@ -676,6 +793,10 @@ mod tests {
                         "lat": 2.0,
                         "lon": 3.0,
                         "preferred_side": "same",
+                        "search_filter": {
+                            "exclude_bridge": true,
+                            "min_road_class": "residential",
+                        }
                     }
                 ],
             })

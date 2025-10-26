@@ -45,11 +45,15 @@
           - lat: 60.534715
           - lng: -149.543469
         - kind: break
+        ▿ properties: Optional<Data>
+          - some: 30 bytes
       ▿ Waypoint: GeographicCoordinate(lat: 60.534991, lng: -149.548581) kind: break
         ▿ coordinate: GeographicCoordinate
           - lat: 60.534991
           - lng: -149.548581
         - kind: break
+        ▿ properties: Optional<Data>
+          - some: 30 bytes
     ▿ steps: 2 elements
       ▿ RouteStep: Drive west on AK 1/Seward Highway.
         ▿ geometry: 10 elements

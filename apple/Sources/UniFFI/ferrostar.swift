@@ -505,6 +505,22 @@ fileprivate struct FfiConverterInt64: FfiConverterPrimitive {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterFloat: FfiConverterPrimitive {
+    typealias FfiType = Float
+    typealias SwiftType = Float
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Float {
+        return try lift(readFloat(&buf))
+    }
+
+    public static func write(_ value: Float, into buf: inout [UInt8]) {
+        writeFloat(&buf, lower(value))
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterDouble: FfiConverterPrimitive {
     typealias FfiType = Double
     typealias SwiftType = Double
@@ -5693,6 +5709,147 @@ public func FfiConverterTypeUserLocation_lower(_ value: UserLocation) -> RustBuf
 
 
 /**
+ * A set of optional filters to exclude candidate edges based on their attributes.
+ */
+public struct ValhallaLocationSearchFilter: Equatable, Hashable, Codable {
+    /**
+     * Whether to exclude roads marked as tunnels.
+     */
+    public var excludeTunnel: Bool?
+    /**
+     * Whether to exclude roads marked as bridges.
+     */
+    public var excludeBridge: Bool?
+    /**
+     * Whether to exclude roads with tolls.
+     */
+    public var excludeTolls: Bool?
+    /**
+     * Whether to exclude ferries.
+     */
+    public var excludeFerry: Bool?
+    /**
+     * Whether to exclude roads marked as ramps.
+     */
+    public var excludeRamp: Bool?
+    /**
+     * Whether to exclude roads marked as closed due to a live traffic closure.
+     */
+    public var excludeClosures: Bool?
+    /**
+     * The lowest road class allowed.
+     */
+    public var minRoadClass: ValhallaRoadClass?
+    /**
+     * The highest road class allowed.
+     */
+    public var maxRoadClass: ValhallaRoadClass?
+    /**
+     * If specified, will only consider edges that are on or traverse the passed floor level.
+     * It will set `search_cutoff` to a default value of 300 meters if no cutoff value is passed.
+     * Additionally, if a `search_cutoff` is passed, it will be clamped to 1000 meters.
+     */
+    public var level: Float?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * Whether to exclude roads marked as tunnels.
+         */excludeTunnel: Bool?, 
+        /**
+         * Whether to exclude roads marked as bridges.
+         */excludeBridge: Bool?, 
+        /**
+         * Whether to exclude roads with tolls.
+         */excludeTolls: Bool?, 
+        /**
+         * Whether to exclude ferries.
+         */excludeFerry: Bool?, 
+        /**
+         * Whether to exclude roads marked as ramps.
+         */excludeRamp: Bool?, 
+        /**
+         * Whether to exclude roads marked as closed due to a live traffic closure.
+         */excludeClosures: Bool?, 
+        /**
+         * The lowest road class allowed.
+         */minRoadClass: ValhallaRoadClass?, 
+        /**
+         * The highest road class allowed.
+         */maxRoadClass: ValhallaRoadClass?, 
+        /**
+         * If specified, will only consider edges that are on or traverse the passed floor level.
+         * It will set `search_cutoff` to a default value of 300 meters if no cutoff value is passed.
+         * Additionally, if a `search_cutoff` is passed, it will be clamped to 1000 meters.
+         */level: Float?) {
+        self.excludeTunnel = excludeTunnel
+        self.excludeBridge = excludeBridge
+        self.excludeTolls = excludeTolls
+        self.excludeFerry = excludeFerry
+        self.excludeRamp = excludeRamp
+        self.excludeClosures = excludeClosures
+        self.minRoadClass = minRoadClass
+        self.maxRoadClass = maxRoadClass
+        self.level = level
+    }
+
+    
+}
+
+#if compiler(>=6)
+extension ValhallaLocationSearchFilter: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeValhallaLocationSearchFilter: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ValhallaLocationSearchFilter {
+        return
+            try ValhallaLocationSearchFilter(
+                excludeTunnel: FfiConverterOptionBool.read(from: &buf), 
+                excludeBridge: FfiConverterOptionBool.read(from: &buf), 
+                excludeTolls: FfiConverterOptionBool.read(from: &buf), 
+                excludeFerry: FfiConverterOptionBool.read(from: &buf), 
+                excludeRamp: FfiConverterOptionBool.read(from: &buf), 
+                excludeClosures: FfiConverterOptionBool.read(from: &buf), 
+                minRoadClass: FfiConverterOptionTypeValhallaRoadClass.read(from: &buf), 
+                maxRoadClass: FfiConverterOptionTypeValhallaRoadClass.read(from: &buf), 
+                level: FfiConverterOptionFloat.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ValhallaLocationSearchFilter, into buf: inout [UInt8]) {
+        FfiConverterOptionBool.write(value.excludeTunnel, into: &buf)
+        FfiConverterOptionBool.write(value.excludeBridge, into: &buf)
+        FfiConverterOptionBool.write(value.excludeTolls, into: &buf)
+        FfiConverterOptionBool.write(value.excludeFerry, into: &buf)
+        FfiConverterOptionBool.write(value.excludeRamp, into: &buf)
+        FfiConverterOptionBool.write(value.excludeClosures, into: &buf)
+        FfiConverterOptionTypeValhallaRoadClass.write(value.minRoadClass, into: &buf)
+        FfiConverterOptionTypeValhallaRoadClass.write(value.maxRoadClass, into: &buf)
+        FfiConverterOptionFloat.write(value.level, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeValhallaLocationSearchFilter_lift(_ buf: RustBuffer) throws -> ValhallaLocationSearchFilter {
+    return try FfiConverterTypeValhallaLocationSearchFilter.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeValhallaLocationSearchFilter_lower(_ value: ValhallaLocationSearchFilter) -> RustBuffer {
+    return FfiConverterTypeValhallaLocationSearchFilter.lower(value)
+}
+
+
+/**
  * Waypoint properties supported by Valhalla servers.
  *
  * Our docstrings are short here, since Valhalla is the final authority.
@@ -5731,10 +5888,52 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
      * Determines whether the location should be visited from the same, opposite or either side of the road,
      * with respect to the side of the road the given locale drives on.
      *
-     * NOTE: If the location is not offset from the road centerline,
+     * NOTE: If the location is not offset from the road centerline
      * or is very close to an intersection, this option has no effect!
      */
     public var preferredSide: ValhallaWaypointPreferredSide?
+    /**
+     * Latitude of the map location in degrees.
+     *
+     * If provided, the waypoint location will still be used for routing,
+     * but these coordinates will determine the side of the street.
+     */
+    public var displayCoordinate: GeographicCoordinate?
+    /**
+     * The cutoff at which we will assume the input is too far away from civilization
+     * to be worth correlating to the nearest graph elements.
+     */
+    public var searchCutoff: UInt32?
+    /**
+     * During edge correlation, this is the tolerance used to determine whether to snap
+     * to the intersection rather than along the street.
+     * If the snap location is within this distance from the intersection,
+     * the intersection is used instead.
+     */
+    public var nodeSnapTolerance: UInt16?
+    /**
+     * A tolerance in meters from the edge centerline used for determining the side of the street
+     * that the location is on.
+     * If the distance to the centerline is less than this tolerance,
+     * no side will be inferred.
+     * Otherwise, the left or right side will be selected depending on the direction of travel.
+     */
+    public var streetSideTolerance: UInt16?
+    /**
+     * The max distance in meters that the input coordinates or display lat/lon can be
+     * from the edge centerline for them to be used for determining the side of the street.
+     * Beyond this distance, no street side is inferred.
+     */
+    public var streetSideMaxDistance: UInt16?
+    /**
+     * Disables the `preferred_side` when set to `same` or `opposite`
+     * if the edge has a road class less than that provided by `street_side_cutoff`.
+     */
+    public var streetSideCutoff: ValhallaRoadClass?
+    /**
+     * A set of optional filters to exclude candidate edges based on their attributes.
+     */
+    public var searchFilter: ValhallaLocationSearchFilter?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -5761,14 +5960,56 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
          * Determines whether the location should be visited from the same, opposite or either side of the road,
          * with respect to the side of the road the given locale drives on.
          *
-         * NOTE: If the location is not offset from the road centerline,
+         * NOTE: If the location is not offset from the road centerline
          * or is very close to an intersection, this option has no effect!
-         */preferredSide: ValhallaWaypointPreferredSide?) {
+         */preferredSide: ValhallaWaypointPreferredSide?, 
+        /**
+         * Latitude of the map location in degrees.
+         *
+         * If provided, the waypoint location will still be used for routing,
+         * but these coordinates will determine the side of the street.
+         */displayCoordinate: GeographicCoordinate?, 
+        /**
+         * The cutoff at which we will assume the input is too far away from civilization
+         * to be worth correlating to the nearest graph elements.
+         */searchCutoff: UInt32?, 
+        /**
+         * During edge correlation, this is the tolerance used to determine whether to snap
+         * to the intersection rather than along the street.
+         * If the snap location is within this distance from the intersection,
+         * the intersection is used instead.
+         */nodeSnapTolerance: UInt16?, 
+        /**
+         * A tolerance in meters from the edge centerline used for determining the side of the street
+         * that the location is on.
+         * If the distance to the centerline is less than this tolerance,
+         * no side will be inferred.
+         * Otherwise, the left or right side will be selected depending on the direction of travel.
+         */streetSideTolerance: UInt16?, 
+        /**
+         * The max distance in meters that the input coordinates or display lat/lon can be
+         * from the edge centerline for them to be used for determining the side of the street.
+         * Beyond this distance, no street side is inferred.
+         */streetSideMaxDistance: UInt16?, 
+        /**
+         * Disables the `preferred_side` when set to `same` or `opposite`
+         * if the edge has a road class less than that provided by `street_side_cutoff`.
+         */streetSideCutoff: ValhallaRoadClass?, 
+        /**
+         * A set of optional filters to exclude candidate edges based on their attributes.
+         */searchFilter: ValhallaLocationSearchFilter?) {
         self.heading = heading
         self.headingTolerance = headingTolerance
         self.minimumReachability = minimumReachability
         self.radius = radius
         self.preferredSide = preferredSide
+        self.displayCoordinate = displayCoordinate
+        self.searchCutoff = searchCutoff
+        self.nodeSnapTolerance = nodeSnapTolerance
+        self.streetSideTolerance = streetSideTolerance
+        self.streetSideMaxDistance = streetSideMaxDistance
+        self.streetSideCutoff = streetSideCutoff
+        self.searchFilter = searchFilter
     }
 
     
@@ -5789,7 +6030,14 @@ public struct FfiConverterTypeValhallaWaypointProperties: FfiConverterRustBuffer
                 headingTolerance: FfiConverterOptionUInt16.read(from: &buf), 
                 minimumReachability: FfiConverterOptionUInt16.read(from: &buf), 
                 radius: FfiConverterOptionUInt16.read(from: &buf), 
-                preferredSide: FfiConverterOptionTypeValhallaWaypointPreferredSide.read(from: &buf)
+                preferredSide: FfiConverterOptionTypeValhallaWaypointPreferredSide.read(from: &buf), 
+                displayCoordinate: FfiConverterOptionTypeGeographicCoordinate.read(from: &buf), 
+                searchCutoff: FfiConverterOptionUInt32.read(from: &buf), 
+                nodeSnapTolerance: FfiConverterOptionUInt16.read(from: &buf), 
+                streetSideTolerance: FfiConverterOptionUInt16.read(from: &buf), 
+                streetSideMaxDistance: FfiConverterOptionUInt16.read(from: &buf), 
+                streetSideCutoff: FfiConverterOptionTypeValhallaRoadClass.read(from: &buf), 
+                searchFilter: FfiConverterOptionTypeValhallaLocationSearchFilter.read(from: &buf)
         )
     }
 
@@ -5799,6 +6047,13 @@ public struct FfiConverterTypeValhallaWaypointProperties: FfiConverterRustBuffer
         FfiConverterOptionUInt16.write(value.minimumReachability, into: &buf)
         FfiConverterOptionUInt16.write(value.radius, into: &buf)
         FfiConverterOptionTypeValhallaWaypointPreferredSide.write(value.preferredSide, into: &buf)
+        FfiConverterOptionTypeGeographicCoordinate.write(value.displayCoordinate, into: &buf)
+        FfiConverterOptionUInt32.write(value.searchCutoff, into: &buf)
+        FfiConverterOptionUInt16.write(value.nodeSnapTolerance, into: &buf)
+        FfiConverterOptionUInt16.write(value.streetSideTolerance, into: &buf)
+        FfiConverterOptionUInt16.write(value.streetSideMaxDistance, into: &buf)
+        FfiConverterOptionTypeValhallaRoadClass.write(value.streetSideCutoff, into: &buf)
+        FfiConverterOptionTypeValhallaLocationSearchFilter.write(value.searchFilter, into: &buf)
     }
 }
 
@@ -8071,6 +8326,118 @@ public func FfiConverterTypeTripState_lower(_ value: TripState) -> RustBuffer {
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
+ * A road class in the Valhalla taxonomy.
+ *
+ * These are ordered from highest (fastest travel speed) to lowest.
+ */
+
+public enum ValhallaRoadClass: Equatable, Hashable, Codable {
+    
+    case motorway
+    case trunk
+    case primary
+    case secondary
+    case tertiary
+    case unclassified
+    case residential
+    case serviceOther
+
+
+
+}
+
+#if compiler(>=6)
+extension ValhallaRoadClass: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeValhallaRoadClass: FfiConverterRustBuffer {
+    typealias SwiftType = ValhallaRoadClass
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ValhallaRoadClass {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .motorway
+        
+        case 2: return .trunk
+        
+        case 3: return .primary
+        
+        case 4: return .secondary
+        
+        case 5: return .tertiary
+        
+        case 6: return .unclassified
+        
+        case 7: return .residential
+        
+        case 8: return .serviceOther
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ValhallaRoadClass, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .motorway:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .trunk:
+            writeInt(&buf, Int32(2))
+        
+        
+        case .primary:
+            writeInt(&buf, Int32(3))
+        
+        
+        case .secondary:
+            writeInt(&buf, Int32(4))
+        
+        
+        case .tertiary:
+            writeInt(&buf, Int32(5))
+        
+        
+        case .unclassified:
+            writeInt(&buf, Int32(6))
+        
+        
+        case .residential:
+            writeInt(&buf, Int32(7))
+        
+        
+        case .serviceOther:
+            writeInt(&buf, Int32(8))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeValhallaRoadClass_lift(_ buf: RustBuffer) throws -> ValhallaRoadClass {
+    return try FfiConverterTypeValhallaRoadClass.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeValhallaRoadClass_lower(_ value: ValhallaRoadClass) -> RustBuffer {
+    return FfiConverterTypeValhallaRoadClass.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
  * Specifies a preferred side for departing from / arriving at a location.
  *
  * Examples:
@@ -8363,6 +8730,30 @@ fileprivate struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionUInt32: FfiConverterRustBuffer {
+    typealias SwiftType = UInt32?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterUInt32.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterUInt32.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionUInt64: FfiConverterRustBuffer {
     typealias SwiftType = UInt64?
 
@@ -8379,6 +8770,30 @@ fileprivate struct FfiConverterOptionUInt64: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterUInt64.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionFloat: FfiConverterRustBuffer {
+    typealias SwiftType = Float?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterFloat.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterFloat.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -8555,6 +8970,30 @@ fileprivate struct FfiConverterOptionTypeCourseOverGround: FfiConverterRustBuffe
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeGeographicCoordinate: FfiConverterRustBuffer {
+    typealias SwiftType = GeographicCoordinate?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeGeographicCoordinate.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeGeographicCoordinate.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeNavigationSessionSnapshot: FfiConverterRustBuffer {
     typealias SwiftType = NavigationSessionSnapshot?
 
@@ -8667,6 +9106,30 @@ fileprivate struct FfiConverterOptionTypeUserLocation: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeUserLocation.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeValhallaLocationSearchFilter: FfiConverterRustBuffer {
+    typealias SwiftType = ValhallaLocationSearchFilter?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeValhallaLocationSearchFilter.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeValhallaLocationSearchFilter.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
@@ -8811,6 +9274,30 @@ fileprivate struct FfiConverterOptionTypeTripState: FfiConverterRustBuffer {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeTripState.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeValhallaRoadClass: FfiConverterRustBuffer {
+    typealias SwiftType = ValhallaRoadClass?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeValhallaRoadClass.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeValhallaRoadClass.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }

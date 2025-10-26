@@ -123,7 +123,7 @@ pub struct Waypoint {
     /// In any case, [`crate::routing_adapters::RouteRequestGenerator`] and [`crate::routing_adapters::RouteResponseParser`]
     /// implementations SHOULD document their level support for this,
     /// ideally with an exportable record type.
-    #[uniffi(default)]
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub properties: Option<Vec<u8>>,
 }
 
