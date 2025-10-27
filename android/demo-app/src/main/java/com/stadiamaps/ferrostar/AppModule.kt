@@ -33,16 +33,19 @@ object AppModule {
 
   private lateinit var appContext: Context
 
+  // Here we show examples of how to use Ferrostar with a routing API.
+  //
+  // See https://stadiamaps.github.io/ferrostar/vendors.html for a list of vendors
+  // known to work with Ferrostar.
+  //
+  // Option 1: Stadia Maps
+  //
   // You can get an API key (free for development and evaluation; no credit card required)
   // at client.stadiamaps.com.
-  // You can also modify this file to use your preferred sources for maps and/or routing.
-  // See https://stadiamaps.github.io/ferrostar/vendors.html for vendors known to work with
-  // Ferrostar.
+  // NOTE: The demo app requires a Stadia Maps API key for the search box to work.
   //
-  // NOTE: Don't set this directly in source code. Add a line to your local.properties file:
+  // Add a line to your local.properties file to enable Stadia Maps:
   // stadiaApiKey=YOUR-API-KEY
-  // and if you want to use the GraphHopper API for routing add additionally:
-  // graphhopperApiKey=YOUR-API-KEY
   val stadiaApiKey =
       if (BuildConfig.stadiaApiKey.isBlank() || BuildConfig.stadiaApiKey == "null") {
         null
@@ -50,6 +53,11 @@ object AppModule {
         BuildConfig.stadiaApiKey
       }
 
+  // Option 2: GraphHopper
+  //
+  // GraphHopper offers free API keys at https://www.graphhopper.com/.
+  // Add a line to your local.properties file to enable GraphHopper:
+  // graphhopperApiKey=YOUR-API-KEY
   val graphhopperApiKey =
       if (BuildConfig.graphhopperApiKey.isBlank() || BuildConfig.graphhopperApiKey == "null") {
         null
@@ -89,6 +97,7 @@ object AppModule {
   }
 
   val ferrostarCore: FerrostarCore by lazy {
+    // Option 1: Valhalla-based API
     var options =
         mapOf(
             "costingOptions" to
@@ -105,35 +114,36 @@ object AppModule {
 
     val valhallaEndpoint: String by lazy {
       if (stadiaApiKey != null) {
+        // If you have set a Stadia Maps API key in local.properties (see above instructions)
         "https://api.stadiamaps.com/route/v1?api_key=$stadiaApiKey"
       } else {
+        // Fall back to the public FOSSGIS server
         "https://valhalla1.openstreeetmap.de/route"
       }
     }
     var engine: RoutingEngine = RoutingEngine.Valhalla(valhallaEndpoint, "auto")
 
     // GraphHopper API is used instead of valhalla if graphhopperApiKey is specified in
-    // local.properties
+    // local.properties (see above instructions)
     if (graphhopperApiKey != null) {
       engine =
           RoutingEngine.GraphHopper(
               "https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey", "car")
 
-      if (true) {
-        // use default profile (no custom models)
-        options = mapOf()
-      } else {
-        // documentation for custom models: https://docs.graphhopper.com/openapi/custom-model
-        // arbitrary example:
-        options =
-            mapOf(
-                "ch.disable" to true,
-                "custom_model" to
-                    mapOf(
-                        "distance_influence" to 15,
-                        "speed" to
-                            listOf(mapOf("if" to "road_class == MOTORWAY", "limit_to" to "100"))))
-      }
+      // use default profile (no custom models)
+      options = mapOf()
+
+      // GraphHopper also supports custom models.
+      // You can find the documentation here: https://docs.graphhopper.com/openapi/custom-model
+      // Arbitrary example (limits the top speed on motorways to 100kph):
+//      options =
+//          mapOf(
+//              "ch.disable" to true,
+//              "custom_model" to
+//                  mapOf(
+//                      "distance_influence" to 15,
+//                      "speed" to
+//                          listOf(mapOf("if" to "road_class == MOTORWAY", "limit_to" to "100"))))
     }
     val core =
         FerrostarCore(
