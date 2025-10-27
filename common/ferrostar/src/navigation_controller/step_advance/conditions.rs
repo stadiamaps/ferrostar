@@ -548,12 +548,10 @@ impl StepAdvanceCondition for DistanceEntryAndSnappedExitCondition {
             };
 
             let next_iteration = DistanceEntryAndSnappedExitCondition {
-                minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-                distance_to_end_of_step: self.distance_to_end_of_step,
-                distance_after_end_of_step: self.distance_after_end_of_step,
                 has_reached_end_of_current_step: distance_to_end
                     .should_advance_step(user_location, current_step, next_step, route_deviation)
                     .should_advance,
+                ..*self
             };
 
             StepAdvanceResult::continue_with_state(Arc::new(next_iteration))
@@ -562,10 +560,8 @@ impl StepAdvanceCondition for DistanceEntryAndSnappedExitCondition {
 
     fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
         Arc::new(DistanceEntryAndSnappedExitCondition {
-            distance_to_end_of_step: self.distance_to_end_of_step,
-            distance_after_end_of_step: self.distance_after_end_of_step,
-            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-            has_reached_end_of_current_step: false, // Always reset to initial state
+            has_reached_end_of_current_step: false, // Always reset this to the initial state
+            ..*self
         })
     }
 }
