@@ -5756,33 +5756,33 @@ public struct ValhallaLocationSearchFilter: Equatable, Hashable, Codable {
     public init(
         /**
          * Whether to exclude roads marked as tunnels.
-         */excludeTunnel: Bool?, 
+         */excludeTunnel: Bool? = nil, 
         /**
          * Whether to exclude roads marked as bridges.
-         */excludeBridge: Bool?, 
+         */excludeBridge: Bool? = nil, 
         /**
          * Whether to exclude roads with tolls.
-         */excludeTolls: Bool?, 
+         */excludeTolls: Bool? = nil, 
         /**
          * Whether to exclude ferries.
-         */excludeFerry: Bool?, 
+         */excludeFerry: Bool? = nil, 
         /**
          * Whether to exclude roads marked as ramps.
-         */excludeRamp: Bool?, 
+         */excludeRamp: Bool? = nil, 
         /**
          * Whether to exclude roads marked as closed due to a live traffic closure.
-         */excludeClosures: Bool?, 
+         */excludeClosures: Bool? = nil, 
         /**
          * The lowest road class allowed.
-         */minRoadClass: ValhallaRoadClass?, 
+         */minRoadClass: ValhallaRoadClass? = nil, 
         /**
          * The highest road class allowed.
-         */maxRoadClass: ValhallaRoadClass?, 
+         */maxRoadClass: ValhallaRoadClass? = nil, 
         /**
          * If specified, will only consider edges that are on or traverse the passed floor level.
          * It will set `search_cutoff` to a default value of 300 meters if no cutoff value is passed.
          * Additionally, if a `search_cutoff` is passed, it will be clamped to 1000 meters.
-         */level: Float?) {
+         */level: Float? = nil) {
         self.excludeTunnel = excludeTunnel
         self.excludeBridge = excludeBridge
         self.excludeTolls = excludeTolls
@@ -5940,64 +5940,64 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
     public init(
         /**
          * Preferred direction of travel for the start from the location.
-         */heading: UInt16?, 
+         */heading: UInt16? = nil, 
         /**
          * How close in degrees a given street's angle must be
          * in order for it to be considered as in the same direction of the heading parameter.
-         */headingTolerance: UInt16?, 
+         */headingTolerance: UInt16? = nil, 
         /**
          * Minimum number of nodes (intersections) reachable for a given edge
          * (road between intersections) to consider that edge as belonging to a connected region.
          * Disconnected edges are ignored.
-         */minimumReachability: UInt16?, 
+         */minimumReachability: UInt16? = nil, 
         /**
          * The number of meters about this input location within which edges
          * will be considered as candidates for said location.
          * If there are no candidates within this distance,
          * it will return the closest candidate within reason.
-         */radius: UInt16?, 
+         */radius: UInt16? = nil, 
         /**
          * Determines whether the location should be visited from the same, opposite or either side of the road,
          * with respect to the side of the road the given locale drives on.
          *
          * NOTE: If the location is not offset from the road centerline
          * or is very close to an intersection, this option has no effect!
-         */preferredSide: ValhallaWaypointPreferredSide?, 
+         */preferredSide: ValhallaWaypointPreferredSide? = nil, 
         /**
          * Latitude of the map location in degrees.
          *
          * If provided, the waypoint location will still be used for routing,
          * but these coordinates will determine the side of the street.
-         */displayCoordinate: GeographicCoordinate?, 
+         */displayCoordinate: GeographicCoordinate? = nil, 
         /**
          * The cutoff at which we will assume the input is too far away from civilization
          * to be worth correlating to the nearest graph elements.
-         */searchCutoff: UInt32?, 
+         */searchCutoff: UInt32? = nil, 
         /**
          * During edge correlation, this is the tolerance used to determine whether to snap
          * to the intersection rather than along the street.
          * If the snap location is within this distance from the intersection,
          * the intersection is used instead.
-         */nodeSnapTolerance: UInt16?, 
+         */nodeSnapTolerance: UInt16? = nil, 
         /**
          * A tolerance in meters from the edge centerline used for determining the side of the street
          * that the location is on.
          * If the distance to the centerline is less than this tolerance,
          * no side will be inferred.
          * Otherwise, the left or right side will be selected depending on the direction of travel.
-         */streetSideTolerance: UInt16?, 
+         */streetSideTolerance: UInt16? = nil, 
         /**
          * The max distance in meters that the input coordinates or display lat/lon can be
          * from the edge centerline for them to be used for determining the side of the street.
          * Beyond this distance, no street side is inferred.
-         */streetSideMaxDistance: UInt16?, 
+         */streetSideMaxDistance: UInt16? = nil, 
         /**
          * Disables the `preferred_side` when set to `same` or `opposite`
          * if the edge has a road class less than that provided by `street_side_cutoff`.
-         */streetSideCutoff: ValhallaRoadClass?, 
+         */streetSideCutoff: ValhallaRoadClass? = nil, 
         /**
          * A set of optional filters to exclude candidate edges based on their attributes.
-         */searchFilter: ValhallaLocationSearchFilter?) {
+         */searchFilter: ValhallaLocationSearchFilter? = nil) {
         self.heading = heading
         self.headingTolerance = headingTolerance
         self.minimumReachability = minimumReachability

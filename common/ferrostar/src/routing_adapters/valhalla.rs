@@ -36,52 +36,64 @@ use tsify::Tsify;
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct ValhallaWaypointProperties {
     /// Preferred direction of travel for the start from the location.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub heading: Option<u16>,
     /// How close in degrees a given street's angle must be
     /// in order for it to be considered as in the same direction of the heading parameter.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub heading_tolerance: Option<u16>,
     /// Minimum number of nodes (intersections) reachable for a given edge
     /// (road between intersections) to consider that edge as belonging to a connected region.
     /// Disconnected edges are ignored.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub minimum_reachability: Option<u16>,
     /// The number of meters about this input location within which edges
     /// will be considered as candidates for said location.
     /// If there are no candidates within this distance,
     /// it will return the closest candidate within reason.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub radius: Option<u16>,
     /// Determines whether the location should be visited from the same, opposite or either side of the road,
     /// with respect to the side of the road the given locale drives on.
     ///
     /// NOTE: If the location is not offset from the road centerline
     /// or is very close to an intersection, this option has no effect!
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub preferred_side: Option<ValhallaWaypointPreferredSide>,
     /// Latitude of the map location in degrees.
     ///
     /// If provided, the waypoint location will still be used for routing,
     /// but these coordinates will determine the side of the street.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub display_coordinate: Option<GeographicCoordinate>,
     /// The cutoff at which we will assume the input is too far away from civilization
     /// to be worth correlating to the nearest graph elements.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub search_cutoff: Option<u32>,
     /// During edge correlation, this is the tolerance used to determine whether to snap
     /// to the intersection rather than along the street.
     /// If the snap location is within this distance from the intersection,
     /// the intersection is used instead.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub node_snap_tolerance: Option<u16>,
     /// A tolerance in meters from the edge centerline used for determining the side of the street
     /// that the location is on.
     /// If the distance to the centerline is less than this tolerance,
     /// no side will be inferred.
     /// Otherwise, the left or right side will be selected depending on the direction of travel.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub street_side_tolerance: Option<u16>,
     /// The max distance in meters that the input coordinates or display lat/lon can be
     /// from the edge centerline for them to be used for determining the side of the street.
     /// Beyond this distance, no street side is inferred.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub street_side_max_distance: Option<u16>,
     /// Disables the `preferred_side` when set to `same` or `opposite`
     /// if the edge has a road class less than that provided by `street_side_cutoff`.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub street_side_cutoff: Option<ValhallaRoadClass>,
     /// A set of optional filters to exclude candidate edges based on their attributes.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub search_filter: Option<ValhallaLocationSearchFilter>,
 }
 
@@ -164,24 +176,33 @@ pub enum ValhallaRoadClass {
 #[serde(rename_all = "snake_case")]
 pub struct ValhallaLocationSearchFilter {
     /// Whether to exclude roads marked as tunnels.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub exclude_tunnel: Option<bool>,
     /// Whether to exclude roads marked as bridges.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub exclude_bridge: Option<bool>,
     /// Whether to exclude roads with tolls.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub exclude_tolls: Option<bool>,
     /// Whether to exclude ferries.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub exclude_ferry: Option<bool>,
     /// Whether to exclude roads marked as ramps.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub exclude_ramp: Option<bool>,
     /// Whether to exclude roads marked as closed due to a live traffic closure.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub exclude_closures: Option<bool>,
     /// The lowest road class allowed.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub min_road_class: Option<ValhallaRoadClass>,
     /// The highest road class allowed.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub max_road_class: Option<ValhallaRoadClass>,
     /// If specified, will only consider edges that are on or traverse the passed floor level.
     /// It will set `search_cutoff` to a default value of 300 meters if no cutoff value is passed.
     /// Additionally, if a `search_cutoff` is passed, it will be clamped to 1000 meters.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub level: Option<f32>,
 }
 
