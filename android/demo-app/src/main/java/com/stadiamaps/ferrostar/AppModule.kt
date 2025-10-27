@@ -20,6 +20,7 @@ import java.time.Duration
 import java.time.Instant
 import okhttp3.OkHttpClient
 import uniffi.ferrostar.GeographicCoordinate
+import uniffi.ferrostar.GraphHopperVoiceUnits
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.UserLocation
 
@@ -128,7 +129,10 @@ object AppModule {
     if (graphhopperApiKey != null) {
       engine =
           RoutingEngine.GraphHopper(
-              "https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey", "car")
+              "https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey",
+              profile = "car",
+              locale = "en",
+              voiceUnits = GraphHopperVoiceUnits.METRIC)
 
       // use default profile (no custom models)
       options = mapOf()

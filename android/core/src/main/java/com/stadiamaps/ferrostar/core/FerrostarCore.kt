@@ -16,7 +16,6 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.GraphHopperVoiceUnits
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavState
 import uniffi.ferrostar.NavigationControllerConfig
@@ -189,10 +188,10 @@ class FerrostarCore(
             is RoutingEngine.GraphHopper ->
                 RouteAdapter.newGraphhopperHttp(
                     routingEngine.endpoint,
-                    routingEngine.profile,
-                    "en",
-                    GraphHopperVoiceUnits.METRIC,
-                    options.toJson())
+                    profile = routingEngine.profile,
+                    locale = routingEngine.locale,
+                    voiceUnits = routingEngine.voiceUnits,
+                    optionsJson = options.toJson())
 
             is RoutingEngine.Valhalla ->
                 RouteAdapter.newValhallaHttp(
