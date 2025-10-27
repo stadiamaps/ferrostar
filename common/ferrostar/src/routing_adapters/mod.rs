@@ -50,7 +50,7 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 #[cfg(feature = "alloc")]
 use alloc::{string::String, sync::Arc, vec::Vec};
 
-use crate::routing_adapters::graphhopper::VoiceUnits;
+use crate::routing_adapters::graphhopper::GraphHopperVoiceUnits;
 use crate::routing_adapters::{
     graphhopper::GraphHopperHttpRequestGenerator, osrm::OsrmResponseParser,
     valhalla::ValhallaHttpRequestGenerator,
@@ -173,7 +173,7 @@ impl RouteAdapter {
         endpoint_url: String,
         profile: String,
         locale: String,
-        voice_units: VoiceUnits,
+        voice_units: GraphHopperVoiceUnits,
         options_json: Option<String>,
     ) -> Result<Self, InstantiationError> {
         let request_generator = Arc::new(GraphHopperHttpRequestGenerator::with_options_json(

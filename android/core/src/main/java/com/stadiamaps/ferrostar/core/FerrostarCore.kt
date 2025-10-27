@@ -16,6 +16,7 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import uniffi.ferrostar.GeographicCoordinate
+import uniffi.ferrostar.GraphHopperVoiceUnits
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavState
 import uniffi.ferrostar.NavigationControllerConfig
@@ -26,7 +27,6 @@ import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
-import uniffi.ferrostar.VoiceUnits
 import uniffi.ferrostar.Waypoint
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
@@ -191,7 +191,7 @@ class FerrostarCore(
                     routingEngine.endpoint,
                     routingEngine.profile,
                     "en",
-                    VoiceUnits.METRIC,
+                    GraphHopperVoiceUnits.METRIC,
                     options.toJson())
 
             is RoutingEngine.Valhalla ->

@@ -13,7 +13,7 @@ use std::collections::HashMap;
 #[derive(Serialize, Debug)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[serde(rename_all = "lowercase")]
-pub enum VoiceUnits {
+pub enum GraphHopperVoiceUnits {
     Metric,
     Imperial,
 }
@@ -24,7 +24,7 @@ pub enum VoiceUnits {
 ///
 /// ```
 /// use serde_json::{json, Map, Value};
-/// use ferrostar::routing_adapters::graphhopper::{GraphHopperHttpRequestGenerator, VoiceUnits};
+/// use ferrostar::routing_adapters::graphhopper::{GraphHopperHttpRequestGenerator, GraphHopperVoiceUnits};
 /// let options: Map<String, Value> = json!({
 ///     "ch.disable": true,
 ///     "custom_model": {
@@ -41,7 +41,7 @@ pub enum VoiceUnits {
 ///     "https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY",
 ///     "car",
 ///     "en",
-///     VoiceUnits::Metric, options
+///     GraphHopperVoiceUnits::Metric, options
 /// );
 /// ```
 #[derive(Debug)]
@@ -49,7 +49,7 @@ pub struct GraphHopperHttpRequestGenerator {
     endpoint_url: String,
     profile: String,
     locale: String,
-    voice_units: VoiceUnits,
+    voice_units: GraphHopperVoiceUnits,
     options: Map<String, JsonValue>,
 }
 
@@ -61,7 +61,7 @@ impl GraphHopperHttpRequestGenerator {
     ///
     /// ```
     /// use serde_json::{json, Map, Value};
-    /// use ferrostar::routing_adapters::graphhopper::{GraphHopperHttpRequestGenerator, VoiceUnits};
+    /// use ferrostar::routing_adapters::graphhopper::{GraphHopperHttpRequestGenerator, GraphHopperVoiceUnits};
     /// let options: Map<String, Value> = json!({
     ///     "ch.disable": true,
     ///     "custom_model": {
@@ -78,7 +78,7 @@ impl GraphHopperHttpRequestGenerator {
     ///     "https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY",
     ///     "car",
     ///     "en",
-    ///     VoiceUnits::Metric,
+    ///     GraphHopperVoiceUnits::Metric,
     ///     options
     /// );
     /// ```
@@ -86,7 +86,7 @@ impl GraphHopperHttpRequestGenerator {
         endpoint_url: U,
         profile: P,
         locale: L,
-        voice_units: VoiceUnits,
+        voice_units: GraphHopperVoiceUnits,
         options: Map<String, JsonValue>,
     ) -> Self {
         Self {
@@ -106,7 +106,7 @@ impl GraphHopperHttpRequestGenerator {
     /// # Examples
     ///
     /// ```
-    /// # use ferrostar::routing_adapters::graphhopper::{GraphHopperHttpRequestGenerator, VoiceUnits};
+    /// # use ferrostar::routing_adapters::graphhopper::{GraphHopperHttpRequestGenerator, GraphHopperVoiceUnits};
     /// let options = r#"{
     ///     "ch.disable": true,
     ///     "custom_model": {
@@ -125,7 +125,7 @@ impl GraphHopperHttpRequestGenerator {
     ///     "https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY",
     ///     "car",
     ///     "en",
-    ///     VoiceUnits::Metric,
+    ///     GraphHopperVoiceUnits::Metric,
     ///     None
     /// );
     ///
@@ -134,7 +134,7 @@ impl GraphHopperHttpRequestGenerator {
     ///     "https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY",
     ///     "car",
     ///     "en",
-    ///     VoiceUnits::Metric,
+    ///     GraphHopperVoiceUnits::Metric,
     ///     Some(options)
     /// );
     /// ```
@@ -142,7 +142,7 @@ impl GraphHopperHttpRequestGenerator {
         endpoint_url: U,
         profile: P,
         locale: L,
-        voice_units: VoiceUnits,
+        voice_units: GraphHopperVoiceUnits,
         options_json: Option<&str>,
     ) -> Result<Self, InstantiationError> {
         let parsed_options = match options_json {
@@ -223,7 +223,7 @@ mod tests {
     const ENDPOINT_URL: &str = "https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY";
     const COSTING: &str = "car";
     const LOCALE: &str = "en";
-    const VOICE_UNITS: VoiceUnits = VoiceUnits::Metric;
+    const VOICE_UNITS: GraphHopperVoiceUnits = GraphHopperVoiceUnits::Metric;
 
     const USER_LOCATION: UserLocation = UserLocation {
         coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },

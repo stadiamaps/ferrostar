@@ -2950,13 +2950,13 @@ public convenience init(requestGenerator: RouteRequestGenerator, responseParser:
     }
 
     
-public static func newGraphhopperHttp(endpointUrl: String, profile: String, locale: String, voiceUnits: VoiceUnits, optionsJson: String?)throws  -> RouteAdapter  {
+public static func newGraphhopperHttp(endpointUrl: String, profile: String, locale: String, voiceUnits: GraphHopperVoiceUnits, optionsJson: String?)throws  -> RouteAdapter  {
     return try  FfiConverterTypeRouteAdapter_lift(try rustCallWithError(FfiConverterTypeInstantiationError_lift) {
     uniffi_ferrostar_fn_constructor_routeadapter_new_graphhopper_http(
         FfiConverterString.lower(endpointUrl),
         FfiConverterString.lower(profile),
         FfiConverterString.lower(locale),
-        FfiConverterTypeVoiceUnits_lower(voiceUnits),
+        FfiConverterTypeGraphHopperVoiceUnits_lower(voiceUnits),
         FfiConverterOptionString.lower(optionsJson),$0
     )
 })
@@ -6802,6 +6802,78 @@ extension CourseFiltering: Codable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum GraphHopperVoiceUnits {
+    
+    case metric
+    case imperial
+}
+
+
+#if compiler(>=6)
+extension GraphHopperVoiceUnits: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeGraphHopperVoiceUnits: FfiConverterRustBuffer {
+    typealias SwiftType = GraphHopperVoiceUnits
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> GraphHopperVoiceUnits {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .metric
+        
+        case 2: return .imperial
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: GraphHopperVoiceUnits, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .metric:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .imperial:
+            writeInt(&buf, Int32(2))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeGraphHopperVoiceUnits_lift(_ buf: RustBuffer) throws -> GraphHopperVoiceUnits {
+    return try FfiConverterTypeGraphHopperVoiceUnits.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeGraphHopperVoiceUnits_lower(_ value: GraphHopperVoiceUnits) -> RustBuffer {
+    return FfiConverterTypeGraphHopperVoiceUnits.lower(value)
+}
+
+
+extension GraphHopperVoiceUnits: Equatable, Hashable {}
+
+extension GraphHopperVoiceUnits: Codable {}
+
+
+
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * The impact of the incident that has occurred.
  */
@@ -8659,78 +8731,6 @@ extension TripState: Codable {}
 
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
-
-public enum VoiceUnits {
-    
-    case metric
-    case imperial
-}
-
-
-#if compiler(>=6)
-extension VoiceUnits: Sendable {}
-#endif
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public struct FfiConverterTypeVoiceUnits: FfiConverterRustBuffer {
-    typealias SwiftType = VoiceUnits
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> VoiceUnits {
-        let variant: Int32 = try readInt(&buf)
-        switch variant {
-        
-        case 1: return .metric
-        
-        case 2: return .imperial
-        
-        default: throw UniffiInternalError.unexpectedEnumCase
-        }
-    }
-
-    public static func write(_ value: VoiceUnits, into buf: inout [UInt8]) {
-        switch value {
-        
-        
-        case .metric:
-            writeInt(&buf, Int32(1))
-        
-        
-        case .imperial:
-            writeInt(&buf, Int32(2))
-        
-        }
-    }
-}
-
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeVoiceUnits_lift(_ buf: RustBuffer) throws -> VoiceUnits {
-    return try FfiConverterTypeVoiceUnits.lift(buf)
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
-public func FfiConverterTypeVoiceUnits_lower(_ value: VoiceUnits) -> RustBuffer {
-    return FfiConverterTypeVoiceUnits.lower(value)
-}
-
-
-extension VoiceUnits: Equatable, Hashable {}
-
-extension VoiceUnits: Codable {}
-
-
-
-
-
-
-// Note that we don't yet support `indirect` for enums.
-// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
  * Controls when a waypoint should be marked as complete.
  *
@@ -10385,7 +10385,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 32290) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_new_graphhopper_http() != 87) {
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_new_graphhopper_http() != 57663) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 3524) {
