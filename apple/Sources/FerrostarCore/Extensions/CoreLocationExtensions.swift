@@ -206,13 +206,12 @@ public extension UserLocation {
 ///   - accuracy: The CLLocation user speed accuracy in meters per second.
 /// - Returns: The FFI Speed object for ferrostar.
 private func ffiSpeed(_ speed: CLLocationSpeed?, accuracy: CLLocationSpeedAccuracy?) -> Speed? {
-    guard let speed = parseCLValidityToOptional(speed),
-          let accuracy = parseCLValidityToOptional(accuracy)
+    guard let speed = parseCLValidityToOptional(speed)
     else {
         return nil
     }
 
-    return Speed(value: speed, accuracy: accuracy)
+    return Speed(value: speed, accuracy: parseCLValidityToOptional(accuracy))
 }
 
 private func parseCLValidityToOptional(_ value: Double?) -> Double? {

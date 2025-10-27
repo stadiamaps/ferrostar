@@ -69,7 +69,40 @@ to bring the puck "up" closer to the center of the screen.
 
 You can add your own overlays to the map as well (any class, including `DynamicallyOrientingNavigationView`)!
 The `content` closure argument lets you add more layers.
-See the demo app for an example.
+
+```kotlin
+  DynamicallyOrientingNavigationView(
+      modifier = Modifier.fillMaxSize(),
+      styleUrl = AppModule.mapStyleUrl,
+	  // Other arguments elided...
+  ) { uiState ->
+	// Trivial, if silly example of how to add your own overlay layers.
+	uiState.location?.let { location ->
+      // Add a little blue dot where the user is now
+	  Circle(
+		  center = LatLng(location.coordinates.lat, location.coordinates.lng),
+		  radius = 10f,
+		  color = "Blue",
+		  zIndex = 3,
+	  )
+
+      // If the reported GPS accuracy is worse than 15m,
+      // show a large blue translucent circle (this is an example; not to scale).
+	  if (location.horizontalAccuracy > 15) {
+		Circle(
+			center = LatLng(location.coordinates.lat, location.coordinates.lng),
+			radius = min(location.horizontalAccuracy.toFloat(), 150f),
+			color = "Blue",
+			opacity = 0.2f,
+			zIndex = 2,
+		)
+	  }
+	}
+  }
+```
+
+The map drawing features are provided by [this library](https://github.com/Rallista/maplibre-compose-playground/),
+which also includes polygines, lines, and other drawing primitives.
 
 ### Styling the route polyline
 
@@ -86,9 +119,9 @@ Here's an example with `DynamicallyOrientingNavigationView`:
       routeOverlayBuilder = RouteOverlayBuilder(
         navigationPath = { uiState ->
           uiState.routeGeometry?.let { geometry ->
-		    // BorderedPolyline is part of Ferrostar;
-			// you can also drop down to the raw Polyline and build your own custom style.
-            BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0, color = "#3583dd33")
+		    // BorderedPolyline is part of Ferrostar's MapLibre UI package.
+			// You can also drop down to the raw Polyline and build your own custom style.
+            BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0, color = "#3583dd", opacity = 0.7f, borderOpacity = 0.3f)
           }
         }),
 	  // ...
@@ -110,7 +143,7 @@ Here's an example with `DynamicallyOrientingNavigationView`:
 ```
 
 You can also customize or replace the instruction banners, trip progress view, and road name overlays with your own composables.
-These are configurable via the `NavigationComponentBuilder`.
+These are configurable via the `NavigationViewComponentBuilder`.
 Instruction banners in particular have a lot of built-in configurablity, which we'll talk about in the next section.
 
 ## Customizing the instruction banners

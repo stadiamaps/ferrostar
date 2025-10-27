@@ -2,7 +2,8 @@ import { ReactiveElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import {
   SerializableNavState,
-  NavigationController,
+  NavigationSession,
+  NavigationSessionRecording,
   RouteAdapter,
   TripState,
   Route,
@@ -54,7 +55,8 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
   shouldRecord: boolean = false;
 
   routeAdapter: RouteAdapter | null = null;
-  navigationController: NavigationController | null = null;
+  navigationSession: NavigationSession | NavigationSessionRecording | null =
+    null;
   lastSpokenUtteranceId: string | null = null;
 
   constructor() {
@@ -113,12 +115,12 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
     this.locationProvider.start();
     if (this.onNavigationStart) this.onNavigationStart();
 
-    // Initialize the navigation controller
-    this.navigationController = new NavigationController(
-      route,
-      config,
-      this.shouldRecord,
-    );
+    // Initialize the navigation session with recording if enabled
+    if (this.shouldRecord) {
+      this.navigationSession = new NavigationSessionRecording(route, config);
+    } else {
+      this.navigationSession = new NavigationSession(route, config);
+    }
     this.locationProvider.updateCallback = this.onLocationUpdated.bind(this);
 
     // Initialize the trip state
@@ -133,29 +135,29 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
         };
 
     this.navStateUpdate(
-      this.navigationController.getInitialState(startingLocation),
+      this.navigationSession.getInitialState(startingLocation),
     );
   }
 
   private saveRecording() {
-    let recording = this.navigationController?.getRecording(
-      this._navState?.recordingEvents,
-    );
-    const blob = new Blob([recording], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    // TODO: Figure out how to generate a unique filename
-    link.download = "recording.json";
-    link.click();
-    URL.revokeObjectURL(link.href);
+    if (this.navigationSession instanceof NavigationSessionRecording) {
+      const recording = this.navigationSession.getRecording();
+      const blob = new Blob([recording], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      // TODO: Figure out how to generate a unique filename
+      link.download = "recording.json";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
   }
 
   async stopNavigation() {
     if (this.shouldRecord) this.saveRecording();
     this.routeAdapter?.free();
     this.routeAdapter = null;
-    this.navigationController?.free();
-    this.navigationController = null;
+    this.navigationSession?.free();
+    this.navigationSession = null;
     this.navStateUpdate(null);
     if (this.locationProvider) this.locationProvider.updateCallback = null;
     if (this.onNavigationStop) this.onNavigationStop();
@@ -180,12 +182,12 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
   }
 
   private onLocationUpdated() {
-    if (!this.navigationController) {
+    if (!this.navigationSession) {
       return;
     }
 
     // Update the trip state with the new location
-    const newNavState = this.navigationController.updateUserLocation(
+    const newNavState = this.navigationSession.updateUserLocation(
       this.locationProvider.lastLocation,
       this._navState,
     );

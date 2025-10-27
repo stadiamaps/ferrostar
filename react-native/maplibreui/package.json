@@ -1,6 +1,6 @@
 {
   "name": "@stadiamaps/ferrostar-maplibre-react-native",
-  "version": "0.42.0",
+  "version": "0.44.0",
   "description": "Ferrostar React Native MapLibre UI",
   "main": "./lib/index.js",
   "types": "./src/index.ts",
@@ -34,7 +34,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@maplibre/maplibre-react-native": "^10.0.0",
+    "@maplibre/maplibre-react-native": "11.0.0-alpha.4",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.3.1",
     "del-cli": "^5.1.0",
@@ -62,7 +62,9 @@
     "dts": true,
     "external": [
       "react",
-      "react-native"
+      "react-native",
+      "@maplibre/maplibre-react-native",
+      "react-native-svg"
     ]
   },
   "packageManager": "yarn@3.6.1"

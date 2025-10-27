@@ -88,6 +88,7 @@ private extension DemoAppState {
         }
     }
 
+    var core: FerrostarCore { model.core }
     var coreState: NavigationState? { model.coreState }
     var camera: MapViewCamera {
         get {
@@ -97,6 +98,8 @@ private extension DemoAppState {
             model.camera = newValue
         }
     }
+
+    var isMuted: Bool { core.spokenInstructionObserver.isMuted }
 
     func chooseDestination(_ mapTemplate: CPMapTemplate) {
         model.chooseDestination()
@@ -211,10 +214,31 @@ private extension DemoAppState {
         mapTemplate.automaticallyHidesNavigationBar = false
         mapTemplate.leadingNavigationBarButtons = leadingNavigationBarButtons(mapTemplate)
         mapTemplate.trailingNavigationBarButtons = trailingNavigationBarButtons(mapTemplate)
-        mapTemplate
-            .mapButtons = [CarPlayMapButtons.recenterButton { [self] in
-                model.camera = .automotiveNavigation(pitch: 25)
-            }]
+
+        let cameraState: CameraControlState = if camera.isTrackingUserLocationWithCourse,
+                                                 let overviewCamera = coreState?.routeOverviewCamera
+        {
+            .showRouteOverview { [weak self] in
+                self?.camera = overviewCamera
+            }
+        } else {
+            .showRecenter { [weak self] in
+                self?.camera = .automotiveNavigation(zoom: 15)
+            }
+        }
+
+        mapTemplate.mapButtons = [
+            CarPlayMapButtons.toggleMute(isMuted) { [weak self] in
+                self?.core.spokenInstructionObserver.toggleMute()
+            },
+            CarPlayMapButtons.zoomIn { [weak self] in
+                self?.camera.incrementZoom(by: 1)
+            },
+            CarPlayMapButtons.zoomOut { [weak self] in
+                self?.camera.incrementZoom(by: -1)
+            },
+            CarPlayMapButtons.camera(cameraState),
+        ].compactMap { $0 }
     }
 
     func mapTemplate(_ mapTemplate: CPMapTemplate, selectedPreviewFor _: CPTrip, using routeChoice: CPRouteChoice) {

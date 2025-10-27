@@ -4,7 +4,6 @@ import {
   type MapViewRef,
   MapView,
   UserLocation,
-  setAccessToken,
 } from '@maplibre/maplibre-react-native';
 import { bbox } from '@turf/bbox';
 import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
@@ -19,8 +18,6 @@ import TripProgressView from './TripProgressView';
 import { StyleSheet, View } from 'react-native';
 import InstructionsView from './InstructionsView';
 import MapControls from './MapControls';
-
-setAccessToken(null);
 
 type NavigationViewProps = ComponentProps<typeof MapView> & {
   core: FerrostarCore;

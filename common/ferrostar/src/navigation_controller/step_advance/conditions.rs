@@ -3,6 +3,7 @@ use std::sync::Arc;
 use super::{StepAdvanceCondition, StepAdvanceConditionSerializable, StepAdvanceResult};
 use crate::{
     algorithms::{deviation_from_line, is_within_threshold_to_end_of_linestring},
+    deviation_detection::RouteDeviation,
     models::{RouteStep, UserLocation},
 };
 use geo::Point;
@@ -13,12 +14,7 @@ use proptest::prelude::*;
 #[cfg(test)]
 use crate::test_utils::{arb_coord, make_user_location};
 
-#[cfg(feature = "wasm-bindgen")]
-use serde::{Deserialize, Serialize};
-
 use super::SerializableStepAdvanceCondition;
-#[cfg(feature = "wasm-bindgen")]
-use tsify::Tsify;
 
 /// Never advances to the next step automatically;
 /// requires calling [`NavigationController::advance_to_next_step`](super::NavigationController::advance_to_next_step).
@@ -35,11 +31,13 @@ impl StepAdvanceCondition for ManualStepCondition {
         user_location: UserLocation,
         current_step: RouteStep,
         next_step: Option<RouteStep>,
+        route_deviation: RouteDeviation,
     ) -> StepAdvanceResult {
-        StepAdvanceResult {
-            should_advance: false,
-            next_iteration: Arc::new(ManualStepCondition),
-        }
+        StepAdvanceResult::continue_with_state(Arc::new(ManualStepCondition))
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(ManualStepCondition)
     }
 }
 
@@ -72,6 +70,7 @@ impl StepAdvanceCondition for DistanceToEndOfStepCondition {
         user_location: UserLocation,
         current_step: RouteStep,
         next_step: Option<RouteStep>,
+        route_deviation: RouteDeviation,
     ) -> StepAdvanceResult {
         let should_advance =
             if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
@@ -84,13 +83,18 @@ impl StepAdvanceCondition for DistanceToEndOfStepCondition {
                 )
             };
 
-        StepAdvanceResult {
-            should_advance,
-            next_iteration: Arc::new(DistanceToEndOfStepCondition {
-                distance: self.distance,
-                minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-            }),
+        if should_advance {
+            StepAdvanceResult::advance_to_new_instance(self)
+        } else {
+            StepAdvanceResult::continue_with_state(self.new_instance())
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceToEndOfStepCondition {
+            distance: self.distance,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+        })
     }
 }
 
@@ -121,6 +125,8 @@ pub struct DistanceFromStepCondition {
     /// The minimum required horizontal accuracy of the user location, in meters.
     /// Values larger than this cannot ever trigger a step advance.
     pub minimum_horizontal_accuracy: u16,
+    /// Whether the condition can succeed when the user is off route.
+    pub calculate_while_off_route: bool,
 }
 
 impl StepAdvanceCondition for DistanceFromStepCondition {
@@ -130,10 +136,15 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
         user_location: UserLocation,
         current_step: RouteStep,
         next_step: Option<RouteStep>,
+        route_deviation: RouteDeviation,
     ) -> StepAdvanceResult {
-        // Exit early if the user location is not accurate enough.
+        // If the user is not on route & we don't allow calculating while off route, don't advance
+        // Else if, the user location is not within the minimum horizontal accuracy, don't advance
+        // Else if, the user location is within the minimum horizontal accuracy, advance
         let should_advance =
-            if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
+            if !self.calculate_while_off_route && route_deviation != RouteDeviation::NoDeviation {
+                false
+            } else if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
                 false
             } else {
                 let current_position: Point = user_location.into();
@@ -144,13 +155,19 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
                     .unwrap_or(false)
             };
 
-        StepAdvanceResult {
-            should_advance,
-            next_iteration: Arc::new(DistanceFromStepCondition {
-                minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-                distance: self.distance,
-            }),
+        if should_advance {
+            StepAdvanceResult::advance_to_new_instance(self)
+        } else {
+            StepAdvanceResult::continue_with_state(self.new_instance())
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceFromStepCondition {
+            distance: self.distance,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+            calculate_while_off_route: self.calculate_while_off_route,
+        })
     }
 }
 
@@ -159,6 +176,7 @@ impl StepAdvanceConditionSerializable for DistanceFromStepCondition {
         SerializableStepAdvanceCondition::DistanceFromStep {
             distance: self.distance,
             minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+            calculate_while_off_route: self.calculate_while_off_route,
         }
     }
 }
@@ -182,6 +200,7 @@ impl StepAdvanceCondition for OrAdvanceConditions {
         user_location: UserLocation,
         current_step: RouteStep,
         next_step: Option<RouteStep>,
+        route_deviation: RouteDeviation,
     ) -> StepAdvanceResult {
         let mut should_advance = false;
         let mut next_conditions = Vec::with_capacity(self.conditions.len());
@@ -191,6 +210,7 @@ impl StepAdvanceCondition for OrAdvanceConditions {
                 user_location,
                 current_step.clone(),
                 next_step.clone(),
+                route_deviation.clone(),
             );
             should_advance = should_advance || result.should_advance;
             next_conditions.push(result.next_iteration);
@@ -198,16 +218,26 @@ impl StepAdvanceCondition for OrAdvanceConditions {
 
         StepAdvanceResult {
             should_advance,
-            next_iteration: Arc::new(OrAdvanceConditions {
-                conditions: if should_advance {
-                    // Reset to fresh conditions when advancing
-                    self.conditions.clone()
-                } else {
-                    // Preserve stateful progress when not advancing
-                    next_conditions
-                },
-            }),
+            next_iteration: if should_advance {
+                // When advancing, create fresh instances of all conditions to ensure state isolation
+                self.new_instance()
+            } else {
+                // Preserve stateful progress when not advancing
+                Arc::new(OrAdvanceConditions {
+                    conditions: next_conditions,
+                })
+            },
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(OrAdvanceConditions {
+            conditions: self
+                .conditions
+                .iter()
+                .map(|condition| condition.new_instance())
+                .collect(),
+        })
     }
 }
 
@@ -232,6 +262,7 @@ impl StepAdvanceCondition for AndAdvanceConditions {
         user_location: UserLocation,
         current_step: RouteStep,
         next_step: Option<RouteStep>,
+        route_deviation: RouteDeviation,
     ) -> StepAdvanceResult {
         let mut should_advance = true;
         let mut next_conditions = Vec::with_capacity(self.conditions.len());
@@ -241,6 +272,7 @@ impl StepAdvanceCondition for AndAdvanceConditions {
                 user_location,
                 current_step.clone(),
                 next_step.clone(),
+                route_deviation.clone(),
             );
             should_advance = should_advance && result.should_advance;
             next_conditions.push(result.next_iteration);
@@ -248,16 +280,26 @@ impl StepAdvanceCondition for AndAdvanceConditions {
 
         StepAdvanceResult {
             should_advance,
-            next_iteration: Arc::new(AndAdvanceConditions {
-                conditions: if should_advance {
-                    // Reset to fresh conditions when advancing
-                    self.conditions.clone()
-                } else {
-                    // Preserve stateful progress when not advancing
-                    next_conditions
-                },
-            }),
+            next_iteration: if should_advance {
+                // When advancing, create fresh instances of all conditions to ensure state isolation
+                self.new_instance()
+            } else {
+                // Preserve stateful progress when not advancing
+                Arc::new(AndAdvanceConditions {
+                    conditions: next_conditions,
+                })
+            },
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(AndAdvanceConditions {
+            conditions: self
+                .conditions
+                .iter()
+                .map(|condition| condition.new_instance())
+                .collect(),
+        })
     }
 }
 
@@ -284,7 +326,7 @@ pub struct DistanceEntryAndExitCondition {
     /// Values larger than this cannot ever trigger a step advance.
     pub(super) minimum_horizontal_accuracy: u16,
     /// Internal state for tracking when the user is within `distance_to_end_of_step` meters from the end of the step.
-    /// This allows for stateful advance only after entering a reasonable radues of the goal
+    /// This allows for stateful advance only after entering a reasonable radius of the goal
     /// and then exiting the area by a separate trigger threshold.
     pub(super) has_reached_end_of_current_step: bool,
     // TODO: Do we want a speed multiplier
@@ -320,39 +362,30 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
         user_location: UserLocation,
         current_step: RouteStep,
         next_step: Option<RouteStep>,
+        route_deviation: RouteDeviation,
     ) -> StepAdvanceResult {
         if self.has_reached_end_of_current_step {
             let distance_from_end = DistanceFromStepCondition {
                 minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
                 distance: self.distance_after_end_of_step,
+                calculate_while_off_route: false,
             };
 
             let should_advance = distance_from_end
-                .should_advance_step(user_location, current_step, next_step)
+                .should_advance_step(user_location, current_step, next_step, route_deviation)
                 .should_advance;
 
             if should_advance {
-                StepAdvanceResult {
-                    should_advance: true,
-                    next_iteration: Arc::new(DistanceEntryAndExitCondition {
-                        distance_to_end_of_step: self.distance_to_end_of_step,
-                        distance_after_end_of_step: self.distance_after_end_of_step,
-                        minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-                        has_reached_end_of_current_step: false,
-                    }),
-                }
+                StepAdvanceResult::advance_to_new_instance(self)
             } else {
                 // The condition was not advanced. So we return a fresh iteration
                 // where has_reached_end_of_current_step is still true to re-trigger this part 2 logic.
-                StepAdvanceResult {
-                    should_advance: false,
-                    next_iteration: Arc::new(DistanceEntryAndExitCondition {
-                        distance_to_end_of_step: self.distance_to_end_of_step,
-                        distance_after_end_of_step: self.distance_after_end_of_step,
-                        minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
-                        has_reached_end_of_current_step: true,
-                    }),
-                }
+                StepAdvanceResult::continue_with_state(Arc::new(DistanceEntryAndExitCondition {
+                    distance_to_end_of_step: self.distance_to_end_of_step,
+                    distance_after_end_of_step: self.distance_after_end_of_step,
+                    minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+                    has_reached_end_of_current_step: true,
+                }))
             }
         } else {
             let distance_to_end = DistanceToEndOfStepCondition {
@@ -366,15 +399,21 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
                 distance_to_end_of_step: self.distance_to_end_of_step,
                 distance_after_end_of_step: self.distance_after_end_of_step,
                 has_reached_end_of_current_step: distance_to_end
-                    .should_advance_step(user_location, current_step, next_step)
+                    .should_advance_step(user_location, current_step, next_step, route_deviation)
                     .should_advance,
             };
 
-            StepAdvanceResult {
-                should_advance: false,
-                next_iteration: Arc::new(next_iteration),
-            }
+            StepAdvanceResult::continue_with_state(Arc::new(next_iteration))
         }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceEntryAndExitCondition {
+            distance_to_end_of_step: self.distance_to_end_of_step,
+            distance_after_end_of_step: self.distance_after_end_of_step,
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+            has_reached_end_of_current_step: false, // Always reset to initial state
+        })
     }
 }
 
@@ -418,6 +457,7 @@ mod tests {
             *LOCATION_NEAR_START_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         // We should never advance to the next step in manual mode,
@@ -441,6 +481,7 @@ mod tests {
             *LOCATION_NEAR_START_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -462,11 +503,70 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
             result.should_advance,
             "Should advance when close to the end of the step"
+        );
+    }
+
+    #[test]
+    fn test_distance_from_step_advance_with_deviation() {
+        // Create a location that's far from the route (500+ meters north)
+        // At the equator, 0.005° latitude is approximately 555 meters
+        let user_location = make_user_location(coord!(x: 0.005, y: 0.0005), 5.0);
+
+        // Set up the condition with a minimum deviation of 100 meters to advance
+        let condition = DistanceFromStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100, // Must be at least 100 meters from route to advance
+            calculate_while_off_route: true,
+        };
+
+        // Test the condition - we SHOULD advance since we're far from the route
+        let result = condition.should_advance_step(
+            user_location,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+            RouteDeviation::OffRoute {
+                deviation_from_route_line: 10.0,
+            },
+        );
+
+        assert!(
+            result.should_advance,
+            "Should advance when far from the route"
+        );
+    }
+
+    #[test]
+    fn test_distance_from_step_advance_with_deviation_off() {
+        // Create a location that's far from the route (500+ meters north)
+        // At the equator, 0.005° latitude is approximately 555 meters
+        let user_location = make_user_location(coord!(x: 0.005, y: 0.0005), 5.0);
+
+        // Set up the condition with a minimum deviation of 100 meters to advance
+        let condition = DistanceFromStepCondition {
+            minimum_horizontal_accuracy: 10,
+            distance: 100, // Must be at least 100 meters from route to advance
+            calculate_while_off_route: false,
+        };
+
+        // Test the condition - we SHOULD advance since we're far from the route
+        let result = condition.should_advance_step(
+            user_location,
+            STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
+            None,
+            RouteDeviation::OffRoute {
+                deviation_from_route_line: 10.0,
+            },
+        );
+
+        assert!(
+            !result.should_advance,
+            "Should not advance when far from the route"
         );
     }
 
@@ -480,6 +580,7 @@ mod tests {
         let condition = DistanceFromStepCondition {
             minimum_horizontal_accuracy: 10,
             distance: 100, // Must be at least 100 meters from route to advance
+            calculate_while_off_route: false,
         };
 
         // Test the condition - we SHOULD advance since we're far from the route
@@ -487,6 +588,7 @@ mod tests {
             user_location,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -513,6 +615,7 @@ mod tests {
             *LOCATION_NEAR_START_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -542,6 +645,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -574,6 +678,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -605,6 +710,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -631,6 +737,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -650,6 +757,7 @@ mod tests {
             user_location_still_close,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -674,6 +782,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -693,6 +802,7 @@ mod tests {
             user_location_far,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -721,6 +831,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -737,6 +848,7 @@ mod tests {
             user_location_far,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -772,6 +884,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -792,6 +905,7 @@ mod tests {
             user_location_far,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -824,6 +938,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -844,6 +959,7 @@ mod tests {
             user_location_far,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -879,6 +995,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -899,6 +1016,7 @@ mod tests {
             user_location_far,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -915,6 +1033,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -947,6 +1066,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -966,6 +1086,7 @@ mod tests {
             user_location_far,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -982,6 +1103,7 @@ mod tests {
             *LOCATION_NEAR_END_OF_STEP,
             STRAIGHT_LINE_SHORT_ROUTE_STEP.clone(),
             None,
+            RouteDeviation::NoDeviation,
         );
 
         assert!(
@@ -1009,7 +1131,7 @@ proptest! {
         let condition = ManualStepCondition;
 
         // Test the condition - we should NOT advance since we're far from the end
-        let result = condition.should_advance_step(user_location, route_step, None);
+        let result = condition.should_advance_step(user_location, route_step, None, RouteDeviation::NoDeviation);
 
         // We should never advance to the next step in manual mode,
         // so the list should always be empty.
@@ -1042,7 +1164,7 @@ proptest! {
         // First update: User is close to the end of the step...
         // Should not advance yet, but should update internal state
         let result1 =
-            condition.should_advance_step(user_location, route_step.clone(), None);
+            condition.should_advance_step(user_location, route_step.clone(), None, RouteDeviation::NoDeviation);
 
         prop_assert!(
             !result1.should_advance,
@@ -1056,7 +1178,7 @@ proptest! {
 
         // Should still not advance because we haven't moved far enough away
         let result2 =
-            next_condition.should_advance_step(user_location, route_step, None);
+            next_condition.should_advance_step(user_location, route_step, None, RouteDeviation::NoDeviation);
 
         prop_assert!(
             !result2.should_advance,

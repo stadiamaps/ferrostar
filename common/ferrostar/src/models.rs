@@ -273,6 +273,12 @@ pub struct Route {
     pub steps: Vec<RouteStep>,
 }
 
+impl Route {
+    pub fn get_linestring(&self) -> LineString {
+        get_linestring(&self.geometry)
+    }
+}
+
 /// Helper function for getting the route as an encoded polyline.
 ///
 /// Mostly used for debugging.

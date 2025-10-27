@@ -39,6 +39,24 @@ enables you to add more layers.
 See the demo app for an example, where we add a little dot showing the raw location
 in addition to the puck, which snaps to the route line.
 
+### Replacing the route polyline overlay
+
+Ferrostar includes a default route polyline overlay that is pre-styled. You can replace it
+using the `navigationMapViewRouteOverlay()` modifier. See `RouteStyleLayer` for the default
+polyline for reference.
+
+```swift
+            .navigationMapViewRouteOverlay { state in
+                if let routeGeometry = state?.routeGeometry {
+                    RouteStyleLayer(
+                        polyline: MLNPolylineFeature(coordinates: routeGeometry.map(\.clLocationCoordinate2D)),
+                        identifier: "route-polyline",
+                        style: MyCustomRouteStyle()
+                    )
+                }
+            }
+```
+
 ### Customizing the Map View's Content Inset
 
 The content inset is used on the Ferrostar NavigationMapView (and MapLibre's SwiftUI DSL MapView) to control
@@ -83,6 +101,11 @@ The units of the `InstructionsView` are controlled using the formatter settings
 you passed to the `NavigationMapView` (if you’re using it).
 If you’re not using the `NavigationMapView`, you can pass a formatter directly.
 
+The `OffRouteBannerView` replaces the instructions view when the user is off route.
+This avoids providing incorrect instructions and should let the user know
+how to resolve the issue until a re-route is successful and the `InstructionsView`
+reappears.
+
 The `TripProgressView` included in Ferrostar includes a basic layout showing the
 progress of the trip, formatted with the specified or default `FormatterCollection`.
 
@@ -95,6 +118,9 @@ All of these views can be replaced using their view modifier extensions.
     DynamicallyOrientingNavigationView(...)
         .navigationViewInstructionView { navigationState, isExpanded, sizeWhenNotExpanded in
             MyCustomTopCenterView(navigationState, isExpanded, sizeWhenNotExpanded)
+        }
+        .navigationViewOffRouteView { navigationState, size in
+            MyCustomOffRouteView(navigationState, size)
         }
         .navigationViewProgressView { navigationState, onTapExit in
             MyCustomProgressView(navigationState, onTapExit)

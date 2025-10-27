@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "%@" : {
 
     },
@@ -33,6 +36,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Duration"
+          }
+        }
+      }
+    },
+    "Return to the Route" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return to the Route.."
           }
         }
       }

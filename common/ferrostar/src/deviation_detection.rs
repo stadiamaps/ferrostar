@@ -16,7 +16,7 @@ use crate::algorithms::deviation_from_line;
 use crate::models::{Route, RouteStep, UserLocation};
 #[cfg(feature = "alloc")]
 use alloc::sync::Arc;
-use geo::Point;
+use geo::{LineString, Point};
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
@@ -82,19 +82,24 @@ impl RouteDeviationTracking {
                 if location.horizontal_accuracy < f64::from(*minimum_horizontal_accuracy) {
                     // Check if the deviation from the route line is within tolerance,
                     // after sanity checking that the positioning signal is within accuracy tolerance.
-                    deviation_from_line(
+                    let step_deviation = self.static_threshold_deviation_from_line(
                         &Point::from(location),
                         &current_route_step.get_linestring(),
-                    )
-                    .map_or(RouteDeviation::NoDeviation, |deviation| {
-                        if deviation > 0.0 && deviation > *max_acceptable_deviation {
-                            RouteDeviation::OffRoute {
-                                deviation_from_route_line: deviation,
-                            }
-                        } else {
-                            RouteDeviation::NoDeviation
-                        }
-                    })
+                        max_acceptable_deviation,
+                    );
+
+                    // Exit early if the step is within tolerance, otherwise check there route line.
+                    if step_deviation == RouteDeviation::NoDeviation {
+                        RouteDeviation::NoDeviation
+                    } else {
+                        // Fall back to the route line. This allows us to re-join the route later
+                        // for skipping forward if [`StepAdvanceConditions`] allow it.
+                        self.static_threshold_deviation_from_line(
+                            &Point::from(location),
+                            &route.get_linestring(),
+                            max_acceptable_deviation,
+                        )
+                    }
                 } else {
                     RouteDeviation::NoDeviation
                 }
@@ -103,6 +108,25 @@ impl RouteDeviationTracking {
                 detector.check_route_deviation(location, route.clone(), current_route_step.clone())
             }
         }
+    }
+
+    /// Get the RouteDeviation status for a given location on a line string.
+    /// This can be used with a Route or RouteStep.
+    fn static_threshold_deviation_from_line(
+        &self,
+        point: &Point,
+        line: &LineString,
+        max_acceptable_deviation: &f64,
+    ) -> RouteDeviation {
+        deviation_from_line(point, line).map_or(RouteDeviation::NoDeviation, |deviation| {
+            if deviation > 0.0 && deviation > *max_acceptable_deviation {
+                RouteDeviation::OffRoute {
+                    deviation_from_route_line: deviation,
+                }
+            } else {
+                RouteDeviation::NoDeviation
+            }
+        })
     }
 }
 
@@ -137,6 +161,10 @@ pub trait RouteDeviationDetector: Send + Sync {
     /// NOTE: This function has a single responsibility.
     /// Side-effects like whether to recalculate a route are left to higher levels,
     /// and implementations should only be concerned with determining the facts.
+    ///
+    /// IMPORTANT: If you are short circuiting [`StepAdvanceCondition`]'s to allow
+    /// skipping steps, you must always fall back to checking the deviation from the
+    /// full route line.
     #[must_use]
     fn check_route_deviation(
         &self,

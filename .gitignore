@@ -29,6 +29,9 @@ misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 
+# Zed
+.zed
+
 # Keystore files
 *.jks
 *.keystore

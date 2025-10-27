@@ -68,11 +68,18 @@ struct LandscapeNavigationOverlayView: View {
                     }
                 }
 
-                componentsConfig.getInstructionsView(
-                    navigationState,
-                    isExpanded: $isInstructionViewExpanded,
-                    sizeWhenNotExpanded: .constant(.zero)
-                )
+                if case .offRoute = navigationState?.currentDeviation {
+                    componentsConfig.getOffRouteView(
+                        navigationState,
+                        size: .constant(.zero)
+                    )
+                } else {
+                    componentsConfig.getInstructionsView(
+                        navigationState,
+                        isExpanded: $isInstructionViewExpanded,
+                        sizeWhenNotExpanded: .constant(.zero)
+                    )
+                }
             }
 
             Spacer().frame(width: 16)
@@ -107,7 +114,7 @@ struct LandscapeNavigationOverlayView: View {
                     onZoomOut: onZoomOut,
                     cameraControlState: cameraControlState
                 )
-                .innerGrid {
+                .navigationViewInnerGrid {
                     gridConfig.getTopCenter()
                 } topTrailing: {
                     gridConfig.getTopTrailing()

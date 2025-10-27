@@ -5,15 +5,18 @@ import SwiftUI
 
 public struct NavigationViewComponentsConfiguration {
     public let progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    public let offRouteView: ((NavigationState?, Binding<CGSize>) -> AnyView)?
     public let instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
     public let currentRoadNameView: ((NavigationState?) -> AnyView)?
 
     public init(
         progressView: ((NavigationState?, (() -> Void)?) -> AnyView)? = nil,
+        offRouteView: ((NavigationState?, Binding<CGSize>) -> AnyView)? = nil,
         instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)? = nil,
         currentRoadNameView: ((NavigationState?) -> AnyView)? = nil
     ) {
         self.progressView = progressView
+        self.offRouteView = offRouteView
         self.instructionsView = instructionsView
         self.currentRoadNameView = currentRoadNameView
     }
@@ -27,6 +30,18 @@ public struct NavigationViewComponentsConfiguration {
             customProgressView(navigationState, onTapExit)
         } else {
             DefaultNavigationViewComponents.defaultProgressView(navigationState, onTapExit)
+        }
+    }
+
+    @ViewBuilder
+    public func getOffRouteView(
+        _ navigationState: NavigationState?,
+        size: Binding<CGSize>
+    ) -> some View {
+        if let customOffRouteView = offRouteView {
+            customOffRouteView(navigationState, size)
+        } else {
+            DefaultNavigationViewComponents.defaultOffRouteView(navigationState, size: size)
         }
     }
 
@@ -70,6 +85,7 @@ public extension EnvironmentValues {
 
 private struct NavigationViewComponentsViewModifier: ViewModifier {
     let progressView: ((NavigationState?, (() -> Void)?) -> AnyView)?
+    let offRouteView: ((NavigationState?, Binding<CGSize>) -> AnyView)?
     let instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)?
     let currentRoadNameView: ((NavigationState?) -> AnyView)?
 
@@ -79,6 +95,7 @@ private struct NavigationViewComponentsViewModifier: ViewModifier {
                 // Merge new configuration with existing, prioritizing new values
                 config = NavigationViewComponentsConfiguration(
                     progressView: progressView ?? config.progressView,
+                    offRouteView: offRouteView ?? config.offRouteView,
                     instructionsView: instructionsView ?? config.instructionsView,
                     currentRoadNameView: currentRoadNameView ?? config.currentRoadNameView
                 )
@@ -101,11 +118,13 @@ public extension View {
     /// - Returns: A modified view with navigation components configuration in the environment.
     func navigationViewComponents(
         progressView: ((NavigationState?, (() -> Void)?) -> AnyView)? = nil,
+        offRouteView: ((NavigationState?, Binding<CGSize>) -> AnyView)? = nil,
         instructionsView: ((NavigationState?, Binding<Bool>, Binding<CGSize>) -> AnyView)? = nil,
         currentRoadNameView: ((NavigationState?) -> AnyView)? = nil
     ) -> some View {
         modifier(NavigationViewComponentsViewModifier(
             progressView: progressView,
+            offRouteView: offRouteView,
             instructionsView: instructionsView,
             currentRoadNameView: currentRoadNameView
         ))
@@ -119,6 +138,16 @@ public extension View {
         @ViewBuilder _ instructionsView: @escaping (NavigationState?, Binding<Bool>, Binding<CGSize>) -> some View
     ) -> some View {
         navigationViewComponents(instructionsView: { AnyView(instructionsView($0, $1, $2)) })
+    }
+
+    /// Configure the navigation view off route banner.
+    ///
+    /// - Parameter offRouteView: The custom off route banner.
+    /// - Returns: A modified view with navigation components configuration in the environment.
+    func navigationViewOffRouteView(
+        @ViewBuilder _ offRouteView: @escaping (NavigationState?, Binding<CGSize>) -> some View
+    ) -> some View {
+        navigationViewComponents(offRouteView: { AnyView(offRouteView($0, $1)) })
     }
 
     /// Configure the navigation view progress component.
@@ -171,6 +200,13 @@ public enum DefaultNavigationViewComponents {
         }
     }
 
+    @ViewBuilder public static func defaultOffRouteView(
+        _: NavigationState?,
+        size: Binding<CGSize>
+    ) -> some View {
+        OffRouteBannerView(size: size)
+    }
+
     @ViewBuilder public static func defaultInstructionsView(
         _ navigationState: NavigationState?,
         _ isExpanded: Binding<Bool>,
@@ -186,6 +222,9 @@ public enum DefaultNavigationViewComponents {
     @ViewBuilder public static func defaultCurrentRoadNameView(_ navigationState: NavigationState?)
         -> some View
     {
-        CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName)
+        // Only show the road view when on route.
+        if case .noDeviation = navigationState?.currentDeviation {
+            CurrentRoadNameView(currentRoadName: navigationState?.currentRoadName)
+        }
     }
 }

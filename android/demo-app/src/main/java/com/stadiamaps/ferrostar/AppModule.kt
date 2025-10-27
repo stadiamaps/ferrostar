@@ -146,14 +146,21 @@ object AppModule {
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
-            navigationControllerConfig =
-                NavigationControllerConfig(
-                    WaypointAdvanceMode.WaypointWithinRange(100.0),
-                    stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
-                    stepAdvanceDistanceToEndOfStep(30u, 32u),
-                    RouteDeviationTracking.StaticThreshold(15U, 50.0),
-                    CourseFiltering.SNAP_TO_ROUTE),
-            options = options)
+            navigationControllerConfig = NavigationControllerConfig.demoConfig(),
+            options =
+                mapOf(
+                    "costing_options" to
+                        // Just an example... You can set multiple costing options for any profile
+                        // in Valhalla.
+                        // If your app uses multiple routing modes, you can have a master settings
+                        // map, or construct a new one each time.
+                        mapOf(
+                            "low_speed_vehicle" to
+                                mapOf(
+                                    "vehicle_type" to "golf_cart",
+                                    "top_speed" to 32 // 24kph ~= 15mph
+                                    )),
+                    "units" to "miles"))
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!

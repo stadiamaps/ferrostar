@@ -1,8 +1,8 @@
 //! The navigation state machine.
 
 pub mod models;
-pub mod recording;
 pub mod step_advance;
+pub mod waypoint_advance;
 
 #[cfg(test)]
 pub(crate) mod test_helpers;
@@ -16,18 +16,17 @@ use crate::{
         advance_step, apply_snapped_course, calculate_trip_progress,
         index_of_closest_segment_origin, snap_user_location_to_line,
     },
+    deviation_detection::RouteDeviation,
     models::{Route, RouteStep, UserLocation, Waypoint},
-    navigation_controller::models::{NavigationRecordingEvent, TripSummary},
-    navigation_controller::recording::{NavigationRecordingMetadata, RecordingError},
+    navigation_controller::{
+        models::TripSummary,
+        waypoint_advance::{WaypointAdvanceChecker, WaypointAdvanceResult, WaypointCheckEvent},
+    },
+    navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
 };
 use chrono::Utc;
-use geo::{
-    algorithm::{Distance, Haversine},
-    geometry::{LineString, Point},
-};
-use models::{
-    NavState, NavigationControllerConfig, StepAdvanceStatus, TripState, WaypointAdvanceMode,
-};
+use geo::geometry::LineString;
+use models::{NavState, NavigationControllerConfig, StepAdvanceStatus, TripState};
 use std::clone::Clone;
 use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
@@ -40,19 +39,10 @@ use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 /// around [`NavigationController`] in a composable manner.
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 pub trait Navigator: Send + Sync {
+    fn route(&self) -> Route;
     fn get_initial_state(&self, location: UserLocation) -> NavState;
     fn advance_to_next_step(&self, state: NavState) -> NavState;
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState;
-    /// Attempts to retrieve a recording based on the supplied navigation events.
-    ///
-    /// The default implementation returns an error indicating that recording is not enabled.
-    /// Navigation controllers which support recording can provide their own implementation.
-    fn get_recording(
-        &self,
-        #[allow(unused_variables)] events: Vec<NavigationRecordingEvent>,
-    ) -> Result<String, RecordingError> {
-        Err(RecordingError::RecordingNotEnabled)
-    }
 }
 
 /// Creates a new navigation controller for the given route and configuration.
@@ -65,13 +55,20 @@ pub fn create_navigator(
     config: NavigationControllerConfig,
     should_record: bool,
 ) -> Arc<dyn Navigator> {
-    if should_record {
-        // Creates a navigation controller with a wrapper that records events.
-        Arc::new(RecordingNavigationController::new(route, config))
+    let observers: Vec<Arc<dyn NavigationObserver>> = if should_record {
+        vec![Arc::new(NavigationRecorder::new(
+            route.clone(),
+            config.clone(),
+        ))]
     } else {
-        // Creates a normal navigation controller.
-        Arc::new(NavigationController::new(route, config))
-    }
+        vec![]
+    };
+
+    // Creates a normal navigation controller.
+    Arc::new(NavigationSession::new(
+        Arc::new(NavigationController::new(route, config)),
+        observers,
+    ))
 }
 
 /// Manages the navigation lifecycle through a route,
@@ -96,6 +93,11 @@ impl NavigationController {
 }
 
 impl Navigator for NavigationController {
+    /// The route associated with this controller.
+    fn route(&self) -> Route {
+        self.route.clone()
+    }
+
     /// Returns initial trip state as if the user had just started the route with no progress.
     fn get_initial_state(&self, location: UserLocation) -> NavState {
         let remaining_steps = self.route.steps.clone();
@@ -109,7 +111,7 @@ impl Navigator for NavigationController {
 
         let Some(current_route_step) = remaining_steps.first() else {
             // Bail early; if we don't have any steps, this is a useless route
-            return NavState::complete(location, initial_summary, None);
+            return NavState::complete(location, initial_summary);
         };
 
         // TODO: We could move this to the Route struct or NavigationController directly to only calculate it once.
@@ -152,7 +154,7 @@ impl Navigator for NavigationController {
             annotation_json,
         };
         let next_advance = Arc::clone(&self.config.step_advance_condition);
-        NavState::new(trip_state, next_advance, None)
+        NavState::new(trip_state, next_advance)
     }
 
     /// Advances navigation to the next step (or finishes the route).
@@ -169,12 +171,23 @@ impl Navigator for NavigationController {
                 user_location,
                 ref remaining_steps,
                 ref remaining_waypoints,
+                ref deviation,
                 summary,
                 ..
             } => {
                 let update = advance_step(remaining_steps);
                 match update {
                     StepAdvanceStatus::Advanced { step: current_step } => {
+                        // Trim the remaining waypoints if needed.
+                        let waypoints_result = self.get_new_waypoints(
+                            &state.trip_state(),
+                            WaypointCheckEvent::StepAdvanced(current_step.clone()),
+                        );
+                        let remaining_waypoints = match waypoints_result {
+                            WaypointAdvanceResult::Unchanged => remaining_waypoints.clone(),
+                            WaypointAdvanceResult::Changed(new_waypoints) => new_waypoints,
+                        };
+
                         // Apply the updates
                         let mut remaining_steps = remaining_steps.clone();
                         remaining_steps.remove(0);
@@ -187,17 +200,12 @@ impl Navigator for NavigationController {
                             &current_step,
                             &remaining_steps,
                             &remaining_waypoints,
+                            &deviation,
                         );
 
-                        NavState::new(
-                            trip_state,
-                            state.step_advance_condition(),
-                            state.recording_events,
-                        )
+                        NavState::new(trip_state, state.step_advance_condition())
                     }
-                    StepAdvanceStatus::EndOfRoute => {
-                        NavState::complete(user_location, summary, state.recording_events)
-                    }
+                    StepAdvanceStatus::EndOfRoute => NavState::complete(user_location, summary),
                 }
             }
             // Pass through
@@ -221,32 +229,45 @@ impl Navigator for NavigationController {
             } => {
                 // Remaining steps is empty, the route is finished.
                 let Some(current_step) = remaining_steps.first() else {
-                    return NavState::complete(location, summary, state.recording_events);
+                    return NavState::complete(location, summary);
                 };
 
                 // Trim the remaining waypoints if needed.
-                let remaining_waypoints = if self.should_advance_waypoint(&state.trip_state()) {
-                    let mut remaining_waypoints = remaining_waypoints.clone();
-                    remaining_waypoints.remove(0);
-                    remaining_waypoints
-                } else {
-                    remaining_waypoints.clone()
+                let waypoints_result = self
+                    .get_new_waypoints(&state.trip_state(), WaypointCheckEvent::LocationUpdated);
+                let remaining_waypoints = match waypoints_result {
+                    WaypointAdvanceResult::Unchanged => remaining_waypoints.clone(),
+                    WaypointAdvanceResult::Changed(new_waypoints) => new_waypoints,
                 };
+
+                let deviation = self.config.route_deviation_tracking.check_route_deviation(
+                    location,
+                    &self.route,
+                    current_step,
+                );
 
                 // Get the step advance condition result.
                 let next_step = remaining_steps.get(1).cloned();
-                let step_advance_result = if remaining_steps.len() <= 2 {
+                let is_arriving = remaining_steps.len() <= 2;
+                let step_advance_result = if is_arriving {
                     self.config
                         .arrival_step_advance_condition
-                        .should_advance_step(location, current_step.clone(), next_step)
+                        .should_advance_step(
+                            location,
+                            current_step.clone(),
+                            next_step,
+                            deviation.clone(),
+                        )
                 } else {
                     state.step_advance_condition().should_advance_step(
                         location,
                         current_step.clone(),
                         next_step,
+                        deviation.clone(),
                     )
                 };
 
+                let should_advance = step_advance_result.should_advance();
                 let intermediate_nav_state = NavState::new(
                     self.create_intermediate_trip_state(
                         state.trip_state(),
@@ -254,14 +275,21 @@ impl Navigator for NavigationController {
                         current_step,
                         &remaining_steps,
                         &remaining_waypoints,
+                        &deviation,
                     ),
                     step_advance_result.next_iteration,
-                    state.recording_events,
                 );
 
-                if step_advance_result.should_advance {
+                if should_advance {
                     // Advance to the next step
-                    return self.advance_to_next_step(intermediate_nav_state);
+                    let updated_state = self.advance_to_next_step(intermediate_nav_state);
+
+                    if is_arriving {
+                        return updated_state;
+                    } else {
+                        // Recurse ("speed run" behavior)
+                        return self.update_user_location(location, updated_state);
+                    }
                 }
 
                 intermediate_nav_state
@@ -293,6 +321,7 @@ impl NavigationController {
         current_step: &RouteStep,
         remaining_steps: &Vec<RouteStep>,
         remaining_waypoints: &Vec<Waypoint>,
+        deviation: &RouteDeviation,
     ) -> TripState {
         match trip_state {
             TripState::Navigating {
@@ -305,12 +334,6 @@ impl NavigationController {
                 let current_step_linestring = current_step.get_linestring();
                 let (current_step_geometry_index, snapped_user_location) =
                     self.snap_user_to_line(*location, &current_step_linestring);
-
-                let deviation = self.config.route_deviation_tracking.check_route_deviation(
-                    *location,
-                    &self.route,
-                    current_step,
-                );
 
                 // Update trip summary with accumulated distance
                 let updated_summary = previous_summary.update(
@@ -343,7 +366,7 @@ impl NavigationController {
                     remaining_waypoints: remaining_waypoints.clone(),
                     progress,
                     summary: updated_summary,
-                    deviation,
+                    deviation: deviation.clone(),
                     visual_instruction,
                     spoken_instruction,
                     annotation_json,
@@ -383,78 +406,16 @@ impl NavigationController {
         (current_step_geometry_index, snapped_with_course)
     }
 
-    /// Determines if the navigation controller should advance to the next waypoint.
-    fn should_advance_waypoint(&self, state: &TripState) -> bool {
-        match state {
-            TripState::Navigating {
-                snapped_user_location,
-                ref remaining_waypoints,
-                ..
-            } => {
-                // Update remaining waypoints
-                remaining_waypoints.first().is_some_and(|waypoint| {
-                    let current_location: Point = snapped_user_location.coordinates.into();
-                    let next_waypoint: Point = waypoint.coordinate.into();
-                    match self.config.waypoint_advance {
-                        WaypointAdvanceMode::WaypointWithinRange(range) => {
-                            Haversine.distance(current_location, next_waypoint) < range
-                        }
-                    }
-                })
-            }
-            TripState::Idle { .. } | TripState::Complete { .. } => false,
-        }
-    }
-}
-
-/// A wrapper around [`NavigationController`] that records navigation events.
-///
-/// This controller provides the same navigation functionality as [`NavigationController`]
-/// but additionally records all [`NavState`] changes
-/// The recording can be exported as JSON for debugging or testing purposes.
-pub struct RecordingNavigationController {
-    pub controller: NavigationController,
-    pub recording: NavigationRecordingMetadata,
-}
-
-impl RecordingNavigationController {
-    pub fn new(route: Route, config: NavigationControllerConfig) -> Self {
-        Self {
-            controller: NavigationController::new(route.clone(), config.clone()),
-            recording: NavigationRecordingMetadata::new(config, route),
-        }
-    }
-}
-
-impl Navigator for RecordingNavigationController {
-    fn get_initial_state(&self, location: UserLocation) -> NavState {
-        let initial_state = self.controller.get_initial_state(location);
-        let initial_event = NavigationRecordingEvent::state_update(initial_state.clone().into());
-
-        initial_state.append_recording_event(initial_event)
-    }
-
-    fn advance_to_next_step(&self, state: NavState) -> NavState {
-        let new_state = self.controller.advance_to_next_step(state.clone());
-        let event = NavigationRecordingEvent::state_update(new_state.clone().into());
-
-        new_state.append_recording_event(event)
-    }
-
-    fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
-        let new_state = self
-            .controller
-            .update_user_location(location, state.clone());
-        let event = NavigationRecordingEvent::state_update(new_state.clone().into());
-
-        new_state.append_recording_event(event)
-    }
-
-    fn get_recording(
+    /// Process waypoint advance us
+    fn get_new_waypoints(
         &self,
-        events: Vec<NavigationRecordingEvent>,
-    ) -> Result<String, RecordingError> {
-        self.recording.to_json(events)
+        state: &TripState,
+        event: WaypointCheckEvent,
+    ) -> WaypointAdvanceResult {
+        let checker = WaypointAdvanceChecker {
+            mode: self.config.waypoint_advance,
+        };
+        checker.get_new_waypoints(state, event)
     }
 }
 
@@ -517,30 +478,19 @@ impl JsNavigationController {
         serde_wasm_bindgen::to_value(&SerializableNavState::from(new_state))
             .map_err(|e| JsValue::from_str(&format!("{:?}", e)))
     }
-
-    #[wasm_bindgen(js_name = getRecording)]
-    pub fn get_recording(&self, events: JsValue) -> Result<JsValue, JsValue> {
-        let events: Vec<NavigationRecordingEvent> = serde_wasm_bindgen::from_value(events)?;
-        let recording = self.0.get_recording(events);
-
-        match recording {
-            Ok(recording) => Ok(JsValue::from_str(&recording)),
-            Err(e) => Err(JsValue::from_str(&format!("{:?}", e))),
-        }
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::step_advance::StepAdvanceCondition;
     use super::*;
-    use crate::deviation_detection::{RouteDeviation, RouteDeviationTracking};
-    use crate::navigation_controller::models::CourseFiltering;
+    use crate::deviation_detection::RouteDeviation;
     use crate::navigation_controller::step_advance::conditions::{
         DistanceEntryAndExitCondition, DistanceToEndOfStepCondition,
     };
     use crate::navigation_controller::test_helpers::{
-        get_test_route, nav_controller_insta_settings, TestRoute,
+        get_test_navigation_controller_config, get_test_route, nav_controller_insta_settings,
+        TestRoute,
     };
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
@@ -558,22 +508,7 @@ mod tests {
 
         let controller = create_navigator(
             route,
-            NavigationControllerConfig {
-                waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
-                // Careful setup: if the user is ever off the route
-                // (ex: because of an improper automatic step advance),
-                // we want to know about it.
-                route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
-                    minimum_horizontal_accuracy: 0,
-                    max_acceptable_deviation: 0.0,
-                },
-                snapped_location_course_filtering: CourseFiltering::Raw,
-                step_advance_condition,
-                arrival_step_advance_condition: Arc::new(DistanceToEndOfStepCondition {
-                    distance: 5,
-                    minimum_horizontal_accuracy: 0,
-                }),
-            },
+            get_test_navigation_controller_config(step_advance_condition),
             should_record,
         );
 
@@ -670,29 +605,6 @@ mod tests {
                 .into_iter()
                 .map(|state| state.trip_state())
                 .collect::<Vec<_>>());
-        });
-    }
-
-    #[test]
-    fn test_recording_serialization() {
-        nav_controller_insta_settings().bind(|| {
-            let (controller, states) = test_full_route_state_snapshot(
-                get_test_route(TestRoute::SelfIntersecting),
-                Arc::new(DistanceToEndOfStepCondition {
-                    distance: 0,
-                    minimum_horizontal_accuracy: 0,
-                }),
-                true,
-            );
-
-            let final_nav_state = states.into_iter().last().expect("No final nav state?!");
-            let json = controller
-                .get_recording(final_nav_state.recording_events.unwrap())
-                .unwrap();
-
-            // We have to do this to serialize the recording.
-            let value: serde_json::Value = serde_json::from_str(&json).unwrap();
-            insta::assert_yaml_snapshot!(value);
         });
     }
 

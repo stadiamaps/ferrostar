@@ -1,10 +1,50 @@
-use crate::models::{BoundingBox, GeographicCoordinate, Route, RouteStep, Waypoint, WaypointKind};
+use std::sync::Arc;
+
+use crate::deviation_detection::RouteDeviation;
+use crate::deviation_detection::RouteDeviationTracking;
+use crate::models::{
+    BoundingBox, GeographicCoordinate, Route, RouteStep, UserLocation, Waypoint, WaypointKind,
+};
+use crate::navigation_controller::models::{
+    CourseFiltering, NavigationControllerConfig, TripProgress, TripState, TripSummary,
+    WaypointAdvanceMode,
+};
+use crate::navigation_controller::step_advance::conditions::DistanceToEndOfStepCondition;
+use crate::navigation_controller::step_advance::StepAdvanceCondition;
 use crate::routing_adapters::{osrm::OsrmResponseParser, RouteResponseParser};
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
 use chrono::{DateTime, Utc};
 use geo::{point, BoundingRect, Coord, Distance, Haversine, LineString, Point};
 use insta::{dynamic_redaction, Settings};
+
+pub fn get_test_navigation_controller_config(
+    step_advance_condition: Arc<dyn StepAdvanceCondition>,
+) -> NavigationControllerConfig {
+    NavigationControllerConfig {
+        waypoint_advance: WaypointAdvanceMode::WaypointWithinRange(100.0),
+        // Careful setup: if the user is ever off the route
+        // (ex: because of an improper automatic step advance),
+        // we want to know about it.
+        route_deviation_tracking: RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: 0,
+            max_acceptable_deviation: 0.0,
+        },
+        snapped_location_course_filtering: CourseFiltering::Raw,
+        step_advance_condition,
+        arrival_step_advance_condition: Arc::new(DistanceToEndOfStepCondition {
+            distance: 5,
+            minimum_horizontal_accuracy: 0,
+        }),
+    }
+}
+
+pub fn get_test_step_advance_condition(distance: u16) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceToEndOfStepCondition {
+        distance,
+        minimum_horizontal_accuracy: 0,
+    })
+}
 
 pub enum TestRoute {
     /// Gets a longer + more complex route.
@@ -236,4 +276,40 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
     settings.add_redaction(".version", "[version]");
 
     settings
+}
+
+/// Creates a TripState::Navigating for testing purposes.
+///
+/// This is a convenience function to reduce boilerplate in tests that need a navigating state.
+///
+/// # Parameters
+///
+/// * `user_location` - The user's current location
+/// * `remaining_waypoints` - The remaining waypoints in the trip
+pub fn get_navigating_trip_state(
+    user_location: UserLocation,
+    remaining_waypoints: Vec<Waypoint>,
+) -> TripState {
+    TripState::Navigating {
+        current_step_geometry_index: Some(0),
+        user_location: user_location.clone(),
+        snapped_user_location: user_location,
+        remaining_steps: vec![],
+        remaining_waypoints,
+        progress: TripProgress {
+            distance_to_next_maneuver: 100.0,
+            distance_remaining: 1000.0,
+            duration_remaining: 600.0,
+        },
+        deviation: RouteDeviation::NoDeviation,
+        summary: TripSummary {
+            distance_traveled: 0.0,
+            snapped_distance_traveled: 0.0,
+            started_at: Utc::now(),
+            ended_at: None,
+        },
+        visual_instruction: None,
+        spoken_instruction: None,
+        annotation_json: None,
+    }
 }
