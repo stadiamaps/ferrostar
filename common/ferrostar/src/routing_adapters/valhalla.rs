@@ -207,6 +207,10 @@ pub struct ValhallaLocationSearchFilter {
 /// # Examples
 ///
 /// ```
+/// # #[cfg(all(feature = "std", not(feature = "web-time")))]
+/// # use std::time::SystemTime;
+/// # #[cfg(feature = "web-time")]
+/// # use web_time::SystemTime;
 /// use serde_json::{json, Map, Value};
 /// use ferrostar::models::{GeographicCoordinate, UserLocation, Waypoint, WaypointKind};
 /// use crate::ferrostar::routing_adapters::RouteRequestGenerator;
@@ -230,7 +234,7 @@ pub struct ValhallaLocationSearchFilter {
 ///     },
 ///     horizontal_accuracy: 0.0,
 ///     course_over_ground: None,
-///     timestamp: std::time::SystemTime::now(),
+///     timestamp: SystemTime::now(),
 ///     speed: None,
 /// };
 ///
