@@ -3,8 +3,9 @@ use crate::{
     deviation_detection::RouteDeviation,
     models::{RouteStep, UserLocation},
     navigation_controller::step_advance::conditions::{
-        AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceEntryAndSnappedExitCondition, DistanceFromStepCondition,
-        DistanceToEndOfStepCondition, ManualStepCondition, OrAdvanceConditions,
+        AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceEntryAndSnappedExitCondition,
+        DistanceFromStepCondition, DistanceToEndOfStepCondition, ManualStepCondition,
+        OrAdvanceConditions,
     },
 };
 use serde::{Deserialize, Serialize};

@@ -2,7 +2,10 @@ use std::sync::Arc;
 
 use super::{StepAdvanceCondition, StepAdvanceConditionSerializable, StepAdvanceResult};
 use crate::{
-    algorithms::{deviation_from_line, get_linestring, is_within_threshold_to_end_of_linestring, snap_user_location_to_line},
+    algorithms::{
+        deviation_from_line, get_linestring, is_within_threshold_to_end_of_linestring,
+        snap_user_location_to_line,
+    },
     deviation_detection::RouteDeviation,
     models::{RouteStep, UserLocation},
 };
@@ -495,7 +498,7 @@ impl StepAdvanceCondition for DistanceEntryAndSnappedExitCondition {
                         DistanceEntryAndSnappedExitCondition {
                             has_reached_end_of_current_step: true,
                             ..*self
-                        }
+                        },
                     ));
                 }
 
@@ -505,23 +508,21 @@ impl StepAdvanceCondition for DistanceEntryAndSnappedExitCondition {
                 let combined_linestring = get_linestring(&combined_coords);
 
                 // Snap to the combined route
-                let snapped_to_route = snap_user_location_to_line(
-                    user_location,
-                    &combined_linestring
-                );
+                let snapped_to_route =
+                    snap_user_location_to_line(user_location, &combined_linestring);
 
                 // Measure distance from CURRENT step only
                 let current_step_linestring = current_step.get_linestring();
-                let deviation = deviation_from_line(
-                    &Point::from(snapped_to_route),
-                    &current_step_linestring
-                ).unwrap_or(0.0);
+                let deviation =
+                    deviation_from_line(&Point::from(snapped_to_route), &current_step_linestring)
+                        .unwrap_or(0.0);
 
                 // Cap exit distance to prevent getting stuck on short steps
                 // Use 0.5x multiplier since we measure perpendicular distance, not path distance
                 let next_step_length = next.distance;
                 let max_reasonable_exit = (next_step_length * 0.5) as u16;
-                let effective_exit_distance = self.distance_after_end_of_step.min(max_reasonable_exit);
+                let effective_exit_distance =
+                    self.distance_after_end_of_step.min(max_reasonable_exit);
 
                 let should_advance = deviation > effective_exit_distance.into();
 
@@ -532,7 +533,7 @@ impl StepAdvanceCondition for DistanceEntryAndSnappedExitCondition {
                         DistanceEntryAndSnappedExitCondition {
                             has_reached_end_of_current_step: true,
                             ..*self
-                        }
+                        },
                     ))
                 }
             } else {
@@ -1257,7 +1258,7 @@ mod tests {
 
         // Step 2 is very short - only ~5.5 meters long
         let step2 = gen_route_step_with_coords(vec![
-            coord!(x: 0.001, y: 0.0),    // Start of step 2
+            coord!(x: 0.001, y: 0.0),     // Start of step 2
             coord!(x: 0.001, y: 0.00005), // Only ~5.5m north
         ]);
 
