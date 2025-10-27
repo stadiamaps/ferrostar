@@ -136,14 +136,15 @@ object AppModule {
       // GraphHopper also supports custom models.
       // You can find the documentation here: https://docs.graphhopper.com/openapi/custom-model
       // Arbitrary example (limits the top speed on motorways to 100kph):
-//      options =
-//          mapOf(
-//              "ch.disable" to true,
-//              "custom_model" to
-//                  mapOf(
-//                      "distance_influence" to 15,
-//                      "speed" to
-//                          listOf(mapOf("if" to "road_class == MOTORWAY", "limit_to" to "100"))))
+      //      options =
+      //          mapOf(
+      //              "ch.disable" to true,
+      //              "custom_model" to
+      //                  mapOf(
+      //                      "distance_influence" to 15,
+      //                      "speed" to
+      //                          listOf(mapOf("if" to "road_class == MOTORWAY", "limit_to" to
+      // "100"))))
     }
     val core =
         FerrostarCore(
