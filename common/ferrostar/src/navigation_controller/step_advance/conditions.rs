@@ -495,10 +495,7 @@ impl StepAdvanceCondition for DistanceEntryAndSnappedExitCondition {
                 // Check GPS accuracy first
                 if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
                     return StepAdvanceResult::continue_with_state(Arc::new(
-                        DistanceEntryAndSnappedExitCondition {
-                            has_reached_end_of_current_step: true,
-                            ..*self
-                        },
+                        DistanceEntryAndSnappedExitCondition { ..*self },
                     ));
                 }
 
@@ -530,10 +527,7 @@ impl StepAdvanceCondition for DistanceEntryAndSnappedExitCondition {
                     StepAdvanceResult::advance_to_new_instance(self)
                 } else {
                     StepAdvanceResult::continue_with_state(Arc::new(
-                        DistanceEntryAndSnappedExitCondition {
-                            has_reached_end_of_current_step: true,
-                            ..*self
-                        },
+                        DistanceEntryAndSnappedExitCondition { ..*self },
                     ))
                 }
             } else {
