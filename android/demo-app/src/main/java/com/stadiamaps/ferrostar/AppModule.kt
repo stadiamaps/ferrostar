@@ -19,14 +19,9 @@ import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import java.time.Duration
 import java.time.Instant
 import okhttp3.OkHttpClient
-import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.NavigationControllerConfig
-import uniffi.ferrostar.RouteDeviationTracking
 import uniffi.ferrostar.UserLocation
-import uniffi.ferrostar.WaypointAdvanceMode
-import uniffi.ferrostar.stepAdvanceDistanceEntryAndExit
-import uniffi.ferrostar.stepAdvanceDistanceToEndOfStep
 
 /**
  * A basic sample of a dependency injection module for the demo app. This is only used to
