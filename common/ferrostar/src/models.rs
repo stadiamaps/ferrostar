@@ -107,7 +107,7 @@ pub struct Waypoint {
     /// Optional additional properties that will be passed on to the [`crate::routing_adapters::RouteRequestGenerator`].
     ///
     /// Most users should prefer convenience functions like [`Waypoint::new_with_valhalla_properties`]
-    /// (or, on platforms like iOS and Android with UniFFI bindings, [`crate::routing_adapters::valhalla::create_waypoint_with_valhalla_properties`]).
+    /// (or, on platforms like iOS and Android with `UniFFI` bindings, [`crate::routing_adapters::valhalla::create_waypoint_with_valhalla_properties`]).
     ///
     /// # Format guidelines
     ///

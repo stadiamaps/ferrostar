@@ -1,8 +1,8 @@
 use crate::algorithms::deviation_from_line;
 use crate::models::RouteStep;
-use crate::navigation_controller::models::WaypointAdvanceMode;
 use crate::navigation_controller::TripState;
 use crate::navigation_controller::Waypoint;
+use crate::navigation_controller::models::WaypointAdvanceMode;
 use geo::{Distance, Haversine, Point};
 
 #[derive(Debug, Clone, PartialEq)]
@@ -78,11 +78,10 @@ impl WaypointAdvanceChecker {
                             .iter()
                             .filter(|waypoint| {
                                 let waypoint_point: Point = waypoint.coordinate.into();
-                                let is_beyond_range =
-                                    deviation_from_line(&waypoint_point, &step_linestring)
-                                        .is_some_and(|diff| diff > range);
+
                                 // Only keep waypoints that are beyond the range
-                                is_beyond_range
+                                deviation_from_line(&waypoint_point, &step_linestring)
+                                    .is_some_and(|diff| diff > range)
                             })
                             .cloned()
                             .collect();
@@ -92,10 +91,10 @@ impl WaypointAdvanceChecker {
                             filtered_waypoints.push(remaining_waypoints.last().unwrap().clone());
                         }
 
-                        if filtered_waypoints.len() != remaining_waypoints.len() {
-                            WaypointAdvanceResult::Changed(filtered_waypoints)
-                        } else {
+                        if filtered_waypoints.len() == remaining_waypoints.len() {
                             WaypointAdvanceResult::Unchanged
+                        } else {
+                            WaypointAdvanceResult::Changed(filtered_waypoints)
                         }
                     }
                 }
@@ -112,7 +111,7 @@ mod tests {
     use crate::navigation_controller::test_helpers::{
         gen_route_step_with_coords, get_navigating_trip_state,
     };
-    use geo::{coord, Destination};
+    use geo::{Destination, coord};
     use proptest::prelude::*;
 
     #[cfg(all(test, feature = "std", not(feature = "web-time")))]

@@ -47,9 +47,9 @@ impl StepAdvanceResult {
     }
 
     /// Creates a step advance result that does not advance to the next step.
-    /// Uses the provided next_iteration as-is for preserving stateful progress.
+    /// Uses the provided `next_iteration` as-is for preserving stateful progress.
     ///
-    /// Note: it's up to the caller to determine whether next_iteration should reset.
+    /// Note: it's up to the caller to determine whether `next_iteration` should reset.
     pub fn continue_with_state(next_iteration: Arc<dyn StepAdvanceCondition>) -> Self {
         Self {
             should_advance: false,
@@ -191,12 +191,12 @@ impl From<SerializableStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
             }),
             SerializableStepAdvanceCondition::OrAdvanceConditions { conditions } => {
                 Arc::new(OrAdvanceConditions {
-                    conditions: conditions.into_iter().map(|c| c.into()).collect(),
+                    conditions: conditions.into_iter().map(Into::into).collect(),
                 })
             }
             SerializableStepAdvanceCondition::AndAdvanceConditions { conditions } => {
                 Arc::new(AndAdvanceConditions {
-                    conditions: conditions.into_iter().map(|c| c.into()).collect(),
+                    conditions: conditions.into_iter().map(Into::into).collect(),
                 })
             }
         }
@@ -206,7 +206,7 @@ impl From<SerializableStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
 /// Convenience function for creating a [`ManualStepCondition`].
 ///
 /// This never advances to the next step automatically.
-/// You must manually advance to the next step programmatically using a FerrostarCore
+/// You must manually advance to the next step programmatically using a `FerrostarCore`
 /// platform wrapper or by calling [`super::Navigator::advance_to_next_step`] manually.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]

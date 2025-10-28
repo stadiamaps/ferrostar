@@ -2,10 +2,10 @@ use crate::{
     models::{Route, UserLocation},
     navigation_controller::models::{NavState, NavigationControllerConfig},
     navigation_session::{
+        NavigationObserver,
         recording::models::{
             NavigationRecordingEvent, NavigationRecordingMetadata, RecordingError,
         },
-        NavigationObserver,
     },
 };
 use std::sync::Mutex;
@@ -83,15 +83,15 @@ mod tests {
     use crate::test_utils::redact_properties;
     use crate::{
         navigation_controller::{
-            test_helpers::{
-                get_test_navigation_controller_config, get_test_route,
-                get_test_step_advance_condition, nav_controller_insta_settings, TestRoute,
-            },
             NavigationController,
+            test_helpers::{
+                TestRoute, get_test_navigation_controller_config, get_test_route,
+                get_test_step_advance_condition, nav_controller_insta_settings,
+            },
         },
         navigation_session::{
-            recording::NavigationRecorder, test_helpers::test_full_route_state_snapshot,
-            NavigationSession,
+            NavigationSession, recording::NavigationRecorder,
+            test_helpers::test_full_route_state_snapshot,
         },
     };
 

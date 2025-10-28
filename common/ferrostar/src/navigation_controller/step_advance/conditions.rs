@@ -154,8 +154,7 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
                 let current_step_linestring = current_step.get_linestring();
 
                 deviation_from_line(&current_position, &current_step_linestring)
-                    .map(|deviation| deviation > self.distance.into())
-                    .unwrap_or(false)
+                    .is_some_and(|deviation| deviation > self.distance.into())
             };
 
         if should_advance {
@@ -213,7 +212,7 @@ impl StepAdvanceCondition for OrAdvanceConditions {
                 user_location,
                 current_step.clone(),
                 next_step.clone(),
-                route_deviation.clone(),
+                route_deviation,
             );
             should_advance = should_advance || result.should_advance;
             next_conditions.push(result.next_iteration);
@@ -275,7 +274,7 @@ impl StepAdvanceCondition for AndAdvanceConditions {
                 user_location,
                 current_step.clone(),
                 next_step.clone(),
-                route_deviation.clone(),
+                route_deviation,
             );
             should_advance = should_advance && result.should_advance;
             next_conditions.push(result.next_iteration);

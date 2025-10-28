@@ -11,10 +11,10 @@ use crate::models::{
 use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
 use crate::routing_adapters::utilities::get_coordinates_from_geometry;
 use crate::routing_adapters::{
+    ParsingError, Route,
     osrm::models::{
         Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep, Waypoint as OsrmWaypoint,
     },
-    ParsingError, Route,
 };
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::{string::ToString, vec, vec::Vec};
@@ -84,7 +84,7 @@ impl Route {
             .collect();
 
         let waypoints: Vec<_> = waypoints
-            .into_iter()
+            .iter()
             .enumerate()
             .map(|(idx, waypoint)| Waypoint {
                 coordinate: GeographicCoordinate {
@@ -269,7 +269,7 @@ impl RouteStep {
                         maneuver_modifier: secondary.maneuver_modifier,
                         roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
                         lane_info: None,
-                        exit_numbers: Self::extract_exit_numbers(&secondary),
+                        exit_numbers: Self::extract_exit_numbers(secondary),
                     }
                 }),
                 sub_content: banner.sub.as_ref().map(|sub| VisualInstructionContent {
@@ -295,7 +295,7 @@ impl RouteStep {
                             Some(lane_infos)
                         }
                     },
-                    exit_numbers: Self::extract_exit_numbers(&sub),
+                    exit_numbers: Self::extract_exit_numbers(sub),
                 }),
                 trigger_distance_before_maneuver: banner.distance_along_geometry,
             })

@@ -150,7 +150,7 @@ impl TripSummary {
         current_snapped_location: &UserLocation,
     ) -> Self {
         // Calculate distance increment between the user locations.
-        let distance_increment = distance_between_locations(previous_location, current_location);
+        let distance_increment = distance_between_locations(&previous_location, &current_location);
         let snapped_distance_increment =
             distance_between_locations(previous_snapped_location, current_snapped_location);
 

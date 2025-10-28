@@ -5,7 +5,7 @@ use crate::models::{GeographicCoordinate, UserLocation, Waypoint, WaypointKind};
 use crate::routing_adapters::RouteRequestGenerator;
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
-use serde_json::{json, Map, Value as JsonValue};
+use serde_json::{Map, Value as JsonValue, json};
 #[cfg(feature = "std")]
 use std::collections::HashMap;
 
@@ -511,7 +511,7 @@ fn merge_optional_waypoint_properties(
 
     if let Some(preferred_side) = preferred_side {
         result["preferred_side"] =
-            serde_json::to_value(&preferred_side).expect("This should never fail");
+            serde_json::to_value(preferred_side).expect("This should never fail");
     }
 
     if let Some(display_coordinate) = display_coordinate {
@@ -537,12 +537,12 @@ fn merge_optional_waypoint_properties(
 
     if let Some(street_side_cutoff) = street_side_cutoff {
         result["street_side_cutoff"] =
-            serde_json::to_value(&street_side_cutoff).expect("This should never fail");
+            serde_json::to_value(street_side_cutoff).expect("This should never fail");
     }
 
     if let Some(search_filter) = search_filter {
         result["search_filter"] =
-            serde_json::to_value(&search_filter).expect("This should never fail");
+            serde_json::to_value(search_filter).expect("This should never fail");
     }
 
     result

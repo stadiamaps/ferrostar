@@ -11,14 +11,14 @@ use std::sync::Arc;
 use crate::{
     models::{Route, UserLocation},
     navigation_controller::{
-        models::{SerializableNavState, SerializableNavigationControllerConfig},
         NavigationController, Navigator,
+        models::{SerializableNavState, SerializableNavigationControllerConfig},
     },
-    navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
+    navigation_session::{NavigationObserver, NavigationSession, recording::NavigationRecorder},
 };
 
 #[cfg(feature = "wasm-bindgen")]
-use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 /// JavaScript wrapper for `NavigationSession` (simple version).
 /// This wrapper provides basic navigation functionality without observers.

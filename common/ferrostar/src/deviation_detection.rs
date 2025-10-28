@@ -110,8 +110,8 @@ impl RouteDeviationTracking {
         }
     }
 
-    /// Get the RouteDeviation status for a given location on a line string.
-    /// This can be used with a Route or RouteStep.
+    /// Get the `RouteDeviation` status for a given location on a line string.
+    /// This can be used with a Route or `RouteStep`.
     fn static_threshold_deviation_from_line(
         &self,
         point: &Point,

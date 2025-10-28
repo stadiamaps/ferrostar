@@ -22,7 +22,7 @@ use crate::{
         models::TripSummary,
         waypoint_advance::{WaypointAdvanceChecker, WaypointAdvanceResult, WaypointCheckEvent},
     },
-    navigation_session::{recording::NavigationRecorder, NavigationObserver, NavigationSession},
+    navigation_session::{NavigationObserver, NavigationSession, recording::NavigationRecorder},
 };
 use chrono::Utc;
 use geo::geometry::LineString;
@@ -30,7 +30,7 @@ use models::{NavState, NavigationControllerConfig, StepAdvanceStatus, TripState}
 use std::clone::Clone;
 use std::sync::Arc;
 #[cfg(feature = "wasm-bindgen")]
-use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 /// Core interface for navigation functionalities.
 ///
@@ -171,7 +171,7 @@ impl Navigator for NavigationController {
                 user_location,
                 ref remaining_steps,
                 ref remaining_waypoints,
-                ref deviation,
+                deviation,
                 summary,
                 ..
             } => {
@@ -196,11 +196,11 @@ impl Navigator for NavigationController {
                         // and remaining_steps
                         let trip_state = self.create_intermediate_trip_state(
                             state.trip_state(),
-                            &user_location,
+                            user_location,
                             &current_step,
                             &remaining_steps,
                             &remaining_waypoints,
-                            &deviation,
+                            deviation,
                         );
 
                         NavState::new(trip_state, state.step_advance_condition())
@@ -252,18 +252,13 @@ impl Navigator for NavigationController {
                 let step_advance_result = if is_arriving {
                     self.config
                         .arrival_step_advance_condition
-                        .should_advance_step(
-                            location,
-                            current_step.clone(),
-                            next_step,
-                            deviation.clone(),
-                        )
+                        .should_advance_step(location, current_step.clone(), next_step, deviation)
                 } else {
                     state.step_advance_condition().should_advance_step(
                         location,
                         current_step.clone(),
                         next_step,
-                        deviation.clone(),
+                        deviation,
                     )
                 };
 
@@ -271,11 +266,11 @@ impl Navigator for NavigationController {
                 let intermediate_nav_state = NavState::new(
                     self.create_intermediate_trip_state(
                         state.trip_state(),
-                        &location,
+                        location,
                         current_step,
-                        &remaining_steps,
+                        remaining_steps,
                         &remaining_waypoints,
-                        &deviation,
+                        deviation,
                     ),
                     step_advance_result.next_iteration,
                 );
@@ -284,12 +279,12 @@ impl Navigator for NavigationController {
                     // Advance to the next step
                     let updated_state = self.advance_to_next_step(intermediate_nav_state);
 
-                    if is_arriving {
-                        return updated_state;
+                    return if is_arriving {
+                        updated_state
                     } else {
                         // Recurse ("speed run" behavior)
-                        return self.update_user_location(location, updated_state);
-                    }
+                        self.update_user_location(location, updated_state)
+                    };
                 }
 
                 intermediate_nav_state
@@ -300,7 +295,7 @@ impl Navigator for NavigationController {
     }
 }
 
-/// Shared functionality for the navigation controller that is not exported by UniFFI.
+// Shared functionality for the navigation controller that is not exported by `UniFFI`.
 impl NavigationController {
     /// Create an intermediate trip state with updated values,
     /// but does _not_ advance to the next step or handle arrival.
@@ -317,11 +312,11 @@ impl NavigationController {
     fn create_intermediate_trip_state(
         &self,
         trip_state: TripState,
-        location: &UserLocation,
+        current_user_location: UserLocation,
         current_step: &RouteStep,
         remaining_steps: &Vec<RouteStep>,
         remaining_waypoints: &Vec<Waypoint>,
-        deviation: &RouteDeviation,
+        deviation: RouteDeviation,
     ) -> TripState {
         match trip_state {
             TripState::Navigating {
@@ -333,12 +328,12 @@ impl NavigationController {
                 // Find the nearest point on the route line
                 let current_step_linestring = current_step.get_linestring();
                 let (current_step_geometry_index, snapped_user_location) =
-                    self.snap_user_to_line(*location, &current_step_linestring);
+                    self.snap_user_to_line(current_user_location, &current_step_linestring);
 
                 // Update trip summary with accumulated distance
                 let updated_summary = previous_summary.update(
                     &previous_user_location,
-                    &location,
+                    &current_user_location,
                     &previous_snapped_user_location,
                     &snapped_user_location,
                 );
@@ -346,7 +341,7 @@ impl NavigationController {
                 let progress = calculate_trip_progress(
                     &snapped_user_location.into(),
                     &current_step_linestring,
-                    &remaining_steps,
+                    remaining_steps,
                 );
 
                 let visual_instruction = current_step
@@ -360,13 +355,13 @@ impl NavigationController {
 
                 TripState::Navigating {
                     current_step_geometry_index,
-                    user_location: location.clone(),
+                    user_location: current_user_location,
                     snapped_user_location,
                     remaining_steps: remaining_steps.clone(),
                     remaining_waypoints: remaining_waypoints.clone(),
                     progress,
                     summary: updated_summary,
-                    deviation: deviation.clone(),
+                    deviation,
                     visual_instruction,
                     spoken_instruction,
                     annotation_json,
@@ -406,7 +401,7 @@ impl NavigationController {
         (current_step_geometry_index, snapped_with_course)
     }
 
-    /// Process waypoint advance us
+    /// Process waypoint advance
     fn get_new_waypoints(
         &self,
         state: &TripState,
@@ -489,12 +484,12 @@ mod tests {
         DistanceEntryAndExitCondition, DistanceToEndOfStepCondition,
     };
     use crate::navigation_controller::test_helpers::{
-        get_test_navigation_controller_config, get_test_route, nav_controller_insta_settings,
-        TestRoute,
+        TestRoute, get_test_navigation_controller_config, get_test_route,
+        nav_controller_insta_settings,
     };
     use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
     use crate::simulation::{
-        advance_location_simulation, location_simulation_from_route, LocationBias,
+        LocationBias, advance_location_simulation, location_simulation_from_route,
     };
     use crate::test_utils::redact_properties;
     use std::sync::Arc;

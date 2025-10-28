@@ -6,7 +6,7 @@ use crate::routing_adapters::error::{InstantiationError, RoutingRequestGeneratio
 use crate::routing_adapters::{RouteRequest, RouteRequestGenerator};
 
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Map, Value as JsonValue};
+use serde_json::{Map, Value as JsonValue, json};
 #[cfg(feature = "std")]
 use std::collections::HashMap;
 #[cfg(feature = "wasm-bindgen")]

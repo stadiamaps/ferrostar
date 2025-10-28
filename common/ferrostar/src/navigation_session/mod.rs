@@ -3,8 +3,8 @@ use std::sync::Arc;
 use crate::{
     models::{Route, UserLocation},
     navigation_controller::{
-        models::{NavState, NavigationControllerConfig},
         NavigationController, Navigator,
+        models::{NavState, NavigationControllerConfig},
     },
 };
 

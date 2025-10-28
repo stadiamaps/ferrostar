@@ -9,8 +9,8 @@ use ferrostar::navigation_controller::models::{
 use ferrostar::navigation_controller::step_advance::conditions::{
     DistanceToEndOfStepCondition, ManualStepCondition,
 };
-use ferrostar::routing_adapters::osrm::OsrmResponseParser;
 use ferrostar::routing_adapters::RouteResponseParser;
+use ferrostar::routing_adapters::osrm::OsrmResponseParser;
 use std::sync::Arc;
 
 #[cfg(all(feature = "std", not(feature = "web-time")))]
