@@ -7,10 +7,10 @@ PRs welcome to expand the list or to add support!
 
 * [Stadia Maps](https://stadiamaps.com/)
 	* Global hosted Valhalla API (free keys for evaluation available)
-	* Custom deployments with proprietary data integrations possible
-* [GIS • OPS](https://gis-ops.com/)
-	* Routing specialists, with an emphasis on Valhalla
-	* Specializes in custom deployments and integration of proprietary data
+	* Traffic and other proprietary data integrations available
+* [GraphHopper](https://www.graphhopper.com/)
+    * Global hosted GraphHopper API (free keys for evaluation available)
+	* Traffic available via add-on
 
 ## Basemaps
 

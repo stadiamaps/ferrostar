@@ -223,9 +223,19 @@ The `FerrostarCore` instance should live for at least the duration of a navigati
 Bringing it all together, a typical init looks something like this:
 
 ```kotlin
+var options =
+    mapOf(
+        "costingOptions" to
+            mapOf(
+                "bicycle" to
+                    mapOf(
+                        "use_roads" to 0.2
+                        )),
+        "units" to "miles")
 private val core =
       FerrostarCore(
-          routingEngine = RoutingEngine.Valhalla("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY", "auto"),
+          wellKnownRouteProvider = WellKnownRouteProvider.Valhalla("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY", "bicycle")
+		    .withJsonOptions(options),
           httpClient = httpClient,
           locationProvider = locationProvider,
           foregroundServiceManager = foregroundServiceManager,
@@ -241,13 +251,12 @@ private val core =
       )
 ```
 
-`FerrostarCore` exposes a number of convenience constructors for common cases,
-such as using a Valhalla [Route Provider](./route-providers.md#bundled-support),
-and automatically subscribes to location updates from the `LocationProvider`.
+### Route Providers
 
-There are a LOT of options, but don’t worry; everything is documented.
-Check out the [Navigation Behavior](configuring-the-navigation-controller.md)
-customization chapter for details.
+You’ll need a route provider when you set up your `FerrostarCore` instance.
+Several are available via the `WellKnownRouteProvider` enum,
+or you can [configure your own from scratch](./route-providers.md).
+Refer to the [commercial vendors](./vendors.md) page for some known working integrations.
 
 ## Set up voice guidance
 
