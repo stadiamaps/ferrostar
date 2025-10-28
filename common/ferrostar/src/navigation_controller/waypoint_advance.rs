@@ -35,8 +35,8 @@ impl WaypointAdvanceChecker {
     ) -> WaypointAdvanceResult {
         match state {
             TripState::Navigating {
-                ref user_location,
-                ref remaining_waypoints,
+                user_location,
+                remaining_waypoints,
                 ..
             } => {
                 match self.mode {

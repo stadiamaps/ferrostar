@@ -9,9 +9,9 @@ authors = [
     "Luke Seelenbinder <luke@stadiamaps.com>",
 ]
 license = "BSD-3-Clause"
-edition = "2021"
+edition = "2024"
 repository = "https://github.com/stadiamaps/ferrostar"
-rust-version = "1.83.0"
+rust-version = "1.88.0"
 
 [profile.dev.package]
 insta.opt-level = 3
