@@ -25,7 +25,7 @@ public protocol CustomRouteProvider {
 }
 
 public extension WellKnownRouteProvider {
-    func withJsonOptions(options: [String: Any] = [:]) throws -> WellKnownRouteProvider {
+    func withJsonOptions(options: [String: Any]) throws -> WellKnownRouteProvider {
         guard
             let jsonOptions = try String(
                 data: JSONSerialization.data(withJSONObject: options),
