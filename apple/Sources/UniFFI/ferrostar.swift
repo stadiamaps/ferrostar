@@ -894,13 +894,13 @@ public protocol DistanceEntryAndSnappedExitConditionProtocol: AnyObject, Sendabl
  * The exit distance is measured from the current step to the route-snapped position.
  */
 open class DistanceEntryAndSnappedExitCondition: DistanceEntryAndSnappedExitConditionProtocol, @unchecked Sendable {
-    fileprivate let pointer: UnsafeMutableRawPointer!
+    fileprivate let handle: UInt64
 
-    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+    /// Used to instantiate a [FFIObject] without an actual handle, for fakes in tests, mostly.
 #if swift(>=5.8)
     @_documentation(visibility: private)
 #endif
-    public struct NoPointer {
+    public struct NoHandle {
         public init() {}
     }
 
@@ -910,42 +910,39 @@ open class DistanceEntryAndSnappedExitCondition: DistanceEntryAndSnappedExitCond
 #if swift(>=5.8)
     @_documentation(visibility: private)
 #endif
-    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
-        self.pointer = pointer
+    required public init(unsafeFromHandle handle: UInt64) {
+        self.handle = handle
     }
 
     // This constructor can be used to instantiate a fake object.
-    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    // - Parameter noHandle: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
     //
     // - Warning:
-    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing handle the FFI lower functions will crash.
 #if swift(>=5.8)
     @_documentation(visibility: private)
 #endif
-    public init(noPointer: NoPointer) {
-        self.pointer = nil
+    public init(noHandle: NoHandle) {
+        self.handle = 0
     }
 
 #if swift(>=5.8)
     @_documentation(visibility: private)
 #endif
-    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
-        return try! rustCall { uniffi_ferrostar_fn_clone_distanceentryandsnappedexitcondition(self.pointer, $0) }
+    public func uniffiCloneHandle() -> UInt64 {
+        return try! rustCall { uniffi_ferrostar_fn_clone_distanceentryandsnappedexitcondition(self.handle, $0) }
     }
     // No primary constructor declared for this class.
 
     deinit {
-        guard let pointer = pointer else {
-            return
-        }
-
-        try! rustCall { uniffi_ferrostar_fn_free_distanceentryandsnappedexitcondition(pointer, $0) }
+        try! rustCall { uniffi_ferrostar_fn_free_distanceentryandsnappedexitcondition(handle, $0) }
     }
 
     
 
     
 
+    
 }
 
 
@@ -953,33 +950,24 @@ open class DistanceEntryAndSnappedExitCondition: DistanceEntryAndSnappedExitCond
 @_documentation(visibility: private)
 #endif
 public struct FfiConverterTypeDistanceEntryAndSnappedExitCondition: FfiConverter {
-
-    typealias FfiType = UnsafeMutableRawPointer
+    typealias FfiType = UInt64
     typealias SwiftType = DistanceEntryAndSnappedExitCondition
 
-    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceEntryAndSnappedExitCondition {
-        return DistanceEntryAndSnappedExitCondition(unsafeFromRawPointer: pointer)
+    public static func lift(_ handle: UInt64) throws -> DistanceEntryAndSnappedExitCondition {
+        return DistanceEntryAndSnappedExitCondition(unsafeFromHandle: handle)
     }
 
-    public static func lower(_ value: DistanceEntryAndSnappedExitCondition) -> UnsafeMutableRawPointer {
-        return value.uniffiClonePointer()
+    public static func lower(_ value: DistanceEntryAndSnappedExitCondition) -> UInt64 {
+        return value.uniffiCloneHandle()
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceEntryAndSnappedExitCondition {
-        let v: UInt64 = try readInt(&buf)
-        // The Rust code won't compile if a pointer won't fit in a UInt64.
-        // We have to go via `UInt` because that's the thing that's the size of a pointer.
-        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
-        if (ptr == nil) {
-            throw UniffiInternalError.unexpectedNullPointer
-        }
-        return try lift(ptr!)
+        let handle: UInt64 = try readInt(&buf)
+        return try lift(handle)
     }
 
     public static func write(_ value: DistanceEntryAndSnappedExitCondition, into buf: inout [UInt8]) {
-        // This fiddling is because `Int` is the thing that's the same size as a pointer.
-        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
-        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+        writeInt(&buf, lower(value))
     }
 }
 
@@ -987,14 +975,14 @@ public struct FfiConverterTypeDistanceEntryAndSnappedExitCondition: FfiConverter
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeDistanceEntryAndSnappedExitCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceEntryAndSnappedExitCondition {
-    return try FfiConverterTypeDistanceEntryAndSnappedExitCondition.lift(pointer)
+public func FfiConverterTypeDistanceEntryAndSnappedExitCondition_lift(_ handle: UInt64) throws -> DistanceEntryAndSnappedExitCondition {
+    return try FfiConverterTypeDistanceEntryAndSnappedExitCondition.lift(handle)
 }
 
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-public func FfiConverterTypeDistanceEntryAndSnappedExitCondition_lower(_ value: DistanceEntryAndSnappedExitCondition) -> UnsafeMutableRawPointer {
+public func FfiConverterTypeDistanceEntryAndSnappedExitCondition_lower(_ value: DistanceEntryAndSnappedExitCondition) -> UInt64 {
     return FfiConverterTypeDistanceEntryAndSnappedExitCondition.lower(value)
 }
 
