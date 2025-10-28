@@ -11,10 +11,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.builtins.MapSerializer
-import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavState
@@ -27,6 +23,7 @@ import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
 import uniffi.ferrostar.Waypoint
+import uniffi.ferrostar.WellKnownRouteProvider
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
 data class NavigationState(
@@ -46,31 +43,6 @@ fun NavigationState.isNavigating(): Boolean =
 
       is TripState.Navigating -> true
     }
-
-private val json = Json { ignoreUnknownKeys = true }
-
-private fun Map<String, Any?>.toJsonElement(): JsonElement = Json.parseToJsonElement(this.toJson())
-
-private fun Map<String, Any?>.toJson(): String =
-    json.encodeToString(
-        MapSerializer(String.serializer(), JsonElement.serializer()),
-        mapValues { (_, v) ->
-          when (v) {
-            is String -> Json.encodeToJsonElement(String.serializer(), v)
-            is Int -> Json.encodeToJsonElement(Int.serializer(), v)
-            is Boolean -> Json.encodeToJsonElement(Boolean.serializer(), v)
-            is Double -> Json.encodeToJsonElement(Double.serializer(), v)
-            is Float -> Json.encodeToJsonElement(Float.serializer(), v)
-            is Long -> Json.encodeToJsonElement(Long.serializer(), v)
-            is Map<*, *> -> {
-              @Suppress("UNCHECKED_CAST")
-              (v as? Map<String, Any>)?.toJsonElement()
-                  ?: throw IllegalArgumentException("Unsupported map value type: ${v::class}")
-            }
-            null -> Json.encodeToJsonElement(String.serializer(), "null")
-            else -> throw IllegalArgumentException("Unsupported value type: ${v::class}")
-          }
-        })
 
 /**
  * This is the entrypoint for end users of Ferrostar on Android, and is responsible for "driving"
@@ -104,7 +76,7 @@ class FerrostarCore(
    * the user is determined to still be off the new route. This adds a minimum delay (default 5
    * seconds).
    */
-  var minimumTimeBeforeRecalculaton: Long = 5
+  var minimumTimeBeforeRecalculation: Long = 5
 
   /**
    * The minimum distance (in meters) the user must move before performing another route
@@ -176,27 +148,13 @@ class FerrostarCore(
   var state: StateFlow<NavigationState> = _state.asStateFlow()
 
   constructor(
-      routingEngine: RoutingEngine,
+      wellKnownRouteProvider: WellKnownRouteProvider,
       httpClient: HttpClientProvider,
       locationProvider: LocationProvider,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
-      options: Map<String, Any> = emptyMap(),
   ) : this(
-      RouteProvider.RouteAdapter(
-          when (routingEngine) {
-            is RoutingEngine.GraphHopper ->
-                RouteAdapter.newGraphhopperHttp(
-                    routingEngine.endpoint,
-                    profile = routingEngine.profile,
-                    locale = routingEngine.locale,
-                    voiceUnits = routingEngine.voiceUnits,
-                    optionsJson = options.toJson())
-
-            is RoutingEngine.Valhalla ->
-                RouteAdapter.newValhallaHttp(
-                    routingEngine.endpoint, routingEngine.profile, options.toJson())
-          }),
+      RouteProvider.RouteAdapter(RouteAdapter.fromWellKnownRouteProvider(wellKnownRouteProvider)),
       httpClient,
       locationProvider,
       foregroundServiceManager,
@@ -405,7 +363,7 @@ class FerrostarCore(
         if (!_routeRequestInFlight && // We can't have a request in flight already
             _lastAutomaticRecalculation?.let {
               // Ensure a minimum cool down before a new route fetch
-              System.nanoTime() - it > minimumTimeBeforeRecalculaton
+              System.nanoTime() - it > minimumTimeBeforeRecalculation
             } != false &&
             _lastRecalculationLocation?.let {
               // Don't recalculate again if the user hasn't moved much

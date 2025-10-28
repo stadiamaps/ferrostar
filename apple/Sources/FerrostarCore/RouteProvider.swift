@@ -23,3 +23,35 @@ public enum RouteProvider {
 public protocol CustomRouteProvider {
     func getRoutes(userLocation: UserLocation, waypoints: [Waypoint]) async throws -> [Route]
 }
+
+public extension WellKnownRouteProvider {
+    func withJsonOptions(options: [String: Any] = [:]) throws -> WellKnownRouteProvider {
+        guard
+            let jsonOptions = try String(
+                data: JSONSerialization.data(withJSONObject: options),
+                encoding: .utf8
+            )
+        else {
+            throw InstantiationError.OptionsJsonParseError
+        }
+
+        switch self {
+        case .valhalla(endpointUrl: let endpointUrl, profile: let profile, optionsJson: _):
+            return .valhalla(endpointUrl: endpointUrl, profile: profile, optionsJson: jsonOptions)
+        case .graphHopper(
+            endpointUrl: let endpointUrl,
+            profile: let profile,
+            locale: let locale,
+            voiceUnits: let voiceUnits,
+            optionsJson: _
+        ):
+            return .graphHopper(
+                endpointUrl: endpointUrl,
+                profile: profile,
+                locale: locale,
+                voiceUnits: voiceUnits,
+                optionsJson: jsonOptions
+            )
+        }
+    }
+}

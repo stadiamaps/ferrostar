@@ -5,13 +5,17 @@ use crate::models::{UserLocation, Waypoint};
 use crate::routing_adapters::error::{InstantiationError, RoutingRequestGenerationError};
 use crate::routing_adapters::{RouteRequest, RouteRequestGenerator};
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Map, Value as JsonValue};
 #[cfg(feature = "std")]
 use std::collections::HashMap;
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
 
-#[derive(Serialize, Debug)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
 #[serde(rename_all = "lowercase")]
 pub enum GraphHopperVoiceUnits {
     Metric,
@@ -41,7 +45,8 @@ pub enum GraphHopperVoiceUnits {
 ///     "https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY",
 ///     "car",
 ///     "en",
-///     GraphHopperVoiceUnits::Metric, options
+///     GraphHopperVoiceUnits::Metric,
+///     options
 /// );
 /// ```
 #[derive(Debug)]

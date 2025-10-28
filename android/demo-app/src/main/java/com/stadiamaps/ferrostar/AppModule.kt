@@ -9,12 +9,12 @@ import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
-import com.stadiamaps.ferrostar.core.RoutingEngine
 import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
+import com.stadiamaps.ferrostar.core.withJsonOptions
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
 import java.time.Duration
 import java.time.Instant
@@ -23,6 +23,7 @@ import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.GraphHopperVoiceUnits
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.WellKnownRouteProvider
 
 /**
  * A basic sample of a dependency injection module for the demo app. This is only used to
@@ -122,13 +123,14 @@ object AppModule {
         "https://valhalla1.openstreeetmap.de/route"
       }
     }
-    var engine: RoutingEngine = RoutingEngine.Valhalla(valhallaEndpoint, "auto")
+    var routeProvider: WellKnownRouteProvider =
+        WellKnownRouteProvider.Valhalla(valhallaEndpoint, "auto")
 
     // GraphHopper API is used instead of valhalla if graphhopperApiKey is specified in
     // local.properties (see above instructions)
     if (graphhopperApiKey != null) {
-      engine =
-          RoutingEngine.GraphHopper(
+      routeProvider =
+          WellKnownRouteProvider.GraphHopper(
               "https://graphhopper.com/api/1/navigate/?key=$graphhopperApiKey",
               profile = "car",
               locale = "en",
@@ -152,25 +154,11 @@ object AppModule {
     }
     val core =
         FerrostarCore(
-            engine,
+            routeProvider.withJsonOptions(options),
             httpClient = httpClient,
             locationProvider = locationProvider,
             foregroundServiceManager = foregroundServiceManager,
-            navigationControllerConfig = NavigationControllerConfig.demoConfig(),
-            options =
-                mapOf(
-                    "costing_options" to
-                        // Just an example... You can set multiple costing options for any profile
-                        // in Valhalla.
-                        // If your app uses multiple routing modes, you can have a master settings
-                        // map, or construct a new one each time.
-                        mapOf(
-                            "low_speed_vehicle" to
-                                mapOf(
-                                    "vehicle_type" to "golf_cart",
-                                    "top_speed" to 32 // 24kph ~= 15mph
-                                    )),
-                    "units" to "miles"))
+            navigationControllerConfig = NavigationControllerConfig.demoConfig())
 
     // Not all navigation apps will require this sort of extra configuration.
     // In fact, we hope that most don't!
