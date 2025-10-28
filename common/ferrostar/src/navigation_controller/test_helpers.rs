@@ -288,13 +288,14 @@ pub(crate) fn nav_controller_insta_settings() -> Settings {
 /// * `remaining_waypoints` - The remaining waypoints in the trip
 pub fn get_navigating_trip_state(
     user_location: UserLocation,
+    remaining_steps: Vec<RouteStep>,
     remaining_waypoints: Vec<Waypoint>,
 ) -> TripState {
     TripState::Navigating {
         current_step_geometry_index: Some(0),
         user_location: user_location.clone(),
         snapped_user_location: user_location,
-        remaining_steps: vec![],
+        remaining_steps,
         remaining_waypoints,
         progress: TripProgress {
             distance_to_next_maneuver: 100.0,
