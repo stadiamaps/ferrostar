@@ -115,7 +115,7 @@ impl Waypoint {
 /// A convenience helper for creating waypoints with Valhalla rich location properties.
 ///
 /// Regrettably this must live as a top-level function unless constructors for record types lands
-/// in UniFFI:
+/// in `UniFFI`:
 /// <https://github.com/mozilla/uniffi-rs/issues/1935>.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]

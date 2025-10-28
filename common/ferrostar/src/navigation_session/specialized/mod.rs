@@ -1,6 +1,6 @@
 //! Specialized navigation session wrappers for JavaScript/WebAssembly.
 //!
-//! This module contains specialized versions of NavigationSession optimized for web usage,
+//! This module contains specialized versions of [`NavigationSession`] optimized for web usage,
 //! where trait object complexity needs to be avoided and specific use cases can be
 //! directly implemented for better performance and usability.
 
@@ -20,7 +20,7 @@ use crate::{
 #[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
-/// JavaScript wrapper for `NavigationSession` (simple version).
+/// JavaScript wrapper for [`NavigationSession`] (simple version).
 /// This wrapper provides basic navigation functionality without observers.
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = NavigationSession)]
@@ -76,7 +76,7 @@ impl JsNavigationSession {
     }
 }
 
-/// JavaScript wrapper for `NavigationSession` with recording capabilities.
+/// JavaScript wrapper for [`NavigationSession`] with recording capabilities.
 /// This version includes a NavigationRecorder observer and provides direct access to recording functionality.
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = NavigationSessionRecording)]
