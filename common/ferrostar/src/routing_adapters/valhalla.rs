@@ -28,7 +28,7 @@ use tsify::Tsify;
 /// Other Valhalla-based APIs such as Stadia Maps or Mapbox may have slightly different defaults.
 /// Refer to your vendor's documentation when in doubt.
 ///
-/// NOTE: Waypoint properties will NOT currently be echoed back by Valhalla-based servers,
+/// NOTE: Waypoint properties will NOT currently be echoed back in OSRM format,
 /// so these are sent to the server one time.
 #[derive(Copy, Clone, PartialEq, Debug, Default, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
