@@ -1,4 +1,4 @@
-//! High-level HTTP request generation for Valhalla HTTP APIs.
+//! High-level HTTP request generation for Valhalla-based HTTP APIs.
 
 use super::{RouteRequest, RoutingRequestGenerationError};
 use crate::models::{GeographicCoordinate, UserLocation, Waypoint, WaypointKind};
@@ -218,7 +218,7 @@ pub struct ValhallaLocationSearchFilter {
 /// The waypoint kind field of [`Waypoint`] carries the same meaning as the respective
 /// [`type` strings in Valhalla API](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations).
 ///
-/// ## Additional properties
+/// ## Waypoint properties
 ///
 /// Additional properties are supported via the [`Waypoint`] `properties` field.
 /// To enforce type safety and make it easier to use, we provide the [`ValhallaWaypointProperties`] struct.
@@ -243,7 +243,7 @@ pub struct ValhallaLocationSearchFilter {
 ///         }
 ///     }
 /// }).as_object().unwrap().to_owned();;
-/// let request_generator = ValhallaHttpRequestGenerator::new("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(), "low_speed_vehicle".to_string(), options);
+/// let request_generator = ValhallaHttpRequestGenerator::new("https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY", "low_speed_vehicle", options);
 ///
 /// // Generate a request...
 ///
@@ -312,22 +312,26 @@ impl ValhallaHttpRequestGenerator {
     ///
     /// // Without options
     /// let request_generator_no_opts = ValhallaHttpRequestGenerator::new(
-    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(),
-    ///     "low_speed_vehicle".to_string(),
+    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY",
+    ///     "low_speed_vehicle",
     ///     Map::new()
     /// );
     ///
     /// // With options
     /// let request_generator_opts = ValhallaHttpRequestGenerator::new(
-    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(),
-    ///     "low_speed_vehicle".to_string(),
+    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY",
+    ///     "low_speed_vehicle",
     ///     options
     /// );
     /// ```
-    pub fn new(endpoint_url: String, profile: String, options: Map<String, JsonValue>) -> Self {
+    pub fn new<U: Into<String>, P: Into<String>>(
+        endpoint_url: U,
+        profile: P,
+        options: Map<String, JsonValue>,
+    ) -> Self {
         Self {
-            endpoint_url,
-            profile,
+            endpoint_url: endpoint_url.into(),
+            profile: profile.into(),
             options,
         }
     }
@@ -351,25 +355,24 @@ impl ValhallaHttpRequestGenerator {
     ///
     /// // Without options
     /// let request_generator_no_opts = ValhallaHttpRequestGenerator::with_options_json(
-    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(),
-    ///     "low_speed_vehicle".to_string(),
+    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY",
+    ///     "low_speed_vehicle",
     ///     None,
     /// );
     ///
     /// // With options
     /// let request_generator_opts = ValhallaHttpRequestGenerator::with_options_json(
-    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY".to_string(),
-    ///     "low_speed_vehicle".to_string(),
+    ///     "https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY",
+    ///     "low_speed_vehicle",
     ///     Some(options),
     /// );
     /// ```
-    pub fn with_options_json(
-        endpoint_url: String,
-        profile: String,
+    pub fn with_options_json<U: Into<String>, P: Into<String>>(
+        endpoint_url: U,
+        profile: P,
         options_json: Option<&str>,
     ) -> Result<Self, InstantiationError> {
         let parsed_options = match options_json {
-            // TODO: Another error variant
             Some(options) => serde_json::from_str::<JsonValue>(options)?
                 .as_object()
                 .ok_or(InstantiationError::OptionsJsonParseError)?
@@ -377,8 +380,8 @@ impl ValhallaHttpRequestGenerator {
             None => Map::new(),
         };
         Ok(Self {
-            endpoint_url,
-            profile,
+            endpoint_url: endpoint_url.into(),
+            profile: profile.into(),
             options: parsed_options,
         })
     }
@@ -557,6 +560,7 @@ mod tests {
     use std::time::SystemTime;
     #[cfg(feature = "web-time")]
     use web_time::SystemTime;
+
     const ENDPOINT_URL: &str = "https://api.stadiamaps.com/route/v1";
     const COSTING: &str = "bicycle";
     const USER_LOCATION: UserLocation = UserLocation {
@@ -601,11 +605,7 @@ mod tests {
 
     #[test]
     fn not_enough_locations() {
-        let generator = ValhallaHttpRequestGenerator::new(
-            ENDPOINT_URL.to_string(),
-            COSTING.to_string(),
-            Map::new(),
-        );
+        let generator = ValhallaHttpRequestGenerator::new(ENDPOINT_URL, COSTING, Map::new());
 
         // At least two locations are required
         assert!(matches!(
@@ -619,12 +619,9 @@ mod tests {
         waypoints: Vec<Waypoint>,
         options_json: Option<&str>,
     ) -> JsonValue {
-        let generator = ValhallaHttpRequestGenerator::with_options_json(
-            ENDPOINT_URL.to_string(),
-            COSTING.to_string(),
-            options_json,
-        )
-        .expect("Unable to create request generator");
+        let generator =
+            ValhallaHttpRequestGenerator::with_options_json(ENDPOINT_URL, COSTING, options_json)
+                .expect("Unable to create request generator");
 
         match generator.generate_request(user_location, waypoints) {
             Ok(RouteRequest::HttpPost {
@@ -769,11 +766,7 @@ mod tests {
 
     #[test]
     fn request_body_with_invalid_horizontal_accuracy() {
-        let generator = ValhallaHttpRequestGenerator::new(
-            ENDPOINT_URL.to_string(),
-            COSTING.to_string(),
-            Map::new(),
-        );
+        let generator = ValhallaHttpRequestGenerator::new(ENDPOINT_URL, COSTING, Map::new());
         let location = UserLocation {
             coordinates: GeographicCoordinate { lat: 0.0, lng: 0.0 },
             horizontal_accuracy: -6.0,

@@ -127,7 +127,7 @@ pub struct Waypoint {
     pub properties: Option<Vec<u8>>,
 }
 
-/// Describes characteristics of the waypoint for the routing backend.
+/// Describes characteristics of the waypoint for routing purposes.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
@@ -136,8 +136,11 @@ pub enum WaypointKind {
     /// Starts or ends a leg of the trip.
     ///
     /// Most routing engines will generate arrival and departure instructions.
+    /// Some routing engines do not support multi-leg routes,
+    /// so an intermediate break may behave like a [`WaypointKind::Via`].
     Break,
-    /// A waypoint that is simply passed through, but will not have any arrival or departure instructions.
+    /// A waypoint that is simply passed through,
+    /// but will not have any arrival or departure instructions.
     Via,
 }
 
@@ -411,7 +414,7 @@ pub struct SpokenInstruction {
     pub text: String,
     /// Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
     pub ssml: Option<String>,
-    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    /// How far (in meters) from the upcoming maneuver the instruction should start being spoken.
     pub trigger_distance_before_maneuver: f64,
     /// A unique identifier for this instruction.
     ///

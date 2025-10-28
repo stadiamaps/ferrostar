@@ -2981,6 +2981,13 @@ open class RouteAdapter: RouteAdapterProtocol, @unchecked Sendable {
     public func uniffiCloneHandle() -> UInt64 {
         return try! rustCall { uniffi_ferrostar_fn_clone_routeadapter(self.handle, $0) }
     }
+    /**
+     * Creates a route adapter from any request generator and response parser.
+     *
+     * This constructor offers unlimited flexibility,
+     * but if you're using a major routing vendor API,
+     * [`RouteAdapter::from_well_known_route_provider`] may be a more convenient interface.
+     */
 public convenience init(requestGenerator: RouteRequestGenerator, responseParser: RouteResponseParser) {
     let handle =
         try! rustCall() {
@@ -2997,12 +3004,13 @@ public convenience init(requestGenerator: RouteRequestGenerator, responseParser:
     }
 
     
-public static func newValhallaHttp(endpointUrl: String, profile: String, optionsJson: String?)throws  -> RouteAdapter  {
+    /**
+     * Creates a route adapter from a well-known provider configuration.
+     */
+public static func fromWellKnownRouteProvider(wellKnownRouteProvider: WellKnownRouteProvider)throws  -> RouteAdapter  {
     return try  FfiConverterTypeRouteAdapter_lift(try rustCallWithError(FfiConverterTypeInstantiationError_lift) {
-    uniffi_ferrostar_fn_constructor_routeadapter_new_valhalla_http(
-        FfiConverterString.lower(endpointUrl),
-        FfiConverterString.lower(profile),
-        FfiConverterOptionString.lower(optionsJson),$0
+    uniffi_ferrostar_fn_constructor_routeadapter_from_well_known_route_provider(
+        FfiConverterTypeWellKnownRouteProvider_lower(wellKnownRouteProvider),$0
     )
 })
 }
@@ -5399,7 +5407,7 @@ public struct SpokenInstruction: Equatable, Hashable, Codable {
      */
     public var ssml: String?
     /**
-     * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+     * How far (in meters) from the upcoming maneuver the instruction should start being spoken.
      */
     public var triggerDistanceBeforeManeuver: Double
     /**
@@ -5424,7 +5432,7 @@ public struct SpokenInstruction: Equatable, Hashable, Codable {
          * Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
          */ssml: String?, 
         /**
-         * How far (in meters) from the upcoming maneuver the instruction should start being displayed
+         * How far (in meters) from the upcoming maneuver the instruction should start being spoken.
          */triggerDistanceBeforeManeuver: Double, 
         /**
          * A unique identifier for this instruction.
@@ -6690,6 +6698,71 @@ public func FfiConverterTypeCourseFiltering_lift(_ buf: RustBuffer) throws -> Co
 #endif
 public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> RustBuffer {
     return FfiConverterTypeCourseFiltering.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum GraphHopperVoiceUnits: Equatable, Hashable, Codable {
+    
+    case metric
+    case imperial
+
+
+
+}
+
+#if compiler(>=6)
+extension GraphHopperVoiceUnits: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeGraphHopperVoiceUnits: FfiConverterRustBuffer {
+    typealias SwiftType = GraphHopperVoiceUnits
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> GraphHopperVoiceUnits {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .metric
+        
+        case 2: return .imperial
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: GraphHopperVoiceUnits, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .metric:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .imperial:
+            writeInt(&buf, Int32(2))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeGraphHopperVoiceUnits_lift(_ buf: RustBuffer) throws -> GraphHopperVoiceUnits {
+    return try FfiConverterTypeGraphHopperVoiceUnits.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeGraphHopperVoiceUnits_lower(_ value: GraphHopperVoiceUnits) -> RustBuffer {
+    return FfiConverterTypeGraphHopperVoiceUnits.lower(value)
 }
 
 
@@ -8762,7 +8835,7 @@ public func FfiConverterTypeWaypointAdvanceMode_lower(_ value: WaypointAdvanceMo
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 /**
- * Describes characteristics of the waypoint for the routing backend.
+ * Describes characteristics of the waypoint for routing purposes.
  */
 
 public enum WaypointKind: Equatable, Hashable, Codable {
@@ -8771,10 +8844,13 @@ public enum WaypointKind: Equatable, Hashable, Codable {
      * Starts or ends a leg of the trip.
      *
      * Most routing engines will generate arrival and departure instructions.
+     * Some routing engines do not support multi-leg routes,
+     * so an intermediate break may behave like a [`WaypointKind::Via`].
      */
     case `break`
     /**
-     * A waypoint that is simply passed through, but will not have any arrival or departure instructions.
+     * A waypoint that is simply passed through,
+     * but will not have any arrival or departure instructions.
      */
     case via
 
@@ -8832,6 +8908,126 @@ public func FfiConverterTypeWaypointKind_lift(_ buf: RustBuffer) throws -> Waypo
 #endif
 public func FfiConverterTypeWaypointKind_lower(_ value: WaypointKind) -> RustBuffer {
     return FfiConverterTypeWaypointKind.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Configurations for built-in route providers.
+ */
+
+public enum WellKnownRouteProvider: Equatable, Hashable, Codable {
+    
+    /**
+     * A Valhalla-based routing API.
+     *
+     * [Stadia Maps](https://docs.stadiamaps.com/) offers a commercially supported API.
+     * You can also substitute any URL to use a self-hosted server.
+     */
+    case valhalla(
+        /**
+         * The endpoint URL to use (e.g. https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY).
+         */endpointUrl: String, 
+        /**
+         * The costing model (e.g. `auto`).
+         */profile: String, 
+        /**
+         * Additional options to be incorporated into the request parameters.
+         *
+         * This value must be a stringified representation of a JSON object.
+         */optionsJson: String? = nil
+    )
+    /**
+     * A GraphHopper-based routing API.
+     *
+     * [GraphHopper](https://www.graphhopper.com/) offers a commercially supported API.
+     * You can also substitute any other URL to use a self-hosted server.
+     */
+    case graphHopper(
+        /**
+         * The endpoint URL to use (e.g. https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY).
+         */endpointUrl: String, 
+        /**
+         * The routing profile (e.g. `car`).
+         */profile: String, 
+        /**
+         * The locale to give directions in (e.g. `en`).
+         */locale: String, 
+        /**
+         * The units to use for spoken instructions.
+         */voiceUnits: GraphHopperVoiceUnits, 
+        /**
+         * Additional options to be incorporated into the request parameters.
+         *
+         * This value must be a stringified representation of a JSON object.
+         */optionsJson: String? = nil
+    )
+
+
+
+}
+
+#if compiler(>=6)
+extension WellKnownRouteProvider: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeWellKnownRouteProvider: FfiConverterRustBuffer {
+    typealias SwiftType = WellKnownRouteProvider
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> WellKnownRouteProvider {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .valhalla(endpointUrl: try FfiConverterString.read(from: &buf), profile: try FfiConverterString.read(from: &buf), optionsJson: try FfiConverterOptionString.read(from: &buf)
+        )
+        
+        case 2: return .graphHopper(endpointUrl: try FfiConverterString.read(from: &buf), profile: try FfiConverterString.read(from: &buf), locale: try FfiConverterString.read(from: &buf), voiceUnits: try FfiConverterTypeGraphHopperVoiceUnits.read(from: &buf), optionsJson: try FfiConverterOptionString.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: WellKnownRouteProvider, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .valhalla(endpointUrl,profile,optionsJson):
+            writeInt(&buf, Int32(1))
+            FfiConverterString.write(endpointUrl, into: &buf)
+            FfiConverterString.write(profile, into: &buf)
+            FfiConverterOptionString.write(optionsJson, into: &buf)
+            
+        
+        case let .graphHopper(endpointUrl,profile,locale,voiceUnits,optionsJson):
+            writeInt(&buf, Int32(2))
+            FfiConverterString.write(endpointUrl, into: &buf)
+            FfiConverterString.write(profile, into: &buf)
+            FfiConverterString.write(locale, into: &buf)
+            FfiConverterTypeGraphHopperVoiceUnits.write(voiceUnits, into: &buf)
+            FfiConverterOptionString.write(optionsJson, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeWellKnownRouteProvider_lift(_ buf: RustBuffer) throws -> WellKnownRouteProvider {
+    return try FfiConverterTypeWellKnownRouteProvider.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeWellKnownRouteProvider_lower(_ value: WellKnownRouteProvider) -> RustBuffer {
+    return FfiConverterTypeWellKnownRouteProvider.lower(value)
 }
 
 
@@ -10484,10 +10680,10 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_constructor_navigationsessioncache_new() != 16270) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 32290) {
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_from_well_known_route_provider() != 7407) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_new_valhalla_http() != 3524) {
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 43455) {
         return InitializationResult.apiChecksumMismatch
     }
 
