@@ -862,6 +862,137 @@ public func FfiConverterTypeDistanceEntryAndExitCondition_lower(_ value: Distanc
 
 
 /**
+ * A stateful condition that requires the user to reach the end of the step then proceed past it to advance.
+ *
+ * This variant uses route snapping (snapping to the combined current+next step geometry) for the exit check,
+ * making it more robust for pedestrian/hiking navigation where users may walk on the opposite side of the street
+ * or wander around the optimal path. The route-snapped exit check prevents premature advancement while still
+ * allowing natural pedestrian movement patterns.
+ * The exit distance is measured from the current step to the route-snapped position.
+ */
+public protocol DistanceEntryAndSnappedExitConditionProtocol: AnyObject, Sendable {
+    
+}
+/**
+ * A stateful condition that requires the user to reach the end of the step then proceed past it to advance.
+ *
+ * This variant uses route snapping (snapping to the combined current+next step geometry) for the exit check,
+ * making it more robust for pedestrian/hiking navigation where users may walk on the opposite side of the street
+ * or wander around the optimal path. The route-snapped exit check prevents premature advancement while still
+ * allowing natural pedestrian movement patterns.
+ * The exit distance is measured from the current step to the route-snapped position.
+ */
+open class DistanceEntryAndSnappedExitCondition: DistanceEntryAndSnappedExitConditionProtocol, @unchecked Sendable {
+    fileprivate let pointer: UnsafeMutableRawPointer!
+
+    /// Used to instantiate a [FFIObject] without an actual pointer, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoPointer {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noPointer: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing [Pointer] the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noPointer: NoPointer) {
+        self.pointer = nil
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_ferrostar_fn_clone_distanceentryandsnappedexitcondition(self.pointer, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        guard let pointer = pointer else {
+            return
+        }
+
+        try! rustCall { uniffi_ferrostar_fn_free_distanceentryandsnappedexitcondition(pointer, $0) }
+    }
+
+    
+
+    
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDistanceEntryAndSnappedExitCondition: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = DistanceEntryAndSnappedExitCondition
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceEntryAndSnappedExitCondition {
+        return DistanceEntryAndSnappedExitCondition(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: DistanceEntryAndSnappedExitCondition) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DistanceEntryAndSnappedExitCondition {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: DistanceEntryAndSnappedExitCondition, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceEntryAndSnappedExitCondition_lift(_ pointer: UnsafeMutableRawPointer) throws -> DistanceEntryAndSnappedExitCondition {
+    return try FfiConverterTypeDistanceEntryAndSnappedExitCondition.lift(pointer)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDistanceEntryAndSnappedExitCondition_lower(_ value: DistanceEntryAndSnappedExitCondition) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeDistanceEntryAndSnappedExitCondition.lower(value)
+}
+
+
+
+
+
+
+/**
  * Requires that the user be at least this far from the current route step.
  *
  * This results in *delayed* advance,
@@ -8263,6 +8394,8 @@ public enum SerializableStepAdvanceCondition {
     )
     case distanceEntryExit(distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, minimumHorizontalAccuracy: UInt16, hasReachedEndOfCurrentStep: Bool
     )
+    case distanceEntryAndSnappedExit(distanceToEndOfStep: UInt16, distanceAfterEndStep: UInt16, minimumHorizontalAccuracy: UInt16, hasReachedEndOfCurrentStep: Bool
+    )
     case orAdvanceConditions(conditions: [SerializableStepAdvanceCondition]
     )
     case andAdvanceConditions(conditions: [SerializableStepAdvanceCondition]
@@ -8295,10 +8428,13 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
         case 4: return .distanceEntryExit(distanceToEndOfStep: try FfiConverterUInt16.read(from: &buf), distanceAfterEndStep: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), hasReachedEndOfCurrentStep: try FfiConverterBool.read(from: &buf)
         )
         
-        case 5: return .orAdvanceConditions(conditions: try FfiConverterSequenceTypeSerializableStepAdvanceCondition.read(from: &buf)
+        case 5: return .distanceEntryAndSnappedExit(distanceToEndOfStep: try FfiConverterUInt16.read(from: &buf), distanceAfterEndStep: try FfiConverterUInt16.read(from: &buf), minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), hasReachedEndOfCurrentStep: try FfiConverterBool.read(from: &buf)
         )
         
-        case 6: return .andAdvanceConditions(conditions: try FfiConverterSequenceTypeSerializableStepAdvanceCondition.read(from: &buf)
+        case 6: return .orAdvanceConditions(conditions: try FfiConverterSequenceTypeSerializableStepAdvanceCondition.read(from: &buf)
+        )
+        
+        case 7: return .andAdvanceConditions(conditions: try FfiConverterSequenceTypeSerializableStepAdvanceCondition.read(from: &buf)
         )
         
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -8334,13 +8470,21 @@ public struct FfiConverterTypeSerializableStepAdvanceCondition: FfiConverterRust
             FfiConverterBool.write(hasReachedEndOfCurrentStep, into: &buf)
             
         
-        case let .orAdvanceConditions(conditions):
+        case let .distanceEntryAndSnappedExit(distanceToEndOfStep,distanceAfterEndStep,minimumHorizontalAccuracy,hasReachedEndOfCurrentStep):
             writeInt(&buf, Int32(5))
+            FfiConverterUInt16.write(distanceToEndOfStep, into: &buf)
+            FfiConverterUInt16.write(distanceAfterEndStep, into: &buf)
+            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
+            FfiConverterBool.write(hasReachedEndOfCurrentStep, into: &buf)
+            
+        
+        case let .orAdvanceConditions(conditions):
+            writeInt(&buf, Int32(6))
             FfiConverterSequenceTypeSerializableStepAdvanceCondition.write(conditions, into: &buf)
             
         
         case let .andAdvanceConditions(conditions):
-            writeInt(&buf, Int32(6))
+            writeInt(&buf, Int32(7))
             FfiConverterSequenceTypeSerializableStepAdvanceCondition.write(conditions, into: &buf)
             
         }
@@ -10061,6 +10205,28 @@ public func stepAdvanceDistanceEntryAndExit(distanceToEndOfStep: UInt16, distanc
 })
 }
 /**
+ * Convenience function for creating a [`DistanceEntryAndSnappedExitCondition`].
+ *
+ * This variant uses route snapping for better handling of pedestrian/hiking navigation scenarios
+ * where users may walk on the opposite side of the street or wander around the optimal path.
+ * Requires the user to first travel within `distance_to_end_of_step` meters of the end of the step,
+ * and then the route-snapped position moves `distance_after_end_of_step` meters from the current step.
+ * The snapping to the combined route (current+next steps) prevents premature advancement.
+ *
+ * The exit distance is automatically capped to the next step's length to prevent getting stuck on short steps.
+ *
+ * Recommended values for pedestrian navigation: entry 20m, exit 2-5m.
+ */
+public func stepAdvanceDistanceEntryAndSnappedExit(distanceToEndOfStep: UInt16, distanceAfterEndOfStep: UInt16, minimumHorizontalAccuracy: UInt16) -> StepAdvanceCondition  {
+    return try!  FfiConverterTypeStepAdvanceCondition_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_step_advance_distance_entry_and_snapped_exit(
+        FfiConverterUInt16.lower(distanceToEndOfStep),
+        FfiConverterUInt16.lower(distanceAfterEndOfStep),
+        FfiConverterUInt16.lower(minimumHorizontalAccuracy),$0
+    )
+})
+}
+/**
  * Convenience function for creating a [`DistanceFromStepCondition`].
  *
  * This advances to the next step when the user is at least `distance` meters away _from_ any point on the current route step geometry.
@@ -10170,6 +10336,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 48000) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_snapped_exit() != 44340) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 45697) {
