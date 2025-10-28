@@ -59,9 +59,11 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@nextest
+        
       - name: Cargo Build
         run: cargo build --verbose
         working-directory: common
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo nextest run --no-fail-fast
         working-directory: common

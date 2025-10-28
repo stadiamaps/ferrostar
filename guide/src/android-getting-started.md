@@ -308,6 +308,15 @@ You probably want something like `launch(Dispatchers.IO) { .. }`
 for most cases to ensure it’s running on the correct dispatcher.
 You may select a different dispatcher if you are doing offline route calculation.
 
+### Additional waypoint properties
+
+The example above uses simple waypoints that will work with any routing engine.
+But many routing engines, including Valhalla which we run at Stadia Maps,
+let you provide additional detail.
+
+Ferrostar supports this with engine-specific properties.
+Refer to the [Route Providers documentation](./route-providers.md#bundled-support) for more details.
+
 ## Starting a navigation session
 
 Once you have a route (ex: by grabbing the first one from the list

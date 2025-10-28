@@ -296,10 +296,12 @@ expression: routes
         lat: 59.442643
         lng: 24.765368
       kind: Break
+      properties: "{\"name\":\"\",\"distance\":0.546}"
     - coordinate:
         lat: 59.452226
         lng: 24.730034
       kind: Break
+      properties: "{\"name\":\"Peetri\",\"distance\":0.134}"
   steps:
     - geometry:
         - lat: 59.442643
