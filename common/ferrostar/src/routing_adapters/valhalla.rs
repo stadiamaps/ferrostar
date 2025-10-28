@@ -218,14 +218,12 @@ pub struct ValhallaLocationSearchFilter {
 /// The waypoint kind field of [`Waypoint`] carries the same meaning as the respective
 /// [`type` strings in Valhalla API](https://valhalla.github.io/valhalla/api/turn-by-turn/api-reference/#locations).
 ///
-/// ## Additional properties
+/// ## Waypoint properties
 ///
 /// Additional properties are supported via the [`Waypoint`] `properties` field.
 /// To enforce type safety and make it easier to use, we provide the [`ValhallaWaypointProperties`] struct.
 /// Internally, `generate_request` will first deserialize `properties` into this.
 /// If `properties` are in an invalid format, `generate_request` will fail.
-///
-/// # Examples
 ///
 /// # Examples
 ///
@@ -375,7 +373,6 @@ impl ValhallaHttpRequestGenerator {
         options_json: Option<&str>,
     ) -> Result<Self, InstantiationError> {
         let parsed_options = match options_json {
-            // TODO: Another error variant
             Some(options) => serde_json::from_str::<JsonValue>(options)?
                 .as_object()
                 .ok_or(InstantiationError::OptionsJsonParseError)?

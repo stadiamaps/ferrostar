@@ -24,6 +24,17 @@ pub enum GraphHopperVoiceUnits {
 
 /// A route request generator for GraphHopper backends operating over HTTP.
 ///
+/// ## [`WaypointKind`](crate::models::WaypointKind)
+///
+/// The waypoint kind field of [`Waypoint`] is not currently supported in GraphHopper,
+/// as there is no multi-leg support.
+/// However, you can configure whether U-turns are allowed with the `pass_through` parameter.
+/// Refer to the GraphHopper documentation: <https://docs.graphhopper.com/openapi/routing/getroute>.
+///
+/// ## Waypoint properties
+///
+/// The [`Waypoint`] `properties` field is ignored by this route request generator.
+///
 /// # Examples
 ///
 /// ```
@@ -151,7 +162,6 @@ impl GraphHopperHttpRequestGenerator {
         options_json: Option<&str>,
     ) -> Result<Self, InstantiationError> {
         let parsed_options = match options_json {
-            // TODO: Another error variant
             Some(options) => serde_json::from_str::<JsonValue>(options)?
                 .as_object()
                 .ok_or(InstantiationError::OptionsJsonParseError)?
@@ -241,10 +251,12 @@ mod tests {
         Waypoint {
             coordinate: GeographicCoordinate { lat: 0.0, lng: 1.0 },
             kind: WaypointKind::Break,
+            properties: None,
         },
         Waypoint {
             coordinate: GeographicCoordinate { lat: 2.0, lng: 3.0 },
             kind: WaypointKind::Break,
+            properties: None,
         },
     ];
 
