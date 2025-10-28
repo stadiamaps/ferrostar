@@ -16,19 +16,9 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install latest mdbook
-        run: |
-          tag=$(curl 'https://api.github.com/repos/rust-lang/mdbook/releases/latest' | jq -r '.tag_name')
-          url="https://github.com/rust-lang/mdbook/releases/download/${tag}/mdbook-${tag}-x86_64-unknown-linux-gnu.tar.gz"
-          mkdir mdbook
-          curl -sSL $url | tar -xz --directory=./mdbook
-          echo `pwd`/mdbook >> $GITHUB_PATH
+        run: cargo install mdbook
       - name: Install latest mdbook-mermaid
-        run: |
-          tag=$(curl 'https://api.github.com/repos/badboy/mdbook-mermaid/releases/latest' | jq -r '.tag_name')
-          url="https://github.com/badboy/mdbook-mermaid/releases/download/${tag}/mdbook-mermaid-${tag}-x86_64-unknown-linux-gnu.tar.gz"
-          mkdir mdbook-mermaid
-          curl -sSL $url | tar -xz --directory=./mdbook-mermaid
-          echo `pwd`/mdbook-mermaid >> $GITHUB_PATH
+        run: cargo install mdbook-mermaid
       - name: Build Book
         run: mdbook build
         working-directory: guide

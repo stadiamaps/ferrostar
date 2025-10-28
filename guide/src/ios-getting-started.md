@@ -147,7 +147,10 @@ Here’s an example:
 ```swift
 Task {
     do {
-        routes = try await ferrostarCore.getRoutes(initialLocation: userLocation, waypoints: [Waypoint(coordinate: GeographicCoordinate(cl: loc.location), kind: .break)])
+        routes = try await ferrostarCore.getRoutes(initialLocation: userLocation,
+		                                           waypoints: [
+												       Waypoint(coordinate: GeographicCoordinate(cl: loc.location), kind: .break)
+												   ])
 
         errorMessage = nil
         
@@ -159,6 +162,14 @@ Task {
 }
 ```
 
+### Additional waypoint properties
+
+The example above uses simple waypoints that will work with any routing engine.
+But many routing engines, including Valhalla which we run at Stadia Maps,
+let you provide additional detail.
+
+Ferrostar supports this with engine-specific properties.
+Refer to the [Route Providers documentation](./route-providers.md#bundled-support) for more details.
 
 ## Starting a navigation session
 

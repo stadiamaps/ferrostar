@@ -9,12 +9,12 @@ use crate::models::{
 };
 use alloc::{string::String, vec::Vec};
 use chrono::{DateTime, Utc};
-use serde::Deserialize;
-#[cfg(test)]
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 #[cfg(feature = "alloc")]
 use std::collections::HashMap;
+#[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
 
 #[derive(Deserialize, Debug)]
 #[serde(transparent)]
@@ -315,6 +315,24 @@ pub struct Waypoint {
     pub distance: Option<f64>,
     /// The waypoint's location on the road network.
     pub location: Coordinate,
+}
+
+/// Waypoint properties parsed from an OSRM-compatible server response.
+///
+/// NOTE: Some servers (such as Valhalla) may support additional parameters at request time
+/// which are _not_ echoed back in the response time.
+/// This is unfortunate; PRs upstream would likely be welcomed!
+/// Similarly, if your server is OSRM-compatible and returns additional attributes,
+/// feel free to open a PR to include these as optional properties.
+#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub struct OsrmWaypointProperties {
+    /// The name of the street that the waypoint snapped to.
+    pub name: Option<String>,
+    /// The distance (in meters) between the snapped point and the input coordinate.
+    pub distance: Option<f64>,
 }
 
 #[derive(Deserialize, Debug)]

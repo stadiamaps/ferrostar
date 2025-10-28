@@ -475,6 +475,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "63.5407901251"
       distanceRemaining: "1717.6147901251"
@@ -971,6 +972,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "18.1097178056"
       distanceRemaining: "1672.1837178056"
@@ -1467,6 +1469,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "12.8563813597"
       distanceRemaining: "1666.9303813597"
@@ -1963,6 +1966,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "7.5056535507"
       distanceRemaining: "1661.5796535507"
@@ -2459,6 +2463,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "1654.0740000000"
@@ -2927,6 +2932,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "109.5992268140"
       distanceRemaining: "1648.6732268140"
@@ -3395,6 +3401,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "103.1395061534"
       distanceRemaining: "1642.2135061534"
@@ -3863,6 +3870,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "93.7279109227"
       distanceRemaining: "1632.8019109227"
@@ -4331,6 +4339,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "87.4636259971"
       distanceRemaining: "1626.5376259971"
@@ -4799,6 +4808,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "81.2055951226"
       distanceRemaining: "1620.2795951226"
@@ -5267,6 +5277,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "74.5617517169"
       distanceRemaining: "1613.6357517169"
@@ -5735,6 +5746,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "68.4652538998"
       distanceRemaining: "1607.5392538998"
@@ -6203,6 +6215,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "60.4650720134"
       distanceRemaining: "1599.5390720134"
@@ -6671,6 +6684,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "52.3811209585"
       distanceRemaining: "1591.4551209585"
@@ -7139,6 +7153,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "44.8467044937"
       distanceRemaining: "1583.9207044937"
@@ -7607,6 +7622,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "37.2281492452"
       distanceRemaining: "1576.3021492452"
@@ -8075,6 +8091,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "27.4546113495"
       distanceRemaining: "1566.5286113495"
@@ -8543,6 +8560,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "18.2753506517"
       distanceRemaining: "1557.3493506517"
@@ -9011,6 +9029,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "9.1792606990"
       distanceRemaining: "1548.2532606990"
@@ -9479,6 +9498,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "1539.0740000000"
@@ -9905,6 +9925,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "228.1359540901"
       distanceRemaining: "1531.2099540901"
@@ -10331,6 +10352,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "219.9773448428"
       distanceRemaining: "1523.0513448428"
@@ -10757,6 +10779,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "214.7517746971"
       distanceRemaining: "1517.8257746971"
@@ -11183,6 +11206,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "209.4967103211"
       distanceRemaining: "1512.5707103211"
@@ -11609,6 +11633,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "202.9211149389"
       distanceRemaining: "1505.9951149389"
@@ -12035,6 +12060,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "196.8151854137"
       distanceRemaining: "1499.8891854137"
@@ -12461,6 +12487,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "191.3256437942"
       distanceRemaining: "1494.3996437942"
@@ -12887,6 +12914,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "186.0879503353"
       distanceRemaining: "1489.1619503353"
@@ -13313,6 +13341,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "179.7397663878"
       distanceRemaining: "1482.8137663878"
@@ -13739,6 +13768,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "173.3529435229"
       distanceRemaining: "1476.4269435229"
@@ -14165,6 +14195,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "168.0433774802"
       distanceRemaining: "1471.1173774802"
@@ -14591,6 +14622,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "162.8130706417"
       distanceRemaining: "1465.8870706417"
@@ -15017,6 +15049,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "156.7431111968"
       distanceRemaining: "1459.8171111968"
@@ -15443,6 +15476,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "150.6731517531"
       distanceRemaining: "1453.7471517531"
@@ -15869,6 +15903,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "145.5347672429"
       distanceRemaining: "1448.6087672429"
@@ -16295,6 +16330,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "140.4072633770"
       distanceRemaining: "1443.4812633770"
@@ -16721,6 +16757,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "130.4366152292"
       distanceRemaining: "1433.5106152292"
@@ -17147,6 +17184,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "121.3024165435"
       distanceRemaining: "1424.3764165435"
@@ -17573,6 +17611,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "112.1683243910"
       distanceRemaining: "1415.2423243910"
@@ -17999,6 +18038,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "103.0341257048"
       distanceRemaining: "1406.1081257048"
@@ -18425,6 +18465,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "93.9000335528"
       distanceRemaining: "1396.9740335528"
@@ -18851,6 +18892,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "84.7658348665"
       distanceRemaining: "1387.8398348665"
@@ -19277,6 +19319,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "75.7014157489"
       distanceRemaining: "1378.7754157489"
@@ -19703,6 +19746,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "66.4975440288"
       distanceRemaining: "1369.5715440288"
@@ -20129,6 +20173,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "57.4331249102"
       distanceRemaining: "1360.5071249102"
@@ -20555,6 +20600,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "48.2292531905"
       distanceRemaining: "1351.3032531905"
@@ -20981,6 +21027,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "39.1648340719"
       distanceRemaining: "1342.2388340719"
@@ -21407,6 +21454,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "34.8193358404"
       distanceRemaining: "1337.8933358404"
@@ -21833,6 +21881,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "28.7698659295"
       distanceRemaining: "1331.8438659295"
@@ -22259,6 +22308,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "22.4524382128"
       distanceRemaining: "1325.5264382128"
@@ -22685,6 +22735,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "17.7667566193"
       distanceRemaining: "1320.8407566193"
@@ -23111,6 +23162,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "9.2867832667"
       distanceRemaining: "1312.3607832667"
@@ -23537,6 +23589,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "1303.0740000000"
@@ -23903,6 +23956,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "547.3345206042"
       distanceRemaining: "1292.4085206042"
@@ -24275,6 +24329,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "538.1959100885"
       distanceRemaining: "1283.2699100885"
@@ -24647,6 +24702,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "528.9399076314"
       distanceRemaining: "1274.0139076314"
@@ -25019,6 +25075,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "519.7196831340"
       distanceRemaining: "1264.7936831340"
@@ -25391,6 +25448,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "510.5452946572"
       distanceRemaining: "1255.6192946572"
@@ -25763,6 +25821,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "501.3250701600"
       distanceRemaining: "1246.3990701600"
@@ -26135,6 +26194,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "492.6664170853"
       distanceRemaining: "1237.7404170853"
@@ -26507,6 +26567,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "484.0077640117"
       distanceRemaining: "1229.0817640117"
@@ -26879,6 +26940,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "477.4939663894"
       distanceRemaining: "1222.5679663894"
@@ -27251,6 +27313,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "470.8981777450"
       distanceRemaining: "1215.9721777450"
@@ -27623,6 +27686,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "464.1891248371"
       distanceRemaining: "1209.2631248371"
@@ -27995,6 +28059,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "457.5134619581"
       distanceRemaining: "1202.5874619581"
@@ -28367,6 +28432,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "450.7110365960"
       distanceRemaining: "1195.7850365960"
@@ -28739,6 +28805,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "443.8575078705"
       distanceRemaining: "1188.9315078705"
@@ -29111,6 +29178,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "436.0738307454"
       distanceRemaining: "1181.1478307454"
@@ -29483,6 +29551,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "428.3204557650"
       distanceRemaining: "1173.3944557650"
@@ -29855,6 +29924,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "420.5031615932"
       distanceRemaining: "1165.5771615932"
@@ -30227,6 +30297,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "412.6032766041"
       distanceRemaining: "1157.6772766041"
@@ -30599,6 +30670,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "405.3436865759"
       distanceRemaining: "1150.4176865759"
@@ -30971,6 +31043,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "398.1132238783"
       distanceRemaining: "1143.1872238783"
@@ -31366,6 +31439,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "391.5747628831"
       distanceRemaining: "1136.6487628831"
@@ -31761,6 +31835,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "385.0637155949"
       distanceRemaining: "1130.1377155949"
@@ -32156,6 +32231,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "377.3796116339"
       distanceRemaining: "1122.4536116339"
@@ -32551,6 +32627,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "369.6955076728"
       distanceRemaining: "1114.7695076728"
@@ -32946,6 +33023,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "362.0114037117"
       distanceRemaining: "1107.0854037117"
@@ -33341,6 +33419,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "354.3272997519"
       distanceRemaining: "1099.4012997519"
@@ -33736,6 +33815,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "345.5766959510"
       distanceRemaining: "1090.6506959510"
@@ -34131,6 +34211,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "336.8260921498"
       distanceRemaining: "1081.9000921498"
@@ -34526,6 +34607,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "328.0203491783"
       distanceRemaining: "1073.0943491783"
@@ -34921,6 +35003,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "319.2697453773"
       distanceRemaining: "1064.3437453773"
@@ -35316,6 +35399,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "310.5191415762"
       distanceRemaining: "1055.5931415762"
@@ -35711,6 +35795,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "303.6262604469"
       distanceRemaining: "1048.7002604469"
@@ -36106,6 +36191,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "296.8166747873"
       distanceRemaining: "1041.8906747873"
@@ -36501,6 +36587,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "289.9237936580"
       distanceRemaining: "1034.9977936580"
@@ -36896,6 +36983,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "280.1984846290"
       distanceRemaining: "1025.2724846290"
@@ -37291,6 +37379,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "270.5785592228"
       distanceRemaining: "1015.6525592228"
@@ -37686,6 +37775,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "260.8532501924"
       distanceRemaining: "1005.9272501924"
@@ -38081,6 +38171,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "251.1279411634"
       distanceRemaining: "996.2019411634"
@@ -38476,6 +38567,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "241.4026321332"
       distanceRemaining: "986.4766321332"
@@ -38871,6 +38963,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "231.7827067270"
       distanceRemaining: "976.8567067270"
@@ -39266,6 +39359,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "222.0573976980"
       distanceRemaining: "967.1313976980"
@@ -39661,6 +39755,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "214.4284783511"
       distanceRemaining: "959.5024783511"
@@ -40056,6 +40151,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "206.7391627841"
       distanceRemaining: "951.8131627841"
@@ -40451,6 +40547,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "199.1252590247"
       distanceRemaining: "944.1992590247"
@@ -40846,6 +40943,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "191.4998265336"
       distanceRemaining: "936.5738265336"
@@ -41241,6 +41339,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "183.8019277297"
       distanceRemaining: "928.8759277297"
@@ -41636,6 +41735,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "176.1880239702"
       distanceRemaining: "921.2620239702"
@@ -42031,6 +42131,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "169.3596472690"
       distanceRemaining: "914.4336472690"
@@ -42426,6 +42527,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "162.4784940994"
       distanceRemaining: "907.5524940994"
@@ -42821,6 +42923,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "154.4523037440"
       distanceRemaining: "899.5263037440"
@@ -43216,6 +43319,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "146.3960575394"
       distanceRemaining: "891.4700575394"
@@ -43611,6 +43715,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "138.3698671841"
       distanceRemaining: "883.4438671841"
@@ -44006,6 +44111,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "128.4889325542"
       distanceRemaining: "873.5629325542"
@@ -44401,6 +44507,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "118.5781713753"
       distanceRemaining: "863.6521713753"
@@ -44796,6 +44903,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "108.6972367463"
       distanceRemaining: "853.7712367463"
@@ -45191,6 +45299,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "98.8163021164"
       distanceRemaining: "843.8903021164"
@@ -45586,6 +45695,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "88.9353674863"
       distanceRemaining: "834.0093674863"
@@ -45981,6 +46091,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "79.0246063077"
       distanceRemaining: "824.0986063077"
@@ -46376,6 +46487,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "69.2261955054"
       distanceRemaining: "814.3001955054"
@@ -46771,6 +46883,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "59.3452608766"
       distanceRemaining: "804.4192608766"
@@ -47166,6 +47279,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "49.4344996978"
       distanceRemaining: "794.5084996978"
@@ -47561,6 +47675,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "39.5535650677"
       distanceRemaining: "784.6275650677"
@@ -47956,6 +48071,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "29.6726304377"
       distanceRemaining: "774.7466304377"
@@ -48351,6 +48467,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "19.7916958076"
       distanceRemaining: "764.8656958076"
@@ -48746,6 +48863,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "9.8809346288"
       distanceRemaining: "754.9549346288"
@@ -49141,6 +49259,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "745.0740000000"
@@ -49433,6 +49552,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "362.7792203838"
       distanceRemaining: "735.8532203838"
@@ -49696,6 +49816,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "354.2786221091"
       distanceRemaining: "727.3526221091"
@@ -49959,6 +50080,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "345.7780238352"
       distanceRemaining: "718.8520238352"
@@ -50222,6 +50344,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "337.2774255617"
       distanceRemaining: "710.3514255617"
@@ -50485,6 +50608,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "328.5776908729"
       distanceRemaining: "701.6516908729"
@@ -50748,6 +50872,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "321.8408006360"
       distanceRemaining: "694.9148006360"
@@ -51011,6 +51136,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "315.8936129789"
       distanceRemaining: "688.9676129789"
@@ -51274,6 +51400,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "311.3433221884"
       distanceRemaining: "684.4173221884"
@@ -51537,6 +51664,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "306.5227802620"
       distanceRemaining: "679.5967802620"
@@ -51800,6 +51928,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "301.5290305160"
       distanceRemaining: "674.6030305160"
@@ -52063,6 +52192,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "296.6683900925"
       distanceRemaining: "669.7423900925"
@@ -52326,6 +52456,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "292.3426483244"
       distanceRemaining: "665.4166483244"
@@ -52589,6 +52720,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "288.3078691745"
       distanceRemaining: "661.3818691745"
@@ -52852,6 +52984,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "284.4151305528"
       distanceRemaining: "657.4891305528"
@@ -53115,6 +53248,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "279.3936708741"
       distanceRemaining: "652.4676708741"
@@ -53378,6 +53512,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "275.3685685211"
       distanceRemaining: "648.4425685211"
@@ -53641,6 +53776,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "271.3477077650"
       distanceRemaining: "644.4217077650"
@@ -53904,6 +54040,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "266.8586814384"
       distanceRemaining: "639.9326814384"
@@ -54167,6 +54304,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "262.0743161742"
       distanceRemaining: "635.1483161742"
@@ -54430,6 +54568,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "257.7055424409"
       distanceRemaining: "630.7795424409"
@@ -54693,6 +54832,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "252.5052489448"
       distanceRemaining: "625.5792489448"
@@ -54956,6 +55096,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "247.6594145620"
       distanceRemaining: "620.7334145620"
@@ -55219,6 +55360,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "242.6194434006"
       distanceRemaining: "615.6934434006"
@@ -55482,6 +55624,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "237.2479042873"
       distanceRemaining: "610.3219042873"
@@ -55745,6 +55888,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "232.7459745232"
       distanceRemaining: "605.8199745232"
@@ -56008,6 +56152,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "227.7303749774"
       distanceRemaining: "600.8043749774"
@@ -56271,6 +56416,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "222.4523583238"
       distanceRemaining: "595.5263583238"
@@ -56534,6 +56680,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "217.0353234840"
       distanceRemaining: "590.1093234840"
@@ -56797,6 +56944,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "212.0711809408"
       distanceRemaining: "585.1451809408"
@@ -57060,6 +57208,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "207.0833186575"
       distanceRemaining: "580.1573186575"
@@ -57323,6 +57472,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "201.6931639548"
       distanceRemaining: "574.7671639548"
@@ -57586,6 +57736,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "197.4771322209"
       distanceRemaining: "570.5511322209"
@@ -57849,6 +58000,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "192.1614767251"
       distanceRemaining: "565.2354767251"
@@ -58112,6 +58264,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "186.8748808291"
       distanceRemaining: "559.9488808291"
@@ -58375,6 +58528,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "182.8884356637"
       distanceRemaining: "555.9624356637"
@@ -58638,6 +58792,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "177.2257994317"
       distanceRemaining: "550.2997994317"
@@ -58901,6 +59056,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "172.1877567590"
       distanceRemaining: "545.2617567590"
@@ -59164,6 +59320,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "167.6198880231"
       distanceRemaining: "540.6938880231"
@@ -59427,6 +59584,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "162.5593751124"
       distanceRemaining: "535.6333751124"
@@ -59690,6 +59848,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "158.0519548725"
       distanceRemaining: "531.1259548725"
@@ -59953,6 +60112,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "153.5372735281"
       distanceRemaining: "526.6112735281"
@@ -60216,6 +60376,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "148.4317304100"
       distanceRemaining: "521.5057304100"
@@ -60479,6 +60640,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "143.5738322602"
       distanceRemaining: "516.6478322602"
@@ -60742,6 +60904,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "140.0629686026"
       distanceRemaining: "513.1369686026"
@@ -61005,6 +61168,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "135.5903380962"
       distanceRemaining: "508.6643380962"
@@ -61268,6 +61432,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "131.8255274498"
       distanceRemaining: "504.8995274498"
@@ -61531,6 +61696,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "128.4516333961"
       distanceRemaining: "501.5256333961"
@@ -61794,6 +61960,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "125.0004745336"
       distanceRemaining: "498.0744745336"
@@ -62057,6 +62224,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "121.1004570647"
       distanceRemaining: "494.1744570647"
@@ -62320,6 +62488,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "116.8216845502"
       distanceRemaining: "489.8956845502"
@@ -62583,6 +62752,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "113.1227531470"
       distanceRemaining: "486.1967531470"
@@ -62846,6 +63016,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "108.2017598617"
       distanceRemaining: "481.2757598617"
@@ -63109,6 +63280,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "102.9373462326"
       distanceRemaining: "476.0113462326"
@@ -63372,6 +63544,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "97.5830044699"
       distanceRemaining: "470.6570044699"
@@ -63635,6 +63808,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "88.2375545361"
       distanceRemaining: "461.3115545361"
@@ -63898,6 +64072,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "78.9910640304"
       distanceRemaining: "452.0650640304"
@@ -64161,6 +64336,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "69.6876345565"
       distanceRemaining: "442.7616345566"
@@ -64424,6 +64600,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "60.4411440508"
       distanceRemaining: "433.5151440508"
@@ -64687,6 +64864,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "51.0956941170"
       distanceRemaining: "424.1696941170"
@@ -64950,6 +65128,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "42.5892704545"
       distanceRemaining: "415.6632704545"
@@ -65213,6 +65392,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "34.0542707214"
       distanceRemaining: "407.1282707214"
@@ -65476,6 +65656,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "25.5478470589"
       distanceRemaining: "398.6218470589"
@@ -65739,6 +65920,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "17.0414233956"
       distanceRemaining: "390.1154233956"
@@ -66002,6 +66184,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "8.5064236625"
       distanceRemaining: "381.5804236625"
@@ -66265,6 +66448,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "373.0740000000"
@@ -66402,6 +66586,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "77.5059890337"
       distanceRemaining: "366.5799890337"
@@ -66539,6 +66724,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "70.8118146449"
       distanceRemaining: "359.8858146449"
@@ -66676,6 +66862,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "66.0404923464"
       distanceRemaining: "355.1144923464"
@@ -66813,6 +67000,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "61.2611916671"
       distanceRemaining: "350.3351916671"
@@ -66950,6 +67138,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "55.7878527914"
       distanceRemaining: "344.8618527914"
@@ -67087,6 +67276,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "49.5284079883"
       distanceRemaining: "338.6024079883"
@@ -67224,6 +67414,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "43.3794355806"
       distanceRemaining: "332.4534355806"
@@ -67361,6 +67552,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "37.1652126449"
       distanceRemaining: "326.2392126449"
@@ -67498,6 +67690,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "33.7759103542"
       distanceRemaining: "322.8499103542"
@@ -67635,6 +67828,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "25.3809531558"
       distanceRemaining: "314.4549531558"
@@ -67772,6 +67966,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "16.8722088861"
       distanceRemaining: "305.9462088861"
@@ -67909,6 +68104,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "8.4772516866"
       distanceRemaining: "297.5512516866"
@@ -68046,6 +68242,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "289.0740000000"
@@ -68145,6 +68342,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "281.0914389003"
       distanceRemaining: "281.0914389003"
@@ -68244,6 +68442,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "273.5706523851"
       distanceRemaining: "273.5706523851"
@@ -68343,6 +68542,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "265.9641186317"
       distanceRemaining: "265.9641186317"
@@ -68442,6 +68642,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "256.5755955711"
       distanceRemaining: "256.5755955711"
@@ -68541,6 +68742,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "247.1591304778"
       distanceRemaining: "247.1591304778"
@@ -68640,6 +68842,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "237.7706074178"
       distanceRemaining: "237.7706074178"
@@ -68739,6 +68942,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "228.3820843573"
       distanceRemaining: "228.3820843573"
@@ -68838,6 +69042,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "218.9935612967"
       distanceRemaining: "218.9935612967"
@@ -68937,6 +69142,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "209.5770962033"
       distanceRemaining: "209.5770962033"
@@ -69036,6 +69242,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "200.1885731434"
       distanceRemaining: "200.1885731434"
@@ -69135,6 +69342,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "190.8000500829"
       distanceRemaining: "190.8000500829"
@@ -69234,6 +69442,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "187.6732602338"
       distanceRemaining: "187.6732602338"
@@ -69333,6 +69542,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "178.1996831050"
       distanceRemaining: "178.1996831050"
@@ -69432,6 +69642,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "168.7261059762"
       distanceRemaining: "168.7261059762"
@@ -69531,6 +69742,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "159.3383240767"
       distanceRemaining: "159.3383240767"
@@ -69630,6 +69842,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "149.8647469480"
       distanceRemaining: "149.8647469480"
@@ -69729,6 +69942,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "140.3332651187"
       distanceRemaining: "140.3332651187"
@@ -69828,6 +70042,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "130.8596879899"
       distanceRemaining: "130.8596879899"
@@ -69927,6 +70142,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "121.4719060898"
       distanceRemaining: "121.4719060898"
@@ -70026,6 +70242,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "111.9983289610"
       distanceRemaining: "111.9983289610"
@@ -70125,6 +70342,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "103.2687597132"
       distanceRemaining: "103.2687597132"
@@ -70224,6 +70442,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "94.3954850643"
       distanceRemaining: "94.3954850643"
@@ -70323,6 +70542,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "85.6659158165"
       distanceRemaining: "85.6659158165"
@@ -70422,6 +70642,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "76.8504589461"
       distanceRemaining: "76.8504589461"
@@ -70521,6 +70742,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "68.0630719198"
       distanceRemaining: "68.0630719198"
@@ -70620,6 +70842,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "59.3335026728"
       distanceRemaining: "59.3335026728"
@@ -70719,6 +70942,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "50.4602280239"
       distanceRemaining: "50.4602280239"
@@ -70818,6 +71042,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "41.7306587761"
       distanceRemaining: "41.7306587761"
@@ -70917,6 +71142,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "33.8368591376"
       distanceRemaining: "33.8368591376"
@@ -71016,6 +71242,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "25.9152692032"
       distanceRemaining: "25.9152692032"
@@ -71115,6 +71342,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "18.0214695639"
       distanceRemaining: "18.0214695639"
@@ -71214,6 +71442,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "10.1276699260"
       distanceRemaining: "10.1276699260"
@@ -71313,6 +71542,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "5.0501003801"
       distanceRemaining: "5.0501003801"
@@ -71376,6 +71606,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
           lat: 40.777985
           lng: -74.040048
         kind: Break
+        properties: "{\"name\":\"Dell Avenue\",\"distance\":20.629}"
     progress:
       distanceToNextManeuver: "0.0000000000"
       distanceRemaining: "0.0000000000"
