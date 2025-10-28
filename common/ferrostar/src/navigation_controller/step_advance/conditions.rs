@@ -2,7 +2,10 @@ use std::sync::Arc;
 
 use super::{StepAdvanceCondition, StepAdvanceConditionSerializable, StepAdvanceResult};
 use crate::{
-    algorithms::{deviation_from_line, is_within_threshold_to_end_of_linestring},
+    algorithms::{
+        deviation_from_line, get_linestring, is_within_threshold_to_end_of_linestring,
+        snap_user_location_to_line,
+    },
     deviation_detection::RouteDeviation,
     models::{RouteStep, UserLocation},
 };
@@ -420,6 +423,146 @@ impl StepAdvanceCondition for DistanceEntryAndExitCondition {
 impl StepAdvanceConditionSerializable for DistanceEntryAndExitCondition {
     fn to_js(&self) -> SerializableStepAdvanceCondition {
         SerializableStepAdvanceCondition::DistanceEntryExit {
+            minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+            distance_to_end_of_step: self.distance_to_end_of_step,
+            distance_after_end_step: self.distance_after_end_of_step,
+            has_reached_end_of_current_step: self.has_reached_end_of_current_step,
+        }
+    }
+}
+
+/// A stateful condition that requires the user to reach the end of the step then proceed past it to advance.
+///
+/// This variant uses route snapping (snapping to the combined current+next step geometry) for the exit check,
+/// making it more robust for pedestrian/hiking navigation where users may walk on the opposite side of the street
+/// or wander around the optimal path. The route-snapped exit check prevents premature advancement while still
+/// allowing natural pedestrian movement patterns.
+/// The exit distance is measured from the current step to the route-snapped position.
+#[derive(Debug, Copy, Clone)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Object))]
+pub struct DistanceEntryAndSnappedExitCondition {
+    /// Mark the arrival at the end of the step once the user is within this distance.
+    pub(super) distance_to_end_of_step: u16,
+    /// Advance only after the route-snapped position has moved this distance from the current step.
+    ///
+    /// This uses a snapped position to the combined route (current+next steps) which provides
+    /// better handling of pedestrian scenarios like walking on the opposite side of the street.
+    /// Values of 2-5m work well for pedestrian navigation.
+    pub(super) distance_after_end_of_step: u16,
+    /// The minimum required horizontal accuracy of the user location, in meters.
+    /// Values larger than this cannot ever trigger a step advance.
+    pub(super) minimum_horizontal_accuracy: u16,
+    /// Internal state for tracking when the user is within `distance_to_end_of_step` meters from the end of the step.
+    pub(super) has_reached_end_of_current_step: bool,
+}
+
+impl Default for DistanceEntryAndSnappedExitCondition {
+    fn default() -> Self {
+        Self {
+            distance_to_end_of_step: 20,
+            distance_after_end_of_step: 2,
+            minimum_horizontal_accuracy: 25,
+            has_reached_end_of_current_step: false,
+        }
+    }
+}
+
+#[cfg(test)]
+impl DistanceEntryAndSnappedExitCondition {
+    pub fn exact() -> Self {
+        Self {
+            distance_to_end_of_step: 0,
+            distance_after_end_of_step: 0,
+            minimum_horizontal_accuracy: 0,
+            has_reached_end_of_current_step: false,
+        }
+    }
+}
+
+impl StepAdvanceCondition for DistanceEntryAndSnappedExitCondition {
+    #[allow(unused_variables)]
+    fn should_advance_step(
+        &self,
+        user_location: UserLocation,
+        current_step: RouteStep,
+        next_step: Option<RouteStep>,
+        route_deviation: RouteDeviation,
+    ) -> StepAdvanceResult {
+        if self.has_reached_end_of_current_step {
+            // EXIT CHECK: Use route-snapped position
+
+            if let Some(next) = next_step {
+                // Check GPS accuracy first
+                if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
+                    return StepAdvanceResult::continue_with_state(Arc::new(
+                        DistanceEntryAndSnappedExitCondition { ..*self },
+                    ));
+                }
+
+                // Build combined linestring from current + next step
+                let mut combined_coords = current_step.geometry.clone();
+                combined_coords.extend(next.geometry.clone());
+                let combined_linestring = get_linestring(&combined_coords);
+
+                // Snap to the combined route
+                let snapped_to_route =
+                    snap_user_location_to_line(user_location, &combined_linestring);
+
+                // Measure distance from CURRENT step only
+                let current_step_linestring = current_step.get_linestring();
+                let deviation =
+                    deviation_from_line(&Point::from(snapped_to_route), &current_step_linestring)
+                        .unwrap_or(0.0);
+
+                // Cap exit distance to prevent getting stuck on short steps
+                // Use 0.5x multiplier since we measure perpendicular distance, not path distance
+                let next_step_length = next.distance;
+                let max_reasonable_exit = (next_step_length * 0.5) as u16;
+                let effective_exit_distance =
+                    self.distance_after_end_of_step.min(max_reasonable_exit);
+
+                let should_advance = deviation > effective_exit_distance.into();
+
+                if should_advance {
+                    StepAdvanceResult::advance_to_new_instance(self)
+                } else {
+                    StepAdvanceResult::continue_with_state(Arc::new(
+                        DistanceEntryAndSnappedExitCondition { ..*self },
+                    ))
+                }
+            } else {
+                // No next step - we're at destination, advance
+                StepAdvanceResult::advance_to_new_instance(self)
+            }
+        } else {
+            // ENTRY CHECK: Use existing distance to end logic
+            let distance_to_end = DistanceToEndOfStepCondition {
+                minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
+                distance: self.distance_to_end_of_step,
+            };
+
+            let next_iteration = DistanceEntryAndSnappedExitCondition {
+                has_reached_end_of_current_step: distance_to_end
+                    .should_advance_step(user_location, current_step, next_step, route_deviation)
+                    .should_advance,
+                ..*self
+            };
+
+            StepAdvanceResult::continue_with_state(Arc::new(next_iteration))
+        }
+    }
+
+    fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+        Arc::new(DistanceEntryAndSnappedExitCondition {
+            has_reached_end_of_current_step: false, // Always reset this to the initial state
+            ..*self
+        })
+    }
+}
+
+impl StepAdvanceConditionSerializable for DistanceEntryAndSnappedExitCondition {
+    fn to_js(&self) -> SerializableStepAdvanceCondition {
+        SerializableStepAdvanceCondition::DistanceEntryAndSnappedExit {
             minimum_horizontal_accuracy: self.minimum_horizontal_accuracy,
             distance_to_end_of_step: self.distance_to_end_of_step,
             distance_after_end_step: self.distance_after_end_of_step,
@@ -1039,6 +1182,116 @@ mod tests {
         assert!(
             !result3.should_advance,
             "Should not advance immediately after reset - entry/exit condition should restart its two-phase process"
+        );
+    }
+
+    #[test]
+    fn test_route_snapped_entry_and_exit_condition_advance() {
+        // Create a straight route with two steps
+        let step1 = gen_route_step_with_coords(vec![
+            coord!(x: 0.0, y: 0.0),   // Start
+            coord!(x: 0.001, y: 0.0), // 111m east (end of step 1)
+        ]);
+
+        let step2 = gen_route_step_with_coords(vec![
+            coord!(x: 0.001, y: 0.0),   // Start of step 2 (same as end of step 1)
+            coord!(x: 0.001, y: 0.001), // 111m north
+        ]);
+
+        let condition = DistanceEntryAndSnappedExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 5,
+            minimum_horizontal_accuracy: 10,
+            has_reached_end_of_current_step: false,
+        };
+
+        // User near end of step 1
+        let location_near_end = make_user_location(coord!(x: 0.00099, y: 0.0), 5.0);
+
+        // First update: Should enter the zone but not advance
+        let result1 = condition.should_advance_step(
+            location_near_end,
+            step1.clone(),
+            Some(step2.clone()),
+            RouteDeviation::NoDeviation,
+        );
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update when entering end zone"
+        );
+
+        // Second update: User has turned onto step 2 (10m north of the corner)
+        let location_on_step2 = make_user_location(coord!(x: 0.001, y: 0.0001), 5.0);
+        let next_condition = result1.next_iteration;
+
+        let result2 = next_condition.should_advance_step(
+            location_on_step2,
+            step1,
+            Some(step2),
+            RouteDeviation::NoDeviation,
+        );
+
+        assert!(
+            result2.should_advance,
+            "Should advance when route-snapped position has moved onto next step"
+        );
+    }
+
+    #[test]
+    fn test_route_snapped_entry_and_exit_with_short_next_step() {
+        // Create a route where step 1 is normal length, but step 2 is very short (only 5m)
+        let step1 = gen_route_step_with_coords(vec![
+            coord!(x: 0.0, y: 0.0),   // Start
+            coord!(x: 0.001, y: 0.0), // 111m east (end of step 1)
+        ]);
+
+        // Step 2 is very short - only ~5.5 meters long
+        let step2 = gen_route_step_with_coords(vec![
+            coord!(x: 0.001, y: 0.0),     // Start of step 2
+            coord!(x: 0.001, y: 0.00005), // Only ~5.5m north
+        ]);
+
+        // Configure with 10m exit distance, but step 2 is only 5.5m long
+        // The algorithm should cap the effective exit distance to ~2.75m (50% of 5.5m)
+        let condition = DistanceEntryAndSnappedExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 10, // Larger than next step length!
+            minimum_horizontal_accuracy: 10,
+            has_reached_end_of_current_step: false,
+        };
+
+        // User near end of step 1
+        let location_near_end = make_user_location(coord!(x: 0.00099, y: 0.0), 5.0);
+
+        // First update: Enter the end zone
+        let result1 = condition.should_advance_step(
+            location_near_end,
+            step1.clone(),
+            Some(step2.clone()),
+            RouteDeviation::NoDeviation,
+        );
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update when entering end zone"
+        );
+
+        // Second update: User has moved onto step 2, just 3m from the turn
+        // This is >2.75m (the capped exit distance), so should advance
+        let location_on_step2 = make_user_location(coord!(x: 0.001, y: 0.00003), 5.0);
+        let next_condition = result1.next_iteration;
+
+        let result2 = next_condition.should_advance_step(
+            location_on_step2,
+            step1,
+            Some(step2),
+            RouteDeviation::NoDeviation,
+        );
+
+        assert!(
+            result2.should_advance,
+            "Should advance even with short next step due to 0.5x capping"
         );
     }
 

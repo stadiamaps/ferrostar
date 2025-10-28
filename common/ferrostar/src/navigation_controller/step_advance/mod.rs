@@ -3,8 +3,9 @@ use crate::{
     deviation_detection::RouteDeviation,
     models::{RouteStep, UserLocation},
     navigation_controller::step_advance::conditions::{
-        AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceFromStepCondition,
-        DistanceToEndOfStepCondition, ManualStepCondition, OrAdvanceConditions,
+        AndAdvanceConditions, DistanceEntryAndExitCondition, DistanceEntryAndSnappedExitCondition,
+        DistanceFromStepCondition, DistanceToEndOfStepCondition, ManualStepCondition,
+        OrAdvanceConditions,
     },
 };
 use serde::{Deserialize, Serialize};
@@ -130,6 +131,13 @@ pub enum SerializableStepAdvanceCondition {
         has_reached_end_of_current_step: bool,
     },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    DistanceEntryAndSnappedExit {
+        distance_to_end_of_step: u16,
+        distance_after_end_step: u16,
+        minimum_horizontal_accuracy: u16,
+        has_reached_end_of_current_step: bool,
+    },
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     OrAdvanceConditions {
         conditions: Vec<SerializableStepAdvanceCondition>,
     },
@@ -165,6 +173,17 @@ impl From<SerializableStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
                 distance_after_end_step,
                 has_reached_end_of_current_step,
             } => Arc::new(DistanceEntryAndExitCondition {
+                minimum_horizontal_accuracy,
+                distance_to_end_of_step,
+                distance_after_end_of_step: distance_after_end_step,
+                has_reached_end_of_current_step,
+            }),
+            SerializableStepAdvanceCondition::DistanceEntryAndSnappedExit {
+                minimum_horizontal_accuracy,
+                distance_to_end_of_step,
+                distance_after_end_step,
+                has_reached_end_of_current_step,
+            } => Arc::new(DistanceEntryAndSnappedExitCondition {
                 minimum_horizontal_accuracy,
                 distance_to_end_of_step,
                 distance_after_end_of_step: distance_after_end_step,
@@ -264,6 +283,32 @@ pub fn step_advance_distance_entry_and_exit(
     minimum_horizontal_accuracy: u16,
 ) -> Arc<dyn StepAdvanceCondition> {
     Arc::new(DistanceEntryAndExitCondition {
+        distance_to_end_of_step,
+        distance_after_end_of_step,
+        minimum_horizontal_accuracy,
+        has_reached_end_of_current_step: false,
+    })
+}
+
+/// Convenience function for creating a [`DistanceEntryAndSnappedExitCondition`].
+///
+/// This variant uses route snapping for better handling of pedestrian/hiking navigation scenarios
+/// where users may walk on the opposite side of the street or wander around the optimal path.
+/// Requires the user to first travel within `distance_to_end_of_step` meters of the end of the step,
+/// and then the route-snapped position moves `distance_after_end_of_step` meters from the current step.
+/// The snapping to the combined route (current+next steps) prevents premature advancement.
+///
+/// The exit distance is automatically capped to the next step's length to prevent getting stuck on short steps.
+///
+/// Recommended values for pedestrian navigation: entry 20m, exit 2-5m.
+#[cfg(feature = "uniffi")]
+#[uniffi::export]
+pub fn step_advance_distance_entry_and_snapped_exit(
+    distance_to_end_of_step: u16,
+    distance_after_end_of_step: u16,
+    minimum_horizontal_accuracy: u16,
+) -> Arc<dyn StepAdvanceCondition> {
+    Arc::new(DistanceEntryAndSnappedExitCondition {
         distance_to_end_of_step,
         distance_after_end_of_step,
         minimum_horizontal_accuracy,
