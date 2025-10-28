@@ -190,6 +190,7 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints.clone(),
             );
 
@@ -237,6 +238,7 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints,
             );
 
@@ -287,6 +289,7 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints.clone(),
             );
 
@@ -344,6 +347,7 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints,
             );
 
@@ -375,6 +379,7 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints.clone(),
             );
 
@@ -417,6 +422,7 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints.clone(),
             );
 
