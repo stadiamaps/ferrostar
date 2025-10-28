@@ -59,7 +59,7 @@ private extension DemoAppState {
 }
 
 @MainActor
-@Observable final class DemoCarPlayModel: NSObject, @preconcurrency CPMapTemplateDelegate {
+@Observable final class DemoCarPlayModel: NSObject, CPMapTemplateDelegate {
     private var model: DemoModel
     private var interfaceController: CPInterfaceController
     private var session: CPNavigationSession?
