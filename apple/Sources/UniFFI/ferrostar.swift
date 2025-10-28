@@ -5858,7 +5858,7 @@ public func FfiConverterTypeValhallaLocationSearchFilter_lower(_ value: Valhalla
  * Other Valhalla-based APIs such as Stadia Maps or Mapbox may have slightly different defaults.
  * Refer to your vendor's documentation when in doubt.
  *
- * NOTE: Waypoint properties will NOT currently be echoed back by Valhalla-based servers,
+ * NOTE: Waypoint properties will NOT currently be echoed back in OSRM format,
  * so these are sent to the server one time.
  */
 public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
