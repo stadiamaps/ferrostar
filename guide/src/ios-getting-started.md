@@ -93,15 +93,36 @@ and use it in SwiftUI using a `private @StateObject` or `@ObservedObject`
 in most situations.
 
 `FerrostarCore` provides several initializers,
-including convenient initializers for Valhalla routing backends
+including convenience helpers for well-known route providers
 and the ability to provide your own custom routing (ex: for local/offline use).
+
+Here's a full example configuration:
+
+```swift
+let core = try FerrostarCore(
+    wellKnownRouteProvider: .valhalla(
+        endpointUrl: "https://api.stadiamaps.com/route/v1?api_key=\(sharedAPIKeys.stadiaMapsAPIKey)",
+        profile: "bicycle"
+    )
+    .withJsonOptions(options: ["costing_options": ["bicycle": ["use_roads": 0.2]]]),
+    locationProvider: locationProvider,
+    navigationControllerConfig: config,
+    // This is how you can set up annotation publishing;
+    // We provide "extended OSRM" support out of the box,
+    // but this is fully extendable!
+    annotation: AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM(),
+    widgetProvider: FerrostarWidgetProvider()
+)
+```
+
+Let's dive into the configuration options a bit further.
 
 ### Route Providers
 
-You’ll need to decide on a route provider when you set up your `FerrostarCore` instance.
-For limited testing, FOSSGIS maintains a public server with the URL `https://valhalla1.openstreetmap.de/route`.
-For production use, you’ll need another solution like a [commercial vendor](./vendors.md)
-or self-hosting.
+You’ll need a route provider when you set up your `FerrostarCore` instance.
+Several are available via the `WellKnownRouteProvider` enum,
+or you can [configure your own from scratch](./route-providers.md).
+Refer to the [commercial vendors](./vendors.md) page for some known working integrations.
 
 ### Set up Voice Guidance
 
@@ -147,7 +168,10 @@ Here’s an example:
 ```swift
 Task {
     do {
-        routes = try await ferrostarCore.getRoutes(initialLocation: userLocation, waypoints: [Waypoint(coordinate: GeographicCoordinate(cl: loc.location), kind: .break)])
+        routes = try await ferrostarCore.getRoutes(initialLocation: userLocation,
+		                                           waypoints: [
+												       Waypoint(coordinate: GeographicCoordinate(cl: loc.location), kind: .break)
+												   ])
 
         errorMessage = nil
         
@@ -159,6 +183,14 @@ Task {
 }
 ```
 
+### Additional waypoint properties
+
+The example above uses simple waypoints that will work with any routing engine.
+But many routing engines, including Valhalla which we run at Stadia Maps,
+let you provide additional detail.
+
+Ferrostar supports this with engine-specific properties.
+Refer to the [Route Providers documentation](./route-providers.md#bundled-support) for more details.
 
 ## Starting a navigation session
 

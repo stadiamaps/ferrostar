@@ -3,7 +3,7 @@
     "target": "es2021",
     "module": "es2020",
     "moduleResolution": "node",
-    "lib": ["es2021", "dom"],
+    "lib": ["esnext", "dom"],
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "dist",

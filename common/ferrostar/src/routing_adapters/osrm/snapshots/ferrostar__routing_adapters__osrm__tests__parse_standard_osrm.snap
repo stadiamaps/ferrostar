@@ -52,12 +52,15 @@ expression: routes
         lat: 52.517033
         lng: 13.388798
       kind: Break
+      properties: "{\"name\":\"Friedrichstraße\",\"distance\":4.231521214}"
     - coordinate:
         lat: 52.529432
         lng: 13.39763
       kind: Break
+      properties: "{\"name\":\"Torstraße\",\"distance\":2.795148358}"
     - coordinate:
         lat: 52.523239
         lng: 13.428554
       kind: Break
+      properties: "{\"name\":\"Platz der Vereinten Nationen\",\"distance\":2.226580806}"
   steps: []

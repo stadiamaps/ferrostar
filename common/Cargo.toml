@@ -22,7 +22,7 @@ lto = "thin"
 opt-level = "s"
 
 [workspace.dependencies]
-uniffi = "0.29.4"
+uniffi = "0.30.0"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

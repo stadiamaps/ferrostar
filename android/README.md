@@ -21,6 +21,12 @@ Set your API key in `local.properties` to run the demo app
 stadiaApiKey=YOUR-API-KEY
 ```
 
+Or, to use GraphHopper for the routing:
+
+```properties
+graphhopperApiKey=YOUR-API-KEY
+```
+
 ## Testing locally in a separate project
 
 * Bump the version number to a `SNAPSHOT` in `build.gradle`.

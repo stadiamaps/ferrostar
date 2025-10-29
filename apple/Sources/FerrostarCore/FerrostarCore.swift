@@ -177,12 +177,11 @@ public protocol FerrostarCoreDelegate: AnyObject {
         )
     }
 
-    /// Initializes a core instance for a Valhalla API accessed over HTTP.
+    /// Initializes a core instance for a well-known API accessed over HTTP.
+    /// This convenience initializer provides easy access for any built-in route provider.
     ///
     /// - Parameters
-    ///   - valhallaEndpointUrl: The URL of the Valhalla endpoint you're trying to hit for route requests. If necessary,
-    /// include your API key here.
-    ///   - profile: The Valhalla costing model to use for route requests.
+    ///   - routingEngine: The configuration for a well-known routing engine.
     ///   - navigationControllerConfig: Configuration of the navigation session.
     ///   - options: A dictionary of options to include in the request. The Valhalla request generator sets several
     /// automatically (like `format`), but this lets you add arbitrary options so you can access the full API.
@@ -191,31 +190,16 @@ public protocol FerrostarCoreDelegate: AnyObject {
     ///   - annotation: An implementation of the annotation publisher that transforms custom annotation JSON into
     /// published values of defined swift types.
     public convenience init(
-        valhallaEndpointUrl: URL,
-        profile: String,
+        wellKnownRouteProvider: WellKnownRouteProvider,
         locationProvider: LocationProviding,
         navigationControllerConfig: SwiftNavigationControllerConfig,
-        options: [String: Any] = [:],
         networkSession: URLRequestLoading = URLSession.shared,
         annotation: (any AnnotationPublishing)? = nil,
         spokenInstructionObserver: SpokenInstructionObserver =
             .initAVSpeechSynthesizer(),
         widgetProvider: WidgetProviding? = nil
     ) throws {
-        guard
-            let jsonOptions = try String(
-                data: JSONSerialization.data(withJSONObject: options),
-                encoding: .utf8
-            )
-        else {
-            throw InstantiationError.OptionsJsonParseError
-        }
-
-        let adapter = try RouteAdapter.newValhallaHttp(
-            endpointUrl: valhallaEndpointUrl.absoluteString,
-            profile: profile,
-            optionsJson: jsonOptions
-        )
+        let adapter = try RouteAdapter.fromWellKnownRouteProvider(wellKnownRouteProvider: wellKnownRouteProvider)
         self.init(
             routeProvider: .routeAdapter(adapter),
             locationProvider: locationProvider,

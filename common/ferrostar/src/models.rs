@@ -97,16 +97,37 @@ impl From<GeographicCoordinate> for Point {
 /// and are used for recalculating when the user deviates from the expected route.
 ///
 /// Note that support for properties beyond basic geographic coordinates varies by routing engine.
-#[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct Waypoint {
     pub coordinate: GeographicCoordinate,
     pub kind: WaypointKind,
+    /// Optional additional properties that will be passed on to the [`crate::routing_adapters::RouteRequestGenerator`].
+    ///
+    /// Most users should prefer convenience functions like [`Waypoint::new_with_valhalla_properties`]
+    /// (or, on platforms like iOS and Android with UniFFI bindings, [`crate::routing_adapters::valhalla::create_waypoint_with_valhalla_properties`]).
+    ///
+    /// # Format guidelines
+    ///
+    /// This MAY be any format agreed upon by both the request generator and response parser.
+    /// However, to promote interoperability, all implementations in the Ferrostar codebase
+    /// MUST use JSON.
+    ///
+    /// We selected JSON is selected not because it is good,
+    /// but because generics (i.e., becoming `Waypoint<T>`, where an example `T` is `ValhallaProperties`)
+    /// would be way too painful, particularly for foreign code.
+    /// Especially JavaScript.
+    ///
+    /// In any case, [`crate::routing_adapters::RouteRequestGenerator`] and [`crate::routing_adapters::RouteResponseParser`]
+    /// implementations SHOULD document their level support for this,
+    /// ideally with an exportable record type.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
+    pub properties: Option<Vec<u8>>,
 }
 
-/// Describes characteristics of the waypoint for the routing backend.
+/// Describes characteristics of the waypoint for routing purposes.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Debug, Serialize, Deserialize)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
@@ -115,8 +136,11 @@ pub enum WaypointKind {
     /// Starts or ends a leg of the trip.
     ///
     /// Most routing engines will generate arrival and departure instructions.
+    /// Some routing engines do not support multi-leg routes,
+    /// so an intermediate break may behave like a [`WaypointKind::Via`].
     Break,
-    /// A waypoint that is simply passed through, but will not have any arrival or departure instructions.
+    /// A waypoint that is simply passed through,
+    /// but will not have any arrival or departure instructions.
     Via,
 }
 
@@ -390,7 +414,7 @@ pub struct SpokenInstruction {
     pub text: String,
     /// Speech Synthesis Markup Language, which should be preferred by clients capable of understanding it.
     pub ssml: Option<String>,
-    /// How far (in meters) from the upcoming maneuver the instruction should start being displayed
+    /// How far (in meters) from the upcoming maneuver the instruction should start being spoken.
     pub trigger_distance_before_maneuver: f64,
     /// A unique identifier for this instruction.
     ///

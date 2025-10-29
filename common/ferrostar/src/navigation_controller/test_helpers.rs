@@ -175,10 +175,12 @@ pub fn gen_route_from_steps(steps: Vec<RouteStep>) -> Route {
             Waypoint {
                 coordinate: steps.first().unwrap().geometry.first().cloned().unwrap(),
                 kind: WaypointKind::Break,
+                properties: None,
             },
             Waypoint {
                 coordinate: steps.last().unwrap().geometry.last().cloned().unwrap(),
                 kind: WaypointKind::Break,
+                properties: None,
             },
         ],
         steps,

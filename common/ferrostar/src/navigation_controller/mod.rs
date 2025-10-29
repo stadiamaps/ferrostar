@@ -145,7 +145,7 @@ impl Navigator for NavigationController {
             snapped_user_location,
             remaining_steps,
             // Skip the first waypoint, as it is the current one
-            remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
+            remaining_waypoints: self.route.waypoints.iter().skip(1).cloned().collect(),
             progress,
             summary: initial_summary,
             deviation,
@@ -483,9 +483,11 @@ mod tests {
         get_test_navigation_controller_config, get_test_route, nav_controller_insta_settings,
         TestRoute,
     };
+    use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
     };
+    use crate::test_utils::redact_properties;
     use std::sync::Arc;
 
     fn test_full_route_state_snapshot(
@@ -562,7 +564,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 
@@ -577,7 +581,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 
@@ -595,7 +601,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 
@@ -610,7 +618,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 
@@ -628,7 +638,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 }

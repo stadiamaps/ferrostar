@@ -136,6 +136,7 @@ mod tests {
         Waypoint {
             coordinate: GeographicCoordinate { lng, lat },
             kind: WaypointKind::Break,
+            properties: None,
         }
     }
 
@@ -211,7 +212,7 @@ mod tests {
             prop_assert_eq!(new_waypoints.len(), waypoints.len() - 1);
             // Verify it's the correct remaining waypoints
             for (i, waypoint) in new_waypoints.iter().enumerate() {
-                prop_assert_eq!(*waypoint, waypoints[i + 1]);
+                prop_assert_eq!(waypoint, &waypoints[i + 1]);
             }
         }
 
@@ -312,7 +313,7 @@ mod tests {
 
             // Should only have the destination waypoint remaining
             prop_assert_eq!(new_waypoints.len(), 1);
-            prop_assert_eq!(new_waypoints[0], waypoints.last().unwrap().clone());
+            prop_assert_eq!(&new_waypoints[0], waypoints.last().unwrap());
         }
 
         /// Test WaypointAlongAdvancingStep mode out of range of step, should never advance
