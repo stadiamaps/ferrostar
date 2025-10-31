@@ -85,7 +85,7 @@ impl RouteDeviationTracking {
                     let step_deviation = self.static_threshold_deviation_from_line(
                         &Point::from(location),
                         &current_route_step.get_linestring(),
-                        max_acceptable_deviation,
+                        *max_acceptable_deviation,
                     );
 
                     // Exit early if the step is within tolerance, otherwise check there route line.
@@ -97,7 +97,7 @@ impl RouteDeviationTracking {
                         self.static_threshold_deviation_from_line(
                             &Point::from(location),
                             &route.get_linestring(),
-                            max_acceptable_deviation,
+                            *max_acceptable_deviation,
                         )
                     }
                 } else {
@@ -116,10 +116,10 @@ impl RouteDeviationTracking {
         &self,
         point: &Point,
         line: &LineString,
-        max_acceptable_deviation: &f64,
+        max_acceptable_deviation: f64,
     ) -> RouteDeviation {
         deviation_from_line(point, line).map_or(RouteDeviation::NoDeviation, |deviation| {
-            if deviation > 0.0 && deviation > *max_acceptable_deviation {
+            if deviation > 0.0 && deviation > max_acceptable_deviation {
                 RouteDeviation::OffRoute {
                     deviation_from_route_line: deviation,
                 }

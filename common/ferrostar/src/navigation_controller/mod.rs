@@ -197,9 +197,9 @@ impl Navigator for NavigationController {
                         let trip_state = self.create_intermediate_trip_state(
                             state.trip_state(),
                             user_location,
-                            &current_step,
-                            &remaining_steps,
-                            &remaining_waypoints,
+                            current_step,
+                            remaining_steps,
+                            remaining_waypoints,
                             deviation,
                         );
 
@@ -222,13 +222,13 @@ impl Navigator for NavigationController {
     fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
         match state.trip_state() {
             TripState::Navigating {
-                ref remaining_steps,
+                remaining_steps,
                 ref remaining_waypoints,
                 summary,
                 ..
             } => {
                 // Remaining steps is empty, the route is finished.
-                let Some(current_step) = remaining_steps.first() else {
+                let Some(current_step) = remaining_steps.first().cloned() else {
                     return NavState::complete(location, summary);
                 };
 
@@ -243,7 +243,7 @@ impl Navigator for NavigationController {
                 let deviation = self.config.route_deviation_tracking.check_route_deviation(
                     location,
                     &self.route,
-                    current_step,
+                    &current_step,
                 );
 
                 // Get the step advance condition result.
@@ -269,7 +269,7 @@ impl Navigator for NavigationController {
                         location,
                         current_step,
                         remaining_steps,
-                        &remaining_waypoints,
+                        remaining_waypoints,
                         deviation,
                     ),
                     step_advance_result.next_iteration,
@@ -313,9 +313,9 @@ impl NavigationController {
         &self,
         trip_state: TripState,
         current_user_location: UserLocation,
-        current_step: &RouteStep,
-        remaining_steps: &Vec<RouteStep>,
-        remaining_waypoints: &Vec<Waypoint>,
+        current_step: RouteStep,
+        remaining_steps: Vec<RouteStep>,
+        remaining_waypoints: Vec<Waypoint>,
         deviation: RouteDeviation,
     ) -> TripState {
         match trip_state {
@@ -341,7 +341,7 @@ impl NavigationController {
                 let progress = calculate_trip_progress(
                     &snapped_user_location.into(),
                     &current_step_linestring,
-                    remaining_steps,
+                    &remaining_steps,
                 );
 
                 let visual_instruction = current_step
@@ -357,8 +357,8 @@ impl NavigationController {
                     current_step_geometry_index,
                     user_location: current_user_location,
                     snapped_user_location,
-                    remaining_steps: remaining_steps.clone(),
-                    remaining_waypoints: remaining_waypoints.clone(),
+                    remaining_steps,
+                    remaining_waypoints,
                     progress,
                     summary: updated_summary,
                     deviation,

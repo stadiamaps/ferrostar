@@ -144,18 +144,18 @@ impl StepAdvanceCondition for DistanceFromStepCondition {
         // If the user is not on route & we don't allow calculating while off route, don't advance
         // Else if, the user location is not within the minimum horizontal accuracy, don't advance
         // Else if, the user location is within the minimum horizontal accuracy, advance
-        let should_advance =
-            if !self.calculate_while_off_route && route_deviation != RouteDeviation::NoDeviation {
-                false
-            } else if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
-                false
-            } else {
-                let current_position: Point = user_location.into();
-                let current_step_linestring = current_step.get_linestring();
+        let should_advance = if (!self.calculate_while_off_route
+            && route_deviation != RouteDeviation::NoDeviation)
+            || (user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into())
+        {
+            false
+        } else {
+            let current_position: Point = user_location.into();
+            let current_step_linestring = current_step.get_linestring();
 
-                deviation_from_line(&current_position, &current_step_linestring)
-                    .is_some_and(|deviation| deviation > self.distance.into())
-            };
+            deviation_from_line(&current_position, &current_step_linestring)
+                .is_some_and(|deviation| deviation > self.distance.into())
+        };
 
         if should_advance {
             StepAdvanceResult::advance_to_new_instance(self)

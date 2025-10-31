@@ -98,6 +98,7 @@ impl Route {
                 },
                 properties: if waypoint.name.is_some() || waypoint.distance.is_some() {
                     Some(
+                        #[expect(clippy::missing_panics_doc)]
                         serde_json::to_vec(&OsrmWaypointProperties {
                             name: waypoint.name.clone(),
                             distance: waypoint.distance,
@@ -209,15 +210,15 @@ impl Route {
 
                         start_index = end_index;
 
-                        RouteStep::from_osrm_and_geom(
+                        Ok(RouteStep::from_osrm_and_geom(
                             step,
                             step_geometry,
                             annotation_slice,
                             relevant_incidents_slice,
-                        )
+                        ))
                     })
                 })
-                .collect::<Result<Vec<_>, _>>()?;
+                .collect::<Result<Vec<_>, ParsingError>>()?;
 
             Ok(Route {
                 geometry,
@@ -249,7 +250,7 @@ impl RouteStep {
         geometry: Vec<GeographicCoordinate>,
         annotations: Option<Vec<AnyAnnotationValue>>,
         incidents: Vec<Incident>,
-    ) -> Result<Self, ParsingError> {
+    ) -> Self {
         let visual_instructions = value
             .banner_instructions
             .iter()
@@ -327,7 +328,7 @@ impl RouteStep {
             None => Vec::new(),
         };
 
-        Ok(RouteStep {
+        RouteStep {
             geometry,
             // TODO: Investigate using the haversine distance or geodesics to normalize.
             // Valhalla in particular is a bit nonstandard. See https://github.com/valhalla/valhalla/issues/1717
@@ -340,7 +341,7 @@ impl RouteStep {
             spoken_instructions,
             annotations: annotations_as_strings,
             incidents,
-        })
+        }
     }
 }
 

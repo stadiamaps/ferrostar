@@ -5991,6 +5991,10 @@ public func FfiConverterTypeValhallaLocationSearchFilter_lower(_ value: Valhalla
 public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
     /**
      * Preferred direction of travel for the start from the location.
+     *
+     * The heading is indicated in degrees from north in a clockwise direction, where north is 0°, east is 90°, south is 180°, and west is 270°.
+     * Avoid specifying this unless you really know what you're doing.
+     * Most use cases for this are better served by `preferred_side`.
      */
     public var heading: UInt16?
     /**
@@ -6009,6 +6013,13 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
      * will be considered as candidates for said location.
      * If there are no candidates within this distance,
      * it will return the closest candidate within reason.
+     *
+     * This allows the routing engine to match another edge which is NOT
+     * the closest to your location, but in within this range.
+     * This can be useful if you have other constraints and want to disambiguate,
+     * but beware that this can lead to very strange results,
+     * particularly if you have specified other parameters like `heading`.
+     * This is an advanced feature and should only be used with extreme care.
      */
     public var radius: UInt16?
     /**
@@ -6067,6 +6078,10 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
     public init(
         /**
          * Preferred direction of travel for the start from the location.
+         *
+         * The heading is indicated in degrees from north in a clockwise direction, where north is 0°, east is 90°, south is 180°, and west is 270°.
+         * Avoid specifying this unless you really know what you're doing.
+         * Most use cases for this are better served by `preferred_side`.
          */heading: UInt16? = nil, 
         /**
          * How close in degrees a given street's angle must be
@@ -6082,6 +6097,13 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
          * will be considered as candidates for said location.
          * If there are no candidates within this distance,
          * it will return the closest candidate within reason.
+         *
+         * This allows the routing engine to match another edge which is NOT
+         * the closest to your location, but in within this range.
+         * This can be useful if you have other constraints and want to disambiguate,
+         * but beware that this can lead to very strange results,
+         * particularly if you have specified other parameters like `heading`.
+         * This is an advanced feature and should only be used with extreme care.
          */radius: UInt16? = nil, 
         /**
          * Determines whether the location should be visited from the same, opposite or either side of the road,

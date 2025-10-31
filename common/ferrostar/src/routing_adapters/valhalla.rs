@@ -36,6 +36,10 @@ use tsify::Tsify;
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct ValhallaWaypointProperties {
     /// Preferred direction of travel for the start from the location.
+    ///
+    /// The heading is indicated in degrees from north in a clockwise direction, where north is 0°, east is 90°, south is 180°, and west is 270°.
+    /// Avoid specifying this unless you really know what you're doing.
+    /// Most use cases for this are better served by `preferred_side`.
     #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub heading: Option<u16>,
     /// How close in degrees a given street's angle must be
@@ -51,6 +55,13 @@ pub struct ValhallaWaypointProperties {
     /// will be considered as candidates for said location.
     /// If there are no candidates within this distance,
     /// it will return the closest candidate within reason.
+    ///
+    /// This allows the routing engine to match another edge which is NOT
+    /// the closest to your location, but in within this range.
+    /// This can be useful if you have other constraints and want to disambiguate,
+    /// but beware that this can lead to very strange results,
+    /// particularly if you have specified other parameters like `heading`.
+    /// This is an advanced feature and should only be used with extreme care.
     #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub radius: Option<u16>,
     /// Determines whether the location should be visited from the same, opposite or either side of the road,
@@ -107,6 +118,7 @@ impl Waypoint {
         Self {
             coordinate,
             kind,
+            #[expect(clippy::missing_panics_doc)]
             properties: Some(serde_json::to_vec(&properties).expect("Serialization of Valhalla waypoint properties failed. This is a bug in Ferrostar; please open an issue report on GitHub."))
         }
     }

@@ -194,8 +194,8 @@ impl CourseOverGround {
     /// # Arguments
     ///
     /// - degrees: The direction in which the user's device is traveling, measured in clockwise degrees from
-    ///            true north (N = 0, E = 90, S = 180, W = 270).
-    ///            NOTE: Input values must lie in the range [0, 360).
+    ///   true north (N = 0, E = 90, S = 180, W = 270).
+    ///   NOTE: Input values must lie in the range [0, 360).
     /// - accuracy: the accuracy of the course value, measured in degrees.
     pub fn new(degrees: f64, accuracy: Option<u16>) -> Self {
         debug_assert!(degrees >= 0.0 && degrees < 360.0);
