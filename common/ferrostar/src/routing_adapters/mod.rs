@@ -47,7 +47,7 @@ use serde_json::json;
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 #[cfg(feature = "wasm-bindgen")]
-use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 use crate::routing_adapters::graphhopper::GraphHopperVoiceUnits;
 use crate::routing_adapters::{
@@ -226,7 +226,7 @@ pub enum WellKnownRouteProvider {
     /// You can also substitute any URL to use a self-hosted server.
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     Valhalla {
-        /// The endpoint URL to use (e.g. https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY).
+        /// The endpoint URL to use (e.g. <https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY>).
         endpoint_url: String,
         /// The costing model (e.g. `auto`).
         profile: String,
@@ -243,7 +243,7 @@ pub enum WellKnownRouteProvider {
     /// You can also substitute any other URL to use a self-hosted server.
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     GraphHopper {
-        /// The endpoint URL to use (e.g. https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY).
+        /// The endpoint URL to use (e.g. <https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY>).
         endpoint_url: String,
         /// The routing profile (e.g. `car`).
         profile: String,

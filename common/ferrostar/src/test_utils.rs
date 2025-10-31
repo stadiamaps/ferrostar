@@ -1,11 +1,11 @@
 use crate::models::{GeographicCoordinate, UserLocation};
-use geo::{coord, Coord};
+use geo::{Coord, coord};
 use proptest::prop_compose;
 
 use insta::_macro_support::Content;
 use insta::internals::ContentPath;
-use serde::de::DeserializeOwned;
 use serde::Serialize;
+use serde::de::DeserializeOwned;
 #[cfg(all(feature = "std", not(feature = "web-time")))]
 use std::time::SystemTime;
 #[cfg(feature = "web-time")]

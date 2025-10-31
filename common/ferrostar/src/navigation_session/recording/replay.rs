@@ -4,7 +4,7 @@ use crate::{
 };
 
 #[cfg(feature = "wasm-bindgen")]
-use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
+use wasm_bindgen::{JsValue, prelude::wasm_bindgen};
 
 /// A wrapper around `NavigationRecording` to facilitate replaying the event stream.
 #[cfg_attr(feature = "uniffi", derive(uniffi::Object))]

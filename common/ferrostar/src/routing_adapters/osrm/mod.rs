@@ -11,10 +11,10 @@ use crate::models::{
 use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
 use crate::routing_adapters::utilities::get_coordinates_from_geometry;
 use crate::routing_adapters::{
+    ParsingError, Route,
     osrm::models::{
         Route as OsrmRoute, RouteResponse, RouteStep as OsrmRouteStep, Waypoint as OsrmWaypoint,
     },
-    ParsingError, Route,
 };
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::{string::ToString, vec, vec::Vec};
@@ -84,7 +84,7 @@ impl Route {
             .collect();
 
         let waypoints: Vec<_> = waypoints
-            .into_iter()
+            .iter()
             .enumerate()
             .map(|(idx, waypoint)| Waypoint {
                 coordinate: GeographicCoordinate {
@@ -98,6 +98,7 @@ impl Route {
                 },
                 properties: if waypoint.name.is_some() || waypoint.distance.is_some() {
                     Some(
+                        #[expect(clippy::missing_panics_doc)]
                         serde_json::to_vec(&OsrmWaypointProperties {
                             name: waypoint.name.clone(),
                             distance: waypoint.distance,
@@ -209,15 +210,15 @@ impl Route {
 
                         start_index = end_index;
 
-                        RouteStep::from_osrm_and_geom(
+                        Ok(RouteStep::from_osrm_and_geom(
                             step,
                             step_geometry,
                             annotation_slice,
                             relevant_incidents_slice,
-                        )
+                        ))
                     })
                 })
-                .collect::<Result<Vec<_>, _>>()?;
+                .collect::<Result<Vec<_>, ParsingError>>()?;
 
             Ok(Route {
                 geometry,
@@ -249,7 +250,7 @@ impl RouteStep {
         geometry: Vec<GeographicCoordinate>,
         annotations: Option<Vec<AnyAnnotationValue>>,
         incidents: Vec<Incident>,
-    ) -> Result<Self, ParsingError> {
+    ) -> Self {
         let visual_instructions = value
             .banner_instructions
             .iter()
@@ -269,7 +270,7 @@ impl RouteStep {
                         maneuver_modifier: secondary.maneuver_modifier,
                         roundabout_exit_degrees: banner.primary.roundabout_exit_degrees,
                         lane_info: None,
-                        exit_numbers: Self::extract_exit_numbers(&secondary),
+                        exit_numbers: Self::extract_exit_numbers(secondary),
                     }
                 }),
                 sub_content: banner.sub.as_ref().map(|sub| VisualInstructionContent {
@@ -295,7 +296,7 @@ impl RouteStep {
                             Some(lane_infos)
                         }
                     },
-                    exit_numbers: Self::extract_exit_numbers(&sub),
+                    exit_numbers: Self::extract_exit_numbers(sub),
                 }),
                 trigger_distance_before_maneuver: banner.distance_along_geometry,
             })
@@ -327,7 +328,7 @@ impl RouteStep {
             None => Vec::new(),
         };
 
-        Ok(RouteStep {
+        RouteStep {
             geometry,
             // TODO: Investigate using the haversine distance or geodesics to normalize.
             // Valhalla in particular is a bit nonstandard. See https://github.com/valhalla/valhalla/issues/1717
@@ -340,7 +341,7 @@ impl RouteStep {
             spoken_instructions,
             annotations: annotations_as_strings,
             incidents,
-        })
+        }
     }
 }
 
