@@ -36,10 +36,10 @@ public struct NavigationMapViewContentInsetConfiguration {
 
     /// Get the dynamic content inset based on orientation using the configured bundle.
     /// This method uses navigation mode insets only.
-    public func getDynamicInset(for orientation: UIDeviceOrientation,
+    public func getDynamicInset(isLandscape: Bool,
                                 geometry: GeometryProxy) -> NavigationMapViewContentInsetMode
     {
-        bundle.dynamic(orientation)(geometry)
+        bundle.dynamic(isLandscape: isLandscape)(geometry)
     }
 
     /// Get the dynamic showcase content inset based on orientation using the configured bundle.
@@ -57,10 +57,10 @@ public struct NavigationMapViewContentInsetConfiguration {
     /// Get the dynamic content inset based on camera state and orientation using the configured bundle.
     /// This is the recommended method as it automatically chooses between navigation and showcase insets.
     public func getDynamicInsetWithCameraState(for cameraState: CameraState,
-                                               orientation: UIDeviceOrientation,
+                                               isLandscape: Bool,
                                                geometry: GeometryProxy) -> NavigationMapViewContentInsetMode
     {
-        bundle.dynamicWithCameraState(cameraState, orientation: orientation)(geometry)
+        bundle.dynamicWithCameraState(cameraState, isLandscape: isLandscape)(geometry)
     }
 }
 
