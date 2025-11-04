@@ -11,8 +11,6 @@ public struct DynamicallyOrientingNavigationView: View {
     @Environment(\.navigationFormatterCollection) var formatterCollection: any FormatterCollection
     @Environment(\.navigationViewComponentsConfiguration) private var componentsConfig
 
-    @State private var orientation = UIDevice.current.orientation
-
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
@@ -82,8 +80,7 @@ public struct DynamicallyOrientingNavigationView: View {
                     userLayers
                 }
 
-                switch orientation {
-                case .landscapeLeft, .landscapeRight:
+                if geometry.isLandscape {
                     LandscapeNavigationOverlayView(
                         navigationState: navigationState,
                         speedLimit: speedLimitConfig.speedLimit,
@@ -114,7 +111,7 @@ public struct DynamicallyOrientingNavigationView: View {
                     } bottomTrailing: {
                         gridConfig.getBottomTrailing()
                     }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
-                default:
+                } else {
                     PortraitNavigationOverlayView(
                         navigationState: navigationState,
                         speedLimit: speedLimitConfig.speedLimit,
@@ -147,11 +144,6 @@ public struct DynamicallyOrientingNavigationView: View {
                     }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
                 }
             }
-        }
-        .onReceive(
-            NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
-        ) { _ in
-            orientation = UIDevice.current.orientation
         }
     }
 }

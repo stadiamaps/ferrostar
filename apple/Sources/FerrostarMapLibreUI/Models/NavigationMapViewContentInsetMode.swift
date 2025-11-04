@@ -91,11 +91,10 @@ public struct NavigationMapViewContentInsetBundle {
         self.showcasePortrait = showcasePortrait
     }
 
-    public func dynamic(_ orientation: UIDeviceOrientation) -> (GeometryProxy) -> NavigationMapViewContentInsetMode {
-        switch orientation {
-        case .landscapeLeft, .landscapeRight:
+    public func dynamic(isLandscape: Bool) -> (GeometryProxy) -> NavigationMapViewContentInsetMode {
+        if isLandscape {
             landscape
-        default:
+        } else {
             portrait
         }
     }
@@ -104,24 +103,23 @@ public struct NavigationMapViewContentInsetBundle {
     ///
     /// - Parameters:
     ///   - cameraState: The current camera state (navigation vs showcase mode)
-    ///   - orientation: The device orientation
+    ///   - isLandscape: If the device is oriented in landscape mode
     /// - Returns: A function that takes geometry and returns the appropriate inset mode
     public func dynamicWithCameraState(_ cameraState: CameraState,
-                                       orientation: UIDeviceOrientation)
+                                       isLandscape: Bool)
         -> (GeometryProxy) -> NavigationMapViewContentInsetMode
     {
         switch cameraState {
         case .rect:
             // Showcase mode - use showcase-specific insets
-            switch orientation {
-            case .landscapeLeft, .landscapeRight:
+            if isLandscape {
                 showcaseLandscape
-            default:
+            } else {
                 showcasePortrait
             }
         default:
             // Navigation mode - use existing dynamic method
-            dynamic(orientation)
+            dynamic(isLandscape: isLandscape)
         }
     }
 }
