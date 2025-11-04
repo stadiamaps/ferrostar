@@ -246,34 +246,30 @@ impl Navigator for NavigationController {
                     &current_step,
                 );
 
+                let intermediate_trip_state = self.create_intermediate_trip_state(
+                    state.trip_state(),
+                    &location,
+                    current_step,
+                    &remaining_steps,
+                    &remaining_waypoints,
+                    &deviation,
+                );
+
                 // Get the step advance condition result.
-                let next_step = remaining_steps.get(1).cloned();
                 let is_arriving = remaining_steps.len() <= 2;
                 let step_advance_result = if is_arriving {
                     self.config
                         .arrival_step_advance_condition
-                        .should_advance_step(location, current_step.clone(), next_step, deviation)
+                        .should_advance_step(intermediate_trip_state.clone())
                 } else {
-                    state.step_advance_condition().should_advance_step(
-                        location,
-                        current_step.clone(),
-                        next_step,
-                        deviation,
-                    )
+                    state
+                        .step_advance_condition()
+                        .should_advance_step(intermediate_trip_state.clone())
                 };
 
                 let should_advance = step_advance_result.should_advance();
-                let intermediate_nav_state = NavState::new(
-                    self.create_intermediate_trip_state(
-                        state.trip_state(),
-                        location,
-                        current_step,
-                        remaining_steps,
-                        remaining_waypoints,
-                        deviation,
-                    ),
-                    step_advance_result.next_iteration,
-                );
+                let intermediate_nav_state =
+                    NavState::new(intermediate_trip_state, step_advance_result.next_iteration);
 
                 if should_advance {
                     // Advance to the next step
