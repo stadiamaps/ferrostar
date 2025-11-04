@@ -108,6 +108,7 @@ impl WaypointAdvanceChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::deviation_detection::RouteDeviation;
     use crate::models::{GeographicCoordinate, WaypointKind};
     use crate::navigation_controller::test_helpers::{
         gen_route_step_with_coords, get_navigating_trip_state,
@@ -191,7 +192,9 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints.clone(),
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -238,7 +241,9 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints,
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -288,7 +293,9 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints.clone(),
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -345,7 +352,9 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints,
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -376,7 +385,9 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints.clone(),
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -418,7 +429,9 @@ mod tests {
 
             let state = get_navigating_trip_state(
                 user_location,
+                vec![],
                 waypoints.clone(),
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(

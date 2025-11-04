@@ -3746,7 +3746,7 @@ public protocol StepAdvanceConditionProtocol: AnyObject, Sendable {
      * The step advance condition can choose based on its outcome and internal state
      * whether to advance to the next step or not.
      */
-    func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?, routeDeviation: RouteDeviation)  -> StepAdvanceResult
+    func shouldAdvanceStep(tripState: TripState)  -> StepAdvanceResult
     
     /**
      * Creates a clean instance of this condition with the same configuration but reset state.
@@ -3823,14 +3823,11 @@ open class StepAdvanceCondition: StepAdvanceConditionProtocol, @unchecked Sendab
      * The step advance condition can choose based on its outcome and internal state
      * whether to advance to the next step or not.
      */
-open func shouldAdvanceStep(userLocation: UserLocation, currentStep: RouteStep, nextStep: RouteStep?, routeDeviation: RouteDeviation) -> StepAdvanceResult  {
+open func shouldAdvanceStep(tripState: TripState) -> StepAdvanceResult  {
     return try!  FfiConverterTypeStepAdvanceResult_lift(try! rustCall() {
     uniffi_ferrostar_fn_method_stepadvancecondition_should_advance_step(
             self.uniffiCloneHandle(),
-        FfiConverterTypeUserLocation_lower(userLocation),
-        FfiConverterTypeRouteStep_lower(currentStep),
-        FfiConverterOptionTypeRouteStep.lower(nextStep),
-        FfiConverterTypeRouteDeviation_lower(routeDeviation),$0
+        FfiConverterTypeTripState_lower(tripState),$0
     )
 })
 }
@@ -9346,30 +9343,6 @@ fileprivate struct FfiConverterOptionTypeNavigationSessionSnapshot: FfiConverter
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
-fileprivate struct FfiConverterOptionTypeRouteStep: FfiConverterRustBuffer {
-    typealias SwiftType = RouteStep?
-
-    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
-        guard let value = value else {
-            writeInt(&buf, Int8(0))
-            return
-        }
-        writeInt(&buf, Int8(1))
-        FfiConverterTypeRouteStep.write(value, into: &buf)
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
-        switch try readInt(&buf) as Int8 {
-        case 0: return nil
-        case 1: return try FfiConverterTypeRouteStep.read(from: &buf)
-        default: throw UniffiInternalError.unexpectedOptionalTag
-        }
-    }
-}
-
-#if swift(>=5.8)
-@_documentation(visibility: private)
-#endif
 fileprivate struct FfiConverterOptionTypeSpeed: FfiConverterRustBuffer {
     typealias SwiftType = Speed?
 
@@ -10665,7 +10638,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 44735) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 62754) {
+    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 14894) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_stepadvancecondition_new_instance() != 29956) {
