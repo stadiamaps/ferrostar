@@ -2,10 +2,10 @@ use crate::{
     models::{Route, UserLocation},
     navigation_controller::models::{NavState, NavigationControllerConfig},
     navigation_session::{
+        NavigationObserver,
         recording::models::{
             NavigationRecordingEvent, NavigationRecordingMetadata, RecordingError,
         },
-        NavigationObserver,
     },
 };
 use std::sync::Mutex;
@@ -44,10 +44,6 @@ impl NavigationRecorder {
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationObserver for NavigationRecorder {
-    fn on_route_available(&self, #[allow(unused_variables)] route: Route) {
-        // TODO: We could capture the route on the recording if desired.
-    }
-
     fn on_get_initial_state(&self, state: NavState) {
         let event = NavigationRecordingEvent::state_update(state.into());
         if let Ok(mut events) = self.events.lock() {
@@ -73,6 +69,10 @@ impl NavigationObserver for NavigationRecorder {
             events.push(event);
         }
     }
+
+    fn on_route_available(&self, #[allow(unused_variables)] route: Route) {
+        // TODO: We could capture the route on the recording if desired.
+    }
 }
 
 #[cfg(test)]
@@ -83,15 +83,15 @@ mod tests {
     use crate::test_utils::redact_properties;
     use crate::{
         navigation_controller::{
-            test_helpers::{
-                get_test_navigation_controller_config, get_test_route,
-                get_test_step_advance_condition, nav_controller_insta_settings, TestRoute,
-            },
             NavigationController,
+            test_helpers::{
+                TestRoute, get_test_navigation_controller_config, get_test_route,
+                get_test_step_advance_condition, nav_controller_insta_settings,
+            },
         },
         navigation_session::{
-            recording::NavigationRecorder, test_helpers::test_full_route_state_snapshot,
-            NavigationSession,
+            NavigationSession, recording::NavigationRecorder,
+            test_helpers::test_full_route_state_snapshot,
         },
     };
 

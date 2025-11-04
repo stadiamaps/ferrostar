@@ -2,7 +2,7 @@
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "uniffi")]
-use crate::{models::Route, navigation_controller::models::TripState, UtcDateTime};
+use crate::{UtcDateTime, models::Route, navigation_controller::models::TripState};
 
 #[cfg(feature = "uniffi")]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Record))]

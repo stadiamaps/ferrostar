@@ -5,7 +5,7 @@ use crate::models::{GeographicCoordinate, UserLocation, Waypoint, WaypointKind};
 use crate::routing_adapters::RouteRequestGenerator;
 #[cfg(all(not(feature = "std"), feature = "alloc"))]
 use alloc::collections::BTreeMap as HashMap;
-use serde_json::{json, Map, Value as JsonValue};
+use serde_json::{Map, Value as JsonValue, json};
 #[cfg(feature = "std")]
 use std::collections::HashMap;
 
@@ -36,6 +36,10 @@ use tsify::Tsify;
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub struct ValhallaWaypointProperties {
     /// Preferred direction of travel for the start from the location.
+    ///
+    /// The heading is indicated in degrees from north in a clockwise direction, where north is 0°, east is 90°, south is 180°, and west is 270°.
+    /// Avoid specifying this unless you really know what you're doing.
+    /// Most use cases for this are better served by `preferred_side`.
     #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub heading: Option<u16>,
     /// How close in degrees a given street's angle must be
@@ -51,6 +55,13 @@ pub struct ValhallaWaypointProperties {
     /// will be considered as candidates for said location.
     /// If there are no candidates within this distance,
     /// it will return the closest candidate within reason.
+    ///
+    /// This allows the routing engine to match another edge which is NOT
+    /// the closest to your location, but in within this range.
+    /// This can be useful if you have other constraints and want to disambiguate,
+    /// but beware that this can lead to very strange results,
+    /// particularly if you have specified other parameters like `heading`.
+    /// This is an advanced feature and should only be used with extreme care.
     #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub radius: Option<u16>,
     /// Determines whether the location should be visited from the same, opposite or either side of the road,
@@ -107,6 +118,7 @@ impl Waypoint {
         Self {
             coordinate,
             kind,
+            #[expect(clippy::missing_panics_doc)]
             properties: Some(serde_json::to_vec(&properties).expect("Serialization of Valhalla waypoint properties failed. This is a bug in Ferrostar; please open an issue report on GitHub."))
         }
     }
@@ -115,7 +127,7 @@ impl Waypoint {
 /// A convenience helper for creating waypoints with Valhalla rich location properties.
 ///
 /// Regrettably this must live as a top-level function unless constructors for record types lands
-/// in UniFFI:
+/// in `UniFFI`:
 /// <https://github.com/mozilla/uniffi-rs/issues/1935>.
 #[cfg(feature = "uniffi")]
 #[uniffi::export]
@@ -511,7 +523,7 @@ fn merge_optional_waypoint_properties(
 
     if let Some(preferred_side) = preferred_side {
         result["preferred_side"] =
-            serde_json::to_value(&preferred_side).expect("This should never fail");
+            serde_json::to_value(preferred_side).expect("This should never fail");
     }
 
     if let Some(display_coordinate) = display_coordinate {
@@ -537,12 +549,12 @@ fn merge_optional_waypoint_properties(
 
     if let Some(street_side_cutoff) = street_side_cutoff {
         result["street_side_cutoff"] =
-            serde_json::to_value(&street_side_cutoff).expect("This should never fail");
+            serde_json::to_value(street_side_cutoff).expect("This should never fail");
     }
 
     if let Some(search_filter) = search_filter {
         result["search_filter"] =
-            serde_json::to_value(&search_filter).expect("This should never fail");
+            serde_json::to_value(search_filter).expect("This should never fail");
     }
 
     result

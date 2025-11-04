@@ -16,7 +16,7 @@ use geo::{
 #[cfg(test)]
 use {
     crate::navigation_controller::test_helpers::gen_dummy_route_step,
-    geo::{coord, point, CoordsIter},
+    geo::{CoordsIter, coord, point},
     proptest::{collection::vec, prelude::*},
 };
 
@@ -220,7 +220,7 @@ pub(crate) fn is_within_threshold_to_end_of_linestring(
     current_step_linestring
         .coords()
         .last()
-        .map_or(false, |end_coord| {
+        .is_some_and(|end_coord| {
             let end_point = Point::from(*end_coord);
             let distance_to_end = Haversine.distance(end_point, *current_position);
 

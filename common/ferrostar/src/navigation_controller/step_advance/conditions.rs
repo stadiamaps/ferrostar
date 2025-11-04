@@ -155,21 +155,18 @@ impl DistanceFromStepCondition {
         let user_location = trip_state.user_location()?;
         let current_step = trip_state.current_step()?;
 
-        // If the user is not on route & we don't allow calculating while off route, don't advance
-        // Else if, the user location is not within the minimum horizontal accuracy, don't advance
-        // Else if, the user location is within the minimum horizontal accuracy, advance
         let should_advance =
-            if !self.calculate_while_off_route && deviation != RouteDeviation::NoDeviation {
-                false
-            } else if user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into() {
+            // If the user is not on route and we don't allow calculating while off route, don't advance
+            if (!self.calculate_while_off_route && deviation != RouteDeviation::NoDeviation)
+                // If the user location isn't accurate enough, don't advance
+                || (user_location.horizontal_accuracy > self.minimum_horizontal_accuracy.into()){
                 false
             } else {
                 let current_position: Point = user_location.into();
                 let current_step_linestring = current_step.get_linestring();
 
                 deviation_from_line(&current_position, &current_step_linestring)
-                    .map(|deviation| deviation > self.distance.into())
-                    .unwrap_or(false)
+                    .is_some_and(|deviation| deviation > self.distance.into())
             };
 
         let result = if should_advance {
@@ -511,8 +508,7 @@ impl DistanceEntryAndSnappedExitCondition {
             let max_reasonable_exit = (next_step_length * 0.5) as u16;
             let effective_exit_distance = self.distance_after_end_of_step.min(max_reasonable_exit);
 
-            let should_advance = deviation > effective_exit_distance.into();
-            should_advance
+            deviation > effective_exit_distance.into()
         } else {
             // Advance because no next step.
             true
