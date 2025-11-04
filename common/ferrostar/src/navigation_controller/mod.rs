@@ -246,17 +246,17 @@ impl Navigator for NavigationController {
                     &current_step,
                 );
 
+                let is_arriving = remaining_steps.len() <= 2;
                 let intermediate_trip_state = self.create_intermediate_trip_state(
                     state.trip_state(),
-                    &location,
+                    location,
                     current_step,
-                    &remaining_steps,
-                    &remaining_waypoints,
-                    &deviation,
+                    remaining_steps,
+                    remaining_waypoints,
+                    deviation,
                 );
 
                 // Get the step advance condition result.
-                let is_arriving = remaining_steps.len() <= 2;
                 let step_advance_result = if is_arriving {
                     self.config
                         .arrival_step_advance_condition

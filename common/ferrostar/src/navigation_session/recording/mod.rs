@@ -44,10 +44,6 @@ impl NavigationRecorder {
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationObserver for NavigationRecorder {
-    fn on_route_available(&self, #[allow(unused_variables)] route: Route) {
-        // TODO: We could capture the route on the recording if desired.
-    }
-
     fn on_get_initial_state(&self, state: NavState) {
         let event = NavigationRecordingEvent::state_update(state.into());
         if let Ok(mut events) = self.events.lock() {
@@ -72,6 +68,10 @@ impl NavigationObserver for NavigationRecorder {
         if let Ok(mut events) = self.events.lock() {
             events.push(event);
         }
+    }
+
+    fn on_route_available(&self, #[allow(unused_variables)] route: Route) {
+        // TODO: We could capture the route on the recording if desired.
     }
 }
 
