@@ -488,9 +488,29 @@ impl DistanceEntryAndSnappedExitCondition {
         {
             false
         } else if let Some(next) = next_step {
-            // Build combined linestring from current + next step
+            // Build combined linestring from current + N next steps
+            // Accumulate steps until we have enough distance for meaningful exit check
             let mut combined_coords = current_step.geometry.clone();
+            let mut accumulated_distance = next.distance;
+            let mut step_index = 1;
+
+            // Add first next step
             combined_coords.extend(next.geometry.clone());
+
+            // Keep adding subsequent steps until we have sufficient distance
+            // or run out of steps. Use 2x multiplier to increase chances of handling
+            // U-turns and complex geometries in future steps.
+            let target_distance = (self.distance_after_end_of_step as f64) * 2.0;
+            while accumulated_distance < target_distance {
+                if let Some(future_step) = trip_state.get_step(step_index + 1) {
+                    combined_coords.extend(future_step.geometry.clone());
+                    accumulated_distance += future_step.distance;
+                    step_index += 1;
+                } else {
+                    break;
+                }
+            }
+
             let combined_linestring = get_linestring(&combined_coords);
 
             // Snap to the combined route
@@ -502,13 +522,12 @@ impl DistanceEntryAndSnappedExitCondition {
                 deviation_from_line(&Point::from(snapped_to_route), &current_step_linestring)
                     .unwrap_or(0.0);
 
-            // Cap exit distance to prevent getting stuck on short steps
-            // Use 0.5x multiplier since we measure perpendicular distance, not path distance
-            let next_step_length = next.distance;
-            let max_reasonable_exit = (next_step_length * 0.5) as u16;
-            let effective_exit_distance = self.distance_after_end_of_step.min(max_reasonable_exit);
+            // Use the minimum of configured exit distance and accumulated distance
+            // to handle cases where there aren't enough future steps
+            let effective_exit_distance =
+                (self.distance_after_end_of_step as f64).min(accumulated_distance);
 
-            deviation > effective_exit_distance.into()
+            deviation >= effective_exit_distance
         } else {
             // Advance because no next step.
             true
@@ -1272,23 +1291,30 @@ mod tests {
 
     #[test]
     fn test_route_snapped_entry_and_exit_with_short_next_step() {
-        // Create a route where step 1 is normal length, but step 2 is very short (only 5m)
+        // Create a route where step 1 is normal length, but step 2 and 3 are short
         let step1 = gen_route_step_with_coords(vec![
             coord!(x: 0.0, y: 0.0),   // Start
             coord!(x: 0.001, y: 0.0), // 111m east (end of step 1)
         ]);
 
-        // Step 2 is very short - only ~5.5 meters long
+        // Step 2 is short - ~3 meters long
         let step2 = gen_route_step_with_coords(vec![
-            coord!(x: 0.001, y: 0.0),     // Start of step 2
-            coord!(x: 0.001, y: 0.00005), // Only ~5.5m north
+            coord!(x: 0.001, y: 0.0),      // Start of step 2
+            coord!(x: 0.001, y: 0.000027), // ~3m north
         ]);
 
-        // Configure with 10m exit distance, but step 2 is only 5.5m long
-        // The algorithm should cap the effective exit distance to ~2.75m (50% of 5.5m)
+        // Step 3 is also short - ~3 meters long
+        // Total accumulated distance: 3 + 3 = 6m, less than configured 10m
+        let step3 = gen_route_step_with_coords(vec![
+            coord!(x: 0.001, y: 0.000027), // Start of step 3
+            coord!(x: 0.001, y: 0.000054), // ~3m north
+        ]);
+
+        // Configure with 10m exit distance, but step 2 + step 3 = only 6m total
+        // The algorithm should cap the effective exit distance to min(10, 6) = 6m
         let condition = DistanceEntryAndSnappedExitCondition {
             distance_to_end_of_step: 10,
-            distance_after_end_of_step: 10, // Larger than next step length!
+            distance_after_end_of_step: 10, // Larger than accumulated distance!
             minimum_horizontal_accuracy: 10,
             has_reached_end_of_current_step: false,
         };
@@ -1297,7 +1323,7 @@ mod tests {
         let location_near_end = make_user_location(coord!(x: 0.00099, y: 0.0), 5.0);
         let trip_state = get_navigating_trip_state(
             location_near_end,
-            vec![step1],
+            vec![step1, step2.clone(), step3.clone()],
             vec![],
             RouteDeviation::NoDeviation,
         );
@@ -1310,13 +1336,14 @@ mod tests {
             "Should not advance on first update when entering end zone"
         );
 
-        // Second update: User has moved onto step 2, just 3m from the turn
-        // This is >2.75m (the capped exit distance), so should advance
-        let location_on_step2 = make_user_location(coord!(x: 0.001, y: 0.00003), 5.0);
+        // Second update: User has moved 8m north from the turn (well past the short steps)
+        // With correct code using min(10, 6), effective_exit_distance is 6m
+        // The perpendicular deviation from step1 should exceed 6m, so should advance
+        let location_on_step2 = make_user_location(coord!(x: 0.001, y: 0.000072), 5.0);
         let next_condition = result1.next_iteration;
         let trip_state2 = get_navigating_trip_state(
             location_on_step2,
-            vec![step2],
+            vec![step2, step3],
             vec![],
             RouteDeviation::NoDeviation,
         );
@@ -1325,7 +1352,71 @@ mod tests {
 
         assert!(
             result2.should_advance,
-            "Should advance even with short next step due to 0.5x capping"
+            "Should advance with short next steps using min(configured, accumulated) distance"
+        );
+    }
+
+    #[test]
+    fn test_route_snapped_entry_and_exit_with_zero_length_via_waypoint() {
+        // Create a route with a normal step, a 0-length via waypoint step, and another normal step
+        let step1 = gen_route_step_with_coords(vec![
+            coord!(x: 0.0, y: 0.0),   // Start
+            coord!(x: 0.001, y: 0.0), // 111m east (end of step 1)
+        ]);
+
+        // Step 2 is a via waypoint with 0 distance (same start and end point)
+        let mut step2 = gen_route_step_with_coords(vec![
+            coord!(x: 0.001, y: 0.0), // Via waypoint location (duplicated)
+            coord!(x: 0.001, y: 0.0), // Same point
+        ]);
+        step2.distance = 0.0; // Explicitly set to 0 distance
+
+        // Step 3 is a normal step continuing from the via waypoint
+        let step3 = gen_route_step_with_coords(vec![
+            coord!(x: 0.001, y: 0.0),   // Start (via waypoint)
+            coord!(x: 0.001, y: 0.001), // 111m north
+        ]);
+
+        let condition = DistanceEntryAndSnappedExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 5,
+            minimum_horizontal_accuracy: 10,
+            has_reached_end_of_current_step: false,
+        };
+
+        // User near end of step 1
+        let location_near_end = make_user_location(coord!(x: 0.00099, y: 0.0), 5.0);
+        let trip_state = get_navigating_trip_state(
+            location_near_end,
+            vec![step1, step2.clone(), step3.clone()],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        // First update: Should enter the zone but not advance
+        let result1 = condition.should_advance_step(trip_state);
+
+        assert!(
+            !result1.should_advance,
+            "Should not advance on first update when entering end zone"
+        );
+
+        // Second update: User has moved onto step 3 (past the 0-length via waypoint)
+        // The algorithm should accumulate geometry from step2 (0m) + step3 (111m) to have sufficient distance
+        let location_on_step3 = make_user_location(coord!(x: 0.001, y: 0.0001), 5.0);
+        let next_condition = result1.next_iteration;
+        let trip_state2 = get_navigating_trip_state(
+            location_on_step3,
+            vec![step2, step3],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result2 = next_condition.should_advance_step(trip_state2);
+
+        assert!(
+            result2.should_advance,
+            "Should advance when route-snapped position has moved onto step after 0-length via waypoint"
         );
     }
 
