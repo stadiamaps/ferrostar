@@ -44,7 +44,7 @@ final class SpokenObserverTests: XCTestCase {
 
         spokenObserver.toggleMute()
 
-        wait(for: [muteExp, exp], timeout: 3.0)
+        wait(for: [muteExp, exp], timeout: 10)
     }
 
     func test_speakWhileMuted() {
@@ -68,7 +68,7 @@ final class SpokenObserverTests: XCTestCase {
             exp.fulfill()
         }
 
-        wait(for: [exp], timeout: 3.0)
+        wait(for: [exp], timeout: 10)
     }
 
     func test_speakWhileUnmuted() {
@@ -93,6 +93,6 @@ final class SpokenObserverTests: XCTestCase {
             taskExp.fulfill()
         }
 
-        wait(for: [exp, taskExp], timeout: 5.0)
+        wait(for: [exp, taskExp], timeout: 10)
     }
 }

@@ -76,12 +76,25 @@ export class FerrostarCore extends ReactiveElement implements StateProvider {
 
   // @ts-ignore: We don't have a type/interface for these yet
   async getRoutes(initialLocation: any, waypoints: any) {
-    // Initialize the route adapter
-    // (NOTE: currently only supports Valhalla, but working toward expansion)
+    // Initialize the route adapter.
+    // We use Valhalla for this example, but you can also use any other
+    // "well-known" route provider.
     this.routeAdapter = new RouteAdapter(
-      this.valhallaEndpointUrl,
-      this.profile,
-      JSON.stringify(this.options),
+      {
+        Valhalla: {
+          endpointUrl: this.valhallaEndpointUrl,
+          profile: this.profile,
+          optionsJson: JSON.stringify(this.options),
+        },
+      },
+      // {
+      //     GraphHopper: {
+      //         endpointUrl: "https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY",
+      //         profile: "car",
+      //         locale: "en",
+      //         voiceUnits: "metric",
+      //     }
+      // }
     );
 
     // Generate the request body

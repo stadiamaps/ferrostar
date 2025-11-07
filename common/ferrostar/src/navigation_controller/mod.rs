@@ -141,7 +141,7 @@ impl Navigator for NavigationController {
             snapped_user_location,
             remaining_steps,
             // Skip the first waypoint, as it is the current one
-            remaining_waypoints: self.route.waypoints.iter().skip(1).copied().collect(),
+            remaining_waypoints: self.route.waypoints.iter().skip(1).cloned().collect(),
             progress,
             summary: initial_summary,
             deviation: RouteDeviation::NoDeviation,
@@ -278,39 +278,30 @@ impl Navigator for NavigationController {
                     .route_deviation_tracking
                     .check_route_deviation(&self.route, &state.trip_state());
 
+                let intermediate_trip_state = self.create_intermediate_trip_state(
+                    state.trip_state(),
+                    &location,
+                    current_step,
+                    &remaining_steps,
+                    &remaining_waypoints,
+                    &deviation,
+                );
+
                 // Get the step advance condition result.
-                let next_step = remaining_steps.get(1).cloned();
                 let is_arriving = remaining_steps.len() <= 2;
                 let step_advance_result = if is_arriving {
                     self.config
                         .arrival_step_advance_condition
-                        .should_advance_step(
-                            location,
-                            current_step.clone(),
-                            next_step,
-                            deviation.clone(),
-                        )
+                        .should_advance_step(intermediate_trip_state.clone())
                 } else {
-                    state.step_advance_condition().should_advance_step(
-                        location,
-                        current_step.clone(),
-                        next_step,
-                        deviation.clone(),
-                    )
+                    state
+                        .step_advance_condition()
+                        .should_advance_step(intermediate_trip_state.clone())
                 };
 
                 let should_advance = step_advance_result.should_advance();
-                let intermediate_nav_state = NavState::new(
-                    self.create_intermediate_trip_state(
-                        state.trip_state(),
-                        &location,
-                        current_step,
-                        &remaining_steps,
-                        &remaining_waypoints,
-                        &deviation,
-                    ),
-                    step_advance_result.next_iteration,
-                );
+                let intermediate_nav_state =
+                    NavState::new(intermediate_trip_state, step_advance_result.next_iteration);
 
                 if should_advance {
                     // Advance to the next step
@@ -524,9 +515,11 @@ mod tests {
         get_test_navigation_controller_config, get_test_route, nav_controller_insta_settings,
         TestRoute,
     };
+    use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
     use crate::simulation::{
         advance_location_simulation, location_simulation_from_route, LocationBias,
     };
+    use crate::test_utils::redact_properties;
     use std::sync::Arc;
 
     fn test_full_route_state_snapshot(
@@ -603,7 +596,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 
@@ -618,7 +613,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 
@@ -636,7 +633,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 
@@ -651,7 +650,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 
@@ -669,7 +670,9 @@ mod tests {
             insta::assert_yaml_snapshot!(states
                 .into_iter()
                 .map(|state| state.trip_state())
-                .collect::<Vec<_>>());
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
         });
     }
 }

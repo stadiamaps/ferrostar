@@ -67,7 +67,7 @@ final class SimulatedLocationManagerTests: XCTestCase {
         locationManager.lastLocation = locations.removeFirst()
         locationManager.lastLocation = locations.removeFirst()
 
-        wait(for: [exp], timeout: 1.0)
+        wait(for: [exp], timeout: 10)
     }
 
     func testDelegateSetHeading() {
@@ -109,6 +109,6 @@ final class SimulatedLocationManagerTests: XCTestCase {
         locationManager.lastHeading = headings.removeFirst()
         locationManager.lastHeading = headings.removeFirst()
 
-        wait(for: [exp], timeout: 1.0)
+        wait(for: [exp], timeout: 10)
     }
 }

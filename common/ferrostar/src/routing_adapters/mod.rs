@@ -45,15 +45,21 @@ use std::{collections::HashMap, fmt::Debug};
 #[cfg(feature = "wasm-bindgen")]
 use serde_json::json;
 #[cfg(feature = "wasm-bindgen")]
+use tsify::Tsify;
+#[cfg(feature = "wasm-bindgen")]
 use wasm_bindgen::{prelude::wasm_bindgen, JsValue};
 
+use crate::routing_adapters::graphhopper::GraphHopperVoiceUnits;
+use crate::routing_adapters::{
+    graphhopper::GraphHopperHttpRequestGenerator, osrm::OsrmResponseParser,
+    valhalla::ValhallaHttpRequestGenerator,
+};
 #[cfg(feature = "alloc")]
 use alloc::{string::String, sync::Arc, vec::Vec};
-
-use crate::routing_adapters::osrm::OsrmResponseParser;
-use crate::routing_adapters::valhalla::ValhallaHttpRequestGenerator;
+use serde::{Deserialize, Serialize};
 
 pub mod error;
+pub mod graphhopper;
 pub mod osrm;
 pub mod utilities;
 pub mod valhalla;
@@ -138,6 +144,11 @@ pub struct RouteAdapter {
 
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl RouteAdapter {
+    /// Creates a route adapter from any request generator and response parser.
+    ///
+    /// This constructor offers unlimited flexibility,
+    /// but if you're using a major routing vendor API,
+    /// [`RouteAdapter::from_well_known_route_provider`] may be a more convenient interface.
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
     pub fn new(
         request_generator: Arc<dyn RouteRequestGenerator>,
@@ -149,18 +160,39 @@ impl RouteAdapter {
         }
     }
 
+    /// Creates a route adapter from a well-known provider configuration.
     #[cfg_attr(feature = "uniffi", uniffi::constructor)]
-    pub fn new_valhalla_http(
-        endpoint_url: String,
-        profile: String,
-        options_json: Option<String>,
+    pub fn from_well_known_route_provider(
+        well_known_route_provider: WellKnownRouteProvider,
     ) -> Result<Self, InstantiationError> {
-        let request_generator = Arc::new(ValhallaHttpRequestGenerator::with_options_json(
-            endpoint_url,
-            profile,
-            options_json.as_deref(),
-        )?);
-        let response_parser = Arc::new(OsrmResponseParser::new(6));
+        let response_parser = match &well_known_route_provider {
+            WellKnownRouteProvider::Valhalla { .. }
+            | WellKnownRouteProvider::GraphHopper { .. } => Arc::new(OsrmResponseParser::new(6)),
+        };
+        let request_generator = match well_known_route_provider {
+            WellKnownRouteProvider::Valhalla {
+                endpoint_url,
+                profile,
+                options_json,
+            } => Arc::new(ValhallaHttpRequestGenerator::with_options_json(
+                endpoint_url,
+                profile,
+                options_json.as_deref(),
+            )?) as Arc<dyn RouteRequestGenerator>,
+            WellKnownRouteProvider::GraphHopper {
+                endpoint_url,
+                profile,
+                locale,
+                voice_units,
+                options_json,
+            } => Arc::new(GraphHopperHttpRequestGenerator::with_options_json(
+                endpoint_url,
+                profile,
+                locale,
+                voice_units,
+                options_json.as_deref(),
+            )?) as Arc<dyn RouteRequestGenerator>,
+        };
         Ok(Self::new(request_generator, response_parser))
     }
 
@@ -182,6 +214,52 @@ impl RouteAdapter {
     }
 }
 
+/// Configurations for built-in route providers.
+#[derive(Serialize, Deserialize, Clone, Debug)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
+pub enum WellKnownRouteProvider {
+    /// A Valhalla-based routing API.
+    ///
+    /// [Stadia Maps](https://docs.stadiamaps.com/) offers a commercially supported API.
+    /// You can also substitute any URL to use a self-hosted server.
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    Valhalla {
+        /// The endpoint URL to use (e.g. https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY).
+        endpoint_url: String,
+        /// The costing model (e.g. `auto`).
+        profile: String,
+        /// Additional options to be incorporated into the request parameters.
+        ///
+        /// This value must be a stringified representation of a JSON object.
+        #[serde(default)]
+        #[cfg_attr(feature = "uniffi", uniffi(default))]
+        options_json: Option<String>,
+    },
+    /// A GraphHopper-based routing API.
+    ///
+    /// [GraphHopper](https://www.graphhopper.com/) offers a commercially supported API.
+    /// You can also substitute any other URL to use a self-hosted server.
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    GraphHopper {
+        /// The endpoint URL to use (e.g. https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY).
+        endpoint_url: String,
+        /// The routing profile (e.g. `car`).
+        profile: String,
+        /// The locale to give directions in (e.g. `en`).
+        locale: String,
+        /// The units to use for spoken instructions.
+        voice_units: GraphHopperVoiceUnits,
+        /// Additional options to be incorporated into the request parameters.
+        ///
+        /// This value must be a stringified representation of a JSON object.
+        #[serde(default)]
+        #[cfg_attr(feature = "uniffi", uniffi(default))]
+        options_json: Option<String>,
+    },
+}
+
 /// JavaScript wrapper for `RouteAdapter`.
 #[cfg(feature = "wasm-bindgen")]
 #[wasm_bindgen(js_name = RouteAdapter)]
@@ -194,11 +272,9 @@ impl JsRouteAdapter {
     /// At the moment, this is the only supported combination.
     #[wasm_bindgen(constructor)]
     pub fn new(
-        endpoint_url: String,
-        profile: String,
-        costing_options_json: Option<String>,
+        well_known_route_provider: WellKnownRouteProvider,
     ) -> Result<JsRouteAdapter, JsValue> {
-        RouteAdapter::new_valhalla_http(endpoint_url, profile, costing_options_json)
+        RouteAdapter::from_well_known_route_provider(well_known_route_provider)
             .map(JsRouteAdapter)
             .map_err(|e| JsValue::from_str(&format!("{}", e)))
         // TODO: We should have a better error handling strategy here. Same for the other methods.

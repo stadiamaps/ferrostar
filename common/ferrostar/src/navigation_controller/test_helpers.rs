@@ -175,10 +175,12 @@ pub fn gen_route_from_steps(steps: Vec<RouteStep>) -> Route {
             Waypoint {
                 coordinate: steps.first().unwrap().geometry.first().cloned().unwrap(),
                 kind: WaypointKind::Break,
+                properties: None,
             },
             Waypoint {
                 coordinate: steps.last().unwrap().geometry.last().cloned().unwrap(),
                 kind: WaypointKind::Break,
+                properties: None,
             },
         ],
         steps,
@@ -290,6 +292,7 @@ pub fn get_navigating_trip_state(
     user_location: UserLocation,
     remaining_steps: Vec<RouteStep>,
     remaining_waypoints: Vec<Waypoint>,
+    deviation: RouteDeviation,
 ) -> TripState {
     TripState::Navigating {
         current_step_geometry_index: Some(0),
@@ -302,7 +305,7 @@ pub fn get_navigating_trip_state(
             distance_remaining: 1000.0,
             duration_remaining: 600.0,
         },
-        deviation: RouteDeviation::NoDeviation,
+        deviation,
         summary: TripSummary {
             distance_traveled: 0.0,
             snapped_distance_traveled: 0.0,

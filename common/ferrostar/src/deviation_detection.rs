@@ -207,6 +207,7 @@ proptest! {
             user_location_on_route.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state),
@@ -229,6 +230,7 @@ proptest! {
             user_location_random.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_random),
@@ -278,6 +280,7 @@ proptest! {
             user_location_on_route.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_on_route),
@@ -300,6 +303,7 @@ proptest! {
             user_location_random.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_random),
@@ -350,6 +354,7 @@ proptest! {
             user_location_on_route.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_on_route),
@@ -374,6 +379,7 @@ proptest! {
             user_location_random.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_random),
@@ -417,6 +423,7 @@ proptest! {
             user_location_on_route.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state),
@@ -441,6 +448,7 @@ proptest! {
             user_location_random.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         let deviation = deviation_from_line(&Point::from(coordinates), &current_route_step.get_linestring());
         match tracking.check_route_deviation(&route, &trip_state_random) {
@@ -490,6 +498,7 @@ proptest! {
             user_location_random.clone(),
             vec![current_route_step.clone()],
             vec![],
+            RouteDeviation::NoDeviation
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_random),

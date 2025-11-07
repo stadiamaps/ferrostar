@@ -2,7 +2,7 @@ lints.workspace = true
 
 [package]
 name = "ferrostar"
-version = "0.44.0"
+version = "0.45.0"
 readme = "README.md"
 description = "The core of modern turn-by-turn navigation."
 keywords = ["navigation", "routing", "valhalla", "osrm"]
@@ -23,6 +23,7 @@ wasm_js = [
     "std",
     "getrandom/wasm_js",
     "serde-wasm-bindgen",
+    "tsify",
     "wasm-bindgen",
     "web-time",
     "uuid/js"
@@ -35,6 +36,7 @@ polyline = "0.11.0"
 rand = "0.9.2"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = { version = "1.0.145", default-features = false }
+serde_with = "3.15.1"
 serde-wasm-bindgen = { version = "0.6.5", optional = true }
 thiserror = "2.0.12"
 uniffi = { workspace = true, optional = true }
@@ -42,7 +44,7 @@ uuid = { version = "1.18.1", features = ["v4", "serde"] }
 getrandom = { version = "0.3.3", optional = true }
 wasm-bindgen = { version = "0.2.93", optional = true }
 web-time = { version = "1.1.0", features = ["serde"], optional = true }
-tsify = { version = "0.5.5", default-features = false, features = ["js"] }
+tsify = { version = "0.5.5", default-features = false, features = ["js"], optional = true }
 log = "0.4.28"
 
 [target.'cfg(target_os = "android")'.dependencies]
@@ -54,7 +56,7 @@ uniffi = { workspace = true, features = ["build"] }
 [dev-dependencies]
 assert-json-diff = "2.0.2"
 proptest = { version = "1.8.0", default-features = false }
-insta = { version = "1.43.1", features = ["yaml", "redactions"] }
+insta = { version = "1.43.1", features = ["json", "yaml", "redactions"] }
 rstest = "0.26.1"
 wasm-bindgen-test = "0.3"
 

@@ -79,6 +79,8 @@ impl NavigationObserver for NavigationRecorder {
 mod tests {
     use std::sync::Arc;
 
+    use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
+    use crate::test_utils::redact_properties;
     use crate::{
         navigation_controller::{
             test_helpers::{
@@ -107,7 +109,10 @@ mod tests {
 
             let json = recorder.get_recording().unwrap();
             let value: serde_json::Value = serde_json::from_str(&json).unwrap();
-            insta::assert_yaml_snapshot!(value);
+            insta::assert_yaml_snapshot!(value, {
+                ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                ".**.waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+            });
         })
     }
 }

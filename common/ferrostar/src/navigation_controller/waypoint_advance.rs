@@ -108,6 +108,7 @@ impl WaypointAdvanceChecker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::deviation_detection::RouteDeviation;
     use crate::models::{GeographicCoordinate, WaypointKind};
     use crate::navigation_controller::test_helpers::{
         gen_route_step_with_coords, get_navigating_trip_state,
@@ -135,6 +136,7 @@ mod tests {
         Waypoint {
             coordinate: GeographicCoordinate { lng, lat },
             kind: WaypointKind::Break,
+            properties: None,
         }
     }
 
@@ -192,6 +194,7 @@ mod tests {
                 user_location,
                 vec![],
                 waypoints.clone(),
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -209,7 +212,7 @@ mod tests {
             prop_assert_eq!(new_waypoints.len(), waypoints.len() - 1);
             // Verify it's the correct remaining waypoints
             for (i, waypoint) in new_waypoints.iter().enumerate() {
-                prop_assert_eq!(*waypoint, waypoints[i + 1]);
+                prop_assert_eq!(waypoint, &waypoints[i + 1]);
             }
         }
 
@@ -240,6 +243,7 @@ mod tests {
                 user_location,
                 vec![],
                 waypoints,
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -291,6 +295,7 @@ mod tests {
                 user_location,
                 vec![],
                 waypoints.clone(),
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -308,7 +313,7 @@ mod tests {
 
             // Should only have the destination waypoint remaining
             prop_assert_eq!(new_waypoints.len(), 1);
-            prop_assert_eq!(new_waypoints[0], waypoints.last().unwrap().clone());
+            prop_assert_eq!(&new_waypoints[0], waypoints.last().unwrap());
         }
 
         /// Test WaypointAlongAdvancingStep mode out of range of step, should never advance
@@ -349,6 +354,7 @@ mod tests {
                 user_location,
                 vec![],
                 waypoints,
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -381,6 +387,7 @@ mod tests {
                 user_location,
                 vec![],
                 waypoints.clone(),
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(
@@ -424,6 +431,7 @@ mod tests {
                 user_location,
                 vec![],
                 waypoints.clone(),
+                RouteDeviation::NoDeviation,
             );
 
             let result = checker.get_new_waypoints(

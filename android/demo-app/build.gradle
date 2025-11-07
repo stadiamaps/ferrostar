@@ -26,6 +26,7 @@ android {
 
         android.buildFeatures.buildConfig true
         buildConfigField "String", "stadiaApiKey", "\"${properties.getProperty("stadiaApiKey")}\""
+        buildConfigField "String", "graphhopperApiKey", "\"${properties.getProperty("graphhopperApiKey")}\""
     }
 
     buildTypes {

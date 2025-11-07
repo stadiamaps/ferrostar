@@ -21,11 +21,13 @@
           - lat: 0.0
           - lng: 0.0
         - kind: break
+        - properties: Optional<Data>.none
       ▿ Waypoint: GeographicCoordinate(lat: 1.0, lng: 1.0) kind: break
         ▿ coordinate: GeographicCoordinate
           - lat: 1.0
           - lng: 1.0
         - kind: break
+        - properties: Optional<Data>.none
     ▿ steps: 1 element
       ▿ RouteStep: Sail straight
         ▿ geometry: 2 elements

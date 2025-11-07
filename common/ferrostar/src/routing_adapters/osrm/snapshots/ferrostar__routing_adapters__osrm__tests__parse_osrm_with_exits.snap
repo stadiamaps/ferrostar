@@ -100,10 +100,12 @@ expression: routes
         lat: 45.377106
         lng: -122.584167
       kind: Break
+      properties: "{\"name\":\"I 205 South\",\"distance\":5.288}"
     - coordinate:
         lat: 45.371508
         lng: -122.585901
       kind: Break
+      properties: "{\"name\":\"OR 213 South\",\"distance\":1.31}"
   steps:
     - geometry:
         - lat: 45.377106
