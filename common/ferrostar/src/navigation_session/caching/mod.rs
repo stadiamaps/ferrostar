@@ -9,8 +9,8 @@ use crate::{
     models::{Route, UserLocation},
     navigation_controller::models::NavState,
     navigation_session::{
-        caching::models::{NavigationCachingConfig, NavigationSessionSnapshot},
         NavigationObserver,
+        caching::models::{NavigationCachingConfig, NavigationSessionSnapshot},
     },
 };
 
@@ -82,7 +82,7 @@ impl NavigationSessionCache {
 #[cfg_attr(feature = "uniffi", uniffi::export)]
 impl NavigationObserver for NavigationSessionCache {
     fn on_get_initial_state(&self, state: NavState) {
-        self.handle_update(state, true)
+        self.handle_update(state, true);
     }
 
     fn on_user_location_update(
@@ -107,7 +107,7 @@ impl NavigationObserver for NavigationSessionCache {
     }
 
     fn on_advance_to_next_step(&self, state: NavState) {
-        self.handle_update(state, true)
+        self.handle_update(state, true);
     }
 
     fn on_route_available(&self, route: Route) {

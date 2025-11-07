@@ -41,14 +41,14 @@
 
 use crate::algorithms::trunc_float;
 use crate::models::{CourseOverGround, GeographicCoordinate, Route, UserLocation};
-use geo::{coord, Bearing, Densify, Geodesic, Haversine, LineString, Point};
+use geo::{Bearing, Densify, Geodesic, Haversine, LineString, Point, coord};
 use polyline::decode_polyline;
 
 #[cfg(any(test, feature = "wasm-bindgen"))]
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "wasm-bindgen")]
-use wasm_bindgen::{prelude::*, JsValue};
+use wasm_bindgen::{JsValue, prelude::*};
 
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;

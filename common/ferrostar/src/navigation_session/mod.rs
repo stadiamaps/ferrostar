@@ -3,8 +3,8 @@ use std::sync::Arc;
 use crate::{
     models::{Route, UserLocation},
     navigation_controller::{
-        models::{NavState, NavigationControllerConfig},
         NavigationController, Navigator,
+        models::{NavState, NavigationControllerConfig},
     },
 };
 
@@ -58,18 +58,18 @@ impl Navigator for NavigationSession {
         state
     }
 
-    fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
-        let state = self.controller.update_user_location(location, state);
-        for observer in &self.observers {
-            observer.on_user_location_update(location, state.clone());
-        }
-        state
-    }
-
     fn advance_to_next_step(&self, state: NavState) -> NavState {
         let state = self.controller.advance_to_next_step(state);
         for observer in &self.observers {
             observer.on_advance_to_next_step(state.clone());
+        }
+        state
+    }
+
+    fn update_user_location(&self, location: UserLocation, state: NavState) -> NavState {
+        let state = self.controller.update_user_location(location, state);
+        for observer in &self.observers {
+            observer.on_user_location_update(location, state.clone());
         }
         state
     }

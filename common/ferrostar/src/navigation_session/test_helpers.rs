@@ -2,11 +2,11 @@ use crate::{
     deviation_detection::RouteDeviation,
     models::Route,
     navigation_controller::{
-        models::{NavState, TripState},
         Navigator,
+        models::{NavState, TripState},
     },
     navigation_session::NavigationSession,
-    simulation::{advance_location_simulation, location_simulation_from_route, LocationBias},
+    simulation::{LocationBias, advance_location_simulation, location_simulation_from_route},
 };
 
 pub(crate) fn test_full_route_state_snapshot(

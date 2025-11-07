@@ -97,7 +97,7 @@ impl RouteDeviationTracking {
                         let step_deviation = self.static_threshold_deviation_from_line(
                             &Point::from(*user_location),
                             &step.get_linestring(),
-                            max_acceptable_deviation,
+                            max_acceptable_deviation.clone(),
                         );
 
                         if index == 0 {
@@ -118,16 +118,16 @@ impl RouteDeviationTracking {
         }
     }
 
-    /// Get the RouteDeviation status for a given location on a line string.
-    /// This can be used with a Route or RouteStep.
+    /// Get the `RouteDeviation` status for a given location on a line string.
+    /// This can be used with a Route or `RouteStep`.
     fn static_threshold_deviation_from_line(
         &self,
         point: &Point,
         line: &LineString,
-        max_acceptable_deviation: &f64,
+        max_acceptable_deviation: f64,
     ) -> RouteDeviation {
         deviation_from_line(point, line).map_or(RouteDeviation::NoDeviation, |deviation| {
-            if deviation > 0.0 && deviation > *max_acceptable_deviation {
+            if deviation > 0.0 && deviation > max_acceptable_deviation {
                 RouteDeviation::OffRoute {
                     deviation_from_route_line: deviation,
                 }

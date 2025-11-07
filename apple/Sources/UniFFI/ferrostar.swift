@@ -5985,6 +5985,10 @@ public func FfiConverterTypeValhallaLocationSearchFilter_lower(_ value: Valhalla
 public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
     /**
      * Preferred direction of travel for the start from the location.
+     *
+     * The heading is indicated in degrees from north in a clockwise direction, where north is 0°, east is 90°, south is 180°, and west is 270°.
+     * Avoid specifying this unless you really know what you're doing.
+     * Most use cases for this are better served by `preferred_side`.
      */
     public var heading: UInt16?
     /**
@@ -6003,6 +6007,13 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
      * will be considered as candidates for said location.
      * If there are no candidates within this distance,
      * it will return the closest candidate within reason.
+     *
+     * This allows the routing engine to match another edge which is NOT
+     * the closest to your location, but in within this range.
+     * This can be useful if you have other constraints and want to disambiguate,
+     * but beware that this can lead to very strange results,
+     * particularly if you have specified other parameters like `heading`.
+     * This is an advanced feature and should only be used with extreme care.
      */
     public var radius: UInt16?
     /**
@@ -6061,6 +6072,10 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
     public init(
         /**
          * Preferred direction of travel for the start from the location.
+         *
+         * The heading is indicated in degrees from north in a clockwise direction, where north is 0°, east is 90°, south is 180°, and west is 270°.
+         * Avoid specifying this unless you really know what you're doing.
+         * Most use cases for this are better served by `preferred_side`.
          */heading: UInt16? = nil, 
         /**
          * How close in degrees a given street's angle must be
@@ -6076,6 +6091,13 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
          * will be considered as candidates for said location.
          * If there are no candidates within this distance,
          * it will return the closest candidate within reason.
+         *
+         * This allows the routing engine to match another edge which is NOT
+         * the closest to your location, but in within this range.
+         * This can be useful if you have other constraints and want to disambiguate,
+         * but beware that this can lead to very strange results,
+         * particularly if you have specified other parameters like `heading`.
+         * This is an advanced feature and should only be used with extreme care.
          */radius: UInt16? = nil, 
         /**
          * Determines whether the location should be visited from the same, opposite or either side of the road,
@@ -6420,7 +6442,7 @@ public struct Waypoint: Equatable, Hashable, Codable {
      * Optional additional properties that will be passed on to the [`crate::routing_adapters::RouteRequestGenerator`].
      *
      * Most users should prefer convenience functions like [`Waypoint::new_with_valhalla_properties`]
-     * (or, on platforms like iOS and Android with UniFFI bindings, [`crate::routing_adapters::valhalla::create_waypoint_with_valhalla_properties`]).
+     * (or, on platforms like iOS and Android with `UniFFI` bindings, [`crate::routing_adapters::valhalla::create_waypoint_with_valhalla_properties`]).
      *
      * # Format guidelines
      *
@@ -6446,7 +6468,7 @@ public struct Waypoint: Equatable, Hashable, Codable {
          * Optional additional properties that will be passed on to the [`crate::routing_adapters::RouteRequestGenerator`].
          *
          * Most users should prefer convenience functions like [`Waypoint::new_with_valhalla_properties`]
-         * (or, on platforms like iOS and Android with UniFFI bindings, [`crate::routing_adapters::valhalla::create_waypoint_with_valhalla_properties`]).
+         * (or, on platforms like iOS and Android with `UniFFI` bindings, [`crate::routing_adapters::valhalla::create_waypoint_with_valhalla_properties`]).
          *
          * # Format guidelines
          *
@@ -8921,7 +8943,7 @@ public enum WellKnownRouteProvider: Equatable, Hashable, Codable {
      */
     case valhalla(
         /**
-         * The endpoint URL to use (e.g. https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY).
+         * The endpoint URL to use (e.g. <https://api.stadiamaps.com/route/v1?api_key=YOUR-API-KEY>).
          */endpointUrl: String, 
         /**
          * The costing model (e.g. `auto`).
@@ -8940,7 +8962,7 @@ public enum WellKnownRouteProvider: Equatable, Hashable, Codable {
      */
     case graphHopper(
         /**
-         * The endpoint URL to use (e.g. https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY).
+         * The endpoint URL to use (e.g. <https://graphhopper.com/api/1/navigate/?key=YOUR-API-KEY>).
          */endpointUrl: String, 
         /**
          * The routing profile (e.g. `car`).
@@ -10291,7 +10313,7 @@ public func createValhallaRequestGenerator(endpointUrl: String, profile: String,
  * A convenience helper for creating waypoints with Valhalla rich location properties.
  *
  * Regrettably this must live as a top-level function unless constructors for record types lands
- * in UniFFI:
+ * in `UniFFI`:
  * <https://github.com/mozilla/uniffi-rs/issues/1935>.
  */
 public func createWaypointWithValhallaProperties(coordinate: GeographicCoordinate, kind: WaypointKind, properties: ValhallaWaypointProperties) -> Waypoint  {
@@ -10442,7 +10464,7 @@ public func stepAdvanceDistanceToEndOfStep(distance: UInt16, minimumHorizontalAc
  * Convenience function for creating a [`ManualStepCondition`].
  *
  * This never advances to the next step automatically.
- * You must manually advance to the next step programmatically using a FerrostarCore
+ * You must manually advance to the next step programmatically using a `FerrostarCore`
  * platform wrapper or by calling [`super::Navigator::advance_to_next_step`] manually.
  */
 public func stepAdvanceManual() -> StepAdvanceCondition  {
@@ -10503,7 +10525,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 16275) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_waypoint_with_valhalla_properties() != 31935) {
+    if (uniffi_ferrostar_checksum_func_create_waypoint_with_valhalla_properties() != 12382) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_get_route_polyline() != 31480) {
@@ -10533,7 +10555,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 39292) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 14605) {
+    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 62615) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_func_step_advance_or() != 26194) {
