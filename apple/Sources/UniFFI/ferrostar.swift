@@ -3106,7 +3106,7 @@ public protocol RouteDeviationDetector: AnyObject, Sendable {
      * skipping steps, you must always fall back to checking the deviation from the
      * full route line.
      */
-    func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep)  -> RouteDeviation
+    func checkRouteDeviation(route: Route, tripState: TripState)  -> RouteDeviation
     
 }
 /**
@@ -3175,13 +3175,12 @@ open class RouteDeviationDetectorImpl: RouteDeviationDetector, @unchecked Sendab
      * skipping steps, you must always fall back to checking the deviation from the
      * full route line.
      */
-open func checkRouteDeviation(location: UserLocation, route: Route, currentRouteStep: RouteStep) -> RouteDeviation  {
+open func checkRouteDeviation(route: Route, tripState: TripState) -> RouteDeviation  {
     return try!  FfiConverterTypeRouteDeviation_lift(try! rustCall() {
     uniffi_ferrostar_fn_method_routedeviationdetector_check_route_deviation(
             self.uniffiCloneHandle(),
-        FfiConverterTypeUserLocation_lower(location),
         FfiConverterTypeRoute_lower(route),
-        FfiConverterTypeRouteStep_lower(currentRouteStep),$0
+        FfiConverterTypeTripState_lower(tripState),$0
     )
 })
 }
@@ -3217,9 +3216,8 @@ fileprivate struct UniffiCallbackInterfaceRouteDeviationDetector {
         },
         checkRouteDeviation: { (
             uniffiHandle: UInt64,
-            location: RustBuffer,
             route: RustBuffer,
-            currentRouteStep: RustBuffer,
+            tripState: RustBuffer,
             uniffiOutReturn: UnsafeMutablePointer<RustBuffer>,
             uniffiCallStatus: UnsafeMutablePointer<RustCallStatus>
         ) in
@@ -3229,9 +3227,8 @@ fileprivate struct UniffiCallbackInterfaceRouteDeviationDetector {
                     throw UniffiInternalError.unexpectedStaleHandle
                 }
                 return uniffiObj.checkRouteDeviation(
-                     location: try FfiConverterTypeUserLocation_lift(location),
                      route: try FfiConverterTypeRoute_lift(route),
-                     currentRouteStep: try FfiConverterTypeRouteStep_lift(currentRouteStep)
+                     tripState: try FfiConverterTypeTripState_lift(tripState)
                 )
             }
 
@@ -10651,7 +10648,7 @@ private let initializationResult: InitializationResult = {
     if (uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 34481) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 40148) {
+    if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 35091) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 63458) {

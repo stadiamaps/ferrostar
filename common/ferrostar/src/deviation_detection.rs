@@ -13,7 +13,10 @@
 //! we suggest enforcing a similar separation of concerns.
 
 use crate::algorithms::deviation_from_line;
-use crate::models::{Route, RouteStep, UserLocation};
+use crate::models::Route;
+use crate::navigation_controller::models::TripState;
+#[cfg(test)]
+use crate::{models::UserLocation, navigation_controller::test_helpers::get_navigating_trip_state};
 #[cfg(feature = "alloc")]
 use alloc::sync::Arc;
 use geo::{LineString, Point};
@@ -69,43 +72,48 @@ impl RouteDeviationTracking {
     #[must_use]
     pub(crate) fn check_route_deviation(
         &self,
-        location: UserLocation,
         route: &Route,
-        current_route_step: &RouteStep,
+        trip_state: &TripState,
     ) -> RouteDeviation {
         match self {
             RouteDeviationTracking::None => RouteDeviation::NoDeviation,
             RouteDeviationTracking::StaticThreshold {
                 minimum_horizontal_accuracy,
                 max_acceptable_deviation,
-            } => {
-                if location.horizontal_accuracy < f64::from(*minimum_horizontal_accuracy) {
-                    // Check if the deviation from the route line is within tolerance,
-                    // after sanity checking that the positioning signal is within accuracy tolerance.
-                    let step_deviation = self.static_threshold_deviation_from_line(
-                        &Point::from(location),
-                        &current_route_step.get_linestring(),
-                        *max_acceptable_deviation,
-                    );
-
-                    // Exit early if the step is within tolerance, otherwise check there route line.
-                    if step_deviation == RouteDeviation::NoDeviation {
-                        RouteDeviation::NoDeviation
-                    } else {
-                        // Fall back to the route line. This allows us to re-join the route later
-                        // for skipping forward if [`StepAdvanceConditions`] allow it.
-                        self.static_threshold_deviation_from_line(
-                            &Point::from(location),
-                            &route.get_linestring(),
-                            *max_acceptable_deviation,
-                        )
+            } => match trip_state {
+                TripState::Idle { .. } | TripState::Complete { .. } => RouteDeviation::NoDeviation,
+                TripState::Navigating {
+                    user_location,
+                    remaining_steps,
+                    ..
+                } => {
+                    if user_location.horizontal_accuracy > f64::from(*minimum_horizontal_accuracy) {
+                        return RouteDeviation::NoDeviation;
                     }
-                } else {
-                    RouteDeviation::NoDeviation
+
+                    let mut first_step_deviation = None;
+
+                    for (index, step) in remaining_steps.iter().enumerate() {
+                        let step_deviation = self.static_threshold_deviation_from_line(
+                            &Point::from(*user_location),
+                            &step.get_linestring(),
+                            max_acceptable_deviation.clone(),
+                        );
+
+                        if index == 0 {
+                            first_step_deviation = Some(step_deviation.clone());
+                        }
+
+                        if matches!(step_deviation, RouteDeviation::NoDeviation) {
+                            return RouteDeviation::NoDeviation;
+                        }
+                    }
+
+                    first_step_deviation.unwrap_or(RouteDeviation::NoDeviation)
                 }
-            }
+            },
             RouteDeviationTracking::Custom { detector } => {
-                detector.check_route_deviation(location, route.clone(), current_route_step.clone())
+                detector.check_route_deviation(route.clone(), trip_state.clone())
             }
         }
     }
@@ -166,12 +174,7 @@ pub trait RouteDeviationDetector: Send + Sync {
     /// skipping steps, you must always fall back to checking the deviation from the
     /// full route line.
     #[must_use]
-    fn check_route_deviation(
-        &self,
-        location: UserLocation,
-        route: Route,
-        current_route_step: RouteStep,
-    ) -> RouteDeviation;
+    fn check_route_deviation(&self, route: Route, trip_state: TripState) -> RouteDeviation;
 }
 
 #[cfg(test)]
@@ -200,8 +203,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state = get_navigating_trip_state(
+            user_location_on_route.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         prop_assert_eq!(
-            tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
+            tracking.check_route_deviation(&route, &trip_state),
             RouteDeviation::NoDeviation
         );
 
@@ -217,8 +226,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state_random = get_navigating_trip_state(
+            user_location_random.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         prop_assert_eq!(
-            tracking.check_route_deviation(user_location_random, &route, &current_route_step),
+            tracking.check_route_deviation(&route, &trip_state_random),
             RouteDeviation::NoDeviation
         );
     }
@@ -236,9 +251,8 @@ proptest! {
         impl RouteDeviationDetector for NeverDetector {
             fn check_route_deviation(
                 &self,
-                _location: UserLocation,
                 _route: Route,
-                _current_route_step: RouteStep,
+                _trip_state: TripState,
             ) -> RouteDeviation {
                 return RouteDeviation::NoDeviation
             }
@@ -262,8 +276,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state_on_route = get_navigating_trip_state(
+            user_location_on_route.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         prop_assert_eq!(
-            tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
+            tracking.check_route_deviation(&route, &trip_state_on_route),
             RouteDeviation::NoDeviation
         );
 
@@ -279,8 +299,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state_random = get_navigating_trip_state(
+            user_location_random.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         prop_assert_eq!(
-            tracking.check_route_deviation(user_location_random, &route, &current_route_step),
+            tracking.check_route_deviation(&route, &trip_state_random),
             RouteDeviation::NoDeviation
         );
     }
@@ -297,9 +323,8 @@ proptest! {
         impl RouteDeviationDetector for NeverDetector {
             fn check_route_deviation(
                 &self,
-                _location: UserLocation,
                 _route: Route,
-                _current_route_step: RouteStep,
+                _trip_state: TripState,
             ) -> RouteDeviation {
                 return RouteDeviation::OffRoute {
                     deviation_from_route_line: 7.0
@@ -325,8 +350,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state_on_route = get_navigating_trip_state(
+            user_location_on_route.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         prop_assert_eq!(
-            tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
+            tracking.check_route_deviation(&route, &trip_state_on_route),
             RouteDeviation::OffRoute {
                 deviation_from_route_line: 7.0
             }
@@ -344,8 +375,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state_random = get_navigating_trip_state(
+            user_location_random.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         prop_assert_eq!(
-            tracking.check_route_deviation(user_location_random, &route, &current_route_step),
+            tracking.check_route_deviation(&route, &trip_state_random),
             RouteDeviation::OffRoute {
                 deviation_from_route_line: 7.0
             }
@@ -382,8 +419,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state = get_navigating_trip_state(
+            user_location_on_route.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         prop_assert_eq!(
-            tracking.check_route_deviation(user_location_on_route, &route, &current_route_step),
+            tracking.check_route_deviation(&route, &trip_state),
             RouteDeviation::NoDeviation
         );
 
@@ -401,8 +444,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state_random = get_navigating_trip_state(
+            user_location_random.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         let deviation = deviation_from_line(&Point::from(coordinates), &current_route_step.get_linestring());
-        match tracking.check_route_deviation(user_location_random, &route, &current_route_step) {
+        match tracking.check_route_deviation(&route, &trip_state_random) {
             RouteDeviation::NoDeviation => {
                 if let Some(calculated) = deviation {
                     prop_assert!(calculated <= max_acceptable_deviation);
@@ -445,8 +494,14 @@ proptest! {
             timestamp: SystemTime::now(),
             speed: None
         };
+        let trip_state_random = get_navigating_trip_state(
+            user_location_random.clone(),
+            vec![current_route_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation
+        );
         prop_assert_eq!(
-            tracking.check_route_deviation(user_location_random, &route, &current_route_step),
+            tracking.check_route_deviation(&route, &trip_state_random),
             RouteDeviation::NoDeviation
         );
     }

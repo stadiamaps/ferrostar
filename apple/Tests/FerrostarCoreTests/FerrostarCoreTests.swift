@@ -408,7 +408,7 @@ final class FerrostarCoreTests: XCTestCase {
                 minimumHorizontalAccuracy: 32
             ),
             arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(distance: 10, minimumHorizontalAccuracy: 32),
-            routeDeviationTracking: .custom(detector: { _, _, _ in
+            routeDeviationTracking: .custom(detector: { _, _ in
                 // Pretend that the user is always off route
                 .offRoute(deviationFromRouteLine: 42)
             }),

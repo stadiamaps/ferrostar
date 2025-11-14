@@ -32,6 +32,7 @@ import uniffi.ferrostar.RouteRequest
 import uniffi.ferrostar.RouteRequestGenerator
 import uniffi.ferrostar.RouteResponseParser
 import uniffi.ferrostar.RouteStep
+import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 import uniffi.ferrostar.VisualInstructionContent
@@ -434,9 +435,8 @@ class FerrostarCoreTest {
                     detector =
                         object : RouteDeviationDetector {
                           override fun checkRouteDeviation(
-                              location: UserLocation,
                               route: Route,
-                              currentRouteStep: RouteStep
+                              tripState: TripState
                           ): RouteDeviation {
                             return RouteDeviation.OffRoute(42.0)
                           }

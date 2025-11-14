@@ -124,11 +124,7 @@ impl Navigator for NavigationController {
             &current_step_linestring,
             &remaining_steps,
         );
-        let deviation = self.config.route_deviation_tracking.check_route_deviation(
-            location,
-            &self.route,
-            current_route_step,
-        );
+
         let visual_instruction = current_route_step
             .get_active_visual_instruction(progress.distance_to_next_maneuver)
             .cloned();
@@ -139,7 +135,7 @@ impl Navigator for NavigationController {
         let annotation_json = current_step_geometry_index
             .and_then(|index| current_route_step.get_annotation_at_current_index(index));
 
-        let trip_state = TripState::Navigating {
+        let initial_trip_state = TripState::Navigating {
             current_step_geometry_index,
             user_location: location,
             snapped_user_location,
@@ -148,11 +144,48 @@ impl Navigator for NavigationController {
             remaining_waypoints: self.route.waypoints.iter().skip(1).cloned().collect(),
             progress,
             summary: initial_summary,
-            deviation,
+            deviation: RouteDeviation::NoDeviation,
             visual_instruction,
             spoken_instruction,
             annotation_json,
         };
+
+        let deviation = self
+            .config
+            .route_deviation_tracking
+            .check_route_deviation(&self.route, &initial_trip_state);
+
+        let trip_state = if let TripState::Navigating {
+            current_step_geometry_index,
+            user_location,
+            snapped_user_location,
+            remaining_steps,
+            remaining_waypoints,
+            progress,
+            summary,
+            visual_instruction,
+            spoken_instruction,
+            annotation_json,
+            ..
+        } = initial_trip_state
+        {
+            TripState::Navigating {
+                current_step_geometry_index,
+                user_location,
+                snapped_user_location,
+                remaining_steps,
+                remaining_waypoints,
+                progress,
+                summary,
+                deviation, // Use the newly calculated deviation
+                visual_instruction,
+                spoken_instruction,
+                annotation_json,
+            }
+        } else {
+            unreachable!("initial_trip_state should always be Navigating variant")
+        };
+
         let next_advance = Arc::clone(&self.config.step_advance_condition);
         NavState::new(trip_state, next_advance)
     }
@@ -240,11 +273,10 @@ impl Navigator for NavigationController {
                     WaypointAdvanceResult::Changed(new_waypoints) => new_waypoints,
                 };
 
-                let deviation = self.config.route_deviation_tracking.check_route_deviation(
-                    location,
-                    &self.route,
-                    &current_step,
-                );
+                let deviation = self
+                    .config
+                    .route_deviation_tracking
+                    .check_route_deviation(&self.route, &state.trip_state());
 
                 let is_arriving = remaining_steps.len() <= 2;
                 let intermediate_trip_state = self.create_intermediate_trip_state(
