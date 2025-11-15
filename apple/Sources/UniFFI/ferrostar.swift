@@ -7926,7 +7926,18 @@ public enum RouteDeviationTracking {
          *
          * If the distance between the reported location and the expected route line
          * is greater than this threshold, it will be flagged as an off route condition.
-         */maxAcceptableDeviation: Double
+         */maxAcceptableDeviation: Double, 
+        /**
+         * The threshold for returning to on-route state, in meters.
+         *
+         * Must be less than or equal to `max_acceptable_deviation`.
+         * This creates hysteresis to prevent oscillation between on/off route states.
+         * For example, if `max_acceptable_deviation` is 50m and `on_route_threshold` is 40m,
+         * the user must deviate more than 50m to trigger off-route, but must return within
+         * 40m to be considered back on route.
+         *
+         * If not specified or equal to `max_acceptable_deviation`, no hysteresis is applied.
+         */onRouteThreshold: Double
     )
     /**
      * An arbitrary user-defined implementation.
@@ -7955,7 +7966,7 @@ public struct FfiConverterTypeRouteDeviationTracking: FfiConverterRustBuffer {
         
         case 1: return .none
         
-        case 2: return .staticThreshold(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), maxAcceptableDeviation: try FfiConverterDouble.read(from: &buf)
+        case 2: return .staticThreshold(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), maxAcceptableDeviation: try FfiConverterDouble.read(from: &buf), onRouteThreshold: try FfiConverterDouble.read(from: &buf)
         )
         
         case 3: return .custom(detector: try FfiConverterTypeRouteDeviationDetector.read(from: &buf)
@@ -7973,10 +7984,11 @@ public struct FfiConverterTypeRouteDeviationTracking: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
         
         
-        case let .staticThreshold(minimumHorizontalAccuracy,maxAcceptableDeviation):
+        case let .staticThreshold(minimumHorizontalAccuracy,maxAcceptableDeviation,onRouteThreshold):
             writeInt(&buf, Int32(2))
             FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
             FfiConverterDouble.write(maxAcceptableDeviation, into: &buf)
+            FfiConverterDouble.write(onRouteThreshold, into: &buf)
             
         
         case let .custom(detector):

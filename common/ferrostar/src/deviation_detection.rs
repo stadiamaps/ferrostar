@@ -58,6 +58,16 @@ pub enum RouteDeviationTracking {
         /// If the distance between the reported location and the expected route line
         /// is greater than this threshold, it will be flagged as an off route condition.
         max_acceptable_deviation: f64,
+        /// The threshold for returning to on-route state, in meters.
+        ///
+        /// Must be less than or equal to `max_acceptable_deviation`.
+        /// This creates hysteresis to prevent oscillation between on/off route states.
+        /// For example, if `max_acceptable_deviation` is 50m and `on_route_threshold` is 40m,
+        /// the user must deviate more than 50m to trigger off-route, but must return within
+        /// 40m to be considered back on route.
+        ///
+        /// If not specified or equal to `max_acceptable_deviation`, no hysteresis is applied.
+        on_route_threshold: f64,
     },
     // TODO: Standard variants that account for mode of travel. For example, `DefaultFor(modeOfTravel: ModeOfTravel)` with sensible defaults for walking, driving, cycling, etc.
     /// An arbitrary user-defined implementation.
@@ -80,16 +90,24 @@ impl RouteDeviationTracking {
             RouteDeviationTracking::StaticThreshold {
                 minimum_horizontal_accuracy,
                 max_acceptable_deviation,
+                on_route_threshold,
             } => match trip_state {
                 TripState::Idle { .. } | TripState::Complete { .. } => RouteDeviation::NoDeviation,
                 TripState::Navigating {
                     user_location,
                     remaining_steps,
+                    deviation,
                     ..
                 } => {
                     if user_location.horizontal_accuracy > f64::from(*minimum_horizontal_accuracy) {
                         return RouteDeviation::NoDeviation;
                     }
+
+                    // Choose threshold based on current state (hysteresis)
+                    let threshold = match deviation {
+                        RouteDeviation::NoDeviation => *max_acceptable_deviation,
+                        RouteDeviation::OffRoute { .. } => *on_route_threshold,
+                    };
 
                     let mut first_step_deviation = None;
 
@@ -97,7 +115,7 @@ impl RouteDeviationTracking {
                         let step_deviation = self.static_threshold_deviation_from_line(
                             &Point::from(*user_location),
                             &step.get_linestring(),
-                            max_acceptable_deviation.clone(),
+                            threshold,
                         );
 
                         if index == 0 {
@@ -402,7 +420,8 @@ proptest! {
     ) {
         let tracking = RouteDeviationTracking::StaticThreshold {
             minimum_horizontal_accuracy,
-            max_acceptable_deviation
+            max_acceptable_deviation,
+            on_route_threshold: max_acceptable_deviation
         };
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
         let route = gen_route_from_steps(vec![current_route_step.clone()]);
@@ -478,7 +497,8 @@ proptest! {
     ) {
         let tracking = RouteDeviationTracking::StaticThreshold {
             minimum_horizontal_accuracy: horizontal_accuracy - 1,
-            max_acceptable_deviation
+            max_acceptable_deviation,
+            on_route_threshold: max_acceptable_deviation
         };
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
         let route = gen_route_from_steps(vec![current_route_step.clone()]);
@@ -505,4 +525,138 @@ proptest! {
             RouteDeviation::NoDeviation
         );
     }
+}
+
+/// Tests that hysteresis prevents oscillation between on-route and off-route states.
+/// This test verifies that:
+/// 1. User goes off-route when deviation > max_acceptable_deviation
+/// 2. User stays off-route until deviation <= on_route_threshold
+/// 3. User stays on-route until deviation > max_acceptable_deviation again
+#[cfg(test)]
+#[test]
+fn static_threshold_hysteresis_prevents_oscillation() {
+    use crate::{
+        models::{GeographicCoordinate, UserLocation},
+        navigation_controller::test_helpers::{gen_dummy_route_step, gen_route_from_steps, get_navigating_trip_state},
+    };
+
+    #[cfg(feature = "std")]
+    use std::time::SystemTime;
+    #[cfg(feature = "web-time")]
+    use web_time::SystemTime;
+
+    let max_deviation = 50.0;
+    let on_route_threshold = 40.0;
+
+    let tracking = RouteDeviationTracking::StaticThreshold {
+        minimum_horizontal_accuracy: 100,
+        max_acceptable_deviation: max_deviation,
+        on_route_threshold,
+    };
+
+    // Create a simple route step from (0, 0) to (0, 0.001) (~111 meters north)
+    let current_route_step = gen_dummy_route_step(0.0, 0.0, 0.0, 0.001);
+    let route = gen_route_from_steps(vec![current_route_step.clone()]);
+
+    // Start on route
+    let user_location_on_route = UserLocation {
+        coordinates: GeographicCoordinate { lng: 0.0, lat: 0.0 },
+        horizontal_accuracy: 5.0,
+        course_over_ground: None,
+        timestamp: SystemTime::now(),
+        speed: None,
+    };
+
+    // Initially on route
+    let trip_state_on_route = get_navigating_trip_state(
+        user_location_on_route.clone(),
+        vec![current_route_step.clone()],
+        vec![],
+        RouteDeviation::NoDeviation,
+    );
+
+    assert_eq!(
+        tracking.check_route_deviation(&route, &trip_state_on_route),
+        RouteDeviation::NoDeviation
+    );
+
+    // Move 45m away from route (between on_route_threshold and max_deviation)
+    // At this distance, should still be on-route since we started on-route
+    let user_location_45m = UserLocation {
+        coordinates: GeographicCoordinate { lng: 0.0004, lat: 0.0 }, // ~45m east
+        horizontal_accuracy: 5.0,
+        course_over_ground: None,
+        timestamp: SystemTime::now(),
+        speed: None,
+    };
+
+    let trip_state_45m_from_onroute = get_navigating_trip_state(
+        user_location_45m.clone(),
+        vec![current_route_step.clone()],
+        vec![],
+        RouteDeviation::NoDeviation, // Still on-route from previous state
+    );
+
+    // Should remain on-route because 45m < max_deviation (50m)
+    assert_eq!(
+        tracking.check_route_deviation(&route, &trip_state_45m_from_onroute),
+        RouteDeviation::NoDeviation
+    );
+
+    // Move 55m away from route (beyond max_deviation)
+    // Should trigger off-route
+    let user_location_55m = UserLocation {
+        coordinates: GeographicCoordinate { lng: 0.0005, lat: 0.0 }, // ~55m east
+        horizontal_accuracy: 5.0,
+        course_over_ground: None,
+        timestamp: SystemTime::now(),
+        speed: None,
+    };
+
+    let trip_state_55m = get_navigating_trip_state(
+        user_location_55m.clone(),
+        vec![current_route_step.clone()],
+        vec![],
+        RouteDeviation::NoDeviation, // Was on-route
+    );
+
+    // Should be off-route now
+    let deviation_result = tracking.check_route_deviation(&route, &trip_state_55m);
+    assert!(matches!(deviation_result, RouteDeviation::OffRoute { .. }));
+
+    // Move back to 45m (between thresholds)
+    // Should STAY off-route because 45m > on_route_threshold (40m)
+    let trip_state_45m_from_offroute = get_navigating_trip_state(
+        user_location_45m.clone(),
+        vec![current_route_step.clone()],
+        vec![],
+        RouteDeviation::OffRoute { deviation_from_route_line: 55.0 }, // Was off-route
+    );
+
+    // Should remain off-route because 45m > on_route_threshold (40m)
+    let deviation_result_2 = tracking.check_route_deviation(&route, &trip_state_45m_from_offroute);
+    assert!(matches!(deviation_result_2, RouteDeviation::OffRoute { .. }));
+
+    // Move to 35m (below on_route_threshold)
+    // Should return to on-route
+    let user_location_35m = UserLocation {
+        coordinates: GeographicCoordinate { lng: 0.00031, lat: 0.0 }, // ~35m east
+        horizontal_accuracy: 5.0,
+        course_over_ground: None,
+        timestamp: SystemTime::now(),
+        speed: None,
+    };
+
+    let trip_state_35m = get_navigating_trip_state(
+        user_location_35m.clone(),
+        vec![current_route_step.clone()],
+        vec![],
+        RouteDeviation::OffRoute { deviation_from_route_line: 45.0 }, // Was off-route
+    );
+
+    // Should be back on-route because 35m <= on_route_threshold (40m)
+    assert_eq!(
+        tracking.check_route_deviation(&route, &trip_state_35m),
+        RouteDeviation::NoDeviation
+    );
 }

@@ -18,7 +18,11 @@ private final class DetectorImpl: RouteDeviationDetector {
 public enum SwiftRouteDeviationTracking {
     case none
 
-    case staticThreshold(minimumHorizontalAccuracy: UInt16, maxAcceptableDeviation: Double)
+    case staticThreshold(
+        minimumHorizontalAccuracy: UInt16,
+        maxAcceptableDeviation: Double,
+        onRouteThreshold: Double? = nil
+    )
 
     case custom(detector: @Sendable (Route, TripState) -> RouteDeviation)
 
@@ -28,11 +32,13 @@ public enum SwiftRouteDeviationTracking {
             .none
         case let .staticThreshold(
             minimumHorizontalAccuracy: minimumHorizontalAccuracy,
-            maxAcceptableDeviation: maxAcceptableDeviation
+            maxAcceptableDeviation: maxAcceptableDeviation,
+            onRouteThreshold: onRouteThreshold
         ):
             .staticThreshold(
                 minimumHorizontalAccuracy: minimumHorizontalAccuracy,
-                maxAcceptableDeviation: maxAcceptableDeviation
+                maxAcceptableDeviation: maxAcceptableDeviation,
+                onRouteThreshold: onRouteThreshold ?? maxAcceptableDeviation
             )
         case let .custom(detector: detectorFunc):
             .custom(detector: DetectorImpl(detectorFunc: detectorFunc))
