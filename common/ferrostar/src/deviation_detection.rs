@@ -115,6 +115,7 @@ impl RouteDeviationTracking {
                         let step_deviation = self.static_threshold_deviation_from_line(
                             &Point::from(*user_location),
                             &step.get_linestring(),
+                            // Note: This is always <= max_acceptable_deviation
                             threshold,
                         );
 
