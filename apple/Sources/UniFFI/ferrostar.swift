@@ -5490,6 +5490,112 @@ public func FfiConverterTypeSpokenInstruction_lower(_ value: SpokenInstruction) 
 
 
 /**
+ * Configuration for static threshold route deviation detection with hysteresis support.
+ *
+ * This struct ensures valid configuration through a failable constructor,
+ * making it impossible to create invalid threshold configurations.
+ */
+public struct StaticThresholdConfig: Equatable, Hashable, Codable {
+    /**
+     * The minimum required horizontal accuracy of the user location, in meters.
+     * Values larger than this will not trigger route deviation warnings.
+     */
+    public var minimumHorizontalAccuracy: UInt16
+    /**
+     * The maximum acceptable deviation from the route line, in meters.
+     *
+     * If the distance between the reported location and the expected route line
+     * is greater than this threshold, it will be flagged as an off route condition.
+     */
+    public var maxAcceptableDeviation: Double
+    /**
+     * The buffer distance used for hysteresis when returning to on-route state, in meters.
+     *
+     * The actual threshold for returning to on-route is calculated as:
+     * `max_acceptable_deviation - return_buffer`
+     *
+     * For example, if `max_acceptable_deviation` is 50m and `return_buffer` is 10m,
+     * the user must deviate more than 50m to trigger off-route, but must return within
+     * 40m to be considered back on route.
+     *
+     * Set to 0 for no hysteresis (same threshold for going off-route and returning).
+     */
+    public var returnBuffer: Double
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The minimum required horizontal accuracy of the user location, in meters.
+         * Values larger than this will not trigger route deviation warnings.
+         */minimumHorizontalAccuracy: UInt16, 
+        /**
+         * The maximum acceptable deviation from the route line, in meters.
+         *
+         * If the distance between the reported location and the expected route line
+         * is greater than this threshold, it will be flagged as an off route condition.
+         */maxAcceptableDeviation: Double, 
+        /**
+         * The buffer distance used for hysteresis when returning to on-route state, in meters.
+         *
+         * The actual threshold for returning to on-route is calculated as:
+         * `max_acceptable_deviation - return_buffer`
+         *
+         * For example, if `max_acceptable_deviation` is 50m and `return_buffer` is 10m,
+         * the user must deviate more than 50m to trigger off-route, but must return within
+         * 40m to be considered back on route.
+         *
+         * Set to 0 for no hysteresis (same threshold for going off-route and returning).
+         */returnBuffer: Double) {
+        self.minimumHorizontalAccuracy = minimumHorizontalAccuracy
+        self.maxAcceptableDeviation = maxAcceptableDeviation
+        self.returnBuffer = returnBuffer
+    }
+
+    
+}
+
+#if compiler(>=6)
+extension StaticThresholdConfig: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeStaticThresholdConfig: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> StaticThresholdConfig {
+        return
+            try StaticThresholdConfig(
+                minimumHorizontalAccuracy: FfiConverterUInt16.read(from: &buf), 
+                maxAcceptableDeviation: FfiConverterDouble.read(from: &buf), 
+                returnBuffer: FfiConverterDouble.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: StaticThresholdConfig, into buf: inout [UInt8]) {
+        FfiConverterUInt16.write(value.minimumHorizontalAccuracy, into: &buf)
+        FfiConverterDouble.write(value.maxAcceptableDeviation, into: &buf)
+        FfiConverterDouble.write(value.returnBuffer, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeStaticThresholdConfig_lift(_ buf: RustBuffer) throws -> StaticThresholdConfig {
+    return try FfiConverterTypeStaticThresholdConfig.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeStaticThresholdConfig_lower(_ value: StaticThresholdConfig) -> RustBuffer {
+    return FfiConverterTypeStaticThresholdConfig.lower(value)
+}
+
+
+/**
  * The step advance result is produced on every iteration of the navigation state machine and
  * used by the navigation to build a new [`NavState`](super::NavState) instance for that update.
  */
@@ -7916,28 +8022,7 @@ public enum RouteDeviationTracking {
     /**
      * Detects deviation from the route using a configurable static distance threshold from the route line.
      */
-    case staticThreshold(
-        /**
-         * The minimum required horizontal accuracy of the user location, in meters.
-         * Values larger than this will not trigger route deviation warnings.
-         */minimumHorizontalAccuracy: UInt16, 
-        /**
-         * The maximum acceptable deviation from the route line, in meters.
-         *
-         * If the distance between the reported location and the expected route line
-         * is greater than this threshold, it will be flagged as an off route condition.
-         */maxAcceptableDeviation: Double, 
-        /**
-         * The threshold for returning to on-route state, in meters.
-         *
-         * Must be less than or equal to `max_acceptable_deviation`.
-         * This creates hysteresis to prevent oscillation between on/off route states.
-         * For example, if `max_acceptable_deviation` is 50m and `on_route_threshold` is 40m,
-         * the user must deviate more than 50m to trigger off-route, but must return within
-         * 40m to be considered back on route.
-         *
-         * If not specified or equal to `max_acceptable_deviation`, no hysteresis is applied.
-         */onRouteThreshold: Double
+    case staticThreshold(StaticThresholdConfig
     )
     /**
      * An arbitrary user-defined implementation.
@@ -7966,7 +8051,7 @@ public struct FfiConverterTypeRouteDeviationTracking: FfiConverterRustBuffer {
         
         case 1: return .none
         
-        case 2: return .staticThreshold(minimumHorizontalAccuracy: try FfiConverterUInt16.read(from: &buf), maxAcceptableDeviation: try FfiConverterDouble.read(from: &buf), onRouteThreshold: try FfiConverterDouble.read(from: &buf)
+        case 2: return .staticThreshold(try FfiConverterTypeStaticThresholdConfig.read(from: &buf)
         )
         
         case 3: return .custom(detector: try FfiConverterTypeRouteDeviationDetector.read(from: &buf)
@@ -7984,11 +8069,9 @@ public struct FfiConverterTypeRouteDeviationTracking: FfiConverterRustBuffer {
             writeInt(&buf, Int32(1))
         
         
-        case let .staticThreshold(minimumHorizontalAccuracy,maxAcceptableDeviation,onRouteThreshold):
+        case let .staticThreshold(v1):
             writeInt(&buf, Int32(2))
-            FfiConverterUInt16.write(minimumHorizontalAccuracy, into: &buf)
-            FfiConverterDouble.write(maxAcceptableDeviation, into: &buf)
-            FfiConverterDouble.write(onRouteThreshold, into: &buf)
+            FfiConverterTypeStaticThresholdConfig.write(v1, into: &buf)
             
         
         case let .custom(detector):
@@ -8381,6 +8464,112 @@ public func FfiConverterTypeSimulationError_lift(_ buf: RustBuffer) throws -> Si
 #endif
 public func FfiConverterTypeSimulationError_lower(_ value: SimulationError) -> RustBuffer {
     return FfiConverterTypeSimulationError.lower(value)
+}
+
+
+/**
+ * Errors that can occur when creating a [`StaticThresholdConfig`].
+ */
+public enum StaticThresholdError: Swift.Error, Equatable, Hashable, Codable, Foundation.LocalizedError {
+
+    
+    
+    /**
+     * The maximum acceptable deviation must be non-negative.
+     */
+    case NegativeMaxDeviation(value: Double
+    )
+    /**
+     * The return buffer must be non-negative.
+     */
+    case NegativeReturnBuffer(value: Double
+    )
+    /**
+     * The return buffer must not exceed the maximum acceptable deviation.
+     */
+    case ReturnBufferTooLarge(returnBuffer: Double, maxAcceptableDeviation: Double
+    )
+
+    
+
+    
+    public var errorDescription: String? {
+        String(reflecting: self)
+    }
+    
+}
+
+#if compiler(>=6)
+extension StaticThresholdError: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeStaticThresholdError: FfiConverterRustBuffer {
+    typealias SwiftType = StaticThresholdError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> StaticThresholdError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        
+
+        
+        case 1: return .NegativeMaxDeviation(
+            value: try FfiConverterDouble.read(from: &buf)
+            )
+        case 2: return .NegativeReturnBuffer(
+            value: try FfiConverterDouble.read(from: &buf)
+            )
+        case 3: return .ReturnBufferTooLarge(
+            returnBuffer: try FfiConverterDouble.read(from: &buf), 
+            maxAcceptableDeviation: try FfiConverterDouble.read(from: &buf)
+            )
+
+         default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: StaticThresholdError, into buf: inout [UInt8]) {
+        switch value {
+
+        
+
+        
+        
+        case let .NegativeMaxDeviation(value):
+            writeInt(&buf, Int32(1))
+            FfiConverterDouble.write(value, into: &buf)
+            
+        
+        case let .NegativeReturnBuffer(value):
+            writeInt(&buf, Int32(2))
+            FfiConverterDouble.write(value, into: &buf)
+            
+        
+        case let .ReturnBufferTooLarge(returnBuffer,maxAcceptableDeviation):
+            writeInt(&buf, Int32(3))
+            FfiConverterDouble.write(returnBuffer, into: &buf)
+            FfiConverterDouble.write(maxAcceptableDeviation, into: &buf)
+            
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeStaticThresholdError_lift(_ buf: RustBuffer) throws -> StaticThresholdError {
+    return try FfiConverterTypeStaticThresholdError.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeStaticThresholdError_lower(_ value: StaticThresholdError) -> RustBuffer {
+    return FfiConverterTypeStaticThresholdError.lower(value)
 }
 
 // Note that we don't yet support `indirect` for enums.

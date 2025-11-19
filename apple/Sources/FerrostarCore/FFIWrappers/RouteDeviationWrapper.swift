@@ -18,10 +18,17 @@ private final class DetectorImpl: RouteDeviationDetector {
 public enum SwiftRouteDeviationTracking {
     case none
 
+    /// Static threshold deviation tracking with hysteresis support.
+    ///
+    /// - Parameters:
+    ///   - minimumHorizontalAccuracy: Minimum GPS accuracy required to trigger deviation checks
+    ///   - maxAcceptableDeviation: Maximum distance from route before going off-route (must be >= 0)
+    ///   - returnBuffer: Buffer distance for hysteresis (must be >= 0 and <= maxAcceptableDeviation).
+    ///     If nil, defaults to 0 (no hysteresis).
     case staticThreshold(
         minimumHorizontalAccuracy: UInt16,
         maxAcceptableDeviation: Double,
-        onRouteThreshold: Double? = nil
+        returnBuffer: Double? = nil
     )
 
     case custom(detector: @Sendable (Route, TripState) -> RouteDeviation)
@@ -33,12 +40,14 @@ public enum SwiftRouteDeviationTracking {
         case let .staticThreshold(
             minimumHorizontalAccuracy: minimumHorizontalAccuracy,
             maxAcceptableDeviation: maxAcceptableDeviation,
-            onRouteThreshold: onRouteThreshold
+            returnBuffer: returnBuffer
         ):
             .staticThreshold(
-                minimumHorizontalAccuracy: minimumHorizontalAccuracy,
-                maxAcceptableDeviation: maxAcceptableDeviation,
-                onRouteThreshold: onRouteThreshold ?? maxAcceptableDeviation
+                StaticThresholdConfig(
+                    minimumHorizontalAccuracy: minimumHorizontalAccuracy,
+                    maxAcceptableDeviation: maxAcceptableDeviation,
+                    returnBuffer: returnBuffer ?? 0.0
+                )
             )
         case let .custom(detector: detectorFunc):
             .custom(detector: DetectorImpl(detectorFunc: detectorFunc))

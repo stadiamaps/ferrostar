@@ -11,7 +11,7 @@ config:
     StaticThreshold:
       max_acceptable_deviation: 0
       minimum_horizontal_accuracy: 0
-      on_route_threshold: 0
+      return_buffer: 0
   snapped_location_course_filtering: Raw
   step_advance_condition:
     DistanceToEndOfStep:

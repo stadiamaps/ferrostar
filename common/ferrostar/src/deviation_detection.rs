@@ -24,6 +24,120 @@ use serde::{Deserialize, Serialize};
 #[cfg(feature = "wasm-bindgen")]
 use tsify::Tsify;
 
+/// Errors that can occur when creating a [`StaticThresholdConfig`].
+#[derive(Debug, Clone, PartialEq)]
+#[cfg_attr(feature = "std", derive(thiserror::Error))]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
+pub enum StaticThresholdError {
+    /// The maximum acceptable deviation must be non-negative.
+    #[cfg_attr(
+        feature = "std",
+        error("max_acceptable_deviation must be non-negative, got {value}")
+    )]
+    NegativeMaxDeviation { value: f64 },
+    /// The return buffer must be non-negative.
+    #[cfg_attr(
+        feature = "std",
+        error("return_buffer must be non-negative, got {value}")
+    )]
+    NegativeReturnBuffer { value: f64 },
+    /// The return buffer must not exceed the maximum acceptable deviation.
+    #[cfg_attr(
+        feature = "std",
+        error(
+            "return_buffer ({return_buffer}) must not exceed max_acceptable_deviation ({max_acceptable_deviation})"
+        )
+    )]
+    ReturnBufferTooLarge {
+        return_buffer: f64,
+        max_acceptable_deviation: f64,
+    },
+}
+
+/// Configuration for static threshold route deviation detection with hysteresis support.
+///
+/// This struct ensures valid configuration through a failable constructor,
+/// making it impossible to create invalid threshold configurations.
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Record))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(from_wasm_abi))]
+pub struct StaticThresholdConfig {
+    /// The minimum required horizontal accuracy of the user location, in meters.
+    /// Values larger than this will not trigger route deviation warnings.
+    pub minimum_horizontal_accuracy: u16,
+    /// The maximum acceptable deviation from the route line, in meters.
+    ///
+    /// If the distance between the reported location and the expected route line
+    /// is greater than this threshold, it will be flagged as an off route condition.
+    pub max_acceptable_deviation: f64,
+    /// The buffer distance used for hysteresis when returning to on-route state, in meters.
+    ///
+    /// The actual threshold for returning to on-route is calculated as:
+    /// `max_acceptable_deviation - return_buffer`
+    ///
+    /// For example, if `max_acceptable_deviation` is 50m and `return_buffer` is 10m,
+    /// the user must deviate more than 50m to trigger off-route, but must return within
+    /// 40m to be considered back on route.
+    ///
+    /// Set to 0 for no hysteresis (same threshold for going off-route and returning).
+    pub return_buffer: f64,
+}
+
+impl StaticThresholdConfig {
+    /// Creates a new static threshold configuration with validation.
+    ///
+    /// # Arguments
+    ///
+    /// * `minimum_horizontal_accuracy` - Minimum GPS accuracy required to trigger deviation checks
+    /// * `max_acceptable_deviation` - Maximum distance from route before going off-route (must be >= 0)
+    /// * `return_buffer` - Buffer distance for hysteresis (must be >= 0 and <= max_acceptable_deviation)
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if:
+    /// - `max_acceptable_deviation` is < 0
+    /// - `return_buffer` is < 0
+    /// - `return_buffer` > `max_acceptable_deviation`
+    #[cfg_attr(feature = "uniffi", uniffi::constructor)]
+    pub fn new(
+        minimum_horizontal_accuracy: u16,
+        max_acceptable_deviation: f64,
+        return_buffer: f64,
+    ) -> Result<Self, StaticThresholdError> {
+        if max_acceptable_deviation < 0.0 {
+            return Err(StaticThresholdError::NegativeMaxDeviation {
+                value: max_acceptable_deviation,
+            });
+        }
+        if return_buffer < 0.0 {
+            return Err(StaticThresholdError::NegativeReturnBuffer {
+                value: return_buffer,
+            });
+        }
+        if return_buffer > max_acceptable_deviation {
+            return Err(StaticThresholdError::ReturnBufferTooLarge {
+                return_buffer,
+                max_acceptable_deviation,
+            });
+        }
+
+        Ok(Self {
+            minimum_horizontal_accuracy,
+            max_acceptable_deviation,
+            return_buffer,
+        })
+    }
+
+    /// Returns the threshold distance for returning to on-route state.
+    ///
+    /// This is calculated as `max_acceptable_deviation - return_buffer`.
+    #[must_use]
+    pub fn on_route_threshold(&self) -> f64 {
+        self.max_acceptable_deviation - self.return_buffer
+    }
+}
+
 #[cfg(test)]
 use {
     crate::{
@@ -48,27 +162,7 @@ pub enum RouteDeviationTracking {
     /// No checks will be done, and we assume the user is always following the route.
     None,
     /// Detects deviation from the route using a configurable static distance threshold from the route line.
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-    StaticThreshold {
-        /// The minimum required horizontal accuracy of the user location, in meters.
-        /// Values larger than this will not trigger route deviation warnings.
-        minimum_horizontal_accuracy: u16,
-        /// The maximum acceptable deviation from the route line, in meters.
-        ///
-        /// If the distance between the reported location and the expected route line
-        /// is greater than this threshold, it will be flagged as an off route condition.
-        max_acceptable_deviation: f64,
-        /// The threshold for returning to on-route state, in meters.
-        ///
-        /// Must be less than or equal to `max_acceptable_deviation`.
-        /// This creates hysteresis to prevent oscillation between on/off route states.
-        /// For example, if `max_acceptable_deviation` is 50m and `on_route_threshold` is 40m,
-        /// the user must deviate more than 50m to trigger off-route, but must return within
-        /// 40m to be considered back on route.
-        ///
-        /// If not specified or equal to `max_acceptable_deviation`, no hysteresis is applied.
-        on_route_threshold: f64,
-    },
+    StaticThreshold(StaticThresholdConfig),
     // TODO: Standard variants that account for mode of travel. For example, `DefaultFor(modeOfTravel: ModeOfTravel)` with sensible defaults for walking, driving, cycling, etc.
     /// An arbitrary user-defined implementation.
     /// You decide with your own [`RouteDeviationDetector`] implementation!
@@ -87,11 +181,7 @@ impl RouteDeviationTracking {
     ) -> RouteDeviation {
         match self {
             RouteDeviationTracking::None => RouteDeviation::NoDeviation,
-            RouteDeviationTracking::StaticThreshold {
-                minimum_horizontal_accuracy,
-                max_acceptable_deviation,
-                on_route_threshold,
-            } => match trip_state {
+            RouteDeviationTracking::StaticThreshold(config) => match trip_state {
                 TripState::Idle { .. } | TripState::Complete { .. } => RouteDeviation::NoDeviation,
                 TripState::Navigating {
                     user_location,
@@ -99,14 +189,16 @@ impl RouteDeviationTracking {
                     deviation,
                     ..
                 } => {
-                    if user_location.horizontal_accuracy > f64::from(*minimum_horizontal_accuracy) {
+                    if user_location.horizontal_accuracy
+                        > f64::from(config.minimum_horizontal_accuracy)
+                    {
                         return RouteDeviation::NoDeviation;
                     }
 
                     // Choose threshold based on current state (hysteresis)
                     let threshold = match deviation {
-                        RouteDeviation::NoDeviation => *max_acceptable_deviation,
-                        RouteDeviation::OffRoute { .. } => *on_route_threshold,
+                        RouteDeviation::NoDeviation => config.max_acceptable_deviation,
+                        RouteDeviation::OffRoute { .. } => config.on_route_threshold(),
                     };
 
                     let mut first_step_deviation = None;
@@ -115,7 +207,6 @@ impl RouteDeviationTracking {
                         let step_deviation = self.static_threshold_deviation_from_line(
                             &Point::from(*user_location),
                             &step.get_linestring(),
-                            // Note: This is always <= max_acceptable_deviation
                             threshold,
                         );
 
@@ -419,11 +510,12 @@ proptest! {
         horizontal_accuracy: f64,
         max_acceptable_deviation in 0f64..,
     ) {
-        let tracking = RouteDeviationTracking::StaticThreshold {
+        let config = StaticThresholdConfig::new(
             minimum_horizontal_accuracy,
             max_acceptable_deviation,
-            on_route_threshold: max_acceptable_deviation
-        };
+            0.0, // no hysteresis for this test
+        ).unwrap();
+        let tracking = RouteDeviationTracking::StaticThreshold(config);
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
         let route = gen_route_from_steps(vec![current_route_step.clone()]);
 
@@ -494,13 +586,14 @@ proptest! {
         x2 in -180f64..=180f64, y2 in -90f64..=90f64,
         x3 in -180f64..=180f64, y3 in -90f64..=90f64,
         horizontal_accuracy in 1u16..,
-        max_acceptable_deviation: f64,
+        max_acceptable_deviation in 0f64..,
     ) {
-        let tracking = RouteDeviationTracking::StaticThreshold {
-            minimum_horizontal_accuracy: horizontal_accuracy - 1,
+        let config = StaticThresholdConfig::new(
+            horizontal_accuracy - 1,
             max_acceptable_deviation,
-            on_route_threshold: max_acceptable_deviation
-        };
+            0.0, // no hysteresis for this test
+        ).unwrap();
+        let tracking = RouteDeviationTracking::StaticThreshold(config);
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
         let route = gen_route_from_steps(vec![current_route_step.clone()]);
 
@@ -538,7 +631,9 @@ proptest! {
 fn static_threshold_hysteresis_prevents_oscillation() {
     use crate::{
         models::{GeographicCoordinate, UserLocation},
-        navigation_controller::test_helpers::{gen_dummy_route_step, gen_route_from_steps, get_navigating_trip_state},
+        navigation_controller::test_helpers::{
+            gen_dummy_route_step, gen_route_from_steps, get_navigating_trip_state,
+        },
     };
 
     #[cfg(feature = "std")]
@@ -547,13 +642,15 @@ fn static_threshold_hysteresis_prevents_oscillation() {
     use web_time::SystemTime;
 
     let max_deviation = 50.0;
-    let on_route_threshold = 40.0;
+    let return_buffer = 10.0; // on_route_threshold will be 50 - 10 = 40m
 
-    let tracking = RouteDeviationTracking::StaticThreshold {
-        minimum_horizontal_accuracy: 100,
-        max_acceptable_deviation: max_deviation,
-        on_route_threshold,
-    };
+    let config = StaticThresholdConfig::new(
+        100, // minimum_horizontal_accuracy
+        max_deviation,
+        return_buffer,
+    )
+    .unwrap();
+    let tracking = RouteDeviationTracking::StaticThreshold(config);
 
     // Create a simple route step from (0, 0) to (0, 0.001) (~111 meters north)
     let current_route_step = gen_dummy_route_step(0.0, 0.0, 0.0, 0.001);
@@ -584,7 +681,10 @@ fn static_threshold_hysteresis_prevents_oscillation() {
     // Move 45m away from route (between on_route_threshold and max_deviation)
     // At this distance, should still be on-route since we started on-route
     let user_location_45m = UserLocation {
-        coordinates: GeographicCoordinate { lng: 0.0004, lat: 0.0 }, // ~45m east
+        coordinates: GeographicCoordinate {
+            lng: 0.0004,
+            lat: 0.0,
+        }, // ~45m east
         horizontal_accuracy: 5.0,
         course_over_ground: None,
         timestamp: SystemTime::now(),
@@ -607,7 +707,10 @@ fn static_threshold_hysteresis_prevents_oscillation() {
     // Move 55m away from route (beyond max_deviation)
     // Should trigger off-route
     let user_location_55m = UserLocation {
-        coordinates: GeographicCoordinate { lng: 0.0005, lat: 0.0 }, // ~55m east
+        coordinates: GeographicCoordinate {
+            lng: 0.0005,
+            lat: 0.0,
+        }, // ~55m east
         horizontal_accuracy: 5.0,
         course_over_ground: None,
         timestamp: SystemTime::now(),
@@ -631,17 +734,25 @@ fn static_threshold_hysteresis_prevents_oscillation() {
         user_location_45m.clone(),
         vec![current_route_step.clone()],
         vec![],
-        RouteDeviation::OffRoute { deviation_from_route_line: 55.0 }, // Was off-route
+        RouteDeviation::OffRoute {
+            deviation_from_route_line: 55.0,
+        }, // Was off-route
     );
 
     // Should remain off-route because 45m > on_route_threshold (40m)
     let deviation_result_2 = tracking.check_route_deviation(&route, &trip_state_45m_from_offroute);
-    assert!(matches!(deviation_result_2, RouteDeviation::OffRoute { .. }));
+    assert!(matches!(
+        deviation_result_2,
+        RouteDeviation::OffRoute { .. }
+    ));
 
     // Move to 35m (below on_route_threshold)
     // Should return to on-route
     let user_location_35m = UserLocation {
-        coordinates: GeographicCoordinate { lng: 0.00031, lat: 0.0 }, // ~35m east
+        coordinates: GeographicCoordinate {
+            lng: 0.00031,
+            lat: 0.0,
+        }, // ~35m east
         horizontal_accuracy: 5.0,
         course_over_ground: None,
         timestamp: SystemTime::now(),
@@ -652,7 +763,9 @@ fn static_threshold_hysteresis_prevents_oscillation() {
         user_location_35m.clone(),
         vec![current_route_step.clone()],
         vec![],
-        RouteDeviation::OffRoute { deviation_from_route_line: 45.0 }, // Was off-route
+        RouteDeviation::OffRoute {
+            deviation_from_route_line: 45.0,
+        }, // Was off-route
     );
 
     // Should be back on-route because 35m <= on_route_threshold (40m)

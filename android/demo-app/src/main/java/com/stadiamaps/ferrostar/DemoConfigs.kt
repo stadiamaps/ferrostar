@@ -4,6 +4,7 @@ import uniffi.ferrostar.CourseFiltering
 import uniffi.ferrostar.NavigationCachingConfig
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.RouteDeviationTracking
+import uniffi.ferrostar.StaticThresholdConfig
 import uniffi.ferrostar.WaypointAdvanceMode
 import uniffi.ferrostar.stepAdvanceDistanceEntryAndExit
 import uniffi.ferrostar.stepAdvanceDistanceToEndOfStep
@@ -13,7 +14,13 @@ fun NavigationControllerConfig.Companion.demoConfig(): NavigationControllerConfi
       WaypointAdvanceMode.WaypointWithinRange(100.0),
       stepAdvanceDistanceEntryAndExit(30u, 5u, 32u),
       stepAdvanceDistanceToEndOfStep(10u, 32u),
-      RouteDeviationTracking.StaticThreshold(15U, 50.0),
+      RouteDeviationTracking.StaticThreshold(
+          StaticThresholdConfig(
+              minimumHorizontalAccuracy = 15U,
+              maxAcceptableDeviation = 50.0,
+              returnBuffer = 0.0
+          )
+      ),
       CourseFiltering.SNAP_TO_ROUTE)
 }
 
