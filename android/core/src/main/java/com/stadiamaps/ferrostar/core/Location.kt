@@ -257,8 +257,14 @@ fun android.location.Location.toUserLocation(): UserLocation {
         } else {
           Double.MAX_VALUE
         },
-        if (hasBearing() && hasBearingAccuracy()) {
-          CourseOverGround(bearing.toUInt().toUShort(), bearingAccuracyDegrees.toUInt().toUShort())
+        if (hasBearing()) {
+          CourseOverGround(
+              bearing.toUInt().toUShort(),
+              if (hasBearingAccuracy()) {
+                bearingAccuracyDegrees.toUInt().toUShort()
+              } else {
+                null
+              })
         } else {
           null
         },
