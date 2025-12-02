@@ -449,7 +449,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                           self.lastRecalculationLocation?.clLocation
                           .distance(from: location.clLocation) ?? .greatestFiniteMagnitude
                           > self
-                          .minimumMovementBeforeRecaluclation
+                          .minimumMovementBeforeRecalculation
                     else {
                         break
                     }
