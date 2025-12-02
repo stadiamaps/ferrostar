@@ -34,7 +34,7 @@ class RouteProviderOptionsTest {
   }
 
   @Test
-  fun `serialize options with a mix of list-like collectons`() {
+  fun `serialize options with a mix of list-like collections`() {
     val options =
         mapOf(
             "excluded_polygons" to
