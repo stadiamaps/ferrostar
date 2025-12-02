@@ -83,10 +83,10 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This adds a minimum delay (default 5 seconds).
     public var minimumTimeBeforeRecalculaton: TimeInterval = 5
 
-    /// The minimum distance (in meters) the user must move before performing another route recaluclation.
+    /// The minimum distance (in meters) the user must move before performing another route recalculation.
     ///
     /// This ensures that, while the user remains off the route, we don't keep triggering useless recalculations.
-    public var minimumMovementBeforeRecaluclation = CLLocationDistance(50)
+    public var minimumMovementBeforeRecalculation = CLLocationDistance(50)
 
     /// The observable state of the model (for easy binding in SwiftUI views).
     @Published private var coreNavState: NavState?
@@ -449,7 +449,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                           self.lastRecalculationLocation?.clLocation
                           .distance(from: location.clLocation) ?? .greatestFiniteMagnitude
                           > self
-                          .minimumMovementBeforeRecaluclation
+                          .minimumMovementBeforeRecalculation
                     else {
                         break
                     }
