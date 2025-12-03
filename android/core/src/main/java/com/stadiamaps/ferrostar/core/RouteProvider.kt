@@ -1,5 +1,7 @@
 package com.stadiamaps.ferrostar.core
 
+import androidx.annotation.VisibleForTesting
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
@@ -53,23 +55,34 @@ private val json = Json { ignoreUnknownKeys = true }
 
 private fun Map<String, Any?>.toJsonElement(): JsonElement = Json.parseToJsonElement(this.toJson())
 
-private fun Map<String, Any?>.toJson(): String =
+// The inner function that does most of the work in the general case.
+// This is private because our use cases so far really do only work on maps,
+// but they can be arbitrarily nested with other collections.
+private fun Any?.toJsonElement(): JsonElement =
+    when (this) {
+      is String -> Json.encodeToJsonElement(String.serializer(), this)
+      is Int -> Json.encodeToJsonElement(Int.serializer(), this)
+      is Boolean -> Json.encodeToJsonElement(Boolean.serializer(), this)
+      is Double -> Json.encodeToJsonElement(Double.serializer(), this)
+      is Float -> Json.encodeToJsonElement(Float.serializer(), this)
+      is Long -> Json.encodeToJsonElement(Long.serializer(), this)
+      is Iterable<*> ->
+          Json.encodeToJsonElement(
+              ListSerializer(JsonElement.serializer()), this.map { it.toJsonElement() })
+      is Array<*> -> this.asIterable().toJsonElement()
+      is Map<*, *> -> {
+        @Suppress("UNCHECKED_CAST")
+        (this as? Map<String, Any>)?.toJsonElement()
+            ?: throw IllegalArgumentException("Unsupported map value type: ${this::class}")
+      }
+      null -> Json.encodeToJsonElement(String.serializer(), "null")
+      else -> throw IllegalArgumentException("Unsupported value type: ${this::class}")
+    }
+
+// Must be marked internal or higher in order to test.
+// Kotlin doesn't have a way to have differing visibility for tests like Swift or Rust.
+@VisibleForTesting
+internal fun Map<String, Any?>.toJson(): String =
     json.encodeToString(
         MapSerializer(String.serializer(), JsonElement.serializer()),
-        mapValues { (_, v) ->
-          when (v) {
-            is String -> Json.encodeToJsonElement(String.serializer(), v)
-            is Int -> Json.encodeToJsonElement(Int.serializer(), v)
-            is Boolean -> Json.encodeToJsonElement(Boolean.serializer(), v)
-            is Double -> Json.encodeToJsonElement(Double.serializer(), v)
-            is Float -> Json.encodeToJsonElement(Float.serializer(), v)
-            is Long -> Json.encodeToJsonElement(Long.serializer(), v)
-            is Map<*, *> -> {
-              @Suppress("UNCHECKED_CAST")
-              (v as? Map<String, Any>)?.toJsonElement()
-                  ?: throw IllegalArgumentException("Unsupported map value type: ${v::class}")
-            }
-            null -> Json.encodeToJsonElement(String.serializer(), "null")
-            else -> throw IllegalArgumentException("Unsupported value type: ${v::class}")
-          }
-        })
+        mapValues { (_, v) -> v.toJsonElement() })
