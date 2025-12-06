@@ -64,6 +64,101 @@ impl NavState {
         }
     }
 
+    /// Creates a navigation state indicating the trip is paused (stopped location updates, retaining navigation context).
+    pub fn paused(navigating_state: Self) -> Self {
+        let NavState {
+            trip_state,
+            step_advance_condition,
+        } = navigating_state;
+
+        // We use `let ... else { return ... }` to safely destructure only when the state is Navigating.
+        let TripState::Navigating {
+            current_step_geometry_index,
+            user_location,
+            snapped_user_location,
+            remaining_steps,
+            remaining_waypoints,
+            progress,
+            summary,
+            deviation,
+            visual_instruction,
+            spoken_instruction,
+            annotation_json,
+        } = trip_state
+        else {
+            // If it wasn't navigating (e.g., Idle or Complete), just return the state as-is
+            return NavState {
+                trip_state,
+                step_advance_condition,
+            };
+        };
+
+        Self {
+            trip_state: TripState::Paused {
+                current_step_geometry_index,
+                user_location,
+                snapped_user_location,
+                remaining_steps,
+                remaining_waypoints,
+                progress,
+                summary,
+                deviation,
+                visual_instruction,
+                spoken_instruction,
+                annotation_json,
+            },
+            step_advance_condition,
+        }
+    }
+
+    /// Creates a navigation state indicating a previously paused trip has been resumed.
+    ///
+    /// If the provided state is not `Paused`, it is returned unchanged.
+    pub fn resumed(paused_state: Self) -> Self {
+        let NavState {
+            trip_state,
+            step_advance_condition,
+        } = paused_state;
+
+        let TripState::Paused {
+            current_step_geometry_index,
+            user_location,
+            snapped_user_location,
+            remaining_steps,
+            remaining_waypoints,
+            progress,
+            summary,
+            deviation,
+            visual_instruction,
+            spoken_instruction,
+            annotation_json,
+        } = trip_state
+        else {
+            // Not paused: return original state.
+            return NavState {
+                trip_state,
+                step_advance_condition,
+            };
+        };
+
+        Self {
+            trip_state: TripState::Navigating {
+                current_step_geometry_index,
+                user_location,
+                snapped_user_location,
+                remaining_steps,
+                remaining_waypoints,
+                progress,
+                summary,
+                deviation,
+                visual_instruction,
+                spoken_instruction,
+                annotation_json,
+            },
+            step_advance_condition,
+        }
+    }
+
     #[inline]
     pub fn trip_state(&self) -> TripState {
         self.trip_state.clone()
@@ -176,7 +271,24 @@ impl TripSummary {
 pub enum TripState {
     /// The navigation controller is idle and there is no active trip.
     Idle { user_location: Option<UserLocation> },
+
+    /// The navigation controller is paused: navigation context is retained,
+    /// but location updates are stopped.
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    Paused {
+        current_step_geometry_index: Option<u64>,
+        user_location: UserLocation,
+        snapped_user_location: UserLocation,
+        remaining_steps: Vec<RouteStep>,
+        remaining_waypoints: Vec<Waypoint>,
+        progress: TripProgress,
+        summary: TripSummary,
+        deviation: RouteDeviation,
+        visual_instruction: Option<VisualInstruction>,
+        spoken_instruction: Option<SpokenInstruction>,
+        annotation_json: Option<String>,
+    },
+
     /// The navigation controller is actively navigating a trip.
     Navigating {
         /// The index of the closest coordinate to the user's snapped location.
@@ -230,6 +342,7 @@ pub enum TripState {
         /// This is represented as a json formatted byte array to allow for flexible encoding of custom annotations.
         annotation_json: Option<String>,
     },
+
     /// The navigation controller has reached the end of the trip.
     Complete {
         user_location: UserLocation,
@@ -242,7 +355,8 @@ pub enum TripState {
 impl TripState {
     pub(crate) fn user_location(&self) -> Option<UserLocation> {
         match self {
-            TripState::Navigating { user_location, .. } => Some(*user_location),
+            TripState::Navigating { user_location, .. }
+            | TripState::Paused { user_location, .. } => Some(*user_location),
             _ => None,
         }
     }
@@ -250,6 +364,10 @@ impl TripState {
     pub(crate) fn snapped_user_location(&self) -> Option<UserLocation> {
         match self {
             TripState::Navigating {
+                snapped_user_location,
+                ..
+            }
+            | TripState::Paused {
                 snapped_user_location,
                 ..
             } => Some(*snapped_user_location),
@@ -260,6 +378,9 @@ impl TripState {
     pub(crate) fn current_step(&self) -> Option<RouteStep> {
         match self {
             TripState::Navigating {
+                remaining_steps, ..
+            }
+            | TripState::Paused {
                 remaining_steps, ..
             } => remaining_steps.first().cloned(),
             _ => None,
@@ -274,6 +395,9 @@ impl TripState {
         match self {
             TripState::Navigating {
                 remaining_steps, ..
+            }
+            | TripState::Paused {
+                remaining_steps, ..
             } => remaining_steps.get(index).cloned(),
             _ => None,
         }
@@ -281,7 +405,8 @@ impl TripState {
 
     pub(crate) fn deviation(&self) -> Option<RouteDeviation> {
         match self {
-            TripState::Navigating { deviation, .. } => Some(*deviation),
+            TripState::Navigating { deviation, .. }
+            | TripState::Paused { deviation, .. } => Some(*deviation),
             _ => None,
         }
     }
