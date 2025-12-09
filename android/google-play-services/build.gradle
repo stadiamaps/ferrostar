@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar.googleplayservices'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         minSdk 25
