@@ -131,14 +131,12 @@ class FerrostarCoreTest {
                                   secondaryContent = null,
                                   subContent = null,
                                   triggerDistanceBeforeManeuver = 42.0,
-                              )
-                          ),
+                              )),
                       spokenInstructions = listOf(),
                       duration = 0.0,
                       annotations = null,
                       incidents = listOf(),
-                  )
-              ),
+                  )),
       )
 
   @Test
@@ -192,8 +190,7 @@ class FerrostarCoreTest {
                   Waypoint(
                       coordinate = GeographicCoordinate(60.5349908, -149.5485806),
                       kind = WaypointKind.BREAK,
-                  )
-              ),
+                  )),
       )
       fail("Expected the request to fail")
     } catch (e: InvalidStatusCodeException) {
@@ -249,8 +246,7 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )
-                ),
+                    )),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -304,8 +300,7 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )
-                ),
+                    )),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -456,8 +451,7 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )
-                ),
+                    )),
         )
 
     assertEquals(listOf(mockRoute), routes)
@@ -546,8 +540,7 @@ class FerrostarCoreTest {
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
                         kind = WaypointKind.BREAK,
-                    )
-                ),
+                    )),
         )
 
     locationProvider.lastLocation =
@@ -574,8 +567,7 @@ class FerrostarCoreTest {
                           ): RouteDeviation {
                             return RouteDeviation.OffRoute(42.0)
                           }
-                        }
-                ),
+                        }),
             CourseFiltering.RAW,
         ),
     )

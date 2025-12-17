@@ -5,6 +5,7 @@ import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,6 @@ import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Uuid
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WellKnownRouteProvider
-import java.util.concurrent.TimeUnit
 
 /** Represents the complete state of the navigation session provided by FerrostarCore-RS. */
 data class NavigationState(
@@ -364,8 +364,7 @@ class FerrostarCore(
       if (tripState.deviation is RouteDeviation.OffRoute) {
         if (!_routeRequestInFlight && // We can't have a request in flight already
             isMinimumTimeBeforeRecalcExceeded(_lastAutomaticRecalculation) &&
-            isExceededLastLocationRecalculation(location)
-        ) {
+            isExceededLastLocationRecalculation(location)) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
                   this, tripState.deviation.deviationFromRouteLine, tripState.remainingWaypoints)
@@ -420,23 +419,23 @@ class FerrostarCore(
     foregroundServiceManager?.onNavigationStateUpdated(_state.value)
   }
 
-    // Don't recalculate again if the user hasn't moved much
-    private fun isExceededLastLocationRecalculation(location: UserLocation): Boolean {
-        return _lastRecalculationLocation?.let {
-            it.toAndroidLocation()
-                .distanceTo(location.toAndroidLocation()) > minimumMovementBeforeRecalculation
-        } != false
-    }
+  // Don't recalculate again if the user hasn't moved much
+  private fun isExceededLastLocationRecalculation(location: UserLocation): Boolean {
+    return _lastRecalculationLocation?.let {
+      it.toAndroidLocation().distanceTo(location.toAndroidLocation()) >
+          minimumMovementBeforeRecalculation
+    } != false
+  }
 
-    // Ensure a minimum cool down before a new route fetch
-    @VisibleForTesting
-    internal fun isMinimumTimeBeforeRecalcExceeded(lastAutomaticRecalculation: Long?): Boolean {
-        return lastAutomaticRecalculation?.let {
-            System.nanoTime() - it > TimeUnit.SECONDS.toNanos(minimumTimeBeforeRecalculation)
-        } ?: false
-    }
+  // Ensure a minimum cool down before a new route fetch
+  @VisibleForTesting
+  internal fun isMinimumTimeBeforeRecalcExceeded(lastAutomaticRecalculation: Long?): Boolean {
+    return lastAutomaticRecalculation?.let {
+      System.nanoTime() - it > TimeUnit.SECONDS.toNanos(minimumTimeBeforeRecalculation)
+    } ?: false
+  }
 
-    override fun onLocationUpdated(location: UserLocation) {
+  override fun onLocationUpdated(location: UserLocation) {
     _lastLocation = location
     val session = _navigationSession
 
