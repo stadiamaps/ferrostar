@@ -343,10 +343,11 @@ class FerrostarCoreTest {
                 ),
         )
 
-    val lessThan10Seconds = System.nanoTime() - 10.seconds.inWholeNanoseconds
-    val lessThan5Seconds = System.nanoTime() - 5.1.seconds.inWholeNanoseconds
-    assertTrue(core.isMinimumTimeBeforeRecalcExceeded(lessThan10Seconds))
-    assertTrue(core.isMinimumTimeBeforeRecalcExceeded(lessThan5Seconds))
+    // Note: the default minimum recalculation threshold is 5 seconds.
+    val tenSecondsAgo = System.nanoTime() - 10.seconds.inWholeNanoseconds
+    val moreThanFiveSecondsAgo = System.nanoTime() - 5.1.seconds.inWholeNanoseconds
+    assertTrue(core.isMinimumTimeBeforeRecalcExceeded(tenSecondsAgo))
+    assertTrue(core.isMinimumTimeBeforeRecalcExceeded(moreThanFiveSecondsAgo))
   }
 
   @Test
@@ -386,14 +387,16 @@ class FerrostarCoreTest {
                 ),
         )
 
-    val lessThanFourSecs = System.nanoTime() - 4.seconds.inWholeNanoseconds
-    val lessThanThreeSecs = System.nanoTime() - 3.seconds.inWholeNanoseconds
-    val lessThanTwoSecs = System.nanoTime() - 2.seconds.inWholeNanoseconds
-    val lessThanOneSecs = System.nanoTime() - 1.seconds.inWholeNanoseconds
-    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(lessThanFourSecs))
-    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(lessThanThreeSecs))
-    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(lessThanTwoSecs))
-    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(lessThanOneSecs))
+    // Note: the default minimum recalculation threshold is 5 seconds.
+    val fourSecondsAgo = System.nanoTime() - 4.seconds.inWholeNanoseconds
+    val threeSecondsAgo = System.nanoTime() - 3.seconds.inWholeNanoseconds
+    val twoSecondsAgo = System.nanoTime() - 2.seconds.inWholeNanoseconds
+    val oneSecondAgo = System.nanoTime() - 1.seconds.inWholeNanoseconds
+
+    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(fourSecondsAgo))
+    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(threeSecondsAgo))
+    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(twoSecondsAgo))
+    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(oneSecondAgo))
   }
 
   @Test

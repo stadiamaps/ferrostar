@@ -72,7 +72,7 @@ class FerrostarCore(
   }
 
   /**
-   * The minimum time to wait before initiating another route recalculation.
+   * The minimum time (in seconds) to wait before initiating another route recalculation.
    *
    * This matters in the case that a user is off route, the framework calculates a new route, and
    * the user is determined to still be off the new route. This adds a minimum delay (default 5
@@ -134,6 +134,8 @@ class FerrostarCore(
   private val _navState: MutableStateFlow<NavState?> = MutableStateFlow(null)
   private var _state: MutableStateFlow<NavigationState> = MutableStateFlow(NavigationState())
   private var _routeRequestInFlight = false
+  // The last timestamp at which we triggered a recalculation,
+  // measured via System.nanoTime().
   private var _lastAutomaticRecalculation: Long? = null
   private var _lastLocation: UserLocation? = null
 
@@ -364,7 +366,7 @@ class FerrostarCore(
       if (tripState.deviation is RouteDeviation.OffRoute) {
         if (!_routeRequestInFlight && // We can't have a request in flight already
             isMinimumTimeBeforeRecalcExceeded(_lastAutomaticRecalculation) &&
-            isExceededLastLocationRecalculation(location)) {
+            hasUserMovedSignificantlySinceLastRecalc(location)) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
                   this, tripState.deviation.deviationFromRouteLine, tripState.remainingWaypoints)
@@ -420,7 +422,7 @@ class FerrostarCore(
   }
 
   // Don't recalculate again if the user hasn't moved much
-  private fun isExceededLastLocationRecalculation(location: UserLocation): Boolean {
+  private fun hasUserMovedSignificantlySinceLastRecalc(location: UserLocation): Boolean {
     return _lastRecalculationLocation?.let {
       it.toAndroidLocation().distanceTo(location.toAndroidLocation()) >
           minimumMovementBeforeRecalculation
