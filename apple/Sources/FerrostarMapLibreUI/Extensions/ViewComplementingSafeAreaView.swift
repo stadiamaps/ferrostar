@@ -35,7 +35,7 @@ extension View {
     /// safeAreaPadding - in this case, fall back to regular padding.
     func safeAreaPaddingPolyfill(_ insets: EdgeInsets) -> AnyView {
         if #available(iOS 17.0, *) {
-            AnyView(self.safeAreaPadding(insets))
+            AnyView(safeAreaPadding(insets))
         } else {
             AnyView(padding(insets))
         }
