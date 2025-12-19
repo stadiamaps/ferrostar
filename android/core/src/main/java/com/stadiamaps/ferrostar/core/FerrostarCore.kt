@@ -73,13 +73,13 @@ class FerrostarCore(
   }
 
   /**
-   * The minimum time (in seconds) to wait before initiating another route recalculation.
+   * The minimum duration to wait before initiating another route recalculation.
    *
    * This matters in the case that a user is off route, the framework calculates a new route, and
    * the user is determined to still be off the new route. This adds a minimum delay (default 5
    * seconds).
    */
-  var minimumTimeBeforeRecalculation: Long = 5
+  var minimumTimeBeforeRecalculation: Duration = 5.seconds
 
   /**
    * The minimum distance (in meters) the user must move before performing another route
@@ -367,7 +367,7 @@ class FerrostarCore(
       if (tripState.deviation is RouteDeviation.OffRoute) {
         if (!_routeRequestInFlight && // We can't have a request in flight already
             hasWaitedMinimumRecalculationDelay(
-                _lastAutomaticRecalculation, minimumTimeBeforeRecalculation.seconds) &&
+                _lastAutomaticRecalculation, minimumTimeBeforeRecalculation) &&
             hasUserMovedSignificantlySinceLastRecalc(location)) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
