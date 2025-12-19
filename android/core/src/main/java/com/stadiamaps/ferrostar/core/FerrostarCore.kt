@@ -1,9 +1,12 @@
 package com.stadiamaps.ferrostar.core
 
+import androidx.annotation.VisibleForTesting
 import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
 import java.util.concurrent.Executors
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,13 +73,13 @@ class FerrostarCore(
   }
 
   /**
-   * The minimum time to wait before initiating another route recalculation.
+   * The minimum duration to wait before initiating another route recalculation.
    *
    * This matters in the case that a user is off route, the framework calculates a new route, and
    * the user is determined to still be off the new route. This adds a minimum delay (default 5
    * seconds).
    */
-  var minimumTimeBeforeRecalculation: Long = 5
+  var minimumTimeBeforeRecalculation: Duration = 5.seconds
 
   /**
    * The minimum distance (in meters) the user must move before performing another route
@@ -132,6 +135,8 @@ class FerrostarCore(
   private val _navState: MutableStateFlow<NavState?> = MutableStateFlow(null)
   private var _state: MutableStateFlow<NavigationState> = MutableStateFlow(NavigationState())
   private var _routeRequestInFlight = false
+  // The last timestamp at which we triggered a recalculation,
+  // measured via System.nanoTime().
   private var _lastAutomaticRecalculation: Long? = null
   private var _lastLocation: UserLocation? = null
 
@@ -361,15 +366,9 @@ class FerrostarCore(
     if (tripState is TripState.Navigating) {
       if (tripState.deviation is RouteDeviation.OffRoute) {
         if (!_routeRequestInFlight && // We can't have a request in flight already
-            _lastAutomaticRecalculation?.let {
-              // Ensure a minimum cool down before a new route fetch
-              System.nanoTime() - it > minimumTimeBeforeRecalculation
-            } != false &&
-            _lastRecalculationLocation?.let {
-              // Don't recalculate again if the user hasn't moved much
-              it.toAndroidLocation().distanceTo(location.toAndroidLocation()) >
-                  minimumMovementBeforeRecalculation
-            } != false) {
+            hasWaitedMinimumRecalculationDelay(
+                _lastAutomaticRecalculation, minimumTimeBeforeRecalculation) &&
+            hasUserMovedSignificantlySinceLastRecalc(location)) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
                   this, tripState.deviation.deviationFromRouteLine, tripState.remainingWaypoints)
@@ -424,6 +423,18 @@ class FerrostarCore(
     foregroundServiceManager?.onNavigationStateUpdated(_state.value)
   }
 
+  /**
+   * Has the user moved enough since the time we recalculated the route?
+   *
+   * This predicate avoids rapid recomputation when the route is unlikely to change.
+   */
+  private fun hasUserMovedSignificantlySinceLastRecalc(location: UserLocation): Boolean {
+    return _lastRecalculationLocation?.let {
+      it.toAndroidLocation().distanceTo(location.toAndroidLocation()) >
+          minimumMovementBeforeRecalculation
+    } ?: true // Default to true if no prior automatic recalculation
+  }
+
   override fun onLocationUpdated(location: UserLocation) {
     _lastLocation = location
     val session = _navigationSession
@@ -445,4 +456,19 @@ class FerrostarCore(
   override fun onHeadingUpdated(heading: Heading) {
     // TODO: Publish new heading to flow
   }
+}
+
+/**
+ * Has enough time elapsed since the last automatic recalculation?
+ *
+ * This ensures a minimum cool down before fetching a new route.
+ */
+@VisibleForTesting
+internal fun hasWaitedMinimumRecalculationDelay(
+    lastAutomaticRecalculation: Long?,
+    minimumCooldown: Duration
+): Boolean {
+  return lastAutomaticRecalculation?.let {
+    System.nanoTime() - it > minimumCooldown.inWholeNanoseconds
+  } ?: true // Default to true if no prior automatic recalculation
 }

@@ -50,14 +50,14 @@ private val valhallaEndpointUrl = "https://api.stadiamaps.com/navigate/v1"
 class MockPostRouteRequestGenerator : RouteRequestGenerator {
   override fun generateRequest(
       userLocation: UserLocation,
-      waypoints: List<Waypoint>
+      waypoints: List<Waypoint>,
   ): RouteRequest = RouteRequest.HttpPost(valhallaEndpointUrl, mapOf(), byteArrayOf())
 }
 
 class MockGetRouteRequestGenerator : RouteRequestGenerator {
   override fun generateRequest(
       userLocation: UserLocation,
-      waypoints: List<Waypoint>
+      waypoints: List<Waypoint>,
   ): RouteRequest = RouteRequest.HttpGet(valhallaEndpointUrl, mapOf())
 }
 
@@ -88,10 +88,10 @@ class MockForegroundNotificationManager : ForegroundServiceManager {
 class FerrostarCoreTest {
   private val errorBody =
       """
-        {
-            "error": "No valid authentication provided."
-        }
-    """
+      {
+          "error": "No valid authentication provided."
+      }
+      """
           .trimIndent()
           .toResponseBody(MediaTypes.MEDIATYPE_JSON)
 
@@ -105,7 +105,8 @@ class FerrostarCoreTest {
           maneuverModifier = ManeuverModifier.STRAIGHT,
           roundaboutExitDegrees = null,
           laneInfo = null,
-          exitNumbers = emptyList())
+          exitNumbers = emptyList(),
+      )
   private val mockRoute =
       Route(
           geometry = mockGeom,
@@ -126,11 +127,14 @@ class FerrostarCoreTest {
                                   primaryContent = instructionContent,
                                   secondaryContent = null,
                                   subContent = null,
-                                  triggerDistanceBeforeManeuver = 42.0)),
+                                  triggerDistanceBeforeManeuver = 42.0,
+                              )),
                       spokenInstructions = listOf(),
                       duration = 0.0,
                       annotations = null,
-                      incidents = listOf())))
+                      incidents = listOf(),
+                  )),
+      )
 
   @Test
   fun test401UnauthorizedRouteResponse() = runTest {
@@ -146,7 +150,8 @@ class FerrostarCoreTest {
             routeAdapter =
                 RouteAdapter(
                     requestGenerator = MockPostRouteRequestGenerator(),
-                    responseParser = MockRouteResponseParser(routes = listOf())),
+                    responseParser = MockRouteResponseParser(routes = listOf()),
+                ),
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
@@ -157,7 +162,9 @@ class FerrostarCoreTest {
                     stepAdvanceManual(),
                     stepAdvanceManual(),
                     RouteDeviationTracking.None,
-                    CourseFiltering.RAW))
+                    CourseFiltering.RAW,
+                ),
+        )
 
     try {
       // Tests that the core generates a request and attempts to process it, but throws due to the
@@ -173,12 +180,15 @@ class FerrostarCoreTest {
                   horizontalAccuracy = 0.0,
                   courseOverGround = null,
                   timestamp = Instant.now(),
-                  speed = null),
+                  speed = null,
+              ),
           waypoints =
               listOf(
                   Waypoint(
                       coordinate = GeographicCoordinate(60.5349908, -149.5485806),
-                      kind = WaypointKind.BREAK)))
+                      kind = WaypointKind.BREAK,
+                  )),
+      )
       fail("Expected the request to fail")
     } catch (e: InvalidStatusCodeException) {
       assertEquals(401, e.statusCode)
@@ -199,7 +209,8 @@ class FerrostarCoreTest {
             routeAdapter =
                 RouteAdapter(
                     requestGenerator = MockPostRouteRequestGenerator(),
-                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
+                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute)),
+                ),
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
@@ -210,7 +221,9 @@ class FerrostarCoreTest {
                     stepAdvanceManual(),
                     stepAdvanceManual(),
                     RouteDeviationTracking.None,
-                    CourseFiltering.RAW))
+                    CourseFiltering.RAW,
+                ),
+        )
     val routes =
         core.getRoutes(
             initialLocation =
@@ -223,12 +236,15 @@ class FerrostarCoreTest {
                     horizontalAccuracy = 6.0,
                     courseOverGround = null,
                     timestamp = Instant.now(),
-                    speed = null),
+                    speed = null,
+                ),
             waypoints =
                 listOf(
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
-                        kind = WaypointKind.BREAK)))
+                        kind = WaypointKind.BREAK,
+                    )),
+        )
 
     assertEquals(listOf(mockRoute), routes)
   }
@@ -247,7 +263,8 @@ class FerrostarCoreTest {
             routeAdapter =
                 RouteAdapter(
                     requestGenerator = MockGetRouteRequestGenerator(),
-                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
+                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute)),
+                ),
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = SimulatedLocationProvider(),
@@ -258,7 +275,9 @@ class FerrostarCoreTest {
                     stepAdvanceManual(),
                     stepAdvanceManual(),
                     RouteDeviationTracking.None,
-                    CourseFiltering.RAW))
+                    CourseFiltering.RAW,
+                ),
+        )
     val routes =
         core.getRoutes(
             initialLocation =
@@ -271,12 +290,15 @@ class FerrostarCoreTest {
                     horizontalAccuracy = 6.0,
                     courseOverGround = null,
                     timestamp = Instant.now(),
-                    speed = null),
+                    speed = null,
+                ),
             waypoints =
                 listOf(
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
-                        kind = WaypointKind.BREAK)))
+                        kind = WaypointKind.BREAK,
+                    )),
+        )
 
     assertEquals(listOf(mockRoute), routes)
   }
@@ -294,7 +316,7 @@ class FerrostarCoreTest {
 
           override suspend fun getRoutes(
               userLocation: UserLocation,
-              waypoints: List<Waypoint>
+              waypoints: List<Waypoint>,
           ): List<Route> {
             wasCalled = true
             return listOf(mockRoute)
@@ -314,7 +336,9 @@ class FerrostarCoreTest {
                     stepAdvanceManual(),
                     stepAdvanceManual(),
                     RouteDeviationTracking.None,
-                    CourseFiltering.RAW))
+                    CourseFiltering.RAW,
+                ),
+        )
     val routes =
         core.getRoutes(
             initialLocation =
@@ -327,12 +351,15 @@ class FerrostarCoreTest {
                     horizontalAccuracy = 6.0,
                     courseOverGround = null,
                     timestamp = Instant.now(),
-                    speed = null),
+                    speed = null,
+                ),
             waypoints =
                 listOf(
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
-                        kind = WaypointKind.BREAK)))
+                        kind = WaypointKind.BREAK,
+                    )),
+        )
 
     assertEquals(listOf(mockRoute), routes)
     assert(routeProvider.wasCalled)
@@ -355,7 +382,7 @@ class FerrostarCoreTest {
       override fun correctiveActionForDeviation(
           core: FerrostarCore,
           deviationInMeters: Double,
-          remainingWaypoints: List<Waypoint>
+          remainingWaypoints: List<Waypoint>,
       ): CorrectiveAction {
         called = true
         assertEquals(42.0, deviationInMeters, Double.MIN_VALUE)
@@ -379,7 +406,8 @@ class FerrostarCoreTest {
             routeAdapter =
                 RouteAdapter(
                     requestGenerator = MockPostRouteRequestGenerator(),
-                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute))),
+                    responseParser = MockRouteResponseParser(routes = listOf(mockRoute)),
+                ),
             httpClient =
                 OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
             locationProvider = locationProvider,
@@ -390,7 +418,9 @@ class FerrostarCoreTest {
                     stepAdvanceManual(),
                     stepAdvanceManual(),
                     RouteDeviationTracking.None,
-                    CourseFiltering.RAW))
+                    CourseFiltering.RAW,
+                ),
+        )
 
     val deviationHandler = DeviationHandler()
     core.deviationHandler = deviationHandler
@@ -410,12 +440,15 @@ class FerrostarCoreTest {
                     horizontalAccuracy = 6.0,
                     courseOverGround = null,
                     timestamp = Instant.now(),
-                    speed = null),
+                    speed = null,
+                ),
             waypoints =
                 listOf(
                     Waypoint(
                         coordinate = GeographicCoordinate(lat = 60.5349908, lng = -149.5485806),
-                        kind = WaypointKind.BREAK)))
+                        kind = WaypointKind.BREAK,
+                    )),
+        )
 
     locationProvider.lastLocation =
         UserLocation(
@@ -423,7 +456,8 @@ class FerrostarCoreTest {
             horizontalAccuracy = 6.0,
             courseOverGround = null,
             timestamp = Instant.now(),
-            speed = null)
+            speed = null,
+        )
     core.startNavigation(
         routes.first(),
         NavigationControllerConfig(
@@ -436,12 +470,14 @@ class FerrostarCoreTest {
                         object : RouteDeviationDetector {
                           override fun checkRouteDeviation(
                               route: Route,
-                              tripState: TripState
+                              tripState: TripState,
                           ): RouteDeviation {
                             return RouteDeviation.OffRoute(42.0)
                           }
                         }),
-            CourseFiltering.RAW))
+            CourseFiltering.RAW,
+        ),
+    )
 
     assert(foregroundServiceManager.startCalled)
     assert(deviationHandler.called)
