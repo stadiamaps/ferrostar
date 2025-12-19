@@ -5,7 +5,8 @@ import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -365,7 +366,8 @@ class FerrostarCore(
     if (tripState is TripState.Navigating) {
       if (tripState.deviation is RouteDeviation.OffRoute) {
         if (!_routeRequestInFlight && // We can't have a request in flight already
-            isMinimumTimeBeforeRecalcExceeded(_lastAutomaticRecalculation) &&
+            hasWaitedMinimumRecalculationDelay(
+                _lastAutomaticRecalculation, minimumTimeBeforeRecalculation.seconds) &&
             hasUserMovedSignificantlySinceLastRecalc(location)) {
           val action =
               deviationHandler?.correctiveActionForDeviation(
@@ -421,20 +423,16 @@ class FerrostarCore(
     foregroundServiceManager?.onNavigationStateUpdated(_state.value)
   }
 
-  // Don't recalculate again if the user hasn't moved much
+  /**
+   * Has the user moved enough since the time we recalculated the route?
+   *
+   * This predicate avoids rapid recomputation when the route is unlikely to change.
+   */
   private fun hasUserMovedSignificantlySinceLastRecalc(location: UserLocation): Boolean {
     return _lastRecalculationLocation?.let {
       it.toAndroidLocation().distanceTo(location.toAndroidLocation()) >
           minimumMovementBeforeRecalculation
-    } != false
-  }
-
-  // Ensure a minimum cool down before a new route fetch
-  @VisibleForTesting
-  internal fun isMinimumTimeBeforeRecalcExceeded(lastAutomaticRecalculation: Long?): Boolean {
-    return lastAutomaticRecalculation?.let {
-      System.nanoTime() - it > TimeUnit.SECONDS.toNanos(minimumTimeBeforeRecalculation)
-    } ?: false
+    } ?: true // Default to true if no prior automatic recalculation
   }
 
   override fun onLocationUpdated(location: UserLocation) {
@@ -458,4 +456,19 @@ class FerrostarCore(
   override fun onHeadingUpdated(heading: Heading) {
     // TODO: Publish new heading to flow
   }
+}
+
+/**
+ * Has enough time elapsed since the last automatic recalculation?
+ *
+ * This ensures a minimum cool down before fetching a new route.
+ */
+@VisibleForTesting
+internal fun hasWaitedMinimumRecalculationDelay(
+    lastAutomaticRecalculation: Long?,
+    minimumCooldown: Duration
+): Boolean {
+  return lastAutomaticRecalculation?.let {
+    System.nanoTime() - it > minimumCooldown.inWholeNanoseconds
+  } ?: true // Default to true if no prior automatic recalculation
 }

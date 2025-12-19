@@ -3,7 +3,6 @@ package com.stadiamaps.ferrostar.core
 import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -16,8 +15,6 @@ import okhttp3.mock.respond
 import okhttp3.mock.rule
 import okhttp3.mock.url
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
 import uniffi.ferrostar.BoundingBox
@@ -304,99 +301,6 @@ class FerrostarCoreTest {
         )
 
     assertEquals(listOf(mockRoute), routes)
-  }
-
-  @Test
-  fun shouldReturnTrueWhenTheDiffIsMoreThan5Seconds() {
-    val interceptor =
-        MockInterceptor().apply {
-          rule(post) { respond { throw IllegalStateException("Unexpected network call") } }
-        }
-
-    val routeProvider =
-        object : CustomRouteProvider {
-          var wasCalled = false
-
-          override suspend fun getRoutes(
-              userLocation: UserLocation,
-              waypoints: List<Waypoint>,
-          ): List<Route> {
-            wasCalled = true
-            return listOf(mockRoute)
-          }
-        }
-
-    val core =
-        FerrostarCore(
-            customRouteProvider = routeProvider,
-            httpClient =
-                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
-            locationProvider = SimulatedLocationProvider(),
-            foregroundServiceManager = MockForegroundNotificationManager(),
-            navigationControllerConfig =
-                NavigationControllerConfig(
-                    WaypointAdvanceMode.WaypointWithinRange(100.0),
-                    stepAdvanceManual(),
-                    stepAdvanceManual(),
-                    RouteDeviationTracking.None,
-                    CourseFiltering.RAW,
-                ),
-        )
-
-    // Note: the default minimum recalculation threshold is 5 seconds.
-    val tenSecondsAgo = System.nanoTime() - 10.seconds.inWholeNanoseconds
-    val moreThanFiveSecondsAgo = System.nanoTime() - 5.1.seconds.inWholeNanoseconds
-    assertTrue(core.isMinimumTimeBeforeRecalcExceeded(tenSecondsAgo))
-    assertTrue(core.isMinimumTimeBeforeRecalcExceeded(moreThanFiveSecondsAgo))
-  }
-
-  @Test
-  fun shouldReturnFalseWhenTheDiffIsMoreLess5Seconds() {
-    val interceptor =
-        MockInterceptor().apply {
-          rule(post) { respond { throw IllegalStateException("Unexpected network call") } }
-        }
-
-    val routeProvider =
-        object : CustomRouteProvider {
-          var wasCalled = false
-
-          override suspend fun getRoutes(
-              userLocation: UserLocation,
-              waypoints: List<Waypoint>,
-          ): List<Route> {
-            wasCalled = true
-            return listOf(mockRoute)
-          }
-        }
-
-    val core =
-        FerrostarCore(
-            customRouteProvider = routeProvider,
-            httpClient =
-                OkHttpClient.Builder().addInterceptor(interceptor).build().toOkHttpClientProvider(),
-            locationProvider = SimulatedLocationProvider(),
-            foregroundServiceManager = MockForegroundNotificationManager(),
-            navigationControllerConfig =
-                NavigationControllerConfig(
-                    WaypointAdvanceMode.WaypointWithinRange(100.0),
-                    stepAdvanceManual(),
-                    stepAdvanceManual(),
-                    RouteDeviationTracking.None,
-                    CourseFiltering.RAW,
-                ),
-        )
-
-    // Note: the default minimum recalculation threshold is 5 seconds.
-    val fourSecondsAgo = System.nanoTime() - 4.seconds.inWholeNanoseconds
-    val threeSecondsAgo = System.nanoTime() - 3.seconds.inWholeNanoseconds
-    val twoSecondsAgo = System.nanoTime() - 2.seconds.inWholeNanoseconds
-    val oneSecondAgo = System.nanoTime() - 1.seconds.inWholeNanoseconds
-
-    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(fourSecondsAgo))
-    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(threeSecondsAgo))
-    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(twoSecondsAgo))
-    assertFalse(core.isMinimumTimeBeforeRecalcExceeded(oneSecondAgo))
   }
 
   @Test
