@@ -92,7 +92,7 @@ export class FerrostarCore implements LocationUpdateListener {
    * the user is determined to still be off the new route. This adds a minimum delay (default 5
    * seconds).
    */
-  minimumTimeBeforeRecalculaton: number = 5;
+  minimumTimeBeforeRecalculation: number = 5;
 
   /**
    * Controls what happens when the user deviates from the route.
@@ -301,7 +301,7 @@ export class FerrostarCore implements LocationUpdateListener {
       // We have to do some weird thing here with hrTime since JavaScript doesn't have a nice nanoseoncds method.
       const isGreaterThanMinimumTime = this._lastAutomaticRecalculation
         ? getNanoTime() - this._lastAutomaticRecalculation >
-          this.minimumTimeBeforeRecalculaton
+          this.minimumTimeBeforeRecalculation
         : true;
 
       if (this._routeRequestInFlight || !isGreaterThanMinimumTime) {

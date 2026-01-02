@@ -1,6 +1,6 @@
 import Foundation
 
-/// A generic prodocol describing a network session capable of loading URL requests.
+/// A generic protocol describing a network session capable of loading URL requests.
 ///
 /// This exists to allow mocking in test code. A conformance is provided for `URLSession`,
 /// which should be used for production code.

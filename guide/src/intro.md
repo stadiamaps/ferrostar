@@ -101,7 +101,7 @@ We are tracking status via the following issues:
 ### On the web
 
 We consider the web platform to be rougher **beta** quality than the native mobile platforms.
-We do our best not to introduce any breaknig changes that are web-specific,
+We do our best not to introduce any breaking changes that are web-specific,
 but web (particularly the UI layer) is not quite as mature as mobile.
 
 ## How to use this guide

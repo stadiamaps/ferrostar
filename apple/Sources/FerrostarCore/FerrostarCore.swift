@@ -81,7 +81,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
     /// This matters in the case that a user is off route, the framework calculates a new route,
     /// and the user is determined to still be off the new route.
     /// This adds a minimum delay (default 5 seconds).
-    public var minimumTimeBeforeRecalculaton: TimeInterval = 5
+    public var minimumTimeBeforeRecalculation: TimeInterval = 5
 
     /// The minimum distance (in meters) the user must move before performing another route recalculation.
     ///
@@ -444,7 +444,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                           // Ensure a minimum cool down before a new route fetch
                           self.lastAutomaticRecalculation?.timeIntervalSinceNow ?? -TimeInterval
                           .greatestFiniteMagnitude < -self
-                          .minimumTimeBeforeRecalculaton,
+                          .minimumTimeBeforeRecalculation,
                           // Don't recalculate again if the user hasn't moved much
                           self.lastRecalculationLocation?.clLocation
                           .distance(from: location.clLocation) ?? .greatestFiniteMagnitude
@@ -499,7 +499,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
                     // Otherwise we'll ignore it.
                     spokenInstructionToAlert = spokenInstruction
 
-                    // This sholud not happen on the main queue as it can block;
+                    // This should not happen on the main queue as it can block;
                     // we'll probably remove the need for this eventually
                     // by making FerrostarCore its own actor
                     DispatchQueue.global(qos: .default).async {
