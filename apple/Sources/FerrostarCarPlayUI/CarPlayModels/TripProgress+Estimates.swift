@@ -16,14 +16,14 @@ extension TripProgress {
 
         mapTemplate.updateEstimates(estimates, for: session.trip)
 
-        if let currentManeuer = session.upcomingManeuvers.first {
+        if let currentManeuver = session.upcomingManeuvers.first {
             let estimates = CPTravelEstimates.fromFerrostarForStep(
                 progress: self,
                 units: units,
                 locale: .current
             )
 
-            session.updateEstimates(estimates, for: currentManeuer)
+            session.updateEstimates(estimates, for: currentManeuver)
         }
     }
 }

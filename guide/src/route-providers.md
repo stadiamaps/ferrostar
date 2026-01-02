@@ -218,7 +218,7 @@ class MyCustomRouteProvider(
 
     val jsonAdapter = moshi.adapter(MyOsrmRoute::class.java)
     // Using the intermediate OSRM route JSON. We map our custom response
-    // data into ferrostar waypionts.
+    // data into ferrostar waypoints.
     val routes = myResponse.routes {
       val osrmRoute = jsonAdapter.toJson(it.route).encodeToByteArray()
       createRouteFromOsrmRoute(osrmRoute, outWaypoints, MyCustomRouteProvider.POLYLINE_PRECISION)

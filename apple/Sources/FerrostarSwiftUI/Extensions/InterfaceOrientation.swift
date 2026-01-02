@@ -7,7 +7,7 @@ public extension GeometryProxy {
     /// with other methods like size classes.
     ///
     /// NOTE: This is a public computed property,
-    /// but you sholud not rely on this in your applications as we may ditch this
+    /// but you should not rely on this in your applications as we may ditch this
     /// if a better model presents itself.
     /// It is only public so that we can use it internally to other Ferrostar modules.
     ///
