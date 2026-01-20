@@ -72,11 +72,11 @@ public struct NavigationMapView: View {
                 // Overlay any additional user layers.
                 userLayers
             }
-            .mapViewContentInset(calculatedMapViewInsets(for: geometry).uiEdgeInsets)
+            .mapContentInset(calculatedMapViewInsets(for: geometry).uiEdgeInsets)
             .mapControls {
                 // No controls
             }
-            .onStyleLoaded(onStyleLoaded)
+            .onMapStyleLoaded(onStyleLoaded)
             .ignoresSafeArea(.all)
         }
     }
