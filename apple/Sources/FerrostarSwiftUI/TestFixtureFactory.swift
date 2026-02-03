@@ -1,4 +1,4 @@
-/// Various helpers that generate views for previews.
+// Various helpers that generate views for previews.
 
 import FerrostarCoreFFI
 import Foundation
@@ -15,8 +15,6 @@ extension TestFixtureFactory {
 }
 
 struct VisualInstructionContentFactory: TestFixtureFactory {
-    init() {}
-
     var textBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
     func text(_ builder: @escaping (Int) -> String) -> Self {
         var copy = self
@@ -37,8 +35,6 @@ struct VisualInstructionContentFactory: TestFixtureFactory {
 }
 
 struct VisualInstructionFactory: TestFixtureFactory {
-    init() {}
-
     var primaryContentBuilder: (Int) -> VisualInstructionContent = { n in
         VisualInstructionContentFactory().build(n)
     }
@@ -61,30 +57,29 @@ struct VisualInstructionFactory: TestFixtureFactory {
     }
 }
 
-struct RouteStepFactory: TestFixtureFactory {
-    init() {}
-    var visualInstructionBuilder: (Int) -> VisualInstruction = { n in VisualInstructionFactory().build(n) }
-    var roadNameBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
-
-    func build(_ n: Int = 0) -> RouteStep {
-        RouteStep(
-            geometry: [],
-            distance: 100,
-            duration: 99,
-            roadName: roadNameBuilder(n),
-            exits: [],
-            instruction: "Walk west on \(roadNameBuilder(n))",
-            visualInstructions: [visualInstructionBuilder(n)],
-            spokenInstructions: [],
-            annotations: nil,
-            incidents: []
-        )
-    }
+struct RouteStepFactory: TestFixtureFactory { var visualInstructionBuilder: (Int) -> VisualInstruction = { n in
+    VisualInstructionFactory().build(n)
 }
 
-struct RoadNameFactory: TestFixtureFactory {
-    init() {}
-    var baseNameBuilder: (Int) -> String = { _ in "Ave" }
+var roadNameBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
+
+func build(_ n: Int = 0) -> RouteStep {
+    RouteStep(
+        geometry: [],
+        distance: 100,
+        duration: 99,
+        roadName: roadNameBuilder(n),
+        exits: [],
+        instruction: "Walk west on \(roadNameBuilder(n))",
+        visualInstructions: [visualInstructionBuilder(n)],
+        spokenInstructions: [],
+        annotations: nil,
+        incidents: []
+    )
+}
+}
+
+struct RoadNameFactory: TestFixtureFactory { var baseNameBuilder: (Int) -> String = { _ in "Ave" }
 
     func baseName(_ builder: @escaping (Int) -> String) -> Self {
         var copy = self

@@ -50,7 +50,7 @@ let mockRoute = Route(
     )]
 )
 
-// Mocked route adapters
+/// Mocked route adapters
 let mockPOSTRouteAdapter = RouteAdapter(
     requestGenerator: MockPOSTRouteRequestGenerator(),
     responseParser: MockRouteResponseParser(routes: [mockRoute])
@@ -415,7 +415,7 @@ final class FerrostarCoreTests: XCTestCase {
             snappedLocationCourseFiltering: .raw
         )
 
-        try core.startNavigation(route: routes.first!, config: config)
+        try core.startNavigation(route: XCTUnwrap(routes.first), config: config)
 
         await fulfillment(of: [routeDeviationCallbackExp], timeout: 1.0)
         await fulfillment(of: [loadedAltRoutesExp], timeout: 1.0)

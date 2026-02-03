@@ -37,7 +37,7 @@ final class AnnotationPublisherTests: XCTestCase {
         wait(for: [exp], timeout: 10)
     }
 
-    func testInvalidJSON() throws {
+    func testInvalidJSON() {
         let exp = expectation(description: "json decoder error")
 
         let annotation = AnnotationPublisher<ValhallaExtendedOSRMAnnotation>.valhallaExtendedOSRM { error in

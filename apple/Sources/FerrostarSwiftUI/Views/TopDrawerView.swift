@@ -106,7 +106,7 @@ private struct Handle: View {
 
     var backgroundTopPadding: CGFloat
 
-    // Style
+    /// Style
     var foregroundColor: Color = .gray.opacity(0.7)
 
     var blurStyle: UIBlurEffect.Style {
@@ -159,8 +159,7 @@ private struct BlurView: UIViewRepresentable {
 
     func makeUIView(context _: Context) -> UIVisualEffectView {
         let blurEffect = UIBlurEffect(style: style)
-        let blurView = UIVisualEffectView(effect: blurEffect)
-        return blurView
+        return UIVisualEffectView(effect: blurEffect)
     }
 
     func updateUIView(_: UIVisualEffectView, context _: Context) {

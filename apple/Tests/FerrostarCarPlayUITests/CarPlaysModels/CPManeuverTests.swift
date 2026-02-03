@@ -2,12 +2,11 @@ import CarPlay
 import FerrostarCoreFFI
 import MapKit
 import Testing
-
 @testable import FerrostarCarPlayUI
 
 struct CPManeuverTests {
     @Test("Maneuver init from ferrostar")
-    func maneuverInit() async throws {
+    func maneuverInit() {
         let instruction = VisualInstruction(
             primaryContent: .init(
                 text: "Maneuver instruction.",

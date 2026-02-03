@@ -6,7 +6,7 @@ import XCTest
 @testable import FerrostarSwiftUI
 
 final class ManeuverInstructionViewTests: XCTestCase {
-    func testCustomManeuverInstructionIcon() throws {
+    func testCustomManeuverInstructionIcon() {
         assertView {
             ManeuverInstructionView(
                 text: "Turn Right on Road Ave.",
@@ -24,7 +24,7 @@ final class ManeuverInstructionViewTests: XCTestCase {
         }
     }
 
-    func testFerrostarInstruction() throws {
+    func testFerrostarInstruction() {
         assertView {
             ManeuverInstructionView(
                 text: "Merge Left",
@@ -41,7 +41,7 @@ final class ManeuverInstructionViewTests: XCTestCase {
         }
     }
 
-    func testFerrostarInstructionDE() throws {
+    func testFerrostarInstructionDE() {
         assertView {
             ManeuverInstructionView(
                 text: "Links einfädeln",
@@ -58,7 +58,7 @@ final class ManeuverInstructionViewTests: XCTestCase {
         }
     }
 
-    func testRightToLeftInstruction() throws {
+    func testRightToLeftInstruction() {
         assertView {
             ManeuverInstructionView(
                 text: "ادمج يسارًا",

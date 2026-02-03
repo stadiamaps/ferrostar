@@ -30,7 +30,7 @@ struct LandscapeNavigationOverlayView: View {
     let isMuted: Bool
     let onMute: () -> Void
 
-    // NOTE: These don't really follow our usual coding style as they are internal.
+    /// NOTE: These don't really follow our usual coding style as they are internal.
     init(
         navigationState: NavigationState?,
         speedLimit: Measurement<UnitSpeed>? = nil,

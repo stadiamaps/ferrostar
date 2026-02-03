@@ -4,12 +4,11 @@ import FerrostarSwiftUI
 import MapKit
 import Testing
 import TestSupport
-
 @testable import FerrostarCarPlayUI
 
 struct CPTripTests {
     @Test("CPTrip creation")
-    func cpTripCreation() async throws {
+    func cpTripCreation() throws {
         let route = Route(
             geometry: [],
             bbox: .init(sw: .init(lat: 0, lng: 0), ne: .init(lat: 1, lng: 1)),
