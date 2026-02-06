@@ -5,6 +5,7 @@ import FerrostarCoreFFI
 import FerrostarSwiftUI
 import Foundation
 import MapLibreSwiftUI
+import StadiaMaps
 
 @MainActor
 private extension CPBarButton {
@@ -63,12 +64,17 @@ private extension DemoAppState {
     private var model: DemoModel
     private var interfaceController: CPInterfaceController
     private var session: CPNavigationSession?
+    private let carPlaySearch: DemoCarPlaySearch
 
     private let formatterCollection: FormatterCollection = FoundationFormatterCollection()
 
     init(model: DemoModel, interfaceController: CPInterfaceController) {
         self.model = model
         self.interfaceController = interfaceController
+        carPlaySearch = DemoCarPlaySearch(
+            apiKey: sharedAPIKeys.stadiaMapsAPIKey,
+            interfaceController: interfaceController
+        )
     }
 
     func createAndAttachTemplate() -> CPMapTemplate {
@@ -102,8 +108,15 @@ private extension DemoAppState {
     var isMuted: Bool { core.spokenInstructionObserver.isMuted }
 
     func chooseDestination(_ mapTemplate: CPMapTemplate) {
-        model.chooseDestination()
-        updateTemplate(mapTemplate)
+        carPlaySearch.searchNear(userLocation: model.lastLocation) {
+            guard let geometry = $0.geometry else {
+                throw DemoError.carplaySearchNoGeometry
+            }
+            self.model.updateDestination(to: geometry)
+            self.updateTemplate(mapTemplate)
+        } onError: { error in
+            self.model.handleError(error)
+        }
     }
 
     func loadRoute(_ destination: CLLocationCoordinate2D, _ mapTemplate: CPMapTemplate) async {
