@@ -12,12 +12,11 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar.core'
-    compileSdk 35
+    compileSdk = 36
     ndkVersion "26.2.11394342"
 
     defaultConfig {
         minSdk 25
-        targetSdk 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -30,6 +29,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    lint {
+        targetSdk 36
+    }
+    testOptions {
+        targetSdk 36
     }
 }
 
