@@ -200,14 +200,14 @@ public enum DefaultNavigationViewComponents {
         }
     }
 
-    @ViewBuilder public static func defaultOffRouteView(
+    public static func defaultOffRouteView(
         _: NavigationState?,
         size: Binding<CGSize>
     ) -> some View {
         OffRouteBannerView(size: size)
     }
 
-    @ViewBuilder public static func defaultInstructionsView(
+    public static func defaultInstructionsView(
         _ navigationState: NavigationState?,
         _ isExpanded: Binding<Bool>,
         _ sizeWhenNotExpanded: Binding<CGSize>

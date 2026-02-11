@@ -30,11 +30,12 @@ import Foundation
         }
     }
 
-    var delegate: (any LocationManagingDelegate)? { get {
-        current.delegate
-    } set {
-        current.delegate = newValue
-    }
+    var delegate: (any LocationManagingDelegate)? {
+        get {
+            current.delegate
+        } set {
+            current.delegate = newValue
+        }
     }
 
     var authorizationStatus: CLAuthorizationStatus {

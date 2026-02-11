@@ -301,9 +301,7 @@ public protocol FerrostarCoreDelegate: AnyObject {
             if let res = response as? HTTPURLResponse, res.statusCode < 200 || res.statusCode >= 300 {
                 throw FerrostarCoreError.httpStatusCode(res.statusCode)
             } else {
-                let routes = try routeAdapter.parseResponse(response: data)
-
-                return routes
+                return try routeAdapter.parseResponse(response: data)
             }
         }
     }

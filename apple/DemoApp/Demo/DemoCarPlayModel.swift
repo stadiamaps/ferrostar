@@ -78,7 +78,10 @@ private extension DemoAppState {
         return mapTemplate
     }
 
-    var appState: DemoAppState { model.appState }
+    var appState: DemoAppState {
+        model.appState
+    }
+
     var errorMessage: String? {
         get {
             model.errorMessage
@@ -88,8 +91,14 @@ private extension DemoAppState {
         }
     }
 
-    var core: FerrostarCore { model.core }
-    var coreState: NavigationState? { model.coreState }
+    var core: FerrostarCore {
+        model.core
+    }
+
+    var coreState: NavigationState? {
+        model.coreState
+    }
+
     var camera: MapViewCamera {
         get {
             model.camera
@@ -99,7 +108,9 @@ private extension DemoAppState {
         }
     }
 
-    var isMuted: Bool { core.spokenInstructionObserver.isMuted }
+    var isMuted: Bool {
+        core.spokenInstructionObserver.isMuted
+    }
 
     func chooseDestination(_ mapTemplate: CPMapTemplate) {
         model.chooseDestination()
@@ -167,8 +178,13 @@ private extension DemoAppState {
         }
     }
 
-    private var start: MKMapItem { MKMapItem(placemark: MKPlacemark(coordinate: model.origin)) }
-    private var end: MKMapItem { MKMapItem(placemark: MKPlacemark(coordinate: model.destination)) }
+    private var start: MKMapItem {
+        MKMapItem(placemark: MKPlacemark(coordinate: model.origin))
+    }
+
+    private var end: MKMapItem {
+        MKMapItem(placemark: MKPlacemark(coordinate: model.destination))
+    }
 
     private func trip(_ routes: [Route]) -> CPTrip {
         CPTrip.fromFerrostar(

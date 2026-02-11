@@ -5,7 +5,7 @@ final class MockURLSessionTests: XCTestCase {
     func testUninitializedSession() async throws {
         let session = MockURLSession()
         do {
-            _ = try await session.loadData(with: URLRequest(url: URL(string: "https://example.com/")!))
+            _ = try await session.loadData(with: URLRequest(url: XCTUnwrap(URL(string: "https://example.com/"))))
             XCTFail("Expected an error")
         } catch MockURLSessionError.noResponseMockForMethodAndURL {
             // Expected failure
@@ -13,9 +13,14 @@ final class MockURLSessionTests: XCTestCase {
     }
 
     func testMockedURL() async throws {
-        let url = URL(string: "https://example.com/registered")!
+        let url = try XCTUnwrap(URL(string: "https://example.com/registered"))
         let mockData = Data("foobar".utf8)
-        let mockResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: "HTTP/1.1", headerFields: nil)!
+        let mockResponse = try XCTUnwrap(HTTPURLResponse(
+            url: url,
+            statusCode: 200,
+            httpVersion: "HTTP/1.1",
+            headerFields: nil
+        ))
 
         let session = MockURLSession()
 
@@ -26,7 +31,8 @@ final class MockURLSessionTests: XCTestCase {
         XCTAssertEqual(response, mockResponse)
 
         do {
-            _ = try await session.loadData(with: URLRequest(url: URL(string: "https://example.com/unregistered")!))
+            _ = try await session
+                .loadData(with: URLRequest(url: XCTUnwrap(URL(string: "https://example.com/unregistered"))))
             XCTFail("Expected an error")
         } catch MockURLSessionError.noResponseMockForMethodAndURL {
             // Expected failure
