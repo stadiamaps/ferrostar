@@ -1,6 +1,5 @@
 import MapKit
 import Testing
-
 @testable import FerrostarCarPlayUI
 
 struct TestCarPlayMeasurementLength {
@@ -15,7 +14,7 @@ struct TestCarPlayMeasurementLength {
             (47.6, 50.0),
         ]
     )
-    func roundingUnder50(testCase: (input: Double, expected: Double)) throws {
+    func roundingUnder50(testCase: (input: Double, expected: Double)) {
         let measurement = CarPlayMeasurementLength(
             units: .imperial,
             distance: testCase.input * 0.3048 // Convert feet to meters
@@ -34,7 +33,7 @@ struct TestCarPlayMeasurementLength {
             (95.6, 100.0),
         ]
     )
-    func roundingBetween50And100(testCase: (input: Double, expected: Double)) throws {
+    func roundingBetween50And100(testCase: (input: Double, expected: Double)) {
         let measurement = CarPlayMeasurementLength(
             units: .imperial,
             distance: testCase.input * 0.3048
@@ -53,7 +52,7 @@ struct TestCarPlayMeasurementLength {
             (476.0, 500.0),
         ]
     )
-    func roundingBetween100And500(testCase: (input: Double, expected: Double)) throws {
+    func roundingBetween100And500(testCase: (input: Double, expected: Double)) {
         let measurement = CarPlayMeasurementLength(
             units: .imperial,
             distance: testCase.input * 0.3048
@@ -71,7 +70,7 @@ struct TestCarPlayMeasurementLength {
             (751.0, 800.0),
         ]
     )
-    func roundingAbove500(testCase: (input: Double, expected: Double)) throws {
+    func roundingAbove500(testCase: (input: Double, expected: Double)) {
         let measurement = CarPlayMeasurementLength(
             units: .imperial,
             distance: testCase.input * 0.3048
@@ -92,7 +91,7 @@ struct TestCarPlayMeasurementLength {
             (9.95, 10.0),
         ]
     )
-    func roundingKilometersUnder10(testCase: (input: Double, expected: Double)) throws {
+    func roundingKilometersUnder10(testCase: (input: Double, expected: Double)) {
         let measurement = CarPlayMeasurementLength(
             units: .metric,
             distance: testCase.input * 1000 // Convert km to meters
@@ -111,7 +110,7 @@ struct TestCarPlayMeasurementLength {
             (19.7, 20.0),
         ]
     )
-    func roundingKilometersAbove10(testCase: (input: Double, expected: Double)) throws {
+    func roundingKilometersAbove10(testCase: (input: Double, expected: Double)) {
         let measurement = CarPlayMeasurementLength(
             units: .metric,
             distance: testCase.input * 1000
@@ -130,7 +129,7 @@ struct TestCarPlayMeasurementLength {
             (9.95, 9.9),
         ]
     )
-    func roundingMilesUnder10(testCase: (input: Double, expected: Double)) throws {
+    func roundingMilesUnder10(testCase: (input: Double, expected: Double)) {
         let measurement = CarPlayMeasurementLength(
             units: .imperial,
             distance: testCase.input * 1609.34 // Convert miles to meters
@@ -149,7 +148,7 @@ struct TestCarPlayMeasurementLength {
             (19.7, 20.0),
         ]
     )
-    func roundingMilesAbove10(testCase: (input: Double, expected: Double)) throws {
+    func roundingMilesAbove10(testCase: (input: Double, expected: Double)) {
         let measurement = CarPlayMeasurementLength(
             units: .imperial,
             distance: testCase.input * 1609.34

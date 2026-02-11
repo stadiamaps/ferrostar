@@ -116,9 +116,17 @@ extension DemoModel {
         }
     }
 
-    var locationServicesEnabled: Bool { locationProvider.locationServicesEnabled }
-    var lastCoordinate: CLLocationCoordinate2D? { locationProvider.lastLocation?.clLocation.coordinate }
-    var horizontalAccuracy: Double? { locationProvider.lastLocation?.horizontalAccuracy }
+    var locationServicesEnabled: Bool {
+        locationProvider.locationServicesEnabled
+    }
+
+    var lastCoordinate: CLLocationCoordinate2D? {
+        locationProvider.lastLocation?.clLocation.coordinate
+    }
+
+    var horizontalAccuracy: Double? {
+        locationProvider.lastLocation?.horizontalAccuracy
+    }
 
     private func routes(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D) async throws -> [Route] {
         guard from != kCLLocationCoordinate2DInvalid else { throw DemoError.invalidOrigin }

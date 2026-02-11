@@ -2,12 +2,11 @@ import CarPlay
 import FerrostarCoreFFI
 import MapKit
 import Testing
-
 @testable import FerrostarCarPlayUI
 
 struct CPTravelEstimatesTests {
     @Test("Initialize TripProgress for Trip")
-    func fromTrip() async throws {
+    func fromTrip() {
         let tripProgress = TripProgress(
             distanceToNextManeuver: 11.1,
             distanceRemaining: 22.2,
@@ -25,7 +24,7 @@ struct CPTravelEstimatesTests {
     }
 
     @Test("Initialize TripProgress for Step")
-    func fromStep() async throws {
+    func fromStep() {
         let tripProgress = TripProgress(
             distanceToNextManeuver: 11.1,
             distanceRemaining: 22.2,

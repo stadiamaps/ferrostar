@@ -111,7 +111,7 @@ public extension NavigationState {
     }
 }
 
-// Derived from the Stadia Maps map matching example
+/// Derived from the Stadia Maps map matching example
 private let samplePedestrianWaypoints = [
     GeographicCoordinate(lat: 37.807770999999995, lng: -122.41970699999999),
     GeographicCoordinate(lat: 37.807680999999995, lng: -122.42041599999999),

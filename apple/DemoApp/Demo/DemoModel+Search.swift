@@ -21,7 +21,7 @@ extension DemoModel {
         chooseDestination()
     }
 
-    @ViewBuilder var searchView: some View {
+    var searchView: some View {
         AutocompleteSearch(apiKey: sharedAPIKeys.stadiaMapsAPIKey, userLocation: lastLocation) {
             guard let geometry = $0.geometry else { return }
             self.updateDestination(to: geometry)

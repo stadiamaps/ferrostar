@@ -15,7 +15,7 @@ struct CarPlayNavigationOverlayView: View {
     private let navigationState: NavigationState?
     private let cameraControlState: CameraControlState
 
-    // NOTE: These don't really follow our usual coding style as they are internal.
+    /// NOTE: These don't really follow our usual coding style as they are internal.
     init(
         navigationState: NavigationState?,
         cameraControlState: CameraControlState

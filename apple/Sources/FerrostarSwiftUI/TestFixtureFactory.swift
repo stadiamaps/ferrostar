@@ -1,5 +1,3 @@
-/// Various helpers that generate views for previews.
-
 import FerrostarCoreFFI
 import Foundation
 
@@ -15,8 +13,6 @@ extension TestFixtureFactory {
 }
 
 struct VisualInstructionContentFactory: TestFixtureFactory {
-    init() {}
-
     var textBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
     func text(_ builder: @escaping (Int) -> String) -> Self {
         var copy = self
@@ -37,8 +33,6 @@ struct VisualInstructionContentFactory: TestFixtureFactory {
 }
 
 struct VisualInstructionFactory: TestFixtureFactory {
-    init() {}
-
     var primaryContentBuilder: (Int) -> VisualInstructionContent = { n in
         VisualInstructionContentFactory().build(n)
     }
@@ -62,8 +56,10 @@ struct VisualInstructionFactory: TestFixtureFactory {
 }
 
 struct RouteStepFactory: TestFixtureFactory {
-    init() {}
-    var visualInstructionBuilder: (Int) -> VisualInstruction = { n in VisualInstructionFactory().build(n) }
+    var visualInstructionBuilder: (Int) -> VisualInstruction = { n in
+        VisualInstructionFactory().build(n)
+    }
+
     var roadNameBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
 
     func build(_ n: Int = 0) -> RouteStep {
@@ -82,9 +78,7 @@ struct RouteStepFactory: TestFixtureFactory {
     }
 }
 
-struct RoadNameFactory: TestFixtureFactory {
-    init() {}
-    var baseNameBuilder: (Int) -> String = { _ in "Ave" }
+struct RoadNameFactory: TestFixtureFactory { var baseNameBuilder: (Int) -> String = { _ in "Ave" }
 
     func baseName(_ builder: @escaping (Int) -> String) -> Self {
         var copy = self
