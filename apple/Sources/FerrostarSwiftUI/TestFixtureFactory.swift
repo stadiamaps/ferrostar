@@ -1,5 +1,3 @@
-// Various helpers that generate views for previews.
-
 import FerrostarCoreFFI
 import Foundation
 
@@ -57,26 +55,27 @@ struct VisualInstructionFactory: TestFixtureFactory {
     }
 }
 
-struct RouteStepFactory: TestFixtureFactory { var visualInstructionBuilder: (Int) -> VisualInstruction = { n in
-    VisualInstructionFactory().build(n)
-}
+struct RouteStepFactory: TestFixtureFactory {
+    var visualInstructionBuilder: (Int) -> VisualInstruction = { n in
+        VisualInstructionFactory().build(n)
+    }
 
-var roadNameBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
+    var roadNameBuilder: (Int) -> String = { n in RoadNameFactory().build(n) }
 
-func build(_ n: Int = 0) -> RouteStep {
-    RouteStep(
-        geometry: [],
-        distance: 100,
-        duration: 99,
-        roadName: roadNameBuilder(n),
-        exits: [],
-        instruction: "Walk west on \(roadNameBuilder(n))",
-        visualInstructions: [visualInstructionBuilder(n)],
-        spokenInstructions: [],
-        annotations: nil,
-        incidents: []
-    )
-}
+    func build(_ n: Int = 0) -> RouteStep {
+        RouteStep(
+            geometry: [],
+            distance: 100,
+            duration: 99,
+            roadName: roadNameBuilder(n),
+            exits: [],
+            instruction: "Walk west on \(roadNameBuilder(n))",
+            visualInstructions: [visualInstructionBuilder(n)],
+            spokenInstructions: [],
+            annotations: nil,
+            incidents: []
+        )
+    }
 }
 
 struct RoadNameFactory: TestFixtureFactory { var baseNameBuilder: (Int) -> String = { _ in "Ave" }
