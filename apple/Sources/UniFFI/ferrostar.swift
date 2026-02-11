@@ -709,6 +709,11 @@ open class AndAdvanceConditions: AndAdvanceConditionsProtocol, @unchecked Sendab
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_andadvanceconditions(handle, $0) }
     }
 
@@ -816,6 +821,11 @@ open class DistanceEntryAndExitCondition: DistanceEntryAndExitConditionProtocol,
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_distanceentryandexitcondition(handle, $0) }
     }
 
@@ -935,6 +945,11 @@ open class DistanceEntryAndSnappedExitCondition: DistanceEntryAndSnappedExitCond
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_distanceentryandsnappedexitcondition(handle, $0) }
     }
 
@@ -1060,6 +1075,11 @@ open class DistanceFromStepCondition: DistanceFromStepConditionProtocol, @unchec
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_distancefromstepcondition(handle, $0) }
     }
 
@@ -1173,6 +1193,11 @@ open class DistanceToEndOfStepCondition: DistanceToEndOfStepConditionProtocol, @
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_distancetoendofstepcondition(handle, $0) }
     }
 
@@ -1286,6 +1311,11 @@ open class ManualStepCondition: ManualStepConditionProtocol, @unchecked Sendable
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_manualstepcondition(handle, $0) }
     }
 
@@ -1393,6 +1423,11 @@ open class NavigationCacheImpl: NavigationCache, @unchecked Sendable {
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_navigationcache(handle, $0) }
     }
 
@@ -1659,6 +1694,11 @@ public convenience init(route: Route, config: NavigationControllerConfig) {
 }
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_navigationcontroller(handle, $0) }
     }
 
@@ -1768,6 +1808,11 @@ open class NavigationObserverImpl: NavigationObserver, @unchecked Sendable {
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_navigationobserver(handle, $0) }
     }
 
@@ -2058,6 +2103,11 @@ open class NavigationRecorder: NavigationRecorderProtocol, @unchecked Sendable {
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_navigationrecorder(handle, $0) }
     }
 
@@ -2216,6 +2266,11 @@ open class NavigationReplay: NavigationReplayProtocol, @unchecked Sendable {
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_navigationreplay(handle, $0) }
     }
 
@@ -2334,6 +2389,11 @@ public convenience init(controller: Navigator, observers: [NavigationObserver]) 
 }
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_navigationsession(handle, $0) }
     }
 
@@ -2500,6 +2560,11 @@ public convenience init(config: NavigationCachingConfig, cache: NavigationCache)
 }
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_navigationsessioncache(handle, $0) }
     }
 
@@ -2680,6 +2745,11 @@ open class Navigator: NavigatorProtocol, @unchecked Sendable {
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_navigator(handle, $0) }
     }
 
@@ -2835,6 +2905,11 @@ open class OrAdvanceConditions: OrAdvanceConditionsProtocol, @unchecked Sendable
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_oradvanceconditions(handle, $0) }
     }
 
@@ -3000,6 +3075,11 @@ public convenience init(requestGenerator: RouteRequestGenerator, responseParser:
 }
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_routeadapter(handle, $0) }
     }
 
@@ -3158,6 +3238,11 @@ open class RouteDeviationDetectorImpl: RouteDeviationDetector, @unchecked Sendab
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_routedeviationdetector(handle, $0) }
     }
 
@@ -3382,6 +3467,11 @@ open class RouteRequestGeneratorImpl: RouteRequestGenerator, @unchecked Sendable
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_routerequestgenerator(handle, $0) }
     }
 
@@ -3588,6 +3678,11 @@ open class RouteResponseParserImpl: RouteResponseParser, @unchecked Sendable {
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_routeresponseparser(handle, $0) }
     }
 
@@ -3809,6 +3904,11 @@ open class StepAdvanceCondition: StepAdvanceConditionProtocol, @unchecked Sendab
     // No primary constructor declared for this class.
 
     deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
         try! rustCall { uniffi_ferrostar_fn_free_stepadvancecondition(handle, $0) }
     }
 
@@ -3925,6 +4025,8 @@ public struct BoundingBox: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -3996,6 +4098,8 @@ public struct Congestion: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -4063,6 +4167,8 @@ public struct CourseOverGround: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -4128,6 +4234,8 @@ public struct GeographicCoordinate: Equatable, Hashable, Codable {
         self.lat = lat
         self.lng = lng
     }
+
+    
 
     
 }
@@ -4203,6 +4311,8 @@ public struct Heading: Equatable, Hashable, Codable {
         self.accuracy = accuracy
         self.timestamp = timestamp
     }
+
+    
 
     
 }
@@ -4415,6 +4525,8 @@ public struct Incident: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -4506,6 +4618,8 @@ public struct LaneInfo: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -4563,6 +4677,8 @@ public struct LocationSimulationState: Equatable, Hashable, Codable {
         self.remainingLocations = remainingLocations
         self.bias = bias
     }
+
+    
 
     
 }
@@ -4627,6 +4743,8 @@ public struct NavState {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -4677,6 +4795,8 @@ public struct NavigationCachingConfig: Equatable, Hashable, Codable {
         self.cacheIntervalSeconds = cacheIntervalSeconds
         self.maxAgeSeconds = maxAgeSeconds
     }
+
+    
 
     
 }
@@ -4781,6 +4901,8 @@ public struct NavigationControllerConfig {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -4856,6 +4978,8 @@ public struct NavigationRecordingEvent: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -4908,6 +5032,8 @@ public struct NavigationSessionSnapshot: Equatable, Hashable, Codable {
         self.route = route
         self.tripState = tripState
     }
+
+    
 
     
 }
@@ -4983,6 +5109,8 @@ public struct OsrmWaypointProperties: Equatable, Hashable, Codable {
         self.name = name
         self.distance = distance
     }
+
+    
 
     
 }
@@ -5063,6 +5191,8 @@ public struct Route: Equatable, Hashable, Codable {
         self.waypoints = waypoints
         self.steps = steps
     }
+
+    
 
     
 }
@@ -5211,6 +5341,8 @@ public struct RouteStep: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -5279,6 +5411,8 @@ public struct SerializableNavState: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -5344,6 +5478,8 @@ public struct Speed: Equatable, Hashable, Codable {
         self.value = value
         self.accuracy = accuracy
     }
+
+    
 
     
 }
@@ -5445,6 +5581,8 @@ public struct SpokenInstruction: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -5541,6 +5679,8 @@ public struct StepAdvanceResult {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -5618,6 +5758,8 @@ public struct TripProgress: Equatable, Hashable, Codable {
         self.distanceRemaining = distanceRemaining
         self.durationRemaining = durationRemaining
     }
+
+    
 
     
 }
@@ -5706,6 +5848,8 @@ public struct TripSummary: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -5781,6 +5925,8 @@ public struct UserLocation: Equatable, Hashable, Codable {
         self.timestamp = timestamp
         self.speed = speed
     }
+
+    
 
     
 }
@@ -5914,6 +6060,8 @@ public struct ValhallaLocationSearchFilter: Equatable, Hashable, Codable {
         self.maxRoadClass = maxRoadClass
         self.level = level
     }
+
+    
 
     
 }
@@ -6156,6 +6304,8 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -6261,6 +6411,8 @@ public struct VisualInstruction: Equatable, Hashable, Codable {
         self.subContent = subContent
         self.triggerDistanceBeforeManeuver = triggerDistanceBeforeManeuver
     }
+
+    
 
     
 }
@@ -6372,6 +6524,8 @@ public struct VisualInstructionContent: Equatable, Hashable, Codable {
         self.laneInfo = laneInfo
         self.exitNumbers = exitNumbers
     }
+
+    
 
     
 }
@@ -6491,6 +6645,8 @@ public struct Waypoint: Equatable, Hashable, Codable {
     }
 
     
+
+    
 }
 
 #if compiler(>=6)
@@ -6548,6 +6704,8 @@ public enum BlockedLane: Equatable, Hashable, Codable {
     case rightCenter
     case rightTurnLane
     case hov
+
+
 
 
 
@@ -6662,6 +6820,8 @@ public enum CourseFiltering: Equatable, Hashable, Codable {
 
 
 
+
+
 }
 
 #if compiler(>=6)
@@ -6724,6 +6884,8 @@ public enum GraphHopperVoiceUnits: Equatable, Hashable, Codable {
     
     case metric
     case imperial
+
+
 
 
 
@@ -6795,6 +6957,8 @@ public enum Impact: Equatable, Hashable, Codable {
     case major
     case minor
     case low
+
+
 
 
 
@@ -6891,6 +7055,8 @@ public enum IncidentType: Equatable, Hashable, Codable {
     case roadClosure
     case roadHazard
     case weather
+
+
 
 
 
@@ -7019,6 +7185,8 @@ public enum InstantiationError: Swift.Error, Equatable, Hashable, Codable, Found
     
 
     
+
+    
     public var errorDescription: String? {
         String(reflecting: self)
     }
@@ -7118,6 +7286,8 @@ public enum LocationBias: Equatable, Hashable, Codable {
 
 
 
+
+
 }
 
 #if compiler(>=6)
@@ -7207,6 +7377,8 @@ public enum ManeuverModifier: Equatable, Hashable, Codable {
     case slightLeft
     case left
     case sharpLeft
+
+
 
 
 
@@ -7327,6 +7499,8 @@ public enum ManeuverType: Equatable, Hashable, Codable {
     case notification
     case exitRoundabout
     case exitRotary
+
+
 
 
 
@@ -7480,6 +7654,8 @@ public enum ModelError: Swift.Error, Equatable, Hashable, Codable, Foundation.Lo
     
 
     
+
+    
     public var errorDescription: String? {
         String(reflecting: self)
     }
@@ -7561,6 +7737,8 @@ public enum NavigationRecordingEventData: Equatable, Hashable, Codable {
 
 
 
+
+
 }
 
 #if compiler(>=6)
@@ -7635,6 +7813,8 @@ public enum ParsingError: Swift.Error, Equatable, Hashable, Codable, Foundation.
     case InvalidStatusCode(code: String, description: String?
     )
     case UnknownParsingError
+
+    
 
     
 
@@ -7752,6 +7932,8 @@ public enum RecordingError: Swift.Error, Equatable, Hashable, Codable, Foundatio
     
 
     
+
+    
     public var errorDescription: String? {
         String(reflecting: self)
     }
@@ -7841,6 +8023,8 @@ public enum RouteDeviation: Equatable, Hashable, Codable {
          * The deviation from the route line, in meters.
          */deviationFromRouteLine: Double
     )
+
+
 
 
 
@@ -7937,6 +8121,8 @@ public enum RouteDeviationTracking {
 
 
 
+
+
 }
 
 #if compiler(>=6)
@@ -8018,6 +8204,8 @@ public enum RouteRequest: Equatable, Hashable, Codable {
 
 
 
+
+
 }
 
 #if compiler(>=6)
@@ -8088,6 +8276,8 @@ public enum RoutingRequestGenerationError: Swift.Error, Equatable, Hashable, Cod
     case NotEnoughWaypoints
     case JsonError
     case UnknownRequestGenerationError
+
+    
 
     
 
@@ -8178,6 +8368,8 @@ public enum SerializableStepAdvanceCondition: Equatable, Hashable, Codable {
     )
     case andAdvanceConditions(conditions: [SerializableStepAdvanceCondition]
     )
+
+
 
 
 
@@ -8301,6 +8493,8 @@ public enum SimulationError: Swift.Error, Equatable, Hashable, Codable, Foundati
      * Not enough points in the input.
      */
     case NotEnoughPoints
+
+    
 
     
 
@@ -8466,6 +8660,8 @@ public enum TripState: Equatable, Hashable, Codable {
 
 
 
+
+
 }
 
 #if compiler(>=6)
@@ -8562,6 +8758,8 @@ public enum ValhallaRoadClass: Equatable, Hashable, Codable {
     case unclassified
     case residential
     case serviceOther
+
+
 
 
 
@@ -8685,6 +8883,8 @@ public enum ValhallaWaypointPreferredSide: Equatable, Hashable, Codable {
 
 
 
+
+
 }
 
 #if compiler(>=6)
@@ -8789,6 +8989,8 @@ public enum WaypointAdvanceMode: Equatable, Hashable, Codable {
 
 
 
+
+
 }
 
 #if compiler(>=6)
@@ -8869,6 +9071,8 @@ public enum WaypointKind: Equatable, Hashable, Codable {
      * but will not have any arrival or departure instructions.
      */
     case via
+
+
 
 
 
@@ -8979,6 +9183,8 @@ public enum WellKnownRouteProvider: Equatable, Hashable, Codable {
          * This value must be a stringified representation of a JSON object.
          */optionsJson: String? = nil
     )
+
+
 
 
 
@@ -10196,57 +10402,10 @@ public func FfiConverterTypeUuid_lower(_ value: Uuid) -> RustBuffer {
     return FfiConverterTypeUuid.lower(value)
 }
 
-/**
- * Returns the next simulation state based on the desired strategy.
- * Results of this can be thought of like a stream from a generator function.
- *
- * This function is intended to be called once/second.
- * However, the caller may vary speed to purposefully replay at a faster rate
- * (ex: calling 3x per second will be a triple speed simulation).
- *
- * When there are now more locations to visit, returns the same state forever.
- */
-public func advanceLocationSimulation(state: LocationSimulationState) -> LocationSimulationState  {
-    return try!  FfiConverterTypeLocationSimulationState_lift(try! rustCall() {
-    uniffi_ferrostar_fn_func_advance_location_simulation(
-        FfiConverterTypeLocationSimulationState_lower(state),$0
-    )
-})
-}
 public func createFerrostarLogger()  {try! rustCall() {
     uniffi_ferrostar_fn_func_create_ferrostar_logger($0
     )
 }
-}
-/**
- * Creates a new navigation session for the given route and configuration.
- *
- * It returns an Arc-wrapped trait object implementing `Navigator`.
- * If `should_record` is true, it creates a controller with event recording enabled.
- */
-public func createNavigationSession(route: Route, config: NavigationControllerConfig, observers: [NavigationObserver]) -> NavigationSession  {
-    return try!  FfiConverterTypeNavigationSession_lift(try! rustCall() {
-    uniffi_ferrostar_fn_func_create_navigation_session(
-        FfiConverterTypeRoute_lower(route),
-        FfiConverterTypeNavigationControllerConfig_lower(config),
-        FfiConverterSequenceTypeNavigationObserver.lower(observers),$0
-    )
-})
-}
-/**
- * Creates a new navigation controller for the given route and configuration.
- *
- * It returns an Arc-wrapped trait object implementing `Navigator`.
- * If `should_record` is true, it creates a controller with event recording enabled.
- */
-public func createNavigator(route: Route, config: NavigationControllerConfig, shouldRecord: Bool) -> Navigator  {
-    return try!  FfiConverterTypeNavigator_lift(try! rustCall() {
-    uniffi_ferrostar_fn_func_create_navigator(
-        FfiConverterTypeRoute_lower(route),
-        FfiConverterTypeNavigationControllerConfig_lower(config),
-        FfiConverterBool.lower(shouldRecord),$0
-    )
-})
 }
 /**
  * Creates a [`RouteResponseParser`] capable of parsing OSRM responses.
@@ -10310,22 +10469,6 @@ public func createValhallaRequestGenerator(endpointUrl: String, profile: String,
 })
 }
 /**
- * A convenience helper for creating waypoints with Valhalla rich location properties.
- *
- * Regrettably this must live as a top-level function unless constructors for record types lands
- * in `UniFFI`:
- * <https://github.com/mozilla/uniffi-rs/issues/1935>.
- */
-public func createWaypointWithValhallaProperties(coordinate: GeographicCoordinate, kind: WaypointKind, properties: ValhallaWaypointProperties) -> Waypoint  {
-    return try!  FfiConverterTypeWaypoint_lift(try! rustCall() {
-    uniffi_ferrostar_fn_func_create_waypoint_with_valhalla_properties(
-        FfiConverterTypeGeographicCoordinate_lower(coordinate),
-        FfiConverterTypeWaypointKind_lower(kind),
-        FfiConverterTypeValhallaWaypointProperties_lower(properties),$0
-    )
-})
-}
-/**
  * Helper function for getting the route as an encoded polyline.
  *
  * Mostly used for debugging.
@@ -10339,45 +10482,17 @@ public func getRoutePolyline(route: Route, precision: UInt32)throws  -> String  
 })
 }
 /**
- * Creates a location simulation from a set of coordinates.
+ * Creates a new navigation controller for the given route and configuration.
  *
- * Optionally resamples the input line so that there is a maximum distance between points.
+ * It returns an Arc-wrapped trait object implementing `Navigator`.
+ * If `should_record` is true, it creates a controller with event recording enabled.
  */
-public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate], resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
-    return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
-    uniffi_ferrostar_fn_func_location_simulation_from_coordinates(
-        FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates),
-        FfiConverterOptionDouble.lower(resampleDistance),
-        FfiConverterTypeLocationBias_lower(bias),$0
-    )
-})
-}
-/**
- * Creates a location simulation from a polyline.
- *
- * Optionally resamples the input line so that there is no more than the specified maximum distance between points.
- */
-public func locationSimulationFromPolyline(polyline: String, precision: UInt32, resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
-    return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
-    uniffi_ferrostar_fn_func_location_simulation_from_polyline(
-        FfiConverterString.lower(polyline),
-        FfiConverterUInt32.lower(precision),
-        FfiConverterOptionDouble.lower(resampleDistance),
-        FfiConverterTypeLocationBias_lower(bias),$0
-    )
-})
-}
-/**
- * Creates a location simulation from a route.
- *
- * Optionally resamples the route geometry so that there is no more than the specified maximum distance between points.
- */
-public func locationSimulationFromRoute(route: Route, resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
-    return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
-    uniffi_ferrostar_fn_func_location_simulation_from_route(
+public func createNavigator(route: Route, config: NavigationControllerConfig, shouldRecord: Bool) -> Navigator  {
+    return try!  FfiConverterTypeNavigator_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_create_navigator(
         FfiConverterTypeRoute_lower(route),
-        FfiConverterOptionDouble.lower(resampleDistance),
-        FfiConverterTypeLocationBias_lower(bias),$0
+        FfiConverterTypeNavigationControllerConfig_lower(config),
+        FfiConverterBool.lower(shouldRecord),$0
     )
 })
 }
@@ -10485,6 +10600,97 @@ public func stepAdvanceOr(conditions: [StepAdvanceCondition]) -> StepAdvanceCond
     )
 })
 }
+/**
+ * Creates a new navigation session for the given route and configuration.
+ *
+ * It returns an Arc-wrapped trait object implementing `Navigator`.
+ * If `should_record` is true, it creates a controller with event recording enabled.
+ */
+public func createNavigationSession(route: Route, config: NavigationControllerConfig, observers: [NavigationObserver]) -> NavigationSession  {
+    return try!  FfiConverterTypeNavigationSession_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_create_navigation_session(
+        FfiConverterTypeRoute_lower(route),
+        FfiConverterTypeNavigationControllerConfig_lower(config),
+        FfiConverterSequenceTypeNavigationObserver.lower(observers),$0
+    )
+})
+}
+/**
+ * A convenience helper for creating waypoints with Valhalla rich location properties.
+ *
+ * Regrettably this must live as a top-level function unless constructors for record types lands
+ * in `UniFFI`:
+ * <https://github.com/mozilla/uniffi-rs/issues/1935>.
+ */
+public func createWaypointWithValhallaProperties(coordinate: GeographicCoordinate, kind: WaypointKind, properties: ValhallaWaypointProperties) -> Waypoint  {
+    return try!  FfiConverterTypeWaypoint_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_create_waypoint_with_valhalla_properties(
+        FfiConverterTypeGeographicCoordinate_lower(coordinate),
+        FfiConverterTypeWaypointKind_lower(kind),
+        FfiConverterTypeValhallaWaypointProperties_lower(properties),$0
+    )
+})
+}
+/**
+ * Returns the next simulation state based on the desired strategy.
+ * Results of this can be thought of like a stream from a generator function.
+ *
+ * This function is intended to be called once/second.
+ * However, the caller may vary speed to purposefully replay at a faster rate
+ * (ex: calling 3x per second will be a triple speed simulation).
+ *
+ * When there are now more locations to visit, returns the same state forever.
+ */
+public func advanceLocationSimulation(state: LocationSimulationState) -> LocationSimulationState  {
+    return try!  FfiConverterTypeLocationSimulationState_lift(try! rustCall() {
+    uniffi_ferrostar_fn_func_advance_location_simulation(
+        FfiConverterTypeLocationSimulationState_lower(state),$0
+    )
+})
+}
+/**
+ * Creates a location simulation from a set of coordinates.
+ *
+ * Optionally resamples the input line so that there is a maximum distance between points.
+ */
+public func locationSimulationFromCoordinates(coordinates: [GeographicCoordinate], resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
+    return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
+    uniffi_ferrostar_fn_func_location_simulation_from_coordinates(
+        FfiConverterSequenceTypeGeographicCoordinate.lower(coordinates),
+        FfiConverterOptionDouble.lower(resampleDistance),
+        FfiConverterTypeLocationBias_lower(bias),$0
+    )
+})
+}
+/**
+ * Creates a location simulation from a polyline.
+ *
+ * Optionally resamples the input line so that there is no more than the specified maximum distance between points.
+ */
+public func locationSimulationFromPolyline(polyline: String, precision: UInt32, resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
+    return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
+    uniffi_ferrostar_fn_func_location_simulation_from_polyline(
+        FfiConverterString.lower(polyline),
+        FfiConverterUInt32.lower(precision),
+        FfiConverterOptionDouble.lower(resampleDistance),
+        FfiConverterTypeLocationBias_lower(bias),$0
+    )
+})
+}
+/**
+ * Creates a location simulation from a route.
+ *
+ * Optionally resamples the route geometry so that there is no more than the specified maximum distance between points.
+ */
+public func locationSimulationFromRoute(route: Route, resampleDistance: Double?, bias: LocationBias)throws  -> LocationSimulationState  {
+    return try  FfiConverterTypeLocationSimulationState_lift(try rustCallWithError(FfiConverterTypeSimulationError_lift) {
+    uniffi_ferrostar_fn_func_location_simulation_from_route(
+        FfiConverterTypeRoute_lower(route),
+        FfiConverterOptionDouble.lower(resampleDistance),
+        FfiConverterTypeLocationBias_lower(bias),$0
+    )
+})
+}
 
 private enum InitializationResult {
     case ok
@@ -10501,181 +10707,181 @@ private let initializationResult: InitializationResult = {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if (uniffi_ferrostar_checksum_func_advance_location_simulation() != 26307) {
-        return InitializationResult.apiChecksumMismatch
-    }
     if (uniffi_ferrostar_checksum_func_create_ferrostar_logger() != 18551) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_navigation_session() != 25334) {
+    if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 64123) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_navigator() != 1507) {
+    if (uniffi_ferrostar_checksum_func_create_route_from_osrm() != 52689) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_osrm_response_parser() != 16550) {
+    if (uniffi_ferrostar_checksum_func_create_route_from_osrm_route() != 46273) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_route_from_osrm() != 42270) {
+    if (uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 52153) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_route_from_osrm_route() != 43326) {
+    if (uniffi_ferrostar_checksum_func_get_route_polyline() != 23279) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_valhalla_request_generator() != 16275) {
+    if (uniffi_ferrostar_checksum_func_create_navigator() != 10765) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_create_waypoint_with_valhalla_properties() != 12382) {
+    if (uniffi_ferrostar_checksum_func_step_advance_and() != 24491) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_get_route_polyline() != 31480) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 35865) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 52416) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_snapped_exit() != 17502) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 14615) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 24638) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 39027) {
+    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 37822) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_and() != 55830) {
+    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 17011) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_exit() != 48000) {
+    if (uniffi_ferrostar_checksum_func_step_advance_or() != 23842) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_entry_and_snapped_exit() != 44340) {
+    if (uniffi_ferrostar_checksum_func_create_navigation_session() != 43697) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_from_step() != 45697) {
+    if (uniffi_ferrostar_checksum_func_create_waypoint_with_valhalla_properties() != 18027) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_distance_to_end_of_step() != 39292) {
+    if (uniffi_ferrostar_checksum_func_advance_location_simulation() != 60721) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_manual() != 62615) {
+    if (uniffi_ferrostar_checksum_func_location_simulation_from_coordinates() != 53271) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_func_step_advance_or() != 26194) {
+    if (uniffi_ferrostar_checksum_func_location_simulation_from_polyline() != 48832) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcache_save() != 19548) {
+    if (uniffi_ferrostar_checksum_func_location_simulation_from_route() != 41168) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcache_load() != 4142) {
+    if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 30835) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationcache_delete() != 6294) {
+    if (uniffi_ferrostar_checksum_method_navigator_route() != 4544) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationobserver_on_get_initial_state() != 39234) {
+    if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 64859) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationobserver_on_user_location_update() != 471) {
+    if (uniffi_ferrostar_checksum_method_navigator_advance_to_next_step() != 23061) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationobserver_on_advance_to_next_step() != 22377) {
+    if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 49085) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationobserver_on_route_available() != 27002) {
+    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 41599) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_events() != 7075) {
+    if (uniffi_ferrostar_checksum_method_stepadvancecondition_new_instance() != 47605) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording() != 65086) {
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_get_initial_state() != 20746) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_advance_to_next_step() != 4393) {
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_user_location_update() != 57067) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_get_initial_state() != 12863) {
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_advance_to_next_step() != 31176) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_route_available() != 45639) {
+    if (uniffi_ferrostar_checksum_method_navigationobserver_on_route_available() != 55256) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_user_location_update() != 14085) {
+    if (uniffi_ferrostar_checksum_method_navigationsession_advance_to_next_step() != 3078) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsession_advance_to_next_step() != 37398) {
+    if (uniffi_ferrostar_checksum_method_navigationsession_get_initial_state() != 50596) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsession_get_initial_state() != 29127) {
+    if (uniffi_ferrostar_checksum_method_navigationsession_route() != 30746) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsession_route() != 30443) {
+    if (uniffi_ferrostar_checksum_method_navigationsession_update_user_location() != 6536) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsession_update_user_location() != 3978) {
+    if (uniffi_ferrostar_checksum_method_navigationcache_save() != 20879) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 41390) {
+    if (uniffi_ferrostar_checksum_method_navigationcache_load() != 32732) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 25289) {
+    if (uniffi_ferrostar_checksum_method_navigationcache_delete() != 43473) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_advance_to_next_step() != 46628) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_can_resume() != 36690) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_get_initial_state() != 59700) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_load() != 11949) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_route_available() != 2553) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_advance_to_next_step() != 21998) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_user_location_update() != 57967) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_get_initial_state() != 13801) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_route() != 46167) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_route_available() != 39648) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_get_initial_state() != 32794) {
+    if (uniffi_ferrostar_checksum_method_navigationsessioncache_on_user_location_update() != 35023) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_advance_to_next_step() != 60240) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_events() != 40080) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_navigator_update_user_location() != 28310) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_get_recording() != 20511) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59034) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_advance_to_next_step() != 2408) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 34481) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_get_initial_state() != 42003) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routedeviationdetector_check_route_deviation() != 35091) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_route_available() != 10378) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 63458) {
+    if (uniffi_ferrostar_checksum_method_navigationrecorder_on_user_location_update() != 46975) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 44735) {
+    if (uniffi_ferrostar_checksum_method_routeadapter_generate_request() != 59943) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_stepadvancecondition_should_advance_step() != 14894) {
+    if (uniffi_ferrostar_checksum_method_routeadapter_parse_response() != 44207) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_method_stepadvancecondition_new_instance() != 29956) {
+    if (uniffi_ferrostar_checksum_method_routerequestgenerator_generate_request() != 54518) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 60881) {
+    if (uniffi_ferrostar_checksum_method_routeresponseparser_parse_response() != 57507) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationsession_new() != 3371) {
+    if (uniffi_ferrostar_checksum_constructor_navigationcontroller_new() != 20114) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_navigationsessioncache_new() != 16270) {
+    if (uniffi_ferrostar_checksum_constructor_navigationsession_new() != 62800) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_from_well_known_route_provider() != 7407) {
+    if (uniffi_ferrostar_checksum_constructor_navigationsessioncache_new() != 44360) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 43455) {
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_from_well_known_route_provider() != 64199) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_ferrostar_checksum_constructor_routeadapter_new() != 13177) {
         return InitializationResult.apiChecksumMismatch
     }
 
