@@ -12,12 +12,11 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar.core'
-    compileSdk 35
+    compileSdk = 36
     ndkVersion "26.2.11394342"
 
     defaultConfig {
         minSdk 25
-        targetSdk 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -30,6 +29,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    lint {
+        targetSdk 36
+    }
+    testOptions {
+        targetSdk 36
     }
 }
 
@@ -94,7 +99,9 @@ android.libraryVariants.all { variant ->
     }
 
     def sourceSet = variant.sourceSets.find { it.name == variant.name }
-    sourceSet.java.srcDir layout.buildDirectory.file("generated/source/uniffi/${variant.name}/java")
+    // AGP 9 disallows adding Provider instances to the legacy SourceSet API.
+    // Use a concrete directory here to keep configuration compatible.
+    sourceSet.java.srcDir bDir.asFile
 
     // UniFFI tutorial notes that they made several attempts like this but were unsuccessful coming
     // to a good solution for forcing the directory to be marked as generated (short of checking in
