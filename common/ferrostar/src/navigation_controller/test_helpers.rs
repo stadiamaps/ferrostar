@@ -11,7 +11,6 @@ use crate::navigation_controller::models::{
 };
 use crate::navigation_controller::step_advance::StepAdvanceCondition;
 use crate::navigation_controller::step_advance::conditions::DistanceToEndOfStepCondition;
-use crate::routing_adapters::{RouteResponseParser, osrm::OsrmResponseParser};
 #[cfg(feature = "alloc")]
 use alloc::string::ToString;
 use chrono::{DateTime, Utc};
@@ -46,35 +45,6 @@ pub fn get_test_step_advance_condition(distance: u16) -> Arc<dyn StepAdvanceCond
     })
 }
 
-pub enum TestRoute {
-    /// Gets a longer + more complex route.
-    Extended,
-    /// Gets a self-intersecting route.
-    SelfIntersecting,
-}
-
-impl TestRoute {
-    pub fn file_content(&self) -> &'static str {
-        match self {
-            TestRoute::Extended => include_str!("fixtures/valhalla_extended_osrm_response.json"),
-            TestRoute::SelfIntersecting => {
-                include_str!("fixtures/valhalla_self_intersecting_osrm_response.json")
-            }
-        }
-    }
-}
-
-/// The accuracy of each parser is tested separately in the routing_adapters module;
-/// this function simply returns a route for an extended test of the state machine.
-pub fn get_test_route(test_route: TestRoute) -> Route {
-    let parser = OsrmResponseParser::new(6);
-    parser
-        .parse_response(test_route.file_content().into())
-        .expect("Unable to parse OSRM response")
-        .pop()
-        .expect("Expected at least one route")
-}
-
 pub fn gen_dummy_route_step(
     start_lng: f64,
     start_lat: f64,
@@ -104,6 +74,8 @@ pub fn gen_dummy_route_step(
         spoken_instructions: vec![],
         annotations: None,
         incidents: vec![],
+        driving_side: None,
+        roundabout_exit_number: None,
     }
 }
 
@@ -150,6 +122,8 @@ pub fn gen_route_step_with_coords(coordinates: Vec<Coord>) -> RouteStep {
         spoken_instructions: vec![],
         annotations: None,
         incidents: vec![],
+        driving_side: None,
+        roundabout_exit_number: None,
     }
 }
 

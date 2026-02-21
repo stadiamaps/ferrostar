@@ -343,6 +343,8 @@ expression: routes
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.442754
           lng: 24.763449
@@ -370,6 +372,8 @@ expression: routes
           trigger_distance_before_maneuver: 4.5
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.442671
           lng: 24.763423
@@ -397,6 +401,8 @@ expression: routes
           trigger_distance_before_maneuver: 8
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.442709
           lng: 24.763155
@@ -426,6 +432,8 @@ expression: routes
           trigger_distance_before_maneuver: 7.5
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.442819
           lng: 24.763
@@ -457,6 +465,8 @@ expression: routes
           trigger_distance_before_maneuver: 19
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.442918
           lng: 24.762356
@@ -484,6 +494,8 @@ expression: routes
           trigger_distance_before_maneuver: 3.5
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.442936
           lng: 24.762237
@@ -517,6 +529,8 @@ expression: routes
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.443526
           lng: 24.761765
@@ -546,6 +560,8 @@ expression: routes
           trigger_distance_before_maneuver: 23
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.4439
           lng: 24.761432
@@ -573,6 +589,8 @@ expression: routes
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.443487
           lng: 24.759273
@@ -606,6 +624,8 @@ expression: routes
           trigger_distance_before_maneuver: 12.5
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.443712
           lng: 24.759127
@@ -637,6 +657,8 @@ expression: routes
           trigger_distance_before_maneuver: 8
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.443674
           lng: 24.758853
@@ -682,6 +704,8 @@ expression: routes
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.444448
           lng: 24.758392
@@ -709,6 +733,8 @@ expression: routes
           trigger_distance_before_maneuver: 4
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.444431
           lng: 24.758246
@@ -742,6 +768,8 @@ expression: routes
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.445069
           lng: 24.757636
@@ -875,6 +903,8 @@ expression: routes
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.44946
           lng: 24.739543
@@ -904,6 +934,8 @@ expression: routes
           trigger_distance_before_maneuver: 11.5
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.449652
           lng: 24.739675
@@ -933,6 +965,8 @@ expression: routes
           trigger_distance_before_maneuver: 8
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.449733
           lng: 24.739454
@@ -998,6 +1032,8 @@ expression: routes
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.450765
           lng: 24.733721
@@ -1025,6 +1061,8 @@ expression: routes
           trigger_distance_before_maneuver: 1
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.450787
           lng: 24.733717
@@ -1078,6 +1116,8 @@ expression: routes
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.451907
           lng: 24.730259
@@ -1105,6 +1145,8 @@ expression: routes
           trigger_distance_before_maneuver: 14
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.452026
           lng: 24.729829
@@ -1134,6 +1176,8 @@ expression: routes
           trigger_distance_before_maneuver: 12.5495
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~
     - geometry:
         - lat: 59.452226
           lng: 24.730034
@@ -1158,3 +1202,5 @@ expression: routes
       spoken_instructions: []
       annotations: redacted annotations json strings vec
       incidents: []
+      driving_side: right
+      roundabout_exit_number: ~

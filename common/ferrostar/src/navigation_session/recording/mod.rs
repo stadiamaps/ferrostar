@@ -80,13 +80,13 @@ mod tests {
     use std::sync::Arc;
 
     use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
-    use crate::test_utils::redact_properties;
+    use crate::test_utils::{TestRoute, redact_properties};
     use crate::{
         navigation_controller::{
             NavigationController,
             test_helpers::{
-                TestRoute, get_test_navigation_controller_config, get_test_route,
-                get_test_step_advance_condition, nav_controller_insta_settings,
+                get_test_navigation_controller_config, get_test_step_advance_condition,
+                nav_controller_insta_settings,
             },
         },
         navigation_session::{
@@ -98,7 +98,7 @@ mod tests {
     #[test]
     fn test_recording_serialization() {
         nav_controller_insta_settings().bind(|| {
-            let route = get_test_route(TestRoute::SelfIntersecting);
+            let route = TestRoute::ValhallaSelfIntersecting.first_route();
             let config = get_test_navigation_controller_config(get_test_step_advance_condition(0));
             let recorder = Arc::new(NavigationRecorder::new(route.clone(), config.clone()));
             let session = NavigationSession::new(

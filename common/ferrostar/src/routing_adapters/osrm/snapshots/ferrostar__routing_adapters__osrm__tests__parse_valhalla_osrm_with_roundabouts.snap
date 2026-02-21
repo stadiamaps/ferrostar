@@ -1,0 +1,928 @@
+---
+source: ferrostar/src/routing_adapters/osrm/mod.rs
+expression: routes
+---
+- geometry:
+    - lat: 53.486534
+      lng: -2.273517
+    - lat: 53.486549
+      lng: -2.273346
+    - lat: 53.486437
+      lng: -2.273249
+    - lat: 53.486144
+      lng: -2.273158
+    - lat: 53.486034
+      lng: -2.273118
+    - lat: 53.485972
+      lng: -2.273125
+    - lat: 53.485854
+      lng: -2.273119
+    - lat: 53.485757
+      lng: -2.273179
+    - lat: 53.485667
+      lng: -2.273235
+    - lat: 53.485415
+      lng: -2.273404
+    - lat: 53.485302
+      lng: -2.273616
+    - lat: 53.485272
+      lng: -2.273735
+    - lat: 53.485228
+      lng: -2.274378
+    - lat: 53.485282
+      lng: -2.274518
+    - lat: 53.485328
+      lng: -2.27457
+    - lat: 53.485508
+      lng: -2.274659
+    - lat: 53.48566
+      lng: -2.27469
+    - lat: 53.486021
+      lng: -2.274772
+    - lat: 53.486198
+      lng: -2.274807
+    - lat: 53.486231
+      lng: -2.27483
+    - lat: 53.486279
+      lng: -2.274883
+    - lat: 53.486258
+      lng: -2.274925
+    - lat: 53.486245
+      lng: -2.274975
+    - lat: 53.48587
+      lng: -2.274927
+    - lat: 53.485439
+      lng: -2.274897
+    - lat: 53.485411
+      lng: -2.274851
+    - lat: 53.485241
+      lng: -2.27484
+    - lat: 53.485199
+      lng: -2.274817
+    - lat: 53.485034
+      lng: -2.274658
+    - lat: 53.484984
+      lng: -2.274528
+    - lat: 53.484966
+      lng: -2.274482
+    - lat: 53.48495
+      lng: -2.274434
+    - lat: 53.484937
+      lng: -2.274397
+    - lat: 53.484848
+      lng: -2.274139
+    - lat: 53.484732
+      lng: -2.273772
+    - lat: 53.48465
+      lng: -2.273481
+    - lat: 53.484602
+      lng: -2.273297
+    - lat: 53.484587
+      lng: -2.27323
+    - lat: 53.484566
+      lng: -2.272987
+    - lat: 53.484543
+      lng: -2.272889
+    - lat: 53.484514
+      lng: -2.272762
+    - lat: 53.484343
+      lng: -2.272014
+    - lat: 53.484323
+      lng: -2.271924
+    - lat: 53.484288
+      lng: -2.271769
+    - lat: 53.484232
+      lng: -2.271552
+    - lat: 53.484158
+      lng: -2.271285
+    - lat: 53.484093
+      lng: -2.27105
+    - lat: 53.484036
+      lng: -2.270881
+    - lat: 53.483988
+      lng: -2.270746
+    - lat: 53.483934
+      lng: -2.270623
+    - lat: 53.483819
+      lng: -2.270725
+    - lat: 53.483847
+      lng: -2.270798
+    - lat: 53.483874
+      lng: -2.27087
+    - lat: 53.483939
+      lng: -2.271083
+    - lat: 53.484031
+      lng: -2.271409
+    - lat: 53.484154
+      lng: -2.271913
+    - lat: 53.484179
+      lng: -2.272018
+    - lat: 53.484374
+      lng: -2.272836
+    - lat: 53.484401
+      lng: -2.27297
+    - lat: 53.484441
+      lng: -2.273128
+    - lat: 53.484473
+      lng: -2.273196
+    - lat: 53.484502
+      lng: -2.27327
+    - lat: 53.484543
+      lng: -2.273432
+    - lat: 53.484723
+      lng: -2.274067
+    - lat: 53.484812
+      lng: -2.274325
+    - lat: 53.484867
+      lng: -2.274474
+    - lat: 53.484879
+      lng: -2.27451
+    - lat: 53.484897
+      lng: -2.274559
+    - lat: 53.484914
+      lng: -2.2746
+    - lat: 53.485056
+      lng: -2.274972
+    - lat: 53.485295
+      lng: -2.275551
+    - lat: 53.485464
+      lng: -2.275935
+    - lat: 53.485522
+      lng: -2.276041
+    - lat: 53.485568
+      lng: -2.276147
+    - lat: 53.485653
+      lng: -2.27635
+    - lat: 53.485777
+      lng: -2.276655
+    - lat: 53.485858
+      lng: -2.276845
+    - lat: 53.485942
+      lng: -2.27703
+    - lat: 53.485981
+      lng: -2.277114
+    - lat: 53.486026
+      lng: -2.277213
+    - lat: 53.486075
+      lng: -2.277288
+    - lat: 53.486229
+      lng: -2.277524
+    - lat: 53.486376
+      lng: -2.277749
+    - lat: 53.486504
+      lng: -2.277945
+    - lat: 53.487275
+      lng: -2.278978
+    - lat: 53.487508
+      lng: -2.279277
+    - lat: 53.487704
+      lng: -2.279498
+    - lat: 53.487897
+      lng: -2.279723
+    - lat: 53.488195
+      lng: -2.280122
+    - lat: 53.488251
+      lng: -2.28018
+    - lat: 53.48833
+      lng: -2.280259
+    - lat: 53.488357
+      lng: -2.280287
+    - lat: 53.488377
+      lng: -2.280309
+    - lat: 53.488507
+      lng: -2.280452
+    - lat: 53.488701
+      lng: -2.280651
+    - lat: 53.489021
+      lng: -2.280993
+    - lat: 53.489616
+      lng: -2.281726
+    - lat: 53.489819
+      lng: -2.282124
+    - lat: 53.490074
+      lng: -2.282553
+    - lat: 53.490207
+      lng: -2.282798
+    - lat: 53.49043
+      lng: -2.283305
+    - lat: 53.490601
+      lng: -2.283766
+    - lat: 53.490715
+      lng: -2.28414
+    - lat: 53.490842
+      lng: -2.284539
+    - lat: 53.490873
+      lng: -2.284721
+    - lat: 53.490894
+      lng: -2.284894
+    - lat: 53.49087
+      lng: -2.285061
+    - lat: 53.490863
+      lng: -2.285128
+    - lat: 53.490841
+      lng: -2.285345
+    - lat: 53.49084
+      lng: -2.285491
+    - lat: 53.490846
+      lng: -2.285635
+    - lat: 53.490862
+      lng: -2.285763
+    - lat: 53.490891
+      lng: -2.285854
+    - lat: 53.490926
+      lng: -2.285927
+    - lat: 53.490981
+      lng: -2.286001
+    - lat: 53.491073
+      lng: -2.286089
+    - lat: 53.491203
+      lng: -2.28612
+    - lat: 53.491255
+      lng: -2.286116
+    - lat: 53.491303
+      lng: -2.286095
+    - lat: 53.491341
+      lng: -2.286071
+    - lat: 53.491374
+      lng: -2.286039
+    - lat: 53.491405
+      lng: -2.285994
+    - lat: 53.491429
+      lng: -2.285946
+    - lat: 53.491451
+      lng: -2.285887
+    - lat: 53.491468
+      lng: -2.285816
+    - lat: 53.491481
+      lng: -2.285749
+    - lat: 53.49149
+      lng: -2.285677
+    - lat: 53.491517
+      lng: -2.285452
+    - lat: 53.491539
+      lng: -2.285258
+    - lat: 53.491608
+      lng: -2.285085
+    - lat: 53.491636
+      lng: -2.285007
+    - lat: 53.491658
+      lng: -2.284969
+    - lat: 53.491711
+      lng: -2.284891
+    - lat: 53.491833
+      lng: -2.28478
+    - lat: 53.492083
+      lng: -2.284656
+    - lat: 53.492183
+      lng: -2.284601
+    - lat: 53.492241
+      lng: -2.284548
+    - lat: 53.492319
+      lng: -2.284472
+    - lat: 53.49246
+      lng: -2.284277
+    - lat: 53.492504
+      lng: -2.28422
+    - lat: 53.492571
+      lng: -2.284127
+    - lat: 53.492746
+      lng: -2.283891
+    - lat: 53.492796
+      lng: -2.283824
+    - lat: 53.492891
+      lng: -2.283658
+    - lat: 53.493083
+      lng: -2.283237
+    - lat: 53.493359
+      lng: -2.282735
+    - lat: 53.49339
+      lng: -2.282675
+    - lat: 53.493409
+      lng: -2.282647
+    - lat: 53.493542
+      lng: -2.282497
+    - lat: 53.493676
+      lng: -2.282354
+    - lat: 53.494005
+      lng: -2.281911
+    - lat: 53.494059
+      lng: -2.28185
+    - lat: 53.494224
+      lng: -2.281661
+    - lat: 53.494345
+      lng: -2.281536
+    - lat: 53.494782
+      lng: -2.281106
+    - lat: 53.494865
+      lng: -2.280999
+    - lat: 53.494889
+      lng: -2.28095
+    - lat: 53.494969
+      lng: -2.280805
+    - lat: 53.495118
+      lng: -2.280505
+    - lat: 53.49517
+      lng: -2.280401
+    - lat: 53.49546
+      lng: -2.279827
+    - lat: 53.495717
+      lng: -2.279318
+    - lat: 53.496059
+      lng: -2.278647
+    - lat: 53.496605
+      lng: -2.277558
+    - lat: 53.496761
+      lng: -2.277248
+    - lat: 53.496899
+      lng: -2.277029
+    - lat: 53.496969
+      lng: -2.276938
+    - lat: 53.497044
+      lng: -2.276969
+    - lat: 53.4971
+      lng: -2.276953
+    - lat: 53.497132
+      lng: -2.276922
+    - lat: 53.49715
+      lng: -2.276904
+    - lat: 53.497186
+      lng: -2.276831
+    - lat: 53.497205
+      lng: -2.276741
+    - lat: 53.497205
+      lng: -2.276646
+    - lat: 53.497198
+      lng: -2.276595
+    - lat: 53.497185
+      lng: -2.276557
+    - lat: 53.49713
+      lng: -2.276463
+    - lat: 53.497091
+      lng: -2.276437
+    - lat: 53.497077
+      lng: -2.276428
+    - lat: 53.497028
+      lng: -2.276292
+    - lat: 53.496968
+      lng: -2.276121
+    - lat: 53.496878
+      lng: -2.275603
+  bbox:
+    sw:
+      lat: 53.483819
+      lng: -2.28612
+    ne:
+      lat: 53.497205
+      lng: -2.270623
+  distance: 3179.481
+  waypoints:
+    - coordinate:
+        lat: 53.486534
+        lng: -2.273517
+      kind: Break
+      properties: "{\"name\":\"Cockcroft Road\",\"distance\":0.685}"
+    - coordinate:
+        lat: 53.490863
+        lng: -2.285128
+      kind: Break
+      properties: "{\"name\":\"A576\",\"distance\":0.546}"
+    - coordinate:
+        lat: 53.496878
+        lng: -2.275603
+      kind: Break
+      properties: "{\"name\":\"Rowsley Street\",\"distance\":3.495}"
+  steps:
+    - geometry:
+        - lat: 53.486534
+          lng: -2.273517
+        - lat: 53.486549
+          lng: -2.273346
+        - lat: 53.486437
+          lng: -2.273249
+        - lat: 53.486144
+          lng: -2.273158
+        - lat: 53.486034
+          lng: -2.273118
+      distance: 71.482
+      duration: 28.514
+      road_name: Cockcroft Road
+      exits: []
+      instruction: Drive east on Cockcroft Road.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.486034
+          lng: -2.273118
+        - lat: 53.485972
+          lng: -2.273125
+        - lat: 53.485854
+          lng: -2.273119
+        - lat: 53.485757
+          lng: -2.273179
+        - lat: 53.485667
+          lng: -2.273235
+        - lat: 53.485415
+          lng: -2.273404
+        - lat: 53.485302
+          lng: -2.273616
+        - lat: 53.485272
+          lng: -2.273735
+        - lat: 53.485228
+          lng: -2.274378
+        - lat: 53.485282
+          lng: -2.274518
+        - lat: 53.485328
+          lng: -2.27457
+        - lat: 53.485508
+          lng: -2.274659
+        - lat: 53.48566
+          lng: -2.27469
+        - lat: 53.486021
+          lng: -2.274772
+        - lat: 53.486198
+          lng: -2.274807
+        - lat: 53.486231
+          lng: -2.27483
+        - lat: 53.486279
+          lng: -2.274883
+      distance: 268
+      duration: 48.449
+      road_name: ""
+      exits: []
+      instruction: Bear right.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.486279
+          lng: -2.274883
+        - lat: 53.486258
+          lng: -2.274925
+        - lat: 53.486245
+          lng: -2.274975
+      distance: 7
+      duration: 2.948
+      road_name: University Road West
+      exits: []
+      instruction: Enter the roundabout and take the 1st exit onto University Road West.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: 1
+    - geometry:
+        - lat: 53.486245
+          lng: -2.274975
+        - lat: 53.48587
+          lng: -2.274927
+        - lat: 53.485439
+          lng: -2.274897
+        - lat: 53.485411
+          lng: -2.274851
+        - lat: 53.485241
+          lng: -2.27484
+        - lat: 53.485199
+          lng: -2.274817
+        - lat: 53.485034
+          lng: -2.274658
+        - lat: 53.484984
+          lng: -2.274528
+        - lat: 53.484966
+          lng: -2.274482
+        - lat: 53.48495
+          lng: -2.274434
+        - lat: 53.484937
+          lng: -2.274397
+        - lat: 53.484848
+          lng: -2.274139
+        - lat: 53.484732
+          lng: -2.273772
+        - lat: 53.48465
+          lng: -2.273481
+        - lat: 53.484602
+          lng: -2.273297
+        - lat: 53.484587
+          lng: -2.27323
+        - lat: 53.484566
+          lng: -2.272987
+        - lat: 53.484543
+          lng: -2.272889
+        - lat: 53.484514
+          lng: -2.272762
+        - lat: 53.484343
+          lng: -2.272014
+        - lat: 53.484323
+          lng: -2.271924
+        - lat: 53.484288
+          lng: -2.271769
+        - lat: 53.484232
+          lng: -2.271552
+        - lat: 53.484158
+          lng: -2.271285
+        - lat: 53.484093
+          lng: -2.27105
+        - lat: 53.484036
+          lng: -2.270881
+        - lat: 53.483988
+          lng: -2.270746
+        - lat: 53.483934
+          lng: -2.270623
+      distance: 435
+      duration: 46.236
+      road_name: Crescent
+      exits: []
+      instruction: Exit the roundabout onto A6/Crescent.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.483934
+          lng: -2.270623
+        - lat: 53.483819
+          lng: -2.270725
+        - lat: 53.483847
+          lng: -2.270798
+        - lat: 53.483874
+          lng: -2.27087
+        - lat: 53.483939
+          lng: -2.271083
+        - lat: 53.484031
+          lng: -2.271409
+        - lat: 53.484154
+          lng: -2.271913
+        - lat: 53.484179
+          lng: -2.272018
+        - lat: 53.484374
+          lng: -2.272836
+        - lat: 53.484401
+          lng: -2.27297
+        - lat: 53.484441
+          lng: -2.273128
+        - lat: 53.484473
+          lng: -2.273196
+        - lat: 53.484502
+          lng: -2.27327
+        - lat: 53.484543
+          lng: -2.273432
+        - lat: 53.484723
+          lng: -2.274067
+        - lat: 53.484812
+          lng: -2.274325
+        - lat: 53.484867
+          lng: -2.274474
+        - lat: 53.484879
+          lng: -2.27451
+        - lat: 53.484897
+          lng: -2.274559
+        - lat: 53.484914
+          lng: -2.2746
+        - lat: 53.485056
+          lng: -2.274972
+        - lat: 53.485295
+          lng: -2.275551
+      distance: 376
+      duration: 52.179
+      road_name: Crescent
+      exits: []
+      instruction: Make a right U-turn at Irwell Place to stay on A6/Crescent.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.485295
+          lng: -2.275551
+        - lat: 53.485464
+          lng: -2.275935
+        - lat: 53.485522
+          lng: -2.276041
+        - lat: 53.485568
+          lng: -2.276147
+        - lat: 53.485653
+          lng: -2.27635
+        - lat: 53.485777
+          lng: -2.276655
+        - lat: 53.485858
+          lng: -2.276845
+        - lat: 53.485942
+          lng: -2.27703
+        - lat: 53.485981
+          lng: -2.277114
+        - lat: 53.486026
+          lng: -2.277213
+        - lat: 53.486075
+          lng: -2.277288
+        - lat: 53.486229
+          lng: -2.277524
+        - lat: 53.486376
+          lng: -2.277749
+        - lat: 53.486504
+          lng: -2.277945
+        - lat: 53.487275
+          lng: -2.278978
+        - lat: 53.487508
+          lng: -2.279277
+        - lat: 53.487704
+          lng: -2.279498
+        - lat: 53.487897
+          lng: -2.279723
+        - lat: 53.488195
+          lng: -2.280122
+        - lat: 53.488251
+          lng: -2.28018
+        - lat: 53.48833
+          lng: -2.280259
+        - lat: 53.488357
+          lng: -2.280287
+        - lat: 53.488377
+          lng: -2.280309
+        - lat: 53.488507
+          lng: -2.280452
+        - lat: 53.488701
+          lng: -2.280651
+        - lat: 53.489021
+          lng: -2.280993
+        - lat: 53.489616
+          lng: -2.281726
+      distance: 634
+      duration: 47.812
+      road_name: Crescent
+      exits: []
+      instruction: Keep right to stay on A6.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.489616
+          lng: -2.281726
+        - lat: 53.489819
+          lng: -2.282124
+        - lat: 53.490074
+          lng: -2.282553
+        - lat: 53.490207
+          lng: -2.282798
+        - lat: 53.49043
+          lng: -2.283305
+        - lat: 53.490601
+          lng: -2.283766
+        - lat: 53.490715
+          lng: -2.28414
+        - lat: 53.490842
+          lng: -2.284539
+        - lat: 53.490873
+          lng: -2.284721
+        - lat: 53.490894
+          lng: -2.284894
+        - lat: 53.49087
+          lng: -2.285061
+        - lat: 53.490863
+          lng: -2.285128
+      distance: 272.856
+      duration: 20.52
+      road_name: Pendleton Roundabout
+      exits: []
+      instruction: Take the Pendleton Roundabout exit.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.490863
+          lng: -2.285128
+        - lat: 53.490863
+          lng: -2.285128
+      distance: 0
+      duration: 0
+      road_name: Pendleton Roundabout
+      exits: []
+      instruction: You have arrived at your destination.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.490863
+          lng: -2.285128
+        - lat: 53.490841
+          lng: -2.285345
+        - lat: 53.49084
+          lng: -2.285491
+        - lat: 53.490846
+          lng: -2.285635
+        - lat: 53.490862
+          lng: -2.285763
+        - lat: 53.490891
+          lng: -2.285854
+        - lat: 53.490926
+          lng: -2.285927
+        - lat: 53.490981
+          lng: -2.286001
+        - lat: 53.491073
+          lng: -2.286089
+        - lat: 53.491203
+          lng: -2.28612
+        - lat: 53.491255
+          lng: -2.286116
+        - lat: 53.491303
+          lng: -2.286095
+        - lat: 53.491341
+          lng: -2.286071
+        - lat: 53.491374
+          lng: -2.286039
+        - lat: 53.491405
+          lng: -2.285994
+        - lat: 53.491429
+          lng: -2.285946
+        - lat: 53.491451
+          lng: -2.285887
+        - lat: 53.491468
+          lng: -2.285816
+        - lat: 53.491481
+          lng: -2.285749
+        - lat: 53.49149
+          lng: -2.285677
+        - lat: 53.491517
+          lng: -2.285452
+        - lat: 53.491539
+          lng: -2.285258
+        - lat: 53.491608
+          lng: -2.285085
+        - lat: 53.491636
+          lng: -2.285007
+        - lat: 53.491658
+          lng: -2.284969
+        - lat: 53.491711
+          lng: -2.284891
+        - lat: 53.491833
+          lng: -2.28478
+        - lat: 53.492083
+          lng: -2.284656
+        - lat: 53.492183
+          lng: -2.284601
+        - lat: 53.492241
+          lng: -2.284548
+        - lat: 53.492319
+          lng: -2.284472
+        - lat: 53.49246
+          lng: -2.284277
+        - lat: 53.492504
+          lng: -2.28422
+        - lat: 53.492571
+          lng: -2.284127
+        - lat: 53.492746
+          lng: -2.283891
+        - lat: 53.492796
+          lng: -2.283824
+        - lat: 53.492891
+          lng: -2.283658
+        - lat: 53.493083
+          lng: -2.283237
+        - lat: 53.493359
+          lng: -2.282735
+        - lat: 53.49339
+          lng: -2.282675
+        - lat: 53.493409
+          lng: -2.282647
+        - lat: 53.493542
+          lng: -2.282497
+        - lat: 53.493676
+          lng: -2.282354
+        - lat: 53.494005
+          lng: -2.281911
+        - lat: 53.494059
+          lng: -2.28185
+        - lat: 53.494224
+          lng: -2.281661
+        - lat: 53.494345
+          lng: -2.281536
+        - lat: 53.494782
+          lng: -2.281106
+        - lat: 53.494865
+          lng: -2.280999
+        - lat: 53.494889
+          lng: -2.28095
+        - lat: 53.494969
+          lng: -2.280805
+        - lat: 53.495118
+          lng: -2.280505
+        - lat: 53.49517
+          lng: -2.280401
+        - lat: 53.49546
+          lng: -2.279827
+        - lat: 53.495717
+          lng: -2.279318
+        - lat: 53.496059
+          lng: -2.278647
+        - lat: 53.496605
+          lng: -2.277558
+        - lat: 53.496761
+          lng: -2.277248
+        - lat: 53.496899
+          lng: -2.277029
+        - lat: 53.496969
+          lng: -2.276938
+      distance: 994.144
+      duration: 75.302
+      road_name: Pendleton Roundabout
+      exits: []
+      instruction: Drive west on A576/Pendleton Roundabout. Continue on A576.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.496969
+          lng: -2.276938
+        - lat: 53.497044
+          lng: -2.276969
+        - lat: 53.4971
+          lng: -2.276953
+        - lat: 53.497132
+          lng: -2.276922
+        - lat: 53.49715
+          lng: -2.276904
+        - lat: 53.497186
+          lng: -2.276831
+        - lat: 53.497205
+          lng: -2.276741
+        - lat: 53.497205
+          lng: -2.276646
+        - lat: 53.497198
+          lng: -2.276595
+        - lat: 53.497185
+          lng: -2.276557
+        - lat: 53.49713
+          lng: -2.276463
+        - lat: 53.497091
+          lng: -2.276437
+        - lat: 53.497077
+          lng: -2.276428
+      distance: 61
+      duration: 5.892
+      road_name: Gerald Road
+      exits: []
+      instruction: Enter the roundabout and take the 4th exit onto Gerald Road.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: 4
+    - geometry:
+        - lat: 53.497077
+          lng: -2.276428
+        - lat: 53.497028
+          lng: -2.276292
+        - lat: 53.496968
+          lng: -2.276121
+        - lat: 53.496878
+          lng: -2.275603
+      distance: 60
+      duration: 7.307
+      road_name: Gerald Road
+      exits: []
+      instruction: Exit the roundabout onto Gerald Road.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
+    - geometry:
+        - lat: 53.496878
+          lng: -2.275603
+        - lat: 53.496878
+          lng: -2.275603
+      distance: 0
+      duration: 0
+      road_name: Gerald Road
+      exits: []
+      instruction: You have arrived at your destination.
+      visual_instructions: []
+      spoken_instructions: []
+      annotations: redacted annotations json strings vec
+      incidents: []
+      driving_side: left
+      roundabout_exit_number: ~
