@@ -129,8 +129,7 @@ class FerrostarCoreTest {
                                   secondaryContent = null,
                                   subContent = null,
                                   triggerDistanceBeforeManeuver = 42.0,
-                              )
-                          ),
+                              )),
                       spokenInstructions = listOf(),
                       duration = 0.0,
                       annotations = null,
