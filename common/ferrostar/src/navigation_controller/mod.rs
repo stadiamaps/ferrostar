@@ -512,14 +512,13 @@ mod tests {
         DistanceEntryAndExitCondition, DistanceToEndOfStepCondition,
     };
     use crate::navigation_controller::test_helpers::{
-        TestRoute, get_test_navigation_controller_config, get_test_route,
-        nav_controller_insta_settings,
+        get_test_navigation_controller_config, nav_controller_insta_settings,
     };
     use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
     use crate::simulation::{
         LocationBias, advance_location_simulation, location_simulation_from_route,
     };
-    use crate::test_utils::redact_properties;
+    use crate::test_utils::{TestRoute, redact_properties};
     use std::sync::Arc;
 
     fn test_full_route_state_snapshot(
@@ -586,7 +585,7 @@ mod tests {
     fn test_extended_exact_distance() {
         nav_controller_insta_settings().bind(|| {
             let (_, states) = test_full_route_state_snapshot(
-                get_test_route(TestRoute::Extended),
+                TestRoute::ValhallaExtended.first_route(),
                 Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,
@@ -606,7 +605,7 @@ mod tests {
     fn test_extended_relative_linestring() {
         nav_controller_insta_settings().bind(|| {
             let (_, states) = test_full_route_state_snapshot(
-                get_test_route(TestRoute::Extended),
+                TestRoute::ValhallaExtended.first_route(),
                 Arc::new(DistanceEntryAndExitCondition::exact()),
                 false,
             );
@@ -623,7 +622,7 @@ mod tests {
     fn test_self_intersecting_exact_distance() {
         nav_controller_insta_settings().bind(|| {
             let (_, states) = test_full_route_state_snapshot(
-                get_test_route(TestRoute::SelfIntersecting),
+                TestRoute::ValhallaSelfIntersecting.first_route(),
                 Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,
@@ -643,7 +642,7 @@ mod tests {
     fn test_self_intersecting_relative_linestring() {
         nav_controller_insta_settings().bind(|| {
             let (_, states) = test_full_route_state_snapshot(
-                get_test_route(TestRoute::SelfIntersecting),
+                TestRoute::ValhallaSelfIntersecting.first_route(),
                 Arc::new(DistanceEntryAndExitCondition::exact()),
                 false,
             );
@@ -660,7 +659,27 @@ mod tests {
     fn test_self_intersecting_relative_linestring_min_line_distance() {
         nav_controller_insta_settings().bind(|| {
             let (_, states) = test_full_route_state_snapshot(
-                get_test_route(TestRoute::SelfIntersecting),
+                TestRoute::ValhallaSelfIntersecting.first_route(),
+                Arc::new(DistanceToEndOfStepCondition {
+                    distance: 0,
+                    minimum_horizontal_accuracy: 0,
+                }),
+                false,
+            );
+            insta::assert_yaml_snapshot!(states
+                .into_iter()
+                .map(|state| state.trip_state())
+                .collect::<Vec<_>>(), {
+                    ".**.remaining_waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+                });
+        });
+    }
+
+    #[test]
+    fn test_roundabout_exact_distance() {
+        nav_controller_insta_settings().bind(|| {
+            let (_, states) = test_full_route_state_snapshot(
+                TestRoute::ValhallaWithRoundabouts.first_route(),
                 Arc::new(DistanceToEndOfStepCondition {
                     distance: 0,
                     minimum_horizontal_accuracy: 0,

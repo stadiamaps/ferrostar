@@ -19,6 +19,7 @@ import org.junit.Assert.fail
 import org.junit.Test
 import uniffi.ferrostar.BoundingBox
 import uniffi.ferrostar.CourseFiltering
+import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
@@ -133,6 +134,8 @@ class FerrostarCoreTest {
                       duration = 0.0,
                       annotations = null,
                       incidents = listOf(),
+                      drivingSide = DrivingSide.RIGHT,
+                      roundaboutExitNumber = null,
                   )),
       )
 

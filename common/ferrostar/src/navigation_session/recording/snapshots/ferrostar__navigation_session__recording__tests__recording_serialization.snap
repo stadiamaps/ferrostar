@@ -37,6 +37,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -53,10 +54,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -108,10 +111,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -152,10 +157,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -166,6 +173,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -218,6 +226,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -234,10 +243,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -289,10 +300,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -333,10 +346,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -347,6 +362,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -399,6 +415,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -415,10 +432,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -470,10 +489,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -514,10 +535,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -528,6 +551,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -580,6 +604,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -596,10 +621,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -651,10 +678,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -695,10 +724,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -709,6 +740,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -761,6 +793,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -777,10 +810,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -832,10 +867,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -876,10 +913,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -890,6 +929,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -942,6 +982,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -958,10 +999,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -1013,10 +1056,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -1057,10 +1102,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -1071,6 +1118,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -1123,6 +1171,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -1139,10 +1188,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -1194,10 +1245,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -1238,10 +1291,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -1252,6 +1307,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -1304,6 +1360,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -1320,10 +1377,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -1375,10 +1434,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -1419,10 +1480,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -1433,6 +1496,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -1485,6 +1549,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -1501,10 +1566,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -1556,10 +1623,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -1600,10 +1669,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -1614,6 +1685,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -1666,6 +1738,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -1682,10 +1755,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -1737,10 +1812,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -1781,10 +1858,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -1795,6 +1874,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -1847,6 +1927,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -1863,10 +1944,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -1918,10 +2001,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -1962,10 +2047,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -1976,6 +2063,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -2028,6 +2116,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -2044,10 +2133,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -2099,10 +2190,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -2143,10 +2236,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -2157,6 +2252,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -2209,6 +2305,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -2225,10 +2322,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -2280,10 +2379,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -2324,10 +2425,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -2338,6 +2441,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -2390,6 +2494,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -2406,10 +2511,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -2461,10 +2568,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -2505,10 +2614,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -2519,6 +2630,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -2571,6 +2683,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -2587,10 +2700,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -2642,10 +2757,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -2686,10 +2803,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -2700,6 +2819,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -2752,6 +2872,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -2768,10 +2889,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -2823,10 +2946,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -2867,10 +2992,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -2881,6 +3008,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -2933,6 +3061,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -2949,10 +3078,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -3004,10 +3135,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -3048,10 +3181,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -3062,6 +3197,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -3114,6 +3250,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -3130,10 +3267,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -3185,10 +3324,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -3229,10 +3370,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -3243,6 +3386,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -3295,6 +3439,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -3311,10 +3456,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -3366,10 +3513,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -3410,10 +3559,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -3424,6 +3575,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -3476,6 +3628,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -3492,10 +3645,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -3547,10 +3702,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -3591,10 +3748,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -3605,6 +3764,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -3657,6 +3817,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -3673,10 +3834,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -3728,10 +3891,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -3772,10 +3937,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -3786,6 +3953,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -3838,6 +4006,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -3854,10 +4023,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -3909,10 +4080,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -3953,10 +4126,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -3967,6 +4142,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -4019,6 +4195,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -4035,10 +4212,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -4090,10 +4269,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -4134,10 +4315,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -4148,6 +4331,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -4200,6 +4384,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -4216,10 +4401,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -4271,10 +4458,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -4315,10 +4504,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -4329,6 +4520,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -4381,6 +4573,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -4397,10 +4590,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -4452,10 +4647,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -4496,10 +4693,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -4510,6 +4709,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -4562,6 +4762,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 264.647
+                driving_side: right
                 duration: 10.705
                 exits: []
                 geometry:
@@ -4578,10 +4779,12 @@ events:
                 incidents: []
                 instruction: Drive southwest on I 205 South/OR 213 South.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -4633,10 +4836,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -4677,10 +4882,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -4691,6 +4898,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -4743,6 +4951,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -4794,10 +5003,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -4838,10 +5049,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -4852,6 +5065,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -4904,6 +5118,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -4955,10 +5170,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -4999,10 +5216,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -5013,6 +5232,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -5065,6 +5285,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -5116,10 +5337,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -5160,10 +5383,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -5174,6 +5399,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -5226,6 +5452,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -5277,10 +5504,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -5321,10 +5550,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -5335,6 +5566,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -5387,6 +5619,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -5438,10 +5671,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -5482,10 +5717,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -5496,6 +5733,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -5548,6 +5786,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -5599,10 +5838,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -5643,10 +5884,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -5657,6 +5900,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -5709,6 +5953,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -5760,10 +6005,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -5804,10 +6051,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -5818,6 +6067,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -5870,6 +6120,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -5921,10 +6172,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -5965,10 +6218,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -5979,6 +6234,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -6031,6 +6287,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -6082,10 +6339,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -6126,10 +6385,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -6140,6 +6401,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -6192,6 +6454,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -6243,10 +6506,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -6287,10 +6552,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -6301,6 +6568,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -6353,6 +6621,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -6404,10 +6673,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -6448,10 +6719,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -6462,6 +6735,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -6514,6 +6788,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -6565,10 +6840,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -6609,10 +6886,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -6623,6 +6902,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -6675,6 +6955,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -6726,10 +7007,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -6770,10 +7053,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -6784,6 +7069,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -6836,6 +7122,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -6887,10 +7174,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -6931,10 +7220,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -6945,6 +7236,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -6997,6 +7289,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -7048,10 +7341,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -7092,10 +7387,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -7106,6 +7403,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -7158,6 +7456,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -7209,10 +7508,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -7253,10 +7554,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -7267,6 +7570,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -7319,6 +7623,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -7370,10 +7675,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -7414,10 +7721,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -7428,6 +7737,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -7480,6 +7790,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -7531,10 +7842,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -7575,10 +7888,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -7589,6 +7904,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -7641,6 +7957,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -7692,10 +8009,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -7736,10 +8055,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -7750,6 +8071,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -7802,6 +8124,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -7853,10 +8176,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -7897,10 +8222,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -7911,6 +8238,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -7963,6 +8291,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -8014,10 +8343,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -8058,10 +8389,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -8072,6 +8405,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -8124,6 +8458,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -8175,10 +8510,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -8219,10 +8556,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -8233,6 +8572,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -8285,6 +8625,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -8336,10 +8677,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -8380,10 +8723,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -8394,6 +8739,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -8446,6 +8792,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -8497,10 +8844,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -8541,10 +8890,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -8555,6 +8906,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -8607,6 +8959,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -8658,10 +9011,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -8702,10 +9057,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -8716,6 +9073,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -8768,6 +9126,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -8819,10 +9178,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -8863,10 +9224,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -8877,6 +9240,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -8929,6 +9293,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -8980,10 +9345,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -9024,10 +9391,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -9038,6 +9407,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -9090,6 +9460,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -9141,10 +9512,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -9185,10 +9558,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -9199,6 +9574,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -9251,6 +9627,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -9302,10 +9679,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -9346,10 +9725,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -9360,6 +9741,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -9412,6 +9794,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -9463,10 +9846,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -9507,10 +9892,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -9521,6 +9908,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -9573,6 +9961,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -9624,10 +10013,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -9668,10 +10059,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -9682,6 +10075,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -9734,6 +10128,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -9785,10 +10180,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -9829,10 +10226,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -9843,6 +10242,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -9895,6 +10295,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -9946,10 +10347,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -9990,10 +10393,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -10004,6 +10409,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -10056,6 +10462,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -10107,10 +10514,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -10151,10 +10560,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -10165,6 +10576,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -10217,6 +10629,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -10268,10 +10681,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -10312,10 +10727,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -10326,6 +10743,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -10378,6 +10796,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -10429,10 +10848,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -10473,10 +10894,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -10487,6 +10910,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -10539,6 +10963,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -10590,10 +11015,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -10634,10 +11061,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -10648,6 +11077,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -10700,6 +11130,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -10751,10 +11182,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -10795,10 +11228,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -10809,6 +11244,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -10861,6 +11297,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 295
+                driving_side: right
                 duration: 12.258
                 exits:
                   - "10"
@@ -10912,10 +11349,12 @@ events:
                 incidents: []
                 instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
                 road_name: ""
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -10956,10 +11395,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -10970,6 +11411,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11022,6 +11464,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11062,10 +11505,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11076,6 +11521,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11128,6 +11574,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11168,10 +11615,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11182,6 +11631,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11234,6 +11684,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11274,10 +11725,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11288,6 +11741,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11340,6 +11794,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11380,10 +11835,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11394,6 +11851,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11446,6 +11904,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11486,10 +11945,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11500,6 +11961,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11552,6 +12014,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11592,10 +12055,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11606,6 +12071,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11658,6 +12124,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11698,10 +12165,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11712,6 +12181,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11764,6 +12234,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11804,10 +12275,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11818,6 +12291,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11870,6 +12344,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -11910,10 +12385,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -11924,6 +12401,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -11976,6 +12454,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12016,10 +12495,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12030,6 +12511,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12082,6 +12564,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12122,10 +12605,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12136,6 +12621,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12188,6 +12674,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12228,10 +12715,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12242,6 +12731,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12294,6 +12784,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12334,10 +12825,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12348,6 +12841,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12400,6 +12894,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12440,10 +12935,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12454,6 +12951,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12506,6 +13004,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12546,10 +13045,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12560,6 +13061,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12612,6 +13114,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12652,10 +13155,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12666,6 +13171,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12718,6 +13224,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12758,10 +13265,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12772,6 +13281,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12824,6 +13334,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12864,10 +13375,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12878,6 +13391,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -12930,6 +13444,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -12970,10 +13485,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -12984,6 +13501,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13036,6 +13554,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13076,10 +13595,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13090,6 +13611,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13142,6 +13664,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13182,10 +13705,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13196,6 +13721,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13248,6 +13774,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13288,10 +13815,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13302,6 +13831,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13354,6 +13884,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13394,10 +13925,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13408,6 +13941,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13460,6 +13994,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13500,10 +14035,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13514,6 +14051,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13566,6 +14104,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13606,10 +14145,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13620,6 +14161,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13672,6 +14214,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13712,10 +14255,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13726,6 +14271,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13778,6 +14324,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13818,10 +14365,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13832,6 +14381,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13884,6 +14434,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -13924,10 +14475,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -13938,6 +14491,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -13990,6 +14544,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14030,10 +14585,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14044,6 +14601,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14096,6 +14654,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14136,10 +14695,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14150,6 +14711,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14202,6 +14764,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14242,10 +14805,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14256,6 +14821,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14308,6 +14874,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14348,10 +14915,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14362,6 +14931,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14414,6 +14984,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14454,10 +15025,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14468,6 +15041,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14520,6 +15094,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14560,10 +15135,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14574,6 +15151,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14626,6 +15204,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14666,10 +15245,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14680,6 +15261,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14732,6 +15314,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14772,10 +15355,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14786,6 +15371,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14838,6 +15424,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14878,10 +15465,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14892,6 +15481,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -14944,6 +15534,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -14984,10 +15575,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -14998,6 +15591,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15050,6 +15644,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15090,10 +15685,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15104,6 +15701,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15156,6 +15754,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15196,10 +15795,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15210,6 +15811,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15262,6 +15864,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15302,10 +15905,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15316,6 +15921,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15368,6 +15974,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15408,10 +16015,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15422,6 +16031,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15474,6 +16084,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15514,10 +16125,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15528,6 +16141,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15580,6 +16194,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15620,10 +16235,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15634,6 +16251,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15686,6 +16304,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15726,10 +16345,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15740,6 +16361,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15792,6 +16414,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15832,10 +16455,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15846,6 +16471,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -15898,6 +16524,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -15938,10 +16565,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -15952,6 +16581,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16004,6 +16634,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16044,10 +16675,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16058,6 +16691,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16110,6 +16744,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16150,10 +16785,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16164,6 +16801,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16216,6 +16854,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16256,10 +16895,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16270,6 +16911,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16322,6 +16964,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16362,10 +17005,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16376,6 +17021,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16428,6 +17074,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16468,10 +17115,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16482,6 +17131,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16534,6 +17184,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16574,10 +17225,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16588,6 +17241,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16640,6 +17294,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16680,10 +17335,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16694,6 +17351,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16746,6 +17404,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16786,10 +17445,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16800,6 +17461,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16852,6 +17514,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16892,10 +17555,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -16906,6 +17571,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -16958,6 +17624,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -16998,10 +17665,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -17012,6 +17681,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -17064,6 +17734,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 513.266
+                driving_side: right
                 duration: 25.269
                 exits: []
                 geometry:
@@ -17104,10 +17775,12 @@ events:
                 incidents: []
                 instruction: Keep right to take OR 213 South/Cascade Highway.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -17118,6 +17791,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -17170,6 +17844,7 @@ events:
             remaining_steps:
               - annotations: ~
                 distance: 0
+                driving_side: right
                 duration: 0
                 exits: []
                 geometry:
@@ -17180,6 +17855,7 @@ events:
                 incidents: []
                 instruction: You have arrived at your destination.
                 road_name: Cascade Highway
+                roundabout_exit_number: ~
                 spoken_instructions: []
                 visual_instructions: []
             remaining_waypoints:
@@ -17331,6 +18007,7 @@ initial_route:
   steps:
     - annotations: ~
       distance: 264.647
+      driving_side: right
       duration: 10.705
       exits: []
       geometry:
@@ -17347,10 +18024,12 @@ initial_route:
       incidents: []
       instruction: Drive southwest on I 205 South/OR 213 South.
       road_name: ""
+      roundabout_exit_number: ~
       spoken_instructions: []
       visual_instructions: []
     - annotations: ~
       distance: 295
+      driving_side: right
       duration: 12.258
       exits:
         - "10"
@@ -17402,10 +18081,12 @@ initial_route:
       incidents: []
       instruction: Take exit 10 onto OR 213 South toward Oregon City/Molalla.
       road_name: ""
+      roundabout_exit_number: ~
       spoken_instructions: []
       visual_instructions: []
     - annotations: ~
       distance: 513.266
+      driving_side: right
       duration: 25.269
       exits: []
       geometry:
@@ -17446,10 +18127,12 @@ initial_route:
       incidents: []
       instruction: Keep right to take OR 213 South/Cascade Highway.
       road_name: Cascade Highway
+      roundabout_exit_number: ~
       spoken_instructions: []
       visual_instructions: []
     - annotations: ~
       distance: 0
+      driving_side: right
       duration: 0
       exits: []
       geometry:
@@ -17460,6 +18143,7 @@ initial_route:
       incidents: []
       instruction: You have arrived at your destination.
       road_name: Cascade Highway
+      roundabout_exit_number: ~
       spoken_instructions: []
       visual_instructions: []
   waypoints:

@@ -60,3 +60,6 @@
         - spokenInstructions: 0 elements
         - annotations: Optional<Array<String>>.none
         - incidents: 0 elements
+        ▿ drivingSide: Optional<DrivingSide>
+          - some: DrivingSide.left
+        - roundaboutExitNumber: Optional<UInt8>.none
