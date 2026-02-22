@@ -85,7 +85,9 @@ public extension NavigationState {
                         ],
                         spokenInstructions: [],
                         annotations: nil,
-                        incidents: []
+                        incidents: [],
+                        drivingSide: .left,
+                        roundaboutExitNumber: nil
                     ),
                 ],
                 remainingWaypoints: [],
