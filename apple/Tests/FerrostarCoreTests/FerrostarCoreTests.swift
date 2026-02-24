@@ -46,7 +46,9 @@ let mockRoute = Route(
         )],
         spokenInstructions: [],
         annotations: nil,
-        incidents: []
+        incidents: [],
+        drivingSide: .left,
+        roundaboutExitNumber: nil
     )]
 )
 

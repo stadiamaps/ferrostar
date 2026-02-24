@@ -233,6 +233,8 @@ pub struct StepManeuver {
     /// An optional string indicating the direction change of the maneuver.
     /// TODO: Model this as an enum.
     pub modifier: Option<String>,
+    /// The exit number for roundabout maneuvers.
+    pub exit: Option<u8>,
     /// Non-standard extension in Mapbox and Valhalla where the instruction is computed server-side
     instruction: Option<String>,
 }

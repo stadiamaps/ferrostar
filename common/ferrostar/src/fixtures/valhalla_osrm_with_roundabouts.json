@@ -1,0 +1,1522 @@
+{
+  "routes": [
+    {
+      "weight_name": "auto",
+      "weight": 979.137,
+      "duration": 335.158,
+      "distance": 3179.481,
+      "legs": [
+        {
+          "via_waypoints": [],
+          "admins": [{}, {}],
+          "weight": 804.816,
+          "duration": 246.658,
+          "steps": [
+            {
+              "intersections": [
+                {
+                  "classes": ["restricted"],
+                  "entry": [true],
+                  "bearings": [82],
+                  "duration": 4.134,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 5.27,
+                  "geometry_index": 0,
+                  "location": [-2.273517, 53.486534]
+                },
+                {
+                  "entry": [false, true, false],
+                  "classes": ["restricted"],
+                  "in": 2,
+                  "bearings": [6, 153, 262],
+                  "duration": 19.692,
+                  "turn_weight": 35.0,
+                  "turn_duration": 2.772,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 56.573,
+                  "geometry_index": 1,
+                  "location": [-2.273346, 53.486549]
+                },
+                {
+                  "bearings": [122, 168, 350],
+                  "entry": [false, true, false],
+                  "classes": ["restricted"],
+                  "in": 2,
+                  "turn_weight": 5.25,
+                  "turn_duration": 0.008,
+                  "admin_index": 0,
+                  "out": 1,
+                  "geometry_index": 3,
+                  "location": [-2.273158, 53.486144]
+                }
+              ],
+              "maneuver": {
+                "instruction": "Drive east on Cockcroft Road.",
+                "type": "depart",
+                "bearing_after": 82,
+                "bearing_before": 0,
+                "location": [-2.273517, 53.486534]
+              },
+              "name": "Cockcroft Road",
+              "duration": 28.514,
+              "distance": 71.482,
+              "driving_side": "left",
+              "weight": 73.06,
+              "mode": "driving",
+              "geometry": "k{p_eBxmwiC]uI~EaEhQuDzEoA"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [false, true, false],
+                  "classes": ["restricted"],
+                  "in": 2,
+                  "bearings": [70, 181, 348],
+                  "duration": 3.652,
+                  "turn_weight": 87.875,
+                  "turn_duration": 0.052,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 92.285,
+                  "geometry_index": 4,
+                  "location": [-2.273118, 53.486034]
+                },
+                {
+                  "entry": [false, true, false],
+                  "classes": ["restricted"],
+                  "in": 2,
+                  "bearings": [92, 200, 359],
+                  "duration": 2.07,
+                  "turn_weight": 7.875,
+                  "turn_duration": 0.09,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 10.301,
+                  "geometry_index": 6,
+                  "location": [-2.273119, 53.485854]
+                },
+                {
+                  "entry": [false, true, true],
+                  "classes": ["restricted"],
+                  "in": 0,
+                  "bearings": [20, 111, 200],
+                  "duration": 1.998,
+                  "turn_weight": 5.25,
+                  "turn_duration": 0.018,
+                  "admin_index": 0,
+                  "out": 2,
+                  "weight": 7.676,
+                  "geometry_index": 7,
+                  "location": [-2.273179, 53.485757]
+                },
+                {
+                  "entry": [false, false, true],
+                  "classes": ["restricted"],
+                  "in": 0,
+                  "bearings": [20, 108, 202],
+                  "duration": 8.839,
+                  "turn_weight": 5.25,
+                  "turn_duration": 0.019,
+                  "admin_index": 0,
+                  "out": 2,
+                  "weight": 16.055,
+                  "geometry_index": 8,
+                  "location": [-2.273235, 53.485667]
+                },
+                {
+                  "entry": [false, true],
+                  "classes": ["restricted"],
+                  "in": 0,
+                  "bearings": [48, 254],
+                  "duration": 9.18,
+                  "turn_weight": 7.875,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 19.12,
+                  "geometry_index": 10,
+                  "location": [-2.273616, 53.485302]
+                },
+                {
+                  "entry": [false, true],
+                  "classes": ["restricted"],
+                  "in": 0,
+                  "bearings": [83, 309],
+                  "duration": 17.28,
+                  "turn_weight": 35.0,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 56.168,
+                  "geometry_index": 12,
+                  "location": [-2.274378, 53.485228]
+                },
+                {
+                  "entry": [false, true],
+                  "classes": ["restricted"],
+                  "in": 0,
+                  "bearings": [172, 353],
+                  "duration": 3.6,
+                  "turn_weight": 5.25,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 9.66,
+                  "geometry_index": 17,
+                  "location": [-2.274772, 53.486021]
+                },
+                {
+                  "bearings": [20, 173, 331],
+                  "entry": [false, false, true],
+                  "classes": ["restricted"],
+                  "in": 1,
+                  "turn_weight": 7.875,
+                  "turn_duration": 0.03,
+                  "admin_index": 0,
+                  "out": 2,
+                  "geometry_index": 18,
+                  "location": [-2.274807, 53.486198]
+                }
+              ],
+              "maneuver": {
+                "modifier": "slight right",
+                "instruction": "Bear right.",
+                "type": "turn",
+                "bearing_after": 181,
+                "bearing_before": 168,
+                "location": [-2.273118, 53.486034]
+              },
+              "name": "",
+              "duration": 48.449,
+              "distance": 268.0,
+              "driving_side": "left",
+              "weight": 221.344,
+              "mode": "driving",
+              "geometry": "c|o_eBztviCzBLjFK`EvBrDnBvNpI`FfLz@lFvAdg@kBvG{AfBgJpDoH|@qUbDaJdAaAl@_BhB"
+            },
+            {
+              "destinations": "A6",
+              "intersections": [
+                {
+                  "bearings": [8, 151, 238],
+                  "entry": [false, false, true],
+                  "in": 1,
+                  "turn_weight": 10.5,
+                  "turn_duration": 2.423,
+                  "admin_index": 0,
+                  "out": 2,
+                  "geometry_index": 20,
+                  "location": [-2.274883, 53.486279]
+                }
+              ],
+              "maneuver": {
+                "exit": 1,
+                "modifier": "left",
+                "instruction": "Enter the roundabout and take the 1st exit onto University Road West.",
+                "type": "roundabout",
+                "bearing_after": 238,
+                "bearing_before": 331,
+                "location": [-2.274883, 53.486279]
+              },
+              "name": "University Road West",
+              "duration": 2.948,
+              "distance": 7.0,
+              "driving_side": "left",
+              "weight": 11.143,
+              "mode": "driving",
+              "geometry": "mkp_eBdcziCh@rAXbB"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [false, true, true],
+                  "in": 0,
+                  "bearings": [58, 176, 289],
+                  "duration": 3.571,
+                  "turn_weight": 26.25,
+                  "turn_duration": 0.421,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 30.109,
+                  "geometry_index": 22,
+                  "location": [-2.274975, 53.486245]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 2,
+                  "bearings": [178, 310, 356],
+                  "duration": 3.619,
+                  "turn_weight": 3.5,
+                  "turn_duration": 0.019,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 7.91,
+                  "geometry_index": 23,
+                  "location": [-2.274927, 53.48587]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 2,
+                  "bearings": [170, 237, 358],
+                  "duration": 2.599,
+                  "turn_weight": 5.25,
+                  "turn_duration": 0.012,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 10.076,
+                  "geometry_index": 24,
+                  "location": [-2.274897, 53.485439]
+                },
+                {
+                  "entry": [false, true, false, false],
+                  "in": 3,
+                  "bearings": [131, 153, 290, 350],
+                  "duration": 2.948,
+                  "turn_duration": 0.023,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 5.455,
+                  "geometry_index": 26,
+                  "location": [-2.27484, 53.485241]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 2,
+                  "bearings": [123, 304, 332],
+                  "duration": 1.177,
+                  "turn_weight": 36.5,
+                  "turn_duration": 0.052,
+                  "admin_index": 1,
+                  "out": 0,
+                  "weight": 38.598,
+                  "geometry_index": 28,
+                  "location": [-2.274658, 53.485034]
+                },
+                {
+                  "entry": [true, false],
+                  "in": 1,
+                  "bearings": [123, 303],
+                  "duration": 0.45,
+                  "admin_index": 1,
+                  "out": 0,
+                  "weight": 0.839,
+                  "geometry_index": 29,
+                  "location": [-2.274528, 53.484984]
+                },
+                {
+                  "entry": [false, true, false, false],
+                  "in": 3,
+                  "bearings": [32, 119, 214, 303],
+                  "duration": 0.458,
+                  "turn_duration": 0.008,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 0.839,
+                  "geometry_index": 30,
+                  "location": [-2.274482, 53.484966]
+                },
+                {
+                  "entry": [false, true, false, false],
+                  "in": 3,
+                  "bearings": [32, 121, 213, 299],
+                  "duration": 0.36,
+                  "turn_duration": 0.022,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 0.629,
+                  "geometry_index": 31,
+                  "location": [-2.274434, 53.48495]
+                },
+                {
+                  "entry": [false, true, false, false],
+                  "in": 3,
+                  "bearings": [32, 120, 213, 301],
+                  "duration": 5.295,
+                  "turn_duration": 0.007,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 9.861,
+                  "geometry_index": 32,
+                  "location": [-2.274397, 53.484937]
+                },
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [21, 115, 298],
+                  "duration": 7.096,
+                  "turn_duration": 0.008,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 13.218,
+                  "geometry_index": 34,
+                  "location": [-2.273772, 53.484732]
+                },
+                {
+                  "entry": [false, true, false, false],
+                  "in": 3,
+                  "bearings": [18, 111, 199, 282],
+                  "duration": 7.686,
+                  "turn_duration": 0.036,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 14.267,
+                  "geometry_index": 39,
+                  "location": [-2.272889, 53.484543]
+                },
+                {
+                  "entry": [false, true, false, false],
+                  "in": 3,
+                  "bearings": [21, 111, 201, 291],
+                  "duration": 1.255,
+                  "turn_duration": 0.018,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 2.308,
+                  "geometry_index": 42,
+                  "location": [-2.271924, 53.484323]
+                },
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [39, 114, 291],
+                  "duration": 3.96,
+                  "turn_duration": 0.022,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 7.343,
+                  "geometry_index": 43,
+                  "location": [-2.271769, 53.484288]
+                },
+                {
+                  "entry": [true, false],
+                  "in": 1,
+                  "bearings": [115, 295],
+                  "duration": 1.912,
+                  "admin_index": 1,
+                  "out": 0,
+                  "weight": 3.567,
+                  "geometry_index": 45,
+                  "location": [-2.271285, 53.484158]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 1,
+                  "bearings": [120, 295, 358],
+                  "duration": 1.487,
+                  "turn_duration": 0.024,
+                  "admin_index": 1,
+                  "out": 0,
+                  "weight": 2.728,
+                  "geometry_index": 46,
+                  "location": [-2.27105, 53.484093]
+                },
+                {
+                  "bearings": [124, 300],
+                  "entry": [true, false],
+                  "in": 1,
+                  "admin_index": 1,
+                  "out": 0,
+                  "geometry_index": 47,
+                  "location": [-2.270881, 53.484036]
+                }
+              ],
+              "destinations": "A6",
+              "maneuver": {
+                "modifier": "left",
+                "instruction": "Exit the roundabout onto A6\/Crescent.",
+                "type": "exit roundabout",
+                "bearing_after": 176,
+                "bearing_before": 238,
+                "location": [-2.274975, 53.486245]
+              },
+              "name": "Crescent",
+              "duration": 46.236,
+              "distance": 435.0,
+              "driving_side": "left",
+              "weight": 152.154,
+              "mode": "driving",
+              "ref": "A6",
+              "geometry": "iip_eB|hziClV_B|Y{@v@{ArIUrAm@hI}HbBcGb@{A^_BXiApDcOfF}UbDeQ~AoJ\\eCh@eNl@cEx@}FtIwm@f@sDdAuHnBqLrCuO`CuMpBqI~AmGjBuF"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [125, 208, 304],
+                  "duration": 7.145,
+                  "turn_weight": 13.75,
+                  "turn_duration": 4.625,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 16.837,
+                  "geometry_index": 49,
+                  "location": [-2.270623, 53.483934]
+                },
+                {
+                  "entry": [false, false, true, true],
+                  "in": 0,
+                  "bearings": [28, 122, 207, 303],
+                  "duration": 6.605,
+                  "turn_weight": 66.25,
+                  "turn_duration": 5.93,
+                  "admin_index": 0,
+                  "out": 3,
+                  "weight": 67.509,
+                  "geometry_index": 50,
+                  "location": [-2.270725, 53.483819]
+                },
+                {
+                  "entry": [false, true],
+                  "in": 0,
+                  "bearings": [123, 298],
+                  "duration": 10.012,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 18.673,
+                  "geometry_index": 51,
+                  "location": [-2.270798, 53.483847]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [21, 112, 201, 292],
+                  "duration": 7.658,
+                  "turn_duration": 0.008,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 14.267,
+                  "geometry_index": 56,
+                  "location": [-2.272018, 53.484179]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [18, 111, 199, 293],
+                  "duration": 1.258,
+                  "turn_duration": 0.021,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 2.308,
+                  "geometry_index": 58,
+                  "location": [-2.27297, 53.484401]
+                },
+                {
+                  "entry": [false, false, true],
+                  "in": 0,
+                  "bearings": [113, 252, 299],
+                  "duration": 2.614,
+                  "turn_duration": 0.026,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 4.826,
+                  "geometry_index": 59,
+                  "location": [-2.273128, 53.484441]
+                },
+                {
+                  "entry": [false, true, true],
+                  "in": 0,
+                  "bearings": [119, 282, 295],
+                  "duration": 5.297,
+                  "turn_duration": 0.009,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 9.861,
+                  "geometry_index": 62,
+                  "location": [-2.273432, 53.484543]
+                },
+                {
+                  "entry": [false, true],
+                  "in": 0,
+                  "bearings": [115, 300],
+                  "duration": 2.25,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 4.196,
+                  "geometry_index": 63,
+                  "location": [-2.274067, 53.484723]
+                },
+                {
+                  "entry": [false, false, true],
+                  "in": 0,
+                  "bearings": [120, 159, 302],
+                  "duration": 1.372,
+                  "turn_weight": 5.25,
+                  "turn_duration": 0.022,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 7.768,
+                  "geometry_index": 64,
+                  "location": [-2.274325, 53.484812]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [32, 122, 213, 299],
+                  "duration": 0.347,
+                  "turn_duration": 0.009,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 0.629,
+                  "geometry_index": 65,
+                  "location": [-2.274474, 53.484867]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [32, 119, 211, 302],
+                  "duration": 0.472,
+                  "turn_duration": 0.022,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 0.839,
+                  "geometry_index": 66,
+                  "location": [-2.27451, 53.484879]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [34, 122, 210, 305],
+                  "duration": 0.362,
+                  "turn_duration": 0.024,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 0.629,
+                  "geometry_index": 67,
+                  "location": [-2.274559, 53.484897]
+                },
+                {
+                  "entry": [false, true],
+                  "in": 0,
+                  "bearings": [125, 303],
+                  "duration": 3.262,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 6.085,
+                  "geometry_index": 68,
+                  "location": [-2.2746, 53.484914]
+                },
+                {
+                  "bearings": [123, 305],
+                  "entry": [false, true],
+                  "in": 0,
+                  "admin_index": 1,
+                  "out": 1,
+                  "geometry_index": 69,
+                  "location": [-2.274972, 53.485056]
+                }
+              ],
+              "maneuver": {
+                "modifier": "uturn",
+                "instruction": "Make a right U-turn at Irwell Place to stay on A6\/Crescent.",
+                "type": "continue",
+                "bearing_after": 303,
+                "bearing_before": 124,
+                "location": [-2.270623, 53.483934]
+              },
+              "name": "Crescent",
+              "duration": 52.179,
+              "distance": 376.0,
+              "driving_side": "left",
+              "weight": 161.002,
+              "mode": "driving",
+              "ref": "A6",
+              "geometry": "{xk_eB|xqiCdFjEw@pCu@nCaChLwDjSuFn^q@pEeKbr@u@jGoAzH_AfCy@rCqAbIgJtf@qDbOmBhHWfAc@`Ba@pA{GfV}Mdc@"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [false, true, true],
+                  "in": 0,
+                  "bearings": [125, 291, 306],
+                  "duration": 3.094,
+                  "turn_duration": 0.019,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 5.735,
+                  "geometry_index": 70,
+                  "location": [-2.275551, 53.485295]
+                },
+                {
+                  "entry": [true, false, false, true],
+                  "in": 1,
+                  "bearings": [37, 129, 217, 306],
+                  "duration": 0.684,
+                  "turn_weight": 21.0,
+                  "turn_duration": 0.009,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 22.259,
+                  "geometry_index": 72,
+                  "location": [-2.276041, 53.485522]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [39, 126, 218, 305],
+                  "duration": 1.219,
+                  "turn_duration": 0.019,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 2.238,
+                  "geometry_index": 73,
+                  "location": [-2.276147, 53.485568]
+                },
+                {
+                  "entry": [false, false, true],
+                  "in": 0,
+                  "bearings": [125, 177, 304],
+                  "duration": 1.807,
+                  "turn_weight": 5.25,
+                  "turn_duration": 0.007,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 8.607,
+                  "geometry_index": 74,
+                  "location": [-2.27635, 53.485653]
+                },
+                {
+                  "entry": [false, true],
+                  "in": 0,
+                  "bearings": [124, 306],
+                  "duration": 1.125,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 2.098,
+                  "geometry_index": 75,
+                  "location": [-2.276655, 53.485777]
+                },
+                {
+                  "entry": [false, true, true],
+                  "in": 0,
+                  "bearings": [126, 267, 308],
+                  "duration": 1.672,
+                  "turn_duration": 0.022,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 3.077,
+                  "geometry_index": 76,
+                  "location": [-2.276845, 53.485858]
+                },
+                {
+                  "entry": [false, false, true, true],
+                  "in": 1,
+                  "bearings": [35, 128, 201, 307],
+                  "duration": 0.607,
+                  "lanes": [
+                    {
+                      "indications": ["straight"],
+                      "valid_indication": "straight",
+                      "valid": true,
+                      "active": true
+                    },
+                    {
+                      "indications": ["straight"],
+                      "valid_indication": "straight",
+                      "valid": true,
+                      "active": true
+                    },
+                    {
+                      "indications": ["straight"],
+                      "valid_indication": "straight",
+                      "valid": true,
+                      "active": true
+                    }
+                  ],
+                  "turn_duration": 0.007,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 1.119,
+                  "geometry_index": 78,
+                  "location": [-2.277114, 53.485981]
+                },
+                {
+                  "entry": [true, false, false, true],
+                  "in": 1,
+                  "bearings": [41, 127, 204, 318],
+                  "duration": 0.566,
+                  "turn_duration": 0.041,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 0.979,
+                  "geometry_index": 79,
+                  "location": [-2.277213, 53.486026]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [49, 138, 229, 318],
+                  "duration": 1.743,
+                  "turn_duration": 0.018,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 3.174,
+                  "geometry_index": 80,
+                  "location": [-2.277288, 53.486075]
+                },
+                {
+                  "entry": [false, false, true],
+                  "in": 0,
+                  "bearings": [138, 286, 318],
+                  "duration": 1.668,
+                  "turn_duration": 0.018,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 3.036,
+                  "geometry_index": 81,
+                  "location": [-2.277524, 53.486229]
+                },
+                {
+                  "entry": [false, true],
+                  "in": 0,
+                  "bearings": [138, 318],
+                  "duration": 16.05,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 29.532,
+                  "geometry_index": 82,
+                  "location": [-2.277749, 53.486376]
+                },
+                {
+                  "entry": [false, false, true],
+                  "in": 0,
+                  "bearings": [145, 298, 321],
+                  "duration": 3.759,
+                  "turn_duration": 0.009,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 6.9,
+                  "geometry_index": 87,
+                  "location": [-2.279723, 53.487897]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [34, 144, 235, 329],
+                  "duration": 0.776,
+                  "turn_duration": 0.026,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 1.38,
+                  "geometry_index": 89,
+                  "location": [-2.28018, 53.488251]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [59, 149, 239, 328],
+                  "duration": 0.232,
+                  "turn_duration": 0.007,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 0.414,
+                  "geometry_index": 90,
+                  "location": [-2.280259, 53.48833]
+                },
+                {
+                  "entry": [false, false, false, true],
+                  "in": 1,
+                  "bearings": [59, 148, 220, 327],
+                  "duration": 0.232,
+                  "turn_duration": 0.007,
+                  "admin_index": 1,
+                  "out": 3,
+                  "weight": 0.414,
+                  "geometry_index": 91,
+                  "location": [-2.280287, 53.488357]
+                },
+                {
+                  "entry": [false, true, true],
+                  "in": 0,
+                  "bearings": [147, 327, 359],
+                  "duration": 1.294,
+                  "turn_duration": 0.019,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 2.346,
+                  "geometry_index": 92,
+                  "location": [-2.280309, 53.488377]
+                },
+                {
+                  "entry": [false, false, true],
+                  "in": 1,
+                  "bearings": [110, 147, 329],
+                  "duration": 5.122,
+                  "turn_weight": 1.55,
+                  "turn_duration": 0.022,
+                  "admin_index": 1,
+                  "out": 2,
+                  "weight": 10.934,
+                  "geometry_index": 93,
+                  "location": [-2.280452, 53.488507]
+                },
+                {
+                  "bearings": [148, 160, 324],
+                  "entry": [false, false, true],
+                  "in": 0,
+                  "turn_duration": 0.009,
+                  "admin_index": 1,
+                  "out": 2,
+                  "geometry_index": 95,
+                  "location": [-2.280993, 53.489021]
+                }
+              ],
+              "maneuver": {
+                "modifier": "slight right",
+                "instruction": "Keep right to stay on A6.",
+                "type": "fork",
+                "bearing_after": 306,
+                "bearing_before": 305,
+                "location": [-2.275551, 53.485295]
+              },
+              "name": "Crescent",
+              "duration": 47.812,
+              "distance": 634.0,
+              "driving_side": "left",
+              "weight": 115.558,
+              "mode": "driving",
+              "ref": "A6",
+              "geometry": "}mn_eB|l{iCqI~VsBrE{ArEiDtKwF`RaDzJgDpJmAfDyAdEaBtCsHvMeH`M_GfKeo@p_AqMtQgKxLaK`MsQ|WoBrB}C|Cu@v@g@j@cG|GcKlK_SjTed@xl@"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [false, true, true],
+                  "in": 0,
+                  "bearings": [144, 311, 329],
+                  "duration": 5.642,
+                  "turn_duration": 0.017,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 10.35,
+                  "geometry_index": 96,
+                  "location": [-2.281726, 53.489616]
+                },
+                {
+                  "entry": [false, true],
+                  "in": 0,
+                  "bearings": [135, 312],
+                  "duration": 11.85,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 21.804,
+                  "geometry_index": 98,
+                  "location": [-2.282553, 53.490074]
+                },
+                {
+                  "entry": [false, true],
+                  "in": 0,
+                  "bearings": [118, 284],
+                  "duration": 1.8,
+                  "admin_index": 1,
+                  "out": 1,
+                  "weight": 3.312,
+                  "geometry_index": 103,
+                  "location": [-2.284539, 53.490842]
+                },
+                {
+                  "bearings": [59, 104, 258],
+                  "entry": [false, false, true],
+                  "in": 1,
+                  "turn_weight": 32.9,
+                  "turn_duration": 0.04,
+                  "admin_index": 1,
+                  "out": 2,
+                  "geometry_index": 105,
+                  "location": [-2.284894, 53.490894]
+                }
+              ],
+              "destinations": "Pendleton Roundabout",
+              "maneuver": {
+                "modifier": "slight left",
+                "instruction": "Take the Pendleton Roundabout exit.",
+                "type": "off ramp",
+                "bearing_after": 311,
+                "bearing_before": 324,
+                "location": [-2.281726, 53.489616]
+              },
+              "name": "Pendleton Roundabout",
+              "duration": 20.52,
+              "distance": 272.856,
+              "driving_side": "left",
+              "weight": 70.554,
+              "mode": "driving",
+              "ref": "A576",
+              "geometry": "_|v_eBzngjCuKzW}NxYiGhN}Lt^uIx[cFjV}F|W}@jJi@xIn@lILdC"
+            },
+            {
+              "intersections": [
+                {
+                  "bearings": [78],
+                  "entry": [true],
+                  "in": 0,
+                  "admin_index": 1,
+                  "geometry_index": 107,
+                  "location": [-2.285128, 53.490863]
+                }
+              ],
+              "maneuver": {
+                "instruction": "You have arrived at your destination.",
+                "type": "arrive",
+                "bearing_after": 0,
+                "bearing_before": 258,
+                "location": [-2.285128, 53.490863]
+              },
+              "name": "Pendleton Roundabout",
+              "duration": 0.0,
+              "distance": 0.0,
+              "driving_side": "left",
+              "weight": 0.0,
+              "mode": "driving",
+              "ref": "A576",
+              "geometry": "}iy_eBncnjC??"
+            }
+          ],
+          "distance": 2064.338,
+          "summary": "A6, A576"
+        },
+        {
+          "via_waypoints": [],
+          "admins": [{}, {}],
+          "weight": 174.321,
+          "duration": 88.501,
+          "steps": [
+            {
+              "intersections": [
+                {
+                  "entry": [true],
+                  "bearings": [260],
+                  "duration": 1.061,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 1.952,
+                  "geometry_index": 0,
+                  "location": [-2.285128, 53.490863]
+                },
+                {
+                  "entry": [false, true, true],
+                  "in": 0,
+                  "bearings": [80, 246, 274],
+                  "duration": 4.636,
+                  "turn_duration": 0.061,
+                  "admin_index": 0,
+                  "out": 2,
+                  "weight": 8.418,
+                  "geometry_index": 1,
+                  "location": [-2.285345, 53.490841]
+                },
+                {
+                  "entry": [false, false, true],
+                  "in": 0,
+                  "bearings": [144, 177, 352],
+                  "duration": 1.278,
+                  "turn_duration": 0.153,
+                  "admin_index": 0,
+                  "out": 2,
+                  "weight": 2.07,
+                  "geometry_index": 8,
+                  "location": [-2.286089, 53.491073]
+                },
+                {
+                  "entry": [true, false, true],
+                  "in": 1,
+                  "bearings": [20, 172, 332],
+                  "duration": 2.028,
+                  "turn_duration": 0.153,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 3.45,
+                  "geometry_index": 9,
+                  "location": [-2.28612, 53.491203]
+                },
+                {
+                  "entry": [true, false],
+                  "in": 1,
+                  "bearings": [66, 201],
+                  "duration": 1.725,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 3.174,
+                  "geometry_index": 14,
+                  "location": [-2.285994, 53.491405]
+                },
+                {
+                  "entry": [true, false],
+                  "in": 1,
+                  "bearings": [79, 246],
+                  "duration": 1.125,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 2.07,
+                  "geometry_index": 19,
+                  "location": [-2.285677, 53.49149]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 1,
+                  "bearings": [79, 259, 289],
+                  "duration": 0.993,
+                  "turn_weight": 3.1,
+                  "turn_duration": 0.018,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 4.894,
+                  "geometry_index": 20,
+                  "location": [-2.285452, 53.491517]
+                },
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [55, 106, 259],
+                  "duration": 3.56,
+                  "turn_duration": 0.035,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 6.486,
+                  "geometry_index": 21,
+                  "location": [-2.285258, 53.491539]
+                },
+                {
+                  "entry": [true, true, false, false],
+                  "in": 2,
+                  "bearings": [16, 184, 213, 258],
+                  "duration": 2.198,
+                  "turn_duration": 0.023,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 4.002,
+                  "geometry_index": 26,
+                  "location": [-2.28478, 53.491833]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 1,
+                  "bearings": [24, 196, 303],
+                  "duration": 3.708,
+                  "turn_duration": 0.033,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 6.762,
+                  "geometry_index": 27,
+                  "location": [-2.284656, 53.492083]
+                },
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [38, 130, 218],
+                  "duration": 0.468,
+                  "turn_duration": 0.018,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 0.828,
+                  "geometry_index": 31,
+                  "location": [-2.284277, 53.49246]
+                },
+                {
+                  "entry": [true, false],
+                  "in": 1,
+                  "bearings": [40, 218],
+                  "duration": 0.75,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 1.38,
+                  "geometry_index": 32,
+                  "location": [-2.28422, 53.492504]
+                },
+                {
+                  "entry": [true, false, true],
+                  "in": 1,
+                  "bearings": [39, 220, 306],
+                  "duration": 2.407,
+                  "turn_duration": 0.007,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 4.416,
+                  "geometry_index": 33,
+                  "location": [-2.284127, 53.492571]
+                },
+                {
+                  "entry": [true, false],
+                  "in": 1,
+                  "bearings": [46, 219],
+                  "duration": 1.125,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 2.07,
+                  "geometry_index": 35,
+                  "location": [-2.283824, 53.492796]
+                },
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [53, 131, 226],
+                  "duration": 2.653,
+                  "turn_duration": 0.028,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 4.83,
+                  "geometry_index": 36,
+                  "location": [-2.283658, 53.492891]
+                },
+                {
+                  "entry": [true, false, true],
+                  "in": 1,
+                  "bearings": [47, 233, 322],
+                  "duration": 3.987,
+                  "turn_duration": 0.012,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 7.314,
+                  "geometry_index": 37,
+                  "location": [-2.283237, 53.493083]
+                },
+                {
+                  "entry": [true, false],
+                  "in": 1,
+                  "bearings": [33, 227],
+                  "duration": 2.7,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 4.9,
+                  "geometry_index": 40,
+                  "location": [-2.282647, 53.493409]
+                },
+                {
+                  "entry": [true, false],
+                  "in": 1,
+                  "bearings": [39, 213],
+                  "duration": 4.05,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 7.351,
+                  "geometry_index": 42,
+                  "location": [-2.282354, 53.493676]
+                },
+                {
+                  "entry": [true, false, true],
+                  "in": 1,
+                  "bearings": [34, 217, 320],
+                  "duration": 1.658,
+                  "turn_duration": 0.008,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 2.995,
+                  "geometry_index": 44,
+                  "location": [-2.28185, 53.494059]
+                },
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [31, 130, 214],
+                  "duration": 6.308,
+                  "turn_duration": 0.008,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 11.435,
+                  "geometry_index": 45,
+                  "location": [-2.281661, 53.494224]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 2,
+                  "bearings": [51, 113, 214],
+                  "duration": 0.366,
+                  "turn_duration": 0.066,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 0.545,
+                  "geometry_index": 48,
+                  "location": [-2.280999, 53.494865]
+                },
+                {
+                  "entry": [true, false, true],
+                  "in": 1,
+                  "bearings": [49, 231, 315],
+                  "duration": 3.608,
+                  "turn_duration": 0.008,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 6.534,
+                  "geometry_index": 49,
+                  "location": [-2.28095, 53.494889]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 2,
+                  "bearings": [50, 130, 230],
+                  "duration": 3.771,
+                  "turn_duration": 0.021,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 6.806,
+                  "geometry_index": 52,
+                  "location": [-2.280401, 53.49517]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 2,
+                  "bearings": [50, 139, 230],
+                  "duration": 3.321,
+                  "turn_duration": 0.021,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 5.99,
+                  "geometry_index": 53,
+                  "location": [-2.279827, 53.49546]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 2,
+                  "bearings": [49, 146, 230],
+                  "duration": 4.368,
+                  "turn_duration": 0.018,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 7.895,
+                  "geometry_index": 54,
+                  "location": [-2.279318, 53.495717]
+                },
+                {
+                  "entry": [true, true, false, false],
+                  "in": 2,
+                  "bearings": [50, 139, 229, 314],
+                  "duration": 7.071,
+                  "turn_duration": 0.021,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 12.796,
+                  "geometry_index": 55,
+                  "location": [-2.278647, 53.496059]
+                },
+                {
+                  "entry": [true, false, true],
+                  "in": 1,
+                  "bearings": [50, 230, 306],
+                  "duration": 2.046,
+                  "turn_duration": 0.021,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 3.675,
+                  "geometry_index": 56,
+                  "location": [-2.277558, 53.496605]
+                },
+                {
+                  "bearings": [43, 70, 230],
+                  "entry": [true, false, false],
+                  "in": 2,
+                  "turn_weight": 4.2,
+                  "turn_duration": 0.01,
+                  "admin_index": 0,
+                  "out": 0,
+                  "geometry_index": 57,
+                  "location": [-2.277248, 53.496761]
+                }
+              ],
+              "maneuver": {
+                "instruction": "Drive west on A576\/Pendleton Roundabout. Continue on A576.",
+                "type": "depart",
+                "bearing_after": 260,
+                "bearing_before": 0,
+                "location": [-2.285128, 53.490863]
+              },
+              "name": "Pendleton Roundabout",
+              "duration": 75.302,
+              "distance": 994.144,
+              "driving_side": "left",
+              "weight": 143.457,
+              "mode": "driving",
+              "ref": "A576",
+              "geometry": "}iy_eBncnjCj@pL@bHK~G_@~Fy@tDeApCmBrCwDnDcG|@gBG_Bi@kAo@aA_A}@yAo@_Bk@uBa@mCYeCQoCu@aMk@cKiCyIw@{Ck@kAiB{CsF}EsNwFgEmBsBiB{CwCyGeKwAqBeCyD}IwMcBeC}DkI_KiYgPk^}@wBe@w@iGkHkG}GqSuZkByBiIyJqFyFiZ{YeDuEo@aB_DaHiHwQgBoEcQ{b@aOy^kT}h@ca@acAwHkRsGuLkCuD"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [false, false, true],
+                  "in": 1,
+                  "bearings": [118, 221, 356],
+                  "duration": 1.265,
+                  "turn_weight": 2.8,
+                  "turn_duration": 0.14,
+                  "admin_index": 0,
+                  "out": 2,
+                  "weight": 4.842,
+                  "geometry_index": 59,
+                  "location": [-2.276938, 53.496969]
+                },
+                {
+                  "entry": [true, false, true],
+                  "in": 1,
+                  "bearings": [30, 176, 287],
+                  "duration": 0.541,
+                  "turn_duration": 0.241,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 0.544,
+                  "geometry_index": 61,
+                  "location": [-2.276953, 53.4971]
+                },
+                {
+                  "entry": [true, false, true],
+                  "in": 1,
+                  "bearings": [66, 210, 353],
+                  "duration": 1.855,
+                  "turn_duration": 0.28,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 2.859,
+                  "geometry_index": 62,
+                  "location": [-2.276922, 53.497132]
+                },
+                {
+                  "entry": [true, false, false],
+                  "in": 1,
+                  "bearings": [103, 246, 303],
+                  "duration": 0.526,
+                  "turn_duration": 0.301,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 0.408,
+                  "geometry_index": 66,
+                  "location": [-2.276646, 53.497205]
+                },
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [73, 139, 283],
+                  "duration": 1.48,
+                  "turn_duration": 0.28,
+                  "admin_index": 0,
+                  "out": 1,
+                  "weight": 2.178,
+                  "geometry_index": 67,
+                  "location": [-2.276595, 53.497198]
+                },
+                {
+                  "bearings": [37, 159, 319],
+                  "entry": [false, true, false],
+                  "in": 2,
+                  "turn_duration": 0.077,
+                  "admin_index": 0,
+                  "out": 1,
+                  "geometry_index": 70,
+                  "location": [-2.276437, 53.497091]
+                }
+              ],
+              "maneuver": {
+                "exit": 4,
+                "modifier": "left",
+                "instruction": "Enter the roundabout and take the 4th exit onto Gerald Road.",
+                "type": "roundabout",
+                "bearing_after": 356,
+                "bearing_before": 41,
+                "location": [-2.276938, 53.496969]
+              },
+              "name": "Gerald Road",
+              "duration": 5.892,
+              "distance": 61.0,
+              "driving_side": "left",
+              "weight": 11.104,
+              "mode": "driving",
+              "geometry": "qge`eBrc~iCuC|@oB_@_A}@c@c@gAqCe@sD?}DLeBXkAlB{DlAs@ZQ"
+            },
+            {
+              "intersections": [
+                {
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "bearings": [121, 196, 339],
+                  "duration": 2.968,
+                  "turn_weight": 5.0,
+                  "turn_duration": 0.088,
+                  "admin_index": 0,
+                  "out": 0,
+                  "weight": 8.384,
+                  "geometry_index": 71,
+                  "location": [-2.276428, 53.497077]
+                },
+                {
+                  "bearings": [106, 260, 301],
+                  "entry": [true, true, false],
+                  "in": 2,
+                  "turn_weight": 6.3,
+                  "turn_duration": 0.019,
+                  "admin_index": 1,
+                  "out": 0,
+                  "geometry_index": 73,
+                  "location": [-2.276121, 53.496968]
+                }
+              ],
+              "maneuver": {
+                "modifier": "slight left",
+                "instruction": "Exit the roundabout onto Gerald Road.",
+                "type": "exit roundabout",
+                "bearing_after": 121,
+                "bearing_before": 159,
+                "location": [-2.276428, 53.497077]
+              },
+              "name": "Gerald Road",
+              "duration": 7.307,
+              "distance": 60.0,
+              "driving_side": "left",
+              "weight": 19.76,
+              "mode": "driving",
+              "geometry": "ine`eBvc}iC`BoGvBuIrDk_@"
+            },
+            {
+              "intersections": [
+                {
+                  "bearings": [286],
+                  "entry": [true],
+                  "in": 0,
+                  "admin_index": 1,
+                  "geometry_index": 74,
+                  "location": [-2.275603, 53.496878]
+                }
+              ],
+              "maneuver": {
+                "instruction": "You have arrived at your destination.",
+                "type": "arrive",
+                "bearing_after": 0,
+                "bearing_before": 106,
+                "location": [-2.275603, 53.496878]
+              },
+              "name": "Gerald Road",
+              "duration": 0.0,
+              "distance": 0.0,
+              "driving_side": "left",
+              "weight": 0.0,
+              "mode": "driving",
+              "geometry": "{ae`eBdp{iC??"
+            }
+          ],
+          "distance": 1115.144,
+          "summary": "A576, Gerald Road"
+        }
+      ],
+      "geometry": "k{p_eBxmwiC]uI~EaEhQuDzEoAzBLjFK`EvBrDnBvNpI`FfLz@lFvAdg@kBvG{AfBgJpDoH|@qUbDaJdAaAl@_BhBh@rAXbBlV_B|Y{@v@{ArIUrAm@hI}HbBcGb@{A^_BXiApDcOfF}UbDeQ~AoJ\\eCh@eNl@cEx@}FtIwm@f@sDdAuHnBqLrCuO`CuMpBqI~AmGjBuFdFjEw@pCu@nCaChLwDjSuFn^q@pEeKbr@u@jGoAzH_AfCy@rCqAbIgJtf@qDbOmBhHWfAc@`Ba@pA{GfV}Mdc@qI~VsBrE{ArEiDtKwF`RaDzJgDpJmAfDyAdEaBtCsHvMeH`M_GfKeo@p_AqMtQgKxLaK`MsQ|WoBrB}C|Cu@v@g@j@cG|GcKlK_SjTed@xl@uKzW}NxYiGhN}Lt^uIx[cFjV}F|W}@jJi@xIn@lILdCj@pL@bHK~G_@~Fy@tDeApCmBrCwDnDcG|@gBG_Bi@kAo@aA_A}@yAo@_Bk@uBa@mCYeCQoCu@aMk@cKiCyIw@{Ck@kAiB{CsF}EsNwFgEmBsBiB{CwCyGeKwAqBeCyD}IwMcBeC}DkI_KiYgPk^}@wBe@w@iGkHkG}GqSuZkByBiIyJqFyFiZ{YeDuEo@aB_DaHiHwQgBoEcQ{b@aOy^kT}h@ca@acAwHkRsGuLkCuDuC|@oB_@_A}@c@c@gAqCe@sD?}DLeBXkAlB{DlAs@ZQ`BoGvBuIrDk_@"
+    }
+  ],
+  "waypoints": [
+    {
+      "waypoint_index": 0,
+      "trips_index": 0,
+      "distance": 0.685,
+      "name": "Cockcroft Road",
+      "location": [-2.273517, 53.486534]
+    },
+    {
+      "waypoint_index": 1,
+      "trips_index": 0,
+      "distance": 0.546,
+      "name": "A576",
+      "location": [-2.285128, 53.490863]
+    },
+    {
+      "waypoint_index": 2,
+      "trips_index": 0,
+      "distance": 3.495,
+      "name": "Rowsley Street",
+      "location": [-2.275603, 53.496878]
+    }
+  ],
+  "code": "Ok"
+}

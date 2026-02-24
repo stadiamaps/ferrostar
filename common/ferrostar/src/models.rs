@@ -348,6 +348,13 @@ pub struct RouteStep {
     pub annotations: Option<Vec<String>>,
     /// A list of incidents that occur along the step.
     pub incidents: Vec<Incident>,
+    /// Which side of the road traffic drives on for this step.
+    ///
+    /// This is relevant for roundabouts: left-hand traffic (e.g. UK) uses clockwise roundabouts,
+    /// while right-hand traffic uses counterclockwise roundabouts.
+    pub driving_side: Option<DrivingSide>,
+    /// The exit number when entering a roundabout (1 = first exit, 2 = second, etc.).
+    pub roundabout_exit_number: Option<u8>,
 }
 
 impl RouteStep {
@@ -483,6 +490,21 @@ pub enum ManeuverModifier {
     Left,
     #[serde(rename = "sharp left")]
     SharpLeft,
+}
+
+/// Which side of the road traffic drives on.
+///
+/// This is needed by consumers like Android Auto to determine whether
+/// a roundabout should be rendered as clockwise (right-hand traffic)
+/// or counterclockwise (left-hand traffic).
+#[derive(Deserialize, Debug, Copy, Clone, Eq, PartialEq, Serialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[serde(rename_all = "lowercase")]
+pub enum DrivingSide {
+    Left,
+    Right,
 }
 
 /// The type of incident that has occurred.
