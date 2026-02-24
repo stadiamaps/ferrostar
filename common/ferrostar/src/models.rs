@@ -30,14 +30,10 @@ use uuid::Uuid;
 
 use crate::algorithms::get_linestring;
 
-#[derive(Debug)]
-#[cfg_attr(feature = "std", derive(thiserror::Error))]
+#[derive(Debug, thiserror::Error)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum ModelError {
-    #[cfg_attr(
-        feature = "std",
-        error("Failed to generate a polyline from route coordinates: {error}.")
-    )]
+    #[error("Failed to generate a polyline from route coordinates: {error}.")]
     PolylineGenerationError { error: String },
 }
 
