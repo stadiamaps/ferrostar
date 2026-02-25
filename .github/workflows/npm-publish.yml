@@ -7,6 +7,9 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   build:
@@ -22,7 +25,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
@@ -44,12 +47,7 @@ jobs:
       - name: Publish Core
         run: "npm run publish:core"
         working-directory: web
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Web Component
         run: npm publish --access public
         working-directory: web
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-    
