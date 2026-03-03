@@ -10,15 +10,6 @@
       }
     },
     {
-      "identity" : "mockable",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Kolos65/Mockable.git",
-      "state" : {
-        "revision" : "55f846e4ea37ca37166a6d533b5144b956385b41",
-        "version" : "0.5.1"
-      }
-    },
-    {
       "identity" : "swift-custom-dump",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-custom-dump",
@@ -50,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "e2da0e969a345c00e7524adf391d9be232be9c26",
-        "version" : "0.21.1"
+        "revision" : "bb33eb7c236d690fc8b75f4f028a6bf7200f5c95",
+        "version" : "0.22.0"
       }
     },
     {
