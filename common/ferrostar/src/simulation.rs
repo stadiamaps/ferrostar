@@ -10,7 +10,7 @@
 //!
 //! ```
 //! use ferrostar::simulation::{advance_location_simulation, location_simulation_from_polyline, LocationBias};
-//! # use std::error::Error;
+//! # use core::error::Error;
 //! # fn main() -> Result<(), Box<dyn Error>> {
 //!
 //! let polyline_precision = 6;
