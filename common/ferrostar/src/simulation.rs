@@ -10,7 +10,7 @@
 //!
 //! ```
 //! use ferrostar::simulation::{advance_location_simulation, location_simulation_from_polyline, LocationBias};
-//! # use std::error::Error;
+//! # use core::error::Error;
 //! # fn main() -> Result<(), Box<dyn Error>> {
 //!
 //! let polyline_precision = 6;
@@ -65,16 +65,15 @@ use alloc::{
     vec::Vec,
 };
 
-#[derive(Debug)]
-#[cfg_attr(feature = "std", derive(thiserror::Error))]
+#[derive(Debug, thiserror::Error)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 #[cfg_attr(feature = "wasm-bindgen", derive(Serialize, Deserialize, Tsify))]
 #[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
 pub enum SimulationError {
-    #[cfg_attr(feature = "std", error("Failed to parse polyline: {error}."))]
+    #[error("Failed to parse polyline: {error}.")]
     /// Errors decoding the polyline string.
     PolylineError { error: String },
-    #[cfg_attr(feature = "std", error("Not enough points (expected at least two)."))]
+    #[error("Not enough points (expected at least two).")]
     /// Not enough points in the input.
     NotEnoughPoints,
 }

@@ -75,22 +75,15 @@ impl NavigationRecording {
 }
 
 /// A session recording error.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, thiserror::Error)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
-#[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum RecordingError {
     /// Error during serialization.
-    #[cfg_attr(
-        feature = "std",
-        error("Error serializing navigation recording: {error}.")
-    )]
+    #[error("Error serializing navigation recording: {error}.")]
     SerializationError { error: String },
 
     /// Recording is not enabled for this controller.
-    #[cfg_attr(
-        feature = "std",
-        error("Recording is not enabled for this controller.")
-    )]
+    #[error("Recording is not enabled for this controller.")]
     RecordingNotEnabled,
 }
 

@@ -5,8 +5,8 @@ pub mod utilities;
 
 use super::RouteResponseParser;
 use crate::models::{
-    AnyAnnotationValue, GeographicCoordinate, Incident, LaneInfo, RouteStep, SpokenInstruction,
-    VisualInstruction, VisualInstructionContent, Waypoint, WaypointKind,
+    AnyAnnotationValue, DrivingSide, GeographicCoordinate, Incident, LaneInfo, RouteStep,
+    SpokenInstruction, VisualInstruction, VisualInstructionContent, Waypoint, WaypointKind,
 };
 use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
 use crate::routing_adapters::utilities::get_coordinates_from_geometry;
@@ -328,6 +328,12 @@ impl RouteStep {
             None => Vec::new(),
         };
 
+        let driving_side = value.driving_side.as_deref().and_then(|s| match s {
+            "left" => Some(DrivingSide::Left),
+            "right" => Some(DrivingSide::Right),
+            _ => None,
+        });
+
         RouteStep {
             geometry,
             // TODO: Investigate using the haversine distance or geodesics to normalize.
@@ -341,6 +347,8 @@ impl RouteStep {
             spoken_instructions,
             annotations: annotations_as_strings,
             incidents,
+            driving_side,
+            roundabout_exit_number: value.maneuver.exit,
         }
     }
 }
@@ -348,24 +356,11 @@ impl RouteStep {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::test_utils::redact_properties;
-
-    const STANDARD_OSRM_POLYLINE6_RESPONSE: &str =
-        include_str!("fixtures/standard_osrm_polyline6_response.json");
-    const VALHALLA_OSRM_RESPONSE: &str = include_str!("fixtures/valhalla_osrm_response.json");
-    const VALHALLA_OSRM_RESPONSE_VIA_WAYS: &str =
-        include_str!("fixtures/valhalla_osrm_response_via_ways.json");
-    const VALHALLA_EXTENDED_OSRM_RESPONSE: &str =
-        include_str!("fixtures/valhalla_extended_osrm_response.json");
-    const VALHALLA_OSRM_RESPONSE_WITH_EXITS: &str =
-        include_str!("fixtures/valhalla_osrm_response_with_exit_info.json");
+    use crate::test_utils::{TestRoute, redact_properties};
 
     #[test]
     fn parse_standard_osrm() {
-        let parser = OsrmResponseParser::new(6);
-        let routes = parser
-            .parse_response(STANDARD_OSRM_POLYLINE6_RESPONSE.into())
-            .expect("Unable to parse OSRM response");
+        let routes = TestRoute::StandardOsrm.parse();
         insta::assert_yaml_snapshot!(routes, {
             "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
@@ -373,10 +368,7 @@ mod tests {
 
     #[test]
     fn parse_valhalla_osrm() {
-        let parser = OsrmResponseParser::new(6);
-        let routes = parser
-            .parse_response(VALHALLA_OSRM_RESPONSE.into())
-            .expect("Unable to parse Valhalla OSRM response");
+        let routes = TestRoute::Valhalla.parse();
 
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec",
@@ -386,10 +378,7 @@ mod tests {
 
     #[test]
     fn parse_valhalla_osrm_with_via_ways() {
-        let parser = OsrmResponseParser::new(6);
-        let routes = parser
-            .parse_response(VALHALLA_OSRM_RESPONSE_VIA_WAYS.into())
-            .expect("Unable to parse Valhalla OSRM response");
+        let routes = TestRoute::ValhallaViaWays.parse();
 
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec",
@@ -399,10 +388,7 @@ mod tests {
 
     #[test]
     fn parse_valhalla_asserting_annotation_lengths() {
-        let parser = OsrmResponseParser::new(6);
-        let routes = parser
-            .parse_response(VALHALLA_OSRM_RESPONSE.into())
-            .expect("Unable to parse Valhalla OSRM response");
+        let routes = TestRoute::Valhalla.parse();
 
         // Loop through every step and validate that the length of the annotations
         // matches the length of the geometry minus one. This is because each annotation
@@ -431,10 +417,7 @@ mod tests {
 
     #[test]
     fn parse_valhalla_asserting_sub_maneuvers() {
-        let parser = OsrmResponseParser::new(6);
-        let routes = parser
-            .parse_response(VALHALLA_EXTENDED_OSRM_RESPONSE.into())
-            .expect("Unable to parse Valhalla Extended OSRM response");
+        let routes = TestRoute::ValhallaExtended.parse();
 
         // Collect all sub_contents into a vector
         let sub_contents: Vec<_> = routes
@@ -468,15 +451,60 @@ mod tests {
 
     #[test]
     fn parse_osrm_with_exits() {
-        let parser = OsrmResponseParser::new(6);
-        let routes = parser
-            .parse_response(VALHALLA_OSRM_RESPONSE_WITH_EXITS.into())
-            .expect("Unable to parse OSRM response");
+        let routes = TestRoute::ValhallaWithExits.parse();
 
         insta::assert_yaml_snapshot!(routes, {
             ".**.annotations" => "redacted annotations json strings vec",
             "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
         });
+    }
+
+    #[test]
+    fn parse_valhalla_osrm_with_roundabouts() {
+        let routes = TestRoute::ValhallaWithRoundabouts.parse();
+
+        insta::assert_yaml_snapshot!(routes, {
+            ".**.annotations" => "redacted annotations json strings vec",
+            "[].waypoints[].properties" => insta::dynamic_redaction(redact_properties::<OsrmWaypointProperties>),
+        });
+    }
+
+    #[test]
+    fn parse_valhalla_roundabout_fields() {
+        let routes = TestRoute::ValhallaWithRoundabouts.parse();
+
+        let route = &routes[0];
+
+        // Collect steps that have roundabout exit numbers
+        let roundabout_steps: Vec<_> = route
+            .steps
+            .iter()
+            .filter(|step| step.roundabout_exit_number.is_some())
+            .collect();
+
+        assert!(
+            !roundabout_steps.is_empty(),
+            "Expected at least one step with a roundabout exit number"
+        );
+
+        for step in &roundabout_steps {
+            // Every step with a roundabout exit should also have a driving side
+            assert!(
+                step.driving_side.is_some(),
+                "Roundabout step should have driving_side set"
+            );
+        }
+
+        // All steps in this UK route should be left-hand driving
+        for step in &route.steps {
+            if let Some(driving_side) = step.driving_side {
+                assert_eq!(
+                    driving_side,
+                    DrivingSide::Left,
+                    "Expected left-hand driving for UK route"
+                );
+            }
+        }
     }
 
     #[test]

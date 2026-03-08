@@ -73,7 +73,9 @@ struct RouteStepFactory: TestFixtureFactory {
             visualInstructions: [visualInstructionBuilder(n)],
             spokenInstructions: [],
             annotations: nil,
-            incidents: []
+            incidents: [],
+            drivingSide: .left,
+            roundaboutExitNumber: nil
         )
     }
 }

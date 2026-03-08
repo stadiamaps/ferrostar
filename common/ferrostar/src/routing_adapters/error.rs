@@ -4,33 +4,22 @@ use alloc::string::{String, ToString};
 // TODO: This implementation seems less than ideal. In particular, it hides what sort of JSON error occurred due to an apparent bug in UniFFI.
 // The trouble appears to be with generating "flat" enum bindings that are used with callback
 // interfaces when the underlying actually has fields.
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
-#[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum InstantiationError {
-    #[cfg_attr(
-        feature = "std",
-        error("Error parsing the JSON options for the request.")
-    )]
+    #[error("Error parsing the JSON options for the request.")]
     OptionsJsonParseError,
 }
 
 // TODO: See comment above
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
-#[cfg_attr(feature = "std", derive(thiserror::Error))]
 pub enum RoutingRequestGenerationError {
-    #[cfg_attr(
-        feature = "std",
-        error("Too few waypoints were provided to compute a route.")
-    )]
+    #[error("Too few waypoints were provided to compute a route.")]
     NotEnoughWaypoints,
-    #[cfg_attr(feature = "std", error("Error generating JSON for the request."))]
+    #[error("Error generating JSON for the request.")]
     JsonError,
-    #[cfg_attr(
-        feature = "std",
-        error("An unknown error generating a request was raised in foreign code.")
-    )]
+    #[error("An unknown error generating a request was raised in foreign code.")]
     UnknownRequestGenerationError,
 }
 
@@ -53,29 +42,22 @@ impl From<serde_json::Error> for RoutingRequestGenerationError {
     }
 }
 
-#[derive(Debug)]
-#[cfg_attr(feature = "std", derive(thiserror::Error))]
+#[derive(Debug, thiserror::Error)]
 #[cfg_attr(feature = "uniffi", derive(uniffi::Error))]
 pub enum ParsingError {
     // TODO: Unable to find route and other common errors
-    #[cfg_attr(feature = "std", error("Failed to parse route json object: {error}."))]
+    #[error("Failed to parse route json object: {error}.")]
     InvalidRouteObject { error: String },
-    #[cfg_attr(feature = "std", error("Failed to parse route geometry: {error}."))]
+    #[error("Failed to parse route geometry: {error}.")]
     InvalidGeometry { error: String },
-    #[cfg_attr(feature = "std", error("Failed to parse annotations: {error}."))]
+    #[error("Failed to parse annotations: {error}.")]
     MalformedAnnotations { error: String },
-    #[cfg_attr(
-        feature = "std",
-        error("Routing adapter returned an unexpected status code: {code}.")
-    )]
+    #[error("Routing adapter returned an unexpected status code: {code}.")]
     InvalidStatusCode {
         code: String,
         description: Option<String>,
     },
-    #[cfg_attr(
-        feature = "std",
-        error("An unknown error parsing a response was raised in foreign code.")
-    )]
+    #[error("An unknown error parsing a response was raised in foreign code.")]
     UnknownParsingError,
 }
 

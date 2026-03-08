@@ -97,6 +97,9 @@
         - spokenInstructions: 0 elements
         - annotations: Optional<Array<String>>.none
         - incidents: 0 elements
+        ▿ drivingSide: Optional<DrivingSide>
+          - some: DrivingSide.right
+        - roundaboutExitNumber: Optional<UInt8>.none
       ▿ RouteStep: You have arrived at your destination.
         ▿ geometry: 2 elements
           ▿ GeographicCoordinate
@@ -115,3 +118,6 @@
         - spokenInstructions: 0 elements
         - annotations: Optional<Array<String>>.none
         - incidents: 0 elements
+        ▿ drivingSide: Optional<DrivingSide>
+          - some: DrivingSide.right
+        - roundaboutExitNumber: Optional<UInt8>.none

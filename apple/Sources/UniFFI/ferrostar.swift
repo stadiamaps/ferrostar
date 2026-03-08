@@ -5290,6 +5290,17 @@ public struct RouteStep: Equatable, Hashable, Codable {
      * A list of incidents that occur along the step.
      */
     public var incidents: [Incident]
+    /**
+     * Which side of the road traffic drives on for this step.
+     *
+     * This is relevant for roundabouts: left-hand traffic (e.g. UK) uses clockwise roundabouts,
+     * while right-hand traffic uses counterclockwise roundabouts.
+     */
+    public var drivingSide: DrivingSide?
+    /**
+     * The exit number when entering a roundabout (1 = first exit, 2 = second, etc.).
+     */
+    public var roundaboutExitNumber: UInt8?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -5327,7 +5338,16 @@ public struct RouteStep: Equatable, Hashable, Codable {
          */annotations: [String]?, 
         /**
          * A list of incidents that occur along the step.
-         */incidents: [Incident]) {
+         */incidents: [Incident], 
+        /**
+         * Which side of the road traffic drives on for this step.
+         *
+         * This is relevant for roundabouts: left-hand traffic (e.g. UK) uses clockwise roundabouts,
+         * while right-hand traffic uses counterclockwise roundabouts.
+         */drivingSide: DrivingSide?, 
+        /**
+         * The exit number when entering a roundabout (1 = first exit, 2 = second, etc.).
+         */roundaboutExitNumber: UInt8?) {
         self.geometry = geometry
         self.distance = distance
         self.duration = duration
@@ -5338,6 +5358,8 @@ public struct RouteStep: Equatable, Hashable, Codable {
         self.spokenInstructions = spokenInstructions
         self.annotations = annotations
         self.incidents = incidents
+        self.drivingSide = drivingSide
+        self.roundaboutExitNumber = roundaboutExitNumber
     }
 
     
@@ -5365,7 +5387,9 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
                 visualInstructions: FfiConverterSequenceTypeVisualInstruction.read(from: &buf), 
                 spokenInstructions: FfiConverterSequenceTypeSpokenInstruction.read(from: &buf), 
                 annotations: FfiConverterOptionSequenceString.read(from: &buf), 
-                incidents: FfiConverterSequenceTypeIncident.read(from: &buf)
+                incidents: FfiConverterSequenceTypeIncident.read(from: &buf), 
+                drivingSide: FfiConverterOptionTypeDrivingSide.read(from: &buf), 
+                roundaboutExitNumber: FfiConverterOptionUInt8.read(from: &buf)
         )
     }
 
@@ -5380,6 +5404,8 @@ public struct FfiConverterTypeRouteStep: FfiConverterRustBuffer {
         FfiConverterSequenceTypeSpokenInstruction.write(value.spokenInstructions, into: &buf)
         FfiConverterOptionSequenceString.write(value.annotations, into: &buf)
         FfiConverterSequenceTypeIncident.write(value.incidents, into: &buf)
+        FfiConverterOptionTypeDrivingSide.write(value.drivingSide, into: &buf)
+        FfiConverterOptionUInt8.write(value.roundaboutExitNumber, into: &buf)
     }
 }
 
@@ -6874,6 +6900,80 @@ public func FfiConverterTypeCourseFiltering_lift(_ buf: RustBuffer) throws -> Co
 #endif
 public func FfiConverterTypeCourseFiltering_lower(_ value: CourseFiltering) -> RustBuffer {
     return FfiConverterTypeCourseFiltering.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Which side of the road traffic drives on.
+ *
+ * This is needed by consumers like Android Auto to determine whether
+ * a roundabout should be rendered as clockwise (right-hand traffic)
+ * or counterclockwise (left-hand traffic).
+ */
+
+public enum DrivingSide: Equatable, Hashable, Codable {
+    
+    case left
+    case right
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension DrivingSide: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDrivingSide: FfiConverterRustBuffer {
+    typealias SwiftType = DrivingSide
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DrivingSide {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .left
+        
+        case 2: return .right
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: DrivingSide, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .left:
+            writeInt(&buf, Int32(1))
+        
+        
+        case .right:
+            writeInt(&buf, Int32(2))
+        
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDrivingSide_lift(_ buf: RustBuffer) throws -> DrivingSide {
+    return try FfiConverterTypeDrivingSide.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDrivingSide_lower(_ value: DrivingSide) -> RustBuffer {
+    return FfiConverterTypeDrivingSide.lower(value)
 }
 
 
@@ -9256,6 +9356,30 @@ public func FfiConverterTypeWellKnownRouteProvider_lower(_ value: WellKnownRoute
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionUInt8: FfiConverterRustBuffer {
+    typealias SwiftType = UInt8?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterUInt8.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterUInt8.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionUInt16: FfiConverterRustBuffer {
     typealias SwiftType = UInt16?
 
@@ -9704,6 +9828,30 @@ fileprivate struct FfiConverterOptionTypeVisualInstructionContent: FfiConverterR
         switch try readInt(&buf) as Int8 {
         case 0: return nil
         case 1: return try FfiConverterTypeVisualInstructionContent.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterOptionTypeDrivingSide: FfiConverterRustBuffer {
+    typealias SwiftType = DrivingSide?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeDrivingSide.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeDrivingSide.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
