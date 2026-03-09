@@ -4,8 +4,8 @@ import com.stadiamaps.ferrostar.composeui.views.components.ProgressView24HourPre
 import com.stadiamaps.ferrostar.composeui.views.components.ProgressViewInformationalPreview
 import com.stadiamaps.ferrostar.composeui.views.components.ProgressViewWithExitPreview
 import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
-import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.WithSnapshotBackground
+import com.stadiamaps.ferrostar.support.paparazziDefault
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlinx.datetime.TimeZone

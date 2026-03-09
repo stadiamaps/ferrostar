@@ -3,8 +3,8 @@ package com.stadiamaps.ferrostar.views
 import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.USStyleSpeedLimitView
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeed
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
-import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.WithSnapshotBackground
+import com.stadiamaps.ferrostar.support.paparazziDefault
 import org.junit.Rule
 import org.junit.Test
 

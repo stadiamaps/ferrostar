@@ -4,8 +4,8 @@ import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingI
 import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewLandscapeTrackingPreview
 import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewNonTrackingPreview
 import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewTrackingPreview
-import com.stadiamaps.ferrostar.support.paparazziDefault
 import com.stadiamaps.ferrostar.support.WithSnapshotBackground
+import com.stadiamaps.ferrostar.support.paparazziDefault
 import org.junit.Rule
 import org.junit.Test
 
