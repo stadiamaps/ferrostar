@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIButton
 import com.stadiamaps.ferrostar.composeui.views.components.controls.NavigationUIZoomButton
+import com.stadiamaps.ferrostar.support.WithSnapshotBackground
 import com.stadiamaps.ferrostar.support.paparazziDefault
 import org.junit.Rule
 import org.junit.Test
@@ -25,7 +26,7 @@ class NavigationUIButtonTest {
   @Test
   fun testNavigationUIButton() {
     paparazzi.snapshot {
-      Box(modifier = Modifier.size(buttonSize).padding(16.dp)) {
+      WithSnapshotBackground {
         NavigationUIButton(onClick = { /* no action */ }, buttonSize = buttonSize) {
           Icon(Icons.Filled.Adb, contentDescription = "ADB")
         }
@@ -36,7 +37,7 @@ class NavigationUIButtonTest {
   @Test
   fun testNavigationUIButtonCustomized() {
     paparazzi.snapshot {
-      Box(modifier = Modifier.size(buttonSize).padding(16.dp)) {
+      WithSnapshotBackground {
         NavigationUIButton(
             onClick = { /* no action */ },
             buttonSize = buttonSize,
@@ -51,7 +52,7 @@ class NavigationUIButtonTest {
   @Test
   fun testNavigationUIZoomButton() {
     paparazzi.snapshot {
-      Box(modifier = Modifier.size(buttonSize).padding(16.dp)) {
+      WithSnapshotBackground {
         NavigationUIZoomButton(
             onClickZoomIn = { /* no action */ },
             onClickZoomOut = { /* no action */ },
@@ -63,7 +64,7 @@ class NavigationUIButtonTest {
   @Test
   fun testNavigationUIZoomButtonCustomized() {
     paparazzi.snapshot {
-      Box(modifier = Modifier.size(buttonSize).padding(16.dp)) {
+      WithSnapshotBackground {
         NavigationUIZoomButton(
             buttonSize = buttonSize,
             onClickZoomIn = { /* no action */ },
