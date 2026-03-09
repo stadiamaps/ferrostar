@@ -4,7 +4,7 @@ import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.ViennaConv
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeed
 import com.stadiamaps.ferrostar.core.measurement.MeasurementSpeedUnit
 import com.stadiamaps.ferrostar.support.paparazziDefault
-import com.stadiamaps.ferrostar.support.withSnapshotBackground
+import com.stadiamaps.ferrostar.support.WithSnapshotBackground
 import org.junit.Rule
 import org.junit.Test
 
@@ -14,7 +14,7 @@ class ViennaStyleSpeedLimitViewTest {
   @Test
   fun testLowSpeedValue() {
     paparazzi.snapshot {
-      withSnapshotBackground {
+      WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(55.0, MeasurementSpeedUnit.KilometersPerHour))
       }
@@ -24,7 +24,7 @@ class ViennaStyleSpeedLimitViewTest {
   @Test
   fun testFastSpeedValue() {
     paparazzi.snapshot {
-      withSnapshotBackground {
+      WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.KilometersPerHour))
       }
@@ -34,7 +34,7 @@ class ViennaStyleSpeedLimitViewTest {
   @Test
   fun testImplausibleSpeedValue() {
     paparazzi.snapshot {
-      withSnapshotBackground {
+      WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(1000.0, MeasurementSpeedUnit.KilometersPerHour))
       }
@@ -44,7 +44,7 @@ class ViennaStyleSpeedLimitViewTest {
   @Test
   fun testMetersPerSecondSpeedValue() {
     paparazzi.snapshot {
-      withSnapshotBackground {
+      WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.MetersPerSecond),
             units = MeasurementSpeedUnit.MetersPerSecond)
@@ -55,7 +55,7 @@ class ViennaStyleSpeedLimitViewTest {
   @Test
   fun testMilesPerHourSpeedValue() {
     paparazzi.snapshot {
-      withSnapshotBackground {
+      WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.MilesPerHour),
             units = MeasurementSpeedUnit.MilesPerHour)
@@ -66,7 +66,7 @@ class ViennaStyleSpeedLimitViewTest {
   @Test
   fun testKnotsSpeedValue() {
     paparazzi.snapshot {
-      withSnapshotBackground {
+      WithSnapshotBackground {
         ViennaConventionStyleSpeedLimitView(
             speedLimit = MeasurementSpeed(100.0, MeasurementSpeedUnit.Knots),
             units = MeasurementSpeedUnit.Knots)

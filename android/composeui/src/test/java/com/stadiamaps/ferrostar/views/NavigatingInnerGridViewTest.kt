@@ -5,7 +5,7 @@ import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingI
 import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewNonTrackingPreview
 import com.stadiamaps.ferrostar.composeui.views.components.gridviews.NavigatingInnerGridViewTrackingPreview
 import com.stadiamaps.ferrostar.support.paparazziDefault
-import com.stadiamaps.ferrostar.support.withSnapshotBackground
+import com.stadiamaps.ferrostar.support.WithSnapshotBackground
 import org.junit.Rule
 import org.junit.Test
 
@@ -15,25 +15,25 @@ class NavigatingInnerGridViewTest {
 
   @Test
   fun testNavigatingInnerGridViewTracking() {
-    paparazzi.snapshot { withSnapshotBackground { NavigatingInnerGridViewTrackingPreview() } }
+    paparazzi.snapshot { WithSnapshotBackground { NavigatingInnerGridViewTrackingPreview() } }
   }
 
   @Test
   fun testNavigatingInnerGridViewNonTracking() {
-    paparazzi.snapshot { withSnapshotBackground { NavigatingInnerGridViewNonTrackingPreview() } }
+    paparazzi.snapshot { WithSnapshotBackground { NavigatingInnerGridViewNonTrackingPreview() } }
   }
 
   @Test
   fun testNavigatingInnerGridViewTrackingLandscape() {
     paparazzi.snapshot {
-      withSnapshotBackground { NavigatingInnerGridViewLandscapeTrackingPreview() }
+      WithSnapshotBackground { NavigatingInnerGridViewLandscapeTrackingPreview() }
     }
   }
 
   @Test
   fun testNavigatingInnerGridViewNonTrackingLandscape() {
     paparazzi.snapshot {
-      withSnapshotBackground { NavigatingInnerGridViewLandscapeNonTrackingPreview() }
+      WithSnapshotBackground { NavigatingInnerGridViewLandscapeNonTrackingPreview() }
     }
   }
 }
