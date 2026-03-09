@@ -1,3 +1,4 @@
+import com.github.willir.rust.CargoNdkConfig
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.SonatypeHost
 
@@ -79,9 +80,10 @@ cargoNdk {
 
 android.libraryVariants.all { variant ->
     def bDir = layout.buildDirectory.dir("generated/source/uniffi/${variant.name}/java").get()
+    def cargoPath = CargoNdkConfig.resolveCargoExecutable(cargoNdk.cargoExecutable)
     def generateBindings = tasks.register("generate${variant.name.capitalize()}UniFFIBindings", Exec) {
         workingDir '../../common'
-        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', '../android/core/src/main/jniLibs/arm64-v8a/libferrostar.so', '--language', 'kotlin', '--out-dir', bDir
+        commandLine cargoPath, 'run', '-p', 'uniffi-bindgen', 'generate', '--library', '../android/core/src/main/jniLibs/arm64-v8a/libferrostar.so', '--language', 'kotlin', '--out-dir', bDir
 
         dependsOn "buildCargoNdk${variant.name.capitalize()}"
     }
