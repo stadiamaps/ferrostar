@@ -113,7 +113,6 @@ pub struct ValhallaWaypointProperties {
     /// into a Valhalla `break_through`, and a [`WaypointKind::Via`] into a `through`.
     #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub allow_uturns: Option<bool>,
-
 }
 
 impl Waypoint {
@@ -703,34 +702,38 @@ mod tests {
 
     #[test]
     fn request_body_with_custom_waypoint_types() {
-        let body_json = generate_body(USER_LOCATION, vec![
-            Waypoint {
-                coordinate: GeographicCoordinate { lat: 0.0, lng: 1.0 },
-                kind: WaypointKind::Via,
-                properties: None,
-            },
-            Waypoint::new_with_valhalla_properties(
-                GeographicCoordinate { lat: 2.0, lng: 3.0 },
-                WaypointKind::Break,
-                ValhallaWaypointProperties {
-                    allow_uturns: Some(false),
-                    ..Default::default()
-                }
-            ),
-            Waypoint::new_with_valhalla_properties(
-                GeographicCoordinate { lat: 4.0, lng: 5.0 },
-                WaypointKind::Via,
-                ValhallaWaypointProperties {
-                    allow_uturns: Some(false),
-                    ..Default::default()
-                }
-            ),
-            Waypoint {
-                coordinate: GeographicCoordinate { lat: 6.0, lng: 7.0 },
-                kind: WaypointKind::Break,
-                properties: None,
-            },
-        ], None);
+        let body_json = generate_body(
+            USER_LOCATION,
+            vec![
+                Waypoint {
+                    coordinate: GeographicCoordinate { lat: 0.0, lng: 1.0 },
+                    kind: WaypointKind::Via,
+                    properties: None,
+                },
+                Waypoint::new_with_valhalla_properties(
+                    GeographicCoordinate { lat: 2.0, lng: 3.0 },
+                    WaypointKind::Break,
+                    ValhallaWaypointProperties {
+                        allow_uturns: Some(false),
+                        ..Default::default()
+                    },
+                ),
+                Waypoint::new_with_valhalla_properties(
+                    GeographicCoordinate { lat: 4.0, lng: 5.0 },
+                    WaypointKind::Via,
+                    ValhallaWaypointProperties {
+                        allow_uturns: Some(false),
+                        ..Default::default()
+                    },
+                ),
+                Waypoint {
+                    coordinate: GeographicCoordinate { lat: 6.0, lng: 7.0 },
+                    kind: WaypointKind::Break,
+                    properties: None,
+                },
+            ],
+            None,
+        );
 
         assert_json_include!(
             actual: body_json,
