@@ -106,6 +106,14 @@ pub struct ValhallaWaypointProperties {
     /// A set of optional filters to exclude candidate edges based on their attributes.
     #[cfg_attr(feature = "uniffi", uniffi(default))]
     pub search_filter: Option<ValhallaLocationSearchFilter>,
+    /// Determines whether U-Turns are allowed at the waypoint
+    /// (if it is an intermediate waypoint, not the first or last).
+    ///
+    /// Defaults to `true`. This has the effect of converting a [`WaypointKind::Break`]
+    /// into a Valhalla `break_through`, and a [`WaypointKind::Via`] into a `through`.
+    #[cfg_attr(feature = "uniffi", uniffi(default))]
+    pub allow_uturns: Option<bool>,
+
 }
 
 impl Waypoint {
@@ -434,6 +442,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
                         },
                     });
                     Ok(merge_optional_waypoint_properties(
+                        waypoint.kind,
                         intermediate,
                         if let Some(props) = waypoint.properties.as_deref() {
                             serde_json::from_slice(props)?
@@ -482,6 +491,7 @@ impl RouteRequestGenerator for ValhallaHttpRequestGenerator {
 }
 
 fn merge_optional_waypoint_properties(
+    waypoint_kind: WaypointKind,
     location: JsonValue,
     waypoint_properties: Option<ValhallaWaypointProperties>,
 ) -> JsonValue {
@@ -498,12 +508,21 @@ fn merge_optional_waypoint_properties(
         street_side_max_distance,
         street_side_cutoff,
         search_filter,
+        allow_uturns,
     }) = waypoint_properties
     else {
         return location;
     };
 
     let mut result = location;
+
+    if allow_uturns.is_some_and(|value| value == false) {
+        // Rewrite the waypoint type if u-turns are explicitly disallowed
+        result["type"] = match waypoint_kind {
+            WaypointKind::Break => "break_through".into(),
+            WaypointKind::Via => "through".into(),
+        }
+    }
 
     if let Some(heading) = heading {
         result["heading"] = heading.into();
@@ -676,6 +695,72 @@ mod tests {
                     {
                         "lat": 2.0,
                         "lon": 3.0,
+                    }
+                ],
+            })
+        );
+    }
+
+    #[test]
+    fn request_body_with_custom_waypoint_types() {
+        let body_json = generate_body(USER_LOCATION, vec![
+            Waypoint {
+                coordinate: GeographicCoordinate { lat: 0.0, lng: 1.0 },
+                kind: WaypointKind::Via,
+                properties: None,
+            },
+            Waypoint::new_with_valhalla_properties(
+                GeographicCoordinate { lat: 2.0, lng: 3.0 },
+                WaypointKind::Break,
+                ValhallaWaypointProperties {
+                    allow_uturns: Some(false),
+                    ..Default::default()
+                }
+            ),
+            Waypoint::new_with_valhalla_properties(
+                GeographicCoordinate { lat: 4.0, lng: 5.0 },
+                WaypointKind::Via,
+                ValhallaWaypointProperties {
+                    allow_uturns: Some(false),
+                    ..Default::default()
+                }
+            ),
+            Waypoint {
+                coordinate: GeographicCoordinate { lat: 6.0, lng: 7.0 },
+                kind: WaypointKind::Break,
+                properties: None,
+            },
+        ], None);
+
+        assert_json_include!(
+            actual: body_json,
+            expected: json!({
+                "costing": COSTING,
+                "locations": [
+                    {
+                        "lat": 0.0,
+                        "lon": 0.0,
+                        "street_side_tolerance": 6,
+                    },
+                    {
+                        "lat": 0.0,
+                        "lon": 1.0,
+                        "type": "via",
+                    },
+                    {
+                        "lat": 2.0,
+                        "lon": 3.0,
+                        "type": "break_through"
+                    },
+                    {
+                        "lat": 4.0,
+                        "lon": 5.0,
+                        "type": "through"
+                    },
+                    {
+                        "lat": 6.0,
+                        "lon": 7.0,
+                        "type": "break"
                     }
                 ],
             })

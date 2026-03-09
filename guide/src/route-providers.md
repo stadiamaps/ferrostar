@@ -106,10 +106,17 @@ This is exposed via a top-level helper function named `create_waypoint_with_valh
 Here's an example in Swift:
 
 ```swift
-let waypoint = createWaypointWithValhallaProperties(coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806),
-                                                    kind: .break,
-													properties: ValhallaWaypointProperties(preferredSide: .same))
+let waypoint = createWaypointWithValhallaProperties(
+    coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806),
+    kind: .break,
+    properties: ValhallaWaypointProperties(preferredSide: .same, allowUturns: false))
 ```
+
+> [!TIP]
+> Valhalla lets you disable U-turns at intermediate waypoints.
+> They do this with two new waypoint types: `break_through` and `through`.
+> To achieve the same effect in Ferrostar, set the allow u-turn field to `false` in
+> the Valhalla waypoint properties.
 
 If you’re rolling your own integration or curious about implementation details,
 the relevant Rust type is [`ValhallaHttpRequestGenerator`](https://docs.rs/ferrostar/latest/ferrostar/routing_adapters/valhalla/struct.ValhallaHttpRequestGenerator.html).
