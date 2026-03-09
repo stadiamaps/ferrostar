@@ -44,7 +44,7 @@ class RTLInstructionViewTests {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
           InstructionsView(
               instructions = instructions,
-              distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
+              distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar-EG")),
               distanceToNextManeuver = 42.0)
         }
       }

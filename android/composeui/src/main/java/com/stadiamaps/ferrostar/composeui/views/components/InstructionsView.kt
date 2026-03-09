@@ -168,7 +168,7 @@ fun PreviewInstructionsView() {
   InstructionsView(instructions = instructions, distanceToNextManeuver = 42.0)
 }
 
-@Preview(locale = "ar")
+@Preview(locale = "ar-EG")
 @Composable
 fun PreviewRTLInstructionsView() {
   val instructions =
@@ -187,6 +187,6 @@ fun PreviewRTLInstructionsView() {
 
   InstructionsView(
       instructions = instructions,
-      distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
+      distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar-EG")),
       distanceToNextManeuver = 42.0)
 }

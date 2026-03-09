@@ -85,12 +85,12 @@ fun PreviewImageManeuverInstructionView() {
       }
 }
 
-@Preview(locale = "ar")
+@Preview(locale = "ar-EG")
 @Composable
 fun PreviewRTLManeuverInstructionView() {
   ManeuverInstructionView(
       text = "ادمج يسارًا",
-      distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
+      distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar-EG")),
       distanceToNextManeuver = 24140.16) {
         Image(
             Icons.Filled.Build,
