@@ -20,15 +20,6 @@
       }
     },
     {
-      "identity" : "mockable",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Kolos65/Mockable.git",
-      "state" : {
-        "revision" : "55f846e4ea37ca37166a6d533b5144b956385b41",
-        "version" : "0.5.1"
-      }
-    },
-    {
       "identity" : "stadiamaps-api-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stadiamaps/stadiamaps-api-swift",
@@ -60,17 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/maplibre/swiftui-dsl",
       "state" : {
-        "revision" : "e2da0e969a345c00e7524adf391d9be232be9c26",
-        "version" : "0.21.1"
-      }
-    },
-    {
-      "identity" : "xctest-dynamic-overlay",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
-      "state" : {
-        "revision" : "34e463e98ab8541c604af706c99bed7160f5ec70",
-        "version" : "1.8.1"
+        "revision" : "cecdd8143ad58bfe36072680cd47d750d2a7479e",
+        "version" : "0.23.0"
       }
     }
   ],
