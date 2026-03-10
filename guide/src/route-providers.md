@@ -109,7 +109,8 @@ Here's an example in Swift:
 let waypoint = createWaypointWithValhallaProperties(
     coordinate: GeographicCoordinate(lat: 60.5349908, lng: -149.5485806),
     kind: .break,
-    properties: ValhallaWaypointProperties(preferredSide: .same, allowUturns: false))
+    properties: ValhallaWaypointProperties(preferredSide: .same,
+	allowUturns: false))
 ```
 
 > [!TIP]
