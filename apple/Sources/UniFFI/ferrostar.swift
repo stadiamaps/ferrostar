@@ -6240,6 +6240,14 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
      * A set of optional filters to exclude candidate edges based on their attributes.
      */
     public var searchFilter: ValhallaLocationSearchFilter?
+    /**
+     * Determines whether U-Turns are allowed at the waypoint
+     * (if it is an intermediate waypoint, not the first or last).
+     *
+     * Defaults to `true`. This has the effect of converting a [`WaypointKind::Break`]
+     * into a Valhalla `break_through`, and a [`WaypointKind::Via`] into a `through`.
+     */
+    public var allowUturns: Bool?
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -6314,7 +6322,14 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
          */streetSideCutoff: ValhallaRoadClass? = nil, 
         /**
          * A set of optional filters to exclude candidate edges based on their attributes.
-         */searchFilter: ValhallaLocationSearchFilter? = nil) {
+         */searchFilter: ValhallaLocationSearchFilter? = nil, 
+        /**
+         * Determines whether U-Turns are allowed at the waypoint
+         * (if it is an intermediate waypoint, not the first or last).
+         *
+         * Defaults to `true`. This has the effect of converting a [`WaypointKind::Break`]
+         * into a Valhalla `break_through`, and a [`WaypointKind::Via`] into a `through`.
+         */allowUturns: Bool? = nil) {
         self.heading = heading
         self.headingTolerance = headingTolerance
         self.minimumReachability = minimumReachability
@@ -6327,6 +6342,7 @@ public struct ValhallaWaypointProperties: Equatable, Hashable, Codable {
         self.streetSideMaxDistance = streetSideMaxDistance
         self.streetSideCutoff = streetSideCutoff
         self.searchFilter = searchFilter
+        self.allowUturns = allowUturns
     }
 
     
@@ -6356,7 +6372,8 @@ public struct FfiConverterTypeValhallaWaypointProperties: FfiConverterRustBuffer
                 streetSideTolerance: FfiConverterOptionUInt16.read(from: &buf), 
                 streetSideMaxDistance: FfiConverterOptionUInt16.read(from: &buf), 
                 streetSideCutoff: FfiConverterOptionTypeValhallaRoadClass.read(from: &buf), 
-                searchFilter: FfiConverterOptionTypeValhallaLocationSearchFilter.read(from: &buf)
+                searchFilter: FfiConverterOptionTypeValhallaLocationSearchFilter.read(from: &buf), 
+                allowUturns: FfiConverterOptionBool.read(from: &buf)
         )
     }
 
@@ -6373,6 +6390,7 @@ public struct FfiConverterTypeValhallaWaypointProperties: FfiConverterRustBuffer
         FfiConverterOptionUInt16.write(value.streetSideMaxDistance, into: &buf)
         FfiConverterOptionTypeValhallaRoadClass.write(value.streetSideCutoff, into: &buf)
         FfiConverterOptionTypeValhallaLocationSearchFilter.write(value.searchFilter, into: &buf)
+        FfiConverterOptionBool.write(value.allowUturns, into: &buf)
     }
 }
 
