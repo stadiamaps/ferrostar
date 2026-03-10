@@ -1,3 +1,6 @@
+import org.gradle.api.Project
+import org.gradle.process.ExecOperations
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias libs.plugins.androidApplication apply false
@@ -9,6 +12,16 @@ plugins {
     alias libs.plugins.compose.compiler apply false
     alias libs.plugins.mavenPublish apply false
     alias libs.plugins.kotlinSerialization apply false
+}
+
+// Gradle 9 removed `Project.exec(Closure)`; some third-party plugins still call it.
+// Provide a compatibility shim backed by `ExecOperations`.
+gradle.beforeProject { Project p ->
+    if (!p.metaClass.respondsTo(p, "exec", Closure)) {
+        p.metaClass.exec = { Closure c ->
+            p.services.get(ExecOperations).exec(c)
+        }
+    }
 }
 
 ext {

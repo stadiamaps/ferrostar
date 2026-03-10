@@ -8,7 +8,7 @@ import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
 import app.cash.paparazzi.Paparazzi
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.composeui.views.components.InstructionsView
-import com.stadiamaps.ferrostar.support.withSnapshotBackground
+import com.stadiamaps.ferrostar.support.WithSnapshotBackground
 import org.junit.Rule
 import org.junit.Test
 import uniffi.ferrostar.ManeuverModifier
@@ -40,11 +40,11 @@ class RTLInstructionViewTests {
             triggerDistanceBeforeManeuver = 42.0)
 
     paparazzi.snapshot {
-      withSnapshotBackground {
+      WithSnapshotBackground {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
           InstructionsView(
               instructions = instructions,
-              distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar")),
+              distanceFormatter = LocalizedDistanceFormatter(localeOverride = ULocale("ar-EG")),
               distanceToNextManeuver = 42.0)
         }
       }

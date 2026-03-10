@@ -4,8 +4,8 @@ import com.stadiamaps.ferrostar.composeui.views.components.ProgressView24HourPre
 import com.stadiamaps.ferrostar.composeui.views.components.ProgressViewInformationalPreview
 import com.stadiamaps.ferrostar.composeui.views.components.ProgressViewWithExitPreview
 import com.stadiamaps.ferrostar.composeui.views.components.TripProgressView
+import com.stadiamaps.ferrostar.support.WithSnapshotBackground
 import com.stadiamaps.ferrostar.support.paparazziDefault
-import com.stadiamaps.ferrostar.support.withSnapshotBackground
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlinx.datetime.TimeZone
@@ -21,7 +21,7 @@ class TripProgressViewTest {
   @Test
   fun testProgressView() {
     paparazzi.snapshot {
-      withSnapshotBackground {
+      WithSnapshotBackground {
         TripProgressView(
             progress =
                 TripProgress(
@@ -36,16 +36,16 @@ class TripProgressViewTest {
 
   @Test
   fun testProgressViewInformationalStyle() {
-    paparazzi.snapshot { withSnapshotBackground { ProgressViewInformationalPreview() } }
+    paparazzi.snapshot { WithSnapshotBackground { ProgressViewInformationalPreview() } }
   }
 
   @Test
   fun testProgressViewWithExit() {
-    paparazzi.snapshot { withSnapshotBackground { ProgressViewWithExitPreview() } }
+    paparazzi.snapshot { WithSnapshotBackground { ProgressViewWithExitPreview() } }
   }
 
   @Test
   fun testProgressView24Hour() {
-    paparazzi.snapshot { withSnapshotBackground { ProgressView24HourPreview() } }
+    paparazzi.snapshot { WithSnapshotBackground { ProgressView24HourPreview() } }
   }
 }

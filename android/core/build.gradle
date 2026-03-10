@@ -1,3 +1,4 @@
+import com.github.willir.rust.CargoNdkConfig
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 import com.vanniktech.maven.publish.SonatypeHost
 
@@ -12,12 +13,11 @@ plugins {
 
 android {
     namespace 'com.stadiamaps.ferrostar.core'
-    compileSdk 35
+    compileSdk = 36
     ndkVersion "26.2.11394342"
 
     defaultConfig {
         minSdk 25
-        targetSdk 35
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -30,6 +30,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    lint {
+        targetSdk 36
+    }
+    testOptions {
+        targetSdk 36
     }
 }
 
@@ -74,9 +80,10 @@ cargoNdk {
 
 android.libraryVariants.all { variant ->
     def bDir = layout.buildDirectory.dir("generated/source/uniffi/${variant.name}/java").get()
+    def cargoPath = CargoNdkConfig.resolveCargoExecutable(cargoNdk.cargoExecutable)
     def generateBindings = tasks.register("generate${variant.name.capitalize()}UniFFIBindings", Exec) {
         workingDir '../../common'
-        commandLine 'cargo', 'run', '-p', 'uniffi-bindgen', 'generate', '--library', '../android/core/src/main/jniLibs/arm64-v8a/libferrostar.so', '--language', 'kotlin', '--out-dir', bDir
+        commandLine cargoPath, 'run', '-p', 'uniffi-bindgen', 'generate', '--library', '../android/core/src/main/jniLibs/arm64-v8a/libferrostar.so', '--language', 'kotlin', '--out-dir', bDir
 
         dependsOn "buildCargoNdk${variant.name.capitalize()}"
     }
@@ -94,7 +101,9 @@ android.libraryVariants.all { variant ->
     }
 
     def sourceSet = variant.sourceSets.find { it.name == variant.name }
-    sourceSet.java.srcDir layout.buildDirectory.file("generated/source/uniffi/${variant.name}/java")
+    // AGP 9 disallows adding Provider instances to the legacy SourceSet API.
+    // Use a concrete directory here to keep configuration compatible.
+    sourceSet.java.srcDir bDir.asFile
 
     // UniFFI tutorial notes that they made several attempts like this but were unsuccessful coming
     // to a good solution for forcing the directory to be marked as generated (short of checking in

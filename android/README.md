@@ -27,6 +27,11 @@ Or, to use GraphHopper for the routing:
 graphhopperApiKey=YOUR-API-KEY
 ```
 
+## Snapshot tests
+
+We use Paparazzi for UI snapshot testing.
+To update the snapshots, run `./gradlew recordPaparazziDebug`.
+
 ## Testing locally in a separate project
 
 * Bump the version number to a `SNAPSHOT` in `build.gradle`.
