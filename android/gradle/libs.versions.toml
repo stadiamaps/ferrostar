@@ -75,7 +75,6 @@ stadiamaps-autocomplete-search = { group = "com.stadiamaps", name = "jetpack-com
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 cargo-ndk = { id = "com.gemwallet.cargo-ndk", version.ref = "cargo-ndk" }
