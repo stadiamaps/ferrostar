@@ -1,4 +1,6 @@
 import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SourcesJar
 
 plugins {
     alias libs.plugins.androidLibrary
@@ -64,7 +66,12 @@ mavenPublishing {
         signAllPublications()
     }
 
-    configure(new AndroidSingleVariantLibrary("release", true, true))
+    configure(new AndroidSingleVariantLibrary(
+        // Temporarily disable JavaDoc due to dokka issues with the Compose library using newer bytecode
+        new JavadocJar.Empty(),
+        new SourcesJar.Sources(),
+        "release"
+    ))
 
     apply from: "${rootProject.projectDir}/common-pom.gradle"
 

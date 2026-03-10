@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/stadiamaps/ferrostar"
   },
-  "version": "0.48.0",
+  "version": "0.48.1",
   "license": "BSD-3-Clause",
   "type": "module",
   "main": "./dist/ferrostar-webcomponents.js",
