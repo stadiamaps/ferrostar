@@ -78,7 +78,7 @@ object AppModule {
   }
 
   // TODO: Make this configurable in the UI.
-  val simulation = false
+  val simulation = true
   val locationProvider: LocationProvider by lazy {
     if (simulation) {
       SimulatedLocationProvider().apply {

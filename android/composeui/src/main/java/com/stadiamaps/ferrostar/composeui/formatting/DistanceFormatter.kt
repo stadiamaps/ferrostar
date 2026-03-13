@@ -4,27 +4,16 @@ import android.icu.number.NumberFormatter
 import android.icu.number.Precision
 import android.icu.text.MeasureFormat
 import android.icu.text.NumberFormat
-import android.icu.util.LocaleData
 import android.icu.util.Measure
 import android.icu.util.MeasureUnit
 import android.icu.util.ULocale
 import android.os.Build
+import com.stadiamaps.ferrostar.core.measurement.DistanceMeasurementSystem
+import com.stadiamaps.ferrostar.core.measurement.getMeasurementSystem
 
 private const val METERS_PER_MILE = 1609.344
 private const val FEET_PER_METER = 3.28084
 private const val YARDS_PER_METER = 1.093613
-
-/** Measurement system model that backports Java APIs was not available before API 28. */
-enum class DistanceMeasurementSystem {
-  /** Metric system; used by most of the world. */
-  SI,
-
-  /** The US version of the imperial system which uses feet and miles as distance units. */
-  IMPERIAL,
-
-  /** The UK version of the imperial system which uses yards and miles as distance units. */
-  IMPERIAL_WITH_YARDS
-}
 
 /**
  * Describes how much decimal precision should be shown for display purposes.
@@ -176,24 +165,6 @@ internal fun Double.roundToNearest(wholeNumber: Int): Double {
   return Math.round(this / wholeNumber).toDouble() * wholeNumber
 }
 
-internal fun getMeasurementSystem(locale: ULocale): DistanceMeasurementSystem =
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-      when (LocaleData.getMeasurementSystem(locale) ?: LocaleData.MeasurementSystem.SI) {
-        LocaleData.MeasurementSystem.US -> DistanceMeasurementSystem.IMPERIAL
-        LocaleData.MeasurementSystem.UK -> DistanceMeasurementSystem.IMPERIAL_WITH_YARDS
-        // Ideally we'd match exhaustively, but the underlying Java API and the design of Kotlin
-        // make this impossible to do, so we're stuck with an else.
-        else -> DistanceMeasurementSystem.SI
-      }
-    } else {
-      when (locale.isO3Country) {
-        "USA",
-        "LBR",
-        "MMR" -> DistanceMeasurementSystem.IMPERIAL
-        "GBR" -> DistanceMeasurementSystem.IMPERIAL_WITH_YARDS
-        else -> DistanceMeasurementSystem.SI
-      }
-    }
 
 private fun formatDistance(
     distance: Double,

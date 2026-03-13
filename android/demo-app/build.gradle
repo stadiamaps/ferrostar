@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.stadiamaps.ferrostar.demo"
-        minSdk 26
+        minSdk 29
         targetSdk 36
         versionCode 1
         versionName "1.0"
@@ -63,11 +63,16 @@ dependencies {
     implementation libs.androidx.compose.ui.tooling
     implementation libs.androidx.compose.material3
 
+    implementation libs.androidx.car.app
+
+    implementation project(':car-app')
+    implementation project(':car-app-maplibreui')
     implementation project(':core')
     implementation project(':composeui')
     implementation project(':maplibreui')
     implementation project(':google-play-services')
-
+    
+    implementation libs.maplibre.compose.car.app
     implementation libs.maplibre.compose
 
     implementation platform(libs.okhttp.bom)

@@ -25,6 +25,7 @@ mockk = "1.14.9"
 turbine = "1.2.1"
 mavenPublish = "0.33.0"
 material = "1.13.0"
+androidx-car-app = "1.7.0"
 stadiaAutocompleteSearch = "3.0.0"
 
 [libraries]
@@ -59,6 +60,9 @@ okhttp-mock = { group = "com.github.gmazzo", name = "okhttp-mock", version.ref =
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 # MapLibre
 maplibre-compose = { group = "io.github.rallista", name = "maplibre-compose", version.ref = "maplibre-compose" }
+maplibre-compose-car-app = { group = "io.github.rallista", name = "maplibre-compose-car-app", version.ref = "maplibre-compose" }
+# Car App Library (for car-app module)
+androidx-car-app = { group = "androidx.car.app", name = "app", version.ref = "androidx-car-app" }
 # Google Play Services (for Google module)
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 # Testing

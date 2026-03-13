@@ -1,0 +1,57 @@
+plugins {
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.ktfmt
+    alias libs.plugins.compose.compiler
+    alias libs.plugins.mavenPublish
+}
+
+android {
+    namespace 'com.stadiamaps.ferrostar.carapp.maplibreui'
+    compileSdk {
+        version = release(36)
+    }
+
+    defaultConfig {
+        minSdk 29
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        compose true
+    }
+}
+
+dependencies {
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.graphics
+    implementation libs.androidx.compose.ui.tooling
+    implementation libs.androidx.compose.material3
+
+    api libs.maplibre.compose
+
+    implementation project(':car-app')
+    implementation project(':core')
+    implementation project(':composeui')
+    implementation project(':maplibreui')
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}
