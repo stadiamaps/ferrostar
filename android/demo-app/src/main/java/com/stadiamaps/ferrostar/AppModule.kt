@@ -77,19 +77,17 @@ object AppModule {
     appContext = context
   }
 
-  // TODO: Make this configurable in the UI.
-  val simulation = true
   val locationProvider: LocationProvider by lazy {
-    if (simulation) {
-      SimulatedLocationProvider().apply {
-        warpFactor = 2u
-        lastLocation =
-            UserLocation(GeographicCoordinate(51.049315, 13.73552), 1.0, null, Instant.now(), null)
-      }
-    } else {
       FusedLocationProvider(appContext)
+  }
+  val simulatedLocationProvider: SimulatedLocationProvider by lazy {
+    SimulatedLocationProvider().apply {
+      warpFactor = 2u
+      lastLocation =
+          UserLocation(GeographicCoordinate(51.049315, 13.73552), 1.0, null, Instant.now(), null)
     }
   }
+
   private val httpClient: HttpClientProvider by lazy {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build().toOkHttpClientProvider()
   }

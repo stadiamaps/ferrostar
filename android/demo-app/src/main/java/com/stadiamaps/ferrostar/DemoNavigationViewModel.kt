@@ -1,7 +1,6 @@
 package com.stadiamaps.ferrostar
 
 import android.util.Log
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.maplibre.compose.camera.CameraState
@@ -13,32 +12,47 @@ import com.stadiamaps.ferrostar.core.FerrostarCore
 import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.LocationUpdateListener
 import com.stadiamaps.ferrostar.core.NavigationUiState
+import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.annotation.AnnotationPublisher
 import com.stadiamaps.ferrostar.core.annotation.valhalla.valhallaExtendedOSRMAnnotationPublisher
 import com.stadiamaps.ferrostar.core.boundingBox
-import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import java.util.concurrent.Executors
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.maplibre.android.geometry.LatLngBounds
+import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.Heading
+import uniffi.ferrostar.Route
 import uniffi.ferrostar.UserLocation
+import uniffi.ferrostar.Waypoint
+import uniffi.ferrostar.WaypointKind
 
 class DemoNavigationViewModel(
     // This is a simple example, but these would typically be dependency injected
     val ferrostarCore: FerrostarCore = AppModule.ferrostarCore,
     val locationProvider: LocationProvider = AppModule.locationProvider,
+    val simulatedLocationProvider: SimulatedLocationProvider = AppModule.simulatedLocationProvider,
     annotationPublisher: AnnotationPublisher<*> = valhallaExtendedOSRMAnnotationPublisher()
 ) : DefaultNavigationViewModel(ferrostarCore, annotationPublisher), LocationUpdateListener {
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)
   val location = locationStateFlow.asStateFlow()
   private val executor = Executors.newSingleThreadScheduledExecutor()
+
+  /** Whether navigation should use the simulated location provider. Settable at any time. */
+  val isSimulating = mutableStateOf(true)
+
+  private var lastRoute: Route? = null
+  var lastDestinationName: String? = null
+    private set
 
   // Here's an example of injecting a custom location into the navigation UI state when isNavigating
   // is false.
@@ -91,6 +105,62 @@ class DemoNavigationViewModel(
 
   override fun stopNavigation(stopLocationUpdates: Boolean) {
     ferrostarCore.stopNavigation(stopLocationUpdates = stopLocationUpdates)
+  }
+
+  /**
+   * Fetches routes to [destination] and starts navigation on the first result.
+   *
+   * Suspends until a location fix is available, so it is safe to call immediately after launch.
+   * Respects [isSimulating]: if true, switches the core to [simulatedLocationProvider] and starts
+   * route playback.
+   */
+  fun startNavigation(destination: GeographicCoordinate, displayName: String? = null) {
+    lastDestinationName = displayName ?: "%.4f, %.4f".format(destination.lat, destination.lng)
+    viewModelScope.launch(Dispatchers.IO) {
+      try {
+        val loc =
+            if (isSimulating.value) {
+              simulatedLocationProvider.lastLocation ?: location.first { it != null }
+            } else {
+              location.first { it != null }
+            } ?: return@launch
+        val routes =
+            ferrostarCore.getRoutes(
+                loc,
+                listOf(Waypoint(coordinate = destination, kind = WaypointKind.BREAK)))
+        val route = routes.first()
+        lastRoute = route
+        launchNavigation(route)
+      } catch (e: Exception) {
+        Log.e(TAG, "Failed to start navigation", e)
+      }
+    }
+  }
+
+  /**
+   * Enables simulated navigation. If navigation is already active, restarts it from the beginning
+   * of the current route using the simulated provider (e.g. for DHU auto-drive testing).
+   */
+  fun enableAutoDriveSimulation() {
+    isSimulating.value = true
+    lastRoute?.let { route ->
+      viewModelScope.launch(Dispatchers.IO) {
+        try {
+          launchNavigation(route)
+        } catch (e: Exception) {
+          Log.e(TAG, "Failed to enable auto-drive simulation", e)
+        }
+      }
+    }
+  }
+
+  private fun launchNavigation(route: Route) {
+    val activeProvider = if (isSimulating.value) simulatedLocationProvider else locationProvider
+    ferrostarCore.setLocationProvider(activeProvider)
+    ferrostarCore.startNavigation(route = route)
+    if (isSimulating.value) {
+      simulatedLocationProvider.setSimulatedRoute(route)
+    }
   }
 
   override fun onLocationUpdated(location: UserLocation) {
@@ -152,5 +222,9 @@ class DemoNavigationViewModel(
 
   private fun centerOnUser() {
     mapViewCamera.value = navigationCamera.value
+  }
+
+  companion object {
+    const val TAG = "DemoNavigationViewModel"
   }
 }

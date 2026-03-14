@@ -62,7 +62,7 @@ fun NavigationState.isNavigating(): Boolean =
 class FerrostarCore(
     val routeProvider: RouteProvider,
     val httpClient: HttpClientProvider,
-    val locationProvider: LocationProvider,
+    locationProvider: LocationProvider,
     val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
     val sessionBuilder: FerrostarSessionBuilder =
@@ -71,6 +71,9 @@ class FerrostarCore(
   companion object {
     private const val TAG = "FerrostarCore"
   }
+
+  var locationProvider: LocationProvider = locationProvider
+    private set
 
   /**
    * The minimum duration to wait before initiating another route recalculation.
@@ -89,6 +92,16 @@ class FerrostarCore(
    * recalculations.
    */
   var minimumMovementBeforeRecalculation = 50.0
+
+  /**
+   * Replaces the active location provider, cleanly detaching the core from the current provider
+   * before switching. Call this before [startNavigation] to change between real and simulated
+   * providers.
+   */
+  fun setLocationProvider(provider: LocationProvider) {
+    locationProvider.removeListener(this)
+    locationProvider = provider
+  }
 
   /**
    * Controls what happens when the user deviates from the route.

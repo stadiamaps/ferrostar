@@ -1,7 +1,7 @@
 package com.stadiamaps.ferrostar.formatting
 
-import com.stadiamaps.ferrostar.ui.support.formatting.LocalizedDurationFormatter
-import com.stadiamaps.ferrostar.ui.support.formatting.UnitStyle
+import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDurationFormatter
+import com.stadiamaps.ferrostar.composeui.formatting.UnitStyle
 import kotlin.time.DurationUnit
 import org.junit.Assert.assertEquals
 import org.junit.Test

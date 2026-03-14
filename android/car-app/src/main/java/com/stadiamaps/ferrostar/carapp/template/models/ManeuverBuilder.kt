@@ -35,8 +35,10 @@ fun VisualInstructionContent.toCarManeuver(
                   .build()
           )
         }
-        if (type.isRoundaboutManeuverType()) {
-          setRoundaboutExitNumber(roundaboutExitNumber ?: 1)
+        roundaboutExitNumber?.let {
+          if (type.isRoundaboutManeuverType()) {
+            setRoundaboutExitNumber(it)
+          }
         }
       }
       .build()

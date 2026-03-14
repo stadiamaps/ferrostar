@@ -1,8 +1,8 @@
 package com.stadiamaps.ferrostar.composeui
 
 import android.icu.util.ULocale
-import com.stadiamaps.ferrostar.composeui.formatting.DistanceMeasurementSystem
 import com.stadiamaps.ferrostar.composeui.formatting.LocalizedDistanceFormatter
+import com.stadiamaps.ferrostar.core.measurement.DistanceMeasurementSystem
 import org.junit.Assert
 import org.junit.Test
 

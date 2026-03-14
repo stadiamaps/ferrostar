@@ -102,9 +102,8 @@ fun DemoNavigationScene(
                     location?.let { loc ->
                       AutocompleteOverlay(
                           modifier = modifier,
-                          scope = scope,
+                          viewModel = viewModel,
                           isNavigating = navigationUiState.isNavigating(),
-                          locationProvider = viewModel.locationProvider,
                           loc = loc)
                     }
                   }),

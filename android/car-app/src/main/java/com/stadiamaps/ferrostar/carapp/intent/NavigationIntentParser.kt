@@ -2,7 +2,7 @@ package com.stadiamaps.ferrostar.carapp.intent
 
 import android.content.Intent
 import android.net.Uri
-import java.net.URLDecoder
+import uniffi.ferrostar.GeographicCoordinate
 
 /**
  * Parses navigation intents into [NavigationDestination] values.
@@ -27,85 +27,59 @@ open class NavigationIntentParser {
   }
 
   /** Parses a navigation [Uri] into a [NavigationDestination], or null if unrecognized. */
-  open fun parseUri(uri: Uri): NavigationDestination? {
-    val scheme = uri.scheme ?: return null
-    val ssp = uri.schemeSpecificPart ?: return null
-    return parseSchemeSpecificPart(scheme, ssp)
-  }
+  open fun parseUri(uri: Uri): NavigationDestination? =
+      when (uri.scheme) {
+        "geo" ->
+            parseGeoSsp(
+                coordString = uri.schemeSpecificPart?.substringBefore('?').orEmpty(),
+                query = uri.getQueryParameter("q"))
+        "google.navigation" ->
+            uri.getQueryParameter("q")?.let { parseGoogleNavigationSsp(it) }
+        else -> null
+      }
 
   companion object {
     /**
-     * Parses a URI from its scheme and scheme-specific part strings.
+     * Parses the coordinate and optional query parts of a `geo:` URI.
      *
-     * This is the pure-function core of the parser, usable without `android.net.Uri`.
+     * @param coordString The coordinate portion (before `?`), e.g. `"37.8,-122.4"` or `"0,0"`.
+     *   Altitude is ignored if present (e.g. `"37.8,-122.4,100"`).
+     * @param query The already-decoded value of the `q` parameter, if present.
      */
-    fun parseSchemeSpecificPart(scheme: String, ssp: String): NavigationDestination? =
-        when (scheme) {
-          "geo" -> parseGeoSsp(ssp)
-          "google.navigation" -> parseGoogleNavigationSsp(ssp)
-          else -> null
-        }
-
-    /**
-     * Parses the scheme-specific part of a `geo:` URI.
-     *
-     * Formats handled:
-     * - `lat,lng`
-     * - `0,0?q=lat,lng`
-     * - `0,0?q=search+query`
-     */
-    fun parseGeoSsp(ssp: String): NavigationDestination? {
-      val parts = ssp.split("?", limit = 2)
-
-      val coords = parseCoordinates(parts[0])
-      val query = if (parts.size > 1) parseQueryParam(parts[1], "q") else null
-
+    fun parseGeoSsp(coordString: String, query: String?): NavigationDestination? {
+      val coords = parseCoordinates(coordString)
       // geo:0,0 is conventionally used as "no coordinates, use query instead"
-      val hasCoordinates = coords != null && !(coords.first == 0.0 && coords.second == 0.0)
+      val hasCoordinates = coords != null && !(coords.lat == 0.0 && coords.lng == 0.0)
 
       return when {
-        hasCoordinates -> NavigationDestination(coords!!.first, coords.second, query)
+        hasCoordinates -> NavigationDestination(coords!!.lat, coords.lng, query)
         query != null -> NavigationDestination(null, null, query)
         else -> null
       }
     }
 
     /**
-     * Parses the scheme-specific part of a `google.navigation:` URI.
+     * Parses the already-decoded `q` value from a `google.navigation:` URI.
      *
-     * Formats handled:
-     * - `q=lat,lng`
-     * - `q=place+name`
+     * @param q The decoded value of the `q` parameter, e.g. `"37.8,-122.4"` or `"Starbucks"`.
      */
-    fun parseGoogleNavigationSsp(ssp: String): NavigationDestination? {
-      val query = parseQueryParam(ssp, "q") ?: return null
-
-      val coords = parseCoordinates(query)
+    fun parseGoogleNavigationSsp(q: String): NavigationDestination? {
+      val coords = parseCoordinates(q)
       return if (coords != null) {
-        NavigationDestination(coords.first, coords.second, null)
+        NavigationDestination(coords.lat, coords.lng, null)
       } else {
-        NavigationDestination(null, null, query)
+        NavigationDestination(null, null, q)
       }
     }
 
-    internal fun parseCoordinates(str: String): Pair<Double, Double>? {
-      val parts = str.split(",", limit = 2)
-      if (parts.size != 2) return null
+    internal fun parseCoordinates(str: String): GeographicCoordinate? {
+      // limit=3 so altitude (geo:lat,lng,alt per RFC 5870) is captured and ignored
+      val parts = str.split(",", limit = 3)
+      if (parts.size < 2) return null
       val lat = parts[0].trim().toDoubleOrNull() ?: return null
       val lng = parts[1].trim().toDoubleOrNull() ?: return null
       if (lat < -90.0 || lat > 90.0 || lng < -180.0 || lng > 180.0) return null
-      return lat to lng
-    }
-
-    internal fun parseQueryParam(queryString: String, key: String): String? {
-      for (param in queryString.split("&")) {
-        val kv = param.split("=", limit = 2)
-        if (kv.size == 2 && kv[0] == key) {
-          val decoded = URLDecoder.decode(kv[1], "UTF-8")
-          return decoded.ifEmpty { null }
-        }
-      }
-      return null
+      return GeographicCoordinate(lat, lng)
     }
   }
 }

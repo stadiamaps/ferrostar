@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar.auto
 
-import android.util.Log
 import androidx.car.app.CarContext
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.NavigationManager
@@ -13,25 +12,19 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.DefaultLifecycleObserver
-
 import androidx.lifecycle.LifecycleOwner
 import com.maplibre.compose.camera.CameraState
 import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.camera.extensions.incrementZoom
-import com.maplibre.compose.camera.extensions.setZoom
-import com.maplibre.compose.camera.models.CameraPadding
 import com.maplibre.compose.car.ComposableScreen
 import com.stadiamaps.ferrostar.AppModule
 import com.stadiamaps.ferrostar.R
+import com.stadiamaps.ferrostar.carapp.intent.NavigationDestination
 import com.stadiamaps.ferrostar.carapp.maplibreui.runtime.SurfaceAreaTracker
-import com.stadiamaps.ferrostar.carapp.maplibreui.runtime.surfaceStableCameraPadding
 import com.stadiamaps.ferrostar.carapp.maplibreui.runtime.surfaceStableFractionalCameraPadding
 import com.stadiamaps.ferrostar.carapp.navigation.NavigationManagerBridge
 import com.stadiamaps.ferrostar.carapp.navigation.TurnByTurnNotificationManager
 import com.stadiamaps.ferrostar.carapp.template.NavigationTemplateBuilder
 import com.stadiamaps.ferrostar.core.NavigationUiState
-import com.stadiamaps.ferrostar.core.boundingBox
-import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -39,6 +32,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import androidx.car.app.navigation.model.Destination
 import uniffi.ferrostar.DrivingSide
 
 /**
@@ -52,7 +46,10 @@ import uniffi.ferrostar.DrivingSide
  * - Wires up [NavigationManagerBridge] for NF-4/NF-5 compliance
  * - Posts turn-by-turn notifications via [TurnByTurnNotificationManager] for NF-3 compliance
  */
-class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext) {
+class DemoNavigationScreen(
+    carContext: CarContext,
+    private val initialDestination: NavigationDestination? = null
+) : ComposableScreen(carContext) {
 
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
   private val viewModel = AppModule.viewModel
@@ -67,7 +64,8 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
           viewModel = viewModel,
           context = carContext,
           notificationManager = notificationManager,
-          onStopNavigation = { viewModel.stopNavigation() })
+          onStopNavigation = { viewModel.stopNavigation() },
+          onAutoDriveEnabled = { viewModel.enableAutoDriveSimulation() })
 
   private var uiState: NavigationUiState? by mutableStateOf(null)
 
@@ -85,6 +83,10 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
               invalidate()
             }
             .launchIn(scope)
+
+    // If launched with a coordinate destination (e.g. from a geo: or google.navigation: intent),
+    // delegate to the view model which waits for a location fix before routing.
+    initialDestination?.coordinate?.let { viewModel.startNavigation(it, initialDestination.displayName) }
 }
 
   @Composable
@@ -94,10 +96,14 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
       val trackingPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(stableArea, top = 0.5f))
       val camera = remember { mutableStateOf(viewModel.mapViewCamera.value) }
 
-      // Transition to navigation camera when navigation starts
+      // Transition to navigation camera and publish destination when navigation starts
       LaunchedEffect(uiState?.isNavigating()) {
           if (uiState?.isNavigating() == true) {
               viewModel.mapViewCamera.value = viewModel.navigationCamera.value
+              viewModel.lastDestinationName?.let { name ->
+                  navigationManagerBridge.setDestination(
+                      Destination.Builder().setName(name).build())
+              }
           }
       }
 
@@ -165,7 +171,4 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
         })
   }
 
-    companion object {
-        private const val TAG = "DemoNavigationScreen"
-    }
 }

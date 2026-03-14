@@ -2,7 +2,6 @@ package com.stadiamaps.ferrostar.composeui.formatting
 
 import android.icu.util.ULocale
 import com.stadiamaps.ferrostar.core.measurement.DistanceMeasurementSystem
-import com.stadiamaps.ferrostar.ui.support.formatter.LocalizedDistanceFormatter
 
 /**
  * A generic interface defining distance formatters.
@@ -26,19 +25,16 @@ fun interface DistanceFormatter {
  * In addition to overriding the locale, you can override the measurement system to handle cases
  * like a user with a US phone locale preferring metric measurements.
  */
+@Deprecated(message = "Use ui.support.LocalizedDistanceFormatter")
 class LocalizedDistanceFormatter(
     var localeOverride: ULocale? = null,
     var distanceMeasurementSystemOverride: DistanceMeasurementSystem? = null
 ) : DistanceFormatter {
 
-  private val formatter = LocalizedDistanceFormatter(
+  private val formatter = com.stadiamaps.ferrostar.ui.support.formatter.LocalizedDistanceFormatter(
       localeOverride, distanceMeasurementSystemOverride
   )
 
   override fun format(distanceInMeters: Double): String =
     formatter.format(distanceInMeters)
-}
-
-internal fun Double.roundToNearest(wholeNumber: Int): Double {
-  return Math.round(this / wholeNumber).toDouble() * wholeNumber
 }

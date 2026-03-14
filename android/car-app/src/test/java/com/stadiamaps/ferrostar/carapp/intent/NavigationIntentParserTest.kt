@@ -7,11 +7,11 @@ import org.junit.Test
 
 class NavigationIntentParserTest {
 
-  // geo: URI tests
+  // parseGeoSsp
 
   @Test
-  fun `geo URI with coordinates`() {
-    val result = NavigationIntentParser.parseGeoSsp("37.8100,-122.4200")
+  fun `geo coordinates only`() {
+    val result = NavigationIntentParser.parseGeoSsp("37.8100,-122.4200", null)
     assertNotNull(result)
     assertEquals(37.81, result!!.latitude!!, 0.0001)
     assertEquals(-122.42, result.longitude!!, 0.0001)
@@ -19,8 +19,16 @@ class NavigationIntentParserTest {
   }
 
   @Test
-  fun `geo URI with query only`() {
-    val result = NavigationIntentParser.parseGeoSsp("0,0?q=coffee+shops")
+  fun `geo coordinates with altitude ignored`() {
+    val result = NavigationIntentParser.parseGeoSsp("37.8100,-122.4200,100", null)
+    assertNotNull(result)
+    assertEquals(37.81, result!!.latitude!!, 0.0001)
+    assertEquals(-122.42, result.longitude!!, 0.0001)
+  }
+
+  @Test
+  fun `geo query only`() {
+    val result = NavigationIntentParser.parseGeoSsp("0,0", "coffee shops")
     assertNotNull(result)
     assertNull(result!!.latitude)
     assertNull(result.longitude)
@@ -28,8 +36,8 @@ class NavigationIntentParserTest {
   }
 
   @Test
-  fun `geo URI with coordinates and query`() {
-    val result = NavigationIntentParser.parseGeoSsp("37.81,-122.42?q=Pier+39")
+  fun `geo coordinates and query`() {
+    val result = NavigationIntentParser.parseGeoSsp("37.81,-122.42", "Pier 39")
     assertNotNull(result)
     assertEquals(37.81, result!!.latitude!!, 0.0001)
     assertEquals(-122.42, result.longitude!!, 0.0001)
@@ -37,8 +45,8 @@ class NavigationIntentParserTest {
   }
 
   @Test
-  fun `geo URI with zero coordinates uses query`() {
-    val result = NavigationIntentParser.parseGeoSsp("0,0?q=Starbucks")
+  fun `geo zero coordinates with query uses query`() {
+    val result = NavigationIntentParser.parseGeoSsp("0,0", "Starbucks")
     assertNotNull(result)
     assertNull(result!!.latitude)
     assertNull(result.longitude)
@@ -46,16 +54,26 @@ class NavigationIntentParserTest {
   }
 
   @Test
-  fun `geo URI with no coordinates and no query returns null`() {
-    val result = NavigationIntentParser.parseGeoSsp("0,0")
+  fun `geo zero coordinates with no query returns null`() {
+    val result = NavigationIntentParser.parseGeoSsp("0,0", null)
     assertNull(result)
   }
 
-  // google.navigation: URI tests
+  @Test
+  fun `geo invalid latitude returns null`() {
+    assertNull(NavigationIntentParser.parseGeoSsp("91.0,0.0", null))
+  }
 
   @Test
-  fun `google navigation URI with coordinates`() {
-    val result = NavigationIntentParser.parseGoogleNavigationSsp("q=37.81,-122.42")
+  fun `geo invalid longitude returns null`() {
+    assertNull(NavigationIntentParser.parseGeoSsp("0.0,181.0", null))
+  }
+
+  // parseGoogleNavigationSsp
+
+  @Test
+  fun `google navigation coordinates`() {
+    val result = NavigationIntentParser.parseGoogleNavigationSsp("37.81,-122.42")
     assertNotNull(result)
     assertEquals(37.81, result!!.latitude!!, 0.0001)
     assertEquals(-122.42, result.longitude!!, 0.0001)
@@ -63,47 +81,12 @@ class NavigationIntentParserTest {
   }
 
   @Test
-  fun `google navigation URI with place name`() {
-    val result = NavigationIntentParser.parseGoogleNavigationSsp("q=Starbucks+Seattle")
+  fun `google navigation place name`() {
+    val result = NavigationIntentParser.parseGoogleNavigationSsp("Starbucks Seattle")
     assertNotNull(result)
     assertNull(result!!.latitude)
     assertNull(result.longitude)
     assertEquals("Starbucks Seattle", result.query)
-  }
-
-  @Test
-  fun `google navigation URI with no q param returns null`() {
-    val result = NavigationIntentParser.parseGoogleNavigationSsp("mode=d")
-    assertNull(result)
-  }
-
-  // Scheme dispatch
-
-  @Test
-  fun `unknown scheme returns null`() {
-    val result = NavigationIntentParser.parseSchemeSpecificPart("https", "maps.google.com")
-    assertNull(result)
-  }
-
-  @Test
-  fun `geo scheme dispatches correctly`() {
-    val result = NavigationIntentParser.parseSchemeSpecificPart("geo", "37.81,-122.42")
-    assertNotNull(result)
-    assertEquals(37.81, result!!.latitude!!, 0.0001)
-  }
-
-  // Coordinate validation
-
-  @Test
-  fun `invalid latitude returns null`() {
-    val result = NavigationIntentParser.parseGeoSsp("91.0,0.0")
-    assertNull(result)
-  }
-
-  @Test
-  fun `invalid longitude returns null`() {
-    val result = NavigationIntentParser.parseGeoSsp("0.0,181.0")
-    assertNull(result)
   }
 
   // NavigationDestination display name

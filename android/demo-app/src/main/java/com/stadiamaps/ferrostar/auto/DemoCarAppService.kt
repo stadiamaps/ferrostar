@@ -8,6 +8,7 @@ import androidx.car.app.Session
 import androidx.car.app.SessionInfo
 import androidx.car.app.validation.HostValidator
 import com.stadiamaps.ferrostar.AppModule
+import com.stadiamaps.ferrostar.carapp.intent.NavigationIntentParser
 
 class DemoCarAppService : CarAppService() {
 
@@ -26,6 +27,7 @@ class DemoCarAppService : CarAppService() {
 class DemoCarAppSession : Session() {
   override fun onCreateScreen(intent: Intent): Screen {
     AppModule.init(carContext)
-    return DemoNavigationScreen(carContext)
+    val destination = NavigationIntentParser().parse(intent)
+    return DemoNavigationScreen(carContext, initialDestination = destination)
   }
 }

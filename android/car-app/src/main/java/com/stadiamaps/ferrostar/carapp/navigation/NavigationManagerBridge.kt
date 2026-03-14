@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.car.app.navigation.NavigationManager
 import androidx.car.app.navigation.NavigationManagerCallback
+import androidx.car.app.navigation.model.Destination
 import com.stadiamaps.ferrostar.carapp.template.models.FerrostarTrip
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
@@ -27,24 +28,35 @@ import uniffi.ferrostar.DrivingSide
  * themselves, as it requires direct access to [FerrostarCore] for location injection.
  *
  * @param navigationManager The Car App Library NavigationManager from CarContext.
- * @param viewModel The Ferrostar NavigationViewModel to observe.
  * @param context The context used to resolve maneuver icon drawables.
  * @param notificationManager Optional notification manager for HUN updates (NF-3).
- * @param drivingSide Driving side for maneuver mapping. Defaults to RIGHT.
+ * @param viewModel The Ferrostar NavigationViewModel to observe.
+ * @param backupDrivingSide Driving side for maneuver mapping. Defaults to RIGHT.
  * @param onStopNavigation Called when the head unit requests navigation stop.
  * @param onAutoDriveEnabled Called when auto-drive simulation is requested (NF-7). Optional.
  */
 class NavigationManagerBridge(
     private val navigationManager: NavigationManager,
-    private val viewModel: NavigationViewModel,
     private val context: Context,
     private val notificationManager: TurnByTurnNotificationManager? = null,
+    private val viewModel: NavigationViewModel,
+    private val backupDrivingSide: DrivingSide = DrivingSide.RIGHT,
     private val onStopNavigation: () -> Unit,
     private val onAutoDriveEnabled: (() -> Unit)? = null
 ) {
 
   private var observationJob: Job? = null
   private var wasNavigating = false
+  private var destination: Destination? = null
+
+  /**
+   * Sets the destination shown on the head unit during navigation.
+   *
+   * May be called at any time. Takes effect on the next [NavigationManager.updateTrip] call.
+   */
+  fun setDestination(destination: Destination?) {
+    this.destination = destination
+  }
 
   /**
    * Starts observing the view model's navigation state and driving the [NavigationManager].
@@ -112,6 +124,10 @@ class NavigationManagerBridge(
     uiState.tripState?.let {
       val trip = FerrostarTrip.Builder(context)
           .setTripState(it)
+          .setBackupDrivingSide(backupDrivingSide)
+          .apply {
+            destination?.let { dest -> setDestination(dest) }
+          }
           .build()
 
       try {
