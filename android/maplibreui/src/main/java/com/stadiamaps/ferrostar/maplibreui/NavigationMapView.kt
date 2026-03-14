@@ -16,7 +16,7 @@ import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.settings.MapControls
 import com.stadiamaps.ferrostar.core.NavigationUiState
-import com.stadiamaps.ferrostar.core.toAndroidLocation
+import com.stadiamaps.ferrostar.core.location.toAndroidLocation
 import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
