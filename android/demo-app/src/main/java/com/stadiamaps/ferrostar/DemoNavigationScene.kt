@@ -6,7 +6,10 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,7 +42,7 @@ fun DemoNavigationScene(
   KeepScreenOnDisposableEffect()
 
   val context = LocalContext.current
-  val scope = rememberCoroutineScope()
+//  val scope = rememberCoroutineScope()
 
   // Get location permissions.
   // NOTE: This is NOT a robust suggestion for how to get permissions in a production app.
@@ -56,15 +59,16 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       }
 
-  val navigationUiState by viewModel.navigationUiState.collectAsState(scope.coroutineContext)
-  val location by viewModel.location.collectAsState()
+//  val navigationUiState by viewModel.navigationUiState.collectAsState(scope.coroutineContext)
+//  val location by viewModel.location.collectAsState()
+  val isSimulating by viewModel.simulated.collectAsState()
 
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
           permissions ->
         when {
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-            viewModel.startLocationUpdates()
+            // viewModel.setLocationPermissions(it)
           }
           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
             // TODO: Probably alert the user that this is unusable for navigation
@@ -80,7 +84,7 @@ fun DemoNavigationScene(
   LaunchedEffect(savedInstanceState) {
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
         PackageManager.PERMISSION_GRANTED) {
-      viewModel.startLocationUpdates()
+      viewModel.setLocationPermissions(true)
     } else {
       permissionsLauncher.launch(allPermissions)
     }
@@ -88,6 +92,7 @@ fun DemoNavigationScene(
 
   // Set up the map!
   val camera = rememberSaveableMapViewCamera(MapViewCamera.TrackingUserLocation())
+
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
       styleUrl = AppModule.mapStyleUrl,
@@ -99,16 +104,11 @@ fun DemoNavigationScene(
           NavigationViewComponentBuilder.Default()
               .withCustomOverlayView(
                   customOverlayView = { modifier ->
-                    location?.let { loc ->
-                      AutocompleteOverlay(
-                          modifier = modifier,
-                          scope = scope,
-                          isNavigating = navigationUiState.isNavigating(),
-                          locationProvider = viewModel.locationProvider,
-                          loc = loc)
-                    }
-                  }),
-      onTapExit = { viewModel.stopNavigation() }) { uiState ->
+                      NotNavigatingOverlay(modifier, viewModel)
+                  },
+              ),
+      onTapExit = { viewModel.stopNavigation() },
+  ) { uiState ->
         // Trivial, if silly example of how to add your own overlay layers.
         // (Also incidentally highlights the lag inherent in MapLibre location tracking
         // as-is.)
