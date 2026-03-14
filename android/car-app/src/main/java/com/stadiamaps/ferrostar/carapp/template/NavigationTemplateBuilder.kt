@@ -4,22 +4,21 @@ import androidx.car.app.CarContext
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.Template
-import androidx.car.app.navigation.model.MapController
 import androidx.car.app.navigation.model.NavigationTemplate
 import com.stadiamaps.ferrostar.carapp.R
-import com.stadiamaps.ferrostar.carapp.template.icons.CarIcons
-import com.stadiamaps.ferrostar.carapp.template.models.buildNavigationInfo
+import com.stadiamaps.ferrostar.carapp.template.icons.InterfaceCarIcons
+import com.stadiamaps.ferrostar.carapp.template.models.FerrostarRoutingInfo
 import com.stadiamaps.ferrostar.carapp.template.models.toCarTravelEstimate
+import com.stadiamaps.ferrostar.core.extensions.progress
 import uniffi.ferrostar.DrivingSide
-import uniffi.ferrostar.TripProgress
-import uniffi.ferrostar.VisualInstruction
+import uniffi.ferrostar.TripState
 
 class NavigationTemplateBuilder(
     private val carContext: CarContext
 ) {
-    private var drivingSide: DrivingSide = DrivingSide.RIGHT
-    private var visualInstruction: VisualInstruction? = null
-    private var tripProgress: TripProgress? = null
+    private val carIcons = InterfaceCarIcons(carContext)
+    private var tripState: TripState? = null
+    private var backupDrivingSide: DrivingSide = DrivingSide.RIGHT
 
     private var onStopTapped: (() -> Unit)? = null
 
@@ -33,18 +32,13 @@ class NavigationTemplateBuilder(
     private var cameraIsCenteredOnUser: Boolean = true
     private var onCycleCameraTapped: (() -> Unit)? = null
 
-    fun setDrivingSite(drivingSide: DrivingSide): NavigationTemplateBuilder {
-        this.drivingSide = drivingSide
+    fun setTripState(tripState: TripState?): NavigationTemplateBuilder {
+        this.tripState = tripState
         return this
     }
 
-    fun setVisualInstruction(visualInstruction: VisualInstruction?): NavigationTemplateBuilder {
-        this.visualInstruction = visualInstruction
-        return this
-    }
-
-    fun setTripProgress(tripProgress: TripProgress?): NavigationTemplateBuilder {
-        this.tripProgress = tripProgress
+    fun setBackupDrivingSide(drivingSide: DrivingSide): NavigationTemplateBuilder {
+        this.backupDrivingSide = drivingSide
         return this
     }
 
@@ -85,18 +79,15 @@ class NavigationTemplateBuilder(
             .setActionStrip(buildActionStrip())
             .setMapActionStrip(buildMapActionStrip())
             .apply {
-                visualInstruction?.let { instruction ->
-                    setNavigationInfo(
-                        buildNavigationInfo(
-                            instruction,
-                            progress = tripProgress,
-                            context = carContext,
-                            drivingSide = drivingSide,
-                        )
-                    )
-                }
-                tripProgress?.let {
+                tripState?.let { state ->
+                  val info = FerrostarRoutingInfo.Builder(carContext)
+                      .setTripState(state)
+                      .build()
+                  setNavigationInfo(info)
+
+                  state.progress()?.let {
                     setDestinationTravelEstimate(it.toCarTravelEstimate())
+                  }
                 }
             }
             .build()
@@ -115,14 +106,6 @@ class NavigationTemplateBuilder(
             }
             .build()
     }
-
-    fun buildMapController(): MapController {
-        return MapController.Builder()
-            .setMapActionStrip(buildMapActionStrip())
-            .build()
-    }
-
-    private val carIcons = CarIcons(carContext)
 
     private fun buildMapActionStrip(): ActionStrip =
         ActionStrip.Builder()
@@ -161,9 +144,5 @@ class NavigationTemplateBuilder(
                 }
             }
             .build()
-
-    companion object {
-        const val TAG = "NavScreenTemplateBuilder"
-    }
 }
 

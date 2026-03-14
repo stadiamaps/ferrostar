@@ -17,27 +17,19 @@ import uniffi.ferrostar.VisualInstruction
  */
 fun VisualInstruction.toCarStep(
     context: Context,
-    drivingSide: DrivingSide = DrivingSide.RIGHT,
-    roundaboutExitNumber: Int? = null
+    drivingSide: DrivingSide,
+    roundaboutExitNumber: Int?
 ): Step {
-  val icon = primaryContent.toCarIcon(context)
-  val maneuver = primaryContent.toCarManeuver(icon, drivingSide, roundaboutExitNumber)
-  val builder = Step.Builder(primaryContent.text).setManeuver(maneuver)
-
-  secondaryContent?.text?.let { builder.setRoad(it) }
-
-  primaryContent.laneInfo?.forEach { lane -> builder.addLane(lane.toCarLane()) }
-
-  return builder.build()
-}
-
-/** Converts a Ferrostar [LaneInfo] to a Car App Library [Lane]. */
-fun LaneInfo.toCarLane(): Lane {
-  val builder = Lane.Builder()
-  for (direction in directions) {
-    val shape = direction.toLaneShape()
-    val isRecommended = active && direction == activeDirection
-    builder.addDirection(LaneDirection.create(shape, isRecommended))
-  }
-  return builder.build()
+  val maneuver = primaryContent.toCarManeuver(context, drivingSide, roundaboutExitNumber)
+  return Step.Builder(primaryContent.text)
+      .setManeuver(maneuver)
+      .apply {
+        secondaryContent?.text?.let {
+          setRoad(it)
+        }
+        primaryContent.laneInfo?.forEach { lane ->
+          addLane(lane.toCarLane())
+        }
+      }
+      .build()
 }

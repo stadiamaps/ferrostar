@@ -24,6 +24,7 @@ import uniffi.ferrostar.RouteDeviation
 import uniffi.ferrostar.RouteStep
 import uniffi.ferrostar.SpokenInstruction
 import uniffi.ferrostar.TripProgress
+import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
 
@@ -37,6 +38,8 @@ data class NavigationUiState(
      * in the `location` and `snappedLocation` properties.
      */
     val heading: Float?,
+    /** The full trip state */
+    val tripState: TripState?,
     /** The geometry of the full route. */
     val routeGeometry: List<GeographicCoordinate>?,
     /** Visual instructions which should be displayed based on the user's current progress. */
@@ -76,6 +79,7 @@ data class NavigationUiState(
             location = coreState.tripState.preferredUserLocation(),
             // TODO: Heading/course over ground
             heading = null,
+            tripState = coreState.tripState,
             routeGeometry = coreState.routeGeometry,
             visualInstruction = coreState.tripState.visualInstruction(),
             spokenInstruction = null,

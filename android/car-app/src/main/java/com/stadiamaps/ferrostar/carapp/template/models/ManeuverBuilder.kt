@@ -1,19 +1,47 @@
 package com.stadiamaps.ferrostar.carapp.template.models
 
+import android.content.Context
+import androidx.car.app.CarContext
+import androidx.car.app.model.CarColor
 import androidx.car.app.model.CarIcon
 import androidx.car.app.navigation.model.LaneDirection
 import androidx.car.app.navigation.model.Maneuver
+import com.stadiamaps.ferrostar.ui.support.ManeuverIcon
 import uniffi.ferrostar.DrivingSide
+import uniffi.ferrostar.LaneInfo
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.VisualInstructionContent
 
-/**
- * Maps a Ferrostar [ManeuverType] and [ManeuverModifier] to a Car App Library maneuver type
- * constant.
- *
- * Roundabout types use [drivingSide] to determine clockwise vs counterclockwise direction.
- */
+fun VisualInstructionContent.toCarManeuver(
+    context: Context,
+    drivingSide: DrivingSide = DrivingSide.RIGHT,
+    roundaboutExitNumber: Int? = null
+): Maneuver {
+  val type = maneuverType.toCarManeuverType(maneuverModifier, drivingSide)
+
+  val maneuverIcon: ManeuverIcon? = if (maneuverType != null && maneuverModifier != null) {
+    ManeuverIcon(context, maneuverType!!, maneuverModifier!!)
+  } else {
+    null
+  }
+
+  return Maneuver.Builder(type)
+      .apply {
+        maneuverIcon?.iconCompat()?.let {
+          setIcon(
+              CarIcon.Builder(it)
+                  .setTint(CarColor.PRIMARY)
+                  .build()
+          )
+        }
+        if (type.isRoundaboutManeuverType()) {
+          setRoundaboutExitNumber(roundaboutExitNumber ?: 1)
+        }
+      }
+      .build()
+}
+
 fun ManeuverType?.toCarManeuverType(
     modifier: ManeuverModifier?,
     drivingSide: DrivingSide = DrivingSide.RIGHT
@@ -107,7 +135,6 @@ private fun DrivingSide.roundaboutExit(): Int =
       DrivingSide.LEFT -> Maneuver.TYPE_ROUNDABOUT_EXIT_CW
     }
 
-/** Returns true if this Car App Library maneuver type constant represents a roundabout. */
 fun Int.isRoundaboutManeuverType(): Boolean =
     this == Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW ||
         this == Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW ||
@@ -116,39 +143,3 @@ fun Int.isRoundaboutManeuverType(): Boolean =
         this == Maneuver.TYPE_ROUNDABOUT_EXIT_CW ||
         this == Maneuver.TYPE_ROUNDABOUT_EXIT_CCW
 
-/**
- * Builds a Car App Library [Maneuver] from this [VisualInstructionContent].
- *
- * @param icon The icon to display for this maneuver, or null for no icon.
- * @param drivingSide The driving side, used for roundabout direction.
- * @param roundaboutExitNumber The roundabout exit number, if applicable.
- */
-fun VisualInstructionContent.toCarManeuver(
-    icon: CarIcon? = null,
-    drivingSide: DrivingSide = DrivingSide.RIGHT,
-    roundaboutExitNumber: Int? = null
-): Maneuver {
-  val type = maneuverType.toCarManeuverType(maneuverModifier, drivingSide)
-  val builder = Maneuver.Builder(type)
-  if (icon != null) {
-    builder.setIcon(icon)
-  }
-  if (type.isRoundaboutManeuverType()) {
-    builder.setRoundaboutExitNumber(roundaboutExitNumber ?: 1)
-  }
-  return builder.build()
-}
-
-/** Maps an OSRM/Valhalla lane direction string to a Car App Library [LaneDirection] shape. */
-fun String.toLaneShape(): Int =
-    when (this.lowercase()) {
-      "straight" -> LaneDirection.SHAPE_STRAIGHT
-      "slight left" -> LaneDirection.SHAPE_SLIGHT_LEFT
-      "slight right" -> LaneDirection.SHAPE_SLIGHT_RIGHT
-      "left" -> LaneDirection.SHAPE_NORMAL_LEFT
-      "right" -> LaneDirection.SHAPE_NORMAL_RIGHT
-      "sharp left" -> LaneDirection.SHAPE_SHARP_LEFT
-      "sharp right" -> LaneDirection.SHAPE_SHARP_RIGHT
-      "uturn" -> LaneDirection.SHAPE_U_TURN_LEFT
-      else -> LaneDirection.SHAPE_UNKNOWN
-    }

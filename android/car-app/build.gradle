@@ -29,11 +29,13 @@ dependencies {
     // For as long as we support API < 26 in core; desugaring for java.time
     coreLibraryDesugaring libs.desugar.jdk.libs
 
-    implementation project(':core')
     implementation libs.androidx.car.app
     implementation libs.kotlinx.datetime
     implementation libs.kotlinx.coroutines
 
+    implementation project(':core')
+    implementation project(':ui-support')
+    
     testImplementation libs.junit
     testImplementation libs.kotlinx.coroutines.test
     testImplementation libs.mockk

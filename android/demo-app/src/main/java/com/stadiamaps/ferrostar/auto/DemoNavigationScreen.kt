@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar.auto
 
-import android.graphics.Rect
 import android.util.Log
 import androidx.car.app.CarContext
 import androidx.car.app.model.Template
@@ -22,9 +21,9 @@ import com.maplibre.compose.camera.extensions.incrementZoom
 import com.maplibre.compose.camera.extensions.setZoom
 import com.maplibre.compose.camera.models.CameraPadding
 import com.maplibre.compose.car.ComposableScreen
-import com.maplibre.compose.surface.SurfaceGestureCallback
 import com.stadiamaps.ferrostar.AppModule
 import com.stadiamaps.ferrostar.R
+import com.stadiamaps.ferrostar.carapp.maplibreui.runtime.SurfaceAreaTracker
 import com.stadiamaps.ferrostar.carapp.maplibreui.runtime.surfaceStableCameraPadding
 import com.stadiamaps.ferrostar.carapp.maplibreui.runtime.surfaceStableFractionalCameraPadding
 import com.stadiamaps.ferrostar.carapp.navigation.NavigationManagerBridge
@@ -68,30 +67,14 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
           viewModel = viewModel,
           context = carContext,
           notificationManager = notificationManager,
-          drivingSide = DrivingSide.RIGHT,
           onStopNavigation = { viewModel.stopNavigation() })
 
   private var uiState: NavigationUiState? by mutableStateOf(null)
 
-  private var stableArea: Rect? by mutableStateOf(null)
-  private var visibleArea: Rect? by mutableStateOf(null)
-  private val containerArea: Rect?
-    get() {
-      val stable = stableArea ?: return null
-      val visible = visibleArea ?: return null
-      return Rect(stable.left, visible.top, stable.right, visible.bottom)
-    }
+  private val surfaceAreaTracker = SurfaceAreaTracker()
 
   init {
-    surfaceGestureCallback = object : SurfaceGestureCallback {
-      override fun onStableAreaChanged(stableArea: Rect) {
-        this@DemoNavigationScreen.stableArea = stableArea
-      }
-
-      override fun onVisibleAreaChanged(visibleArea: Rect) {
-        this@DemoNavigationScreen.visibleArea = visibleArea
-      }
-    }
+    surfaceGestureCallback = surfaceAreaTracker
 
     navigationManagerBridge.start(scope)
 
@@ -106,6 +89,7 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
 
   @Composable
   override fun content() {
+      val stableArea = surfaceAreaTracker.stableArea.value
       val normalPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(stableArea))
       val trackingPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(stableArea, top = 0.5f))
       val camera = remember { mutableStateOf(viewModel.mapViewCamera.value) }
@@ -138,7 +122,7 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
       DemoNavigationView(
           viewModel,
           camera = camera,
-          stableArea = containerArea
+          surfaceAreaTracker = surfaceAreaTracker
       )
   }
 
@@ -146,7 +130,8 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
     uiState?.let { state ->
         if (state.isNavigating()) {
             return NavigationTemplateBuilder(carContext)
-                .setDrivingSite(DrivingSide.RIGHT)
+                // Optional. Your route should include this
+                .setBackupDrivingSide(DrivingSide.RIGHT)
                 .setOnStopNavigation {
                     viewModel.stopNavigation()
                 }
@@ -160,8 +145,7 @@ class DemoNavigationScreen(carContext: CarContext) : ComposableScreen(carContext
                 .setOnCycleCamera(viewModel.isTrackingUser()) {
                   viewModel.centerCamera()
                 }
-                .setVisualInstruction(state.visualInstruction)
-                .setTripProgress(state.progress)
+                .setTripState(state.tripState)
                 .build()
         }
     }

@@ -88,6 +88,13 @@ fun TripState.remainingSteps() =
     }
 
 /**
+ * Get the current step.
+ *
+ * @return The current step, if one exists.
+ */
+fun TripState.currentStep() = remainingSteps()?.first()
+
+/**
  * Get the remaining waypoints (starting at the *next* waypoint "goal") in the current trip.
  *
  * @return The list of remaining waypoints (if any).
@@ -98,6 +105,8 @@ fun TripState.remainingWaypoints() =
       is TripState.Complete,
       is TripState.Idle -> null
     }
+
+fun TripState.destination() = remainingWaypoints()?.last()
 
 /**
  * Get the UI's preferred representation of User's location from the trip state.

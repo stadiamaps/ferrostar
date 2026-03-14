@@ -51,6 +51,7 @@ dependencies {
     implementation libs.androidx.compose.material.icon.extended
 
     implementation project(':core')
+    implementation project(':ui-support')
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit

@@ -62,6 +62,7 @@ class DemoNavigationViewModel(
                       null,
                       null,
                       null,
+                      null,
                       false,
                       null,
                       null,
