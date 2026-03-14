@@ -64,6 +64,6 @@ class AndroidLocationProvider(context: Context) : NavigationLocationProviding {
   }
 
   companion object {
-    private const val TAG = "AndroidNavigationLocationProvider"
+    private const val TAG = "AndroidLocationProvider"
   }
 }

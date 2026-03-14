@@ -5,6 +5,7 @@ import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +34,7 @@ class SimulatedLocationProvider(
   // so lastLocation() returns a sensible value before any route has been simulated.
   private var _lastLocation: Location? = initialLocation
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   private val sharedUpdates: Flow<Location> =
       _routeFlow
           .flatMapLatest { initialState ->

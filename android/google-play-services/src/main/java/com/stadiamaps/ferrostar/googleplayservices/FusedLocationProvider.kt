@@ -15,6 +15,7 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -41,28 +42,18 @@ class FusedLocationProvider(context: Context) : LocationProviding {
 
   @SuppressLint("MissingPermission")
   override suspend fun getLastLocation(priority: Int): Location? =
-      suspendCancellableCoroutine { continuation ->
-        val requestStart = System.currentTimeMillis()
+      suspendCoroutine { continuation ->
         Log.d(TAG, "Requesting last location")
-        val cancellationTokenSource = CancellationTokenSource()
-
-        val request = LastLocationRequest.Builder()
-            .build()
+        val requestStart = System.currentTimeMillis()
 
         fusedLocationClient
-            .getLastLocation(request)
+            .getLastLocation(LastLocationRequest.Builder().build())
             .addOnSuccessListener { location ->
               val durationSeconds = (System.currentTimeMillis() - requestStart) / 1000.0
               Log.d(TAG, "Obtained last location in $durationSeconds s")
               continuation.resume(location)
             }
             .addOnFailureListener { exception -> continuation.resumeWithException(exception) }
-
-        continuation.invokeOnCancellation {
-          val durationSeconds = (System.currentTimeMillis() - requestStart) / 1000.0
-          Log.d(TAG, "Last location cancelled after $durationSeconds s")
-          cancellationTokenSource.cancel()
-        }
       }
 
   // Get the next fresh location update with timeout
