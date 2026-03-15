@@ -1,0 +1,86 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SourcesJar
+
+plugins {
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.ktfmt
+    alias libs.plugins.compose.compiler
+    alias libs.plugins.mavenPublish
+}
+
+android {
+    namespace 'com.stadiamaps.ferrostar.ui.maplibre.car.app'
+    compileSdk {
+        version = release(36)
+    }
+
+    defaultConfig {
+        minSdk 26
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        compose true
+    }
+}
+
+dependencies {
+    // For as long as we support API 25; once we can raise support to 26, all is fine
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.graphics
+    implementation libs.androidx.compose.ui.tooling
+    implementation libs.androidx.compose.material3
+
+    implementation project(':core')
+    implementation project(':ui-compose')
+    implementation project(':ui-maplibre')
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+
+    if (!project.hasProperty(SKIP_SIGNING_PROPERTY)) {
+        signAllPublications()
+    }
+
+    configure(new AndroidSingleVariantLibrary(
+            // Temporarily disable JavaDoc due to dokka issues with the Compose library using newer bytecode
+            new JavadocJar.Empty(),
+            new SourcesJar.Sources(),
+            "release"
+    ))
+
+    apply from: "${rootProject.projectDir}/common-pom.gradle"
+
+    pom {
+        name = "Ferrostar MapLibre Android Auto UI"
+        description = "Composable map UI car app components for Ferrostar built with MapLibre"
+
+        commonPomConfig(it, true)
+    }
+}

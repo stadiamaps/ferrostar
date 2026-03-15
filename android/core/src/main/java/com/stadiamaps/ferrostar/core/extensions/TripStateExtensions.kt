@@ -88,6 +88,11 @@ fun TripState.remainingSteps() =
     }
 
 /**
+ * The current step that's being displayed to the user.
+ */
+fun TripState.currentStep() = remainingSteps()?.first()
+
+/**
  * Get the remaining waypoints (starting at the *next* waypoint "goal") in the current trip.
  *
  * @return The list of remaining waypoints (if any).

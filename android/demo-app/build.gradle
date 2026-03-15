@@ -63,10 +63,14 @@ dependencies {
     implementation libs.androidx.compose.ui.tooling
     implementation libs.androidx.compose.material3
 
+    implementation libs.androidx.car.app
+
     implementation project(':core')
+    implementation project(':car-app')
+    implementation project(':google-play-services')
     implementation project(':ui-compose')
     implementation project(':ui-maplibre')
-    implementation project(':google-play-services')
+    implementation project(':ui-maplibre-car-app')
 
     implementation libs.maplibre.compose
 
