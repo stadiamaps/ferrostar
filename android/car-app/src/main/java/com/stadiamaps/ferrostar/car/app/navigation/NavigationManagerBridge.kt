@@ -54,16 +54,6 @@ class NavigationManagerBridge(
   private var tripJob: Job? = null
   private var notificationJob: Job? = null
   private var wasNavigating = false
-  private var destination: Destination? = null
-
-  /**
-   * Sets the destination shown on the head unit during navigation.
-   *
-   * May be called at any time. Takes effect on the next [NavigationManager.updateTrip] call.
-   */
-  fun setDestination(destination: Destination?) {
-    this.destination = destination
-  }
 
   /**
    * Starts observing the view model's navigation state and driving the [NavigationManager].
@@ -100,7 +90,7 @@ class NavigationManagerBridge(
                       FerrostarTrip.Builder(context)
                           .setTripState(it)
                           .setBackupDrivingSide(backupDrivingSide)
-                          .apply { destination?.let { dest -> setDestination(dest) } }
+                          .apply { state.destination?.let { dest -> setDestination(dest) } }
                           .build()
                   try {
                     navigationManager.updateTrip(trip)

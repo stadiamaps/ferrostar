@@ -66,22 +66,7 @@ class DemoNavigationViewModel(
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
-              initialValue =
-                  NavigationUiState(
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      false,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null,
-                      null))
+              initialValue = NavigationUiState.empty())
 
   init {
     viewModelScope.launch {

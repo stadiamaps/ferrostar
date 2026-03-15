@@ -28,8 +28,6 @@ import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
-import uniffi.ferrostar.Waypoint
-import uniffi.ferrostar.WaypointKind
 
 data class NavigationUiState(
     /** The user's location as reported by the location provider. */
@@ -41,6 +39,8 @@ data class NavigationUiState(
      * in the `location` and `snappedLocation` properties.
      */
     val heading: Float?,
+    /** The destination for the current trip. Useful for Car-App implementations. */
+    val destination: String?,
     /** The core trip state from ferrostar */
     val tripState: TripState?,
     /** The geometry of the full route. */
@@ -73,6 +73,25 @@ data class NavigationUiState(
     val currentAnnotation: AnnotationWrapper<*>?
 ) {
   companion object {
+    fun empty(): NavigationUiState =
+        NavigationUiState(
+            location = null,
+            heading = null,
+            destination = null,
+            tripState = null,
+            routeGeometry = null,
+            visualInstruction = null,
+            spokenInstruction = null,
+            progress = null,
+            isCalculatingNewRoute = null,
+            routeDeviation =null,
+            isMuted = null,
+            currentStepRoadName = null,
+            currentStepGeometryIndex = null,
+            remainingSteps =null,
+            currentAnnotation = null
+        )
+
     fun fromFerrostar(
         coreState: NavigationState,
         isMuted: Boolean?,
@@ -82,6 +101,7 @@ data class NavigationUiState(
             location = coreState.tripState.preferredUserLocation(),
             // TODO: Heading/course over ground
             heading = null,
+            destination = null,
             tripState = coreState.tripState,
             routeGeometry = coreState.routeGeometry,
             visualInstruction = coreState.tripState.visualInstruction(),
@@ -103,6 +123,8 @@ data class NavigationUiState(
 interface NavigationViewModel {
   val navigationUiState: StateFlow<NavigationUiState>
 
+  fun setDestination(destination: String?)
+
   fun toggleMute()
 
   fun stopNavigation()
@@ -121,6 +143,8 @@ open class DefaultNavigationViewModel(
     private val annotationPublisher: AnnotationPublisher<*> = NoOpAnnotationPublisher()
 ) : ViewModel(), NavigationViewModel {
 
+  private val destination = MutableStateFlow<String?>(null)
+
   private val muteState: StateFlow<Boolean?> =
       ferrostarCore.spokenInstructionObserver?.muteState ?: MutableStateFlow(null)
 
@@ -135,6 +159,9 @@ open class DefaultNavigationViewModel(
             // This awkward dance is required because Kotlin doesn't have a way to map over
             // StateFlows without converting to a generic Flow in the process.
           }
+          .combine(destination) { uiState, destination ->
+            uiState.copy(destination = destination)
+          }
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
@@ -143,6 +170,10 @@ open class DefaultNavigationViewModel(
                       ferrostarCore.state.value,
                       ferrostarCore.spokenInstructionObserver?.isMuted,
                       null))
+
+  override fun setDestination(destination: String?) {
+    this.destination.value = destination
+  }
 
   override fun stopNavigation() {
     ferrostarCore.stopNavigation()

@@ -22,8 +22,11 @@ class FerrostarTrip {
       return this
     }
 
-    fun setDestination(destination: Destination): Builder {
-      this.destination = destination
+    fun setDestination(destination: String): Builder {
+      this.destination = Destination.Builder()
+          .setName(destination)
+          .build()
+
       return this
     }
 

@@ -71,7 +71,7 @@ fun CarAppNavigationView(
   val wrappedContent: (@Composable @MapLibreComposable (NavigationUiState) -> Unit)? =
       if (surfaceAreaTracker != null || mapContent != null) {
         { uiState ->
-          surfaceAreaTracker?.rememberSurfaceArea()
+          surfaceAreaTracker?.rememberGestureDelegate()
           mapContent?.invoke(uiState)
         }
       } else null

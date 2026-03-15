@@ -16,16 +16,25 @@ import com.maplibre.compose.surface.rememberMapSurfaceGestureCallback
  * forwarding gesture events (scroll, fling, scale) to a map gesture delegate.
  *
  * Usage:
- * 1. Create an instance and assign it to [ComposableScreen.surfaceGestureCallback].
- * 2. Inside a [MapLibreComposable] context, call [rememberSurfaceArea] to wire up map gestures
- *    and observe safe areas in a single call.
+ * 1. Create an instance, passing the registration lambda so it self-registers immediately:
+ *    ```
+ *    private val surfaceAreaTracker = SurfaceAreaTracker { surfaceGestureCallback = it }
+ *    ```
+ * 2. Pass the tracker to [CarAppNavigationView], which handles both gesture wiring and
+ *    safe-area-aware overlay placement internally.
+ * 3. To observe surface area state outside the map context (e.g. for camera padding), call
+ *    [screenSurfaceState] in any [Composable] scope.
  */
-class SurfaceAreaTracker : SurfaceGestureCallback {
+class SurfaceAreaTracker(register: (SurfaceAreaTracker) -> Unit) : SurfaceGestureCallback {
     val stableArea: MutableState<Rect?> = mutableStateOf(null)
     val visibleArea: MutableState<Rect?> = mutableStateOf(null)
 
     @Volatile
     var delegate: SurfaceGestureCallback? = null
+
+    init {
+        register(this)
+    }
 
     override fun onStableAreaChanged(stableArea: Rect) {
         this.stableArea.value = stableArea
@@ -48,13 +57,24 @@ class SurfaceAreaTracker : SurfaceGestureCallback {
     }
 
     /**
+     * Wires up map gesture handling (scroll, fling, scale). Must be called within a
+     * [MapLibreComposable] context. Use this when the surface area state is already observed
+     * elsewhere (e.g. via [screenSurfaceState] in a parent composable).
+     */
+    @Composable
+    @MapLibreComposable
+    fun rememberGestureDelegate() {
+        rememberMapSurfaceGestureCallback { delegate = it }
+    }
+
+    /**
      * Wires up map gesture handling (scroll, fling, scale) and returns a [State] tracking the
      * current [SurfaceArea]. Must be called within a [MapLibreComposable] context.
      */
     @Composable
     @MapLibreComposable
     fun rememberSurfaceArea(): State<SurfaceArea?> {
-        rememberMapSurfaceGestureCallback { delegate = it }
+        rememberGestureDelegate()
         return screenSurfaceState(stableArea, visibleArea)
     }
 }

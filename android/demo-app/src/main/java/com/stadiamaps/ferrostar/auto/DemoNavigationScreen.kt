@@ -20,6 +20,7 @@ import com.maplibre.compose.car.ComposableScreen
 import com.stadiamaps.ferrostar.AppModule
 import com.stadiamaps.ferrostar.R
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
+import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalCameraPadding
 import com.stadiamaps.ferrostar.car.app.navigation.NavigationManagerBridge
 import com.stadiamaps.ferrostar.car.app.template.NavigationTemplateBuilder
@@ -59,7 +60,6 @@ class DemoNavigationScreen(
   private val notificationManager =
       TurnByTurnNotificationManager(context = carContext, smallIconRes = R.drawable.ic_navigation)
 
-
   private val navigationManagerBridge =
       NavigationManagerBridge(
           navigationManager = carContext.getCarService(NavigationManager::class.java),
@@ -73,12 +73,9 @@ class DemoNavigationScreen(
 
   private var uiState: NavigationUiState? by mutableStateOf(null)
 
-  private val surfaceAreaTracker = SurfaceAreaTracker()
+  private val surfaceAreaTracker = SurfaceAreaTracker { surfaceGestureCallback = it }
 
   init {
-    // Attach pan gesture and screen area tracking to map view.
-    surfaceGestureCallback = surfaceAreaTracker
-
     navigationManagerBridge.start(scope)
 
     observeJob =
@@ -98,9 +95,9 @@ class DemoNavigationScreen(
 
   @Composable
   override fun content() {
-      val stableArea = surfaceAreaTracker.stableArea.value
-      val normalPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(stableArea))
-      val trackingPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(stableArea, top = 0.5f))
+      val surfaceArea by screenSurfaceState(surfaceAreaTracker)
+      val normalPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(surfaceArea?.compositeArea))
+      val trackingPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(surfaceArea?.compositeArea, top = 0.5f))
       val camera = remember { mutableStateOf(viewModel.mapViewCamera.value) }
 
       // Transition to navigation camera and publish destination when navigation starts

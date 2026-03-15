@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity(), AndroidTtsStatusListener {
     setContent {
       FerrostarTheme {
         // A surface container using the 'background' color from the theme
-        Surface { DemoNavigationScene(savedInstanceState) }
+        Surface { DemoNavigationScene() }
       }
     }
   }
