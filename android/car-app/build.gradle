@@ -26,12 +26,16 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled = true
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
 }
 
 dependencies {
+    // For as long as we support API 25; once we can raise support to 26, all is fine
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
     implementation libs.androidx.ktx
     implementation libs.androidx.appcompat
     implementation libs.material

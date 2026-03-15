@@ -80,10 +80,11 @@ class NavigationTemplateBuilder(
             .setMapActionStrip(buildMapActionStrip())
             .apply {
                 tripState?.let { state ->
-                  val info = FerrostarRoutingInfo.Builder(carContext)
+                  val routingInfo = FerrostarRoutingInfo.Builder(carContext)
                       .setTripState(state)
                       .build()
-                  setNavigationInfo(info)
+
+                  routingInfo?.let { setNavigationInfo(it) }
 
                   state.progress()?.let {
                     setDestinationTravelEstimate(it.toCarTravelEstimate())
@@ -145,4 +146,3 @@ class NavigationTemplateBuilder(
             }
             .build()
 }
-

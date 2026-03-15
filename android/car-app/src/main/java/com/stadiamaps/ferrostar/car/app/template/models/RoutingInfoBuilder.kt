@@ -24,23 +24,19 @@ class FerrostarRoutingInfo {
       return this
     }
 
-    fun build(): RoutingInfo {
-      val instruction = tripState?.visualInstruction()
-      val progress = tripState?.progress()
-      val currentStep = tripState?.currentStep()
+    fun build(): RoutingInfo? {
+      val instruction = tripState?.visualInstruction() ?: return null
+      val progress = tripState?.progress() ?: return null
+      val currentStep = tripState?.currentStep() ?: return null
+
+      val drivingSide = currentStep.drivingSide ?: backupDrivingSide
+      val roundaboutExitNumber = currentStep.roundaboutExitNumber?.toInt()
 
       return RoutingInfo.Builder()
-          .apply {
-            if (instruction != null && progress != null && currentStep != null) {
-              val drivingSide = currentStep.drivingSide ?: backupDrivingSide
-              val roundaboutExitNumber = currentStep.roundaboutExitNumber?.toInt()
-
-              val step = instruction.toCarStep(context, drivingSide, roundaboutExitNumber)
-              val distance = progress.toCarDistanceToNextManeuver()
-
-              setCurrentStep(step, distance)
-            }
-          }
+          .setCurrentStep(
+              instruction.toCarStep(context, drivingSide, roundaboutExitNumber),
+              progress.toCarDistanceToNextManeuver()
+          )
           .build()
     }
   }
