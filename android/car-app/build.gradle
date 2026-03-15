@@ -1,5 +1,9 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+
 plugins {
-    alias(libs.plugins.androidLibrary)
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.ktfmt
+    alias libs.plugins.mavenPublish
 }
 
 android {
@@ -43,4 +47,23 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+
+    if (!project.hasProperty(SKIP_SIGNING_PROPERTY)) {
+        signAllPublications()
+    }
+
+    configure(new AndroidSingleVariantLibrary("release", true, true))
+
+    apply from: "${rootProject.projectDir}/common-pom.gradle"
+
+    pom {
+        name = "Ferrostar CarApp"
+        description = "Composable map UI car app components for Ferrostar built with MapLibre"
+
+        commonPomConfig(it, true)
+    }
 }

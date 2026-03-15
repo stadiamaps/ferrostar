@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.auto
 import androidx.car.app.CarContext
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.NavigationManager
+import androidx.lifecycle.Lifecycle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,6 +59,7 @@ class DemoNavigationScreen(
   private val notificationManager =
       TurnByTurnNotificationManager(context = carContext, smallIconRes = R.drawable.ic_navigation)
 
+
   private val navigationManagerBridge =
       NavigationManagerBridge(
           navigationManager = carContext.getCarService(NavigationManager::class.java),
@@ -65,7 +67,8 @@ class DemoNavigationScreen(
           context = carContext,
           notificationManager = notificationManager,
           onStopNavigation = { viewModel.stopNavigation() },
-          onAutoDriveEnabled = { viewModel.enableAutoDriveSimulation() }
+          onAutoDriveEnabled = { viewModel.enableAutoDriveSimulation() },
+          isCarForeground = { lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) }
       )
 
   private var uiState: NavigationUiState? by mutableStateOf(null)

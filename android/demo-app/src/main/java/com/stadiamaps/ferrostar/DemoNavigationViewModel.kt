@@ -127,6 +127,7 @@ class DemoNavigationViewModel(
       val lastLocation = location.value ?: return@launch
 
       // TODO: Add label to waypoint?
+      // TODO: Assign the destination to the `NavigationManagerBridge`
       Log.d(TAG, "fetching route to $destination with name $name")
 
       val routes =

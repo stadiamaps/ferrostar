@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.core.extensions
 
 import uniffi.ferrostar.RouteDeviation
+import uniffi.ferrostar.SpokenInstruction
 import uniffi.ferrostar.TripState
 
 /**
@@ -29,6 +30,19 @@ fun TripState.visualInstruction() =
       }
     } catch (_: NoSuchElementException) {
       null
+    }
+
+/**
+ * Get the spoken instruction for the current step.
+ *
+ * @return The spoken instruction that should be announced, or null if not navigating or no
+ *   instruction is currently triggered.
+ */
+fun TripState.spokenInstruction(): SpokenInstruction? =
+    when (this) {
+      is TripState.Navigating -> this.spokenInstruction
+      is TripState.Complete,
+      is TripState.Idle -> null
     }
 
 /**

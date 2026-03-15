@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar.core
 
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +12,7 @@ import com.stadiamaps.ferrostar.core.extensions.deviation
 import com.stadiamaps.ferrostar.core.extensions.preferredUserLocation
 import com.stadiamaps.ferrostar.core.extensions.progress
 import com.stadiamaps.ferrostar.core.extensions.remainingSteps
+import com.stadiamaps.ferrostar.core.extensions.spokenInstruction
 import com.stadiamaps.ferrostar.core.extensions.visualInstruction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -85,7 +85,7 @@ data class NavigationUiState(
             tripState = coreState.tripState,
             routeGeometry = coreState.routeGeometry,
             visualInstruction = coreState.tripState.visualInstruction(),
-            spokenInstruction = null,
+            spokenInstruction = coreState.tripState.spokenInstruction(),
             progress = coreState.tripState.progress(),
             isCalculatingNewRoute = coreState.isCalculatingNewRoute,
             routeDeviation = coreState.tripState.deviation(),

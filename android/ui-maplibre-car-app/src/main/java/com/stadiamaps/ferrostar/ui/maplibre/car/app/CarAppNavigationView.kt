@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar.ui.maplibre.car.app
 
-import android.graphics.Rect
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,6 +19,8 @@ import com.maplibre.compose.settings.AttributionSettings
 import com.maplibre.compose.settings.CompassSettings
 import com.maplibre.compose.settings.LogoSettings
 import com.maplibre.compose.settings.MapControls
+import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
+import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalPadding
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.views.components.CurrentRoadNameView
@@ -48,7 +49,7 @@ fun CarAppNavigationView(
         LocationRequestProperties.NavigationDefault(),
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
-    stableArea: Rect? = null,
+    surfaceAreaTracker: SurfaceAreaTracker? = null,
     mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.navigationUiState.collectAsState()
@@ -60,7 +61,20 @@ fun CarAppNavigationView(
             logo = LogoSettings(enabled = false)))
   }
 
-  val gridPadding = surfaceStableFractionalPadding(stableArea)
+  val surfaceArea by surfaceAreaTracker
+      ?.let { screenSurfaceState(it) }
+      ?: remember { mutableStateOf(null) }
+
+  val gridPadding = surfaceStableFractionalPadding(surfaceArea?.compositeArea)
+
+  // Wrap mapContent to also wire surface gesture handling inside the MapLibreComposable context.
+  val wrappedContent: (@Composable @MapLibreComposable (NavigationUiState) -> Unit)? =
+      if (surfaceAreaTracker != null || mapContent != null) {
+        { uiState ->
+          surfaceAreaTracker?.rememberSurfaceArea()
+          mapContent?.invoke(uiState)
+        }
+      } else null
 
   Box(modifier) {
     NavigationMapView(
@@ -73,7 +87,7 @@ fun CarAppNavigationView(
         onMapReadyCallback = {
           // No definition
         },
-        content = mapContent
+        content = wrappedContent
     )
 
     Box(

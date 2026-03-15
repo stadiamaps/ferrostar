@@ -3,12 +3,14 @@ package com.stadiamaps.ferrostar.car.app.navigation
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import androidx.annotation.DrawableRes
 import androidx.car.app.notification.CarAppExtender
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import uniffi.ferrostar.VisualInstruction
+import com.stadiamaps.ferrostar.car.app.R
+import uniffi.ferrostar.SpokenInstruction
 
 /**
  * Posts and updates a persistent heads-up notification for turn-by-turn guidance on Android Auto.
@@ -20,37 +22,50 @@ import uniffi.ferrostar.VisualInstruction
  * @param channelId Notification channel ID. Defaults to "ferrostar_navigation".
  * @param notificationId Notification ID. Defaults to 502.
  * @param smallIconRes Drawable resource ID for the notification's small icon.
+ * @param contentIntent Optional [PendingIntent] fired when the user taps the HUN or rail widget,
+ *   typically used to bring the car app back to the foreground.
  */
 class TurnByTurnNotificationManager(
     private val context: Context,
     private val channelId: String = DEFAULT_CHANNEL_ID,
     private val notificationId: Int = DEFAULT_NOTIFICATION_ID,
-    @DrawableRes private val smallIconRes: Int
+    @DrawableRes private val smallIconRes: Int,
+    private val contentIntent: PendingIntent? = null
 ) {
 
   private val notificationManager = NotificationManagerCompat.from(context)
 
   init {
     val channel =
-        NotificationChannel(channelId, "Navigation", NotificationManager.IMPORTANCE_HIGH).apply {
-          description = "Turn-by-turn navigation directions"
+        NotificationChannel(
+            channelId, "Navigation",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+          description = context.getString(R.string.notification_description)
         }
     notificationManager.createNotificationChannel(channel)
   }
 
   /** Posts or updates the turn-by-turn notification with the given [instruction]. */
   @SuppressLint("MissingPermission") // Caller is responsible for POST_NOTIFICATIONS permission.
-  fun update(instruction: VisualInstruction) {
+  fun update(instruction: SpokenInstruction) {
     val notification =
         NotificationCompat.Builder(context, channelId)
             .setSmallIcon(smallIconRes)
-            .setContentTitle(instruction.primaryContent.text)
-            .setContentText(instruction.secondaryContent?.text)
+            .setContentTitle(instruction.text)
             .setOngoing(true)
-            .setOnlyAlertOnce(true)
             .setCategory(NotificationCompat.CATEGORY_NAVIGATION)
             .extend(
-                CarAppExtender.Builder().setImportance(NotificationManager.IMPORTANCE_HIGH).build())
+                CarAppExtender.Builder()
+                    .setContentTitle(instruction.text)
+                    .apply {
+                      contentIntent?.let {
+                        setContentIntent(it)
+                      }
+                    }
+                    .setImportance(NotificationManager.IMPORTANCE_HIGH)
+                    .build()
+            )
             .build()
 
     try {
