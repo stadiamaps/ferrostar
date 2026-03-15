@@ -20,6 +20,7 @@
 	- [SwiftUI](./swiftui-customization.md)
 	- [Jetpack Compose](./jetpack-compose-customization.md)
 	- [Android Foreground Services](./android-foreground-service.md)
+	- [Android Auto/Car App](./android-auto-car-app.md)
 	- [Web](./web-customization.md)
 	- [iOS Dynamic Island](./ios-dynamic-island.md)
 	- [iOS CarPlay](./ios-carplay.md)

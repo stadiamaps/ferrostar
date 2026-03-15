@@ -1,0 +1,70 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+
+plugins {
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.ktfmt
+    alias libs.plugins.mavenPublish
+}
+
+android {
+    namespace 'com.stadiamaps.ferrostar.ui.shared'
+    compileSdk {
+        version = release(36)
+    }
+
+    defaultConfig {
+        minSdk 25
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled = true
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    // For as long as we support API 25; once we can raise support to 26, all is fine
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
+    implementation platform(libs.kotlin.bom)
+
+    // Used in the public API
+    api libs.kotlinx.datetime
+
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.activity.compose
+
+    implementation project(':core')
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    if (!project.hasProperty(SKIP_SIGNING_PROPERTY)) {
+        signAllPublications()
+    }
+
+    configure(new AndroidSingleVariantLibrary("release", true, true))
+
+    apply from: "${rootProject.projectDir}/common-pom.gradle"
+
+    pom {
+        name = "Ferrostar Shared UI"
+        description = "Includes shared basics like the maneuver direction icons."
+        commonPomConfig(it, true)
+    }
+}

@@ -10,6 +10,11 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
+    <!-- Android Auto permissions -->
+    <uses-permission android:name="androidx.car.app.MAP_TEMPLATES" />
+    <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
+    <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -20,6 +25,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ferrostar"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="2" />
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
 
         <activity
             android:name="com.stadiamaps.ferrostar.MainActivity"
@@ -35,8 +47,16 @@
 
         <service
             android:name="com.stadiamaps.ferrostar.core.service.FerrostarForegroundService"
-            android:foregroundServiceType="location"
-            />
+            android:foregroundServiceType="location" />
+
+        <service
+            android:name="com.stadiamaps.ferrostar.auto.DemoCarAppService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.NAVIGATION" />
+            </intent-filter>
+        </service>
 
     </application>
     <queries>
