@@ -62,6 +62,7 @@ okhttp-mock = { group = "com.github.gmazzo", name = "okhttp-mock", version.ref =
 kotlinx-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 # MapLibre
 maplibre-compose = { group = "io.github.rallista", name = "maplibre-compose", version.ref = "maplibre-compose" }
+maplibre-compose-car-app = { group = "io.github.rallista", name = "maplibre-compose-car-app", version.ref = "maplibre-compose" }
 # Google Play Services (for Google module)
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 # Testing

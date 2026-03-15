@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.core
 
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,8 @@ import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.VisualInstruction
+import uniffi.ferrostar.Waypoint
+import uniffi.ferrostar.WaypointKind
 
 data class NavigationUiState(
     /** The user's location as reported by the location provider. */

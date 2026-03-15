@@ -40,7 +40,7 @@ fun NotNavigatingOverlay(
                 userLocation = location?.toAndroidLocation()
             ) { feature ->
               feature.center()?.let { center ->
-                viewModel.startNavigation(center)
+                viewModel.startNavigation(center, feature.properties.name)
               }
             }
           }
