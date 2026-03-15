@@ -1,0 +1,80 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+
+plugins {
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.ktfmt
+    alias libs.plugins.paparazzi
+    alias libs.plugins.compose.compiler
+    alias libs.plugins.mavenPublish
+}
+
+android {
+    namespace 'com.stadiamaps.ferrostar.composeui'
+    compileSdk = 36
+
+    defaultConfig {
+        minSdk 25
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        compose true
+    }
+}
+
+dependencies {
+    // For as long as we support API 25; once we can raise support to 26, all is fine
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
+    implementation platform(libs.kotlin.bom)
+
+    // Used in the public API
+    api libs.kotlinx.datetime
+
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.activity.compose
+
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.graphics
+    implementation libs.androidx.compose.ui.tooling.preview
+    implementation libs.androidx.compose.material3
+    implementation libs.androidx.compose.material.icon.extended
+
+    implementation project(':core')
+    implementation project(':ui-formatters')
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+
+    implementation libs.androidx.compose.ui.tooling.preview
+
+    debugImplementation libs.androidx.compose.ui.tooling
+    debugImplementation libs.androidx.compose.ui.test.manifest
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    if (!project.hasProperty(SKIP_SIGNING_PROPERTY)) {
+        signAllPublications()
+    }
+
+    configure(new AndroidSingleVariantLibrary("release", true, true))
+
+    apply from: "${rootProject.projectDir}/common-pom.gradle"
+
+    pom {
+        name = "Ferrostar Composable UI"
+        description = "Composable non-map UI components for Ferrostar"
+        commonPomConfig(it, true)
+    }
+}
