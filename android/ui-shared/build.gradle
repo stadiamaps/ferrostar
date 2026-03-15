@@ -3,14 +3,14 @@ import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
 plugins {
     alias libs.plugins.androidLibrary
     alias libs.plugins.ktfmt
-    alias libs.plugins.paparazzi
-    alias libs.plugins.compose.compiler
     alias libs.plugins.mavenPublish
 }
 
 android {
-    namespace 'com.stadiamaps.ferrostar.composeui'
-    compileSdk = 36
+    namespace 'com.stadiamaps.ferrostar.ui.shared'
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk 25
@@ -19,13 +19,16 @@ android {
         consumerProguardFiles "consumer-rules.pro"
     }
 
-    compileOptions {
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
     }
-    buildFeatures {
-        compose true
+    compileOptions {
+        coreLibraryDesugaringEnabled = true
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
@@ -42,25 +45,11 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.androidx.activity.compose
 
-    implementation platform(libs.androidx.compose.bom)
-    implementation libs.androidx.compose.ui
-    implementation libs.androidx.compose.ui.graphics
-    implementation libs.androidx.compose.ui.tooling.preview
-    implementation libs.androidx.compose.material3
-    implementation libs.androidx.compose.material.icon.extended
-
     implementation project(':core')
-    implementation project(':ui-formatters')
-    implementation project(':ui-shared')
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
-
-    implementation libs.androidx.compose.ui.tooling.preview
-
-    debugImplementation libs.androidx.compose.ui.tooling
-    debugImplementation libs.androidx.compose.ui.test.manifest
 }
 
 mavenPublishing {
@@ -74,8 +63,8 @@ mavenPublishing {
     apply from: "${rootProject.projectDir}/common-pom.gradle"
 
     pom {
-        name = "Ferrostar Composable UI"
-        description = "Composable non-map UI components for Ferrostar"
+        name = "Ferrostar Formatters"
+        description = "Distance, duration and arrival formatters for Ferrostar"
         commonPomConfig(it, true)
     }
 }

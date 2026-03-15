@@ -1,6 +1,5 @@
 package com.stadiamaps.ferrostar.composeui.views.components.maneuver
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -13,35 +12,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.composeui.R
+import com.stadiamaps.ferrostar.ui.shared.icons.ManeuverIcon
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 import uniffi.ferrostar.VisualInstructionContent
 
-val VisualInstructionContent.maneuverIcon: String
-  get() {
-    val descriptor =
-        listOfNotNull(
-                maneuverType?.name?.replace(" ", "_"), maneuverModifier?.name?.replace(" ", "_"))
-            .joinToString(separator = "_")
-    return "direction_${descriptor}".lowercase()
-  }
-
 /** An icon view using the public domain drawables from Mapbox. */
-@SuppressLint("DiscouragedApi")
 @Composable
 fun ManeuverImage(content: VisualInstructionContent, tint: Color = LocalContentColor.current) {
-  val context = LocalContext.current
-  val resourceId =
-      context.resources.getIdentifier(content.maneuverIcon, "drawable", context.packageName)
+  val maneuverType = content.maneuverType ?: return
+  val maneuverModifier = content.maneuverModifier ?: return
 
-  if (resourceId != 0) {
+  val context = LocalContext.current
+  val maneuverIcon = ManeuverIcon(context, maneuverType, maneuverModifier)
+
+  // Only display the icon if the resource was found.
+  // Ignore resolution failures for the moment.
+  maneuverIcon.resourceId?.let {
     Icon(
-        painter = painterResource(id = resourceId),
+        painter = painterResource(id = it),
         contentDescription = stringResource(id = R.string.maneuver_image),
         tint = tint,
         modifier = Modifier.size(64.dp))
-  } else {
-    // Ignore resolution failures for the moment.
   }
 }
 
