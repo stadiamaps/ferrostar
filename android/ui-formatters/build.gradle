@@ -1,5 +1,9 @@
+import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+
 plugins {
-    alias(libs.plugins.androidLibrary)
+    alias libs.plugins.androidLibrary
+    alias libs.plugins.ktfmt
+    alias libs.plugins.mavenPublish
 }
 
 android {
@@ -9,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        minSdk 26
+        minSdk 25
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -22,22 +26,45 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    implementation libs.androidx.ktx
-    implementation libs.androidx.appcompat
-    implementation libs.material
+    // For as long as we support API 25; once we can raise support to 26, all is fine
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
+    implementation platform(libs.kotlin.bom)
 
     // Used in the public API
     api libs.kotlinx.datetime
+
+    implementation libs.androidx.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.activity.compose
 
     implementation project(':core')
 
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    if (!project.hasProperty(SKIP_SIGNING_PROPERTY)) {
+        signAllPublications()
+    }
+
+    configure(new AndroidSingleVariantLibrary("release", true, true))
+
+    apply from: "${rootProject.projectDir}/common-pom.gradle"
+
+    pom {
+        name = "Ferrostar Formatters"
+        description = "Distance, duration and arrival formatters for Ferrostar"
+        commonPomConfig(it, true)
+    }
 }
