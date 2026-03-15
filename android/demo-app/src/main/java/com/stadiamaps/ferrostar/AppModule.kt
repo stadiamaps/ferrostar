@@ -7,22 +7,21 @@ import com.stadiamaps.ferrostar.core.AlternativeRouteProcessor
 import com.stadiamaps.ferrostar.core.AndroidTtsObserver
 import com.stadiamaps.ferrostar.core.CorrectiveAction
 import com.stadiamaps.ferrostar.core.FerrostarCore
-import com.stadiamaps.ferrostar.core.LocationProvider
 import com.stadiamaps.ferrostar.core.RouteDeviationHandler
-import com.stadiamaps.ferrostar.core.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.http.HttpClientProvider
 import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
+import com.stadiamaps.ferrostar.core.location.NavigationLocationProvider
+import com.stadiamaps.ferrostar.core.location.SimulatedLocationProvider
+import com.stadiamaps.ferrostar.core.location.toAndroidLocation
 import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import com.stadiamaps.ferrostar.core.withJsonOptions
-import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
+import com.stadiamaps.ferrostar.googleplayservices.FusedNavigationLocationProvider
+import com.stadiamaps.ferrostar.support.initialSimulatedLocation
 import java.time.Duration
-import java.time.Instant
 import okhttp3.OkHttpClient
-import uniffi.ferrostar.GeographicCoordinate
 import uniffi.ferrostar.GraphHopperVoiceUnits
 import uniffi.ferrostar.NavigationControllerConfig
-import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.WellKnownRouteProvider
 
 /**
@@ -77,18 +76,14 @@ object AppModule {
     appContext = context
   }
 
-  // TODO: Make this configurable in the UI.
-  val simulation = false
-  val locationProvider: LocationProvider by lazy {
-    if (simulation) {
-      SimulatedLocationProvider().apply {
-        warpFactor = 2u
-        lastLocation =
-            UserLocation(GeographicCoordinate(51.049315, 13.73552), 1.0, null, Instant.now(), null)
-      }
-    } else {
-      FusedLocationProvider(appContext)
-    }
+  val locationProvider: NavigationLocationProvider by lazy {
+    NavigationLocationProvider(
+        liveProviding = FusedNavigationLocationProvider(appContext),
+        simulatedProvider = SimulatedLocationProvider(
+            warpFactor = 2u,
+            initialLocation = initialSimulatedLocation.toAndroidLocation()
+        )
+    )
   }
   private val httpClient: HttpClientProvider by lazy {
     OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build().toOkHttpClientProvider()

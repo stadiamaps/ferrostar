@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.core
 
 import com.stadiamaps.ferrostar.core.http.OkHttpClientProvider.Companion.toOkHttpClientProvider
+import com.stadiamaps.ferrostar.core.location.SimulatedLocationProvider
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
 import kotlinx.coroutines.test.runTest
@@ -453,14 +454,6 @@ class FerrostarCoreTest {
                     )),
         )
 
-    locationProvider.lastLocation =
-        UserLocation(
-            coordinates = GeographicCoordinate(0.0, 0.0),
-            horizontalAccuracy = 6.0,
-            courseOverGround = null,
-            timestamp = Instant.now(),
-            speed = null,
-        )
     core.startNavigation(
         routes.first(),
         NavigationControllerConfig(

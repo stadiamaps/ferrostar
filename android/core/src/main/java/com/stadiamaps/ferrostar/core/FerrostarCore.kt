@@ -2,20 +2,22 @@ package com.stadiamaps.ferrostar.core
 
 import androidx.annotation.VisibleForTesting
 import com.stadiamaps.ferrostar.core.http.HttpClientProvider
+import com.stadiamaps.ferrostar.core.location.NavigationLocationProviding
+import com.stadiamaps.ferrostar.core.location.toAndroidLocation
+import com.stadiamaps.ferrostar.core.location.toUserLocation
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import java.time.Instant
-import java.util.concurrent.Executors
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uniffi.ferrostar.GeographicCoordinate
-import uniffi.ferrostar.Heading
 import uniffi.ferrostar.NavState
 import uniffi.ferrostar.NavigationControllerConfig
 import uniffi.ferrostar.NavigationSession
@@ -62,12 +64,12 @@ fun NavigationState.isNavigating(): Boolean =
 class FerrostarCore(
     val routeProvider: RouteProvider,
     val httpClient: HttpClientProvider,
-    val locationProvider: LocationProvider,
+    val locationProvider: NavigationLocationProviding,
     val foregroundServiceManager: ForegroundServiceManager? = null,
     navigationControllerConfig: NavigationControllerConfig,
     val sessionBuilder: FerrostarSessionBuilder =
         FerrostarSessionBuilder(navigationControllerConfig),
-) : LocationUpdateListener {
+) {
   companion object {
     private const val TAG = "FerrostarCore"
   }
@@ -128,8 +130,8 @@ class FerrostarCore(
   var isCalculatingNewRoute: Boolean = false
     private set
 
-  private val _executor = Executors.newSingleThreadScheduledExecutor()
   private val _scope = CoroutineScope(Dispatchers.IO)
+  private var _locationJob: Job? = null
 
   private var _navigationSession: NavigationSession? = null
   private val _navState: MutableStateFlow<NavState?> = MutableStateFlow(null)
@@ -155,7 +157,7 @@ class FerrostarCore(
   constructor(
       wellKnownRouteProvider: WellKnownRouteProvider,
       httpClient: HttpClientProvider,
-      locationProvider: LocationProvider,
+      locationProvider: NavigationLocationProviding,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
@@ -168,7 +170,7 @@ class FerrostarCore(
   constructor(
       routeAdapter: RouteAdapter,
       httpClient: HttpClientProvider,
-      locationProvider: LocationProvider,
+      locationProvider: NavigationLocationProviding,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
@@ -181,7 +183,7 @@ class FerrostarCore(
   constructor(
       customRouteProvider: CustomRouteProvider,
       httpClient: HttpClientProvider,
-      locationProvider: LocationProvider,
+      locationProvider: NavigationLocationProviding,
       navigationControllerConfig: NavigationControllerConfig,
       foregroundServiceManager: ForegroundServiceManager? = null,
   ) : this(
@@ -248,8 +250,7 @@ class FerrostarCore(
     _navigationSession = navigationSession
 
     val startingLocation =
-        locationProvider.lastLocation
-            ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
+        _lastLocation ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
     val initialNavState = navigationSession.getInitialState(startingLocation)
     val newState = NavigationState(tripState = initialNavState.tripState, route.geometry, false)
@@ -258,7 +259,9 @@ class FerrostarCore(
     _navState.value = initialNavState
     _state.value = newState
 
-    locationProvider.addListener(this, _executor)
+    _locationJob = _scope.launch {
+      locationProvider.locationUpdates().collect { location -> onLocationUpdated(location.toUserLocation()) }
+    }
   }
 
   /**
@@ -280,8 +283,7 @@ class FerrostarCore(
     _navigationSession = navigationSession
 
     val startingLocation =
-        locationProvider.lastLocation
-            ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
+        _lastLocation ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
     val newState = NavigationState(tripState = navState.tripState, route.geometry, false)
     handleStateUpdate(navState, startingLocation)
@@ -289,7 +291,9 @@ class FerrostarCore(
     _navState.value = navState
     _state.value = newState
 
-    locationProvider.addListener(this, _executor)
+    _locationJob = _scope.launch {
+      locationProvider.locationUpdates().collect { location -> onLocationUpdated(location.toUserLocation()) }
+    }
   }
 
   /**
@@ -310,8 +314,7 @@ class FerrostarCore(
     _navigationSession = navigationSession
 
     val startingLocation =
-        locationProvider.lastLocation
-            ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
+        _lastLocation ?: UserLocation(route.geometry.first(), 0.0, null, Instant.now(), null)
 
     _queuedUtteranceIds.clear()
     spokenInstructionObserver?.stopAndClearQueue()
@@ -342,11 +345,10 @@ class FerrostarCore(
     }
   }
 
-  fun stopNavigation(stopLocationUpdates: Boolean = true) {
+  fun stopNavigation() {
     foregroundServiceManager?.stopService()
-    if (stopLocationUpdates) {
-      locationProvider.removeListener(this)
-    }
+    _locationJob?.cancel()
+    _locationJob = null
     _navigationSession?.destroy()
     _navigationSession = null
     _state.value = NavigationState()
@@ -435,7 +437,7 @@ class FerrostarCore(
     } ?: true // Default to true if no prior automatic recalculation
   }
 
-  override fun onLocationUpdated(location: UserLocation) {
+  private fun onLocationUpdated(location: UserLocation) {
     _lastLocation = location
     val session = _navigationSession
 
@@ -453,9 +455,6 @@ class FerrostarCore(
     }
   }
 
-  override fun onHeadingUpdated(heading: Heading) {
-    // TODO: Publish new heading to flow
-  }
 }
 
 /**
