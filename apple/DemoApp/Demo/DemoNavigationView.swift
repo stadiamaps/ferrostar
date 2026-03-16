@@ -119,7 +119,6 @@ struct DemoNavigationView: View {
         allowAutoLock()
     }
 
-    @ViewBuilder
     func browseControls(locationServicesEnabled: Bool) -> some View {
         VStack {
             Text(locationLabel)
