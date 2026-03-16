@@ -40,9 +40,11 @@ final class LandscapeNavigationViewTests: XCTestCase {
                     .padding()
             }
             .navigationViewCurrentRoadView { state in
-                Text("Current Road: \(state?.currentRoadName ?? "unknown")")
-                    .background(Color.yellow)
-                    .padding()
+                if let currentRoadName = state?.currentRoadName, !currentRoadName.isEmpty {
+                    Text("Current Road: \(currentRoadName)")
+                        .background(Color.yellow)
+                        .padding()
+                }
             }
             .navigationFormatterCollection(TestingFormatterCollection())
         }
