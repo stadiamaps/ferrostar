@@ -112,11 +112,15 @@ public struct PortraitNavigationView: View {
         if navigationState?.isNavigating != true {
             return .hidden
         }
-        return camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
-            if let overviewCamera = navigationState?.routeOverviewCamera {
+        if camera.isTrackingUserLocationWithCourse {
+            guard let overviewCamera = navigationState?.routeOverviewCamera else {
+                return .hidden
+            }
+            return .showRouteOverview {
                 camera = overviewCamera
             }
-        } : .showRecenter {
+        }
+        return .showRecenter {
             camera = navigationCamera
         }
     }

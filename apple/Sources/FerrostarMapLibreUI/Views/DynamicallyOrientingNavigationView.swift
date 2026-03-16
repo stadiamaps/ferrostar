@@ -95,13 +95,7 @@ public struct DynamicallyOrientingNavigationView: View {
                         showZoom: isNavigating,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        cameraControlState: isNavigating ? (camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
-                            if let overviewCamera = navigationState?.routeOverviewCamera {
-                                camera = overviewCamera
-                            }
-                        } : .showRecenter {
-                            camera = navigationCamera
-                        }) : .hidden,
+                        cameraControlState: cameraControlState,
                         onTapExit: onTapExit
                     )
                     .navigationViewInnerGrid {
@@ -126,13 +120,7 @@ public struct DynamicallyOrientingNavigationView: View {
                         showZoom: isNavigating,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        cameraControlState: isNavigating ? (camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
-                            if let overviewCamera = navigationState?.routeOverviewCamera {
-                                camera = overviewCamera
-                            }
-                        } : .showRecenter {
-                            camera = navigationCamera
-                        }) : .hidden,
+                        cameraControlState: cameraControlState,
                         onTapExit: onTapExit
                     )
                     .navigationViewInnerGrid {
@@ -148,6 +136,23 @@ public struct DynamicallyOrientingNavigationView: View {
                     }.complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
                 }
             }
+        }
+    }
+
+    private var cameraControlState: CameraControlState {
+        if navigationState?.isNavigating != true {
+            return .hidden
+        }
+        if camera.isTrackingUserLocationWithCourse {
+            guard let overviewCamera = navigationState?.routeOverviewCamera else {
+                return .hidden
+            }
+            return .showRouteOverview {
+                camera = overviewCamera
+            }
+        }
+        return .showRecenter {
+            camera = navigationCamera
         }
     }
 }
