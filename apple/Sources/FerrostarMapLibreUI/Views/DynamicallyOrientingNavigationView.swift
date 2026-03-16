@@ -68,13 +68,17 @@ public struct DynamicallyOrientingNavigationView: View {
 
     public var body: some View {
         GeometryReader { geometry in
+            let isNavigating = navigationState?.isNavigating == true
+
             ZStack {
                 NavigationMapView(
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
                     onStyleLoaded: { _ in
-                        camera = navigationCamera
+                        if isNavigating {
+                            camera = navigationCamera
+                        }
                     }
                 ) {
                     userLayers
@@ -88,16 +92,16 @@ public struct DynamicallyOrientingNavigationView: View {
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
-                        showZoom: true,
+                        showZoom: isNavigating,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+                        cameraControlState: isNavigating ? (camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
                             if let overviewCamera = navigationState?.routeOverviewCamera {
                                 camera = overviewCamera
                             }
-                        } : .showRecenter { // TODO: Third case when not navigating!
+                        } : .showRecenter {
                             camera = navigationCamera
-                        },
+                        }) : .hidden,
                         onTapExit: onTapExit
                     )
                     .navigationViewInnerGrid {
@@ -119,16 +123,16 @@ public struct DynamicallyOrientingNavigationView: View {
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
-                        showZoom: true,
+                        showZoom: isNavigating,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+                        cameraControlState: isNavigating ? (camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
                             if let overviewCamera = navigationState?.routeOverviewCamera {
                                 camera = overviewCamera
                             }
-                        } : .showRecenter { // TODO: Third case when not navigating!
+                        } : .showRecenter {
                             camera = navigationCamera
-                        },
+                        }) : .hidden,
                         onTapExit: onTapExit
                     )
                     .navigationViewInnerGrid {

@@ -89,11 +89,7 @@ public struct PortraitNavigationView: View {
                     showZoom: true,
                     onZoomIn: { camera.incrementZoom(by: 1) },
                     onZoomOut: { camera.incrementZoom(by: -1) },
-                    cameraControlState: camera.isTrackingUserLocationWithCourse ? CameraControlState.showRecenter {
-                        // TODO:
-                    } : .showRecenter { // TODO: Third case when not navigating!
-                        camera = navigationCamera
-                    },
+                    cameraControlState: cameraControlState,
                     onTapExit: onTapExit
                 )
                 .navigationViewInnerGrid {
@@ -109,6 +105,19 @@ public struct PortraitNavigationView: View {
                 }
                 .complementSafeAreaInsets(parentGeometry: geometry, minimumInsets: minimumSafeAreaInsets)
             }
+        }
+    }
+
+    private var cameraControlState: CameraControlState {
+        if navigationState?.isNavigating != true {
+            return .hidden
+        }
+        return camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
+            if let overviewCamera = navigationState?.routeOverviewCamera {
+                camera = overviewCamera
+            }
+        } : .showRecenter {
+            camera = navigationCamera
         }
     }
 }
