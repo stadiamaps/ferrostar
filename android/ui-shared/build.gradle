@@ -63,8 +63,8 @@ mavenPublishing {
     apply from: "${rootProject.projectDir}/common-pom.gradle"
 
     pom {
-        name = "Ferrostar Formatters"
-        description = "Distance, duration and arrival formatters for Ferrostar"
+        name = "Ferrostar Shared UI"
+        description = "Shared UI that applies to both Compose & CarApp"
         commonPomConfig(it, true)
     }
 }
