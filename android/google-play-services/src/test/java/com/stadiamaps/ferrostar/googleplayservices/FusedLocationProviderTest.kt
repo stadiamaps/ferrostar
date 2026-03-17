@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.googleplayservices
 import android.content.Context
 import android.location.Location
 import android.os.Looper
+import android.util.Log
 import app.cash.turbine.test
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -41,6 +42,12 @@ class FusedLocationProviderTest {
   fun setup() {
     mockkStatic(LocationServices::class)
     every { LocationServices.getFusedLocationProviderClient(mockContext) } returns mockFusedClient
+
+    mockkStatic(Log::class)
+    every { Log.d(any(), any()) } returns 0
+
+    mockkStatic(Looper::class)
+    every { Looper.getMainLooper() } returns mockk<Looper>(relaxed = true)
   }
 
   @After
