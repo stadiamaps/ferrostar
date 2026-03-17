@@ -68,6 +68,8 @@ dependencies {
 
     implementation project(':core')
     implementation project(':car-app')
+    implementation project(':ui-compose')
+    implementation project(':ui-maplibre')
     implementation project(':google-play-services')
     implementation project(':ui-compose')
     implementation project(':ui-maplibre')

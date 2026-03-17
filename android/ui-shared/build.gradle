@@ -27,8 +27,8 @@ android {
     }
     compileOptions {
         coreLibraryDesugaringEnabled = true
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -64,7 +64,7 @@ mavenPublishing {
 
     pom {
         name = "Ferrostar Shared UI"
-        description = "Includes shared basics like the maneuver direction icons."
+        description = "Shared UI that applies to both Compose & CarApp"
         commonPomConfig(it, true)
     }
 }
