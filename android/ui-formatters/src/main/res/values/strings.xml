@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="unit_short_mps">m/s</string>
+    <string name="unit_short_kph">km/h</string>
+    <string name="unit_short_mph">mph</string>
+    <string name="unit_short_knot">kn</string>
+</resources>
