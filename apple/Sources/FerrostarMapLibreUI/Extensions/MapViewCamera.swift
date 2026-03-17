@@ -6,7 +6,7 @@ public enum NavigationActivity {
     case bicycle
     case pedestrian
 
-    var zoom: Double {
+    public var zoom: Double {
         switch self {
         case .automotive:
             16.0
@@ -17,7 +17,7 @@ public enum NavigationActivity {
         }
     }
 
-    var pitch: Double {
+    public var pitch: Double {
         switch self {
         case .automotive, .bicycle:
             45.0
@@ -54,7 +54,10 @@ public extension MapViewCamera {
     ///   - zoom: The zoom value (default is 18.0)
     ///   - pitch: The pitch (default is 45.0)
     /// - Returns: The configured MapViewCamera
-    static func automotiveNavigation(zoom: Double = 18.0, pitch: Double = 45.0) -> MapViewCamera {
+    static func automotiveNavigation(
+        zoom: Double = NavigationActivity.automotive.zoom,
+        pitch: Double = NavigationActivity.automotive.pitch
+    ) -> MapViewCamera {
         MapViewCamera.trackUserLocationWithCourse(zoom: zoom,
                                                   pitch: pitch,
                                                   pitchRange: .fixed(pitch))
@@ -66,7 +69,10 @@ public extension MapViewCamera {
     ///   - zoom: The zoom value (default is 18.0)
     ///   - pitch: The pitch (default is 45.0)
     /// - Returns: The configured MapViewCamera
-    static func bicycleNavigation(zoom: Double = 18.0, pitch: Double = 45.0) -> MapViewCamera {
+    static func bicycleNavigation(
+        zoom: Double = NavigationActivity.bicycle.zoom,
+        pitch: Double = NavigationActivity.bicycle.pitch
+    ) -> MapViewCamera {
         MapViewCamera.trackUserLocationWithCourse(zoom: zoom,
                                                   pitch: pitch,
                                                   pitchRange: .fixed(pitch))
@@ -78,7 +84,10 @@ public extension MapViewCamera {
     ///   - zoom: The zoom value (default is 20.0)
     ///   - pitch: The pitch (default is 10.0)
     /// - Returns: The configured MapViewCamera
-    static func pedestrianNavigation(zoom: Double = 20.0, pitch: Double = 10.0) -> MapViewCamera {
+    static func pedestrianNavigation(
+        zoom: Double = NavigationActivity.pedestrian.zoom,
+        pitch: Double = NavigationActivity.pedestrian.pitch
+    ) -> MapViewCamera {
         MapViewCamera.trackUserLocationWithCourse(zoom: zoom,
                                                   pitch: pitch,
                                                   pitchRange: .fixed(pitch))
