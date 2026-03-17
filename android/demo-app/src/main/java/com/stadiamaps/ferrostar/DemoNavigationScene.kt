@@ -59,16 +59,12 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       }
 
-//  val navigationUiState by viewModel.navigationUiState.collectAsState(scope.coroutineContext)
-//  val location by viewModel.location.collectAsState()
-  val isSimulating by viewModel.simulated.collectAsState()
-
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
           permissions ->
         when {
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-            // viewModel.setLocationPermissions(it)
+             viewModel.setLocationPermissions(true)
           }
           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
             // TODO: Probably alert the user that this is unusable for navigation
