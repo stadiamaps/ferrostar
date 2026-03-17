@@ -12,9 +12,9 @@ import com.stadiamaps.ferrostar.ui.formatters.DurationFormatter
 import com.stadiamaps.ferrostar.ui.formatters.EstimatedArrivalDateTimeFormatter
 import com.stadiamaps.ferrostar.ui.formatters.LocalizedDistanceFormatter
 import com.stadiamaps.ferrostar.ui.formatters.LocalizedDurationFormatter
-import com.stadiamaps.ferrostar.composeui.views.components.maneuver.maneuverIcon
 import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import com.stadiamaps.ferrostar.core.service.ForegroundNotificationBuilder
+import com.stadiamaps.ferrostar.ui.shared.icons.ManeuverIcon
 import kotlin.time.ExperimentalTime
 import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
@@ -95,10 +95,17 @@ class DefaultForegroundNotificationBuilder(
           RemoteViews(context.packageName, R.layout.navigation_notification)
         }
 
-    val instructionImage = visualInstruction.primaryContent.maneuverIcon
-    remoteViews.setImageViewResource(
-        R.id.instruction_image,
-        context.resources.getIdentifier(instructionImage, "drawable", context.packageName))
+    val maneuverType = visualInstruction.primaryContent.maneuverType
+    val maneuverModifier = visualInstruction.primaryContent.maneuverModifier
+    val maneuverIcon = if (maneuverType != null && maneuverModifier != null) {
+      ManeuverIcon(context, maneuverType, maneuverModifier)
+    } else {
+      null
+    }
+
+    maneuverIcon?.resourceId?.let {
+      remoteViews.setImageViewResource(R.id.instruction_image, it)
+    }
 
     // Set the text
     remoteViews.setTextViewText(
