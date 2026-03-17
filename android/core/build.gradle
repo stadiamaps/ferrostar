@@ -31,7 +31,6 @@ android {
     }
     testOptions {
         targetSdk 36
-        unitTests.returnDefaultValues = true
     }
     lint {
         targetSdk 36

@@ -42,7 +42,6 @@ fun DemoNavigationScene(
   KeepScreenOnDisposableEffect()
 
   val context = LocalContext.current
-//  val scope = rememberCoroutineScope()
 
   // Get location permissions.
   // NOTE: This is NOT a robust suggestion for how to get permissions in a production app.
