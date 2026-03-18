@@ -342,6 +342,13 @@ expression: routes
           ssml: "<speak>In 200 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -371,6 +378,8 @@ expression: routes
           ssml: "<speak>In 14 feet, Turn right onto Laeva.</speak>"
           trigger_distance_before_maneuver: 4.5
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - unknown
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -400,6 +409,8 @@ expression: routes
           ssml: "<speak>In 26 feet, Bear right.</speak>"
           trigger_distance_before_maneuver: 8
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -431,6 +442,9 @@ expression: routes
           ssml: "<speak>In 24 feet, Bear left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 7.5
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - moderate
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -464,6 +478,10 @@ expression: routes
           ssml: "<speak>In 62 feet, Continue.</speak>"
           trigger_distance_before_maneuver: 19
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
+        - low
+        - moderate
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -493,6 +511,8 @@ expression: routes
           ssml: "<speak>In 11 feet, Turn right onto Admiralisild/Admiral Bridge.</speak>"
           trigger_distance_before_maneuver: 3.5
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - moderate
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -528,6 +548,11 @@ expression: routes
           ssml: "<speak>In 200 feet, Continue on the walkway.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - heavy
+        - severe
+        - unknown
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -559,6 +584,9 @@ expression: routes
           ssml: "<speak>In 75 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 23
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - moderate
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -588,6 +616,8 @@ expression: routes
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -623,6 +653,11 @@ expression: routes
           ssml: "<speak>In 41 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 12.5
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
+        - moderate
+        - moderate
+        - heavy
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -656,6 +691,10 @@ expression: routes
           ssml: "<speak>In 26 feet, Turn right onto Logi.</speak>"
           trigger_distance_before_maneuver: 8
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - severe
+        - unknown
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -703,6 +742,17 @@ expression: routes
           ssml: "<speak>In 200 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - moderate
+        - low
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -732,6 +782,8 @@ expression: routes
           ssml: "<speak>In 13 feet, Turn right onto the walkway.</speak>"
           trigger_distance_before_maneuver: 4
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - moderate
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -767,6 +819,11 @@ expression: routes
           ssml: "<speak>In 200 feet, Bear left onto Kultuurikilomeeter.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
+        - low
+        - low
+        - moderate
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -902,6 +959,61 @@ expression: routes
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
+        - moderate
+        - low
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
+        - moderate
+        - low
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
+        - moderate
+        - low
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
+        - moderate
+        - low
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
+        - moderate
+        - low
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -933,6 +1045,9 @@ expression: routes
           ssml: "<speak>In 37 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 11.5
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
+        - moderate
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -964,6 +1079,9 @@ expression: routes
           ssml: "<speak>In 26 feet, Turn left onto the crosswalk.</speak>"
           trigger_distance_before_maneuver: 8
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -1031,6 +1149,27 @@ expression: routes
           ssml: "<speak>In 200 feet, Turn right onto the walkway.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
+        - moderate
+        - low
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
+        - moderate
+        - low
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -1060,6 +1199,8 @@ expression: routes
           ssml: "<speak>In 3 feet, Turn left onto the walkway.</speak>"
           trigger_distance_before_maneuver: 1
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -1115,6 +1256,21 @@ expression: routes
           ssml: "<speak>In 200 feet, Bear left onto Allveelaeva.</speak>"
           trigger_distance_before_maneuver: 60
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - moderate
+        - moderate
+        - heavy
+        - severe
+        - unknown
+        - low
+        - moderate
+        - low
+        - low
+        - low
+        - moderate
+        - moderate
+        - heavy
+        - severe
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -1144,6 +1300,8 @@ expression: routes
           ssml: "<speak>In 45 feet, Turn right onto Peetri.</speak>"
           trigger_distance_before_maneuver: 14
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - unknown
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -1175,6 +1333,9 @@ expression: routes
           ssml: "<speak>In 41 feet, You have arrived at your destination.</speak>"
           trigger_distance_before_maneuver: 12.5495
       annotations: redacted annotations json strings vec
+      traffic_levels:
+        - low
+        - moderate
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -1201,6 +1362,7 @@ expression: routes
           trigger_distance_before_maneuver: 0
       spoken_instructions: []
       annotations: redacted annotations json strings vec
+      traffic_levels: ~
       incidents: []
       driving_side: right
       roundabout_exit_number: ~

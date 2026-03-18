@@ -77,6 +77,9 @@ dependencies {
 
     implementation libs.stadiamaps.autocomplete.search
 
+    // Chucker - For Network Interceptor
+    implementation "com.github.chuckerteam.chucker:library:4.3.1"
+
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
