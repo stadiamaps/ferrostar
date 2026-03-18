@@ -342,6 +342,9 @@ pub struct RouteStep {
     pub spoken_instructions: Vec<SpokenInstruction>,
     /// A list of json encoded strings representing annotations between each coordinate along the step.
     pub annotations: Option<Vec<String>>,
+    /// Per-segment traffic levels between each coordinate pair.
+    /// Length should be `geometry.len() - 1` when present.
+    pub traffic_levels: Option<Vec<TrafficLevel>>,
     /// A list of incidents that occur along the step.
     pub incidents: Vec<Incident>,
     /// Which side of the road traffic drives on for this step.
@@ -486,6 +489,23 @@ pub enum ManeuverModifier {
     Left,
     #[serde(rename = "sharp left")]
     SharpLeft,
+}
+
+/// The level of traffic on a road segment.
+///
+/// Based on OSRM/Mapbox standard congestion annotation values.
+/// Each value represents the traffic level between a pair of consecutive coordinates in the route geometry.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+#[serde(rename_all = "snake_case")]
+pub enum TrafficLevel {
+    Unknown,
+    Low,
+    Moderate,
+    Heavy,
+    Severe,
 }
 
 /// Which side of the road traffic drives on.

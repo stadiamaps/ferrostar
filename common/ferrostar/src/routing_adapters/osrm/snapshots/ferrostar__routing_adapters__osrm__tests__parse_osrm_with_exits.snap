@@ -160,6 +160,7 @@ expression: routes
           trigger_distance_before_maneuver: 264.647
       spoken_instructions: []
       annotations: redacted annotations json strings vec
+      traffic_levels: ~
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -242,6 +243,7 @@ expression: routes
           trigger_distance_before_maneuver: 295
       spoken_instructions: []
       annotations: redacted annotations json strings vec
+      traffic_levels: ~
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -298,6 +300,7 @@ expression: routes
           trigger_distance_before_maneuver: 513.266
       spoken_instructions: []
       annotations: redacted annotations json strings vec
+      traffic_levels: ~
       incidents: []
       driving_side: right
       roundabout_exit_number: ~
@@ -314,6 +317,7 @@ expression: routes
       visual_instructions: []
       spoken_instructions: []
       annotations: redacted annotations json strings vec
+      traffic_levels: ~
       incidents: []
       driving_side: right
       roundabout_exit_number: ~

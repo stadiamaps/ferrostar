@@ -5,8 +5,9 @@ pub mod utilities;
 
 use super::RouteResponseParser;
 use crate::models::{
-    AnyAnnotationValue, DrivingSide, GeographicCoordinate, Incident, LaneInfo, RouteStep,
-    SpokenInstruction, VisualInstruction, VisualInstructionContent, Waypoint, WaypointKind,
+    AnyAnnotationValue, TrafficLevel, DrivingSide, GeographicCoordinate, Incident, LaneInfo,
+    RouteStep, SpokenInstruction, VisualInstruction, VisualInstructionContent, Waypoint,
+    WaypointKind,
 };
 use crate::routing_adapters::osrm::models::OsrmWaypointProperties;
 use crate::routing_adapters::utilities::get_coordinates_from_geometry;
@@ -313,6 +314,31 @@ impl RouteStep {
             })
             .collect();
 
+        // Extract typed congestion levels from annotations before converting to strings.
+        let traffic_levels: Option<Vec<TrafficLevel>> =
+            annotations.as_ref().and_then(|annotations_vec| {
+                let levels: Vec<TrafficLevel> = annotations_vec
+                    .iter()
+                    .filter_map(|annotation| {
+                        annotation.value.get("traffic_level").and_then(|v| {
+                            v.as_str().map(|s| match s {
+                                "low" => TrafficLevel::Low,
+                                "moderate" => TrafficLevel::Moderate,
+                                "heavy" => TrafficLevel::Heavy,
+                                "severe" => TrafficLevel::Severe,
+                                _ => TrafficLevel::Unknown,
+                            })
+                        })
+                    })
+                    .collect();
+
+                if levels.len() == annotations_vec.len() {
+                    Some(levels)
+                } else {
+                    None
+                }
+            });
+
         // Convert the annotations to a vector of json strings.
         // This allows us to safely pass the RouteStep through the FFI boundary.
         // The host platform can then parse an arbitrary annotation object.
@@ -346,6 +372,7 @@ impl RouteStep {
             visual_instructions,
             spoken_instructions,
             annotations: annotations_as_strings,
+            traffic_levels,
             incidents,
             driving_side,
             roundabout_exit_number: value.maneuver.exit,
@@ -505,6 +532,67 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn parse_valhalla_traffic_levels_populated() {
+        let routes = TestRoute::Valhalla.parse();
+        let route = &routes[0];
+
+        // Non-arrival steps should have traffic_levels since the fixture has congestion data
+        for (step_index, step) in route.steps.iter().enumerate() {
+            if step_index == route.steps.len() - 1 {
+                // The arrival step has no annotations, so traffic_levels should be None
+                assert_eq!(
+                    step.traffic_levels, None,
+                    "Arrival step should have no traffic_levels"
+                );
+            } else {
+                let levels = step
+                    .traffic_levels
+                    .as_ref()
+                    .unwrap_or_else(|| panic!("Step {} should have traffic_levels", step_index));
+                assert_eq!(
+                    levels.len(),
+                    step.geometry.len() - 1,
+                    "Step {} traffic_levels length mismatch",
+                    step_index
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn parse_standard_osrm_no_traffic_levels() {
+        // Standard OSRM fixtures don't have congestion annotations
+        let routes = TestRoute::StandardOsrm.parse();
+        let route = &routes[0];
+
+        for step in &route.steps {
+            assert_eq!(
+                step.traffic_levels, None,
+                "Steps without congestion annotation should have traffic_levels: None"
+            );
+        }
+    }
+
+    #[test]
+    fn test_congestion_level_deserialization() {
+        let levels: Vec<TrafficLevel> = serde_json::from_str(
+            r#"["unknown", "low", "moderate", "heavy", "severe"]"#,
+        )
+        .expect("Failed to deserialize TrafficLevel values");
+
+        assert_eq!(
+            levels,
+            vec![
+                TrafficLevel::Unknown,
+                TrafficLevel::Low,
+                TrafficLevel::Moderate,
+                TrafficLevel::Heavy,
+                TrafficLevel::Severe,
+            ]
+        );
     }
 
     #[test]

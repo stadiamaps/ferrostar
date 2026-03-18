@@ -42,6 +42,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -99,6 +100,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -145,6 +147,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -161,6 +164,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -223,6 +227,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -280,6 +285,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -326,6 +332,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -342,6 +349,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -404,6 +412,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -461,6 +470,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -507,6 +517,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -523,6 +534,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -585,6 +597,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -642,6 +655,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -688,6 +702,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -704,6 +719,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -766,6 +782,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -823,6 +840,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -869,6 +887,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -885,6 +904,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -947,6 +967,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1004,6 +1025,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1050,6 +1072,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1066,6 +1089,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1128,6 +1152,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1185,6 +1210,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1231,6 +1257,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1247,6 +1274,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1309,6 +1337,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1366,6 +1395,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1412,6 +1442,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1428,6 +1459,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1490,6 +1522,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1547,6 +1580,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1593,6 +1627,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1609,6 +1644,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1671,6 +1707,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1728,6 +1765,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1774,6 +1812,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1790,6 +1829,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1852,6 +1892,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1909,6 +1950,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1955,6 +1997,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -1971,6 +2014,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2033,6 +2077,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2090,6 +2135,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2136,6 +2182,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2152,6 +2199,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2214,6 +2262,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2271,6 +2320,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2317,6 +2367,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2333,6 +2384,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2395,6 +2447,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2452,6 +2505,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2498,6 +2552,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2514,6 +2569,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2576,6 +2632,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2633,6 +2690,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2679,6 +2737,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2695,6 +2754,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2757,6 +2817,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2814,6 +2875,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2860,6 +2922,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2876,6 +2939,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2938,6 +3002,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -2995,6 +3060,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3041,6 +3107,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3057,6 +3124,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3119,6 +3187,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3176,6 +3245,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3222,6 +3292,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3238,6 +3309,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3300,6 +3372,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3357,6 +3430,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3403,6 +3477,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3419,6 +3494,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3481,6 +3557,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3538,6 +3615,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3584,6 +3662,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3600,6 +3679,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3662,6 +3742,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3719,6 +3800,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3765,6 +3847,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3781,6 +3864,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3843,6 +3927,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3900,6 +3985,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3946,6 +4032,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -3962,6 +4049,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4024,6 +4112,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4081,6 +4170,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4127,6 +4217,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4143,6 +4234,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4205,6 +4297,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4262,6 +4355,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4308,6 +4402,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4324,6 +4419,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4386,6 +4482,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4443,6 +4540,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4489,6 +4587,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4505,6 +4604,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4567,6 +4667,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4624,6 +4725,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4670,6 +4772,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4686,6 +4789,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4748,6 +4852,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4805,6 +4910,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4851,6 +4957,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4867,6 +4974,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -4964,6 +5072,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5010,6 +5119,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5026,6 +5136,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5123,6 +5234,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5169,6 +5281,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5185,6 +5298,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5282,6 +5396,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5328,6 +5443,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5344,6 +5460,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5441,6 +5558,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5487,6 +5605,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5503,6 +5622,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5600,6 +5720,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5646,6 +5767,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5662,6 +5784,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5759,6 +5882,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5805,6 +5929,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5821,6 +5946,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5918,6 +6044,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5964,6 +6091,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -5980,6 +6108,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6077,6 +6206,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6123,6 +6253,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6139,6 +6270,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6236,6 +6368,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6282,6 +6415,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6298,6 +6432,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6395,6 +6530,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6441,6 +6577,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6457,6 +6594,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6554,6 +6692,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6600,6 +6739,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6616,6 +6756,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6713,6 +6854,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6759,6 +6901,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6775,6 +6918,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6872,6 +7016,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6918,6 +7063,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -6934,6 +7080,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7031,6 +7178,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7077,6 +7225,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7093,6 +7242,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7190,6 +7340,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7236,6 +7387,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7252,6 +7404,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7349,6 +7502,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7395,6 +7549,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7411,6 +7566,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7508,6 +7664,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7554,6 +7711,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7570,6 +7728,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7667,6 +7826,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7713,6 +7873,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7729,6 +7890,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7826,6 +7988,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7872,6 +8035,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7888,6 +8052,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -7985,6 +8150,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8031,6 +8197,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8047,6 +8214,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8144,6 +8312,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8190,6 +8359,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8206,6 +8376,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8303,6 +8474,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8349,6 +8521,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8365,6 +8538,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8462,6 +8636,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8508,6 +8683,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8524,6 +8700,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8621,6 +8798,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8667,6 +8845,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8683,6 +8862,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8780,6 +8960,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8826,6 +9007,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8842,6 +9024,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8939,6 +9122,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -8985,6 +9169,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9001,6 +9186,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9098,6 +9284,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9144,6 +9331,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9160,6 +9348,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9257,6 +9446,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9303,6 +9493,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9319,6 +9510,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9416,6 +9608,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9462,6 +9655,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9478,6 +9672,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9575,6 +9770,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9621,6 +9817,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9637,6 +9834,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9734,6 +9932,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9780,6 +9979,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9796,6 +9996,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9893,6 +10094,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9939,6 +10141,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -9955,6 +10158,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10052,6 +10256,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10098,6 +10303,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10114,6 +10320,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10211,6 +10418,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10257,6 +10465,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10273,6 +10482,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10370,6 +10580,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10416,6 +10627,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10432,6 +10644,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10529,6 +10742,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10575,6 +10789,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10591,6 +10806,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10688,6 +10904,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10734,6 +10951,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10750,6 +10968,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10847,6 +11066,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10893,6 +11113,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -10909,6 +11130,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11006,6 +11228,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11052,6 +11275,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11068,6 +11292,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11154,6 +11379,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11170,6 +11396,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11256,6 +11483,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11272,6 +11500,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11358,6 +11587,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11374,6 +11604,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11460,6 +11691,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11476,6 +11708,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11562,6 +11795,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11578,6 +11812,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11664,6 +11899,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11680,6 +11916,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11766,6 +12003,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11782,6 +12020,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11868,6 +12107,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11884,6 +12124,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11970,6 +12211,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -11986,6 +12228,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12072,6 +12315,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12088,6 +12332,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12174,6 +12419,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12190,6 +12436,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12276,6 +12523,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12292,6 +12540,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12378,6 +12627,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12394,6 +12644,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12480,6 +12731,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12496,6 +12748,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12582,6 +12835,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12598,6 +12852,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12684,6 +12939,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12700,6 +12956,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12786,6 +13043,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12802,6 +13060,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12888,6 +13147,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12904,6 +13164,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -12990,6 +13251,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13006,6 +13268,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13092,6 +13355,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13108,6 +13372,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13194,6 +13459,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13210,6 +13476,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13296,6 +13563,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13312,6 +13580,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13398,6 +13667,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13414,6 +13684,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13500,6 +13771,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13516,6 +13788,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13602,6 +13875,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13618,6 +13892,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13704,6 +13979,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13720,6 +13996,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13806,6 +14083,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13822,6 +14100,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13908,6 +14187,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -13924,6 +14204,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14010,6 +14291,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14026,6 +14308,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14112,6 +14395,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14128,6 +14412,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14214,6 +14499,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14230,6 +14516,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14316,6 +14603,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14332,6 +14620,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14418,6 +14707,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14434,6 +14724,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14520,6 +14811,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14536,6 +14828,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14622,6 +14915,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14638,6 +14932,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14724,6 +15019,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14740,6 +15036,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14826,6 +15123,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14842,6 +15140,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14928,6 +15227,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -14944,6 +15244,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15030,6 +15331,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15046,6 +15348,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15132,6 +15435,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15148,6 +15452,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15234,6 +15539,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15250,6 +15556,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15336,6 +15643,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15352,6 +15660,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15438,6 +15747,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15454,6 +15764,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15540,6 +15851,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15556,6 +15868,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15642,6 +15955,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15658,6 +15972,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15744,6 +16059,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15760,6 +16076,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15846,6 +16163,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15862,6 +16180,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15948,6 +16267,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -15964,6 +16284,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16050,6 +16371,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16066,6 +16388,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16152,6 +16475,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16168,6 +16492,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16254,6 +16579,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16270,6 +16596,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16356,6 +16683,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16372,6 +16700,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16458,6 +16787,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16474,6 +16804,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16560,6 +16891,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16576,6 +16908,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16662,6 +16995,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16678,6 +17012,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16764,6 +17099,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16780,6 +17116,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16866,6 +17203,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16882,6 +17220,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~
@@ -16938,6 +17277,7 @@ expression: "states.into_iter().map(|state| state.trip_state()).collect::<Vec<_>
         visual_instructions: []
         spoken_instructions: []
         annotations: ~
+        traffic_levels: ~
         incidents: []
         driving_side: right
         roundabout_exit_number: ~

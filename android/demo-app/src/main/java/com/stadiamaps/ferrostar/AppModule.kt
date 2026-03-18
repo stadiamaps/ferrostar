@@ -16,6 +16,7 @@ import com.stadiamaps.ferrostar.core.service.FerrostarForegroundServiceManager
 import com.stadiamaps.ferrostar.core.service.ForegroundServiceManager
 import com.stadiamaps.ferrostar.core.withJsonOptions
 import com.stadiamaps.ferrostar.googleplayservices.FusedLocationProvider
+import com.stadiamaps.ferrostar.network.CustomChuckerInterceptor
 import java.time.Duration
 import java.time.Instant
 import okhttp3.OkHttpClient
@@ -91,7 +92,9 @@ object AppModule {
     }
   }
   private val httpClient: HttpClientProvider by lazy {
-    OkHttpClient.Builder().callTimeout(Duration.ofSeconds(15)).build().toOkHttpClientProvider()
+    OkHttpClient.Builder()
+        .addInterceptor(CustomChuckerInterceptor(appContext).build())
+        .callTimeout(Duration.ofSeconds(15)).build().toOkHttpClientProvider()
   }
 
   private val foregroundServiceManager: ForegroundServiceManager by lazy {
