@@ -13,5 +13,6 @@ extend-exclude = [
     "**/fixtures/*",
     "react-native/cpp/generated/*",
     "react-native/src/generated/*",
-    "android/**/src/main/generated/**/baseline-prof.txt"
+    "android/**/src/main/generated/**/baseline-prof.txt",
+    "android/**/src/release/generated/**/baseline-prof.txt"
 ]
