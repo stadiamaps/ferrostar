@@ -4,6 +4,7 @@ plugins {
     alias libs.plugins.androidLibrary
     alias libs.plugins.ktfmt
     alias libs.plugins.mavenPublish
+    alias libs.plugins.baselineprofile
 }
 
 android {
@@ -47,9 +48,17 @@ dependencies {
 
     implementation project(':core')
 
+    baselineProfile(project(":baselineprofile"))
+
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
+}
+
+baselineProfile {
+    filter {
+        include "com.stadiamaps.ferrostar.ui.shared.**"
+    }
 }
 
 mavenPublishing {

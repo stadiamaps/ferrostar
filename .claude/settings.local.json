@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs:*)",
+      "Bash(git:*)",
+      "Bash(./gradlew :baselineprofile:tasks:*)",
+      "Bash(chmod +x:*)"
+    ]
+  }
+}

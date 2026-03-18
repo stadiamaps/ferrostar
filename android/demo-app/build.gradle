@@ -2,6 +2,7 @@ plugins {
     alias libs.plugins.androidApplication
     alias libs.plugins.ktfmt
     alias libs.plugins.compose.compiler
+    alias libs.plugins.baselineprofile
 }
 
 android {
@@ -32,6 +33,12 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        benchmark {
+            initWith(buildTypes.release)
+            signingConfig signingConfigs.debug
+            matchingFallbacks = ["release"]
+            debuggable false
         }
     }
     compileOptions {
@@ -82,4 +89,6 @@ dependencies {
     androidTestImplementation libs.androidx.test.espresso
     androidTestImplementation libs.androidx.compose.ui.test.junit4
     debugImplementation libs.androidx.compose.ui.test.manifest
+    implementation libs.androidx.profileinstaller
+    baselineProfile project(':baselineprofile')
 }

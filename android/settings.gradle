@@ -13,10 +13,11 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = 'Ferrostar'
-include ':core'
-include ':ui-compose'
 include ':demo-app'
-include ':ui-maplibre'
+include ':core'
 include ':google-play-services'
 include ':ui-formatters'
 include ':ui-shared'
+include ':ui-maplibre'
+include ':ui-compose'
+include ':baselineprofile'

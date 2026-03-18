@@ -7,6 +7,7 @@ plugins {
     alias libs.plugins.ktfmt
     alias libs.plugins.compose.compiler
     alias libs.plugins.mavenPublish
+    alias libs.plugins.baselineprofile
 }
 
 android {
@@ -52,11 +53,21 @@ dependencies {
     implementation project(':core')
     implementation project(':ui-compose')
 
+    baselineProfile(project(":baselineprofile"))
+
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
 
     debugImplementation libs.androidx.compose.ui.test.manifest
+}
+
+baselineProfile {
+    filter {
+        include "com.stadiamaps.ferrostar.maplibreui.**"
+        include "com.maplibre.**"
+        include "org.maplibre.**"
+    }
 }
 
 mavenPublishing {
