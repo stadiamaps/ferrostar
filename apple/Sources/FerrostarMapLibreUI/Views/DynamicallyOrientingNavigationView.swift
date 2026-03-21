@@ -147,46 +147,17 @@ public struct DynamicallyOrientingNavigationView: View {
     }
 
     private var cameraControlState: CameraControlState {
-        if !isNavigating {
-            return .hidden
-        }
-
-        if isInOverviewMode {
-            return .showRecenter {
-                recenterToFollowMode()
-            }
-        }
-
-        if !isFollowingUser {
-            return .showCurrentLocation {
-                recenterToFollowMode()
-            }
-        }
-
-        guard let overviewCamera = navigationState?.routeOverviewCamera else {
-            return .hidden
-        }
-        return .showRouteOverview {
-            camera = overviewCamera
-        }
-    }
-
-    private var isInOverviewMode: Bool {
-        if case .rect = camera.state {
-            return true
-        }
-        return false
-    }
-
-    private var isFollowingUser: Bool {
-        userTrackingMode != .none
-    }
-
-    private func recenterToFollowMode() {
-        var followCamera = navigationCamera
-        followCamera.lastReasonForChange = useProgrammaticReasonForRecenter ? .programmatic : nil
-        useProgrammaticReasonForRecenter.toggle()
-        camera = followCamera
+        NavigationCameraControlResolver(
+            isNavigating: isNavigating,
+            camera: camera,
+            userTrackingMode: userTrackingMode,
+            navigationCamera: navigationCamera,
+            routeOverviewCamera: navigationState?.routeOverviewCamera,
+            recenterToggle: useProgrammaticReasonForRecenter,
+            setRecenterToggle: { useProgrammaticReasonForRecenter = $0 },
+            setCamera: { camera = $0 }
+        )
+        .cameraControlState()
     }
 }
 
