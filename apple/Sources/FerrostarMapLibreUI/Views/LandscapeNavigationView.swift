@@ -20,6 +20,8 @@ public struct LandscapeNavigationView: View {
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+    @State private var userTrackingMode: MLNUserTrackingMode = .followWithCourse
+    @State private var useProgrammaticReasonForRecenter = false
 
     let isMuted: Bool
     let onTapMute: () -> Void
@@ -72,6 +74,9 @@ public struct LandscapeNavigationView: View {
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    onUserTrackingModeChanged: { mode, _ in
+                        userTrackingMode = mode
+                    },
                     onStyleLoaded: { _ in
                         camera = navigationCamera
                     }
@@ -108,21 +113,51 @@ public struct LandscapeNavigationView: View {
         }
     }
 
+    private var isNavigating: Bool {
+        navigationState?.isNavigating == true
+    }
+
     private var cameraControlState: CameraControlState {
-        if navigationState?.isNavigating != true {
+        if !isNavigating {
             return .hidden
         }
-        if camera.isTrackingUserLocationWithCourse {
-            guard let overviewCamera = navigationState?.routeOverviewCamera else {
-                return .hidden
-            }
-            return .showRouteOverview {
-                camera = overviewCamera
+
+        if isInOverviewMode {
+            return .showRecenter {
+                recenterToFollowMode()
             }
         }
-        return .showRecenter {
-            camera = navigationCamera
+
+        if !isFollowingUser {
+            return .showCurrentLocation {
+                recenterToFollowMode()
+            }
         }
+
+        guard let overviewCamera = navigationState?.routeOverviewCamera else {
+            return .hidden
+        }
+        return .showRouteOverview {
+            camera = overviewCamera
+        }
+    }
+
+    private var isInOverviewMode: Bool {
+        if case .rect = camera.state {
+            return true
+        }
+        return false
+    }
+
+    private var isFollowingUser: Bool {
+        userTrackingMode != .none
+    }
+
+    private func recenterToFollowMode() {
+        var followCamera = navigationCamera
+        followCamera.lastReasonForChange = useProgrammaticReasonForRecenter ? .programmatic : nil
+        useProgrammaticReasonForRecenter.toggle()
+        camera = followCamera
     }
 }
 

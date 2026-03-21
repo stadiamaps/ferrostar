@@ -17,6 +17,8 @@ public struct DynamicallyOrientingNavigationView: View {
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+    @State private var userTrackingMode: MLNUserTrackingMode = .followWithCourse
+    @State private var useProgrammaticReasonForRecenter = false
 
     // Speed limit and grid configuration now read from environment to avoid struct copying issues
     @Environment(\.speedLimitConfiguration) private var speedLimitConfig
@@ -68,13 +70,14 @@ public struct DynamicallyOrientingNavigationView: View {
 
     public var body: some View {
         GeometryReader { geometry in
-            let isNavigating = navigationState?.isNavigating == true
-
             ZStack {
                 NavigationMapView(
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    onUserTrackingModeChanged: { mode, _ in
+                        userTrackingMode = mode
+                    },
                     onStyleLoaded: { _ in
                         if isNavigating {
                             camera = navigationCamera
@@ -139,21 +142,51 @@ public struct DynamicallyOrientingNavigationView: View {
         }
     }
 
+    private var isNavigating: Bool {
+        navigationState?.isNavigating == true
+    }
+
     private var cameraControlState: CameraControlState {
-        if navigationState?.isNavigating != true {
+        if !isNavigating {
             return .hidden
         }
-        if camera.isTrackingUserLocationWithCourse {
-            guard let overviewCamera = navigationState?.routeOverviewCamera else {
-                return .hidden
-            }
-            return .showRouteOverview {
-                camera = overviewCamera
+
+        if isInOverviewMode {
+            return .showRecenter {
+                recenterToFollowMode()
             }
         }
-        return .showRecenter {
-            camera = navigationCamera
+
+        if !isFollowingUser {
+            return .showCurrentLocation {
+                recenterToFollowMode()
+            }
         }
+
+        guard let overviewCamera = navigationState?.routeOverviewCamera else {
+            return .hidden
+        }
+        return .showRouteOverview {
+            camera = overviewCamera
+        }
+    }
+
+    private var isInOverviewMode: Bool {
+        if case .rect = camera.state {
+            return true
+        }
+        return false
+    }
+
+    private var isFollowingUser: Bool {
+        userTrackingMode != .none
+    }
+
+    private func recenterToFollowMode() {
+        var followCamera = navigationCamera
+        followCamera.lastReasonForChange = useProgrammaticReasonForRecenter ? .programmatic : nil
+        useProgrammaticReasonForRecenter.toggle()
+        camera = followCamera
     }
 }
 

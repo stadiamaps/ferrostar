@@ -95,7 +95,7 @@ struct PortraitNavigationOverlayView: View {
                         switch cameraControlState {
                         case .hidden, .showRouteOverview:
                             componentsConfig.getCurrentRoadNameView(navigationState)
-                        case .showRecenter:
+                        case .showRecenter, .showCurrentLocation:
                             EmptyView()
                         }
 
