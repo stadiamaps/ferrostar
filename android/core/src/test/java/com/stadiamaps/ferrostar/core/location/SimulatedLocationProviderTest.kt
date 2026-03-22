@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.core.location
 
 import android.location.Location
+import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
@@ -15,11 +16,7 @@ class SimulatedLocationProviderTest {
 
   @Test
   fun `lastLocation returns initialLocation before any route is set`() = runTest {
-    val location =
-        Location("test").apply {
-          latitude = 60.534716
-          longitude = -149.543469
-        }
+    val location = mockk<Location>(relaxed = true)
     val provider = SimulatedLocationProvider(initialLocation = location)
     assertSame(location, provider.lastLocation())
   }

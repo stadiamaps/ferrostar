@@ -17,25 +17,17 @@ import kotlinx.coroutines.flow.onEach
 import uniffi.ferrostar.DrivingSide
 
 /**
- * Bridges Ferrostar's [NavigationViewModel] to Car App Library's [NavigationManager].
+ * Manages navigation throughout the trip.
  *
- * This component handles:
- * - Calling [NavigationManager.navigationStarted] / [NavigationManager.navigationEnded] at the
- *   correct lifecycle points (NF-4, NF-5).
- * - Feeding [NavigationManager.updateTrip] on each state update.
- * - Delegating [NavigationManagerCallback.onStopNavigation] to the provided callback.
- * - Delegating [NavigationManagerCallback.onAutoDriveEnabled] for NF-7 simulation support.
- *
- * Auto-drive simulation is intentionally NOT included — apps should implement [onAutoDriveEnabled]
- * themselves, as it requires direct access to [FerrostarCore] for location injection.
+ * This manages lifecycle hooks, background managers and attaches it to the UI.
  *
  * @param navigationManager The Car App Library NavigationManager from CarContext.
  * @param context The context used to resolve maneuver icon drawables.
  * @param notificationManager Optional notification manager for HUN updates (NF-3).
  * @param viewModel The Ferrostar NavigationViewModel to observe.
- * @param backupDrivingSide Driving side for maneuver mapping. Defaults to RIGHT.
+ * @param backupDrivingSide Driving side for maneuver mapping. Defaults to RIGHT. This is only necessary if your routing server does not provide driving side.
  * @param onStopNavigation Called when the head unit requests navigation stop.
- * @param onAutoDriveEnabled Called when auto-drive simulation is requested (NF-7). Optional.
+ * @param onAutoDriveEnabled Enables simulation when called (NF-7). Optional.
  * @param isCarForeground Returns true when the car app screen is visible to the user. When true,
  *   turn-by-turn notifications are suppressed since the screen itself shows the guidance. Pass
  *   `{ lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) }` from your [Screen].
