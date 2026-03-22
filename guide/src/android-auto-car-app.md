@@ -5,11 +5,54 @@ Ferrostar provides tooling to construct an Android Auto navigation app. The Demo
 
 ## Basic Setup
 
-### Android Manifest & XML
+### Android Manifest
 
-1. Add the navigation service to your app's manifest [`AndroidManifest.xml#L52`](android/demo-app/src/main/AndroidManifest.xml#L52)
-2. Set the minimum car app version in the manifest [`AndroidManifest.xml#L29`](android/demo-app/src/main/AndroidManifest.xml#L29). Configure this based on which Car App Library features you use.
-3. Add the automotive app descriptor [`automotive_app_desc.xml`](android/demo-app/src/main/res/xml/automotive_app_desc.xml) and link it in your manifest [`AndroidManifest.xml#L32`](android/demo-app/src/main/AndroidManifest.xml#L32)
+1. Add android auto permissions.
+2. Add the navigation service to your app's manifest (e.g. `DemoCarAppService`).
+3. Set the minimum car app version in the manifest `androidx.car.app.minCarApiLevel`. This can be configured based on which Car App Library features you use.
+4. Add the automotive app descriptor and link it in your manifest `com.google.android.gms.car.application`.
+
+The specific items shown in an abbreviated `AndroidManifest.xml`:
+
+```xml
+<manifest>
+
+    <!-- Android Auto permissions -->
+    <uses-permission android:name="androidx.car.app.MAP_TEMPLATES" />
+    <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
+    <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
+
+    <application>
+    
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="2" />
+            
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+
+        <service
+            android:name="com.stadiamaps.ferrostar.auto.DemoCarAppService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.NAVIGATION" />
+            </intent-filter>
+        </service>
+
+    </application>
+</manifest>
+```
+
+And the file `automotive_app_desc.xml`: 
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<automotiveApp>
+    <uses name="template" />
+</automotiveApp>
+```
 
 ### Car App Service
 
@@ -39,8 +82,6 @@ class MyCarAppSession : Session() {
 }
 ```
 
-See [`DemoCarAppService`](android/demo-app/src/main/java/com/stadiamaps/ferrostar/auto/DemoCarAppService.kt) for a complete example.
-
 ### Car App Screen
 
 Extend `ComposableScreen` from the MapLibre Compose Car App library. Your screen is
@@ -49,8 +90,7 @@ responsible for three things: managing the `SurfaceAreaTracker`, building the
 
 #### Surface Area Tracking
 
-Create a [`SurfaceAreaTracker`](android/ui-maplibre-car-app/src/main/java/com/stadiamaps/ferrostar/ui/maplibre/car/app/runtime/ScreenState.kt)
-and register it as the surface gesture callback in one step:
+Create a `SurfaceAreaTracker` and register it as the surface gesture callback in one step. 
 
 ```kotlin
 private val surfaceAreaTracker = SurfaceAreaTracker { surfaceGestureCallback = it }
@@ -62,10 +102,8 @@ overlay placement and gesture wiring internally.
 
 #### Navigation Manager Bridge
 
-Wire up [`NavigationManagerBridge`](android/car-app/src/main/java/com/stadiamaps/ferrostar/car/app/navigation/NavigationManagerBridge.kt)
-to connect Ferrostar's view model to the Car App Library's `NavigationManager`. This
-handles the navigation lifecycle (NF-5), trip updates (NF-4), and turn-by-turn
-notifications (NF-3):
+Wire up `NavigationManagerBridge` to connect Ferrostar's view model to the Car App Library's `NavigationManager`. 
+This handles the navigation lifecycle (NF-5), trip updates (NF-4), and turn-by-turn notifications (NF-3):
 
 ```kotlin
 private val navigationManagerBridge = NavigationManagerBridge(
@@ -105,8 +143,7 @@ override fun content() {
 
 #### Navigation Template
 
-In `onGetTemplate()`, use [`NavigationTemplateBuilder`](android/car-app/src/main/java/com/stadiamaps/ferrostar/car/app/template/NavigationTemplateBuilder.kt)
-to produce the appropriate template for the current navigation state:
+In `onGetTemplate()`, use `NavigationTemplateBuilder` to produce the appropriate template for the current navigation state:
 
 ```kotlin
 override fun onGetTemplate(): Template {
@@ -122,8 +159,6 @@ override fun onGetTemplate(): Template {
 }
 ```
 
-See [`DemoNavigationScreen`](android/demo-app/src/main/java/com/stadiamaps/ferrostar/auto/DemoNavigationScreen.kt) for a complete example.
-
 ## Requirements
 
 Google has specific review guidelines for Android Auto navigation apps. You can
@@ -138,8 +173,7 @@ Android Auto app.
 
 > The app must provide turn-by-turn navigation directions.
 
-[`NavigationTemplateBuilder`](android/car-app/src/main/java/com/stadiamaps/ferrostar/car/app/template/NavigationTemplateBuilder.kt)
-translates Ferrostar's active navigation state into a `NavigationTemplate` for Android Auto,
+`NavigationTemplateBuilder` translates Ferrostar's active navigation state into a `NavigationTemplate` for Android Auto,
 including maneuver icons, distance/time estimates, lane guidance, and action strip controls.
 
 ### NF-2 - Only Map Content on the Surface (with Exceptions)
@@ -149,8 +183,7 @@ including maneuver icons, distance/time estimates, lane guidance, and action str
 > the relevant components of the navigation template. Additional information relevant to the
 > drive, speed limit, road obstructions, etc., can be drawn on the safe area of the map.
 
-[`CarAppNavigationView`](android/ui-maplibre-car-app/src/main/java/com/stadiamaps/ferrostar/ui/maplibre/car/app/CarAppNavigationView.kt)
-handles this automatically. Pass a `SurfaceAreaTracker` and the view constrains speed
+`CarAppNavigationView` handles this automatically. Pass a `SurfaceAreaTracker` and the view constrains speed
 limit and road name overlays to the display's composite stable area, keeping them clear
 of the template chrome.
 
@@ -160,8 +193,7 @@ of the template chrome.
 > notifications. For more information, see
 > [Turn-by-turn notifications](https://developer.android.com/training/cars/apps/navigation#turn-by-turn-notifications).
 
-[`TurnByTurnNotificationManager`](android/car-app/src/main/java/com/stadiamaps/ferrostar/car/app/navigation/TurnByTurnNotificationManager.kt)
-posts heads-up notifications for each new spoken instruction. Pass it to
+`TurnByTurnNotificationManager` posts heads-up notifications for each new spoken instruction. Pass it to
 `NavigationManagerBridge`, which suppresses notifications automatically when the car
 screen is in the foreground (the map surface is already showing guidance).
 
@@ -171,8 +203,7 @@ screen is in the foreground (the map surface is already showing guidance).
 > next-turn information to the vehicle's cluster display. For more information, see
 > [Navigation metadata](https://developer.android.com/training/cars/apps/navigation#navigation-metadata).
 
-[`NavigationManagerBridge`](android/car-app/src/main/java/com/stadiamaps/ferrostar/car/app/navigation/NavigationManagerBridge.kt)
-calls `NavigationManager.updateTrip()` on every navigation state change. The trip is
+`NavigationManagerBridge` calls `NavigationManager.updateTrip()` on every navigation state change. The trip is
 built by `FerrostarTrip`, which populates the current step (maneuver and instruction),
 travel estimate (distance and ETA), current road name, and destination — the fields
 the vehicle cluster display reads.
@@ -184,8 +215,7 @@ the vehicle cluster display reads.
 > information, see
 > [Start, end, and stop navigation](https://developer.android.com/training/cars/apps/navigation#starting-ending-stopping-navigation).
 
-[`NavigationManagerBridge`](android/car-app/src/main/java/com/stadiamaps/ferrostar/car/app/navigation/NavigationManagerBridge.kt)
-calls `NavigationManager.navigationStarted()` and `NavigationManager.navigationEnded()`
+`NavigationManagerBridge` calls `NavigationManager.navigationStarted()` and `NavigationManager.navigationEnded()`
 at the correct lifecycle points, letting the Car App host arbitrate between competing
 navigation apps.
 
@@ -194,8 +224,7 @@ navigation apps.
 > The app must handle navigation requests from other apps. For more information, see
 > [Support navigation intents](https://developer.android.com/training/cars/apps/navigation#support-navigation-intents).
 
-[`NavigationIntentParser`](android/car-app/src/main/java/com/stadiamaps/ferrostar/car/app/intent/NavigationIntentParser.kt)
-parses incoming navigation intents into a [`NavigationDestination`](android/car-app/src/main/java/com/stadiamaps/ferrostar/car/app/intent/NavigationDestination.kt).
+`NavigationIntentParser` parses incoming navigation intents into a `NavigationDestination`.
 It supports `geo:` and `google.navigation:` URI schemes out of the box and is `open`
 for subclassing to support additional schemes:
 
