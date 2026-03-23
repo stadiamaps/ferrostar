@@ -32,6 +32,28 @@ graphhopperApiKey=YOUR-API-KEY
 We use Paparazzi for UI snapshot testing.
 To update the snapshots, run `./gradlew recordPaparazziDebug`.
 
+## Baseline Profiles
+
+The `baselineprofile` module generates baseline profiles for the `demo-app` to improve startup and runtime performance.
+
+To verify the build compiles:
+
+```shell
+./gradlew :demo-app:assembleBenchmark
+```
+
+To generate baseline profiles (requires a connected device or emulator):
+
+```shell
+./gradlew :demo-app:generateBaselineProfile
+```
+
+Or use the convenience script from the android directory:
+
+```shell
+./scripts/baseline_profiler/generate_baseline_profiler.sh
+```
+
 ## Testing locally in a separate project
 
 * Bump the version number to a `SNAPSHOT` in `build.gradle`.

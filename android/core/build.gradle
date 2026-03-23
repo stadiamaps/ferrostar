@@ -7,6 +7,7 @@ plugins {
     alias libs.plugins.ktfmt
     alias libs.plugins.mavenPublish
     alias libs.plugins.kotlinSerialization
+    alias libs.plugins.baselineprofile
 }
 
 android {
@@ -60,6 +61,8 @@ dependencies {
     //noinspection UseTomlInstead
     implementation 'net.java.dev.jna:jna:5.17.0@aar'
 
+    baselineProfile(project(":baselineprofile"))
+
     testImplementation libs.junit
     testImplementation libs.kotlinx.coroutines.test
     testImplementation libs.mockk
@@ -108,6 +111,12 @@ android.libraryVariants.all { variant ->
     // to a good solution for forcing the directory to be marked as generated (short of checking in
     // project files, I suppose).
 //    idea.module.generatedSourceDirs += file("${buildDir}/generated/source/uniffi/${variant.name}/java/uniffi")
+}
+
+baselineProfile {
+    filter {
+        include "com.stadiamaps.ferrostar.core.**"
+    }
 }
 
 mavenPublishing {

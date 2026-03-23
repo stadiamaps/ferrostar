@@ -11,6 +11,8 @@ plugins {
     alias libs.plugins.compose.compiler apply false
     alias libs.plugins.mavenPublish apply false
     alias libs.plugins.kotlinSerialization apply false
+    alias libs.plugins.androidTest apply false
+    alias libs.plugins.baselineprofile apply false
 }
 
 // Gradle 9 removed `Project.exec(Closure)`; some third-party plugins still call it.

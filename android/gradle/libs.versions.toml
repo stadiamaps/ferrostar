@@ -20,6 +20,10 @@ junit = "4.13.2"
 junitVersion = "1.3.0"
 junitCompose = "1.10.4"
 espressoCore = "3.7.0"
+benchmarkMacroJunit4 = "1.3.3"
+uiautomator = "2.3.0"
+profileinstaller = "1.4.1"
+baselineprofile = "1.3.3"
 okhttp-mock = "2.1.0"
 mockk = "1.14.9"
 turbine = "1.2.1"
@@ -70,6 +74,11 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 
+# Baseline Profile & Benchmarking
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
+
 # Demo App
 stadiamaps-autocomplete-search = { group = "com.stadiamaps", name = "jetpack-compose-autocomplete", version.ref = "stadiaAutocompleteSearch" }
 
@@ -82,3 +91,6 @@ ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmt" }
 paparazzi = { id = "app.cash.paparazzi", version.ref = "paparazzi" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+androidTest = { id = "com.android.test", version.ref = "agp" }
+jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }

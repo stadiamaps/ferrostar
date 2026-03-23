@@ -6,6 +6,7 @@ plugins {
     alias libs.plugins.paparazzi
     alias libs.plugins.compose.compiler
     alias libs.plugins.mavenPublish
+    alias libs.plugins.baselineprofile
 }
 
 android {
@@ -53,6 +54,8 @@ dependencies {
     implementation project(':ui-formatters')
     implementation project(':ui-shared')
 
+    baselineProfile(project(":baselineprofile"))
+
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
@@ -61,6 +64,12 @@ dependencies {
 
     debugImplementation libs.androidx.compose.ui.tooling
     debugImplementation libs.androidx.compose.ui.test.manifest
+}
+
+baselineProfile {
+    filter {
+        include "com.stadiamaps.ferrostar.composeui.**"
+    }
 }
 
 mavenPublishing {

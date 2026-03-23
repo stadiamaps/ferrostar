@@ -15,6 +15,9 @@ local.properties
 # Log/OS Files
 *.log
 
+# Claude
+.claude/
+
 # Android Studio generated files and folders
 captures/
 .externalNativeBuild/
