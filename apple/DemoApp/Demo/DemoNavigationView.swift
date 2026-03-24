@@ -88,58 +88,15 @@ struct DemoNavigationView: View {
                             Text("Loading route...")
                         }
                     }
-                },
-                bottomTrailing: {
-                    VStack {
-                        Text(locationLabel)
-                            .font(.caption)
-                            .padding(.all, 8)
-                            .foregroundColor(.white)
-                            .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
-
-                        if locationServicesEnabled {
-                            if model.appState.showStateButton {
-                                NavigationUIButton {
-                                    switch model.appState {
-                                    case .idle:
-                                        showSearch = true
-                                    case let .destination(coordinate):
-                                        Task {
-                                            isFetchingRoutes = true
-                                            await model.loadRoute(coordinate)
-                                            isFetchingRoutes = false
-                                        }
-                                    case let .routes(routes):
-                                        model.selectRoute(from: routes)
-                                    case let .selectedRoute(route):
-                                        startNavigation(route)
-                                    case .navigating:
-                                        // Should not reach this.
-                                        break
-                                    }
-                                } label: {
-                                    Text(model.appState.buttonText)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.5)
-                                        .font(.body.bold())
-                                }
-                            }
-                        } else {
-                            NavigationUIButton {
-                                // TODO: enable location services.
-                            } label: {
-                                Text("Enable Location Services")
-                            }
-                        }
-                        Button {
-                            model.toggleLocationSimulation()
-                        } label: {
-                            model.locationProvider.type.label
-                        }
-                        .buttonStyle(NavigationUIButtonStyle())
-                    }
                 }
             )
+            .overlay(alignment: .bottomTrailing) {
+                if model.appState.showStateButton {
+                    browseControls(locationServicesEnabled: locationServicesEnabled)
+                        .padding(.trailing, 16)
+                        .padding(.bottom, 16)
+                }
+            }
 
             if showSearch {
                 model.searchView
@@ -160,6 +117,56 @@ struct DemoNavigationView: View {
     func stopNavigation() {
         model.stop()
         allowAutoLock()
+    }
+
+    func browseControls(locationServicesEnabled: Bool) -> some View {
+        VStack {
+            Text(locationLabel)
+                .font(.caption)
+                .padding(.all, 8)
+                .foregroundColor(.white)
+                .background(Color.black.opacity(0.7).clipShape(.buttonBorder, style: FillStyle()))
+
+            if locationServicesEnabled {
+                NavigationUIButton {
+                    switch model.appState {
+                    case .idle:
+                        showSearch = true
+                    case let .destination(coordinate):
+                        Task {
+                            isFetchingRoutes = true
+                            await model.loadRoute(coordinate)
+                            isFetchingRoutes = false
+                        }
+                    case let .routes(routes):
+                        model.selectRoute(from: routes)
+                    case let .selectedRoute(route):
+                        startNavigation(route)
+                    case .navigating:
+                        // Should not reach this.
+                        break
+                    }
+                } label: {
+                    Text(model.appState.buttonText)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .font(.body.bold())
+                }
+            } else {
+                NavigationUIButton {
+                    // TODO: enable location services.
+                } label: {
+                    Text("Enable Location Services")
+                }
+            }
+
+            Button {
+                model.toggleLocationSimulation()
+            } label: {
+                model.locationProvider.type.label
+            }
+            .buttonStyle(NavigationUIButtonStyle())
+        }
     }
 
     var locationLabel: String {
