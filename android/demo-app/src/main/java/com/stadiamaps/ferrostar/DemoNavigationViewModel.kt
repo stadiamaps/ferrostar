@@ -114,14 +114,6 @@ class DemoNavigationViewModel(
     }
   }
 
-  fun setLocationPermissions(permitted: Boolean) {
-    _hasLocationPermission.value = permitted
-  }
-
-  fun toggleSimulation() {
-    _simulated.value = !_simulated.value
-  }
-
   override fun toggleMute() {
     val spokenInstructionObserver = ferrostarCore.spokenInstructionObserver
     if (spokenInstructionObserver == null) {
@@ -136,13 +128,9 @@ class DemoNavigationViewModel(
       // TODO: Fail gracefully
       val lastLocation = location.value ?: return@launch
 
-<<<<<<< HEAD
       // TODO: Add label to waypoint?
       // TODO: Assign the destination to the `NavigationManagerBridge`
       Log.d(TAG, "fetching route to $destination with name $name")
-
-=======
->>>>>>> 2f2a7d992fad29563035016e1c66752f253b23a5
       val routes =
           ferrostarCore.getRoutes(
               lastLocation,
