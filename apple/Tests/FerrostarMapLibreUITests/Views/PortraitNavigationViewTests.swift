@@ -40,11 +40,9 @@ final class PortraitNavigationViewTests: XCTestCase {
                     .padding()
             }
             .navigationViewCurrentRoadView { state in
-                if let currentRoadName = state?.currentRoadName, !currentRoadName.isEmpty {
-                    Text("Current Road: \(currentRoadName)")
-                        .background(Color.yellow)
-                        .padding()
-                }
+                Text("Current Road: \(state?.currentRoadName ?? "unknown")")
+                    .background(Color.yellow)
+                    .padding()
             }
             .navigationFormatterCollection(TestingFormatterCollection())
         }
