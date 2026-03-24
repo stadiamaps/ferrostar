@@ -82,7 +82,26 @@ public struct NavigationMapView: View {
     }
 
     private func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
-        contentInsetConfig.bundle.dynamicWithCameraState(camera.state, isLandscape: geometry.isLandscape)(geometry)
+        if navigationState?.isNavigating == true {
+            return contentInsetConfig.bundle
+                .dynamicWithCameraState(camera.state, isLandscape: geometry.isLandscape)(geometry)
+        }
+
+        switch camera.state {
+        case .rect, .showcase:
+            if geometry.isLandscape {
+                return contentInsetConfig.getShowcaseLandscapeInset(for: geometry)
+            } else {
+                return contentInsetConfig.getShowcasePortraitInset(for: geometry)
+            }
+        default:
+            return .edgeInset(UIEdgeInsets(
+                top: geometry.safeAreaInsets.top,
+                left: geometry.safeAreaInsets.leading,
+                bottom: geometry.safeAreaInsets.bottom,
+                right: geometry.safeAreaInsets.trailing
+            ))
+        }
     }
 
     private func updateCameraIfNeeded() {
