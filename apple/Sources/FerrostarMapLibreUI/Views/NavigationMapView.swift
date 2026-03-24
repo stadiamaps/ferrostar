@@ -83,7 +83,8 @@ public struct NavigationMapView: View {
 
     private func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
         if navigationState?.isNavigating == true {
-            return contentInsetConfig.bundle.dynamicWithCameraState(camera.state, isLandscape: geometry.isLandscape)(geometry)
+            return contentInsetConfig.bundle
+                .dynamicWithCameraState(camera.state, isLandscape: geometry.isLandscape)(geometry)
         }
 
         switch camera.state {
