@@ -64,9 +64,9 @@ dependencies {
     implementation libs.androidx.compose.material3
 
     implementation project(':core')
+    implementation project(':google-play-services')
     implementation project(':ui-compose')
     implementation project(':ui-maplibre')
-    implementation project(':google-play-services')
 
     implementation libs.maplibre.compose
 

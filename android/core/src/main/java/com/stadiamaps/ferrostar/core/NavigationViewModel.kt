@@ -97,10 +97,7 @@ interface NavigationViewModel {
 
   fun toggleMute()
 
-  fun stopNavigation(stopLocationUpdates: Boolean = true)
-
-  // TODO: We think the camera may eventually need to be owned by the view model, but that's going
-  // to be a very big refactor (maybe even crossing into the MapLibre Compose project)
+  fun stopNavigation()
 }
 
 /**
@@ -139,8 +136,8 @@ open class DefaultNavigationViewModel(
                       ferrostarCore.spokenInstructionObserver?.isMuted,
                       null))
 
-  override fun stopNavigation(stopLocationUpdates: Boolean) {
-    ferrostarCore.stopNavigation(stopLocationUpdates = stopLocationUpdates)
+  override fun stopNavigation() {
+    ferrostarCore.stopNavigation()
   }
 
   override fun toggleMute() {
