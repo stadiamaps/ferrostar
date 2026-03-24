@@ -362,7 +362,7 @@ Finally, If you’re simulating route progress
 set the route:
 
 ```kotlin
-locationProvider.setSimulatedRoute(route)
+locationProvider.setRoute(route)
 ```
 
 ## Using the `DynamicallyOrientingNavigationView`
