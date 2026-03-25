@@ -15,10 +15,6 @@ import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.ramani.LocationRequestProperties
 import com.maplibre.compose.ramani.MapLibreComposable
 import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.maplibre.compose.settings.AttributionSettings
-import com.maplibre.compose.settings.CompassSettings
-import com.maplibre.compose.settings.LogoSettings
-import com.maplibre.compose.settings.MapControls
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalPadding
@@ -28,38 +24,39 @@ import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SpeedLimit
 import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
-import com.stadiamaps.ferrostar.maplibreui.extensions.NavigationDefault
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
-import com.stadiamaps.ferrostar.maplibreui.runtime.navigationMapViewCamera
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
+import org.maplibre.compose.map.MapOptions
+import org.maplibre.compose.map.OrnamentOptions
 
 /**
  * A navigation view designed for Android Auto car displays.
  *
  * Renders a [NavigationMapView] with speed limit and road name overlays positioned within the
  * stable area of the car display surface (the area not covered by the NavigationTemplate's chrome).
+ *
+ * Note: `camera`, `navigationCamera`, `locationRequestProperties`, and `mapContent` are legacy
+ * Android Auto compatibility parameters. They are currently accepted so the old car app API keeps
+ * compiling while the Android Auto path remains on the legacy stack, but they are ignored by the
+ * current implementation.
  */
 @Composable
 fun CarAppNavigationView(
     modifier: Modifier,
     styleUrl: String,
     camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
-    navigationCamera: MapViewCamera = navigationMapViewCamera(),
+    navigationCamera: MapViewCamera = MapViewCamera.TrackingUserLocationWithBearing(),
     viewModel: NavigationViewModel,
     locationRequestProperties: LocationRequestProperties =
-        LocationRequestProperties.NavigationDefault(),
+        LocationRequestProperties.Builder().build(),
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     surfaceAreaTracker: SurfaceAreaTracker? = null,
     mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
 ) {
+  keepLegacyCompatibilityParameters(camera, navigationCamera, locationRequestProperties, mapContent)
   val uiState by viewModel.navigationUiState.collectAsState()
-  val mapControls = remember {
-    mutableStateOf(
-        MapControls(
-            attribution = AttributionSettings(enabled = false),
-            compass = CompassSettings(enabled = false),
-            logo = LogoSettings(enabled = false)))
-  }
+  val navigationMapState = rememberNavigationMapState()
 
   val surfaceArea by surfaceAreaTracker
       ?.let { screenSurfaceState(it) }
@@ -67,27 +64,14 @@ fun CarAppNavigationView(
 
   val gridPadding = surfaceStableFractionalPadding(surfaceArea?.compositeArea)
 
-  // Wrap mapContent to also wire surface gesture handling inside the MapLibreComposable context.
-  val wrappedContent: (@Composable @MapLibreComposable (NavigationUiState) -> Unit)? =
-      if (surfaceAreaTracker != null || mapContent != null) {
-        { uiState ->
-          surfaceAreaTracker?.rememberGestureDelegate()
-          mapContent?.invoke(uiState)
-        }
-      } else null
-
   Box(modifier) {
     NavigationMapView(
-        styleUrl,
-        camera,
+        styleUrl = styleUrl,
+        navigationMapState = navigationMapState,
         uiState = uiState,
-        mapControls = mapControls,
-        locationRequestProperties = locationRequestProperties,
+        mapOptions = MapOptions(ornamentOptions = OrnamentOptions.AllDisabled),
         routeOverlayBuilder = routeOverlayBuilder,
-        onMapReadyCallback = {
-          // No definition
-        },
-        content = wrappedContent
+        content = null,
     )
 
     Box(
@@ -114,3 +98,5 @@ fun CarAppNavigationView(
     }
   }
 }
+
+private fun keepLegacyCompatibilityParameters(vararg ignored: Any?) = Unit

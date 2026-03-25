@@ -1,9 +1,8 @@
 package com.stadiamaps.ferrostar.maplibreui.routeline
 
 import androidx.compose.runtime.Composable
-import com.maplibre.compose.ramani.MapLibreComposable
 import com.stadiamaps.ferrostar.core.NavigationUiState
-import org.maplibre.android.geometry.LatLng
+import org.maplibre.compose.util.MaplibreComposable
 
 /**
  * A Route Overlay (Polyline) Builder with sensible defaults - showing the full Navigation Route
@@ -17,7 +16,7 @@ import org.maplibre.android.geometry.LatLng
 data class RouteOverlayBuilder(
     internal val navigationPath:
         @Composable
-        @MapLibreComposable
+        @MaplibreComposable
         (uiState: NavigationUiState) -> Unit
 ) {
   companion object {
@@ -25,7 +24,7 @@ data class RouteOverlayBuilder(
         RouteOverlayBuilder(
             navigationPath = { uiState ->
               uiState.routeGeometry?.let { geometry ->
-                BorderedPolyline(points = geometry.map { LatLng(it.lat, it.lng) }, zIndex = 0)
+                BorderedPolyline(points = geometry)
               }
             })
   }
