@@ -2,6 +2,9 @@ package com.stadiamaps.ferrostar.maplibreui.runtime
 
 import androidx.compose.foundation.layout.PaddingValues
 import com.stadiamaps.ferrostar.core.BoundingBox
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -136,8 +139,8 @@ class NavigationCameraTest {
                   browsingPadding = PaddingValues(),
                   navigationPadding = PaddingValues(),
               ),
-          coroutineScope = kotlinx.coroutines.CoroutineScope(
-              kotlinx.coroutines.Job() + kotlinx.coroutines.Dispatchers.Unconfined
+          coroutineScope = CoroutineScope(
+              Job() + Dispatchers.Unconfined,
           ),
       )
 }
