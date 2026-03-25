@@ -19,9 +19,12 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.nativeStyleOrNull
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberFerrostarLocationState
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.templateFollowingCameraPosition
+import com.stadiamaps.ferrostar.maplibreui.runtime.trackingFollowingCameraPosition
 import com.stadiamaps.ferrostar.maplibreui.runtime.toMapLibreLocation
 import kotlinx.coroutines.flow.collectLatest
 import org.maplibre.compose.camera.CameraMoveReason
+import org.maplibre.android.maps.Style
 import org.maplibre.compose.location.LocationPuck
 import org.maplibre.compose.location.LocationPuckColors
 import org.maplibre.compose.location.LocationPuckSizes
@@ -31,8 +34,6 @@ import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
 import org.maplibre.compose.util.MaplibreComposable
-import org.maplibre.android.maps.Style
-import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.spatialk.geojson.Position
 import uniffi.ferrostar.GeographicCoordinate
 
@@ -84,13 +85,23 @@ fun NavigationMapView(
     navigationMapState.cameraMode = defaultNavigationCameraMode(isNavigating)
   }
 
+  LaunchedEffect(navigationMapState.cameraMode, userLocation != null) {
+    if (userLocation != null && navigationMapState.isTrackingUser) {
+      cameraState.position =
+          navigationMapState.templateFollowingCameraPosition(
+              target = userLocation.position,
+              bearing = userLocation.bearing,
+          )
+    }
+  }
+
   LocationTrackingEffect(
       locationState = userLocationState,
       enabled = navigationMapState.isTrackingUser,
       trackBearing = navigationMapState.cameraMode == NavigationCameraMode.FOLLOW_USER_WITH_BEARING,
   ) {
     cameraState.position =
-        navigationMapState.followingCameraPosition(
+        navigationMapState.trackingFollowingCameraPosition(
             target = currentLocation.position,
             bearing = currentLocation.bearing,
         )
@@ -117,7 +128,7 @@ fun NavigationMapView(
       onMapLoadFinished = {
         if (userLocation != null && navigationMapState.isTrackingUser) {
           cameraState.position =
-              navigationMapState.followingCameraPosition(
+              navigationMapState.templateFollowingCameraPosition(
                   target = userLocation.position,
                   bearing = userLocation.bearing,
               )
@@ -180,18 +191,4 @@ private fun NavigationMapClickResult.toComposeClickResult(): ClickResult =
     when (this) {
       NavigationMapClickResult.Pass -> ClickResult.Pass
       NavigationMapClickResult.Consume -> ClickResult.Consume
-    }
-
-private fun NavigationMapState.followingCameraPosition(
-    target: Position,
-    bearing: Double?,
-): CameraPosition =
-    when (cameraMode) {
-      NavigationCameraMode.FOLLOW_USER -> navigationCameraOptions.browsingUser(target)
-      NavigationCameraMode.FOLLOW_USER_WITH_BEARING ->
-          navigationCameraOptions.navigatingUser(
-              target = target,
-              bearing = bearing ?: cameraState.position.bearing,
-          )
-      else -> cameraState.position
     }

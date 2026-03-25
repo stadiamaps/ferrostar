@@ -95,3 +95,39 @@ fun BoundingBox.toMapLibreBoundingBox(): org.maplibre.spatialk.geojson.BoundingB
 fun CameraState.incrementZoom(delta: Double) {
   position = position.copy(zoom = (position.zoom + delta).coerceAtLeast(0.0))
 }
+
+internal fun NavigationMapState.templateFollowingCameraPosition(
+    target: Position,
+    bearing: Double?,
+): CameraPosition =
+    when (cameraMode) {
+      NavigationCameraMode.FOLLOW_USER -> navigationCameraOptions.browsingUser(target)
+      NavigationCameraMode.FOLLOW_USER_WITH_BEARING ->
+          navigationCameraOptions.navigatingUser(
+              target = target,
+              bearing = bearing ?: cameraState.position.bearing,
+          )
+      else -> cameraState.position
+    }
+
+internal fun NavigationMapState.trackingFollowingCameraPosition(
+    target: Position,
+    bearing: Double?,
+): CameraPosition =
+    when (cameraMode) {
+      NavigationCameraMode.FOLLOW_USER ->
+          cameraState.position.copy(
+              target = target,
+              tilt = 0.0,
+              bearing = 0.0,
+              padding = navigationCameraOptions.browsingPadding,
+          )
+      NavigationCameraMode.FOLLOW_USER_WITH_BEARING ->
+          cameraState.position.copy(
+              target = target,
+              tilt = navigationCameraOptions.navigationTilt,
+              bearing = bearing ?: cameraState.position.bearing,
+              padding = navigationCameraOptions.navigationPadding,
+          )
+      else -> cameraState.position
+    }
