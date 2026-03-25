@@ -49,6 +49,49 @@ class NavigationMapStateTest {
   }
 
   @Test
+  fun recenterUsesBrowsingTemplateZoomAfterFreeCamera() {
+    val cameraState = CameraState(CameraPosition(zoom = 10.0))
+    val state =
+        createState(
+            cameraState = cameraState,
+            initialCameraMode = NavigationCameraMode.FREE,
+        )
+
+    state.recenter(isNavigating = false)
+
+    val position =
+        state.templateFollowingCameraPosition(
+            target = CameraPosition().target,
+            bearing = null,
+        )
+
+    assertEquals(16.0, position.zoom, 0.0)
+    assertEquals(NavigationCameraMode.FOLLOW_USER, state.cameraMode)
+  }
+
+  @Test
+  fun recenterUsesNavigationTemplateZoomAfterOverview() {
+    val cameraState = CameraState(CameraPosition(zoom = 10.0))
+    val state =
+        createState(
+            cameraState = cameraState,
+            initialCameraMode = NavigationCameraMode.OVERVIEW,
+        )
+
+    state.recenter(isNavigating = true)
+
+    val position =
+        state.templateFollowingCameraPosition(
+            target = CameraPosition().target,
+            bearing = 87.0,
+        )
+
+    assertEquals(16.0, position.zoom, 0.0)
+    assertEquals(87.0, position.bearing, 0.0)
+    assertEquals(NavigationCameraMode.FOLLOW_USER_WITH_BEARING, state.cameraMode)
+  }
+
+  @Test
   fun routeOverviewSwitchesToOverviewMode() {
     val state = createState(initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 

@@ -6,6 +6,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.CameraState
 import org.maplibre.spatialk.geojson.Position
 
 class NavigationCameraTest {
@@ -60,4 +62,82 @@ class NavigationCameraTest {
     assertEquals(45.0, navigating.tilt, 0.0)
     assertEquals(87.0, navigating.bearing, 0.0)
   }
+
+  @Test
+  fun trackingCameraPreservesCurrentZoomInBrowsingMode() {
+    val state =
+        createState(
+            cameraMode = NavigationCameraMode.FOLLOW_USER,
+            cameraPosition = CameraPosition(zoom = 13.5),
+        )
+
+    val position = state.trackingFollowingCameraPosition(Position(16.37, 48.21), bearing = null)
+
+    assertEquals(13.5, position.zoom, 0.0)
+    assertEquals(0.0, position.bearing, 0.0)
+    assertEquals(0.0, position.tilt, 0.0)
+  }
+
+  @Test
+  fun trackingCameraPreservesCurrentZoomInNavigationMode() {
+    val state =
+        createState(
+            cameraMode = NavigationCameraMode.FOLLOW_USER_WITH_BEARING,
+            cameraPosition = CameraPosition(zoom = 14.5),
+        )
+
+    val position =
+        state.trackingFollowingCameraPosition(Position(16.37, 48.21), bearing = 87.0)
+
+    assertEquals(14.5, position.zoom, 0.0)
+    assertEquals(87.0, position.bearing, 0.0)
+    assertEquals(45.0, position.tilt, 0.0)
+  }
+
+  @Test
+  fun templateCameraUsesConfiguredZoomInBrowsingMode() {
+    val state =
+        createState(
+            cameraMode = NavigationCameraMode.FOLLOW_USER,
+            cameraPosition = CameraPosition(zoom = 13.5),
+        )
+
+    val position = state.templateFollowingCameraPosition(Position(16.37, 48.21), bearing = null)
+
+    assertEquals(16.0, position.zoom, 0.0)
+  }
+
+  @Test
+  fun templateCameraUsesConfiguredZoomInNavigationMode() {
+    val state =
+        createState(
+            cameraMode = NavigationCameraMode.FOLLOW_USER_WITH_BEARING,
+            cameraPosition = CameraPosition(zoom = 13.5),
+        )
+
+    val position = state.templateFollowingCameraPosition(Position(16.37, 48.21), bearing = 87.0)
+
+    assertEquals(16.0, position.zoom, 0.0)
+    assertEquals(87.0, position.bearing, 0.0)
+  }
+
+  private fun createState(
+      cameraMode: NavigationCameraMode,
+      cameraPosition: CameraPosition,
+  ): NavigationMapState =
+      NavigationMapState(
+          cameraState = CameraState(cameraPosition),
+          initialCameraMode = cameraMode,
+          navigationCameraOptions =
+              NavigationCameraOptions(
+                  browsingZoom = 16.0,
+                  navigationZoom = 16.0,
+                  navigationTilt = 45.0,
+                  browsingPadding = PaddingValues(),
+                  navigationPadding = PaddingValues(),
+              ),
+          coroutineScope = kotlinx.coroutines.CoroutineScope(
+              kotlinx.coroutines.Job() + kotlinx.coroutines.Dispatchers.Unconfined
+          ),
+      )
 }
