@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -51,6 +50,9 @@ class DemoNavigationViewModel(
 
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)
   val location = locationStateFlow.asStateFlow()
+
+  private val _droppedPin = MutableStateFlow<GeographicCoordinate?>(null)
+  val droppedPin = _droppedPin.asStateFlow()
 
   // Here's an example of injecting a custom location into the navigation UI state when isNavigating
   // is false.
@@ -95,6 +97,10 @@ class DemoNavigationViewModel(
 
   fun enableAutoDriveSimulation() {
     _simulated.value = true
+  }
+
+  fun setDroppedPin(coordinate: GeographicCoordinate) {
+    _droppedPin.value = coordinate
   }
 
   init {

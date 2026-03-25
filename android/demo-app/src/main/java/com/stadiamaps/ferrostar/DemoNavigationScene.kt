@@ -3,29 +3,33 @@ package com.stadiamaps.ferrostar
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.rememberSaveableMapViewCamera
-import com.maplibre.compose.symbols.Circle
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.config.withCustomOverlayView
 import com.stadiamaps.ferrostar.composeui.config.withSpeedLimitStyle
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
 import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageStyle
+import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickResult
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
-import kotlin.math.min
-import org.maplibre.android.geometry.LatLng
+import org.maplibre.compose.expressions.dsl.const
+import org.maplibre.compose.layers.CircleLayer
+import org.maplibre.compose.sources.GeoJsonData
+import org.maplibre.compose.sources.rememberGeoJsonSource
+import org.maplibre.compose.util.MaplibreComposable
+import uniffi.ferrostar.GeographicCoordinate
 
 @Composable
 fun DemoNavigationScene(
@@ -76,46 +80,56 @@ fun DemoNavigationScene(
       permissionsLauncher.launch(allPermissions)
     }
   }
-
-  // Set up the map!
-  val camera = rememberSaveableMapViewCamera(MapViewCamera.TrackingUserLocation())
+  val droppedPin by viewModel.droppedPin.collectAsState()
 
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
       styleUrl = AppModule.mapStyleUrl,
-      camera = camera,
       viewModel = viewModel,
-      // Configure speed limit signage based on user preference or location
       config = VisualNavigationViewConfig.Default().withSpeedLimitStyle(SignageStyle.MUTCD),
       views =
           NavigationViewComponentBuilder.Default()
               .withCustomOverlayView(
                   customOverlayView = { modifier ->
-                      NotNavigatingOverlay(modifier, viewModel)
+                    NotNavigatingOverlay(modifier, viewModel)
                   },
               ),
       onTapExit = { viewModel.stopNavigation() },
-  ) { uiState ->
-        // Trivial, if silly example of how to add your own overlay layers.
-        // (Also incidentally highlights the lag inherent in MapLibre location tracking
-        // as-is.)
-        uiState.location?.let { location ->
-          Circle(
-              center = LatLng(location.coordinates.lat, location.coordinates.lng),
-              radius = 10f,
-              color = "Blue",
-              zIndex = 3,
-          )
-
-          if (location.horizontalAccuracy > 15) {
-            Circle(
-                center = LatLng(location.coordinates.lat, location.coordinates.lng),
-                radius = min(location.horizontalAccuracy.toFloat(), 150f),
-                color = "Blue",
-                opacity = 0.2f,
-                zIndex = 2,
-            )
-          }
-        }
-      }
+      onMapLongClick = { position, screenPosition ->
+        Log.d(
+            "DemoNavigationScene",
+            "Long press at lat=${position.lat}, lng=${position.lng}, screen=$screenPosition",
+        )
+        viewModel.setDroppedPin(position)
+        NavigationMapClickResult.Pass
+      },
+  ) {
+    DemoDroppedPinOverlay(droppedPin)
+  }
 }
+
+@Composable
+@MaplibreComposable
+private fun DemoDroppedPinOverlay(droppedPin: GeographicCoordinate?) {
+  val pinJson = droppedPinFeatureCollectionJsonOrNull(droppedPin) ?: return
+  val pointSource = rememberGeoJsonSource(GeoJsonData.JsonString(pinJson))
+
+  CircleLayer(
+      id = "demo-dropped-pin",
+      source = pointSource,
+      color = const(Color(0xFFD95F02)),
+      radius = const(8.dp),
+      strokeColor = const(Color.White),
+      strokeWidth = const(3.dp),
+  )
+}
+
+internal fun droppedPinFeatureCollectionJsonOrNull(pin: GeographicCoordinate?): String? =
+    pin?.let {
+      droppedPinFeatureCollectionJson(it)
+    }
+
+internal fun droppedPinFeatureCollectionJson(pin: GeographicCoordinate): String =
+    """
+      {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[${pin.lng},${pin.lat}]},"properties":{}}]}
+    """.trimIndent()
