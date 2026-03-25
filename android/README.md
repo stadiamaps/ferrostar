@@ -48,19 +48,20 @@ implementation("org.maplibre.compose:maplibre-compose-android:0.12.1")
 
 Notable Android phone/tablet migration changes:
 
-* `io.github.rallista:maplibre-compose` is no longer used by `ui-maplibre`.
-* `NavigationMapView`, `PortraitNavigationView`, `LandscapeNavigationView`, and `DynamicallyOrientingNavigationView` now use a Ferrostar-owned `NavigationMapState` facade via `rememberNavigationMapState()`.
-* The old `MapViewCamera`-based camera state has been replaced by a small Ferrostar camera layer for:
+* `ui-maplibre` no longer uses `io.github.rallista:maplibre-compose`.
+* `NavigationMapView`, `PortraitNavigationView`, `LandscapeNavigationView`, and `DynamicallyOrientingNavigationView` now use a Ferrostar-owned `NavigationMapState` via `rememberNavigationMapState()`.
+* The old `MapViewCamera`-based camera API has been replaced by a small Ferrostar camera layer for:
   * follow user
   * follow user with bearing
   * route overview
   * free camera
-* `onMapReadyCallback` is still available on `NavigationMapView` for the 0.x series.
+* `NavigationMapView` now takes `MapOptions` instead of the old `MapControls` API.
 * Location puck styling is configurable through `NavigationMapPuckStyle`.
 * Route rendering now uses a GeoJSON source plus `LineLayer` instead of legacy polyline convenience APIs.
 * Map tap and long-press callbacks use Ferrostar-facing callbacks with `GeographicCoordinate` plus screen position.
+* `onMapReadyCallback` is still available on `NavigationMapView` for the current 0.x migration path.
 
-Example migration for default usage:
+Example usage:
 
 ```kotlin
 val navigationMapState = rememberNavigationMapState()
@@ -83,5 +84,5 @@ navigationMapState.showRouteOverview(boundingBox, paddingValues = mapInsets)
 
 Current scope notes:
 
-* This migration covers Android phone/tablet Compose only.
-* Android Auto remains out of scope for this issue; the legacy car-specific path is kept separately so the repo still builds.
+* This migration covers Android phone/tablet Compose first.
+* `ui-maplibre-car-app` still exists as a compatibility path, but Android Auto has not been fully migrated to the new map state/camera model yet.
