@@ -64,7 +64,7 @@ fun NavigationMapView(
     mapOptions: MapOptions,
     routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
-    locationPuckStyle: NavigationMapPuckStyle = NavigationMapPuckStyle.Default(),
+    locationPuckStyle: NavigationMapPuckStyle = NavigationMapPuckStyle(),
     onMapReadyCallback: ((Style) -> Unit)? = null,
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },

@@ -117,8 +117,8 @@ private fun DemoDroppedPinOverlay(droppedPin: GeographicCoordinate?) {
   CircleLayer(
       id = "demo-dropped-pin",
       source = pointSource,
-      color = const(Color(0xFFD95F02)),
-      radius = const(8.dp),
+      color = const(Color.Green),
+      radius = const(12.dp),
       strokeColor = const(Color.White),
       strokeWidth = const(3.dp),
   )
