@@ -7,6 +7,12 @@ import org.maplibre.compose.camera.CameraState
 
 private const val MAP_READY_TAG = "NavigationMapView"
 
+/**
+ * Extracts the native [Style] from the compose [CameraState] via reflection. This is a workaround
+ * because maplibre-compose (tested against 0.12.1) does not expose a public API for accessing the
+ * underlying style after the map is ready. The function degrades gracefully — if the internal API
+ * changes, it returns null and logs a warning.
+ */
 internal fun CameraState.nativeStyleOrNull(): Style? {
   val mapAdapter =
       runCatching {
