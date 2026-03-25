@@ -32,6 +32,8 @@ import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.ClickResult
 import org.maplibre.compose.util.MaplibreComposable
 import org.maplibre.android.maps.Style
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.spatialk.geojson.Position
 import uniffi.ferrostar.GeographicCoordinate
 
 /**
@@ -127,6 +129,10 @@ fun NavigationMapView(
               mapReadyCallbackFired = true
               onMapReadyCallback(it)
             } ?: run {
+              android.util.Log.w(
+                  "NavigationMapView",
+                  "onMapReadyCallback was requested but the native Style could not be accessed. " +
+                      "The callback will not fire.")
               mapReadyCallbackFired = true
             }
           } else {
@@ -167,7 +173,7 @@ fun NavigationMapView(
   }
 }
 
-private fun org.maplibre.spatialk.geojson.Position.toGeographicCoordinate(): GeographicCoordinate =
+private fun Position.toGeographicCoordinate(): GeographicCoordinate =
     GeographicCoordinate(lat = latitude, lng = longitude)
 
 private fun NavigationMapClickResult.toComposeClickResult(): ClickResult =
@@ -177,9 +183,9 @@ private fun NavigationMapClickResult.toComposeClickResult(): ClickResult =
     }
 
 private fun NavigationMapState.followingCameraPosition(
-    target: org.maplibre.spatialk.geojson.Position,
+    target: Position,
     bearing: Double?,
-): org.maplibre.compose.camera.CameraPosition =
+): CameraPosition =
     when (cameraMode) {
       NavigationCameraMode.FOLLOW_USER -> navigationCameraOptions.browsingUser(target)
       NavigationCameraMode.FOLLOW_USER_WITH_BEARING ->
