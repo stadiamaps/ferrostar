@@ -68,17 +68,20 @@ class DemoNavigationViewModel(
           .stateIn(
               scope = viewModelScope,
               started = SharingStarted.WhileSubscribed(),
-              initialValue = NavigationUiState.empty())
+              initialValue = NavigationUiState.empty()
+          )
 
   init {
     viewModelScope.launch {
-      _hasLocationPermission
-          .flatMapLatest { hasPermission ->
-            if (hasPermission) {
+      combine(_hasLocationPermission, _simulated) { hasPermission, simulated ->
+            hasPermission to simulated
+          }
+          .flatMapLatest { (hasPermission, simulated) ->
+            if (simulated || !hasPermission) {
+              flowOf(initialSimulatedLocation)
+            } else {
               locationProvider.locationUpdates(5000L)
                   .map { it.toUserLocation() }
-            } else {
-              flowOf(initialSimulatedLocation)
             }
           }
           .collect {
@@ -93,6 +96,9 @@ class DemoNavigationViewModel(
 
   fun toggleSimulation() {
     _simulated.value = !_simulated.value
+    if (!_simulated.value) {
+      locationProvider.disableSimulation()
+    }
   }
 
   fun enableAutoDriveSimulation() {
@@ -101,23 +107,6 @@ class DemoNavigationViewModel(
 
   fun setDroppedPin(coordinate: GeographicCoordinate) {
     _droppedPin.value = coordinate
-  }
-
-  init {
-    viewModelScope.launch {
-      _hasLocationPermission
-          .flatMapLatest { hasPermission ->
-            if (hasPermission) {
-              locationProvider.locationUpdates(5000L)
-                  .map { it.toUserLocation() }
-            } else {
-              flowOf(initialSimulatedLocation)
-            }
-          }
-          .collect {
-            locationStateFlow.emit(it)
-          }
-    }
   }
 
   override fun toggleMute() {

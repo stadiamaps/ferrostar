@@ -5,6 +5,7 @@ import com.stadiamaps.ferrostar.core.BoundingBox
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlin.time.Duration.Companion.milliseconds
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertSame
@@ -75,6 +76,13 @@ class NavigationMapStateTest {
     state.navigationCameraOptions = options
 
     assertSame(options, state.navigationCameraOptions)
+  }
+
+  @Test
+  fun zeroOverviewAnimationDurationIsNormalized() {
+    assertEquals(1.milliseconds, normalizeOverviewAnimationDuration(0.milliseconds))
+    assertEquals(1.milliseconds, normalizeOverviewAnimationDuration((-50).milliseconds))
+    assertEquals(300.milliseconds, normalizeOverviewAnimationDuration(300.milliseconds))
   }
 
   private fun createState(

@@ -58,11 +58,22 @@ internal constructor(
           cameraState.animateTo(
               boundingBox = boundingBox.toMapLibreBoundingBox(),
               padding = paddingValues,
-              duration = duration,
+              duration = normalizeOverviewAnimationDuration(duration),
           )
         }
   }
 }
+
+// MapLibre Compose 0.12.1 crashes on Android when the bounds-animation path forwards a zero
+// duration to MapLibreMap.animateCamera(...), which throws
+// IllegalArgumentException("Null duration passed into animateCamera"). Keep overview transitions
+// at >= 1 ms until that Android adapter path is fixed upstream.
+internal fun normalizeOverviewAnimationDuration(duration: Duration): Duration =
+    if (duration.inWholeMilliseconds <= 0L) {
+      1.milliseconds
+    } else {
+      duration
+    }
 
 @Composable
 fun rememberNavigationMapState(
