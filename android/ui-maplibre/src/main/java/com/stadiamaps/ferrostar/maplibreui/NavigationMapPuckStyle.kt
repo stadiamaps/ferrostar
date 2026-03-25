@@ -14,12 +14,8 @@ data class NavigationMapPuckStyle(
     val accuracyStrokeColor: Color = Color(0xFF3583DD),
     val accuracyFillColor: Color = Color(0xFF3583DD).copy(alpha = 0.16f),
     val bearingColor: Color = Color(0xFF0F5FB8),
-    val dotRadius: Dp = 6.dp,
+    val dotRadius: Dp = 7.dp,
     val dotStrokeWidth: Dp = 3.dp,
     val showBearing: Boolean = true,
     val showBearingAccuracy: Boolean = false,
-) {
-  companion object {
-    fun Default() = NavigationMapPuckStyle()
-  }
-}
+)

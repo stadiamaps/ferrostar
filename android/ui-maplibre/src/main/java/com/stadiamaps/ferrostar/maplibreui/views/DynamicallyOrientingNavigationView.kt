@@ -51,7 +51,7 @@ fun DynamicallyOrientingNavigationView(
     navigationMapState: NavigationMapState = rememberNavigationMapState(),
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
     viewModel: NavigationViewModel,
-    locationPuckStyle: NavigationMapPuckStyle = NavigationMapPuckStyle.Default(),
+    locationPuckStyle: NavigationMapPuckStyle = NavigationMapPuckStyle(),
     theme: NavigationUITheme = DefaultNavigationUITheme,
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),

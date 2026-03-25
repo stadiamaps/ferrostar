@@ -10,11 +10,11 @@ import org.junit.Test
 class NavigationMapPuckStyleTest {
   @Test
   fun defaultPuckStyleMatchesFerrostarColorsAndSizes() {
-    val style = NavigationMapPuckStyle.Default()
+    val style = NavigationMapPuckStyle()
 
     assertEquals(Color(0xFF3583DD), style.dotFillColorCurrentLocation)
     assertEquals(Color(0xFF0F5FB8), style.bearingColor)
-    assertEquals(6.dp, style.dotRadius)
+    assertEquals(7.dp, style.dotRadius)
     assertEquals(3.dp, style.dotStrokeWidth)
     assertTrue(style.showBearing)
     assertFalse(style.showBearingAccuracy)
