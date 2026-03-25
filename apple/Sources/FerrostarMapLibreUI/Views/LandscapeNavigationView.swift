@@ -21,7 +21,6 @@ public struct LandscapeNavigationView: View {
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
     @State private var userTrackingMode: MLNUserTrackingMode = .followWithCourse
-    @State private var useProgrammaticReasonForRecenter = false
 
     let isMuted: Bool
     let onTapMute: () -> Void
@@ -124,8 +123,6 @@ public struct LandscapeNavigationView: View {
             userTrackingMode: userTrackingMode,
             navigationCamera: navigationCamera,
             routeOverviewCamera: navigationState?.routeOverviewCamera,
-            recenterToggle: useProgrammaticReasonForRecenter,
-            setRecenterToggle: { useProgrammaticReasonForRecenter = $0 },
             setCamera: { camera = $0 }
         )
         .cameraControlState()

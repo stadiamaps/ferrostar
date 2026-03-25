@@ -18,7 +18,6 @@ public struct DynamicallyOrientingNavigationView: View {
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
     @State private var userTrackingMode: MLNUserTrackingMode = .followWithCourse
-    @State private var useProgrammaticReasonForRecenter = false
 
     // Speed limit and grid configuration now read from environment to avoid struct copying issues
     @Environment(\.speedLimitConfiguration) private var speedLimitConfig
@@ -153,8 +152,6 @@ public struct DynamicallyOrientingNavigationView: View {
             userTrackingMode: userTrackingMode,
             navigationCamera: navigationCamera,
             routeOverviewCamera: navigationState?.routeOverviewCamera,
-            recenterToggle: useProgrammaticReasonForRecenter,
-            setRecenterToggle: { useProgrammaticReasonForRecenter = $0 },
             setCamera: { camera = $0 }
         )
         .cameraControlState()

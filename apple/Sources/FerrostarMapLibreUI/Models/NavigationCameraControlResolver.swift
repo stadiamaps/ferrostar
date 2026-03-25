@@ -19,8 +19,6 @@ struct NavigationCameraControlResolver {
     let navigationCamera: MapViewCamera
     let routeOverviewCamera: MapViewCamera?
 
-    var recenterToggle: Bool
-    let setRecenterToggle: (Bool) -> Void
     let setCamera: (MapViewCamera) -> Void
 
     /// Build the camera button state and its action closure for the current map state.
@@ -59,8 +57,7 @@ struct NavigationCameraControlResolver {
 
     private func recenterToFollowMode() {
         var followCamera = navigationCamera
-        followCamera.lastReasonForChange = recenterToggle ? .programmatic : nil
-        setRecenterToggle(!recenterToggle)
+        followCamera.lastReasonForChange = camera.lastReasonForChange == .programmatic ? nil : .programmatic
         setCamera(followCamera)
     }
 }
