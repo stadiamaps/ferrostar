@@ -2,11 +2,12 @@ package com.stadiamaps.ferrostar.maplibreui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.VectorPainter
-import androidx.compose.ui.graphics.vector.path
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import com.stadiamaps.ferrostar.core.NavigationUiState
@@ -17,11 +18,9 @@ import org.maplibre.compose.expressions.dsl.asNumber
 import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.expressions.dsl.feature
 import org.maplibre.compose.expressions.dsl.image
-import org.maplibre.compose.expressions.value.CirclePitchAlignment
 import org.maplibre.compose.expressions.value.IconPitchAlignment
 import org.maplibre.compose.expressions.value.IconRotationAlignment
 import org.maplibre.compose.expressions.value.SymbolAnchor
-import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.layers.SymbolLayer
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
@@ -68,37 +67,19 @@ internal fun NavigationPuckOverlay(
               navigationPuckFeatureCollection(longitude, latitude, bearingDegrees),
           ),
       )
-  val arrowPainter = rememberNavigationPuckArrowPainter(style.dotFillColorCurrentLocation)
-  val puckRadius = 23.dp
-  val puckShadowRadius = 32.dp
-  val arrowSize = 23.dp
-
-  CircleLayer(
-      id = "ferrostar-navigation-puck-shadow",
-      source = source,
-      color = const(Color.Black),
-      radius = const(puckShadowRadius),
-      opacity = const(0.1f),
-      pitchAlignment = const(CirclePitchAlignment.Map),
-  )
-
-  CircleLayer(
-      id = "ferrostar-navigation-puck-background",
-      source = source,
-      color = const(Color.White),
-      radius = const(puckRadius),
-      strokeColor = const(Color(0xFFE5E5EA)),
-      strokeWidth = const(0.75.dp),
-      pitchAlignment = const(CirclePitchAlignment.Map),
-  )
+  val puckPainter = rememberNavigationPuckPainter(style.dotFillColorCurrentLocation)
+  val puckSize = 80.dp
 
   SymbolLayer(
-      id = "ferrostar-navigation-puck-arrow",
+      id = "ferrostar-navigation-puck",
       source = source,
       iconImage =
           image(
-              arrowPainter,
-              size = DpSize(arrowSize, arrowSize),
+              value = puckPainter,
+              size = DpSize(
+                  width = puckSize,
+                  height = puckSize,
+              ),
               drawAsSdf = false,
           ),
       iconAnchor = const(SymbolAnchor.Center),
@@ -111,25 +92,54 @@ internal fun NavigationPuckOverlay(
 }
 
 @Composable
-private fun rememberNavigationPuckArrowPainter(color: Color): VectorPainter =
-    rememberVectorPainter(
-        remember(color) {
-          ImageVector.Builder(
-              name = "ferrostar_navigation_puck_arrow",
-              defaultWidth = 20.dp,
-              defaultHeight = 20.dp,
-              viewportWidth = 20f,
-              viewportHeight = 20f,
+private fun rememberNavigationPuckPainter(color: Color): Painter =
+    remember(color) {
+      object : Painter() {
+        override val intrinsicSize: Size = Size.Unspecified
+
+        override fun androidx.compose.ui.graphics.drawscope.DrawScope.onDraw() {
+          val minDimension = size.minDimension
+          val center = Offset(size.width / 2f, size.height / 2f)
+          val haloRadius = minDimension * 0.5f
+          val puckRadius = minDimension * 0.359375f
+          val borderWidth = minDimension * 0.012f
+
+          drawCircle(
+              color = Color.Black.copy(alpha = 0.1f),
+              radius = haloRadius,
+              center = center,
           )
-              .apply {
-                path(fill = androidx.compose.ui.graphics.SolidColor(color)) {
-                  moveTo(10f, 1.6f)
-                  lineTo(17.8f, 17.2f)
-                  lineTo(10f, 12.6f)
-                  lineTo(2.2f, 17.2f)
-                  close()
-                }
-              }
-              .build()
-        },
-    )
+          drawCircle(
+              color = Color.White,
+              radius = puckRadius,
+              center = center,
+          )
+          drawCircle(
+              color = Color(0xFFE5E5EA),
+              radius = puckRadius,
+              center = center,
+              style = Stroke(width = borderWidth),
+          )
+          drawPath(
+              path = navigationArrowPath(size),
+              color = color,
+          )
+        }
+      }
+    }
+
+private fun navigationArrowPath(size: Size): Path {
+  val minDimension = size.minDimension
+  val centerX = size.width / 2f
+  val centerY = size.height / 2f
+  val arrowHeight = minDimension * 0.34f
+  val arrowWidth = minDimension * 0.26f
+
+  return Path().apply {
+    moveTo(centerX, centerY - arrowHeight * 0.55f)
+    lineTo(centerX + arrowWidth * 0.5f, centerY + arrowHeight * 0.35f)
+    lineTo(centerX, centerY + arrowHeight * 0.1f)
+    lineTo(centerX - arrowWidth * 0.5f, centerY + arrowHeight * 0.35f)
+    close()
+  }
+}

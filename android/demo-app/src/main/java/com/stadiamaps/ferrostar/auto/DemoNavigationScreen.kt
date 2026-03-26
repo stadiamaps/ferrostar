@@ -1,5 +1,6 @@
 package com.stadiamaps.ferrostar.auto
 
+import android.util.Log
 import androidx.car.app.CarContext
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.model.NavigationTemplate
@@ -157,6 +158,7 @@ class DemoNavigationScreen(
     }
 
     // Fall back to a basic map template of your App's preference here.
+    Log.d(TAG, "onGetTemplate fallback to demo map template")
     return buildDemoMapTemplate()
   }
 
@@ -183,5 +185,9 @@ class DemoNavigationScreen(
       mapState.recenter(isNavigating = uiState?.isNavigating() == true)
     }
     invalidate()
+  }
+
+  companion object {
+    private const val TAG = "DemoNavigationScreen"
   }
 }
