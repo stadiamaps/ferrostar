@@ -4,17 +4,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.maplibre.compose.camera.MapViewCamera
-import com.maplibre.compose.ramani.LocationRequestProperties
-import com.maplibre.compose.ramani.MapLibreComposable
-import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalPadding
@@ -25,38 +20,33 @@ import com.stadiamaps.ferrostar.core.NavigationUiState
 import com.stadiamaps.ferrostar.core.NavigationViewModel
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapView
 import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
+import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
+import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.util.MaplibreComposable
 
 /**
  * A navigation view designed for Android Auto car displays.
  *
  * Renders a [NavigationMapView] with speed limit and road name overlays positioned within the
  * stable area of the car display surface (the area not covered by the NavigationTemplate's chrome).
- *
- * Note: `camera`, `navigationCamera`, `locationRequestProperties`, and `mapContent` are legacy
- * Android Auto compatibility parameters. They are currently accepted so the old car app API keeps
- * compiling while the Android Auto path remains on the legacy stack, but they are ignored by the
- * current implementation.
  */
 @Composable
 fun CarAppNavigationView(
     modifier: Modifier,
     styleUrl: String,
-    camera: MutableState<MapViewCamera> = rememberSaveableMapViewCamera(),
-    navigationCamera: MapViewCamera = MapViewCamera.TrackingUserLocationWithBearing(),
+    navigationMapState: NavigationMapState = rememberNavigationMapState(),
+    navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
     viewModel: NavigationViewModel,
-    locationRequestProperties: LocationRequestProperties =
-        LocationRequestProperties.Builder().build(),
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     surfaceAreaTracker: SurfaceAreaTracker? = null,
-    mapContent: @Composable @MapLibreComposable() ((NavigationUiState) -> Unit)? = null,
+    mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
-  keepLegacyCompatibilityParameters(camera, navigationCamera, locationRequestProperties, mapContent)
   val uiState by viewModel.navigationUiState.collectAsState()
-  val navigationMapState = rememberNavigationMapState()
 
   val surfaceArea by surfaceAreaTracker
       ?.let { screenSurfaceState(it) }
@@ -70,8 +60,9 @@ fun CarAppNavigationView(
         navigationMapState = navigationMapState,
         uiState = uiState,
         mapOptions = MapOptions(ornamentOptions = OrnamentOptions.AllDisabled),
+        navigationCameraOptions = navigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
-        content = null,
+        content = mapContent,
     )
 
     Box(
@@ -98,5 +89,3 @@ fun CarAppNavigationView(
     }
   }
 }
-
-private fun keepLegacyCompatibilityParameters(vararg ignored: Any?) = Unit
