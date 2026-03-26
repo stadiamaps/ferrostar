@@ -16,8 +16,8 @@ import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageSty
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import kotlinx.serialization.json.buildJsonObject
-import kotlin.math.min
 import org.maplibre.compose.expressions.dsl.const
+import org.maplibre.compose.expressions.value.CirclePitchAlignment
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
@@ -25,6 +25,7 @@ import org.maplibre.compose.util.MaplibreComposable
 import org.maplibre.spatialk.geojson.Feature
 import org.maplibre.spatialk.geojson.FeatureCollection
 import org.maplibre.spatialk.geojson.Point
+import uniffi.ferrostar.GeographicCoordinate
 
 @Composable
 fun DemoNavigationView(
@@ -43,40 +44,54 @@ fun DemoNavigationView(
             .withSpeedLimitStyle(SignageStyle.MUTCD),
         surfaceAreaTracker = surfaceAreaTracker,
     ) { uiState ->
-        DemoCarLocationOverlay(uiState)
+        DemoRouteEndpointsOverlay(uiState)
     }
 }
 
 @Composable
 @MaplibreComposable
-private fun DemoCarLocationOverlay(uiState: NavigationUiState) {
-    val location = uiState.location ?: return
-    val locationSource =
-        rememberGeoJsonSource(
-            GeoJsonData.Features(
-                FeatureCollection(
-                    Feature(
-                        geometry = Point(location.coordinates.lng, location.coordinates.lat),
-                        properties = buildJsonObject {},
-                    )
-                )
-            ),
-        )
+private fun DemoRouteEndpointsOverlay(uiState: NavigationUiState) {
+    val route = uiState.routeGeometry ?: return
+    val start = route.firstOrNull() ?: return
+    val end = route.lastOrNull() ?: return
 
-    CircleLayer(
-        id = "demo-car-location-dot",
-        source = locationSource,
-        color = const(Color.Blue),
-        radius = const(10.dp),
+    val startSource =  rememberGeoJsonSource(
+        GeoJsonData.Features(start.toRouteEndpointFeatureCollection())
+    )
+    val endSource = rememberGeoJsonSource(
+        GeoJsonData.Features(end.toRouteEndpointFeatureCollection())
     )
 
-    if (location.horizontalAccuracy > 15) {
-        CircleLayer(
-            id = "demo-car-location-accuracy",
-            source = locationSource,
-            color = const(Color.Blue),
-            opacity = const(0.2f),
-            radius = const(min(location.horizontalAccuracy.toFloat(), 150f).dp),
-        )
-    }
+    CircleLayer(
+        id = "demo-route-start",
+        source = startSource,
+        color = const(Color.Gray),
+        radius = const(10.dp),
+        strokeColor = const(Color.White),
+        strokeWidth = const(2.dp),
+        pitchAlignment = const(CirclePitchAlignment.Map),
+        opacity = const(0.6f),
+    )
+
+    CircleLayer(
+        id = "demo-route-end",
+        source = endSource,
+        color = const(Color.Green),
+        radius = const(10.dp),
+        strokeColor = const(Color.White),
+        strokeWidth = const(10.dp),
+        pitchAlignment = const(CirclePitchAlignment.Map),
+        opacity = const(0.6f),
+    )
 }
+
+private fun GeographicCoordinate.toRouteEndpointFeatureCollection() =
+    FeatureCollection(
+        Feature(
+            geometry = Point(
+                longitude = this.lng,
+                latitude = this.lat,
+            ),
+            properties = buildJsonObject {},
+        )
+    )
