@@ -2,37 +2,40 @@ package com.stadiamaps.ferrostar.auto
 
 import androidx.car.app.CarContext
 import androidx.car.app.model.Template
+import androidx.car.app.navigation.model.NavigationTemplate
 import androidx.car.app.navigation.NavigationManager
-import androidx.lifecycle.Lifecycle
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.maplibre.compose.camera.CameraState
-import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.car.ComposableScreen
 import com.stadiamaps.ferrostar.AppModule
 import com.stadiamaps.ferrostar.R
+import com.stadiamaps.ferrostar.ui.maplibre.car.app.CarAppNavigationView
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.SurfaceAreaTracker
 import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.screenSurfaceState
-import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalCameraPadding
+import com.stadiamaps.ferrostar.ui.maplibre.car.app.runtime.surfaceStableFractionalPadding
 import com.stadiamaps.ferrostar.car.app.navigation.NavigationManagerBridge
 import com.stadiamaps.ferrostar.car.app.template.NavigationTemplateBuilder
 import com.stadiamaps.ferrostar.core.NavigationUiState
+import com.stadiamaps.ferrostar.core.boundingBox
+import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import androidx.car.app.navigation.model.Destination
 import com.stadiamaps.ferrostar.car.app.intent.NavigationDestination
 import com.stadiamaps.ferrostar.car.app.navigation.TurnByTurnNotificationManager
 import uniffi.ferrostar.DrivingSide
@@ -72,6 +75,8 @@ class DemoNavigationScreen(
       )
 
   private var uiState: NavigationUiState? by mutableStateOf(null)
+  private var navigationMapState: NavigationMapState? = null
+  private var browsingPadding: PaddingValues = PaddingValues()
 
   private val surfaceAreaTracker = SurfaceAreaTracker { surfaceGestureCallback = it }
 
@@ -96,38 +101,33 @@ class DemoNavigationScreen(
   @Composable
   override fun content() {
       val surfaceArea by screenSurfaceState(surfaceAreaTracker)
-      val normalPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(surfaceArea?.compositeArea))
-      val trackingPaddingState = rememberUpdatedState(surfaceStableFractionalCameraPadding(surfaceArea?.compositeArea, top = 0.5f))
-      val camera = remember { mutableStateOf(viewModel.mapViewCamera.value) }
+      val normalPadding = surfaceStableFractionalPadding(surfaceArea?.compositeArea)
+      val trackingPadding = surfaceStableFractionalPadding(surfaceArea?.compositeArea, top = 0.5f)
+      val mapCameraOptions =
+          navigationCameraOptions().copy(
+              browsingPadding = normalPadding,
+              navigationPadding = trackingPadding,
+          )
+      val mapState = rememberNavigationMapState(navigationCameraOptions = mapCameraOptions)
+
+      browsingPadding = normalPadding
+      navigationMapState = mapState
 
       // Transition to navigation camera and publish destination when navigation starts
-      LaunchedEffect(uiState?.isNavigating()) {
+      LaunchedEffect(uiState?.isNavigating(), mapState) {
           if (uiState?.isNavigating() == true) {
-              viewModel.mapViewCamera.value = viewModel.navigationCamera.value
+              mapState.recenter(isNavigating = true)
           }
       }
 
-      // Sync camera with padding based on current state
-      LaunchedEffect(Unit) {
-          snapshotFlow {
-              val base = viewModel.mapViewCamera.value
-              val normalPadding = normalPaddingState.value
-              val trackingPadding = trackingPaddingState.value
-              if (uiState?.isNavigating() == true) {
-                  when (base.state) {
-                      is CameraState.TrackingUserLocation,
-                      is CameraState.TrackingUserLocationWithBearing -> base.copy(padding = trackingPadding)
-                      else -> base.copy(padding = normalPadding)
-                  }
-              } else {
-                  base
-              }
-          }.collect { camera.value = it }
+      LaunchedEffect(mapState) {
+          snapshotFlow { mapState.cameraMode }.collectLatest { invalidate() }
       }
 
       DemoNavigationView(
-          viewModel,
-          camera = camera,
+          viewModel = viewModel,
+          navigationMapState = mapState,
+          navigationCameraOptions = mapCameraOptions,
           surfaceAreaTracker = surfaceAreaTracker
       )
   }
@@ -145,11 +145,11 @@ class DemoNavigationScreen(
                     viewModel.toggleMute()
                 }
                 .setOnZoom(
-                    onZoomInTapped = { viewModel.zoomIn() },
-                    onZoomOutTapped = { viewModel.zoomOut() }
+                    onZoomInTapped = { navigationMapState?.zoomIn() },
+                    onZoomOutTapped = { navigationMapState?.zoomOut() }
                 )
-                .setOnCycleCamera(viewModel.isTrackingUser()) {
-                  viewModel.centerCamera()
+                .setOnCycleCamera(navigationMapState?.isTrackingUser == true) {
+                  centerCamera()
                 }
                 .setTripState(state.tripState)
                 .build()
@@ -169,5 +169,19 @@ class DemoNavigationScreen(
             scope.cancel()
           }
         })
+  }
+
+  private fun centerCamera() {
+    val mapState = navigationMapState ?: return
+    if (mapState.isTrackingUser) {
+      val routeBounds = viewModel.navigationUiState.value.routeGeometry?.boundingBox() ?: return
+      mapState.showRouteOverview(
+          boundingBox = routeBounds,
+          paddingValues = browsingPadding,
+      )
+    } else {
+      mapState.recenter(isNavigating = uiState?.isNavigating() == true)
+    }
+    invalidate()
   }
 }

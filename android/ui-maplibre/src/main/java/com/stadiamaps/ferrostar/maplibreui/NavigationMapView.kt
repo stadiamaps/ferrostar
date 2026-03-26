@@ -76,6 +76,7 @@ fun NavigationMapView(
   val cameraState = navigationMapState.cameraState
   val userLocationState = rememberFerrostarLocationState(uiState.location)
   val userLocation = uiState.location?.toMapLibreLocation()
+  var lastKnownNavigationPuckBearing by remember { mutableStateOf(0.0) }
   navigationMapState.navigationCameraOptions = navigationCameraOptions
 
   var isNavigating by remember { mutableStateOf(uiState.isNavigating()) }
@@ -93,6 +94,10 @@ fun NavigationMapView(
               bearing = userLocation.bearing,
           )
     }
+  }
+
+  LaunchedEffect(userLocation?.bearing) {
+    userLocation?.bearing?.let { lastKnownNavigationPuckBearing = it }
   }
 
   LocationTrackingEffect(
@@ -155,28 +160,41 @@ fun NavigationMapView(
   ) {
     routeOverlayBuilder.navigationPath(uiState)
 
-    LocationPuck(
-        idPrefix = "ferrostar-location",
-        locationState = userLocationState,
-        cameraState = cameraState,
-        colors =
-            LocationPuckColors(
-                dotFillColorCurrentLocation = locationPuckStyle.dotFillColorCurrentLocation,
-                dotFillColorOldLocation = locationPuckStyle.dotFillColorOldLocation,
-                dotStrokeColor = locationPuckStyle.dotStrokeColor,
-                shadowColor = locationPuckStyle.shadowColor,
-                accuracyStrokeColor = locationPuckStyle.accuracyStrokeColor,
-                accuracyFillColor = locationPuckStyle.accuracyFillColor,
-                bearingColor = locationPuckStyle.bearingColor,
-            ),
-        sizes =
-            LocationPuckSizes(
-                dotRadius = locationPuckStyle.dotRadius,
-                dotStrokeWidth = locationPuckStyle.dotStrokeWidth,
-            ),
-        showBearing = locationPuckStyle.showBearing,
-        showBearingAccuracy = locationPuckStyle.showBearingAccuracy,
-    )
+    if (shouldRenderNavigationPuck(uiState) && userLocation != null) {
+      NavigationPuckOverlay(
+          longitude = userLocation.position.longitude,
+          latitude = userLocation.position.latitude,
+          bearingDegrees =
+              navigationPuckBearingDegrees(
+                  currentBearing = userLocation.bearing,
+                  lastKnownBearing = lastKnownNavigationPuckBearing,
+              ),
+          style = locationPuckStyle,
+      )
+    } else {
+      LocationPuck(
+          idPrefix = "ferrostar-location",
+          locationState = userLocationState,
+          cameraState = cameraState,
+          colors =
+              LocationPuckColors(
+                  dotFillColorCurrentLocation = locationPuckStyle.dotFillColorCurrentLocation,
+                  dotFillColorOldLocation = locationPuckStyle.dotFillColorOldLocation,
+                  dotStrokeColor = locationPuckStyle.dotStrokeColor,
+                  shadowColor = locationPuckStyle.shadowColor,
+                  accuracyStrokeColor = locationPuckStyle.accuracyStrokeColor,
+                  accuracyFillColor = locationPuckStyle.accuracyFillColor,
+                  bearingColor = locationPuckStyle.bearingColor,
+              ),
+          sizes =
+              LocationPuckSizes(
+                  dotRadius = locationPuckStyle.dotRadius,
+                  dotStrokeWidth = locationPuckStyle.dotStrokeWidth,
+              ),
+          showBearing = locationPuckStyle.showBearing,
+          showBearingAccuracy = locationPuckStyle.showBearingAccuracy,
+      )
+    }
 
     if (content != null) {
       content(uiState)

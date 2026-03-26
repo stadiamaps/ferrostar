@@ -10,7 +10,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.dp
-import com.maplibre.compose.camera.models.CameraPadding
 
 @Composable
 fun surfaceStablePadding(
@@ -71,33 +70,4 @@ fun surfaceStableFractionalPadding(
       }
 
   return padding
-}
-
-// CameraPadding
-
-@Composable
-fun surfaceStableCameraPadding(
-    stableArea: Rect?,
-    additionalPadding: PaddingValues? = null
-): CameraPadding {
-  val padding = surfaceStablePadding(stableArea, additionalPadding)
-  return CameraPadding.padding(padding)
-}
-
-@Composable
-fun surfaceStableFractionalCameraPadding(
-    stableArea: Rect?,
-    @FloatRange(from = 0.0, to = 1.0) start: Float = 0.0f,
-    @FloatRange(from = 0.0, to = 1.0) top: Float = 0.0f,
-    @FloatRange(from = 0.0, to = 1.0) end: Float = 0.0f,
-    @FloatRange(from = 0.0, to = 1.0) bottom: Float = 0.0f
-): CameraPadding {
-  val padding = surfaceStableFractionalPadding(
-      stableArea,
-      start = start,
-      top = top,
-      end = end,
-      bottom = bottom
-  )
-  return CameraPadding.padding(padding)
 }
