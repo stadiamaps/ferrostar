@@ -59,7 +59,7 @@ Notable Android phone/tablet migration changes:
 * Location puck styling is configurable through `NavigationMapPuckStyle`.
 * Route rendering now uses a GeoJSON source plus `LineLayer` instead of legacy polyline convenience APIs.
 * Map tap and long-press callbacks use Ferrostar-facing callbacks with `GeographicCoordinate` plus screen position.
-* `onMapReadyCallback` is still available on `NavigationMapView` for the current 0.x migration path.
+* `NavigationMapView` now exposes `onMapLoadFinished` and `onMapLoadFailed` instead of a native-style `onMapReadyCallback`.
 
 Example usage:
 
