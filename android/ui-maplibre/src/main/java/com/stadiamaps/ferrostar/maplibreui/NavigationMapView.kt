@@ -15,7 +15,6 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraMode
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.runtime.defaultNavigationCameraMode
-import com.stadiamaps.ferrostar.maplibreui.runtime.nativeStyleOrNull
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberFerrostarLocationState
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
@@ -24,7 +23,6 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.trackingFollowingCameraPositi
 import com.stadiamaps.ferrostar.maplibreui.runtime.toMapLibreLocation
 import kotlinx.coroutines.flow.collectLatest
 import org.maplibre.compose.camera.CameraMoveReason
-import org.maplibre.android.maps.Style
 import org.maplibre.compose.location.LocationPuck
 import org.maplibre.compose.location.LocationPuckColors
 import org.maplibre.compose.location.LocationPuckSizes
@@ -51,8 +49,8 @@ import uniffi.ferrostar.GeographicCoordinate
  * @param navigationCameraOptions The camera templates applied when following the user in browsing
  *   and navigation modes.
  * @param locationPuckStyle The style to use for the official MapLibre location puck.
- * @param onMapReadyCallback A callback that is invoked when the underlying map style is ready to be
- *   interacted with.
+ * @param onMapLoadFinished A callback that is invoked when the map finished loading.
+ * @param onMapLoadFailed A callback that is invoked when the map failed to load.
  * @param onMapClick Callback invoked for taps on the map with geographic coordinates and screen
  *   position.
  * @param onMapLongClick Callback invoked for long presses on the map with geographic coordinates
@@ -68,7 +66,8 @@ fun NavigationMapView(
     routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
     locationPuckStyle: NavigationMapPuckStyle = NavigationMapPuckStyle(),
-    onMapReadyCallback: ((Style) -> Unit)? = null,
+    onMapLoadFinished: () -> Unit = {},
+    onMapLoadFailed: (String?) -> Unit = {},
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     content: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
@@ -80,7 +79,6 @@ fun NavigationMapView(
   navigationMapState.navigationCameraOptions = navigationCameraOptions
 
   var isNavigating by remember { mutableStateOf(uiState.isNavigating()) }
-  var mapReadyCallbackFired by remember(styleUrl, onMapReadyCallback) { mutableStateOf(false) }
   if (uiState.isNavigating() != isNavigating) {
     isNavigating = uiState.isNavigating()
     navigationMapState.cameraMode = defaultNavigationCameraMode(isNavigating)
@@ -130,6 +128,7 @@ fun NavigationMapView(
       onMapLongClick = { position, screenPosition ->
         onMapLongClick(position.toGeographicCoordinate(), screenPosition).toComposeClickResult()
       },
+      onMapLoadFailed = onMapLoadFailed,
       onMapLoadFinished = {
         if (userLocation != null && navigationMapState.isTrackingUser) {
           cameraState.position =
@@ -138,23 +137,7 @@ fun NavigationMapView(
                   bearing = userLocation.bearing,
               )
         }
-
-        if (!mapReadyCallbackFired) {
-          if (onMapReadyCallback != null) {
-            cameraState.nativeStyleOrNull()?.let {
-              mapReadyCallbackFired = true
-              onMapReadyCallback(it)
-            } ?: run {
-              android.util.Log.w(
-                  "NavigationMapView",
-                  "onMapReadyCallback was requested but the native Style could not be accessed. " +
-                      "The callback will not fire.")
-              mapReadyCallbackFired = true
-            }
-          } else {
-            mapReadyCallbackFired = true
-          }
-        }
+        onMapLoadFinished()
       },
       options = mapOptions,
   ) {
