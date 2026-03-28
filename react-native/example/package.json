@@ -20,7 +20,7 @@
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.2",
-    "@maplibre/maplibre-react-native": "11.0.0-alpha.5",
+    "@maplibre/maplibre-react-native": "11.0.0-beta.12",
     "@react-native-community/geolocation": "^3.4.0",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",

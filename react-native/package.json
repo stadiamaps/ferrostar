@@ -4,16 +4,22 @@
   "description": "Ferrostar React Native",
   "private": true,
   "scripts": {
-    "build:android": "./scripts/build-android.sh",
-    "build:ios": "./scripts/build-ios.sh",
-    "example:start": "yarn workspace @stadiamaps/ferrostar-example-react-native start",
-    "example:android": "yarn workspace @stadiamaps/ferrostar-example-react-native android",
-    "example:ios": "yarn workspace @stadiamaps/ferrostar-example-react-native ios",
-    "example:prebuild": "yarn workspace @stadiamaps/ferrostar-example-react-native prebuild",
+    "build:android": "run-script-os",
+    "build:android:win32": "powershell ./scripts/build-android.ps1",
+    "build:android:default": "./scripts/build-android.sh",
+    "build:ios": "run-script-os",
+    "build:ios:win32": "powershell ./scripts/build-ios.ps1",
+    "build:ios:default": "./scripts/build-ios.sh",
+    "example:start": "bun run --filter @stadiamaps/ferrostar-example-react-native start",
+    "example:android": "bun run --filter @stadiamaps/ferrostar-example-react-native android",
+    "example:ios": "bun run --filter @stadiamaps/ferrostar-example-react-native ios",
+    "example:prebuild": "bun run --filter @stadiamaps/ferrostar-example-react-native prebuild",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "./scripts/clean.sh"
+    "clean": "run-script-os",
+    "clean:win32": "powershell ./scripts/clean.ps1",
+    "clean:default": "./scripts/clean.sh"
   },
   "keywords": [
     "react-native",
@@ -43,7 +49,9 @@
     "eslint-plugin-prettier": "^5.0.1",
     "globals": "^15.15.0",
     "prettier": "^3.0.3",
-    "typescript-eslint": "^8.22.0"
+    "run-script-os": "^1.1.6",
+    "typescript-eslint": "^8.22.0",
+    "typescript": "^5.2.2"
   },
   "workspaces": [
     "uniffi",
@@ -51,7 +59,6 @@
     "example",
     "maplibreui"
   ],
-  "packageManager": "yarn@3.6.1",
   "eslintConfig": {
     "root": true,
     "extends": [

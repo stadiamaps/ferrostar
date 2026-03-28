@@ -40,7 +40,7 @@
     "ubrn:ios": "ubrn build ios     --config ubrn.config.yaml --and-generate && (cd ../example/ios && pod install)",
     "ubrn:android": "ubrn build android --config ubrn.config.yaml --and-generate",
     "ubrn:checkout": "ubrn checkout      --config ubrn.config.yaml",
-    "ubrn:clean": "rm -Rf cpp/ android/src/main/java ios/ src/Native* src/generated/ src/index.ts*",
+    "ubrn:clean": "del-cli \"cpp\" \"android/src/main/java\" \"ios/\" \"src/Native*\" \"src/generated/\" \"src/index.ts*\"",
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
@@ -87,13 +87,12 @@
     "react-native-builder-bob": "^0.40.12",
     "release-it": "^17.10.0",
     "typescript": "^5.2.2",
-    "uniffi-bindgen-react-native": "^0.29.3-1"
+    "uniffi-bindgen-react-native": "0.30.0-1"
   },
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
   },
-  "packageManager": "yarn@3.6.1",
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [

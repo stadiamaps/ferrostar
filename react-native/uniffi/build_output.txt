@@ -1,0 +1,8 @@
+npm error code E404
+npm error 404 Not Found - GET https://registry.npmjs.org/ubrn - Not found
+npm error 404
+npm error 404  'ubrn@*' is not in this registry.
+npm error 404
+npm error 404 Note that you can also install from a
+npm error 404 tarball, folder, http url, or git url.
+npm error A complete log of this run can be found in: C:\Users\benjamint\AppData\Local\npm-cache\_logs\2026-03-14T07_49_55_502Z-debug-0.log
