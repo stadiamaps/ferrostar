@@ -11,14 +11,6 @@ use crate::{
 };
 use geo::Point;
 
-#[cfg(test)]
-use proptest::prelude::*;
-
-#[cfg(test)]
-use crate::{
-    navigation_controller::test_helpers::get_navigating_trip_state,
-    test_utils::{arb_coord, make_user_location},
-};
 
 use super::SerializableStepAdvanceCondition;
 
@@ -580,6 +572,26 @@ mod tests {
     use crate::test_utils::make_user_location;
     use geo::coord;
     use std::sync::LazyLock;
+
+    /// A test-only condition that always advances. Used to verify composite condition behavior.
+    #[derive(Debug, Clone, Copy)]
+    pub(super) struct AlwaysTrueCondition;
+
+    impl StepAdvanceCondition for AlwaysTrueCondition {
+        fn should_advance_step(&self, _trip_state: TripState) -> StepAdvanceResult {
+            StepAdvanceResult::advance_to_new_instance(self)
+        }
+
+        fn new_instance(&self) -> Arc<dyn StepAdvanceCondition> {
+            Arc::new(AlwaysTrueCondition)
+        }
+    }
+
+    impl StepAdvanceConditionSerializable for AlwaysTrueCondition {
+        fn to_js(&self) -> SerializableStepAdvanceCondition {
+            SerializableStepAdvanceCondition::Manual // Doesn't matter for tests
+        }
+    }
 
     static STRAIGHT_LINE_SHORT_ROUTE_STEP: LazyLock<RouteStep> = LazyLock::new(|| {
         gen_route_step_with_coords(vec![
@@ -1498,6 +1510,13 @@ mod tests {
 }
 
 #[cfg(test)]
+mod prop_tests {
+    use super::*;
+    use super::tests::AlwaysTrueCondition;
+    use crate::navigation_controller::test_helpers::get_navigating_trip_state;
+    use crate::test_utils::{arb_coord, arb_user_loc, make_user_location};
+    use proptest::prelude::*;
+
 proptest! {
     #[test]
     fn manual_step_never_advances(
@@ -1589,11 +1608,295 @@ proptest! {
         );
     }
 
-    // TODO: handling of accuracy parameter for "always" advance
+    // Accuracy gate: DistanceToEndOfStepCondition never advances when accuracy exceeds the threshold.
+    #[test]
+    fn distance_to_end_never_advances_with_bad_accuracy(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+        accuracy in 11.0f64..10000.0f64,
+    ) {
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
 
-    // TODO: "or" advance with one condition that's always trivially true and another which is always false
+        // User at end of step, but with accuracy worse than the threshold
+        let user_location = make_user_location(c2, accuracy);
 
-    // TODO: enter+exit with two updates: one exact, and another that exceeds the distance threshold (could generate such a coordinate with polar formulas; probably a crate for that if our existing ones can't do it)
+        let condition = DistanceToEndOfStepCondition {
+            distance: u16::MAX, // Very generous distance threshold
+            minimum_horizontal_accuracy: 10,
+        };
 
-    // TODO: Similar to the above, but with, say, 5 random updates where the user is *always* within the distance threshold, so they never advance to the next step
+        let trip_state = get_navigating_trip_state(
+            user_location,
+            vec![route_step],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = condition.should_advance_step(trip_state);
+
+        prop_assert!(
+            !result.should_advance,
+            "Should never advance when horizontal accuracy ({accuracy}) exceeds threshold (10)"
+        );
+    }
+
+    // Accuracy gate: DistanceFromStepCondition never advances when accuracy exceeds the threshold.
+    #[test]
+    fn distance_from_step_never_advances_with_bad_accuracy(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+        user_coord in arb_coord(),
+        accuracy in 11.0f64..10000.0f64,
+    ) {
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+
+        let user_location = make_user_location(user_coord, accuracy);
+
+        let condition = DistanceFromStepCondition {
+            distance: 0, // Minimum distance threshold (easiest to trigger)
+            minimum_horizontal_accuracy: 10,
+            calculate_while_off_route: true,
+        };
+
+        let trip_state = get_navigating_trip_state(
+            user_location,
+            vec![route_step],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = condition.should_advance_step(trip_state);
+
+        prop_assert!(
+            !result.should_advance,
+            "Should never advance when horizontal accuracy ({accuracy}) exceeds threshold (10)"
+        );
+    }
+
+    // Off-route gate: DistanceFromStepCondition with calculate_while_off_route=false never advances when off route.
+    #[test]
+    fn distance_from_step_never_advances_when_off_route_and_flag_disabled(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+        user_coord in arb_coord(),
+    ) {
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+
+        let user_location = make_user_location(user_coord, 0.0);
+
+        let condition = DistanceFromStepCondition {
+            distance: 0, // Easiest to trigger
+            minimum_horizontal_accuracy: u16::MAX, // Accept any accuracy
+            calculate_while_off_route: false,
+        };
+
+        let trip_state = get_navigating_trip_state(
+            user_location,
+            vec![route_step],
+            vec![],
+            RouteDeviation::OffRoute {
+                deviation_from_route_line: 100.0,
+            },
+        );
+
+        let result = condition.should_advance_step(trip_state);
+
+        prop_assert!(
+            !result.should_advance,
+            "Should never advance when off route and calculate_while_off_route is false"
+        );
+    }
+
+    // OR composed entirely of ManualStepConditions never advances.
+    #[test]
+    fn or_with_all_manual_never_advances(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+        user_loc in arb_user_loc(5.0),
+        count in 1usize..=5,
+    ) {
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+
+        let conditions: Vec<Arc<dyn StepAdvanceCondition>> =
+            (0..count).map(|_| Arc::new(ManualStepCondition) as Arc<dyn StepAdvanceCondition>).collect();
+
+        let or_condition = OrAdvanceConditions { conditions };
+
+        let trip_state = get_navigating_trip_state(
+            user_loc,
+            vec![route_step],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = or_condition.should_advance_step(trip_state);
+
+        prop_assert!(
+            !result.should_advance,
+            "OR of only ManualStepConditions should never advance"
+        );
+    }
+
+    // OR with a trivially true condition always advances.
+    #[test]
+    fn or_with_trivially_true_always_advances(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+        user_loc in arb_user_loc(5.0),
+    ) {
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+
+        let conditions: Vec<Arc<dyn StepAdvanceCondition>> = vec![
+            Arc::new(ManualStepCondition),
+            Arc::new(AlwaysTrueCondition),
+        ];
+
+        let or_condition = OrAdvanceConditions { conditions };
+
+        let trip_state = get_navigating_trip_state(
+            user_loc,
+            vec![route_step],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = or_condition.should_advance_step(trip_state);
+
+        prop_assert!(
+            result.should_advance,
+            "OR with an AlwaysTrueCondition should always advance"
+        );
+    }
+
+    // AND containing a ManualStepCondition never advances.
+    #[test]
+    fn and_with_any_manual_never_advances(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+        user_loc in arb_user_loc(5.0),
+    ) {
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+
+        let conditions: Vec<Arc<dyn StepAdvanceCondition>> = vec![
+            Arc::new(ManualStepCondition),
+            Arc::new(AlwaysTrueCondition),
+        ];
+
+        let and_condition = AndAdvanceConditions { conditions };
+
+        let trip_state = get_navigating_trip_state(
+            user_loc,
+            vec![route_step],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = and_condition.should_advance_step(trip_state);
+
+        prop_assert!(
+            !result.should_advance,
+            "AND with a ManualStepCondition should never advance"
+        );
+    }
+
+    // Entry+exit condition never advances when user stays at step end across 5 sequential updates.
+    #[test]
+    fn entry_and_exit_never_advances_within_threshold_over_multiple_updates(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+    ) {
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+
+        // User at end of step, never moves
+        let user_location = make_user_location(c2, 5.0);
+
+        let condition: Arc<dyn StepAdvanceCondition> = Arc::new(DistanceEntryAndExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 20,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        });
+
+        let mut current_condition = condition;
+
+        // Run 5 sequential updates at the same location
+        for i in 0..5 {
+            let trip_state = get_navigating_trip_state(
+                user_location,
+                vec![route_step.clone()],
+                vec![],
+                RouteDeviation::NoDeviation,
+            );
+
+            let result = current_condition.should_advance_step(trip_state);
+
+            prop_assert!(
+                !result.should_advance,
+                "Should not advance on update {i} when user hasn't moved"
+            );
+
+            current_condition = result.next_iteration;
+        }
+    }
+
+    // DistanceEntryAndSnappedExitCondition never advances on zero movement (mirrors the non-snapped variant test).
+    #[test]
+    fn snapped_entry_and_exit_never_advances_on_zero_movement(
+        c1 in arb_coord(),
+        c2 in arb_coord(),
+        c3 in arb_coord(),
+    ) {
+        let route_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
+        let next_step =
+            crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c2, c3]);
+
+        // User at the end of the current step
+        let user_location = make_user_location(c2, 5.0);
+
+        let condition = DistanceEntryAndSnappedExitCondition {
+            distance_to_end_of_step: 10,
+            distance_after_end_of_step: 20,
+            minimum_horizontal_accuracy: 5,
+            has_reached_end_of_current_step: false,
+        };
+
+        let trip_state = get_navigating_trip_state(
+            user_location,
+            vec![route_step.clone(), next_step.clone()],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        // First update
+        let result1 = condition.should_advance_step(trip_state);
+
+        prop_assert!(
+            !result1.should_advance,
+            "Should not advance on first update even when at end of step"
+        );
+
+        // Second update at same location
+        let trip_state2 = get_navigating_trip_state(
+            user_location,
+            vec![route_step, next_step],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result2 = result1.next_iteration.should_advance_step(trip_state2);
+
+        prop_assert!(
+            !result2.should_advance,
+            "Should not advance when user hasn't moved from end of step"
+        );
+    }
 }
+} // mod prop_tests
