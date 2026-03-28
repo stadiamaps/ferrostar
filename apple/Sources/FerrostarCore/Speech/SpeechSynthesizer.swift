@@ -5,7 +5,7 @@ import Foundation
 ///
 /// Any functions that are needed for use in the ``SpokenInstructionObserver`` should be exposed through
 /// this protocol.
-public protocol SpeechSynthesizer {
+public protocol SpeechSynthesizer: Sendable {
     // TODO: We could further abstract this to allow other speech synths.
     //       E.g. with a `struct SpeechUtterance` if and when another speech service comes along.
 
@@ -15,11 +15,11 @@ public protocol SpeechSynthesizer {
     func stopSpeaking(at boundary: AVSpeechBoundary) -> Bool
 }
 
-extension AVSpeechSynthesizer: SpeechSynthesizer {
-    // No def required
+extension AVSpeechSynthesizer: @unchecked Sendable, SpeechSynthesizer {
+    // AVSpeechSynthesizer is thread-safe in practice.
 }
 
-class PreviewSpeechSynthesizer: SpeechSynthesizer {
+final class PreviewSpeechSynthesizer: SpeechSynthesizer, @unchecked Sendable {
     var isSpeaking: Bool = false
 
     func speak(_: AVSpeechUtterance) {

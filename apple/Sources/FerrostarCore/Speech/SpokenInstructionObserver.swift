@@ -7,38 +7,37 @@ import Foundation
 ///
 /// Automatically handles audio session management,
 /// including ducking volume from other apps when appropriate.
-public class SpokenInstructionObserver {
-    @Published public private(set) var isMuted: Bool
+// @unchecked Sendable safety: mutable state is isolated to @MainActor.
+// The @Published wrapper is not Sendable but access is protected by MainActor isolation.
+public final class SpokenInstructionObserver: @unchecked Sendable {
+    @MainActor @Published public private(set) var isMuted: Bool
 
-    let synthesizer: SpeechSynthesizer
+    let synthesizer: any SpeechSynthesizer
     private let audioManager = AudioSessionManager()
-    private var audioFocusReleaseTask: Task<Void, Never>?
+    @MainActor private var audioFocusReleaseTask: Task<Void, Never>?
 
     /// Creates a spoken instruction observer with any ``SpeechSynthesizer``.
     ///
     /// - Parameters:
     ///   - synthesizer: The speech synthesizer.
     ///   - isMuted: Whether the speech synthesizer is currently muted. Assume false if unknown.
+    @MainActor
     public init(
-        synthesizer: SpeechSynthesizer,
+        synthesizer: any SpeechSynthesizer,
         isMuted: Bool
     ) {
         self.synthesizer = synthesizer
         self.isMuted = isMuted
     }
 
-    deinit {
-        audioFocusReleaseTask?.cancel()
-        // NOTE: The audioFocusReleaseTask will deinit itself
-    }
-
     public func spokenInstructionTriggered(_ instruction: FerrostarCoreFFI.SpokenInstruction) {
-        guard !isMuted else {
-            return
-        }
-
         Task {
-            cancelAudioFocusRelease()
+            let muted = await isMuted
+            guard !muted else {
+                return
+            }
+
+            await cancelAudioFocusRelease()
             await audioManager.requestAudioFocus()
 
             let utterance: AVSpeechUtterance = if #available(iOS 16.0, *),
@@ -51,21 +50,22 @@ public class SpokenInstructionObserver {
             }
 
             self.synthesizer.speak(utterance)
-            scheduleAudioFocusRelease()
+            await scheduleAudioFocusRelease()
         }
     }
 
     /// Toggle the mute.
+    @MainActor
     public func toggleMute() {
         let isCurrentlyMuted = isMuted
         isMuted = !isCurrentlyMuted
 
-        // This used to have `synthesizer.isSpeaking`, but I think we want to run it regardless.
         if isMuted {
             stopAndClearQueue()
         }
     }
 
+    @MainActor
     public func stopAndClearQueue() {
         Task {
             synthesizer.stopSpeaking(at: .immediate)
@@ -73,26 +73,25 @@ public class SpokenInstructionObserver {
         }
     }
 
+    @MainActor
     func scheduleAudioFocusRelease() {
         cancelAudioFocusRelease()
 
         audioFocusReleaseTask = Task { [weak self] in
-            // Wait at least 500ms; then keep waiting until either:
-            //   - The task is cancelled
-            //   - The synthesizer is no longer speaking
+            guard let self else { return }
             repeat {
                 try? await Task.sleep(nanoseconds: 500 * NSEC_PER_MSEC)
-            } while !Task.isCancelled && self?.synthesizer.isSpeaking ?? false
+            } while !Task.isCancelled && self.synthesizer.isSpeaking
 
             guard !Task.isCancelled else {
                 return
             }
 
-            // Release audio focus (unduck other sources) once we're done speaking
-            await self?.audioManager.releaseAudioFocus()
+            await self.audioManager.releaseAudioFocus()
         }
     }
 
+    @MainActor
     private func cancelAudioFocusRelease() {
         audioFocusReleaseTask?.cancel()
         audioFocusReleaseTask = nil
@@ -107,6 +106,7 @@ public extension SpokenInstructionObserver {
     ///    - isMuted: If the synthesizer is muted. This should be false unless you're providing a "hot" synth that is
     /// speaking.
     /// - Returns: The instance of SpokenInstructionObserver
+    @MainActor
     static func initAVSpeechSynthesizer(synthesizer: AVSpeechSynthesizer = AVSpeechSynthesizer(),
                                         isMuted: Bool = false) -> SpokenInstructionObserver
     {

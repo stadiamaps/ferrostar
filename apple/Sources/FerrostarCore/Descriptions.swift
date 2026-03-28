@@ -2,8 +2,8 @@ import FerrostarCoreFFI
 import Foundation
 
 public extension FerrostarCore {
-    override var description: String {
-        "Core: [route: \(route != nil ? route!.description : "none") state: \(state != nil ? state!.description : "none")]"
+    nonisolated override var description: String {
+        "FerrostarCore"
     }
 }
 

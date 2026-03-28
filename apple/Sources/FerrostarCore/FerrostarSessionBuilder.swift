@@ -1,5 +1,6 @@
 import FerrostarCoreFFI
 
+@MainActor
 public class FerrostarSessionBuilder {
     private var config: SwiftNavigationControllerConfig
     private var caching: NavigationSessionCache?

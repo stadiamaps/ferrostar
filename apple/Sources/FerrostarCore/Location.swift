@@ -1,8 +1,9 @@
 import CoreLocation
 import FerrostarCoreFFI
 
+@MainActor
 public protocol LocationProviding: AnyObject {
-    var delegate: LocationManagingDelegate? { get set }
+    var delegate: (any LocationManagingDelegate)? { get set }
     var authorizationStatus: CLAuthorizationStatus { get }
     var lastLocation: UserLocation? { get }
     var lastHeading: Heading? { get }
@@ -11,15 +12,17 @@ public protocol LocationProviding: AnyObject {
     func stopUpdating()
 }
 
+@MainActor
 public protocol LocationManagingDelegate: AnyObject {
-    func locationManager(_ manager: LocationProviding, didUpdateLocations locations: [UserLocation])
-    func locationManager(_ manager: LocationProviding, didUpdateHeading newHeading: Heading)
-    func locationManager(_ manager: LocationProviding, didFailWithError error: Error)
+    func locationManager(_ manager: any LocationProviding, didUpdateLocations locations: [UserLocation])
+    func locationManager(_ manager: any LocationProviding, didUpdateHeading newHeading: Heading)
+    func locationManager(_ manager: any LocationProviding, didFailWithError error: Error)
 }
 
 /// A location provider that uses Apple's CoreLocation framework.
+@MainActor
 public class CoreLocationProvider: NSObject {
-    public var delegate: LocationManagingDelegate?
+    public var delegate: (any LocationManagingDelegate)?
     public private(set) var authorizationStatus: CLAuthorizationStatus
 
     private let locationManager: CLLocationManager
@@ -79,32 +82,46 @@ extension CoreLocationProvider: LocationProviding {
     }
 }
 
-extension CoreLocationProvider: CLLocationManagerDelegate {
-    public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        lastLocation = locations.last?.userLocation
-        delegate?.locationManager(self, didUpdateLocations: locations.map(\.userLocation))
-    }
-
-    public func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        let value = Heading(clHeading: newHeading)
-        lastHeading = value
-
-        if let value {
-            delegate?.locationManager(self, didUpdateHeading: value)
+extension CoreLocationProvider: @preconcurrency CLLocationManagerDelegate {
+    nonisolated public func locationManager(_: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let userLocations = locations.map(\.userLocation)
+        let lastUserLocation = locations.last?.userLocation
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.lastLocation = lastUserLocation
+            self.delegate?.locationManager(self, didUpdateLocations: userLocations)
         }
     }
 
-    public func locationManager(_: CLLocationManager, didFailWithError error: Error) {
-        delegate?.locationManager(self, didFailWithError: error)
+    nonisolated public func locationManager(_: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        let value = Heading(clHeading: newHeading)
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.lastHeading = value
+            if let value {
+                self.delegate?.locationManager(self, didUpdateHeading: value)
+            }
+        }
     }
 
-    public func locationManagerDidChangeAuthorization(_: CLLocationManager) {
-        authorizationStatus = locationManager.authorizationStatus
+    nonisolated public func locationManager(_: CLLocationManager, didFailWithError error: Error) {
+        let sendableError = error as NSError // NSError is Sendable
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.delegate?.locationManager(self, didFailWithError: sendableError)
+        }
+    }
 
-        switch authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse:
-            locationManager.requestLocation()
-        default: break
+    nonisolated public func locationManagerDidChangeAuthorization(_: CLLocationManager) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.authorizationStatus = self.locationManager.authorizationStatus
+
+            switch self.authorizationStatus {
+            case .authorizedAlways, .authorizedWhenInUse:
+                self.locationManager.requestLocation()
+            default: break
+            }
         }
     }
 }
@@ -112,8 +129,9 @@ extension CoreLocationProvider: CLLocationManagerDelegate {
 /// Location provider for testing without relying on simulator location spoofing.
 ///
 /// This allows for more granular unit tests as well as route simulation use cases.
+@MainActor
 public class SimulatedLocationProvider: LocationProviding {
-    public var delegate: LocationManagingDelegate?
+    public var delegate: (any LocationManagingDelegate)?
     public private(set) var authorizationStatus: CLAuthorizationStatus = .authorizedAlways
 
     private var updateTask: Task<Void, Error>?

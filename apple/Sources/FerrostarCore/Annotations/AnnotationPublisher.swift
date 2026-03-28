@@ -3,6 +3,7 @@ import Foundation
 
 /// A generic implementation of the annotation publisher.
 /// To allow dynamic specialization in the core ``FerrostarCore/FerrostarCore/init(routeProvider:locationProvider:navigationControllerConfig:networkSession:annotation:)``
+@MainActor
 public protocol AnnotationPublishing {
     associatedtype Annotation: Decodable
 
@@ -14,6 +15,7 @@ public protocol AnnotationPublishing {
 
 /// A class that publishes the decoded annotation object off of ``FerrostarCore``'s
 /// ``NavigationState`` publisher.
+@MainActor
 public class AnnotationPublisher<Annotation: Decodable>: ObservableObject, AnnotationPublishing {
     @Published public var currentValue: Annotation?
     @Published public var speedLimit: Measurement<UnitSpeed>?

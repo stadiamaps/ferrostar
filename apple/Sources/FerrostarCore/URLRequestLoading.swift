@@ -4,7 +4,7 @@ import Foundation
 ///
 /// This exists to allow mocking in test code. A conformance is provided for `URLSession`,
 /// which should be used for production code.
-public protocol URLRequestLoading {
+public protocol URLRequestLoading: Sendable {
     func loadData(with urlRequest: URLRequest) async throws -> (Data, URLResponse)
 }
 
@@ -25,7 +25,7 @@ enum MockURLSessionError: Error {
 ///
 /// By default, it will return an error for all requests. Register a mock by URL with
 /// ``registerMock(forMethod:andURL:withData:andResponse:)``.
-public class MockURLSession: URLRequestLoading {
+public final class MockURLSession: URLRequestLoading, @unchecked Sendable {
     private var urlResponseMap = [String: [URL: (Data, URLResponse)]]()
 
     public func loadData(with urlRequest: URLRequest) async throws -> (Data, URLResponse) {

@@ -6,7 +6,7 @@ import Foundation
 ///
 /// While the core generally does not include UI, this is purely at the model layer and should be implemented
 /// the same for all frontends.
-public struct NavigationState: Hashable {
+public struct NavigationState: Hashable, Sendable {
     public internal(set) var tripState: TripState
     public internal(set) var routeGeometry: [GeographicCoordinate]
 

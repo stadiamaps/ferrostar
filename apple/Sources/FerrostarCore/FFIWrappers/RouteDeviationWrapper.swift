@@ -15,7 +15,7 @@ private final class DetectorImpl: RouteDeviationDetector {
 }
 
 /// A Swift wrapper around `UniFFI.RouteDeviationTracking`
-public enum SwiftRouteDeviationTracking {
+public enum SwiftRouteDeviationTracking: Sendable {
     case none
 
     case staticThreshold(minimumHorizontalAccuracy: UInt16, maxAcceptableDeviation: Double)

@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -82,7 +82,10 @@ let package = Package(
                 .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
                 .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
             ],
-            path: "apple/Sources/FerrostarCarPlayUI"
+            path: "apple/Sources/FerrostarCarPlayUI",
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
         ),
         .target(
             name: "FerrostarCore",
@@ -97,7 +100,10 @@ let package = Package(
                 .product(name: "MapLibreSwiftDSL", package: "swiftui-dsl"),
                 .product(name: "MapLibreSwiftUI", package: "swiftui-dsl"),
             ],
-            path: "apple/Sources/FerrostarMapLibreUI"
+            path: "apple/Sources/FerrostarMapLibreUI",
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
         ),
         .target(
             name: "FerrostarSwiftUI",
@@ -107,12 +113,18 @@ let package = Package(
             path: "apple/Sources/FerrostarSwiftUI",
             resources: [
                 .process("Resources"),
+            ],
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
             ]
         ),
         .target(
             name: "FerrostarCoreFFI",
             dependencies: [.target(name: "FerrostarCoreRS")],
-            path: "apple/Sources/UniFFI"
+            path: "apple/Sources/UniFFI",
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
         ),
 
         // MARK: Testing
@@ -126,7 +138,10 @@ let package = Package(
                 "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
-            path: "apple/Tests/FerrostarCarPlayUITests"
+            path: "apple/Tests/FerrostarCarPlayUITests",
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
         ),
         .testTarget(
             name: "FerrostarCoreTests",
@@ -134,7 +149,10 @@ let package = Package(
                 "FerrostarCore",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
-            path: "apple/Tests/FerrostarCoreTests"
+            path: "apple/Tests/FerrostarCoreTests",
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
         ),
         .testTarget(
             name: "FerrostarMapLibreUITests",
@@ -145,7 +163,10 @@ let package = Package(
                 "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
-            path: "apple/Tests/FerrostarMapLibreUITests"
+            path: "apple/Tests/FerrostarMapLibreUITests",
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
         ),
         .testTarget(
             name: "FerrostarSwiftUITests",
@@ -155,7 +176,10 @@ let package = Package(
                 "TestSupport",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
-            path: "apple/Tests/FerrostarSwiftUITests"
+            path: "apple/Tests/FerrostarSwiftUITests",
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
         ),
 
         // MARK: Test Support
@@ -167,7 +191,10 @@ let package = Package(
                 "FerrostarSwiftUI",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
-            path: "apple/Tests/TestSupport"
+            path: "apple/Tests/TestSupport",
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
         ),
     ]
 )

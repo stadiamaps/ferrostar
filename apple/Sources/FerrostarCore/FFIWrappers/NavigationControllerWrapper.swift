@@ -3,7 +3,7 @@ import FerrostarCoreFFI
 import Foundation
 
 /// A Swift wrapper around `UniFFI.NavigationControllerConfig`.
-public struct SwiftNavigationControllerConfig {
+public struct SwiftNavigationControllerConfig: Sendable {
     public init(waypointAdvance: WaypointAdvanceMode,
                 stepAdvanceCondition: StepAdvanceCondition,
                 arrivalStepAdvanceCondition: StepAdvanceCondition,
