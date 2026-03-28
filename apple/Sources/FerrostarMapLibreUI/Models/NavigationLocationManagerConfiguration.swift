@@ -22,5 +22,7 @@ public struct NavigationLocationManagerConfiguration {
         self.navigatingLocationManager = navigatingLocationManager
     }
 
-    public static var `default`: Self { .init() }
+    public static var `default`: Self {
+        .init()
+    }
 }
