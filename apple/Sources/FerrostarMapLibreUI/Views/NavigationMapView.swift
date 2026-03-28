@@ -25,8 +25,9 @@ public struct NavigationMapView: View {
     // TODO: Configurable camera and user "puck" rotation modes
 
     private let navigationState: NavigationState?
+    private let locationManagerConfiguration: NavigationLocationManagerConfiguration
 
-    @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
+    @State private var navigatingLocationManager: any NavigationDrivenLocationManager
 
     // MARK: Camera Settings
 
@@ -44,6 +45,7 @@ public struct NavigationMapView: View {
         styleURL: URL,
         camera: Binding<MapViewCamera>,
         navigationState: NavigationState?,
+        locationManagerConfiguration: NavigationLocationManagerConfiguration = .default,
         activity: MapActivity = .standard,
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
@@ -51,9 +53,11 @@ public struct NavigationMapView: View {
         self.styleURL = styleURL
         _camera = camera
         self.navigationState = navigationState
+        self.locationManagerConfiguration = locationManagerConfiguration
         self.onStyleLoaded = onStyleLoaded
         userLayers = makeMapContent()
         self.activity = activity
+        _navigatingLocationManager = State(initialValue: locationManagerConfiguration.navigatingLocationManager)
     }
 
     public var body: some View {
@@ -61,7 +65,7 @@ public struct NavigationMapView: View {
             MapView(
                 styleURL: styleURL,
                 camera: $camera,
-                locationManager: locationManager,
+                locationManager: activeLocationManager,
                 activity: activity
             ) {
                 // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
@@ -108,11 +112,18 @@ public struct NavigationMapView: View {
         if let userLocation = navigationState?.preferredUserLocation,
            // There is no reason to push an update if the coordinate and heading are the same.
            // That's all that gets displayed, so it's all that MapLibre should care about.
-           locationManager.lastLocation.coordinate != userLocation.coordinates
-           .clLocationCoordinate2D || locationManager.lastLocation.course != userLocation.clLocation.course
+           navigatingLocationManager.lastLocation.coordinate != userLocation.coordinates
+           .clLocationCoordinate2D || navigatingLocationManager.lastLocation.course != userLocation.clLocation.course
         {
-            locationManager.lastLocation = userLocation.clLocation
+            navigatingLocationManager.lastLocation = userLocation.clLocation
         }
+    }
+
+    private var activeLocationManager: (any MLNLocationManager)? {
+        if navigationState?.isNavigating == true {
+            return navigatingLocationManager
+        }
+        return locationManagerConfiguration.nonNavigatingLocationManager
     }
 }
 
