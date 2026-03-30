@@ -47,6 +47,7 @@ fun CarAppNavigationView(
     mapContent: @Composable @MaplibreComposable ((NavigationUiState) -> Unit)? = null,
 ) {
   val uiState by viewModel.navigationUiState.collectAsState()
+  surfaceAreaTracker?.rememberGestureDelegate(navigationMapState)
 
   val surfaceArea by surfaceAreaTracker
       ?.let { screenSurfaceState(it) }
