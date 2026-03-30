@@ -8,7 +8,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.DpOffset
 import com.stadiamaps.ferrostar.core.BoundingBox
+import kotlin.math.ln
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -44,6 +46,42 @@ internal constructor(
 
   fun zoomOut(delta: Double = 1.0) {
     cameraState.incrementZoom(-delta)
+  }
+
+  fun panBy(screenDistance: DpOffset) {
+    val projection = cameraState.projection ?: return
+    val currentPosition = cameraState.position
+    val translatedTarget =
+        projection.positionFromScreenLocation(
+            projection.screenLocationFromPosition(currentPosition.target) + screenDistance)
+
+    cameraMode = NavigationCameraMode.FREE
+    cameraState.position = currentPosition.copy(target = translatedTarget)
+  }
+
+  fun flingBy(screenDistance: DpOffset, duration: Duration = 300.milliseconds) {
+    val projection = cameraState.projection ?: return
+    val currentPosition = cameraState.position
+    val translatedTarget =
+        projection.positionFromScreenLocation(
+            projection.screenLocationFromPosition(currentPosition.target) + screenDistance)
+
+    cameraMode = NavigationCameraMode.FREE
+    coroutineScope.launch {
+      cameraState.animateTo(
+          finalPosition = currentPosition.copy(target = translatedTarget),
+          duration = duration,
+      )
+    }
+  }
+
+  fun scaleBy(scaleFactor: Float) {
+    if (scaleFactor <= 0f) return
+
+    val zoomDelta = ln(scaleFactor.toDouble()) / ln(2.0)
+    cameraMode = NavigationCameraMode.FREE
+    cameraState.position =
+        cameraState.position.copy(zoom = (cameraState.position.zoom + zoomDelta).coerceAtLeast(0.0))
   }
 
   fun showRouteOverview(
