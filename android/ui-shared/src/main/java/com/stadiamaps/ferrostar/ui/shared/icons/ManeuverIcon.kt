@@ -3,6 +3,7 @@ package com.stadiamaps.ferrostar.ui.shared.icons
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.core.graphics.drawable.IconCompat
+import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.ManeuverModifier
 import uniffi.ferrostar.ManeuverType
 
@@ -10,7 +11,8 @@ import uniffi.ferrostar.ManeuverType
 class ManeuverIcon(
     private val context: Context,
     maneuverType: ManeuverType,
-    maneuverModifier: ManeuverModifier
+    maneuverModifier: ManeuverModifier,
+    drivingSide: DrivingSide?,
 ) {
 
   private val _identifier: String
@@ -26,7 +28,11 @@ class ManeuverIcon(
         )
             .joinToString(separator = "_")
 
-    this._identifier = "direction_${descriptor}".lowercase()
+    if (drivingSide === DrivingSide.LEFT) {
+      this._identifier = "direction_${descriptor}_driving_left".lowercase()
+    } else {
+      this._identifier = "direction_${descriptor}".lowercase()
+    }
     this._resourceId = context.resources.getIdentifier(this.identifier, "drawable", context.packageName)
   }
 
