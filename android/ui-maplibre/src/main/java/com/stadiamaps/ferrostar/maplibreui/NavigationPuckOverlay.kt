@@ -53,18 +53,26 @@ internal fun navigationPuckFeatureCollection(
         )
     )
 
+internal data class NavigationPuckTarget(
+    val longitude: Double,
+    val latitude: Double,
+    val bearingDegrees: Double,
+)
+
 @Composable
 @MaplibreComposable
 internal fun NavigationPuckOverlay(
-    longitude: Double,
-    latitude: Double,
-    bearingDegrees: Double,
+    target: NavigationPuckTarget,
     style: NavigationMapPuckStyle,
 ) {
   val source =
       rememberGeoJsonSource(
           GeoJsonData.Features(
-              navigationPuckFeatureCollection(longitude, latitude, bearingDegrees),
+              navigationPuckFeatureCollection(
+                  longitude = target.longitude,
+                  latitude = target.latitude,
+                  bearingDegrees = target.bearingDegrees,
+              ),
           ),
       )
   val puckPainter = rememberNavigationPuckPainter(style.dotFillColorCurrentLocation)
