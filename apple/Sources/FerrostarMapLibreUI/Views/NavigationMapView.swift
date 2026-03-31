@@ -26,8 +26,8 @@ public struct NavigationMapView: View {
     // TODO: Configurable camera and user "puck" rotation modes
 
     private let navigationState: NavigationState?
-    private let locationManagerConfiguration: NavigationLocationManagerConfiguration
 
+    @State private var nonNavigatingLocationManager: (any MLNLocationManager)?
     @State private var navigatingLocationManager: any NavigationDrivenLocationManager
 
     // MARK: Camera Settings
@@ -55,11 +55,11 @@ public struct NavigationMapView: View {
         self.styleURL = styleURL
         _camera = camera
         self.navigationState = navigationState
-        self.locationManagerConfiguration = locationManagerConfiguration
         self.onUserTrackingModeChanged = onUserTrackingModeChanged
         self.onStyleLoaded = onStyleLoaded
         userLayers = makeMapContent()
         self.activity = activity
+        _nonNavigatingLocationManager = State(initialValue: locationManagerConfiguration.nonNavigatingLocationManager)
         _navigatingLocationManager = State(initialValue: locationManagerConfiguration.navigatingLocationManager)
     }
 
@@ -127,7 +127,7 @@ public struct NavigationMapView: View {
         if navigationState?.isNavigating == true {
             return navigatingLocationManager
         }
-        return locationManagerConfiguration.nonNavigatingLocationManager
+        return nonNavigatingLocationManager
     }
 }
 
