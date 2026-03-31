@@ -233,7 +233,7 @@ Bringing it all together, a typical init looks something like this:
 ```kotlin
 var options =
     mapOf(
-        "costingOptions" to
+        "costing_options" to
             mapOf(
                 "bicycle" to
                     mapOf(
