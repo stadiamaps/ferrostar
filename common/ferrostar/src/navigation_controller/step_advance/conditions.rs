@@ -1612,8 +1612,10 @@ mod prop_tests {
         fn distance_to_end_never_advances_with_bad_accuracy(
             c1 in arb_coord(),
             c2 in arb_coord(),
-            accuracy in 11.0f64..10000.0f64,
+            excess in 0.001f64..f64::MAX,
         ) {
+            let accuracy = 10.0 + excess;
+
             let route_step =
                 crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
 
@@ -1646,8 +1648,10 @@ mod prop_tests {
             c1 in arb_coord(),
             c2 in arb_coord(),
             user_coord in arb_coord(),
-            accuracy in 11.0f64..10000.0f64,
+            excess in 0.001f64..f64::MAX,
         ) {
+            let accuracy = 10.0 + excess;
+
             let route_step =
                 crate::navigation_controller::test_helpers::gen_route_step_with_coords(vec![c1, c2]);
 
