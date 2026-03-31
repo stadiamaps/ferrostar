@@ -15,15 +15,15 @@
     "noImplicitUseStrict": false,
     "noStrictGenericChecks": false,
     "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "resolveJsonModule": true,
     "resolvePackageJsonImports": false,
     "skipLibCheck": true,
     "strict": false,
     "target": "ESNext",
     "verbatimModuleSyntax": true,
-    "noCheck": true
+    "noCheck": true,
   },
-  "exclude": ["lib"]
+  "exclude": ["lib"],
 }

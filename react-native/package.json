@@ -11,7 +11,7 @@
     "build:ios:win32": "powershell ./scripts/build-ios.ps1",
     "build:ios:default": "./scripts/build-ios.sh",
     "example:start": "bun run --filter @stadiamaps/ferrostar-example-react-native start",
-    "example:android": "bun run --filter @stadiamaps/ferrostar-example-react-native android",
+    "example:android": "cd ./example && bun run android",
     "example:ios": "bun run --filter @stadiamaps/ferrostar-example-react-native ios",
     "example:prebuild": "bun run --filter @stadiamaps/ferrostar-example-react-native prebuild",
     "test": "jest",
