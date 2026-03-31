@@ -17,6 +17,7 @@ public struct NavigationUICameraButton: View {
         case .hidden:
             EmptyView()
         case let .showRecenter(action),
+             let .showCurrentLocation(action),
              let .showRouteOverview(action):
             NavigationUIButton(action: action) {
                 Image(systemName: state.systemImageName)

@@ -9,6 +9,12 @@ public enum CameraControlState {
     /// to a state that follows the user.
     case showRecenter(() -> Void)
 
+    /// Shows the current location button.
+    ///
+    /// The action is responsible for transitioning the camera back
+    /// to a state that follows the user.
+    case showCurrentLocation(() -> Void)
+
     /// Shows the route overview button.
     ///
     /// The action is responsible for transitioning the camera to an overview of the route.
@@ -21,6 +27,8 @@ public extension CameraControlState {
         switch self {
         case .hidden, .showRecenter:
             "location.north.fill"
+        case .showCurrentLocation:
+            "location.fill"
         case .showRouteOverview:
             "point.bottomleft.forward.to.point.topright.scurvepath"
         }

@@ -19,6 +19,7 @@ public struct NavigationMapView: View {
     let styleURL: URL
     var mapViewContentInset: UIEdgeInsets = .zero
     var onStyleLoaded: (MLNStyle) -> Void
+    var onUserTrackingModeChanged: (MLNUserTrackingMode, Bool) -> Void
     let userLayers: [StyleLayerDefinition]
     let activity: MapActivity
 
@@ -45,12 +46,14 @@ public struct NavigationMapView: View {
         camera: Binding<MapViewCamera>,
         navigationState: NavigationState?,
         activity: MapActivity = .standard,
+        onUserTrackingModeChanged: @escaping (MLNUserTrackingMode, Bool) -> Void = { _, _ in },
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         _camera = camera
         self.navigationState = navigationState
+        self.onUserTrackingModeChanged = onUserTrackingModeChanged
         self.onStyleLoaded = onStyleLoaded
         userLayers = makeMapContent()
         self.activity = activity
@@ -76,6 +79,7 @@ public struct NavigationMapView: View {
             .mapControls {
                 // No controls
             }
+            .onMapUserTrackingModeChanged(onUserTrackingModeChanged)
             .onMapStyleLoaded(onStyleLoaded)
             .ignoresSafeArea(.all)
         }
