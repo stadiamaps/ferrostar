@@ -9,9 +9,6 @@ import MapLibreSwiftUI
 /// - recenter when the map is in route overview (`.rect`)
 /// - current-location when user tracking is disengaged (`.none`)
 /// - route-overview when actively following the user
-///
-/// The resolver also emits a recenter action that alternates `lastReasonForChange` so repeated
-/// recenter taps always produce a non-equal camera update and are not dropped as no-ops.
 struct NavigationCameraControlResolver {
     let isNavigating: Bool
     let camera: MapViewCamera
