@@ -37,7 +37,7 @@ struct CarPlayNavigationOverlayView: View {
 
                     Spacer()
                 }
-            case .showRecenter:
+            case .showRecenter, .showCurrentLocation:
                 EmptyView()
             }
 

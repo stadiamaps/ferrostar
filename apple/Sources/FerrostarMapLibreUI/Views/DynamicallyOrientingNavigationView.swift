@@ -17,6 +17,7 @@ public struct DynamicallyOrientingNavigationView: View {
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+    @State private var userTrackingMode: MLNUserTrackingMode = .followWithCourse
 
     // Speed limit and grid configuration now read from environment to avoid struct copying issues
     @Environment(\.speedLimitConfiguration) private var speedLimitConfig
@@ -68,13 +69,14 @@ public struct DynamicallyOrientingNavigationView: View {
 
     public var body: some View {
         GeometryReader { geometry in
-            let isNavigating = navigationState?.isNavigating == true
-
             ZStack {
                 NavigationMapView(
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    onUserTrackingModeChanged: { mode, _ in
+                        userTrackingMode = mode
+                    },
                     onStyleLoaded: { _ in
                         if isNavigating {
                             camera = navigationCamera
@@ -139,21 +141,20 @@ public struct DynamicallyOrientingNavigationView: View {
         }
     }
 
+    private var isNavigating: Bool {
+        navigationState?.isNavigating == true
+    }
+
     private var cameraControlState: CameraControlState {
-        if navigationState?.isNavigating != true {
-            return .hidden
-        }
-        if camera.isTrackingUserLocationWithCourse {
-            guard let overviewCamera = navigationState?.routeOverviewCamera else {
-                return .hidden
-            }
-            return .showRouteOverview {
-                camera = overviewCamera
-            }
-        }
-        return .showRecenter {
-            camera = navigationCamera
-        }
+        NavigationCameraControlResolver(
+            isNavigating: isNavigating,
+            camera: camera,
+            userTrackingMode: userTrackingMode,
+            navigationCamera: navigationCamera,
+            routeOverviewCamera: navigationState?.routeOverviewCamera,
+            setCamera: { camera = $0 }
+        )
+        .cameraControlState()
     }
 }
 

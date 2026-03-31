@@ -40,6 +40,7 @@ public enum CarPlayMapButtons {
         case .hidden:
             return nil
         case let .showRecenter(action),
+             let .showCurrentLocation(action),
              let .showRouteOverview(action):
             let button = CPMapButton { _ in
                 action()

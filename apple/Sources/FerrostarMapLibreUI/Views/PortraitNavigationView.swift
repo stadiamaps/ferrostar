@@ -19,6 +19,7 @@ public struct PortraitNavigationView: View {
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+    @State private var userTrackingMode: MLNUserTrackingMode = .followWithCourse
 
     let isMuted: Bool
     let onTapMute: () -> Void
@@ -72,6 +73,9 @@ public struct PortraitNavigationView: View {
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    onUserTrackingModeChanged: { mode, _ in
+                        userTrackingMode = mode
+                    },
                     onStyleLoaded: { _ in
                         camera = navigationCamera
                     }
@@ -108,21 +112,20 @@ public struct PortraitNavigationView: View {
         }
     }
 
+    private var isNavigating: Bool {
+        navigationState?.isNavigating == true
+    }
+
     private var cameraControlState: CameraControlState {
-        if navigationState?.isNavigating != true {
-            return .hidden
-        }
-        if camera.isTrackingUserLocationWithCourse {
-            guard let overviewCamera = navigationState?.routeOverviewCamera else {
-                return .hidden
-            }
-            return .showRouteOverview {
-                camera = overviewCamera
-            }
-        }
-        return .showRecenter {
-            camera = navigationCamera
-        }
+        NavigationCameraControlResolver(
+            isNavigating: isNavigating,
+            camera: camera,
+            userTrackingMode: userTrackingMode,
+            navigationCamera: navigationCamera,
+            routeOverviewCamera: navigationState?.routeOverviewCamera,
+            setCamera: { camera = $0 }
+        )
+        .cameraControlState()
     }
 }
 
