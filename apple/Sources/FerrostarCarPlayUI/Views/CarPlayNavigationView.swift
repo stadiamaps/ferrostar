@@ -16,7 +16,7 @@ public struct CarPlayNavigationView: View {
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
-    let locationManagerConfiguration: NavigationLocationManagerConfiguration
+    let locationManagerConfiguration: NavigationLocationManagerConfiguration?
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -43,7 +43,7 @@ public struct CarPlayNavigationView: View {
         camera: Binding<MapViewCamera>,
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
-        locationManagerConfiguration: NavigationLocationManagerConfiguration = .default,
+        locationManagerConfiguration: NavigationLocationManagerConfiguration? = nil,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         @MapViewContentBuilder makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {

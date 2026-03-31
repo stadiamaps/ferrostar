@@ -26,9 +26,9 @@ public struct NavigationMapView: View {
     // TODO: Configurable camera and user "puck" rotation modes
 
     private let navigationState: NavigationState?
-
-    @State private var nonNavigatingLocationManager: (any MLNLocationManager)?
-    @State private var navigatingLocationManager: any NavigationDrivenLocationManager
+    private let locationManagerConfiguration: NavigationLocationManagerConfiguration?
+    @State private var defaultNavigatingLocationManager: any NavigationDrivenLocationManager =
+        StaticLocationManager(initialLocation: CLLocation())
 
     // MARK: Camera Settings
 
@@ -40,13 +40,15 @@ public struct NavigationMapView: View {
     ///   - styleURL: The map's style url.
     ///   - camera: The camera binding that represents the current camera on the map.
     ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
+    ///   - locationManagerConfiguration: Optional custom managers for navigating/non-navigating modes.
+    ///     Keep manager instances stable (do not construct inline in `body`).
     ///   - onStyleLoaded: The map's style has loaded and the camera can be manipulated (e.g. to user tracking).
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,
         navigationState: NavigationState?,
-        locationManagerConfiguration: NavigationLocationManagerConfiguration = .default,
+        locationManagerConfiguration: NavigationLocationManagerConfiguration? = nil,
         activity: MapActivity = .standard,
         onUserTrackingModeChanged: @escaping (MLNUserTrackingMode, Bool) -> Void = { _, _ in },
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
@@ -55,12 +57,11 @@ public struct NavigationMapView: View {
         self.styleURL = styleURL
         _camera = camera
         self.navigationState = navigationState
+        self.locationManagerConfiguration = locationManagerConfiguration
         self.onUserTrackingModeChanged = onUserTrackingModeChanged
         self.onStyleLoaded = onStyleLoaded
         userLayers = makeMapContent()
         self.activity = activity
-        _nonNavigatingLocationManager = State(initialValue: locationManagerConfiguration.nonNavigatingLocationManager)
-        _navigatingLocationManager = State(initialValue: locationManagerConfiguration.navigatingLocationManager)
     }
 
     public var body: some View {
@@ -116,18 +117,22 @@ public struct NavigationMapView: View {
         if let userLocation = navigationState?.preferredUserLocation,
            // There is no reason to push an update if the coordinate and heading are the same.
            // That's all that gets displayed, so it's all that MapLibre should care about.
-           navigatingLocationManager.lastLocation.coordinate != userLocation.coordinates
-           .clLocationCoordinate2D || navigatingLocationManager.lastLocation.course != userLocation.clLocation.course
+           activeNavigatingLocationManager.lastLocation.coordinate != userLocation.coordinates.clLocationCoordinate2D ||
+           activeNavigatingLocationManager.lastLocation.course != userLocation.clLocation.course
         {
-            navigatingLocationManager.lastLocation = userLocation.clLocation
+            activeNavigatingLocationManager.lastLocation = userLocation.clLocation
         }
+    }
+
+    private var activeNavigatingLocationManager: any NavigationDrivenLocationManager {
+        locationManagerConfiguration?.navigatingLocationManager ?? defaultNavigatingLocationManager
     }
 
     private var activeLocationManager: (any MLNLocationManager)? {
         if navigationState?.isNavigating == true {
-            return navigatingLocationManager
+            return activeNavigatingLocationManager
         }
-        return nonNavigatingLocationManager
+        return locationManagerConfiguration?.nonNavigatingLocationManager
     }
 }
 

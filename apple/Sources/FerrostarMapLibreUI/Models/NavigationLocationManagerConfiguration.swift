@@ -1,4 +1,3 @@
-import CoreLocation
 import MapLibre
 import MapLibreSwiftUI
 
@@ -8,21 +7,19 @@ import MapLibreSwiftUI
 ///   - `nil` uses MapLibre's default internal manager (recommended default).
 ///   - any custom manager can be supplied for non-navigation behavior.
 /// - `navigatingLocationManager`:
-///   - defaults to ``StaticLocationManager`` fed by Ferrostar navigation state.
+///   - custom manager fed by Ferrostar navigation state.
+///
+/// Note: `MLNLocationManager` implementations are reference types. Do not construct this configuration
+/// inline in a SwiftUI `body`; keep manager instances in stable state/model storage and pass references here.
 public struct NavigationLocationManagerConfiguration {
     public var nonNavigatingLocationManager: (any MLNLocationManager)?
     public var navigatingLocationManager: any NavigationDrivenLocationManager
 
     public init(
         nonNavigatingLocationManager: (any MLNLocationManager)? = nil,
-        navigatingLocationManager: any NavigationDrivenLocationManager =
-            StaticLocationManager(initialLocation: CLLocation())
+        navigatingLocationManager: any NavigationDrivenLocationManager
     ) {
         self.nonNavigatingLocationManager = nonNavigatingLocationManager
         self.navigatingLocationManager = navigatingLocationManager
-    }
-
-    public static var `default`: Self {
-        .init()
     }
 }
