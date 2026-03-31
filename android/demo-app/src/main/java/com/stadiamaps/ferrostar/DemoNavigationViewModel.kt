@@ -66,11 +66,9 @@ class DemoNavigationViewModel(
 
   init {
     viewModelScope.launch {
-      combine(_hasLocationPermission, _simulated) { hasPermission, simulated ->
-            hasPermission to simulated
-          }
-          .flatMapLatest { (hasPermission, simulated) ->
-            if (simulated || !hasPermission) {
+      _hasLocationPermission
+          .flatMapLatest { hasPermission ->
+            if (!hasPermission) {
               flowOf(initialSimulatedLocation)
             } else {
               locationProvider.locationUpdates(5000L)

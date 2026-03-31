@@ -14,19 +14,18 @@ import com.stadiamaps.ferrostar.maplibreui.routeline.RouteOverlayBuilder
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraMode
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.NavigationMapState
+import com.stadiamaps.ferrostar.maplibreui.runtime.TrackingCameraEffect
 import com.stadiamaps.ferrostar.maplibreui.runtime.defaultNavigationCameraMode
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberDisplayedNavigationLocation
 import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberFerrostarLocationState
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
-import com.stadiamaps.ferrostar.maplibreui.runtime.templateFollowingCameraPosition
-import com.stadiamaps.ferrostar.maplibreui.runtime.trackingFollowingCameraPosition
-import com.stadiamaps.ferrostar.maplibreui.runtime.toMapLibreLocation
+import com.stadiamaps.ferrostar.maplibreui.runtime.snapTrackingCameraToUserLocation
 import kotlinx.coroutines.flow.collectLatest
 import org.maplibre.compose.camera.CameraMoveReason
 import org.maplibre.compose.location.LocationPuck
 import org.maplibre.compose.location.LocationPuckColors
 import org.maplibre.compose.location.LocationPuckSizes
-import org.maplibre.compose.location.LocationTrackingEffect
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.style.BaseStyle
@@ -74,7 +73,7 @@ fun NavigationMapView(
 ) {
   val cameraState = navigationMapState.cameraState
   val userLocationState = rememberFerrostarLocationState(uiState.location)
-  val userLocation = uiState.location?.toMapLibreLocation()
+  val displayedNavigationLocation = rememberDisplayedNavigationLocation(uiState)
   var lastKnownNavigationPuckBearing by remember { mutableStateOf(0.0) }
   navigationMapState.navigationCameraOptions = navigationCameraOptions
 
@@ -84,31 +83,14 @@ fun NavigationMapView(
     navigationMapState.cameraMode = defaultNavigationCameraMode(isNavigating)
   }
 
-  LaunchedEffect(navigationMapState.cameraMode, userLocation != null) {
-    if (userLocation != null && navigationMapState.isTrackingUser) {
-      cameraState.position =
-          navigationMapState.templateFollowingCameraPosition(
-              target = userLocation.position,
-              bearing = userLocation.bearing,
-          )
-    }
+  LaunchedEffect(displayedNavigationLocation?.bearing) {
+    displayedNavigationLocation?.bearing?.let { lastKnownNavigationPuckBearing = it }
   }
 
-  LaunchedEffect(userLocation?.bearing) {
-    userLocation?.bearing?.let { lastKnownNavigationPuckBearing = it }
-  }
-
-  LocationTrackingEffect(
-      locationState = userLocationState,
-      enabled = navigationMapState.isTrackingUser,
-      trackBearing = navigationMapState.cameraMode == NavigationCameraMode.FOLLOW_USER_WITH_BEARING,
-  ) {
-    cameraState.position =
-        navigationMapState.trackingFollowingCameraPosition(
-            target = currentLocation.position,
-            bearing = currentLocation.bearing,
-        )
-  }
+  TrackingCameraEffect(
+      navigationMapState = navigationMapState,
+      userLocation = displayedNavigationLocation,
+  )
 
   LaunchedEffect(cameraState, navigationMapState) {
     snapshotFlow { cameraState.moveReason }.collectLatest { moveReason ->
@@ -130,12 +112,8 @@ fun NavigationMapView(
       },
       onMapLoadFailed = onMapLoadFailed,
       onMapLoadFinished = {
-        if (userLocation != null && navigationMapState.isTrackingUser) {
-          cameraState.position =
-              navigationMapState.templateFollowingCameraPosition(
-                  target = userLocation.position,
-                  bearing = userLocation.bearing,
-              )
+        if (displayedNavigationLocation != null && navigationMapState.isTrackingUser) {
+          navigationMapState.snapTrackingCameraToUserLocation(displayedNavigationLocation)
         }
         onMapLoadFinished()
       },
@@ -143,14 +121,17 @@ fun NavigationMapView(
   ) {
     routeOverlayBuilder.navigationPath(uiState)
 
-    if (shouldRenderNavigationPuck(uiState) && userLocation != null) {
+    if (shouldRenderNavigationPuck(uiState) && displayedNavigationLocation != null) {
       NavigationPuckOverlay(
-          longitude = userLocation.position.longitude,
-          latitude = userLocation.position.latitude,
-          bearingDegrees =
-              navigationPuckBearingDegrees(
-                  currentBearing = userLocation.bearing,
-                  lastKnownBearing = lastKnownNavigationPuckBearing,
+          target =
+              NavigationPuckTarget(
+                  longitude = displayedNavigationLocation.position.longitude,
+                  latitude = displayedNavigationLocation.position.latitude,
+                  bearingDegrees =
+                      navigationPuckBearingDegrees(
+                          currentBearing = displayedNavigationLocation.bearing,
+                          lastKnownBearing = lastKnownNavigationPuckBearing,
+                      ),
               ),
           style = locationPuckStyle,
       )
