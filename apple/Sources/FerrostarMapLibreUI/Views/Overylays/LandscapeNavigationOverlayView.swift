@@ -95,7 +95,7 @@ struct LandscapeNavigationOverlayView: View {
 
                         Spacer(minLength: 64)
                     }
-                case .showRecenter:
+                case .showRecenter, .showCurrentLocation:
                     EmptyView()
                 }
 
