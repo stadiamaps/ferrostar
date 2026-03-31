@@ -54,6 +54,8 @@ struct NavigationCameraControlResolver {
 
     private func recenterToFollowMode() {
         var followCamera = navigationCamera
+        // We alternate `lastReasonForChange` here so repeated recenter taps
+        // always produce a non-equal camera update and are not dropped as no-ops.
         followCamera.lastReasonForChange = camera.lastReasonForChange == .programmatic ? nil : .programmatic
         setCamera(followCamera)
     }
