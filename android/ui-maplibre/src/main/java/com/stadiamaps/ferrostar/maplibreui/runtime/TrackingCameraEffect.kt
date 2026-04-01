@@ -31,7 +31,13 @@ internal fun TrackingCameraEffect(
 
   if (userLocation != null && navigationMapState.isTrackingUser) {
     val shouldSnap = !state.hadLocation || state.lastMode != navigationMapState.cameraMode
-    if (shouldSnap) {
+    if (navigationMapState.suppressTrackingUpdates) {
+      // Keep the animated transition in control until it completes.
+    } else if (!state.hadLocation) {
+      navigationMapState.snapTrackingCameraToUserLocation(userLocation)
+    } else if (state.lastMode?.tracksLocation() == false && shouldSnap) {
+      navigationMapState.animateTrackingCameraToUserLocation(userLocation)
+    } else if (shouldSnap) {
       navigationMapState.snapTrackingCameraToUserLocation(userLocation)
     } else {
       cameraState.position =
@@ -43,7 +49,7 @@ internal fun TrackingCameraEffect(
     state.hadLocation = true
     state.lastMode = navigationMapState.cameraMode
   } else {
-    state.hadLocation = false
+    state.hadLocation = userLocation != null
     state.lastMode = navigationMapState.cameraMode
   }
 }

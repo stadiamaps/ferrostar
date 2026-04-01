@@ -1,6 +1,9 @@
 package com.stadiamaps.ferrostar.maplibreui.runtime
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -17,7 +20,12 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import org.maplibre.compose.camera.CameraState
+import org.maplibre.compose.location.Location
 import org.maplibre.compose.camera.rememberCameraState
+
+internal val DEFAULT_TRACKING_CAMERA_TRANSITION_DURATION = 1000.milliseconds
+internal val DEFAULT_ROUTE_OVERVIEW_ANIMATION_DURATION = 1000.milliseconds
+internal val DEFAULT_ZOOM_ANIMATION_DURATION = 300.milliseconds
 
 @Stable
 class NavigationMapState
@@ -27,7 +35,8 @@ internal constructor(
     navigationCameraOptions: NavigationCameraOptions,
     private val coroutineScope: CoroutineScope,
 ) {
-  private var routeOverviewJob: Job? = null
+  private var cameraAnimationJob: Job? = null
+  internal var suppressTrackingUpdates: Boolean = false
 
   var cameraMode by mutableStateOf(initialCameraMode)
 
@@ -40,12 +49,18 @@ internal constructor(
     cameraMode = defaultNavigationCameraMode(isNavigating)
   }
 
-  fun zoomIn(delta: Double = 1.0) {
-    cameraState.incrementZoom(delta)
+  fun zoomIn(
+      delta: Double = 1.0,
+      duration: Duration = DEFAULT_ZOOM_ANIMATION_DURATION,
+  ) {
+    animateZoomBy(delta = delta, duration = duration)
   }
 
-  fun zoomOut(delta: Double = 1.0) {
-    cameraState.incrementZoom(-delta)
+  fun zoomOut(
+      delta: Double = 1.0,
+      duration: Duration = DEFAULT_ZOOM_ANIMATION_DURATION,
+  ) {
+    animateZoomBy(delta = -delta, duration = duration)
   }
 
   fun panBy(screenDistance: DpOffset) {
@@ -67,7 +82,7 @@ internal constructor(
             projection.screenLocationFromPosition(currentPosition.target) + screenDistance)
 
     cameraMode = NavigationCameraMode.FREE
-    coroutineScope.launch {
+    launchCameraAnimation {
       cameraState.animateTo(
           finalPosition = currentPosition.copy(target = translatedTarget),
           duration = duration,
@@ -87,17 +102,85 @@ internal constructor(
   fun showRouteOverview(
       boundingBox: BoundingBox,
       paddingValues: PaddingValues = PaddingValues(),
-      duration: Duration = 0.milliseconds,
+      duration: Duration = DEFAULT_ROUTE_OVERVIEW_ANIMATION_DURATION,
   ) {
     cameraMode = NavigationCameraMode.OVERVIEW
-    routeOverviewJob?.cancel()
-    routeOverviewJob =
+    launchCameraAnimation {
+      cameraState.animateTo(
+          boundingBox = boundingBox.toMapLibreBoundingBox(),
+          padding = paddingValues,
+          duration = normalizeOverviewAnimationDuration(duration),
+      )
+    }
+  }
+
+  internal fun animateTrackingCameraToUserLocation(
+      userLocation: Location,
+      duration: Duration = DEFAULT_TRACKING_CAMERA_TRANSITION_DURATION,
+  ) {
+    launchCameraAnimation(suppressTrackingUpdates = true) {
+      cameraState.animateTo(
+          finalPosition =
+              templateFollowingCameraPosition(
+                  target = userLocation.position,
+                  bearing = userLocation.bearing,
+              ),
+          duration = duration,
+      )
+    }
+  }
+
+  private fun animateZoomBy(
+      delta: Double,
+      duration: Duration,
+  ) {
+    if (delta == 0.0) return
+
+    val targetZoom = (cameraState.position.zoom + delta).coerceAtLeast(0.0)
+    if (isTrackingUser) {
+      animateTrackingZoomTo(targetZoom = targetZoom, duration = duration)
+    } else {
+      launchCameraAnimation {
+        cameraState.animateTo(
+            finalPosition = cameraState.position.copy(zoom = targetZoom),
+            duration = duration,
+        )
+      }
+    }
+  }
+
+  private fun animateTrackingZoomTo(
+      targetZoom: Double,
+      duration: Duration,
+  ) {
+    launchCameraAnimation {
+      val animatedZoom = Animatable(cameraState.position.zoom.toFloat())
+      animatedZoom.animateTo(
+          targetValue = targetZoom.toFloat(),
+          animationSpec =
+              tween(
+                  durationMillis = duration.inWholeMilliseconds.toInt(),
+                  easing = LinearEasing,
+              ),
+      ) {
+        cameraState.position = cameraState.position.copy(zoom = value.coerceAtLeast(0f).toDouble())
+      }
+    }
+  }
+
+  private fun launchCameraAnimation(
+      suppressTrackingUpdates: Boolean = false,
+      block: suspend () -> Unit,
+  ) {
+    cameraAnimationJob?.cancel()
+    this.suppressTrackingUpdates = suppressTrackingUpdates
+    cameraAnimationJob =
         coroutineScope.launch {
-          cameraState.animateTo(
-              boundingBox = boundingBox.toMapLibreBoundingBox(),
-              padding = paddingValues,
-              duration = normalizeOverviewAnimationDuration(duration),
-          )
+          try {
+            block()
+          } finally {
+            this@NavigationMapState.suppressTrackingUpdates = false
+          }
         }
   }
 }

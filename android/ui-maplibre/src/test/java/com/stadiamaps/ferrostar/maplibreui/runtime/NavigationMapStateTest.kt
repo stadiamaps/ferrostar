@@ -47,14 +47,25 @@ class NavigationMapStateTest {
   }
 
   @Test
-  fun zoomHelpersAdjustCameraZoom() {
-    val cameraState = CameraState(CameraPosition(zoom = 10.0))
-    val state = createState(cameraState = cameraState)
+  fun zoomHelpersAnimateCameraZoom() {
+    val cameraState = mockCameraState(initialPosition = CameraPosition(zoom = 10.0))
+    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FREE)
 
     state.zoomIn()
     state.zoomOut(delta = 2.0)
 
-    assertEquals(9.0, cameraState.position.zoom, 0.0)
+    coVerify {
+      cameraState.animateTo(
+          finalPosition = match { it.zoom == 11.0 },
+          duration = DEFAULT_ZOOM_ANIMATION_DURATION,
+      )
+    }
+    coVerify {
+      cameraState.animateTo(
+          finalPosition = match { it.zoom == 9.0 },
+          duration = DEFAULT_ZOOM_ANIMATION_DURATION,
+      )
+    }
   }
 
   @Test
@@ -203,7 +214,8 @@ class NavigationMapStateTest {
 
   @Test
   fun routeOverviewSwitchesToOverviewMode() {
-    val state = createState(initialCameraMode = NavigationCameraMode.FOLLOW_USER)
+    val cameraState = mockCameraState(initialPosition = CameraPosition())
+    val state = createState(cameraState = cameraState, initialCameraMode = NavigationCameraMode.FOLLOW_USER)
 
     state.showRouteOverview(
         boundingBox = BoundingBox(north = 48.5, east = 16.7, south = 48.1, west = 16.2),
@@ -212,6 +224,15 @@ class NavigationMapStateTest {
 
     assertEquals(NavigationCameraMode.OVERVIEW, state.cameraMode)
     assertFalse(state.isTrackingUser)
+    coVerify {
+      cameraState.animateTo(
+          boundingBox = any(),
+          bearing = 0.0,
+          tilt = 0.0,
+          padding = PaddingValues(),
+          duration = DEFAULT_ROUTE_OVERVIEW_ANIMATION_DURATION,
+      )
+    }
   }
 
   @Test
@@ -240,7 +261,7 @@ class NavigationMapStateTest {
 
   private fun mockCameraState(
       initialPosition: CameraPosition,
-      projection: CameraProjection,
+      projection: CameraProjection? = null,
   ): CameraState {
     val cameraState = mockk<CameraState>(relaxed = true)
     var currentPosition = initialPosition
@@ -251,6 +272,15 @@ class NavigationMapStateTest {
     coEvery { cameraState.animateTo(any<CameraPosition>(), any<Duration>()) } answers {
       currentPosition = firstArg()
     }
+    coEvery {
+      cameraState.animateTo(
+          any<org.maplibre.spatialk.geojson.BoundingBox>(),
+          any<Double>(),
+          any<Double>(),
+          any<PaddingValues>(),
+          any<Duration>(),
+      )
+    } returns Unit
 
     return cameraState
   }
