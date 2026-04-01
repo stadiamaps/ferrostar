@@ -22,7 +22,7 @@ import org.maplibre.compose.camera.rememberCameraState
 @Stable
 class NavigationMapState
 internal constructor(
-    internal val cameraState: CameraState,
+    val cameraState: CameraState,
     initialCameraMode: NavigationCameraMode,
     navigationCameraOptions: NavigationCameraOptions,
     private val coroutineScope: CoroutineScope,

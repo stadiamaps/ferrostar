@@ -28,6 +28,7 @@ import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
+import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.MaplibreComposable
 import uniffi.ferrostar.GeographicCoordinate
 
@@ -84,7 +85,7 @@ fun DemoNavigationScene(
 
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
-      styleUrl = AppModule.mapStyleUrl,
+      baseStyle = BaseStyle.Uri(AppModule.mapStyleUrl),
       viewModel = viewModel,
       config = VisualNavigationViewConfig.Default().withSpeedLimitStyle(SignageStyle.MUTCD),
       views =

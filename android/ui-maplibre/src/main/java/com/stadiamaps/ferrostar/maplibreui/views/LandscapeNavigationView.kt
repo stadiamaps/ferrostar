@@ -41,11 +41,12 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.maplibre.compose.util.MaplibreComposable
+import org.maplibre.compose.style.BaseStyle
 
 @Composable
 fun LandscapeNavigationView(
     modifier: Modifier,
-    styleUrl: String,
+    baseStyle: BaseStyle,
     navigationMapState: NavigationMapState = rememberNavigationMapState(),
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
     viewModel: NavigationViewModel,
@@ -54,7 +55,8 @@ fun LandscapeNavigationView(
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
-    routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
+    routeOverlayBuilder: RouteOverlayBuilder? = RouteOverlayBuilder.Default(),
+    showDefaultPuck: Boolean = true,
     onTapExit: (() -> Unit)? = null,
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
@@ -66,12 +68,13 @@ fun LandscapeNavigationView(
 
   Box(modifier) {
     NavigationMapView(
-        styleUrl = styleUrl,
+        baseStyle = baseStyle,
         navigationMapState = navigationMapState,
         uiState = uiState,
         mapOptions = mapOptions,
         navigationCameraOptions = navigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
+        showDefaultPuck = showDefaultPuck,
         locationPuckStyle = locationPuckStyle,
         onMapClick = onMapClick,
         onMapLongClick = onMapLongClick,
@@ -114,7 +117,7 @@ val previewViewModel =
 private fun LandscapeNavigationViewPreview() {
   LandscapeNavigationView(
       modifier = Modifier.fillMaxSize(),
-      styleUrl = "https://demotiles.maplibre.org/style.json",
+      baseStyle = BaseStyle.Uri("https://demotiles.maplibre.org/style.json"),
       viewModel = previewViewModel,
   )
 }

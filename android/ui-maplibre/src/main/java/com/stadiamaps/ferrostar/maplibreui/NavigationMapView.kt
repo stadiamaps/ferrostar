@@ -38,7 +38,7 @@ import uniffi.ferrostar.GeographicCoordinate
  * The base MapLibre map configured for navigation with a route line, location puck, gesture
  * callbacks, and Ferrostar-specific camera behavior for phone and tablet use.
  *
- * @param styleUrl The MapLibre style URL to use for the map.
+ * @param baseStyle The MapLibre base style to use for the map.
  * @param navigationMapState The Ferrostar-owned map state used to control follow, overview, free
  *   camera, and zoom behavior.
  * @param uiState The navigation UI state.
@@ -48,6 +48,7 @@ import uniffi.ferrostar.GeographicCoordinate
  * @param navigationCameraOptions The camera templates applied when following the user in browsing
  *   and navigation modes.
  * @param locationPuckStyle The style to use for the official MapLibre location puck.
+ * @param showDefaultPuck Whether Ferrostar should render its built-in location puck.
  * @param onMapLoadFinished A callback that is invoked when the map finished loading.
  * @param onMapLoadFailed A callback that is invoked when the map failed to load.
  * @param onMapClick Callback invoked for taps on the map with geographic coordinates and screen
@@ -58,13 +59,14 @@ import uniffi.ferrostar.GeographicCoordinate
  */
 @Composable
 fun NavigationMapView(
-    styleUrl: String,
+    baseStyle: BaseStyle,
     navigationMapState: NavigationMapState = rememberNavigationMapState(),
     uiState: NavigationUiState,
     mapOptions: MapOptions,
-    routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
+    routeOverlayBuilder: RouteOverlayBuilder? = RouteOverlayBuilder.Default(),
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
     locationPuckStyle: NavigationMapPuckStyle = NavigationMapPuckStyle(),
+    showDefaultPuck: Boolean = true,
     onMapLoadFinished: () -> Unit = {},
     onMapLoadFailed: (String?) -> Unit = {},
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
@@ -102,7 +104,7 @@ fun NavigationMapView(
 
   MaplibreMap(
       modifier = Modifier.fillMaxSize(),
-      baseStyle = BaseStyle.Uri(styleUrl),
+      baseStyle = baseStyle,
       cameraState = cameraState,
       onMapClick = { position, screenPosition ->
         onMapClick(position.toGeographicCoordinate(), screenPosition).toComposeClickResult()
@@ -119,45 +121,47 @@ fun NavigationMapView(
       },
       options = mapOptions,
   ) {
-    routeOverlayBuilder.navigationPath(uiState)
+    routeOverlayBuilder?.navigationPath(uiState)
 
-    if (shouldRenderNavigationPuck(uiState) && displayedNavigationLocation != null) {
-      NavigationPuckOverlay(
-          target =
-              NavigationPuckTarget(
-                  longitude = displayedNavigationLocation.position.longitude,
-                  latitude = displayedNavigationLocation.position.latitude,
-                  bearingDegrees =
-                      navigationPuckBearingDegrees(
-                          currentBearing = displayedNavigationLocation.bearing,
-                          lastKnownBearing = lastKnownNavigationPuckBearing,
-                      ),
-              ),
-          style = locationPuckStyle,
-      )
-    } else {
-      LocationPuck(
-          idPrefix = "ferrostar-location",
-          locationState = userLocationState,
-          cameraState = cameraState,
-          colors =
-              LocationPuckColors(
-                  dotFillColorCurrentLocation = locationPuckStyle.dotFillColorCurrentLocation,
-                  dotFillColorOldLocation = locationPuckStyle.dotFillColorOldLocation,
-                  dotStrokeColor = locationPuckStyle.dotStrokeColor,
-                  shadowColor = locationPuckStyle.shadowColor,
-                  accuracyStrokeColor = locationPuckStyle.accuracyStrokeColor,
-                  accuracyFillColor = locationPuckStyle.accuracyFillColor,
-                  bearingColor = locationPuckStyle.bearingColor,
-              ),
-          sizes =
-              LocationPuckSizes(
-                  dotRadius = locationPuckStyle.dotRadius,
-                  dotStrokeWidth = locationPuckStyle.dotStrokeWidth,
-              ),
-          showBearing = locationPuckStyle.showBearing,
-          showBearingAccuracy = locationPuckStyle.showBearingAccuracy,
-      )
+    if (showDefaultPuck) {
+      if (shouldRenderNavigationPuck(uiState) && displayedNavigationLocation != null) {
+        NavigationPuckOverlay(
+            target =
+                NavigationPuckTarget(
+                    longitude = displayedNavigationLocation.position.longitude,
+                    latitude = displayedNavigationLocation.position.latitude,
+                    bearingDegrees =
+                        navigationPuckBearingDegrees(
+                            currentBearing = displayedNavigationLocation.bearing,
+                            lastKnownBearing = lastKnownNavigationPuckBearing,
+                        ),
+                ),
+            style = locationPuckStyle,
+        )
+      } else {
+        LocationPuck(
+            idPrefix = "ferrostar-location",
+            locationState = userLocationState,
+            cameraState = cameraState,
+            colors =
+                LocationPuckColors(
+                    dotFillColorCurrentLocation = locationPuckStyle.dotFillColorCurrentLocation,
+                    dotFillColorOldLocation = locationPuckStyle.dotFillColorOldLocation,
+                    dotStrokeColor = locationPuckStyle.dotStrokeColor,
+                    shadowColor = locationPuckStyle.shadowColor,
+                    accuracyStrokeColor = locationPuckStyle.accuracyStrokeColor,
+                    accuracyFillColor = locationPuckStyle.accuracyFillColor,
+                    bearingColor = locationPuckStyle.bearingColor,
+                ),
+            sizes =
+                LocationPuckSizes(
+                    dotRadius = locationPuckStyle.dotRadius,
+                    dotStrokeWidth = locationPuckStyle.dotStrokeWidth,
+                ),
+            showBearing = locationPuckStyle.showBearing,
+            showBearingAccuracy = locationPuckStyle.showBearingAccuracy,
+        )
+      }
     }
 
     if (content != null) {

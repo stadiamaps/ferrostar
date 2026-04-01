@@ -26,6 +26,7 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import org.maplibre.compose.map.MapOptions
 import org.maplibre.compose.map.OrnamentOptions
+import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.MaplibreComposable
 
 /**
@@ -57,7 +58,7 @@ fun CarAppNavigationView(
 
   Box(modifier) {
     NavigationMapView(
-        styleUrl = styleUrl,
+        baseStyle = BaseStyle.Uri(styleUrl),
         navigationMapState = navigationMapState,
         uiState = uiState,
         mapOptions = MapOptions(ornamentOptions = OrnamentOptions.AllDisabled),
