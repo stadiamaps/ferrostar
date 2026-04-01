@@ -38,13 +38,14 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import org.maplibre.compose.util.MaplibreComposable
+import org.maplibre.compose.style.BaseStyle
 
 /**
  * A portrait orientation of the navigation view with instructions, default controls and the
  * navigation map view.
  *
  * @param modifier The modifier to apply to the view.
- * @param styleUrl The MapLibre style URL to use for the map.
+ * @param baseStyle The MapLibre style to use for the map.
  * @param navigationMapState The Ferrostar-owned map state used to coordinate follow, overview,
  *   free-camera behavior, and zoom actions.
  * @param navigationCameraOptions The camera templates applied when following the user in browsing
@@ -67,7 +68,7 @@ import org.maplibre.compose.util.MaplibreComposable
 @Composable
 fun PortraitNavigationView(
     modifier: Modifier,
-    styleUrl: String,
+    baseStyle: BaseStyle,
     navigationMapState: NavigationMapState = rememberNavigationMapState(),
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
     viewModel: NavigationViewModel,
@@ -76,7 +77,8 @@ fun PortraitNavigationView(
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
-    routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
+    routeOverlayBuilder: RouteOverlayBuilder? = RouteOverlayBuilder.Default(),
+    showDefaultPuck: Boolean = true,
     onTapExit: (() -> Unit)? = null,
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
@@ -88,13 +90,14 @@ fun PortraitNavigationView(
 
   Box(modifier) {
     NavigationMapView(
-        styleUrl = styleUrl,
+        baseStyle = baseStyle,
         navigationMapState = navigationMapState,
         uiState = uiState,
         mapOptions = mapOptions,
         navigationCameraOptions = navigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
         locationPuckStyle = locationPuckStyle,
+        showDefaultPuck = showDefaultPuck,
         onMapClick = onMapClick,
         onMapLongClick = onMapLongClick,
         content = mapContent,
@@ -133,7 +136,7 @@ fun PortraitNavigationView(
 private fun PortraitNavigationViewPreview() {
   PortraitNavigationView(
       modifier = Modifier.fillMaxSize(),
-      styleUrl = "https://demotiles.maplibre.org/style.json",
+      baseStyle = BaseStyle.Uri("https://demotiles.maplibre.org/style.json"),
       viewModel = previewViewModel,
   )
 }

@@ -39,6 +39,7 @@ import com.stadiamaps.ferrostar.maplibreui.runtime.navigationCameraOptions
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberMapOptionsForProgressViewHeight
 import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import org.maplibre.compose.util.MaplibreComposable
+import org.maplibre.compose.style.BaseStyle
 
 /**
  * A dynamically orienting navigation view that switches between portrait and landscape overlays
@@ -47,7 +48,7 @@ import org.maplibre.compose.util.MaplibreComposable
 @Composable
 fun DynamicallyOrientingNavigationView(
     modifier: Modifier,
-    styleUrl: String,
+    baseStyle: BaseStyle,
     navigationMapState: NavigationMapState = rememberNavigationMapState(),
     navigationCameraOptions: NavigationCameraOptions = navigationCameraOptions(),
     viewModel: NavigationViewModel,
@@ -56,7 +57,8 @@ fun DynamicallyOrientingNavigationView(
     config: VisualNavigationViewConfig = VisualNavigationViewConfig.Default(),
     views: NavigationViewComponentBuilder = NavigationViewComponentBuilder.Default(theme),
     mapViewInsets: MutableState<PaddingValues> = remember { mutableStateOf(PaddingValues(0.dp)) },
-    routeOverlayBuilder: RouteOverlayBuilder = RouteOverlayBuilder.Default(),
+    routeOverlayBuilder: RouteOverlayBuilder? = RouteOverlayBuilder.Default(),
+    showDefaultPuck: Boolean = true,
     onTapExit: (() -> Unit)? = null,
     onMapClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
     onMapLongClick: NavigationMapClickHandler = { _, _ -> NavigationMapClickResult.Pass },
@@ -73,13 +75,14 @@ fun DynamicallyOrientingNavigationView(
 
   Box(modifier) {
     NavigationMapView(
-        styleUrl = styleUrl,
+        baseStyle = baseStyle,
         navigationMapState = navigationMapState,
         uiState = uiState,
         mapOptions = mapOptions,
         navigationCameraOptions = navigationCameraOptions,
         routeOverlayBuilder = routeOverlayBuilder,
         locationPuckStyle = locationPuckStyle,
+        showDefaultPuck = showDefaultPuck,
         onMapClick = onMapClick,
         onMapLongClick = onMapLongClick,
         content = mapContent,

@@ -60,6 +60,9 @@ Notable Android phone/tablet migration changes:
 * Route rendering now uses a GeoJSON source plus `LineLayer` instead of legacy polyline convenience APIs.
 * Map tap and long-press callbacks use Ferrostar-facing callbacks with `GeographicCoordinate` plus screen position.
 * `NavigationMapView` now exposes `onMapLoadFinished` and `onMapLoadFailed` instead of a native-style `onMapReadyCallback`.
+* `NavigationMapView` and the phone/tablet wrapper views now take `baseStyle: BaseStyle` directly.
+* `NavigationMapState.cameraState` is public for direct access to projection queries and imperative camera animation.
+* Default route and puck rendering can be disabled with `routeOverlayBuilder = null` and `showDefaultPuck = false`.
 
 Example usage:
 
@@ -68,11 +71,28 @@ val navigationMapState = rememberNavigationMapState()
 
 DynamicallyOrientingNavigationView(
     modifier = Modifier.fillMaxSize(),
-    styleUrl = styleUrl,
+    baseStyle = BaseStyle.Uri(styleUrl),
     navigationMapState = navigationMapState,
     viewModel = viewModel,
 )
 ```
+
+Using a `BaseStyle` directly:
+
+```kotlin
+val navigationMapState = rememberNavigationMapState()
+
+NavigationMapView(
+    baseStyle = BaseStyle.Uri(styleUrl),
+    navigationMapState = navigationMapState,
+    uiState = uiState,
+    mapOptions = MapOptions(),
+    routeOverlayBuilder = null,
+    showDefaultPuck = false,
+)
+```
+
+If you generate style JSON in memory, `BaseStyle.Json(styleJson)` works as well.
 
 Custom camera control now goes through `NavigationMapState`:
 
@@ -80,6 +100,8 @@ Custom camera control now goes through `NavigationMapState`:
 navigationMapState.zoomIn()
 navigationMapState.recenter(isNavigating = true)
 navigationMapState.showRouteOverview(boundingBox, paddingValues = mapInsets)
+navigationMapState.cameraState.animateTo(finalPosition = cameraPosition)
+navigationMapState.cameraState.animateTo(boundingBox = bounds, padding = mapInsets)
 ```
 
 Current scope notes:
