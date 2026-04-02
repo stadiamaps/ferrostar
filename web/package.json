@@ -41,7 +41,7 @@
     "@maptimy/platform-formatters": "^0.6.0",
     "@stadiamaps/ferrostar": "file:../common/ferrostar/pkg",
     "lit": "^3.2.1",
-    "maplibre-gl": "^4.5.0 || ^5"
+    "maplibre-gl": "^5.21.1"
   },
   "devDependencies": {
     "@stadiamaps/maplibre-search-box": "^3.0.2",
