@@ -1,6 +1,6 @@
 [versions]
 agp = "9.0.1"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 cargo-ndk = "0.5.3"
 ktfmt = "0.21.0"                     # 0.22.0 -> https://github.com/cortinico/ktfmt-gradle/issues/413
 androidx-lifecycle = "2.10.0"
