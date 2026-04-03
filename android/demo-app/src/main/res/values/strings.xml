@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Ferrostar Demo App</string>
+    <string name="dropped_pin_title">Dropped pin</string>
+    <string name="destination_coordinates">Coordinates: %1$s</string>
+    <string name="start_navigation">Start navigation</string>
+    <string name="close_destination_sheet">Close</string>
+    <string name="center_on_my_location">Center on my location</string>
 </resources>

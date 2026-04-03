@@ -23,13 +23,21 @@ import com.stadiamaps.ferrostar.composeui.config.withSpeedLimitStyle
 import com.stadiamaps.ferrostar.composeui.runtime.KeepScreenOnDisposableEffect
 import com.stadiamaps.ferrostar.composeui.views.components.speedlimit.SignageStyle
 import com.stadiamaps.ferrostar.maplibreui.NavigationMapClickResult
+import com.stadiamaps.ferrostar.maplibreui.runtime.rememberNavigationMapState
 import com.stadiamaps.ferrostar.maplibreui.views.DynamicallyOrientingNavigationView
+import com.stadiamaps.ferrostar.ui.DestinationSelectionCameraPaddingEffect
+import com.stadiamaps.ferrostar.ui.DestinationSelectionCameraPreviewEffect
+import com.stadiamaps.ferrostar.ui.DestinationSelectionBottomSheet
+import kotlinx.serialization.json.buildJsonObject
 import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
 import org.maplibre.compose.util.MaplibreComposable
+import org.maplibre.spatialk.geojson.Feature
+import org.maplibre.spatialk.geojson.FeatureCollection
+import org.maplibre.spatialk.geojson.Point
 import uniffi.ferrostar.GeographicCoordinate
 
 @Composable
@@ -81,18 +89,30 @@ fun DemoNavigationScene(
       permissionsLauncher.launch(allPermissions)
     }
   }
-  val droppedPin by viewModel.droppedPin.collectAsState()
+  val sceneState by viewModel.sceneState.collectAsState()
+  val navigationMapState = rememberNavigationMapState()
+  DestinationSelectionCameraPreviewEffect(
+      selectedDestination = sceneState.selectedDestination,
+      destinationSheetHeightPx = sceneState.destinationSheetHeightPx,
+      navigationMapState = navigationMapState,
+  )
+  DestinationSelectionCameraPaddingEffect(
+      selectedDestination = sceneState.selectedDestination,
+      destinationSheetHeightPx = sceneState.destinationSheetHeightPx,
+      navigationMapState = navigationMapState,
+  )
 
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
       baseStyle = BaseStyle.Uri(AppModule.mapStyleUrl),
+      navigationMapState = navigationMapState,
       viewModel = viewModel,
       config = VisualNavigationViewConfig.Default().withSpeedLimitStyle(SignageStyle.MUTCD),
       views =
           NavigationViewComponentBuilder.Default()
               .withCustomOverlayView(
                   customOverlayView = { modifier ->
-                    NotNavigatingOverlay(modifier, viewModel)
+                    NotNavigatingOverlay(modifier, viewModel, navigationMapState)
                   },
               ),
       onTapExit = { viewModel.stopNavigation() },
@@ -101,36 +121,50 @@ fun DemoNavigationScene(
             "DemoNavigationScene",
             "Long press at lat=${position.lat}, lng=${position.lng}, screen=$screenPosition",
         )
-        viewModel.setDroppedPin(position)
-        NavigationMapClickResult.Pass
+        viewModel.selectDestination(position)
+        NavigationMapClickResult.Consume
       },
   ) {
-    DemoDroppedPinOverlay(droppedPin)
+    DemoDroppedPinOverlay(sceneState.droppedPin)
+  }
+
+  if (sceneState.isDestinationSheetVisible) {
+    sceneState.selectedDestination?.let { destination ->
+      DestinationSelectionBottomSheet(
+          destination = destination,
+          onClose = { viewModel.clearSelectedDestination() },
+          onStartNavigation = { viewModel.startSelectedDestinationNavigation() },
+          onSheetHeightChanged = viewModel::setDestinationSheetHeight,
+      )
+    }
   }
 }
 
 @Composable
 @MaplibreComposable
 private fun DemoDroppedPinOverlay(droppedPin: GeographicCoordinate?) {
-  val pinJson = droppedPinFeatureCollectionJsonOrNull(droppedPin) ?: return
-  val pointSource = rememberGeoJsonSource(GeoJsonData.JsonString(pinJson))
+  val pinFeatureCollection = droppedPinFeatureCollectionOrNull(droppedPin) ?: return
+  val pointSource = rememberGeoJsonSource(GeoJsonData.Features(pinFeatureCollection))
 
   CircleLayer(
       id = "demo-dropped-pin",
       source = pointSource,
-      color = const(Color.Green),
-      radius = const(12.dp),
+      color = const(Color.Red),
+      radius = const(10.dp),
       strokeColor = const(Color.White),
-      strokeWidth = const(3.dp),
+      strokeWidth = const(2.dp),
   )
 }
 
-internal fun droppedPinFeatureCollectionJsonOrNull(pin: GeographicCoordinate?): String? =
+internal fun droppedPinFeatureCollectionOrNull(pin: GeographicCoordinate?) =
     pin?.let {
-      droppedPinFeatureCollectionJson(it)
+      droppedPinFeatureCollection(it)
     }
 
-internal fun droppedPinFeatureCollectionJson(pin: GeographicCoordinate): String =
-    """
-      {"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[${pin.lng},${pin.lat}]},"properties":{}}]}
-    """.trimIndent()
+internal fun droppedPinFeatureCollection(pin: GeographicCoordinate) =
+    FeatureCollection(
+        Feature(
+            geometry = Point(longitude = pin.lng, latitude = pin.lat),
+            properties = buildJsonObject {},
+        )
+    )

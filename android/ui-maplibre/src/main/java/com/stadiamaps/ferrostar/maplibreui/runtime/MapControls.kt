@@ -32,11 +32,19 @@ internal fun rememberMapOptionsForProgressViewHeight(
   val gridPadding = paddingForGridView()
   val windowInsetPadding = WindowInsets.systemBars.asPaddingValues()
 
-  return remember(progressViewHeight, horizontalPadding, verticalPadding, isLandscape, gridPadding, windowInsetPadding) {
+  return remember(
+      progressViewHeight,
+      horizontalPadding,
+      verticalPadding,
+      isLandscape,
+      gridPadding,
+      windowInsetPadding,
+  ) {
     val endPadding =
         windowInsetPadding.calculateEndPadding(layoutDirection) +
             gridPadding.calculateEndPadding(layoutDirection) +
             horizontalPadding
+    val topPadding = windowInsetPadding.calculateTopPadding() + verticalPadding
     val bottomPadding =
         windowInsetPadding.calculateBottomPadding() +
             gridPadding.calculateBottomPadding() +
@@ -49,7 +57,7 @@ internal fun rememberMapOptionsForProgressViewHeight(
     MapOptions(
         ornamentOptions =
             OrnamentOptions(
-                padding = PaddingValues(end = endPadding, bottom = bottomPadding),
+                padding = PaddingValues(top = topPadding, end = endPadding, bottom = bottomPadding),
                 isCompassEnabled = false,
                 isScaleBarEnabled = false,
                 logoAlignment = Alignment.BottomStart,
