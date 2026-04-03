@@ -28,6 +28,24 @@ import uniffi.ferrostar.UserLocation
 import uniffi.ferrostar.Waypoint
 import uniffi.ferrostar.WaypointKind
 
+data class DestinationSelection(
+    val coordinate: GeographicCoordinate,
+    val label: String? = null,
+    val origin: DestinationSelectionOrigin = DestinationSelectionOrigin.MapLongPress,
+)
+
+enum class DestinationSelectionOrigin {
+  MapLongPress,
+  SearchResult,
+}
+
+data class DemoNavigationSceneState(
+    val droppedPin: GeographicCoordinate? = null,
+    val selectedDestination: DestinationSelection? = null,
+    val isDestinationSheetVisible: Boolean = false,
+    val destinationSheetHeightPx: Int = 0,
+)
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class DemoNavigationViewModel(
     // This is a simple example, but these would typically be dependency injected
@@ -44,8 +62,8 @@ class DemoNavigationViewModel(
   private val locationStateFlow = MutableStateFlow<UserLocation?>(null)
   val location = locationStateFlow.asStateFlow()
 
-  private val _droppedPin = MutableStateFlow<GeographicCoordinate?>(null)
-  val droppedPin = _droppedPin.asStateFlow()
+  private val _sceneState = MutableStateFlow(DemoNavigationSceneState())
+  val sceneState = _sceneState.asStateFlow()
 
   // Here's an example of injecting a custom location into the navigation UI state when isNavigating
   // is false.
@@ -96,8 +114,61 @@ class DemoNavigationViewModel(
     _simulated.value = true
   }
 
-  fun setDroppedPin(coordinate: GeographicCoordinate) {
-    _droppedPin.value = coordinate
+  fun selectDestination(
+      coordinate: GeographicCoordinate,
+      label: String? = null,
+      origin: DestinationSelectionOrigin = DestinationSelectionOrigin.MapLongPress,
+  ) {
+    _sceneState.value =
+        _sceneState.value.copy(
+            droppedPin = coordinate,
+            selectedDestination =
+                DestinationSelection(coordinate = coordinate, label = label, origin = origin),
+            isDestinationSheetVisible = true,
+        )
+  }
+
+  fun selectDestination(
+      location: Location,
+      label: String? = null,
+      origin: DestinationSelectionOrigin = DestinationSelectionOrigin.MapLongPress,
+  ) {
+    selectDestination(
+        coordinate = GeographicCoordinate(location.latitude, location.longitude),
+        label = label,
+        origin = origin,
+    )
+  }
+
+  fun clearSelectedDestination() {
+    _sceneState.value =
+        _sceneState.value.copy(
+            droppedPin = null,
+            selectedDestination = null,
+            isDestinationSheetVisible = false,
+            destinationSheetHeightPx = 0,
+        )
+  }
+
+  fun hideDestinationSheet() {
+    _sceneState.value =
+        _sceneState.value.copy(
+            isDestinationSheetVisible = false,
+            destinationSheetHeightPx = 0,
+        )
+  }
+
+  fun setDestinationSheetHeight(heightPx: Int) {
+    if (_sceneState.value.destinationSheetHeightPx == heightPx) {
+      return
+    }
+    _sceneState.value = _sceneState.value.copy(destinationSheetHeightPx = heightPx)
+  }
+
+  fun startSelectedDestinationNavigation() {
+    val destination = sceneState.value.selectedDestination ?: return
+    clearSelectedDestination()
+    startNavigation(destination.coordinate, destination.label)
   }
 
   override fun toggleMute() {
@@ -110,6 +181,13 @@ class DemoNavigationViewModel(
   }
 
   fun startNavigation(destination: Location, name: String?) {
+    startNavigation(
+        destination = GeographicCoordinate(destination.latitude, destination.longitude),
+        name = name,
+    )
+  }
+
+  fun startNavigation(destination: GeographicCoordinate, name: String? = null) {
     viewModelScope.launch(Dispatchers.IO) {
       // TODO: Fail gracefully
       val lastLocation = location.value ?: return@launch
@@ -122,8 +200,7 @@ class DemoNavigationViewModel(
               lastLocation,
               listOf(
                   Waypoint(
-                      coordinate =
-                          GeographicCoordinate(destination.latitude, destination.longitude),
+                      coordinate = destination,
                       kind = WaypointKind.BREAK),
               ))
 
@@ -133,7 +210,11 @@ class DemoNavigationViewModel(
         locationProvider.enableSimulationOn(route)
       }
 
-      ferrostarCore.startNavigation(route = route)
+      if (navigationUiState.value.isNavigating()) {
+        ferrostarCore.replaceRoute(route = route)
+      } else {
+        ferrostarCore.startNavigation(route = route)
+      }
     }
   }
 

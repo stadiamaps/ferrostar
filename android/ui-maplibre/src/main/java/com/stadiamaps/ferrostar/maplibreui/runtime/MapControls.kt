@@ -43,6 +43,7 @@ internal fun rememberMapOptionsForProgressViewHeight(
         contentPadding.calculateEndPadding(layoutDirection) +
             gridPadding.calculateEndPadding(layoutDirection) +
             horizontalPadding
+    val topPadding = contentPadding.calculateTopPadding() + verticalPadding
     val bottomPadding =
         contentPadding.calculateBottomPadding() +
             gridPadding.calculateBottomPadding() +
@@ -58,6 +59,7 @@ internal fun rememberMapOptionsForProgressViewHeight(
                 padding = PaddingValues(
                     start = startPadding,
                     end = endPadding,
+                    top = topPadding,
                     bottom = bottomPadding,
                 ),
                 isCompassEnabled = false,
