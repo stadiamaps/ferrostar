@@ -70,8 +70,8 @@ Use `navigationMapViewContentInset(...)` to customize the managed inset that Fer
 navigation.
 
 For non-navigation layouts, including route preview or overview states, use MapLibreSwiftUI's raw
-`.mapContentInset(...)` modifier on the host view instead. Ferrostar does not apply a managed content inset outside
-active navigation.
+`.mapContentInset(...)` modifier on the host view. Ferrostar reads that host inset and preserves a single internal
+map inset owner, which avoids the navigation-start camera regression from swapping inset ownership.
 
 The content inset can accessed using the `@Environment(\.navigationMapViewContentInsetConfiguration)`
 environment property.
