@@ -75,37 +75,24 @@ public struct NavigationMapView: View {
                 // Overlay any additional user layers.
                 userLayers
             }
-            .mapContentInset(calculatedMapViewInsets(for: geometry).uiEdgeInsets)
             .mapControls {
                 // No controls
             }
             .onMapUserTrackingModeChanged(onUserTrackingModeChanged)
+            .modifier(ManagedNavigationMapContentInsetModifier(
+                inset: calculatedManagedMapViewInsets(for: geometry)
+            ))
             .onMapStyleLoaded(onStyleLoaded)
             .ignoresSafeArea(.all)
         }
     }
 
-    private func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
+    private func calculatedManagedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode? {
         if navigationState?.isNavigating == true {
             return contentInsetConfig.bundle
                 .dynamicWithCameraState(camera.state, isLandscape: geometry.isLandscape)(geometry)
         }
-
-        switch camera.state {
-        case .rect, .showcase:
-            if geometry.isLandscape {
-                return contentInsetConfig.getShowcaseLandscapeInset(for: geometry)
-            } else {
-                return contentInsetConfig.getShowcasePortraitInset(for: geometry)
-            }
-        default:
-            return .edgeInset(UIEdgeInsets(
-                top: geometry.safeAreaInsets.top,
-                left: geometry.safeAreaInsets.leading,
-                bottom: geometry.safeAreaInsets.bottom,
-                right: geometry.safeAreaInsets.trailing
-            ))
-        }
+        return nil
     }
 
     private func updateCameraIfNeeded() {

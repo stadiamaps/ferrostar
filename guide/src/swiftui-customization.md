@@ -66,7 +66,12 @@ and when landscape, to the trailing half.
 Ferrostar includes the basic raw content inset modifier as well as some advanced landscape and portrait modifiers
 that take the view's actual height and apply a percentage. See `NavigationMapViewContentInsetMode`.
 
-The content inset can be customized using the `navigationMapViewContentInset(...)` modifiers.
+Use `navigationMapViewContentInset(...)` to customize the managed inset that Ferrostar applies during active
+navigation.
+
+For non-navigation layouts, including route preview or overview states, use MapLibreSwiftUI's raw
+`.mapContentInset(...)` modifier on the host view instead. Ferrostar does not apply a managed content inset outside
+active navigation.
 
 The content inset can accessed using the `@Environment(\.navigationMapViewContentInsetConfiguration)`
 environment property.
