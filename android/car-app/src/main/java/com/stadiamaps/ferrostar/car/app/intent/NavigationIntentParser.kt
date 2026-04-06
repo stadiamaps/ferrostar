@@ -27,16 +27,23 @@ open class NavigationIntentParser {
   }
 
   /** Parses a navigation [Uri] into a [NavigationDestination], or null if unrecognized. */
-  open fun parseUri(uri: Uri): NavigationDestination? =
-      when (uri.scheme) {
-        "geo" ->
-            parseGeoSsp(
-                coordString = uri.schemeSpecificPart?.substringBefore('?').orEmpty(),
-                query = uri.getQueryParameter("q"))
-        "google.navigation" ->
-            uri.getQueryParameter("q")?.let { parseGoogleNavigationSsp(it) }
-        else -> null
-      }
+  open fun parseUri(uri: Uri): NavigationDestination? {
+    // Uri.getQueryParameter() throws UnsupportedOperationException on opaque URIs (i.e. URIs
+    // without an authority component, such as geo: and google.navigation:). Parse the
+    // scheme-specific part directly instead.
+    val ssp = uri.schemeSpecificPart ?: return null
+    return when (uri.scheme) {
+      "geo" ->
+          parseGeoSsp(
+              coordString = ssp.substringBefore('?'),
+              query = ssp.substringAfter("?q=", "").ifEmpty { null }?.let { decodeQueryValue(it) })
+      "google.navigation" ->
+          ssp.substringAfter("q=", "").ifEmpty { null }?.let {
+            parseGoogleNavigationSsp(decodeQueryValue(it))
+          }
+      else -> null
+    }
+  }
 
   companion object {
     /**
@@ -71,6 +78,15 @@ open class NavigationIntentParser {
         NavigationDestination(null, null, q)
       }
     }
+
+    /**
+     * Decodes a query parameter value extracted from an opaque URI's scheme-specific part.
+     *
+     * Handles both percent-encoding and `+` as space, matching the behavior of
+     * [Uri.getQueryParameter] on hierarchical URIs.
+     */
+    internal fun decodeQueryValue(encoded: String): String =
+        Uri.decode(encoded.replace("+", "%20"))
 
     internal fun parseCoordinates(str: String): GeographicCoordinate? {
       // limit=3 so altitude (geo:lat,lng,alt per RFC 5870) is captured and ignored
