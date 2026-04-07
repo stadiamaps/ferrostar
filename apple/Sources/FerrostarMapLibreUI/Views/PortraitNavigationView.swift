@@ -16,6 +16,7 @@ public struct PortraitNavigationView: View {
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    let locationManagerConfiguration: NavigationLocationManagerConfiguration?
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
@@ -47,6 +48,7 @@ public struct PortraitNavigationView: View {
         camera: Binding<MapViewCamera>,
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
+        locationManagerConfiguration: NavigationLocationManagerConfiguration? = nil,
         isMuted: Bool,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapMute: @escaping () -> Void,
@@ -55,6 +57,7 @@ public struct PortraitNavigationView: View {
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
+        self.locationManagerConfiguration = locationManagerConfiguration
         self.isMuted = isMuted
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
         self.onTapMute = onTapMute
@@ -73,6 +76,7 @@ public struct PortraitNavigationView: View {
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    locationManagerConfiguration: locationManagerConfiguration,
                     onUserTrackingModeChanged: { mode, _ in
                         userTrackingMode = mode
                     },
