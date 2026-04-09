@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.widget.RemoteViews
 import com.stadiamaps.ferrostar.composeui.R
+import com.stadiamaps.ferrostar.core.extensions.currentStep
 import com.stadiamaps.ferrostar.ui.formatters.DateTimeFormatter
 import com.stadiamaps.ferrostar.ui.formatters.DistanceFormatter
 import com.stadiamaps.ferrostar.ui.formatters.DurationFormatter
@@ -16,6 +17,7 @@ import com.stadiamaps.ferrostar.core.extensions.estimatedArrivalTime
 import com.stadiamaps.ferrostar.core.service.ForegroundNotificationBuilder
 import com.stadiamaps.ferrostar.ui.shared.icons.ManeuverIcon
 import kotlin.time.ExperimentalTime
+import uniffi.ferrostar.DrivingSide
 import uniffi.ferrostar.TripProgress
 import uniffi.ferrostar.TripState
 import uniffi.ferrostar.VisualInstruction
@@ -56,9 +58,10 @@ class DefaultForegroundNotificationBuilder(
     when (tripState) {
       is TripState.Navigating -> {
         val tripProgress = tripState.progress
+        val drivingSide = tripState.currentStep()?.drivingSide ?: DrivingSide.RIGHT
         tripState.visualInstruction?.let {
-          val contentView = getLayoutWith(tripProgress, it)
-          val expandedView = getLayoutWith(tripProgress, it, expanded = true)
+          val contentView = getLayoutWith(tripProgress, it, drivingSide)
+          val expandedView = getLayoutWith(tripProgress, it, drivingSide, expanded = true)
           expandedView.setOnClickPendingIntent(R.id.stop_navigation_button, stopPendingIntent)
 
           builder.setCustomContentView(contentView)
@@ -86,6 +89,7 @@ class DefaultForegroundNotificationBuilder(
   private fun getLayoutWith(
       tripProgress: TripProgress,
       visualInstruction: VisualInstruction,
+      drivingSide: DrivingSide,
       expanded: Boolean = false
   ): RemoteViews {
     val remoteViews =
@@ -98,7 +102,7 @@ class DefaultForegroundNotificationBuilder(
     val maneuverType = visualInstruction.primaryContent.maneuverType
     val maneuverModifier = visualInstruction.primaryContent.maneuverModifier
     val maneuverIcon = if (maneuverType != null && maneuverModifier != null) {
-      ManeuverIcon(context, maneuverType, maneuverModifier)
+      ManeuverIcon(context, maneuverType, maneuverModifier, drivingSide)
     } else {
       null
     }

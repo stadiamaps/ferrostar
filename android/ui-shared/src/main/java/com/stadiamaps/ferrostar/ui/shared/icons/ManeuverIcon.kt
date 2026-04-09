@@ -28,7 +28,11 @@ class ManeuverIcon(
         )
             .joinToString(separator = "_")
 
-    if (drivingSide === DrivingSide.LEFT) {
+    val hasLeftHandResource = context.resources.getIdentifier(
+        "direction_${descriptor}_driving_left".lowercase(),
+        "drawable",
+        context.packageName) != 0
+    if (drivingSide === DrivingSide.LEFT && hasLeftHandResource) {
       this._identifier = "direction_${descriptor}_driving_left".lowercase()
     } else {
       this._identifier = "direction_${descriptor}".lowercase()
