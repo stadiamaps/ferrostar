@@ -1,5 +1,4 @@
 import {
-  TripState,
   type GeographicCoordinate,
   type RouteDeviation,
   type RouteStep,

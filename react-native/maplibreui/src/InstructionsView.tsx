@@ -28,7 +28,7 @@ export type InstructionViewProps = {
  * locale for formatting distances and determining flow order (this can be overridden by passing a
  * customized formatter.)
  */
-const InstructionsView = ({
+export const InstructionsView = ({
   instructions,
   distanceToNextManeuver = 0,
   distanceFormatter = LocalizedDistanceFormatter(),
@@ -173,5 +173,3 @@ const defaultStyle = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-export default InstructionsView;

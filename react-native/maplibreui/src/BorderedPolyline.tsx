@@ -9,7 +9,7 @@ type BorderedPolylineProps = {
   borderWidth?: number;
 };
 
-const BorderedPolyline = ({
+export const BorderedPolyline = ({
   points,
   zIndex = 1,
   color = '#3583dd',
@@ -54,5 +54,3 @@ const BorderedPolyline = ({
     </ShapeSource>
   );
 };
-
-export default BorderedPolyline;

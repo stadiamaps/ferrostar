@@ -39,7 +39,7 @@ type NavigationMapViewCameraProps = {
  * @param activity The type of activity the camera is being used for.
  * @return The recommended navigation MapViewCamera
  */
-const NavigationMapViewCamera = forwardRef<
+export const NavigationMapViewCamera = forwardRef<
   CameraRef,
   NavigationMapViewCameraProps
 >(({ activity = NavigationActivity.Automotive, bounds = null }, outerRef) => {
@@ -90,5 +90,3 @@ const NavigationMapViewCamera = forwardRef<
     />
   );
 });
-
-export default NavigationMapViewCamera;

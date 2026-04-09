@@ -1,70 +1,70 @@
-import type {
-  Route,
-  RouteAdapterInterface,
-  Waypoint,
-  UserLocation,
-} from '@stadiamaps/ferrostar-uniffi-react-native';
 import {
-  RouteAdapter,
-  RouteRequest,
+  WellKnownRouteProvider,
+  type Waypoint,
+  type UserLocation,
+  type Route,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
-import { ab2json } from './_utils';
-import {
-  InvalidStatusCodeException,
-  NoRequestBodyException,
-  NoResponseBodyException,
-} from './FerrostarCoreException';
 
-export type RouteProviderInterface = {
-  getRoute(
+/**
+ * Reworked RouteProvider type structure to align with Android and bindings conventions.
+ */
+
+// Define RouteProvider interface/type that corresponds to Android's interface and usages
+// Since Kotlin can pass around interfaces and sealed classes, in TS we use a union of types
+// to represent the different variants that can be passed to FerrostarCore.
+
+export type RouteProviderAdapter = {
+  kind: 'adapter';
+  provider: WellKnownRouteProvider;
+};
+
+export type RouteProviderCustom = {
+  kind: 'custom';
+  getRoutes(
     userLocation: UserLocation,
     waypoints: Array<Waypoint>
   ): Promise<Array<Route>>;
 };
 
-export class RouteProvider implements RouteProviderInterface {
-  adapter: RouteAdapterInterface;
+export type RouteProvider = RouteProviderAdapter | RouteProviderCustom;
 
-  constructor(
-    valhallaEndpointURL: string,
-    profile: string,
-    options: Record<string, any> = {}
-  ) {
-    this.adapter = RouteAdapter.newValhallaHttp(
-      valhallaEndpointURL,
-      profile,
-      JSON.stringify(options)
-    );
+/**
+ * TypeScript helper equivalent to Android's `withJsonOptions` extension.
+ * Merges a record into the JSON options of a well-known provider.
+ *
+ * @param provider The well-known provider to modify.
+ * @param options A record containing additional options.
+ * @returns A new WellKnownRouteProvider with the options merged.
+ */
+export function withJsonOptions(
+  provider: WellKnownRouteProvider,
+  options?: Record<string, unknown>
+): WellKnownRouteProvider {
+  let existingOptions: Record<string, unknown>;
+  try {
+    existingOptions = JSON.parse(provider.optionsJson ?? '{}');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (_: unknown) {
+    existingOptions = {};
   }
 
-  async getRoute(
-    userLocation: UserLocation,
-    waypoints: Array<Waypoint>
-  ): Promise<Array<Route>> {
-    const request = this.adapter.generateRequest(userLocation, waypoints);
-    if (
-      !RouteRequest.HttpPost.instanceOf(request) ||
-      request.inner.body.byteLength <= 0
-    ) {
-      throw new NoRequestBodyException();
-    }
+  const mergedOptions = { ...existingOptions, ...options };
+  const mergedOptionsJson = JSON.stringify(mergedOptions);
 
-    const { inner } = request;
-    const body = ab2json(inner.body);
-
-    const response = await fetch(inner.url, {
-      method: 'POST',
-      ...inner.headers,
-      body: JSON.stringify(body),
+  if (WellKnownRouteProvider.Valhalla.instanceOf(provider)) {
+    return WellKnownRouteProvider.Valhalla.new({
+      endpointUrl: provider.inner.endpointUrl,
+      profile: provider.inner.profile,
+      optionsJson: mergedOptionsJson,
     });
-
-    const bytes = await response.arrayBuffer();
-    if (!response.ok) {
-      throw new InvalidStatusCodeException(response.status);
-    } else if (bytes.byteLength === 0) {
-      throw new NoResponseBodyException();
-    }
-
-    return this.adapter.parseResponse(bytes);
+  } else if (WellKnownRouteProvider.GraphHopper.instanceOf(provider)) {
+    return WellKnownRouteProvider.GraphHopper.new({
+      endpointUrl: provider.inner.endpointUrl,
+      profile: provider.inner.profile,
+      optionsJson: mergedOptionsJson,
+    });
+  } else {
+    // Should be unreachable if WellKnownRouteProvider is exhaustive
+    return provider;
   }
 }

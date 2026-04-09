@@ -10,7 +10,7 @@ type MapControlsProps = {
   onZoomOut?: () => void;
 };
 
-const MapControls = ({
+export const MapControls = ({
   isNavigating = false,
   isMuted = false,
   onMutePress = () => {},
@@ -120,5 +120,3 @@ const defaultStyle = StyleSheet.create({
     color: '#000',
   },
 });
-
-export default MapControls;

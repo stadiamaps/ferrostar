@@ -22,7 +22,7 @@ type TripProgressViewProps = {
 const DurationFormatter = LocalizedDurationFormatter();
 const DistanceFormatter = LocalizedDistanceFormatter();
 
-const TripProgressView = ({
+export const TripProgressView = ({
   progress,
   fromDate = new Date(),
   onTapExit,
@@ -109,5 +109,3 @@ const defaultStyle = StyleSheet.create({
     color: '#000',
   },
 });
-
-export default TripProgressView;

@@ -1,32 +1,31 @@
 import {
   Camera,
   type CameraRef,
-  type MapViewRef,
-  MapView,
+  type MapRef,
+  Map,
   UserLocation,
 } from '@maplibre/maplibre-react-native';
 import { bbox } from '@turf/bbox';
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { ComponentProps, useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import {
   FerrostarCore,
   NavigationUiState,
-  snappedUserLocation,
 } from '@stadiamaps/ferrostar-core-react-native';
-import BorderedPolyline from './BorderedPolyline';
-import NavigationMapViewCamera from './NavigationMapViewCamera';
-import TripProgressView from './TripProgressView';
+import { BorderedPolyline } from './BorderedPolyline';
+import { NavigationMapViewCamera } from './NavigationMapViewCamera';
+import { TripProgressView } from './TripProgressView';
 import { StyleSheet, View } from 'react-native';
-import InstructionsView from './InstructionsView';
-import MapControls from './MapControls';
+import { InstructionsView } from './InstructionsView';
+import { MapControls } from './MapControls';
 
-type NavigationViewProps = ComponentProps<typeof MapView> & {
+type NavigationViewProps = ComponentProps<typeof Map> & {
   core: FerrostarCore;
   snapUserLocationToRoute?: boolean;
 };
 
-const NavigationView = (props: NavigationViewProps) => {
+export const NavigationView = (props: NavigationViewProps) => {
   const { core, children, snapUserLocationToRoute = true } = props;
-  const mapRef = useRef<MapViewRef>(null);
+  const mapRef = useRef<MapRef>(null);
   const cameraRef = useRef<CameraRef>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [routeBounds, setRouteBounds] = useState<{
@@ -130,7 +129,7 @@ const NavigationView = (props: NavigationViewProps) => {
 
   return (
     <View style={defaultStyle.container}>
-      <MapView
+      <Map
         ref={mapRef}
         compassEnabled={false}
         attributionEnabled={false}
@@ -153,7 +152,7 @@ const NavigationView = (props: NavigationViewProps) => {
         )}
         <BorderedPolyline points={uiState?.routeGeometry ?? []} zIndex={0} />
         {children}
-      </MapView>
+      </Map>
       <InstructionsView
         instructions={uiState?.visualInstruction}
         remainingSteps={uiState?.remainingSteps}
@@ -181,5 +180,3 @@ const defaultStyle = StyleSheet.create({
     position: 'relative',
   },
 });
-
-export default NavigationView;

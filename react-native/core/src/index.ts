@@ -5,7 +5,7 @@ import {
   type LocationUpdateListener,
   type LocationProviderInterface,
 } from './LocationProvider';
-import { RouteProvider, type RouteProviderInterface } from './RouteProvider';
+import { type RouteProvider, type RouteProviderAdapter, type RouteProviderCustom } from './RouteProvider';
 import { type RouteDeviationHandler } from './RouteDeviationHandler';
 import { type AlternativeRouteProcessor } from './AlternativeRouteProcessor';
 import {
@@ -20,7 +20,7 @@ export {
   type LocationUpdateListener,
   type LocationProviderInterface,
 };
-export { RouteProvider, type RouteProviderInterface };
+export { type RouteProvider, type RouteProviderAdapter, type RouteProviderCustom };
 export { type RouteDeviationHandler };
 export { type AlternativeRouteProcessor };
 export {

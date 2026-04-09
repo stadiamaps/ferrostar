@@ -1,4 +1,5 @@
 import { StyleSheet, View, Button, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   CourseFiltering,
   RouteDeviationTracking,
@@ -6,15 +7,17 @@ import {
   stepAdvanceDistanceToEndOfStep,
   WaypointAdvanceMode,
   WaypointKind,
+  WellKnownRouteProvider,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
 import { FerrostarCore } from '@stadiamaps/ferrostar-core-react-native';
 import { NavigationView } from '@stadiamaps/ferrostar-maplibre-react-native';
 import { useMemo } from 'react';
 import { useLocationPermission } from '@/hooks/useLocationPermissions';
 import { useLocationTracker } from '@/hooks/useLocationTracker';
+import { withJsonOptions } from '@stadiamaps/ferrostar-core-react-native/src/RouteProvider';
 
-const apiKey = process.env.STADIA_MAPS_API_KEY ?? '';
-const styleUrl = `https://tiles.stadiamaps.com/styles/alidade_smooth.json?api_key=${apiKey}`;
+const apiKey = process.env.EXPO_PUBLIC_STADIA_MAPS_API_KEY ?? '';
+const styleUrl = `https://tiles.stadiamaps.com/styles/outdoors.json?api_key=${apiKey}`;
 
 export default function Index() {
   const { isPermissionGranted } = useLocationPermission();
@@ -22,16 +25,29 @@ export default function Index() {
 
   const core = useMemo(
     () =>
-      new FerrostarCore('https://valhalla1.openstreetmap.de/route', 'auto', {
-        waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
-        stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
-        arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
-        routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
-          minimumHorizontalAccuracy: 15,
-          maxAcceptableDeviation: 50,
-        }),
-        snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
-      }),
+      new FerrostarCore(
+        {
+          waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
+          stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
+          arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
+          routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
+            minimumHorizontalAccuracy: 15,
+            maxAcceptableDeviation: 50,
+          }),
+          snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
+        },
+        undefined,
+        {
+          kind: 'adapter',
+          provider: withJsonOptions(
+            WellKnownRouteProvider.Valhalla.new({
+              endpointUrl: 'https://valhalla1.openstreetmap.de/route',
+              profile: 'auto',
+              optionsJson: undefined,
+            })
+          ),
+        }
+      ),
     []
   );
 
@@ -83,7 +99,7 @@ export default function Index() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <NavigationView
         style={styles.container}
         mapStyle={styleUrl}
@@ -91,7 +107,7 @@ export default function Index() {
         snapUserLocationToRoute={true}
       />
       <Button title="Start Navigation" onPress={handleNavigationStart} />
-    </View>
+    </SafeAreaView>
   );
 }
 
