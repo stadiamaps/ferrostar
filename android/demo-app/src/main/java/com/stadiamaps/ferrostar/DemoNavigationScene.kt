@@ -3,23 +3,20 @@ package com.stadiamaps.ferrostar
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Bundle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import com.maplibre.compose.camera.MapViewCamera
 import com.maplibre.compose.rememberSaveableMapViewCamera
 import com.maplibre.compose.symbols.Circle
-import com.stadiamaps.autocomplete.center
 import com.stadiamaps.ferrostar.composeui.config.NavigationViewComponentBuilder
 import com.stadiamaps.ferrostar.composeui.config.VisualNavigationViewConfig
 import com.stadiamaps.ferrostar.composeui.config.withCustomOverlayView
@@ -32,14 +29,12 @@ import org.maplibre.android.geometry.LatLng
 
 @Composable
 fun DemoNavigationScene(
-    savedInstanceState: Bundle?,
     viewModel: DemoNavigationViewModel = AppModule.viewModel
 ) {
   // Keeps the screen on at consistent brightness while this Composable is in the view hierarchy.
   KeepScreenOnDisposableEffect()
 
   val context = LocalContext.current
-  val scope = rememberCoroutineScope()
 
   // Get location permissions.
   // NOTE: This is NOT a robust suggestion for how to get permissions in a production app.
@@ -56,15 +51,12 @@ fun DemoNavigationScene(
             Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       }
 
-  val navigationUiState by viewModel.navigationUiState.collectAsState(scope.coroutineContext)
-  val location by viewModel.location.collectAsState()
-
   val permissionsLauncher =
       rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
           permissions ->
         when {
           permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-            viewModel.startLocationUpdates()
+            viewModel.setLocationPermissions(true)
           }
           permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
             // TODO: Probably alert the user that this is unusable for navigation
@@ -76,11 +68,10 @@ fun DemoNavigationScene(
         }
       }
 
-  // FIXME: This is restarting navigation every time the screen is rotated.
-  LaunchedEffect(savedInstanceState) {
+  LaunchedEffect(Unit) {
     if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
         PackageManager.PERMISSION_GRANTED) {
-      viewModel.startLocationUpdates()
+      viewModel.setLocationPermissions(true)
     } else {
       permissionsLauncher.launch(allPermissions)
     }
@@ -88,6 +79,7 @@ fun DemoNavigationScene(
 
   // Set up the map!
   val camera = rememberSaveableMapViewCamera(MapViewCamera.TrackingUserLocation())
+
   DynamicallyOrientingNavigationView(
       modifier = Modifier.fillMaxSize(),
       styleUrl = AppModule.mapStyleUrl,
@@ -99,16 +91,11 @@ fun DemoNavigationScene(
           NavigationViewComponentBuilder.Default()
               .withCustomOverlayView(
                   customOverlayView = { modifier ->
-                    location?.let { loc ->
-                      AutocompleteOverlay(
-                          modifier = modifier,
-                          scope = scope,
-                          isNavigating = navigationUiState.isNavigating(),
-                          locationProvider = viewModel.locationProvider,
-                          loc = loc)
-                    }
-                  }),
-      onTapExit = { viewModel.stopNavigation() }) { uiState ->
+                      NotNavigatingOverlay(modifier, viewModel)
+                  },
+              ),
+      onTapExit = { viewModel.stopNavigation() },
+  ) { uiState ->
         // Trivial, if silly example of how to add your own overlay layers.
         // (Also incidentally highlights the lag inherent in MapLibre location tracking
         // as-is.)

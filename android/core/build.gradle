@@ -32,12 +32,6 @@ android {
     testOptions {
         targetSdk 36
     }
-    lint {
-        targetSdk 36
-    }
-    testOptions {
-        targetSdk 36
-    }
 }
 
 dependencies {
@@ -69,6 +63,7 @@ dependencies {
     // ValhallaCoreTest.kt
     androidTestImplementation libs.okhttp.mock
     androidTestImplementation libs.kotlinx.coroutines.test
+    androidTestImplementation libs.turbine
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso
 }

@@ -14,9 +14,11 @@ public struct DynamicallyOrientingNavigationView: View {
     let styleURL: URL
     @Binding var camera: MapViewCamera
     let navigationCamera: MapViewCamera
+    let locationManagerConfiguration: NavigationLocationManagerConfiguration?
 
     private let navigationState: NavigationState?
     private let userLayers: [StyleLayerDefinition]
+    @State private var userTrackingMode: MLNUserTrackingMode = .followWithCourse
 
     // Speed limit and grid configuration now read from environment to avoid struct copying issues
     @Environment(\.speedLimitConfiguration) private var speedLimitConfig
@@ -47,6 +49,7 @@ public struct DynamicallyOrientingNavigationView: View {
         camera: Binding<MapViewCamera>,
         navigationCamera: MapViewCamera = .automotiveNavigation(),
         navigationState: NavigationState?,
+        locationManagerConfiguration: NavigationLocationManagerConfiguration? = nil,
         isMuted: Bool,
         minimumSafeAreaInsets: EdgeInsets = EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
         onTapMute: @escaping () -> Void,
@@ -55,6 +58,7 @@ public struct DynamicallyOrientingNavigationView: View {
     ) {
         self.styleURL = styleURL
         self.navigationState = navigationState
+        self.locationManagerConfiguration = locationManagerConfiguration
         self.isMuted = isMuted
         self.minimumSafeAreaInsets = minimumSafeAreaInsets
         self.onTapMute = onTapMute
@@ -73,8 +77,14 @@ public struct DynamicallyOrientingNavigationView: View {
                     styleURL: styleURL,
                     camera: $camera,
                     navigationState: navigationState,
+                    locationManagerConfiguration: locationManagerConfiguration,
+                    onUserTrackingModeChanged: { mode, _ in
+                        userTrackingMode = mode
+                    },
                     onStyleLoaded: { _ in
-                        camera = navigationCamera
+                        if isNavigating {
+                            camera = navigationCamera
+                        }
                     }
                 ) {
                     userLayers
@@ -88,16 +98,10 @@ public struct DynamicallyOrientingNavigationView: View {
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
-                        showZoom: true,
+                        showZoom: isNavigating,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
-                            if let overviewCamera = navigationState?.routeOverviewCamera {
-                                camera = overviewCamera
-                            }
-                        } : .showRecenter { // TODO: Third case when not navigating!
-                            camera = navigationCamera
-                        },
+                        cameraControlState: cameraControlState,
                         onTapExit: onTapExit
                     )
                     .navigationViewInnerGrid {
@@ -119,16 +123,10 @@ public struct DynamicallyOrientingNavigationView: View {
                         isMuted: isMuted,
                         showMute: navigationState?.isNavigating == true,
                         onMute: onTapMute,
-                        showZoom: true,
+                        showZoom: isNavigating,
                         onZoomIn: { camera.incrementZoom(by: 1) },
                         onZoomOut: { camera.incrementZoom(by: -1) },
-                        cameraControlState: camera.isTrackingUserLocationWithCourse ? .showRouteOverview {
-                            if let overviewCamera = navigationState?.routeOverviewCamera {
-                                camera = overviewCamera
-                            }
-                        } : .showRecenter { // TODO: Third case when not navigating!
-                            camera = navigationCamera
-                        },
+                        cameraControlState: cameraControlState,
                         onTapExit: onTapExit
                     )
                     .navigationViewInnerGrid {
@@ -145,6 +143,22 @@ public struct DynamicallyOrientingNavigationView: View {
                 }
             }
         }
+    }
+
+    private var isNavigating: Bool {
+        navigationState?.isNavigating == true
+    }
+
+    private var cameraControlState: CameraControlState {
+        NavigationCameraControlResolver(
+            isNavigating: isNavigating,
+            camera: camera,
+            userTrackingMode: userTrackingMode,
+            navigationCamera: navigationCamera,
+            routeOverviewCamera: navigationState?.routeOverviewCamera,
+            setCamera: { camera = $0 }
+        )
+        .cameraControlState()
     }
 }
 

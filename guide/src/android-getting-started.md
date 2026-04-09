@@ -113,15 +113,28 @@ and (if simulating a route) set the location manually or enter a simulated route
 Similar to the Android location APIs you may already know,
 you can add or remove listeners which will receive updates.
 
+#### NavigationLocationProvider
+
+Allows you to bundle a simulated and normal location provider. This is helpful for supporting the Google Play 
+review auto drive Android Auto requirement.
+
+```kt
+locationProvider = NavigationLocationProvider(
+    liveProviding = FusedNavigationLocationProvider(appContext),
+    simulatedProvider = SimulatedLocationProvider(
+        warpFactor = 2u,
+        initialLocation = initialSimulatedLocation.toAndroidLocation()
+    )
+)
+```
 
 #### Google Play Fused Location Client
 
 If your app uses Google Play Services,
-you can use the `FusedLocationProvider`
+you can use the `FusedNavigationLocationProvider`
 This normally offers better device positioning than the default Android location provider
-on supported devices.
-To make use of it,
-you will need to include the optional `implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`
+on supported devices. To make use of it, you will need to include the optional 
+`implementation "com.stadiamaps.ferrostar:google-play-services:${ferrostarVersion}"`
 in your Gradle dependencies block.
 
 You can initialize the provider like so.
@@ -129,12 +142,12 @@ In an `Activity`, the context is simply `this`.
 In other cases, get a context using an appropriate method.
 
 ```kotlin
-locationProvider = FusedLocationProvider(context = this)
+locationProvider = FusedNavigationLocationProvider(context = this)
 ```
 
-#### `AndroidSystemLocationProvider`
+#### `AndroidLocationProvider`
 
-The `AndroidSystemLocationProvider` uses the location provider
+The `AndroidLocationProvider` uses the location provider
 from the Android open-source project.
 
 <div class="warning">
@@ -156,7 +169,7 @@ In an `Activity`, the context is simply `this`.
 In other cases, get a context using an appropriate method.
 
 ```kotlin
-locationProvider = AndroidSystemLocationProvider(context = this)
+locationProvider = AndroidLocationProvider(context = this)
 ```
 
 #### `SimulatedLocationProvider`
@@ -169,14 +182,10 @@ First, instantiate the class.
 This will typically be saved as an instance variable.
 
 ```kotlin
-private val locationProvider = SimulatedLocationProvider()
-```
-
-Later, most likely somewhere in your activity creation code or similar,
-set a location to your desired simulation start point.
-
-```kotlin
-locationProvider.lastLocation = initialSimulatedLocation
+private val locationProvider = SimulatedLocationProvider(
+    warpFactor = 2u,
+    initialLocation = initialSimulatedLocation
+)
 ```
 
 Once you have a route, you can simulate the replay of the route.
@@ -185,8 +194,7 @@ but playing back a route saves you the effort.
 You can set a `warpFactor` to play it back faster.
 
 ```kotlin
-locationProvider.warpFactor = 2u
-locationProvider.setSimulatedRoute(route)
+locationProvider.setRoute(route)
 ```
 
 You don’t need to do anything else after setting a simulated route;
@@ -225,7 +233,7 @@ Bringing it all together, a typical init looks something like this:
 ```kotlin
 var options =
     mapOf(
-        "costingOptions" to
+        "costing_options" to
             mapOf(
                 "bicycle" to
                     mapOf(
@@ -354,7 +362,7 @@ Finally, If you’re simulating route progress
 set the route:
 
 ```kotlin
-locationProvider.setSimulatedRoute(route)
+locationProvider.setRoute(route)
 ```
 
 ## Using the `DynamicallyOrientingNavigationView`

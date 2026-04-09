@@ -1,6 +1,7 @@
 package com.stadiamaps.ferrostar.core.extensions
 
 import uniffi.ferrostar.RouteDeviation
+import uniffi.ferrostar.SpokenInstruction
 import uniffi.ferrostar.TripState
 
 /**
@@ -29,6 +30,19 @@ fun TripState.visualInstruction() =
       }
     } catch (_: NoSuchElementException) {
       null
+    }
+
+/**
+ * Get the spoken instruction for the current step.
+ *
+ * @return The spoken instruction that should be announced, or null if not navigating or no
+ *   instruction is currently triggered.
+ */
+fun TripState.spokenInstruction(): SpokenInstruction? =
+    when (this) {
+      is TripState.Navigating -> this.spokenInstruction
+      is TripState.Complete,
+      is TripState.Idle -> null
     }
 
 /**
@@ -86,6 +100,11 @@ fun TripState.remainingSteps() =
       is TripState.Complete,
       is TripState.Idle -> null
     }
+
+/**
+ * The current step that's being displayed to the user.
+ */
+fun TripState.currentStep() = remainingSteps()?.first()
 
 /**
  * Get the remaining waypoints (starting at the *next* waypoint "goal") in the current trip.

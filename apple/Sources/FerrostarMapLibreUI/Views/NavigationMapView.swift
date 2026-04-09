@@ -19,14 +19,16 @@ public struct NavigationMapView: View {
     let styleURL: URL
     var mapViewContentInset: UIEdgeInsets = .zero
     var onStyleLoaded: (MLNStyle) -> Void
+    var onUserTrackingModeChanged: (MLNUserTrackingMode, Bool) -> Void
     let userLayers: [StyleLayerDefinition]
     let activity: MapActivity
 
     // TODO: Configurable camera and user "puck" rotation modes
 
     private let navigationState: NavigationState?
-
-    @State private var locationManager = StaticLocationManager(initialLocation: CLLocation())
+    private let locationManagerConfiguration: NavigationLocationManagerConfiguration?
+    @State private var defaultNavigatingLocationManager: any NavigationDrivenLocationManager =
+        StaticLocationManager(initialLocation: CLLocation())
 
     // MARK: Camera Settings
 
@@ -38,19 +40,25 @@ public struct NavigationMapView: View {
     ///   - styleURL: The map's style url.
     ///   - camera: The camera binding that represents the current camera on the map.
     ///   - navigationState: The current ferrostar navigation state provided by ferrostar core.
+    ///   - locationManagerConfiguration: Optional custom managers for navigating/non-navigating modes.
+    ///     Keep manager instances stable (do not construct inline in `body`).
     ///   - onStyleLoaded: The map's style has loaded and the camera can be manipulated (e.g. to user tracking).
     ///   - makeMapContent: Custom maplibre symbols to display on the map view.
     public init(
         styleURL: URL,
         camera: Binding<MapViewCamera>,
         navigationState: NavigationState?,
+        locationManagerConfiguration: NavigationLocationManagerConfiguration? = nil,
         activity: MapActivity = .standard,
+        onUserTrackingModeChanged: @escaping (MLNUserTrackingMode, Bool) -> Void = { _, _ in },
         onStyleLoaded: @escaping ((MLNStyle) -> Void),
         @MapViewContentBuilder _ makeMapContent: () -> [StyleLayerDefinition] = { [] }
     ) {
         self.styleURL = styleURL
         _camera = camera
         self.navigationState = navigationState
+        self.locationManagerConfiguration = locationManagerConfiguration
+        self.onUserTrackingModeChanged = onUserTrackingModeChanged
         self.onStyleLoaded = onStyleLoaded
         userLayers = makeMapContent()
         self.activity = activity
@@ -61,7 +69,7 @@ public struct NavigationMapView: View {
             MapView(
                 styleURL: styleURL,
                 camera: $camera,
-                locationManager: locationManager,
+                locationManager: activeLocationManager,
                 activity: activity
             ) {
                 // TODO: Create logic and style for route previews. Unless ferrostarCore will handle this internally.
@@ -76,24 +84,55 @@ public struct NavigationMapView: View {
             .mapControls {
                 // No controls
             }
+            .onMapUserTrackingModeChanged(onUserTrackingModeChanged)
             .onMapStyleLoaded(onStyleLoaded)
             .ignoresSafeArea(.all)
         }
     }
 
     private func calculatedMapViewInsets(for geometry: GeometryProxy) -> NavigationMapViewContentInsetMode {
-        contentInsetConfig.bundle.dynamicWithCameraState(camera.state, isLandscape: geometry.isLandscape)(geometry)
+        if navigationState?.isNavigating == true {
+            return contentInsetConfig.bundle
+                .dynamicWithCameraState(camera.state, isLandscape: geometry.isLandscape)(geometry)
+        }
+
+        switch camera.state {
+        case .rect, .showcase:
+            if geometry.isLandscape {
+                return contentInsetConfig.getShowcaseLandscapeInset(for: geometry)
+            } else {
+                return contentInsetConfig.getShowcasePortraitInset(for: geometry)
+            }
+        default:
+            return .edgeInset(UIEdgeInsets(
+                top: geometry.safeAreaInsets.top,
+                left: geometry.safeAreaInsets.leading,
+                bottom: geometry.safeAreaInsets.bottom,
+                right: geometry.safeAreaInsets.trailing
+            ))
+        }
     }
 
     private func updateCameraIfNeeded() {
         if let userLocation = navigationState?.preferredUserLocation,
            // There is no reason to push an update if the coordinate and heading are the same.
            // That's all that gets displayed, so it's all that MapLibre should care about.
-           locationManager.lastLocation.coordinate != userLocation.coordinates
-           .clLocationCoordinate2D || locationManager.lastLocation.course != userLocation.clLocation.course
+           activeNavigatingLocationManager.lastLocation.coordinate != userLocation.coordinates.clLocationCoordinate2D ||
+           activeNavigatingLocationManager.lastLocation.course != userLocation.clLocation.course
         {
-            locationManager.lastLocation = userLocation.clLocation
+            activeNavigatingLocationManager.lastLocation = userLocation.clLocation
         }
+    }
+
+    private var activeNavigatingLocationManager: any NavigationDrivenLocationManager {
+        locationManagerConfiguration?.navigatingLocationManager ?? defaultNavigatingLocationManager
+    }
+
+    private var activeLocationManager: (any MLNLocationManager)? {
+        if navigationState?.isNavigating == true {
+            return activeNavigatingLocationManager
+        }
+        return locationManagerConfiguration?.nonNavigatingLocationManager
     }
 }
 

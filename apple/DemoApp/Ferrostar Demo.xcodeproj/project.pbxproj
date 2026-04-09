@@ -290,7 +290,7 @@
 			mainGroup = E9505FAE2AD449700016BF0A;
 			packageReferences = (
 				FE0519072E2051EF0084240B /* XCRemoteSwiftPackageReference "swiftui-autocomplete-search" */,
-				16731E072E380B9500B3E2C9 /* XCLocalSwiftPackageReference "../../../ferrostar" */,
+				16731E072E380B9500B3E2C9 /* XCLocalSwiftPackageReference "../.." */,
 			);
 			productRefGroup = E9505FB82AD449700016BF0A /* Products */;
 			projectDirPath = "";
@@ -640,9 +640,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		16731E072E380B9500B3E2C9 /* XCLocalSwiftPackageReference "../../../ferrostar" */ = {
+		16731E072E380B9500B3E2C9 /* XCLocalSwiftPackageReference "../.." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../../ferrostar;
+			relativePath = ../..;
 		};
 /* End XCLocalSwiftPackageReference section */
 

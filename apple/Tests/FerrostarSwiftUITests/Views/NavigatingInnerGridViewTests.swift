@@ -72,4 +72,8 @@ final class NavigatingInnerGridViewTests: XCTestCase {
             .padding()
         }
     }
+
+    func test_CurrentLocationCameraControlIcon() {
+        XCTAssertEqual(CameraControlState.showCurrentLocation {}.systemImageName, "location.fill")
+    }
 }

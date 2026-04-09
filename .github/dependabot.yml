@@ -16,3 +16,7 @@ updates:
     directory: /web
     schedule:
       interval: monthly
+    ignore:
+      - dependency-name: "@stadiamaps/ferrostar"
+        # This is a local path dependency (wasm-pack build artifact),
+        # not a published npm package.
