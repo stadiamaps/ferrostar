@@ -119,7 +119,10 @@ data class NavigationUiState(
             currentStepGeometryIndex = coreState.tripState.currentStepGeometryIndex(),
             remainingSteps = coreState.tripState.remainingSteps(),
             currentAnnotation = annotation,
-            drivingSide = coreState.tripState.currentStep()?.drivingSide,
+            drivingSide = when (coreState.tripState.remainingSteps()?.isNotEmpty()) {
+              true -> coreState.tripState.currentStep()?.drivingSide
+              else -> null
+            }
         )
   }
 
