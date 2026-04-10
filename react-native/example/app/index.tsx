@@ -29,6 +29,7 @@ export default function Index() {
         routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
           minimumHorizontalAccuracy: 15,
           maxAcceptableDeviation: 50,
+          strictMode: false,
         }),
         snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
       }),

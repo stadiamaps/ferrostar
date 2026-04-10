@@ -37,7 +37,7 @@ private extension FerrostarCore {
                 distance: 10,
                 minimumHorizontalAccuracy: 32
             ),
-            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 15, maxAcceptableDeviation: 50),
+            routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 15, maxAcceptableDeviation: 50, strictMode: false),
             snappedLocationCourseFiltering: .snapToRoute
         )
 

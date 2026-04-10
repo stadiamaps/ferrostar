@@ -38,7 +38,7 @@ class NavigationDelegate: FerrostarCoreDelegate {
                         distance: 30,
                         minimumHorizontalAccuracy: 32
                     ),
-                    routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20),
+                    routeDeviationTracking: .staticThreshold(minimumHorizontalAccuracy: 25, maxAcceptableDeviation: 20, strictMode: false),
                     snappedLocationCourseFiltering: .snapToRoute
                 )
                 try core.startNavigation(
