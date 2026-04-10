@@ -58,6 +58,11 @@ pub enum RouteDeviationTracking {
         /// If the distance between the reported location and the expected route line
         /// is greater than this threshold, it will be flagged as an off route condition.
         max_acceptable_deviation: f64,
+        /// When true, only checks for route deviation along the current step
+        /// rather than the entire remaining route. This disables forward step
+        /// skipping, meaning the user will not be considered on-route if they
+        /// are ahead of the current step.
+        strict_mode: bool,
     },
     // TODO: Standard variants that account for mode of travel. For example, `DefaultFor(modeOfTravel: ModeOfTravel)` with sensible defaults for walking, driving, cycling, etc.
     /// An arbitrary user-defined implementation.
@@ -80,6 +85,7 @@ impl RouteDeviationTracking {
             RouteDeviationTracking::StaticThreshold {
                 minimum_horizontal_accuracy,
                 max_acceptable_deviation,
+                strict_mode,
             } => match trip_state {
                 TripState::Idle { .. } | TripState::Complete { .. } => RouteDeviation::NoDeviation,
                 TripState::Navigating {
@@ -91,25 +97,38 @@ impl RouteDeviationTracking {
                         return RouteDeviation::NoDeviation;
                     }
 
-                    let mut first_step_deviation = None;
+                    if *strict_mode {
+                        // In strict mode, only check the current (first) step
+                        if let Some(step) = remaining_steps.first() {
+                            self.static_threshold_deviation_from_line(
+                                &Point::from(*user_location),
+                                &step.get_linestring(),
+                                *max_acceptable_deviation,
+                            )
+                        } else {
+                            RouteDeviation::NoDeviation
+                        }
+                    } else {
+                        let mut first_step_deviation = None;
 
-                    for (index, step) in remaining_steps.iter().enumerate() {
-                        let step_deviation = self.static_threshold_deviation_from_line(
-                            &Point::from(*user_location),
-                            &step.get_linestring(),
-                            max_acceptable_deviation.clone(),
-                        );
+                        for (index, step) in remaining_steps.iter().enumerate() {
+                            let step_deviation = self.static_threshold_deviation_from_line(
+                                &Point::from(*user_location),
+                                &step.get_linestring(),
+                                max_acceptable_deviation.clone(),
+                            );
 
-                        if index == 0 {
-                            first_step_deviation = Some(step_deviation.clone());
+                            if index == 0 {
+                                first_step_deviation = Some(step_deviation.clone());
+                            }
+
+                            if matches!(step_deviation, RouteDeviation::NoDeviation) {
+                                return RouteDeviation::NoDeviation;
+                            }
                         }
 
-                        if matches!(step_deviation, RouteDeviation::NoDeviation) {
-                            return RouteDeviation::NoDeviation;
-                        }
+                        first_step_deviation.unwrap_or(RouteDeviation::NoDeviation)
                     }
-
-                    first_step_deviation.unwrap_or(RouteDeviation::NoDeviation)
                 }
             },
             RouteDeviationTracking::Custom { detector } => {
@@ -402,7 +421,8 @@ proptest! {
     ) {
         let tracking = RouteDeviationTracking::StaticThreshold {
             minimum_horizontal_accuracy,
-            max_acceptable_deviation
+            max_acceptable_deviation,
+            strict_mode: false
         };
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
         let route = gen_route_from_steps(vec![current_route_step.clone()]);
@@ -478,7 +498,8 @@ proptest! {
     ) {
         let tracking = RouteDeviationTracking::StaticThreshold {
             minimum_horizontal_accuracy: horizontal_accuracy - 1,
-            max_acceptable_deviation
+            max_acceptable_deviation,
+            strict_mode: false
         };
         let current_route_step = gen_dummy_route_step(x1, y1, x2, y2);
         let route = gen_route_from_steps(vec![current_route_step.clone()]);
@@ -502,6 +523,90 @@ proptest! {
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_random),
+            RouteDeviation::NoDeviation
+        );
+    }
+}
+
+#[cfg(test)]
+mod strict_mode_tests {
+    use super::*;
+    use crate::{
+        models::{GeographicCoordinate, UserLocation},
+        navigation_controller::test_helpers::{gen_dummy_route_step, gen_route_from_steps, get_navigating_trip_state},
+    };
+
+    #[cfg(not(feature = "web-time"))]
+    use std::time::SystemTime;
+
+    #[cfg(feature = "web-time")]
+    use web_time::SystemTime;
+
+    #[test]
+    fn strict_mode_only_checks_current_step() {
+        let step1 = gen_dummy_route_step(0.0, 0.0, 1.0, 0.0);
+        let step2 = gen_dummy_route_step(1.0, 0.0, 1.0, 1.0);
+        let route = gen_route_from_steps(vec![step1.clone(), step2.clone()]);
+
+        // User is at (1.0, 0.5) — on step2 but far from step1
+        let user_location = UserLocation {
+            coordinates: GeographicCoordinate {
+                lng: 1.0,
+                lat: 0.5,
+            },
+            horizontal_accuracy: 0.0,
+            course_over_ground: None,
+            timestamp: SystemTime::now(),
+            speed: None,
+        };
+
+        // Non-strict mode: checks all remaining steps, finds user on step2 → NoDeviation
+        let tracking_non_strict = RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: 100,
+            max_acceptable_deviation: 0.001,
+            strict_mode: false,
+        };
+        let trip_state = get_navigating_trip_state(
+            user_location.clone(),
+            vec![step1.clone(), step2.clone()],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+        assert_eq!(
+            tracking_non_strict.check_route_deviation(&route, &trip_state),
+            RouteDeviation::NoDeviation
+        );
+
+        // Strict mode: only checks step1, user is far from step1 → OffRoute
+        let tracking_strict = RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: 100,
+            max_acceptable_deviation: 0.001,
+            strict_mode: true,
+        };
+        assert!(matches!(
+            tracking_strict.check_route_deviation(&route, &trip_state),
+            RouteDeviation::OffRoute { .. }
+        ));
+
+        // Strict mode with user on the current step → NoDeviation
+        let user_on_step1 = UserLocation {
+            coordinates: GeographicCoordinate {
+                lng: 0.5,
+                lat: 0.0,
+            },
+            horizontal_accuracy: 0.0,
+            course_over_ground: None,
+            timestamp: SystemTime::now(),
+            speed: None,
+        };
+        let trip_state_on_step1 = get_navigating_trip_state(
+            user_on_step1.clone(),
+            vec![step1.clone(), step2.clone()],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+        assert_eq!(
+            tracking_strict.check_route_deviation(&route, &trip_state_on_step1),
             RouteDeviation::NoDeviation
         );
     }
