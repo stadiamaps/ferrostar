@@ -1,11 +1,11 @@
-import Geolocation, {
-  type GeolocationConfiguration,
-  type GeolocationOptions,
-} from '@react-native-community/geolocation';
 import {
-  GeographicCoordinate,
   UserLocation,
   type Heading,
+  type Route,
+  type LocationSimulationState,
+  LocationBias,
+  advanceLocationSimulation,
+  locationSimulationFromRoute,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
 
 export interface LocationProviderInterface {
@@ -20,112 +20,195 @@ export interface LocationUpdateListener {
   onHeadingUpdate(heading: Heading): void;
 }
 
-export class LocationProvider implements LocationProviderInterface {
+export class ManualLocationProvider implements LocationProviderInterface {
   lastLocation?: UserLocation;
   lastHeading?: Heading;
 
-  private locationUpdateOptions: GeolocationOptions;
-  private listeners: Map<LocationUpdateListener, number> = new Map();
+  private listeners: Set<LocationUpdateListener> = new Set();
 
-  constructor(
-    config: GeolocationConfiguration = {
-      skipPermissionRequests: false,
-      authorizationLevel: 'auto',
-      locationProvider: 'auto',
-      enableBackgroundLocationUpdates: false,
-    },
-    options: GeolocationOptions = {
-      enableHighAccuracy: true,
-      interval: 1000,
-      fastestInterval: 0,
-    }
-  ) {
-    this.locationUpdateOptions = options;
-    Geolocation.setRNConfiguration(config);
-  }
+  constructor() {}
 
-  /**
-   * Adds a location update listener.
-   *
-   * NOTE: This does NOT attempt to check permissions. The caller is responsible for ensuring that
-   * permissions are enabled before calling this.
-   */
   addListener(listener: LocationUpdateListener): void {
-    console.log('Add location listener');
-    if (this.listeners.has(listener)) {
-      console.log('Already registered; skipping');
-      return;
-    }
-
-    if (this.lastLocation == null) {
-      Geolocation.getCurrentPosition(
-        (location) => {
-          const { coords, timestamp } = location;
-          const userLocation = {
-            coordinates: {
-              lat: coords.latitude,
-              lng: coords.longitude,
-            },
-            horizontalAccuracy: coords.accuracy,
-            // TODO: map these parameters to the correct types not 100% which ones are correct
-            courseOverGround: undefined,
-            speed:
-              coords.speed !== null
-                ? {
-                    value: coords.speed,
-                    accuracy: undefined,
-                  }
-                : undefined,
-            timestamp: new Date(timestamp),
-          };
-          this.lastLocation = userLocation;
-          listener.onLocationUpdate(userLocation);
-        },
-        undefined,
-        this.locationUpdateOptions
-      );
-    }
-
-    const watchId = Geolocation.watchPosition(
-      (location) => {
-        const { coords, timestamp } = location;
-        const userLocation = UserLocation.new({
-          coordinates: GeographicCoordinate.new({
-            lat: coords.latitude,
-            lng: coords.longitude,
-          }),
-          horizontalAccuracy: coords.accuracy,
-          // TODO: map these parameters to the correct types not 100% which ones are correct
-          courseOverGround: undefined,
-          speed:
-            coords.speed !== null
-              ? {
-                  value: coords.speed,
-                  accuracy: undefined,
-                }
-              : undefined,
-          timestamp: new Date(timestamp),
-        });
-        this.lastLocation = userLocation;
-        listener.onLocationUpdate(userLocation);
-      },
-      undefined,
-      this.locationUpdateOptions
-    );
-
-    this.listeners.set(listener, watchId);
+    this.listeners.add(listener);
   }
 
   removeListener(listener: LocationUpdateListener): void {
-    console.log('Remove location listener');
-    const watchId = this.listeners.get(listener);
+    this.listeners.delete(listener);
+  }
 
-    if (watchId === undefined) {
-      return;
-    }
+  updateLocation(location: UserLocation): void {
+    this.lastLocation = location;
+    this.listeners.forEach((listener) => {
+      listener.onLocationUpdate(location);
+    });
+  }
 
-    Geolocation.clearWatch(watchId);
+  updateHeading(heading: Heading): void {
+    this.lastHeading = heading;
+    this.listeners.forEach((listener) => {
+      listener.onHeadingUpdate(heading);
+    });
   }
 }
 
-// TODO: Add simulated provider
+/**
+ * A location provider that simulates progress along a route.
+ *
+ * This is useful for testing and demonstrations without having to physically move the device.
+ */
+export class SimulatedLocationProvider implements LocationProviderInterface {
+  lastLocation?: UserLocation;
+  lastHeading?: Heading;
+  private _warpFactor: number = 1;
+
+  private listeners: Set<LocationUpdateListener> = new Set();
+  private simulationState?: LocationSimulationState;
+  private intervalId?: ReturnType<typeof setInterval>;
+  private isPendingCompletion: boolean = false;
+
+  constructor(initialLocation?: UserLocation) {
+    this.lastLocation = initialLocation;
+    if (initialLocation?.courseOverGround) {
+      this.lastHeading = {
+        trueHeading: initialLocation.courseOverGround.degrees,
+        accuracy: initialLocation.courseOverGround.accuracy ?? 0,
+        timestamp: initialLocation.timestamp,
+      };
+    }
+  }
+
+  /**
+   * The factor by which the simulation speed is multiplied.
+   *
+   * A warp factor of 2 will simulate movement at twice the normal speed.
+   */
+  get warpFactor(): number {
+    return this._warpFactor;
+  }
+
+  set warpFactor(value: number) {
+    this._warpFactor = value;
+    if (this.intervalId) {
+      this.stop();
+      this.start();
+    }
+  }
+
+  addListener(listener: LocationUpdateListener): void {
+    this.listeners.add(listener);
+  }
+
+  removeListener(listener: LocationUpdateListener): void {
+    this.listeners.delete(listener);
+  }
+
+  /**
+   * Sets the route to simulate.
+   *
+   * @param route The route to simulate progress along.
+   * @param resampleDistance The maximum distance (in meters) between simulated points.
+   * @param bias The location bias to apply to the simulated locations.
+   */
+  setRoute(
+    route: Route,
+    resampleDistance: number = 10,
+    bias: LocationBias = new LocationBias.None()
+  ): void {
+    this.stop();
+    this.simulationState = locationSimulationFromRoute(
+      route,
+      resampleDistance,
+      bias
+    );
+    this.isPendingCompletion = false;
+    this.updateFromState(this.simulationState);
+    this.start();
+  }
+
+  /**
+   * Starts the simulation.
+   */
+  start(): void {
+    if (this.intervalId || !this.simulationState) {
+      return;
+    }
+
+    this.intervalId = setInterval(() => {
+      if (!this.simulationState) {
+        this.stop();
+        return;
+      }
+
+      const nextState = advanceLocationSimulation(this.simulationState);
+
+      // Check if we've reached the end of the route.
+      // The Rust core returns the same state when the simulation is finished.
+      if (
+        nextState.remainingLocations.length ===
+        this.simulationState.remainingLocations.length
+      ) {
+        if (this.isPendingCompletion) {
+          this.stop();
+          return;
+        } else {
+          this.isPendingCompletion = true;
+        }
+      }
+
+      this.simulationState = nextState;
+      this.updateFromState(this.simulationState);
+    }, 1000 / this._warpFactor);
+  }
+
+  /**
+   * Stops the simulation.
+   */
+  stop(): void {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = undefined;
+    }
+  }
+
+  updateLocation(location: UserLocation): void {
+    if (this.intervalId) {
+      // Ignore manual updates while simulating
+      return;
+    }
+    this.lastLocation = location;
+    this.listeners.forEach((listener) => {
+      listener.onLocationUpdate(location);
+    });
+  }
+
+  updateHeading(heading: Heading): void {
+    if (this.intervalId) {
+      // Ignore manual updates while simulating
+      return;
+    }
+    this.lastHeading = heading;
+    this.listeners.forEach((listener) => {
+      listener.onHeadingUpdate(heading);
+    });
+  }
+
+  private updateFromState(state: LocationSimulationState): void {
+    const location = state.currentLocation;
+    this.lastLocation = location;
+
+    if (location.courseOverGround) {
+      this.lastHeading = {
+        trueHeading: location.courseOverGround.degrees,
+        accuracy: location.courseOverGround.accuracy ?? 0,
+        timestamp: location.timestamp,
+      };
+    }
+
+    this.listeners.forEach((listener) => {
+      listener.onLocationUpdate(location);
+      if (this.lastHeading) {
+        listener.onHeadingUpdate(this.lastHeading);
+      }
+    });
+  }
+}

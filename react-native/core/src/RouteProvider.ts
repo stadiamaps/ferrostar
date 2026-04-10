@@ -41,8 +41,14 @@ export function withJsonOptions(
   options?: Record<string, unknown>
 ): WellKnownRouteProvider {
   let existingOptions: Record<string, unknown>;
+  const currentOptionsJson = WellKnownRouteProvider.Valhalla.instanceOf(provider)
+    ? provider.inner.optionsJson
+    : WellKnownRouteProvider.GraphHopper.instanceOf(provider)
+    ? provider.inner.optionsJson
+    : undefined;
+
   try {
-    existingOptions = JSON.parse(provider.optionsJson ?? '{}');
+    existingOptions = JSON.parse(currentOptionsJson ?? '{}');
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_: unknown) {
     existingOptions = {};
@@ -59,8 +65,7 @@ export function withJsonOptions(
     });
   } else if (WellKnownRouteProvider.GraphHopper.instanceOf(provider)) {
     return WellKnownRouteProvider.GraphHopper.new({
-      endpointUrl: provider.inner.endpointUrl,
-      profile: provider.inner.profile,
+      ...provider.inner,
       optionsJson: mergedOptionsJson,
     });
   } else {

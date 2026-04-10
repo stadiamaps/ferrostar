@@ -1,11 +1,17 @@
 import {
   Camera,
-  UserTrackingMode,
-  type CameraPadding,
   type CameraRef,
+  type ViewPadding,
 } from '@maplibre/maplibre-react-native';
-import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useRef,
+} from 'react';
 import { Dimensions, PixelRatio, useWindowDimensions } from 'react-native';
+import type { UserLocation } from '@stadiamaps/ferrostar-core-react-native';
 
 export class NavigationActivity {
   zoom: number;
@@ -29,6 +35,7 @@ export class NavigationActivity {
 type NavigationMapViewCameraProps = {
   activity?: NavigationActivity;
   bounds?: { ne: [number, number]; sw: [number, number] } | null;
+  followUserLocation?: UserLocation;
 };
 
 /**
@@ -42,51 +49,79 @@ type NavigationMapViewCameraProps = {
 export const NavigationMapViewCamera = forwardRef<
   CameraRef,
   NavigationMapViewCameraProps
->(({ activity = NavigationActivity.Automotive, bounds = null }, outerRef) => {
-  const innerRef = useRef<CameraRef>(null);
+>(
+  (
+    {
+      activity = NavigationActivity.Automotive,
+      bounds = null,
+      followUserLocation,
+    },
+    outerRef
+  ) => {
+    const innerRef = useRef<CameraRef>(null);
 
-  useImperativeHandle<CameraRef | null, CameraRef | null>(
-    outerRef,
-    () => innerRef.current
-  );
+    useImperativeHandle<CameraRef | null, CameraRef | null>(
+      outerRef,
+      () => innerRef.current
+    );
 
-  const { width, height } = useWindowDimensions();
-  const orientation = useMemo(() => {
-    return height > width ? 'portrait' : 'landscape';
-  }, [height, width]);
+    const { width, height } = useWindowDimensions();
+    const orientation = useMemo(() => {
+      return height > width ? 'portrait' : 'landscape';
+    }, [height, width]);
 
-  const start = useMemo(() => {
-    if (orientation === 'landscape') return 0.5;
-    return 0.0;
-  }, [orientation]);
+    const start = useMemo(() => {
+      if (orientation === 'landscape') return 0.5;
+      return 0.0;
+    }, [orientation]);
 
-  const padding: CameraPadding = useMemo(() => {
-    const { height: screenHeight, width: screenWidth } =
-      Dimensions.get('screen');
+    const padding: ViewPadding = useMemo(() => {
+      const { height: screenHeight, width: screenWidth } =
+        Dimensions.get('screen');
 
-    const screenWidthPx = PixelRatio.getPixelSizeForLayoutSize(screenWidth);
-    const screenHeightPx = PixelRatio.getPixelSizeForLayoutSize(screenHeight);
-    // TODO: A way to calculate RTL and LTR padding.
-    const left = start * screenWidthPx;
-    const top = 0.5 * screenHeightPx;
-    const right = 0.0 * screenWidthPx;
-    const bottom = 0.0 * screenHeightPx;
+      const screenWidthPx = PixelRatio.getPixelSizeForLayoutSize(screenWidth);
+      const screenHeightPx = PixelRatio.getPixelSizeForLayoutSize(screenHeight);
+      // TODO: A way to calculate RTL and LTR padding.
+      const left = start * screenWidthPx;
+      const top = 0.5 * screenHeightPx;
+      const right = 0.0 * screenWidthPx;
+      const bottom = 0.0 * screenHeightPx;
 
-    return {
-      paddingLeft: left,
-      paddingTop: top,
-      paddingRight: right,
-      paddingBottom: bottom,
-    };
-  }, [start]);
+      return {
+        left,
+        top,
+        right,
+        bottom,
+      };
+    }, [start]);
 
-  return (
-    <Camera
-      ref={innerRef}
-      followUserLocation={true}
-      followUserMode={UserTrackingMode.FollowWithCourse}
-      followZoomLevel={activity.zoom}
-      followPitch={activity.pitch}
-    />
-  );
-});
+    const centerCoordinate = useMemo(() => {
+      if (!followUserLocation) return undefined;
+      return [
+        followUserLocation.coordinates.lng,
+        followUserLocation.coordinates.lat,
+      ] as [number, number];
+    }, [followUserLocation]);
+
+    const heading = useMemo(() => {
+      return followUserLocation?.courseOverGround?.degrees ?? 0;
+    }, [followUserLocation]);
+
+    useEffect(() => {
+      innerRef.current.easeTo(
+        { center: centerCoordinate, bearing: heading },
+        50
+      );
+    }, [centerCoordinate]);
+
+    return (
+      <Camera
+        ref={innerRef}
+        trackUserLocation={followUserLocation ? undefined : 'course'}
+        zoom={activity.zoom}
+        pitch={activity.pitch}
+        padding={padding}
+      />
+    );
+  }
+);

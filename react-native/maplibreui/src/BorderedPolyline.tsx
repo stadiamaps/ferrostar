@@ -1,4 +1,4 @@
-import { LineLayer, ShapeSource } from '@maplibre/maplibre-react-native';
+import { Layer, GeoJSONSource } from '@maplibre/maplibre-react-native';
 
 type BorderedPolylineProps = {
   points: Array<{ lat: number; lng: number }>;
@@ -22,9 +22,9 @@ export const BorderedPolyline = ({
   }
 
   return (
-    <ShapeSource
+    <GeoJSONSource
       id="border-polyline"
-      shape={{
+      data={{
         type: 'Feature',
         geometry: {
           type: 'LineString',
@@ -33,24 +33,30 @@ export const BorderedPolyline = ({
         properties: {},
       }}
     >
-      <LineLayer
+      <Layer
         id="line-border"
+        type="line"
+        beforeId="line"
         style={{
           lineCap: 'round',
+          lineJoin: 'round',
           lineWidth: lineWidth + borderWidth * 2.0,
           lineColor: borderColor,
           lineSortKey: zIndex,
         }}
       />
-      <LineLayer
+      <Layer
         id="line"
+        type="line"
+        beforeId="ferrostar-puck-bg"
         style={{
           lineCap: 'round',
+          lineJoin: 'round',
           lineWidth,
           lineColor: color,
           lineSortKey: zIndex,
         }}
       />
-    </ShapeSource>
+    </GeoJSONSource>
   );
 };

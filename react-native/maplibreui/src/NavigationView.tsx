@@ -6,10 +6,11 @@ import {
   UserLocation,
 } from '@maplibre/maplibre-react-native';
 import { bbox } from '@turf/bbox';
-import { ComponentProps, useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { ComponentProps, useState, useRef, useMemo, useCallback } from 'react';
 import {
   FerrostarCore,
-  NavigationUiState,
+  useNavigationState,
+  type GeographicCoordinate,
 } from '@stadiamaps/ferrostar-core-react-native';
 import { BorderedPolyline } from './BorderedPolyline';
 import { NavigationMapViewCamera } from './NavigationMapViewCamera';
@@ -17,6 +18,7 @@ import { TripProgressView } from './TripProgressView';
 import { StyleSheet, View } from 'react-native';
 import { InstructionsView } from './InstructionsView';
 import { MapControls } from './MapControls';
+import { NavigationPuck } from './NavigationPuck';
 
 type NavigationViewProps = ComponentProps<typeof Map> & {
   core: FerrostarCore;
@@ -32,17 +34,15 @@ export const NavigationView = (props: NavigationViewProps) => {
     ne: [number, number];
     sw: [number, number];
   } | null>(null);
-  const [uiState, setUiState] = useState<NavigationUiState>();
+
+  const uiState = useNavigationState(core, isMuted);
 
   const isNavigating = useMemo(() => {
     return uiState?.isNavigating() ?? false;
   }, [uiState]);
 
   const handleMute = () => {
-    setIsMuted(!isMuted);
-    if (uiState === undefined) return;
-
-    setUiState(uiState.setMuted(!isMuted));
+    setIsMuted((prev) => !prev);
   };
 
   const handleRoutePress = useCallback(() => {
@@ -66,10 +66,9 @@ export const NavigationView = (props: NavigationViewProps) => {
       properties: {},
       geometry: {
         type: 'LineString' as const,
-        coordinates: uiState.routeGeometry.map((point) => [
-          point.lng,
-          point.lat,
-        ]) as [number, number][],
+        coordinates: uiState.routeGeometry.map(
+          (point: GeographicCoordinate) => [point.lng, point.lat]
+        ) as [number, number][],
       },
     };
     const [minX, minY, maxX, maxY] = bbox(lineString);
@@ -111,45 +110,25 @@ export const NavigationView = (props: NavigationViewProps) => {
     uiState?.snappedLocation,
   ]);
 
-  useEffect(() => {
-    const watchId = core.addStateListener((state) => {
-      const newState = NavigationUiState.fromFerrostar(
-        state,
-        isMuted,
-        core.locationProvider.lastLocation
-      );
-
-      setUiState(newState);
-    });
-
-    return () => {
-      core.removeStateListener(watchId);
-    };
-  }, []);
-
   return (
     <View style={defaultStyle.container}>
-      <Map
-        ref={mapRef}
-        compassEnabled={false}
-        attributionEnabled={false}
-        {...props}
-      >
+      <Map ref={mapRef} compass={false} attribution={false} {...props}>
         {isNavigating ? (
           <>
-            <NavigationMapViewCamera ref={cameraRef} bounds={routeBounds} />
-            <UserLocation
-              renderMode="native"
-              androidRenderMode="gps"
-              animated
+            <NavigationMapViewCamera
+              ref={cameraRef}
+              bounds={routeBounds}
+              followUserLocation={location}
             />
+            <NavigationPuck location={location} />
           </>
         ) : (
           <>
-            <Camera ref={cameraRef} followUserLocation />
-            <UserLocation renderMode="native" />
+            <Camera ref={cameraRef} trackUserLocation="default" />
+            <UserLocation />
           </>
         )}
+
         <BorderedPolyline points={uiState?.routeGeometry ?? []} zIndex={0} />
         {children}
       </Map>

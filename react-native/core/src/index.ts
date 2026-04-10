@@ -1,7 +1,8 @@
 import { FerrostarCore, NavigationState } from './FerrostarCore';
 import { NavigationUiState } from './NavigationUiState';
 import {
-  LocationProvider,
+  ManualLocationProvider,
+  SimulatedLocationProvider,
   type LocationUpdateListener,
   type LocationProviderInterface,
 } from './LocationProvider';
@@ -14,15 +15,34 @@ import {
   NoResponseBodyException,
 } from './FerrostarCoreException';
 
+export {
+  type Route,
+  type TripProgress,
+  type UserLocation,
+  type Waypoint,
+  type GeographicCoordinate,
+  WaypointKind,
+  WellKnownRouteProvider,
+  type NavigationControllerConfig,
+  NavigationController,
+  type TripState,
+  type NavState,
+  RouteAdapter,
+  LocationBias,
+} from '@stadiamaps/ferrostar-uniffi-react-native';
 export { FerrostarCore, NavigationUiState, NavigationState };
 export {
-  LocationProvider,
+  ManualLocationProvider,
+  SimulatedLocationProvider,
   type LocationUpdateListener,
   type LocationProviderInterface,
 };
 export { type RouteProvider, type RouteProviderAdapter, type RouteProviderCustom };
 export { type RouteDeviationHandler };
 export { type AlternativeRouteProcessor };
+export { useNavigationState } from './hooks/useNavigationState';
+export { useFerrostar } from './hooks/useFerrostar';
+export { useRoutes } from './hooks/useRoutes';
 export {
   InvalidStatusCodeException,
   NoRequestBodyException,
