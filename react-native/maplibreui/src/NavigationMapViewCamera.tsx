@@ -1,8 +1,4 @@
-import {
-  Camera,
-  type CameraRef,
-  type ViewPadding,
-} from '@maplibre/maplibre-react-native';
+import { Camera, type CameraRef } from '@maplibre/maplibre-react-native';
 import {
   forwardRef,
   useEffect,
@@ -10,7 +6,6 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { Dimensions, PixelRatio, useWindowDimensions } from 'react-native';
 import type { UserLocation } from '@stadiamaps/ferrostar-core-react-native';
 
 export class NavigationActivity {
@@ -34,7 +29,6 @@ export class NavigationActivity {
 
 type NavigationMapViewCameraProps = {
   activity?: NavigationActivity;
-  bounds?: { ne: [number, number]; sw: [number, number] } | null;
   followUserLocation?: UserLocation;
 };
 
@@ -51,11 +45,7 @@ export const NavigationMapViewCamera = forwardRef<
   NavigationMapViewCameraProps
 >(
   (
-    {
-      activity = NavigationActivity.Automotive,
-      bounds = null,
-      followUserLocation,
-    },
+    { activity = NavigationActivity.Automotive, followUserLocation },
     outerRef
   ) => {
     const innerRef = useRef<CameraRef>(null);
@@ -65,42 +55,12 @@ export const NavigationMapViewCamera = forwardRef<
       () => innerRef.current
     );
 
-    const { width, height } = useWindowDimensions();
-    const orientation = useMemo(() => {
-      return height > width ? 'portrait' : 'landscape';
-    }, [height, width]);
-
-    const start = useMemo(() => {
-      if (orientation === 'landscape') return 0.5;
-      return 0.0;
-    }, [orientation]);
-
-    const padding: ViewPadding = useMemo(() => {
-      const { height: screenHeight, width: screenWidth } =
-        Dimensions.get('screen');
-
-      const screenWidthPx = PixelRatio.getPixelSizeForLayoutSize(screenWidth);
-      const screenHeightPx = PixelRatio.getPixelSizeForLayoutSize(screenHeight);
-      // TODO: A way to calculate RTL and LTR padding.
-      const left = start * screenWidthPx;
-      const top = 0.5 * screenHeightPx;
-      const right = 0.0 * screenWidthPx;
-      const bottom = 0.0 * screenHeightPx;
-
-      return {
-        left,
-        top,
-        right,
-        bottom,
-      };
-    }, [start]);
-
-    const centerCoordinate = useMemo(() => {
+    const centerCoordinate: [number, number] | undefined = useMemo(() => {
       if (!followUserLocation) return undefined;
       return [
         followUserLocation.coordinates.lng,
         followUserLocation.coordinates.lat,
-      ] as [number, number];
+      ];
     }, [followUserLocation]);
 
     const heading = useMemo(() => {
@@ -108,20 +68,21 @@ export const NavigationMapViewCamera = forwardRef<
     }, [followUserLocation]);
 
     useEffect(() => {
-      innerRef.current.easeTo(
-        { center: centerCoordinate, bearing: heading },
-        50
-      );
-    }, [centerCoordinate]);
+      if (centerCoordinate) {
+        innerRef.current?.easeTo(
+          {
+            center: centerCoordinate,
+            bearing: heading,
+            zoom: activity.zoom,
+            pitch: activity.pitch,
+          },
+          50
+        );
+      }
+    }, [centerCoordinate, heading]);
 
     return (
-      <Camera
-        ref={innerRef}
-        trackUserLocation={followUserLocation ? undefined : 'course'}
-        zoom={activity.zoom}
-        pitch={activity.pitch}
-        padding={padding}
-      />
+      <Camera ref={innerRef} zoomLevel={activity.zoom} pitch={activity.pitch} />
     );
   }
 );

@@ -156,42 +156,49 @@ export class FerrostarCore implements LocationUpdateListener {
 
       if (this.routeProvider.kind === 'custom') {
         return await this.routeProvider.getRoutes(initialLocation, waypoints);
-      } else if (this.routeProvider.kind === 'adapter') {
+      }
+
+      if (this.routeProvider.kind === 'adapter') {
         const adapter = RouteAdapter.fromWellKnownRouteProvider(
           this.routeProvider.provider
         );
         const request = adapter.generateRequest(initialLocation, waypoints);
 
-        if (request.tag === 'HttpPost') {
-          const fetchHeaders: Record<string, string> = {};
-          if (request.inner.headers) {
-            request.inner.headers.forEach((value, key) => {
-              fetchHeaders[key] = value;
-            });
-          }
-
-          const response = await fetch(request.inner.url, {
-            method: 'POST',
-            headers: fetchHeaders,
-            body: new Uint8Array(request.inner.body),
-          });
-
-          if (!response.ok) {
-            throw new InvalidStatusCodeException(response.status);
-          }
-
-          const arrayBuffer = await response.arrayBuffer();
-          if (!arrayBuffer || arrayBuffer.byteLength === 0) {
-            throw new NoResponseBodyException();
-          }
-          return adapter.parseResponse(arrayBuffer);
-        } else {
+        if (request.tag !== 'HttpPost') {
           throw new Error(`Unsupported route request type: ${request.tag}`);
         }
+
+        const fetchHeaders: Record<string, string> = {};
+        if (request.inner.headers) {
+          request.inner.headers.forEach((value, key) => {
+            fetchHeaders[key] = value;
+          });
+        }
+
+        console.log({
+          url: request.inner.url,
+          headers: fetchHeaders,
+          body: request.inner.body,
+        });
+        const response = await fetch(request.inner.url, {
+          method: 'POST',
+          headers: fetchHeaders,
+          body: new Uint8Array(request.inner.body),
+        });
+
+        if (!response.ok) {
+          throw new InvalidStatusCodeException(response.status);
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+          throw new NoResponseBodyException();
+        }
+        return adapter.parseResponse(arrayBuffer);
       }
 
       throw new Error('Unknown route provider kind');
-    } catch (e: any) {
+    } catch (e: unknown) {
       if (e instanceof InvalidStatusCodeException) {
         console.warn(`Failed to get routes: Status ${e.message}`);
       } else {
@@ -291,7 +298,11 @@ export class FerrostarCore implements LocationUpdateListener {
     const session = this._navigationSession;
     const location = this._lastLocation;
 
-    if (session === undefined || location === undefined || this._state.navState === undefined) {
+    if (
+      session === undefined ||
+      location === undefined ||
+      this._state.navState === undefined
+    ) {
       return;
     }
 
@@ -387,7 +398,9 @@ export class FerrostarCore implements LocationUpdateListener {
         // Verify we are still in a state that needs this new route
         if (
           TripState.Navigating.instanceOf(this._state.tripState) &&
-          RouteDeviation.OffRoute.instanceOf(this._state.tripState.inner.deviation)
+          RouteDeviation.OffRoute.instanceOf(
+            this._state.tripState.inner.deviation
+          )
         ) {
           if (processor !== undefined) {
             processor.loadedAlternativeRoutes(this, routes);
@@ -430,10 +443,7 @@ export class FerrostarCore implements LocationUpdateListener {
       return;
     }
 
-    const newState = session.updateUserLocation(
-      location,
-      this._state.navState
-    );
+    const newState = session.updateUserLocation(location, this._state.navState);
 
     this.handleStateUpdate(newState, location);
 

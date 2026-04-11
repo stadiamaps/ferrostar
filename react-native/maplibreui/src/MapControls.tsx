@@ -4,7 +4,9 @@ import { getIcon } from './maneuver/_icons';
 type MapControlsProps = {
   isNavigating?: boolean;
   isMuted?: boolean;
+  cameraMode?: 'following' | 'overview' | 'detached';
   onRoutePress?: () => void;
+  onRecenterPress?: () => void;
   onMutePress?: () => void;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
@@ -13,8 +15,10 @@ type MapControlsProps = {
 export const MapControls = ({
   isNavigating = false,
   isMuted = false,
+  cameraMode = 'following',
   onMutePress = () => {},
   onRoutePress = () => {},
+  onRecenterPress = () => {},
   onZoomIn = () => {},
   onZoomOut = () => {},
 }: MapControlsProps) => {
@@ -22,18 +26,20 @@ export const MapControls = ({
 
   return (
     <>
-      <View style={defaultStyle.topRightContainer}>
-        <Pressable style={defaultStyle.routeButton} onPress={onRoutePress}>
-          <Text>{getIcon('route', 32, 32)}</Text>
-        </Pressable>
-        <Pressable style={defaultStyle.muteButton} onPress={onMutePress}>
-          <Text>
-            {isMuted
-              ? getIcon('volume_off', 32, 32)
-              : getIcon('volume_up', 32, 32)}
-          </Text>
-        </Pressable>
-      </View>
+      {cameraMode === 'following' && (
+        <View style={defaultStyle.topRightContainer}>
+          <Pressable style={[defaultStyle.routeButton]} onPress={onRoutePress}>
+            <Text>{getIcon('route', 32, 32)}</Text>
+          </Pressable>
+          <Pressable style={defaultStyle.muteButton} onPress={onMutePress}>
+            <Text>
+              {isMuted
+                ? getIcon('volume_off', 32, 32)
+                : getIcon('volume_up', 32, 32)}
+            </Text>
+          </Pressable>
+        </View>
+      )}
       <View style={defaultStyle.centerRightContainer}>
         <View style={defaultStyle.zoomContainer}>
           <Pressable style={defaultStyle.zoomInButton} onPress={onZoomIn}>
@@ -44,6 +50,16 @@ export const MapControls = ({
             <Text style={defaultStyle.text}>{getIcon('remove', 32, 32)}</Text>
           </Pressable>
         </View>
+      </View>
+      <View style={defaultStyle.bottomRightContainer}>
+        {cameraMode !== 'following' && (
+          <Pressable
+            style={defaultStyle.recenterButton}
+            onPress={onRecenterPress}
+          >
+            <Text>{getIcon('near_me', 32, 32, '#007AFF')}</Text>
+          </Pressable>
+        )}
       </View>
     </>
   );
@@ -69,7 +85,25 @@ const defaultStyle = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 10,
   },
+  bottomRightContainer: {
+    position: 'absolute',
+    bottom: 90,
+    right: 0,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
   muteButton: {
+    borderRadius: 100,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    margin: 10,
+  },
+  recenterButton: {
     borderRadius: 100,
     width: 60,
     height: 60,
@@ -86,6 +120,9 @@ const defaultStyle = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     margin: 10,
+  },
+  activeButton: {
+    backgroundColor: '#eee',
   },
   zoomContainer: {
     flexDirection: 'column',

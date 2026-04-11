@@ -16,8 +16,8 @@ import {
 } from '@stadiamaps/ferrostar-core-react-native';
 import { NavigationView } from '@stadiamaps/ferrostar-maplibre-react-native';
 import { useMemo, useEffect } from 'react';
-import { useLocationPermission } from '@/hooks/useLocationPermissions';
-import { useLocationTracker } from '@/hooks/useLocationTracker';
+import { useLocationPermission } from '../hooks/useLocationPermissions';
+import { useLocationTracker } from '../hooks/useLocationTracker';
 import { withJsonOptions } from '@stadiamaps/ferrostar-core-react-native/src/RouteProvider';
 
 const apiKey = process.env.EXPO_PUBLIC_STADIA_MAPS_API_KEY ?? '';
@@ -27,33 +27,27 @@ export default function Index() {
   const { isPermissionGranted } = useLocationPermission();
   const { currentPosition: location } = useLocationTracker();
 
-  const config = useMemo(
-    () => ({
-      waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
-      stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
-      arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
-      routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
-        minimumHorizontalAccuracy: 15,
-        maxAcceptableDeviation: 50,
-      }),
-      snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
+  const config = {
+    waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
+    stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
+    arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
+    routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
+      minimumHorizontalAccuracy: 15,
+      maxAcceptableDeviation: 50,
     }),
-    []
-  );
+    snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
+  };
 
-  const routeProvider = useMemo(
-    () => ({
-      kind: 'adapter' as const,
-      provider: withJsonOptions(
-        WellKnownRouteProvider.Valhalla.new({
-          endpointUrl: 'https://valhalla1.openstreetmap.de/route',
-          profile: 'auto',
-          optionsJson: undefined,
-        })
-      ),
-    }),
-    []
-  );
+  const routeProvider = {
+    kind: 'adapter' as const,
+    provider: withJsonOptions(
+      WellKnownRouteProvider.Valhalla.new({
+        endpointUrl: 'https://valhalla1.openstreetmap.de/route',
+        profile: 'auto',
+        optionsJson: undefined,
+      })
+    ),
+  };
 
   const locationProvider = useMemo(() => new SimulatedLocationProvider(), []);
   const core = useFerrostar(config, routeProvider, locationProvider);
@@ -65,24 +59,25 @@ export default function Index() {
   }, [locationProvider]);
 
   useEffect(() => {
-    if (location) {
-      const { coords, timestamp } = location;
-      const userLocation = {
-        coordinates: { lat: coords.latitude, lng: coords.longitude },
-        horizontalAccuracy: coords.accuracy ?? 0,
-        courseOverGround: undefined,
-        timestamp: new Date(timestamp),
-        speed:
-          coords.speed !== null
-            ? { value: coords.speed, accuracy: undefined }
-            : undefined,
-      };
+    if (!location) {
+      return;
+    }
+    const { coords, timestamp } = location;
+    const userLocation = {
+      coordinates: { lat: coords.latitude, lng: coords.longitude },
+      horizontalAccuracy: coords.accuracy ?? 0,
+      courseOverGround: undefined,
+      timestamp: new Date(timestamp),
+      speed:
+        coords.speed !== null
+          ? { value: coords.speed, accuracy: undefined }
+          : undefined,
+    };
 
-      if (core.locationProvider instanceof SimulatedLocationProvider) {
-        core.locationProvider.updateLocation(
-          userLocation as unknown as UserLocation
-        );
-      }
+    if (core.locationProvider instanceof SimulatedLocationProvider) {
+      core.locationProvider.updateLocation(
+        userLocation as unknown as UserLocation
+      );
     }
   }, [location, core]);
 
@@ -119,8 +114,6 @@ export default function Index() {
     if (!route) {
       return;
     }
-    console.log({ route });
-
     core.startNavigation(route);
     if (core.locationProvider instanceof SimulatedLocationProvider) {
       core.locationProvider.setRoute(route);

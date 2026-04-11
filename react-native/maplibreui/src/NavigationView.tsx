@@ -4,18 +4,18 @@ import {
   type MapRef,
   Map,
   UserLocation,
+  type ViewStateChangeEvent,
 } from '@maplibre/maplibre-react-native';
 import { bbox } from '@turf/bbox';
 import { ComponentProps, useState, useRef, useMemo, useCallback } from 'react';
+import { type NativeSyntheticEvent, StyleSheet, View } from 'react-native';
 import {
   FerrostarCore,
   useNavigationState,
-  type GeographicCoordinate,
 } from '@stadiamaps/ferrostar-core-react-native';
 import { BorderedPolyline } from './BorderedPolyline';
 import { NavigationMapViewCamera } from './NavigationMapViewCamera';
 import { TripProgressView } from './TripProgressView';
-import { StyleSheet, View } from 'react-native';
 import { InstructionsView } from './InstructionsView';
 import { MapControls } from './MapControls';
 import { NavigationPuck } from './NavigationPuck';
@@ -30,10 +30,9 @@ export const NavigationView = (props: NavigationViewProps) => {
   const mapRef = useRef<MapRef>(null);
   const cameraRef = useRef<CameraRef>(null);
   const [isMuted, setIsMuted] = useState(false);
-  const [routeBounds, setRouteBounds] = useState<{
-    ne: [number, number];
-    sw: [number, number];
-  } | null>(null);
+  const [cameraMode, setCameraMode] = useState<
+    'following' | 'overview' | 'detached'
+  >('following');
 
   const uiState = useNavigationState(core, isMuted);
 
@@ -48,9 +47,8 @@ export const NavigationView = (props: NavigationViewProps) => {
   const handleRoutePress = useCallback(() => {
     if (!uiState) return;
 
-    // If the route is already focused, we need to reset the camera to follow the user.
-    if (routeBounds) {
-      setRouteBounds(null);
+    if (cameraMode === 'overview') {
+      setCameraMode('following');
       return;
     }
 
@@ -62,21 +60,37 @@ export const NavigationView = (props: NavigationViewProps) => {
     }
 
     const lineString = {
-      type: 'Feature' as const,
+      type: 'Feature',
       properties: {},
       geometry: {
-        type: 'LineString' as const,
-        coordinates: uiState.routeGeometry.map(
-          (point: GeographicCoordinate) => [point.lng, point.lat]
-        ) as [number, number][],
+        type: 'LineString',
+        coordinates: uiState.routeGeometry.map((point) => [
+          point.lng,
+          point.lat,
+        ]),
       },
     };
-    const [minX, minY, maxX, maxY] = bbox(lineString);
-    const ne = [minX, minY] satisfies [number, number];
-    const sw = [maxX, maxY] satisfies [number, number];
+    const [west, south, east, north] = bbox(lineString);
 
-    setRouteBounds({ ne, sw });
-  }, [routeBounds, uiState]);
+    setCameraMode('overview');
+    cameraRef.current.fitBounds([west, south, east, north], {
+      pitch: 0,
+      padding: { top: 20, right: 20, bottom: 20, left: 20 },
+    });
+  }, [cameraMode, uiState]);
+
+  const handleRecenterPress = useCallback(() => {
+    setCameraMode('following');
+  }, []);
+
+  const handleCameraChanged = useCallback(
+    (event: NativeSyntheticEvent<ViewStateChangeEvent>) => {
+      if (cameraMode === 'following' && event.nativeEvent.userInteraction) {
+        setCameraMode('detached');
+      }
+    },
+    [cameraMode]
+  );
 
   const handleZoom = useCallback(
     async (type: 'in' | 'out') => {
@@ -93,10 +107,6 @@ export const NavigationView = (props: NavigationViewProps) => {
     [cameraRef]
   );
 
-  // We need to find a way to override the location manager from within maplibre-react-native
-  // or we need to create a custom puck that can have a custom navigation when navigating.
-  // But that is only when the snapToRouteLocation is true.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const location = useMemo(() => {
     if (snapUserLocationToRoute && isNavigating) {
       return uiState?.snappedLocation;
@@ -112,19 +122,26 @@ export const NavigationView = (props: NavigationViewProps) => {
 
   return (
     <View style={defaultStyle.container}>
-      <Map ref={mapRef} compass={false} attribution={false} {...props}>
+      <Map
+        ref={mapRef}
+        compass={false}
+        attribution={false}
+        onRegionIsChanging={handleCameraChanged}
+        {...props}
+      >
         {isNavigating ? (
           <>
             <NavigationMapViewCamera
               ref={cameraRef}
-              bounds={routeBounds}
-              followUserLocation={location}
+              followUserLocation={
+                cameraMode === 'following' ? location : undefined
+              }
             />
             <NavigationPuck location={location} />
           </>
         ) : (
           <>
-            <Camera ref={cameraRef} trackUserLocation="default" />
+            <Camera ref={cameraRef} trackUserLocation="default" zoom={10} />
             <UserLocation />
           </>
         )}
@@ -140,7 +157,9 @@ export const NavigationView = (props: NavigationViewProps) => {
       <MapControls
         isNavigating={isNavigating}
         isMuted={uiState?.isMuted ?? false}
+        cameraMode={cameraMode}
         onRoutePress={handleRoutePress}
+        onRecenterPress={handleRecenterPress}
         onMutePress={handleMute}
         onZoomIn={() => handleZoom('in')}
         onZoomOut={() => handleZoom('out')}

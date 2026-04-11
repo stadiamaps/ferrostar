@@ -92,7 +92,8 @@ export type IconType =
   | 'volume_up'
   | 'route'
   | 'remove'
-  | 'add';
+  | 'add'
+  | 'near_me';
 
 const Arrive = (props: SvgProps) => {
   return (
@@ -1092,6 +1093,17 @@ const Add = (props: SvgProps) => {
   );
 };
 
+const NearMe = (props: SvgProps) => {
+  return (
+    <Svg fill="none" viewBox="0 0 24 24" {...props}>
+      <Path
+        fill="#000"
+        d="M21 3L3 10.53V11.51L9.84 14.16L12.48 21H13.46L21 3Z"
+      />
+    </Svg>
+  );
+};
+
 export function getIcon(
   icon: IconType,
   width: number = 20,
@@ -1171,6 +1183,8 @@ export function getIcon(
       return MergeSlightLeft({ width, height });
     case 'merge_slightright':
       return MergeSlightRight({ width, height });
+    case 'merge_straight':
+      return MergeStraight({ width, height });
     case 'newname_left':
       return NewNameLeft({ width, height });
     case 'newname_right':
@@ -1281,6 +1295,8 @@ export function getIcon(
       return Remove({ width, height });
     case 'add':
       return Add({ width, height });
+    case 'near_me':
+      return NearMe({ width, height });
     default:
       return null;
   }
