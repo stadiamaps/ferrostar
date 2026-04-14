@@ -40,7 +40,8 @@ To update the snapshots, run `./gradlew recordPaparazziDebug`.
 
 ## MapLibre Compose Migration
 
-`ui-maplibre` now targets the official MapLibre Compose Android artifact:
+`ui-maplibre` now targets the official [MapLibre Compose](https://github.com/maplibre/maplibre-compose)
+Android artifact:
 
 ```kotlin
 implementation("org.maplibre.compose:maplibre-compose-android:0.12.1")
@@ -49,6 +50,7 @@ implementation("org.maplibre.compose:maplibre-compose-android:0.12.1")
 Notable Android phone/tablet migration changes:
 
 * `ui-maplibre` no longer uses `io.github.rallista:maplibre-compose`.
+* The underlying imports now come from `org.maplibre.compose.*`.
 * `NavigationMapView`, `PortraitNavigationView`, `LandscapeNavigationView`, and `DynamicallyOrientingNavigationView` now use a Ferrostar-owned `NavigationMapState` via `rememberNavigationMapState()`.
 * The old `MapViewCamera`-based camera API has been replaced by a small Ferrostar camera layer for:
   * follow user
@@ -58,6 +60,7 @@ Notable Android phone/tablet migration changes:
 * `NavigationMapView` now takes `MapOptions` instead of the old `MapControls` API.
 * Location puck styling is configurable through `NavigationMapPuckStyle`.
 * Route rendering now uses a GeoJSON source plus `LineLayer` instead of legacy polyline convenience APIs.
+* App-specific sources and layers should be added through the `content` slot with the normal [MapLibre Compose layer APIs](https://maplibre.org/maplibre-compose/layers/).
 * Map tap and long-press callbacks use Ferrostar-facing callbacks with `GeographicCoordinate` plus screen position.
 * `NavigationMapView` now exposes `onMapLoadFinished` and `onMapLoadFailed` instead of a native-style `onMapReadyCallback`.
 * `NavigationMapView` and the phone/tablet wrapper views now take `baseStyle: BaseStyle` directly.
@@ -100,11 +103,18 @@ Custom camera control now goes through `NavigationMapState`:
 navigationMapState.zoomIn()
 navigationMapState.recenter(isNavigating = true)
 navigationMapState.showRouteOverview(boundingBox, paddingValues = mapInsets)
+
+navigationMapState.cameraMode = NavigationCameraMode.FREE
 navigationMapState.cameraState.animateTo(finalPosition = cameraPosition)
+
+navigationMapState.cameraMode = NavigationCameraMode.FREE
 navigationMapState.cameraState.animateTo(boundingBox = bounds, padding = mapInsets)
 ```
 
+Switch to `NavigationCameraMode.FREE` before direct `cameraState` animations so the tracking
+camera does not immediately overwrite app-specific camera movement.
+
 Current scope notes:
 
-* This migration covers Android phone/tablet Compose first.
-* `ui-maplibre-car-app` still exists as a compatibility path, but Android Auto has not been fully migrated to the new map state/camera model yet.
+* This migration primarily targets Android phone/tablet Compose.
+* `ui-maplibre-car-app` now renders through `NavigationMapView`, but still keeps its Android Auto compatibility layer and Rallista car-app dependencies.

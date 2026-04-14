@@ -6,6 +6,24 @@ This page walks you through the ways to customize the Compose UI to your liking.
 
 Note that this section is very much WIP.
 
+## MapLibre Compose migration notes
+
+The Android MapLibre UI now uses the official
+[MapLibre Compose](https://github.com/maplibre/maplibre-compose) `org.maplibre.compose` APIs
+instead of the previous Rallista APIs. The most important integration changes are:
+
+- pass `baseStyle: BaseStyle` instead of a plain style URL
+- create and pass a `NavigationMapState` with `rememberNavigationMapState()`
+- use `MapOptions` for map, ornament, gesture, and render options
+- add app-specific sources and layers through the `content` slot with normal
+  [MapLibre Compose layer APIs](https://maplibre.org/maplibre-compose/layers/)
+- use `navigationMapState.cameraState` for projection queries and imperative camera animations
+- disable Ferrostar's default route or puck with `routeOverlayBuilder = null` and
+  `showDefaultPuck = false` when drawing custom map content
+
+If you call `navigationMapState.cameraState.animateTo(...)` directly, switch to
+`NavigationCameraMode.FREE` first so the tracking camera does not overwrite your custom animation.
+
 ## Customizing the map
 
 Ferrostar includes a `NavigationMapView` based on [MapLibre Native](https://maplibre.org/).
@@ -74,7 +92,8 @@ and projection queries.
 
 You can add your own overlays to the map on any Ferrostar MapLibre composable view.
 The `content` closure runs inside the underlying `MaplibreMap`, so you can use the
-normal MapLibre Compose source and layer APIs there.
+normal [MapLibre Compose source and layer APIs](https://maplibre.org/maplibre-compose/layers/)
+there.
 
 ```kotlin
   val pinJson = """
