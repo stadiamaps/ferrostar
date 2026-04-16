@@ -73,8 +73,6 @@ export const NavigationMapViewCamera = forwardRef<
           {
             center: centerCoordinate,
             bearing: heading,
-            zoom: activity.zoom,
-            pitch: activity.pitch,
           },
           50
         );

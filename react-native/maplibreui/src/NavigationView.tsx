@@ -14,7 +14,10 @@ import {
   useNavigationState,
 } from '@stadiamaps/ferrostar-core-react-native';
 import { BorderedPolyline } from './BorderedPolyline';
-import { NavigationMapViewCamera } from './NavigationMapViewCamera';
+import {
+  NavigationActivity,
+  NavigationMapViewCamera,
+} from './NavigationMapViewCamera';
 import { TripProgressView } from './TripProgressView';
 import { InstructionsView } from './InstructionsView';
 import { MapControls } from './MapControls';
@@ -22,11 +25,17 @@ import { NavigationPuck } from './NavigationPuck';
 
 type NavigationViewProps = ComponentProps<typeof Map> & {
   core: FerrostarCore;
+  activity?: NavigationActivity;
   snapUserLocationToRoute?: boolean;
 };
 
 export const NavigationView = (props: NavigationViewProps) => {
-  const { core, children, snapUserLocationToRoute = true } = props;
+  const {
+    core,
+    children,
+    activity = NavigationActivity.Automotive,
+    snapUserLocationToRoute = true,
+  } = props;
   const mapRef = useRef<MapRef>(null);
   const cameraRef = useRef<CameraRef>(null);
   const [isMuted, setIsMuted] = useState(false);
@@ -80,8 +89,9 @@ export const NavigationView = (props: NavigationViewProps) => {
   }, [cameraMode, uiState]);
 
   const handleRecenterPress = useCallback(() => {
+    cameraRef.current.zoomTo(activity.zoom, { pitch: activity.pitch });
     setCameraMode('following');
-  }, []);
+  }, [activity]);
 
   const handleCameraChanged = useCallback(
     (event: NativeSyntheticEvent<ViewStateChangeEvent>) => {
@@ -133,6 +143,7 @@ export const NavigationView = (props: NavigationViewProps) => {
           <>
             <NavigationMapViewCamera
               ref={cameraRef}
+              activity={activity}
               followUserLocation={
                 cameraMode === 'following' ? location : undefined
               }
