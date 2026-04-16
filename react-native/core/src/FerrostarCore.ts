@@ -175,11 +175,6 @@ export class FerrostarCore implements LocationUpdateListener {
           });
         }
 
-        console.log({
-          url: request.inner.url,
-          headers: fetchHeaders,
-          body: request.inner.body,
-        });
         const response = await fetch(request.inner.url, {
           method: 'POST',
           headers: fetchHeaders,
@@ -339,7 +334,6 @@ export class FerrostarCore implements LocationUpdateListener {
     // Send listeners the new state early if we want, or at the end.
     // Android does it via a StateFlow update which is immediate.
     // To match Android exactly, we should update our internal state object FIRST.
-
     // 1. Guard: Must be navigating
     if (!TripState.Navigating.instanceOf(tripState)) {
       this._listeners.forEach((listener) => listener(this._state));

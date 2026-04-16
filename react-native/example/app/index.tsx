@@ -21,33 +21,34 @@ import { useLocationTracker } from '../hooks/useLocationTracker';
 import { withJsonOptions } from '@stadiamaps/ferrostar-core-react-native/src/RouteProvider';
 
 const apiKey = process.env.EXPO_PUBLIC_STADIA_MAPS_API_KEY ?? '';
+const endpointUrl = process.env.EXPO_PUBLIC_ENDPOINT_URL ?? '';
 const styleUrl = `https://tiles.stadiamaps.com/styles/outdoors.json?api_key=${apiKey}`;
+
+const config = {
+  waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
+  stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
+  arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
+  routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
+    minimumHorizontalAccuracy: 15,
+    maxAcceptableDeviation: 50,
+  }),
+  snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
+};
+
+const routeProvider = {
+  kind: 'adapter' as const,
+  provider: withJsonOptions(
+    WellKnownRouteProvider.Valhalla.new({
+      endpointUrl,
+      profile: 'auto',
+      optionsJson: undefined,
+    })
+  ),
+};
 
 export default function Index() {
   const { isPermissionGranted } = useLocationPermission();
   const { currentPosition: location } = useLocationTracker();
-
-  const config = {
-    waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
-    stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
-    arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
-    routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
-      minimumHorizontalAccuracy: 15,
-      maxAcceptableDeviation: 50,
-    }),
-    snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
-  };
-
-  const routeProvider = {
-    kind: 'adapter' as const,
-    provider: withJsonOptions(
-      WellKnownRouteProvider.Valhalla.new({
-        endpointUrl: 'https://valhalla1.openstreetmap.de/route',
-        profile: 'auto',
-        optionsJson: undefined,
-      })
-    ),
-  };
 
   const locationProvider = useMemo(() => new SimulatedLocationProvider(), []);
   const core = useFerrostar(config, routeProvider, locationProvider);
@@ -97,10 +98,6 @@ export default function Index() {
       },
       [
         {
-          coordinate: { lat: coords.latitude, lng: coords.longitude },
-          kind: WaypointKind.Break,
-        },
-        {
           coordinate: {
             lat: -43.56823546768915,
             lng: 172.6902914460014,
@@ -114,6 +111,13 @@ export default function Index() {
     if (!route) {
       return;
     }
+    core._lastLocation = {
+      coordinates: { lat: coords.latitude, lng: coords.longitude },
+      horizontalAccuracy: coords.accuracy ?? 0,
+      speed: undefined,
+      courseOverGround: undefined,
+      timestamp: new Date(timestamp),
+    };
     core.startNavigation(route);
     if (core.locationProvider instanceof SimulatedLocationProvider) {
       core.locationProvider.setRoute(route);

@@ -45,7 +45,7 @@
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "clean": "del-cli android/build lib",
-    "prepare": "bob build",
+    "build": "bob build",
     "codegen": "bob build --target codegen",
     "release": "release-it"
   },

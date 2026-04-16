@@ -4,7 +4,7 @@ bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native ubrn:
 
 bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native ubrn:android
 
-bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native prepare
+bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native build
 
 bun run --elide-lines=0 --filter @stadiamaps/ferrostar-uniffi-react-native codegen
 
