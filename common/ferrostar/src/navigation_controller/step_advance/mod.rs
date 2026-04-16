@@ -115,6 +115,7 @@ pub enum SerializableStepAdvanceCondition {
         distance: u16,
         minimum_horizontal_accuracy: u16,
         calculate_while_off_route: bool,
+        calculate_while_off_step: bool,
     },
     #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
     DistanceEntryExit {
@@ -155,10 +156,12 @@ impl From<SerializableStepAdvanceCondition> for Arc<dyn StepAdvanceCondition> {
                 distance,
                 minimum_horizontal_accuracy,
                 calculate_while_off_route,
+                calculate_while_off_step,
             } => Arc::new(DistanceFromStepCondition {
                 distance,
                 minimum_horizontal_accuracy,
                 calculate_while_off_route,
+                calculate_while_off_step,
             }),
             SerializableStepAdvanceCondition::DistanceEntryExit {
                 minimum_horizontal_accuracy,
@@ -233,11 +236,13 @@ pub fn step_advance_distance_from_step(
     distance: u16,
     minimum_horizontal_accuracy: u16,
     calculate_while_off_route: bool,
+    calculate_while_off_step: bool,
 ) -> Arc<dyn StepAdvanceCondition> {
     Arc::new(DistanceFromStepCondition {
         distance,
         minimum_horizontal_accuracy,
         calculate_while_off_route,
+        calculate_while_off_step,
     })
 }
 

@@ -91,25 +91,40 @@ impl RouteDeviationTracking {
                         return RouteDeviation::NoDeviation;
                     }
 
-                    let mut first_step_deviation = None;
+                    let user_point = Point::from(*user_location);
 
-                    for (index, step) in remaining_steps.iter().enumerate() {
-                        let step_deviation = self.static_threshold_deviation_from_line(
-                            &Point::from(*user_location),
-                            &step.get_linestring(),
-                            max_acceptable_deviation.clone(),
-                        );
+                    let Some(current_step) = remaining_steps.first() else {
+                        return RouteDeviation::NoDeviation;
+                    };
 
-                        if index == 0 {
-                            first_step_deviation = Some(step_deviation.clone());
-                        }
+                    let current_step_distance =
+                        deviation_from_line(&user_point, &current_step.get_linestring())
+                            .unwrap_or(0.0);
 
-                        if matches!(step_deviation, RouteDeviation::NoDeviation) {
-                            return RouteDeviation::NoDeviation;
+                    // Check if the user is on the current step.
+                    if current_step_distance <= *max_acceptable_deviation {
+                        return RouteDeviation::NoDeviation;
+                    }
+
+                    // User is off the current step. Check if they're on any future step.
+                    for step in remaining_steps.iter().skip(1) {
+                        let distance = deviation_from_line(&user_point, &step.get_linestring())
+                            .unwrap_or(f64::MAX);
+                        if distance <= *max_acceptable_deviation {
+                            return RouteDeviation::Deviation {
+                                kind: DeviationKind::OffStep {
+                                    deviation_from_step_line: current_step_distance,
+                                },
+                            };
                         }
                     }
 
-                    first_step_deviation.unwrap_or(RouteDeviation::NoDeviation)
+                    // Not within threshold of any step — off route.
+                    RouteDeviation::Deviation {
+                        kind: DeviationKind::OffRoute {
+                            deviation_from_route_line: current_step_distance,
+                        },
+                    }
                 }
             },
             RouteDeviationTracking::Custom { detector } => {
@@ -117,25 +132,29 @@ impl RouteDeviationTracking {
             }
         }
     }
+}
 
-    /// Get the `RouteDeviation` status for a given location on a line string.
-    /// This can be used with a Route or `RouteStep`.
-    fn static_threshold_deviation_from_line(
-        &self,
-        point: &Point,
-        line: &LineString,
-        max_acceptable_deviation: f64,
-    ) -> RouteDeviation {
-        deviation_from_line(point, line).map_or(RouteDeviation::NoDeviation, |deviation| {
-            if deviation > 0.0 && deviation > max_acceptable_deviation {
-                RouteDeviation::OffRoute {
-                    deviation_from_route_line: deviation,
-                }
-            } else {
-                RouteDeviation::NoDeviation
-            }
-        })
-    }
+/// The kind of deviation from the expected route.
+#[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(feature = "uniffi", derive(uniffi::Enum))]
+#[cfg_attr(feature = "wasm-bindgen", derive(Tsify))]
+#[cfg_attr(feature = "wasm-bindgen", tsify(into_wasm_abi, from_wasm_abi))]
+pub enum DeviationKind {
+    /// The user is off the current step, but still on the route polyline (on a future step).
+    ///
+    /// This can happen when the user takes a shortcut, GPS noise places them on a future step,
+    /// or the route self-intersects. Step advance conditions can use this to limit advancement.
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    OffStep {
+        /// The deviation from the current step line, in meters.
+        deviation_from_step_line: f64,
+    },
+    /// The user is off the expected route entirely (not within threshold of any remaining step).
+    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
+    OffRoute {
+        /// The deviation from the route line, in meters.
+        deviation_from_route_line: f64,
+    },
 }
 
 /// Status information that describes whether the user is proceeding according to the route or not.
@@ -149,12 +168,11 @@ impl RouteDeviationTracking {
 pub enum RouteDeviation {
     /// The user is proceeding on course within the expected tolerances; everything is normal.
     NoDeviation,
-    /// The user is off the expected route.
-    #[cfg_attr(feature = "wasm-bindgen", serde(rename_all = "camelCase"))]
-    OffRoute {
-        /// The deviation from the route line, in meters.
-        deviation_from_route_line: f64,
-    },
+    /// The user has deviated from the expected route.
+    ///
+    /// Check the [`DeviationKind`] to determine if the user is still on the route polyline
+    /// (off the current step but on a future step) or off the route entirely.
+    Deviation { kind: DeviationKind },
 }
 
 /// A custom deviation detector (for extending the behavior of [`RouteDeviationTracking`]).
@@ -326,8 +344,10 @@ proptest! {
                 _route: Route,
                 _trip_state: TripState,
             ) -> RouteDeviation {
-                return RouteDeviation::OffRoute {
-                    deviation_from_route_line: 7.0
+                RouteDeviation::Deviation {
+                    kind: DeviationKind::OffRoute {
+                        deviation_from_route_line: 7.0,
+                    },
                 }
             }
         }
@@ -358,8 +378,10 @@ proptest! {
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_on_route),
-            RouteDeviation::OffRoute {
-                deviation_from_route_line: 7.0
+            RouteDeviation::Deviation {
+                kind: DeviationKind::OffRoute {
+                    deviation_from_route_line: 7.0,
+                },
             }
         );
 
@@ -383,8 +405,10 @@ proptest! {
         );
         prop_assert_eq!(
             tracking.check_route_deviation(&route, &trip_state_random),
-            RouteDeviation::OffRoute {
-                deviation_from_route_line: 7.0
+            RouteDeviation::Deviation {
+                kind: DeviationKind::OffRoute {
+                    deviation_from_route_line: 7.0,
+                },
             }
         );
     }
@@ -457,7 +481,11 @@ proptest! {
                     prop_assert!(calculated <= max_acceptable_deviation);
                 }
             }
-            RouteDeviation::OffRoute{ deviation_from_route_line } => {
+            RouteDeviation::Deviation { kind: DeviationKind::OffStep { .. } } => {
+                // Cannot happen with a single-step route, but handle for exhaustiveness.
+                prop_assert!(false, "OffStep should not occur with a single-step route");
+            }
+            RouteDeviation::Deviation { kind: DeviationKind::OffRoute { deviation_from_route_line } } => {
                 prop_assert_eq!(
                     deviation_from_route_line,
                     deviation.unwrap()
@@ -504,5 +532,147 @@ proptest! {
             tracking.check_route_deviation(&route, &trip_state_random),
             RouteDeviation::NoDeviation
         );
+    }
+}
+
+#[cfg(test)]
+mod off_step_tests {
+    use super::*;
+    use crate::models::GeographicCoordinate;
+    use crate::navigation_controller::test_helpers::{gen_dummy_route_step, gen_route_from_steps};
+
+    #[cfg(all(feature = "std", not(feature = "web-time")))]
+    use std::time::SystemTime;
+
+    #[cfg(feature = "web-time")]
+    use web_time::SystemTime;
+
+    fn make_location(lng: f64, lat: f64) -> UserLocation {
+        UserLocation {
+            coordinates: GeographicCoordinate { lng, lat },
+            horizontal_accuracy: 5.0,
+            course_over_ground: None,
+            timestamp: SystemTime::now(),
+            speed: None,
+        }
+    }
+
+    #[test]
+    fn test_off_step_detected_when_on_future_step() {
+        // Route: Step 1 goes east, Step 2 goes north
+        let step1 = gen_dummy_route_step(0.0, 0.0, 0.001, 0.0); // ~111m east
+        let step2 = gen_dummy_route_step(0.001, 0.0, 0.001, 0.001); // ~111m north
+
+        let route = gen_route_from_steps(vec![step1.clone(), step2.clone()]);
+        let tracking = RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: 10,
+            max_acceptable_deviation: 50.0,
+        };
+
+        // User is on step 2's geometry (far from step 1)
+        let user_on_step2 = make_location(0.001, 0.0005);
+        let trip_state = get_navigating_trip_state(
+            user_on_step2,
+            vec![step1.clone(), step2.clone()],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = tracking.check_route_deviation(&route, &trip_state);
+        assert!(
+            matches!(result, RouteDeviation::Deviation { kind: DeviationKind::OffStep { .. } }),
+            "Should detect OffStep when user is on a future step, got: {result:?}"
+        );
+    }
+
+    #[test]
+    fn test_no_deviation_when_on_current_step() {
+        let step1 = gen_dummy_route_step(0.0, 0.0, 0.001, 0.0);
+        let step2 = gen_dummy_route_step(0.001, 0.0, 0.001, 0.001);
+
+        let route = gen_route_from_steps(vec![step1.clone(), step2.clone()]);
+        let tracking = RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: 10,
+            max_acceptable_deviation: 50.0,
+        };
+
+        // User is on step 1's geometry
+        let user_on_step1 = make_location(0.0005, 0.0);
+        let trip_state = get_navigating_trip_state(
+            user_on_step1,
+            vec![step1, step2],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = tracking.check_route_deviation(&route, &trip_state);
+        assert_eq!(
+            result,
+            RouteDeviation::NoDeviation,
+            "Should be NoDeviation when user is on current step"
+        );
+    }
+
+    #[test]
+    fn test_off_route_when_not_on_any_step() {
+        let step1 = gen_dummy_route_step(0.0, 0.0, 0.001, 0.0);
+        let step2 = gen_dummy_route_step(0.001, 0.0, 0.001, 0.001);
+
+        let route = gen_route_from_steps(vec![step1.clone(), step2.clone()]);
+        let tracking = RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: 10,
+            max_acceptable_deviation: 50.0,
+        };
+
+        // User is far from both steps (~5.5km north)
+        let user_off_route = make_location(0.0005, 0.05);
+        let trip_state = get_navigating_trip_state(
+            user_off_route,
+            vec![step1, step2],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = tracking.check_route_deviation(&route, &trip_state);
+        assert!(
+            matches!(result, RouteDeviation::Deviation { kind: DeviationKind::OffRoute { .. } }),
+            "Should be OffRoute when user is not on any step, got: {result:?}"
+        );
+    }
+
+    #[test]
+    fn test_off_step_has_deviation_distance() {
+        // Step 1 goes east, step 2 goes north — perpendicular
+        let step1 = gen_dummy_route_step(0.0, 0.0, 0.001, 0.0); // ~111m east
+        let step2 = gen_dummy_route_step(0.001, 0.0, 0.001, 0.002); // ~222m north
+
+        let route = gen_route_from_steps(vec![step1.clone(), step2.clone()]);
+        let tracking = RouteDeviationTracking::StaticThreshold {
+            minimum_horizontal_accuracy: 10,
+            max_acceptable_deviation: 50.0,
+        };
+
+        // User is clearly on step 2's geometry, far from step 1
+        // (~111m north of step 1's end, on step 2's line)
+        let user_on_step2 = make_location(0.001, 0.001);
+        let trip_state = get_navigating_trip_state(
+            user_on_step2,
+            vec![step1, step2],
+            vec![],
+            RouteDeviation::NoDeviation,
+        );
+
+        let result = tracking.check_route_deviation(&route, &trip_state);
+        match result {
+            RouteDeviation::Deviation {
+                kind: DeviationKind::OffStep { deviation_from_step_line },
+            } => {
+                assert!(
+                    deviation_from_step_line > 0.0,
+                    "OffStep should have a positive deviation distance"
+                );
+            }
+            _ => panic!("Expected OffStep, got: {result:?}"),
+        }
     }
 }

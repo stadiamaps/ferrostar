@@ -367,10 +367,14 @@ final class FerrostarCoreTests: XCTestCase {
 
             func core(
                 _: FerrostarCore,
-                correctiveActionForDeviation deviationInMeters: Double,
+                correctiveActionForDeviation deviation: DeviationKind,
                 remainingWaypoints waypoints: [Waypoint]
             ) -> CorrectiveAction {
-                XCTAssertEqual(deviationInMeters, 42)
+                if case let .offRoute(deviationFromRouteLine: meters) = deviation {
+                    XCTAssertEqual(meters, 42)
+                } else {
+                    XCTFail("Expected offRoute deviation")
+                }
                 routeDeviationCallbackExp.fulfill()
                 return .getNewRoutes(waypoints: waypoints)
             }
