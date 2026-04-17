@@ -60,12 +60,10 @@ export const CameraProvider = ({
 
   const zoomIn = () => {
     setZoom(zoom + 1);
-    cameraRef.current?.zoomTo(zoom + 1);
   };
 
   const zoomOut = () => {
     setZoom(zoom - 1);
-    cameraRef.current?.zoomTo(zoom - 1);
   };
 
   const recenter = () => {

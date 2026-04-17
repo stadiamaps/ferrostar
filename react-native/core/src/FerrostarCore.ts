@@ -11,6 +11,7 @@ import {
   TripState,
   NavState,
   RouteAdapter,
+  SpokenInstruction,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
 import {
   InvalidStatusCodeException,
@@ -28,6 +29,7 @@ import {
   type RouteDeviationHandler,
 } from './RouteDeviationHandler';
 import { type RouteProvider } from './RouteProvider';
+import { ManualSpeechEngine, type SpeechEngine } from './SpeechEngine';
 
 /**
  * Represents the complete state of the navigation session.
@@ -93,6 +95,7 @@ export class FerrostarCore implements LocationUpdateListener {
   navigationControllerConfig: NavigationControllerConfig;
   locationProvider: LocationProviderInterface;
   routeProvider: RouteProvider;
+  speechEngine: SpeechEngine;
 
   /**
    * The minimum time to wait before initiating another route recalculation.
@@ -138,11 +141,13 @@ export class FerrostarCore implements LocationUpdateListener {
   constructor(
     navigationControllerConfig: NavigationControllerConfig,
     locationProvider: LocationProviderInterface = new ManualLocationProvider(),
-    routeProvider: RouteProvider
+    routeProvider: RouteProvider,
+    speechEngine: SpeechEngine = ManualSpeechEngine
   ) {
     this.navigationControllerConfig = navigationControllerConfig;
     this.routeProvider = routeProvider;
     this.locationProvider = locationProvider;
+    this.speechEngine = speechEngine;
   }
 
   async getRoutes(
@@ -323,7 +328,20 @@ export class FerrostarCore implements LocationUpdateListener {
     });
 
     this._queuedUtteranceIds = [];
-    // TODO: add TTS observer to clear queued utterances
+    this.speechEngine.stop();
+  }
+
+  private speakTTS(spokenInstruction?: SpokenInstruction) {
+    if (!spokenInstruction) {
+      return;
+    }
+
+    if (this._queuedUtteranceIds.includes(spokenInstruction.utteranceId)) {
+      return;
+    }
+
+    this._queuedUtteranceIds.push(spokenInstruction);
+    this.speechEngine.speak(spokenInstruction);
   }
 
   private async handleStateUpdate(newState: NavState, location: UserLocation) {
@@ -343,6 +361,7 @@ export class FerrostarCore implements LocationUpdateListener {
     // 2. Guard: Must be off-route for recalculation logic
     if (!RouteDeviation.OffRoute.instanceOf(routeDeviation)) {
       this._listeners.forEach((listener) => listener(this._state));
+      this.speakTTS(tripState.inner.spokenInstruction);
       return;
     }
 
@@ -375,6 +394,7 @@ export class FerrostarCore implements LocationUpdateListener {
 
     if (action === CorrectiveAction.DoNothing) {
       this._listeners.forEach((listener) => listener(this._state));
+      this.speakTTS(tripState.inner.spokenInstruction);
       return;
     }
 
@@ -410,6 +430,7 @@ export class FerrostarCore implements LocationUpdateListener {
         this.isCalculatingNewRoute = false;
         // Final state sync after recalculation attempt
         this._listeners.forEach((listener) => listener(this._state));
+        this.speakTTS(tripState.inner.spokenInstruction);
       }
     }
   }

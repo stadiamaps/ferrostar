@@ -20,7 +20,8 @@
   "dependencies": {
     "@expo/metro-runtime": "~55.0.7",
     "@expo/vector-icons": "^15.0.2",
-    "@maplibre/maplibre-react-native": "11.0.0-beta.12",
+    "expo-speech": "~55.0.13",
+    "@maplibre/maplibre-react-native": "11.0.0-beta.31",
     "@react-native-community/geolocation": "^3.4.0",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
