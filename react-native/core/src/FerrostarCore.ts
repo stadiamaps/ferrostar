@@ -1,7 +1,6 @@
 import {
   type GeographicCoordinate,
   type Heading,
-  type NavigationObserver,
   type NavigationSessionLike,
   type Route,
   RouteDeviation,
@@ -9,7 +8,6 @@ import {
   type Waypoint,
   createNavigationSession,
   NavigationControllerConfig,
-  NavigationController,
   TripState,
   NavState,
   RouteAdapter,
@@ -18,7 +16,7 @@ import {
   InvalidStatusCodeException,
   NoResponseBodyException,
 } from './FerrostarCoreException';
-import { getNanoTime, ab2json, getDistance } from './_utils';
+import { getNanoTime, getDistance } from './_utils';
 import type { AlternativeRouteProcessor } from './AlternativeRouteProcessor';
 import {
   ManualLocationProvider,
@@ -311,7 +309,7 @@ export class FerrostarCore implements LocationUpdateListener {
     this.handleStateUpdate(newState, location);
   }
 
-  stopNavigation(stopLocationUpdates: boolean = true) {
+  stopNavigation() {
     if (!this._state.isNavigating()) {
       return;
     }

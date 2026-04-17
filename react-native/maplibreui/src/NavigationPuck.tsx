@@ -1,13 +1,12 @@
-import React, { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { GeoJSONSource, Layer, Images } from '@maplibre/maplibre-react-native';
-import type { UserLocation } from '@stadiamaps/ferrostar-core-react-native';
+import {
+  useNavigationState,
+  useFerrostar,
+} from '@stadiamaps/ferrostar-core-react-native';
 import arrowIcon from '../assets/navigation_puck.png';
 
 interface NavigationPuckProps {
-  /**
-   * The location to display the puck at.
-   */
-  location?: UserLocation;
   /**
    * The size of the puck in points.
    * @default 40
@@ -20,13 +19,13 @@ interface NavigationPuckProps {
  *
  * This puck uses CircleLayer and SymbolLayer for high performance.
  */
-export const NavigationPuck = ({
-  location,
-  size = 40,
-}: NavigationPuckProps) => {
-  const [images, setImages] = React.useState({
+export const NavigationPuck = ({ size = 40 }: NavigationPuckProps) => {
+  const core = useFerrostar();
+  const { location } = useNavigationState(core);
+  const [images, setImages] = useState({
     'ferrostar-puck-arrow': arrowIcon,
   });
+
   const geojson = useMemo(() => {
     if (!location) return undefined;
     return {

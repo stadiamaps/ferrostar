@@ -1,8 +1,4 @@
 import { useMemo, useState } from 'react';
-import type {
-  RouteStep,
-  VisualInstruction,
-} from '@stadiamaps/ferrostar-uniffi-react-native';
 import { LocalizedDistanceFormatter, type Formatter } from './_utils';
 import {
   FlatList,
@@ -13,12 +9,11 @@ import {
   View,
 } from 'react-native';
 import ManeuverImage from './maneuver/ManeuverImage';
+import { useFerrostar } from '@stadiamaps/ferrostar-core-react-native';
+import { useNavigationState } from '@stadiamaps/ferrostar-core-react-native';
 
-export type InstructionViewProps = {
-  instructions?: VisualInstruction;
-  distanceToNextManeuver?: number;
+export type InstructionsBannerProps = {
   distanceFormatter?: Formatter;
-  remainingSteps?: Array<RouteStep>;
 };
 
 /**
@@ -28,12 +23,15 @@ export type InstructionViewProps = {
  * locale for formatting distances and determining flow order (this can be overridden by passing a
  * customized formatter.)
  */
-export const InstructionsView = ({
-  instructions,
-  distanceToNextManeuver = 0,
+export const InstructionsBanner = ({
   distanceFormatter = LocalizedDistanceFormatter(),
-  remainingSteps,
-}: InstructionViewProps) => {
+}: InstructionsBannerProps) => {
+  const core = useFerrostar();
+  const {
+    visualInstruction: instructions,
+    progress,
+    remainingSteps,
+  } = useNavigationState(core);
   const { height } = useWindowDimensions();
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -41,6 +39,10 @@ export const InstructionsView = ({
   const nextSteps = useMemo(() => {
     return remainingSteps?.slice(1) ?? [];
   }, [remainingSteps]);
+
+  const distanceToNextManeuver = useMemo(() => {
+    return progress?.distanceToNextManeuver ?? 0;
+  }, [progress]);
 
   const upcomingInstructions = useMemo(() => {
     return nextSteps.map((step) => step.visualInstructions[0] ?? null);

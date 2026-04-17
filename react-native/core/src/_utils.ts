@@ -91,3 +91,19 @@ export function snappedUserLocation(
     return fallback;
   }
 }
+
+export function preferredUserLocation(
+  tripState?: TripState,
+  location: UserLocation
+): UserLocation {
+  if (tripState && TripState.Navigating.instanceOf(tripState)) {
+    if (tripState.inner.deviation.tag === 'NoDeviation') {
+      return tripState.inner.snappedUserLocation;
+    }
+    if (tripState.inner.deviation.tag === 'OffRoute') {
+      return tripState.inner.userLocation;
+    }
+  }
+
+  return location;
+}

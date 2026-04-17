@@ -1,7 +1,10 @@
 import { Layer, GeoJSONSource } from '@maplibre/maplibre-react-native';
+import {
+  useFerrostar,
+  useNavigationState,
+} from '@stadiamaps/ferrostar-core-react-native';
 
 type BorderedPolylineProps = {
-  points: Array<{ lat: number; lng: number }>;
   zIndex?: number;
   color?: string;
   borderColor?: string;
@@ -10,13 +13,15 @@ type BorderedPolylineProps = {
 };
 
 export const BorderedPolyline = ({
-  points,
   zIndex = 1,
   color = '#3583dd',
   borderColor = '#ffffff',
   lineWidth = 10.0,
   borderWidth = 3.0,
 }: BorderedPolylineProps) => {
+  const core = useFerrostar();
+  const { routeGeometry: points } = useNavigationState(core);
+
   if (points.length < 2) {
     return null;
   }

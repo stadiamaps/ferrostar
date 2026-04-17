@@ -1,63 +1,26 @@
 import { StyleSheet, View, Button, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  CourseFiltering,
-  RouteDeviationTracking,
-  stepAdvanceDistanceEntryAndExit,
-  stepAdvanceDistanceToEndOfStep,
-  WaypointAdvanceMode,
   WaypointKind,
-  WellKnownRouteProvider,
   UserLocation,
 } from '@stadiamaps/ferrostar-uniffi-react-native';
 import {
   useFerrostar,
   SimulatedLocationProvider,
 } from '@stadiamaps/ferrostar-core-react-native';
-import { NavigationView } from '@stadiamaps/ferrostar-maplibre-react-native';
-import { useMemo, useEffect } from 'react';
+import { NavigationMap } from '@stadiamaps/ferrostar-maplibre-react-native';
+import { useEffect } from 'react';
 import { useLocationPermission } from '../hooks/useLocationPermissions';
 import { useLocationTracker } from '../hooks/useLocationTracker';
-import { withJsonOptions } from '@stadiamaps/ferrostar-core-react-native/src/RouteProvider';
 
 const apiKey = process.env.EXPO_PUBLIC_STADIA_MAPS_API_KEY ?? '';
-const endpointUrl = process.env.EXPO_PUBLIC_ENDPOINT_URL ?? '';
 const styleUrl = `https://tiles.stadiamaps.com/styles/outdoors.json?api_key=${apiKey}`;
-
-const config = {
-  waypointAdvance: new WaypointAdvanceMode.WaypointWithinRange(100.0),
-  stepAdvanceCondition: stepAdvanceDistanceEntryAndExit(30, 5, 32),
-  arrivalStepAdvanceCondition: stepAdvanceDistanceToEndOfStep(10, 32),
-  routeDeviationTracking: new RouteDeviationTracking.StaticThreshold({
-    minimumHorizontalAccuracy: 15,
-    maxAcceptableDeviation: 50,
-  }),
-  snappedLocationCourseFiltering: CourseFiltering.SnapToRoute,
-};
-
-const routeProvider = {
-  kind: 'adapter' as const,
-  provider: withJsonOptions(
-    WellKnownRouteProvider.Valhalla.new({
-      endpointUrl,
-      profile: 'auto',
-      optionsJson: undefined,
-    })
-  ),
-};
 
 export default function Index() {
   const { isPermissionGranted } = useLocationPermission();
   const { currentPosition: location } = useLocationTracker();
 
-  const locationProvider = useMemo(() => new SimulatedLocationProvider(), []);
-  const core = useFerrostar(config, routeProvider, locationProvider);
-
-  useEffect(() => {
-    return () => {
-      locationProvider.stop();
-    };
-  }, [locationProvider]);
+  const core = useFerrostar();
 
   useEffect(() => {
     if (!location) {
@@ -135,12 +98,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <NavigationView
-        style={styles.container}
-        mapStyle={styleUrl}
-        core={core}
-        snapUserLocationToRoute={true}
-      />
+      <NavigationMap style={styles.container} mapStyle={styleUrl} />
       <Button title="Start Navigation" onPress={handleNavigationStart} />
     </SafeAreaView>
   );

@@ -5,33 +5,39 @@ import {
   Pressable,
   Text,
 } from 'react-native';
-import type { TripProgress } from '@stadiamaps/ferrostar-core-react-native';
 import {
   LocalizedDurationFormatter,
   LocalizedDistanceFormatter,
 } from './_utils';
 import { getIcon } from './maneuver/_icons';
+import {
+  useFerrostar,
+  useNavigationState,
+} from '@stadiamaps/ferrostar-core-react-native';
 
 type TripProgressViewProps = {
-  progress?: TripProgress;
   style?: ViewStyle;
   fromDate?: Date;
-  onTapExit: () => void | null;
 };
 
 const DurationFormatter = LocalizedDurationFormatter();
 const DistanceFormatter = LocalizedDistanceFormatter();
 
-export const TripProgressView = ({
-  progress,
+export const TripProgress = ({
   fromDate = new Date(),
-  onTapExit,
 }: TripProgressViewProps) => {
+  const core = useFerrostar();
+  const { progress } = useNavigationState(core);
+
   if (progress === undefined) return;
 
   const estimatedArrival = new Date(
     fromDate.getTime() + progress.durationRemaining * 1000
   );
+
+  const handleExit = () => {
+    core.stopNavigation();
+  };
 
   return (
     <View style={defaultStyle.container}>
@@ -56,13 +62,11 @@ export const TripProgressView = ({
             </Text>
           </View>
         </View>
-        {onTapExit != null && (
-          <Pressable style={defaultStyle.tapExit} onPress={onTapExit}>
-            <Text style={defaultStyle.text}>
-              {getIcon('close', 24, 24, '#FFF')}
-            </Text>
-          </Pressable>
-        )}
+        <Pressable style={defaultStyle.tapExit} onPress={handleExit}>
+          <Text style={defaultStyle.text}>
+            {getIcon('close', 24, 24, '#FFF')}
+          </Text>
+        </Pressable>
       </View>
     </View>
   );

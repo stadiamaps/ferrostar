@@ -1,39 +1,32 @@
 import { View, StyleSheet, Pressable, Text } from 'react-native';
 import { getIcon } from './maneuver/_icons';
+import {
+  useFerrostar,
+  useNavigationState,
+} from '@stadiamaps/ferrostar-core-react-native';
+import { useCamera } from './hooks/useCamera';
 
 type MapControlsProps = {
-  isNavigating?: boolean;
-  isMuted?: boolean;
-  cameraMode?: 'following' | 'overview' | 'detached';
-  onRoutePress?: () => void;
-  onRecenterPress?: () => void;
   onMutePress?: () => void;
-  onZoomIn?: () => void;
-  onZoomOut?: () => void;
 };
 
-export const MapControls = ({
-  isNavigating = false,
-  isMuted = false,
-  cameraMode = 'following',
-  onMutePress = () => {},
-  onRoutePress = () => {},
-  onRecenterPress = () => {},
-  onZoomIn = () => {},
-  onZoomOut = () => {},
-}: MapControlsProps) => {
-  if (!isNavigating) return null;
+export const MapControls = ({ onMutePress = () => {} }: MapControlsProps) => {
+  const core = useFerrostar();
+  const uiState = useNavigationState(core);
+  const { cameraMode, zoomIn, zoomOut, recenter, overview } = useCamera();
+
+  if (!uiState.isNavigating()) return null;
 
   return (
     <>
       {cameraMode === 'following' && (
         <View style={defaultStyle.topRightContainer}>
-          <Pressable style={[defaultStyle.routeButton]} onPress={onRoutePress}>
+          <Pressable style={[defaultStyle.routeButton]} onPress={overview}>
             <Text>{getIcon('route', 32, 32)}</Text>
           </Pressable>
           <Pressable style={defaultStyle.muteButton} onPress={onMutePress}>
             <Text>
-              {isMuted
+              {uiState.isMuted
                 ? getIcon('volume_off', 32, 32)
                 : getIcon('volume_up', 32, 32)}
             </Text>
@@ -42,21 +35,18 @@ export const MapControls = ({
       )}
       <View style={defaultStyle.centerRightContainer}>
         <View style={defaultStyle.zoomContainer}>
-          <Pressable style={defaultStyle.zoomInButton} onPress={onZoomIn}>
+          <Pressable style={defaultStyle.zoomInButton} onPress={zoomIn}>
             <Text style={defaultStyle.text}>{getIcon('add', 32, 32)}</Text>
           </Pressable>
           <View style={defaultStyle.zoomDivider} />
-          <Pressable style={defaultStyle.zoomOutButton} onPress={onZoomOut}>
+          <Pressable style={defaultStyle.zoomOutButton} onPress={zoomOut}>
             <Text style={defaultStyle.text}>{getIcon('remove', 32, 32)}</Text>
           </Pressable>
         </View>
       </View>
       <View style={defaultStyle.bottomRightContainer}>
         {cameraMode !== 'following' && (
-          <Pressable
-            style={defaultStyle.recenterButton}
-            onPress={onRecenterPress}
-          >
+          <Pressable style={defaultStyle.recenterButton} onPress={recenter}>
             <Text>{getIcon('near_me', 32, 32, '#007AFF')}</Text>
           </Pressable>
         )}

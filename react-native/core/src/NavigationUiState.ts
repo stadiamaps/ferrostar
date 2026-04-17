@@ -13,15 +13,13 @@ import {
   progress,
   remainingSteps,
   visualInstruction,
-  snappedUserLocation,
+  preferredUserLocation,
 } from './_utils';
 import type { NavigationState } from './FerrostarCore';
 
 export class NavigationUiState {
   /** The user's location as reported by the location provider. */
   location?: UserLocation;
-  /** The user's location snapped to the route shape. */
-  snappedLocation?: UserLocation;
   /**
    * The last known heading of the user.
    *
@@ -56,7 +54,6 @@ export class NavigationUiState {
 
   constructor(
     location?: UserLocation,
-    snappedLocation?: UserLocation,
     heading?: number,
     routeGeometry?: Array<GeographicCoordinate>,
     visualInstruction?: VisualInstruction,
@@ -69,7 +66,6 @@ export class NavigationUiState {
     remainingSteps?: Array<RouteStep>
   ) {
     this.location = location;
-    this.snappedLocation = snappedLocation;
     this.heading = heading;
     this.routeGeometry = routeGeometry;
     this.visualInstruction = visualInstruction;
@@ -92,10 +88,8 @@ export class NavigationUiState {
     isMuted?: boolean,
     location?: UserLocation
   ): NavigationUiState {
-    console.log('fromFerrostar');
     return new NavigationUiState(
-      location,
-      snappedUserLocation(coreState.tripState, location),
+      preferredUserLocation(coreState.tripState, location),
       undefined,
       coreState.routeGeometry,
       visualInstruction(coreState.tripState),
