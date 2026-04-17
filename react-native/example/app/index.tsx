@@ -8,13 +8,23 @@ import {
   useFerrostar,
   SimulatedLocationProvider,
 } from '@stadiamaps/ferrostar-core-react-native';
-import { NavigationMap } from '@stadiamaps/ferrostar-maplibre-react-native';
+import {
+  NavigationMap,
+  NotNavigating,
+} from '@stadiamaps/ferrostar-maplibre-react-native';
 import { useEffect } from 'react';
 import { useLocationPermission } from '../hooks/useLocationPermissions';
 import { useLocationTracker } from '../hooks/useLocationTracker';
+import {
+  AutocompleteSearchInput,
+  AutocompleteSearchResults,
+  AutocompleteSearchRoot,
+} from '@/components/auto-complete-search';
+import { Configuration, GeocodingGeoJSONFeature } from '@stadiamaps/api';
 
 const apiKey = process.env.EXPO_PUBLIC_STADIA_MAPS_API_KEY ?? '';
 const styleUrl = `https://tiles.stadiamaps.com/styles/outdoors.json?api_key=${apiKey}`;
+const config = new Configuration({ apiKey });
 
 export default function Index() {
   const { isPermissionGranted } = useLocationPermission();
@@ -45,11 +55,14 @@ export default function Index() {
     }
   }, [location, core]);
 
-  const handleNavigationStart = async () => {
-    if (!location) {
+  const handleNavigationStart = async (
+    result: GeocodingGeoJSONFeature | null
+  ) => {
+    if (!location || !result) {
       return;
     }
 
+    const [endLng, endLat] = result.geometry.coordinates;
     const { coords, timestamp } = location;
     const routes = await core.getRoutes(
       {
@@ -62,8 +75,8 @@ export default function Index() {
       [
         {
           coordinate: {
-            lat: -43.56823546768915,
-            lng: 172.6902914460014,
+            lat: endLat,
+            lng: endLng,
           },
           kind: WaypointKind.Break,
         },
@@ -98,8 +111,23 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <NotNavigating>
+        <AutocompleteSearchRoot
+          userLocation={{
+            lat: location?.coords.latitude ?? 0,
+            lng: location?.coords.longitude ?? 0,
+          }}
+          config={config}
+          style={{
+            padding: 10,
+          }}
+          onResultSelected={handleNavigationStart}
+        >
+          <AutocompleteSearchInput />
+          <AutocompleteSearchResults />
+        </AutocompleteSearchRoot>
+      </NotNavigating>
       <NavigationMap style={styles.container} mapStyle={styleUrl} />
-      <Button title="Start Navigation" onPress={handleNavigationStart} />
     </SafeAreaView>
   );
 }
@@ -107,5 +135,6 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'relative',
   },
 });
