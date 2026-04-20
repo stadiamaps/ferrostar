@@ -7,6 +7,7 @@ import { Navigating } from './Navigating';
 import { TripProgress } from './TripProgress';
 import { InstructionsBanner } from './InstructionsBanner';
 import { MapControls } from './MapControls';
+import { CurrentRoadName } from './CurrentRoadName';
 
 export {
   NavigationMap,
@@ -18,4 +19,5 @@ export {
   TripProgress,
   InstructionsBanner,
   MapControls,
+  CurrentRoadName,
 };

@@ -8,8 +8,10 @@ import { InstructionsBanner } from './InstructionsBanner';
 import { MapControls } from './MapControls';
 import { NavigationPuck } from './NavigationPuck';
 import { Navigating } from './Navigating';
+import { CurrentRoadName } from './CurrentRoadName';
 import { useCamera } from './hooks/useCamera';
 import { NotNavigating } from './NotNavigating';
+import { BottomContainer } from './BottomContainer';
 
 type NavigationMapProps = ComponentProps<typeof Map> & {};
 
@@ -43,7 +45,10 @@ export const NavigationMap = (props: NavigationMapProps) => {
       </Map>
       <InstructionsBanner />
       <MapControls />
-      <TripProgress />
+      <BottomContainer>
+        <CurrentRoadName />
+        <TripProgress />
+      </BottomContainer>
     </View>
   );
 };

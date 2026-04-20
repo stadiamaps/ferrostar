@@ -3,7 +3,7 @@
     "name": "ferrostar-example-react-native",
     "slug": "ferrostar-example-react-native",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "example",
     "userInterfaceStyle": "automatic",

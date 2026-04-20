@@ -1,7 +1,6 @@
 import { SimulatedLocationProvider } from '@stadiamaps/ferrostar-core-react-native';
 import { FerrostarProvider } from '@stadiamaps/ferrostar-core-react-native/src/contexts/FerrostarProvider';
 import { withJsonOptions } from '@stadiamaps/ferrostar-core-react-native/src/RouteProvider';
-import { SpeechEngine } from '@stadiamaps/ferrostar-core-react-native/src/SpeechEngine';
 import { CameraProvider } from '@stadiamaps/ferrostar-maplibre-react-native/src/contexts/CameraProvider';
 import {
   CourseFiltering,
@@ -13,6 +12,7 @@ import {
 } from '@stadiamaps/ferrostar-uniffi-react-native';
 import { Stack } from 'expo-router';
 import * as Speech from 'expo-speech';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect, useMemo } from 'react';
 
 const endpointUrl = process.env.EXPO_PUBLIC_ENDPOINT_URL ?? '';
@@ -41,6 +41,10 @@ const routeProvider = {
 
 export default function RootLayout() {
   const locationProvider = useMemo(() => new SimulatedLocationProvider(), []);
+
+  useEffect(() => {
+    ScreenOrientation.unlockAsync();
+  }, []);
 
   useEffect(() => {
     return () => {

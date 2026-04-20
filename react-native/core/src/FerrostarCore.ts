@@ -321,6 +321,7 @@ export class FerrostarCore implements LocationUpdateListener {
 
     this._navigationSession = undefined;
     this._state.reset();
+
     // TODO: handle state change event here
     // Send listeners the new state
     this._listeners.forEach((listener) => {
