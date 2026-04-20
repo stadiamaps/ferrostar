@@ -340,8 +340,8 @@ export class FerrostarCore implements LocationUpdateListener {
       return;
     }
 
-    this._queuedUtteranceIds.push(spokenInstruction);
-    this.speechEngine.speak(spokenInstruction);
+    this._queuedUtteranceIds.push(spokenInstruction.utteranceId);
+    this.speechEngine.speak(spokenInstruction.text);
   }
 
   private async handleStateUpdate(newState: NavState, location: UserLocation) {

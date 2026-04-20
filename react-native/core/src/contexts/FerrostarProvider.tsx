@@ -4,6 +4,7 @@ import {
   ManualLocationProvider,
   type LocationProviderInterface,
 } from '../LocationProvider';
+import { ManualSpeechEngine, type SpeechEngine } from '../SpeechEngine';
 import { NavigationControllerConfig } from '@stadiamaps/ferrostar-uniffi-react-native';
 import { createContext } from 'react';
 
@@ -19,6 +20,7 @@ type FerrostarProviderProps = {
   config: NavigationControllerConfig;
   routeProvider: RouteProvider;
   locationProvider?: LocationProviderInterface;
+  speechEngine?: SpeechEngine;
   children: React.ReactNode;
 };
 
@@ -26,15 +28,17 @@ export const FerrostarProvider = ({
   config,
   routeProvider,
   locationProvider,
+  speechEngine,
   children,
 }: FerrostarProviderProps) => {
   const core = useMemo(() => {
     return new FerrostarCore(
       config,
       locationProvider ?? new ManualLocationProvider(),
-      routeProvider
+      routeProvider,
+      speechEngine ?? ManualSpeechEngine
     );
-  }, [config, routeProvider, locationProvider]);
+  }, [config, routeProvider, locationProvider, speechEngine]);
 
   const addLocationListener = (listener: (location: UserLocation) => void) => {
     return core.locationProvider.addListener(listener);

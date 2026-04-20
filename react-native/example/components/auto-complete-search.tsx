@@ -8,6 +8,7 @@ import {
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Keyboard,
   Pressable,
   StyleSheet,
   Text,
@@ -213,6 +214,7 @@ export const AutocompleteSearchResults = ({
     if (newResult.properties?.name) {
       setSearchQuery(newResult.properties.name);
     }
+    Keyboard.dismiss();
   };
 
   if (result != null || results?.length === 0) {
