@@ -23,6 +23,7 @@ export type CameraProviderContextType = {
   location: [number, number] | null;
   zoom: number;
   pitch: number;
+  muted: boolean;
   bounds: MapBounds | undefined;
   padding: MapPadding | undefined;
   setActivity: (activity: NavigationActivity) => void;
@@ -31,6 +32,7 @@ export type CameraProviderContextType = {
   zoomIn: () => void;
   zoomOut: () => void;
   recenter: () => void;
+  toggleMuted: () => void;
   overview: () => void;
   cameraChange: (e: NativeSyntheticEvent<ViewStateChangeEvent>) => void;
 };
@@ -54,6 +56,7 @@ export const CameraProvider = ({
   const [cameraMode, setCameraMode] = useState<CameraMode>('following');
   const [zoom, setZoom] = useState<number>(activity.zoom);
   const [pitch, setPitch] = useState<number>(activity.pitch);
+  const [muted, setMuted] = useState<boolean>(false);
   const [bounds, setBounds] = useState<MapBounds | undefined>(undefined);
   const [padding, setPadding] = useState<MapPadding | undefined>(undefined);
   const [activityState, setActivity] = useState<NavigationActivity>(activity);
@@ -72,6 +75,11 @@ export const CameraProvider = ({
     setBounds(null);
     setPadding(null);
     setCameraMode('following');
+  };
+
+  const toggleMuted = () => {
+    setMuted(!muted);
+    core.handleMuted(!muted);
   };
 
   const overview = () => {
@@ -114,10 +122,12 @@ export const CameraProvider = ({
         setActivity,
         zoom,
         pitch,
+        muted,
         bounds,
         padding,
         zoomIn,
         zoomOut,
+        toggleMuted,
         recenter,
         overview,
         cameraChange,

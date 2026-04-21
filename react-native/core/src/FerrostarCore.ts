@@ -137,6 +137,7 @@ export class FerrostarCore implements LocationUpdateListener {
   _lastRecalculationLocation?: UserLocation;
   _lastLocation?: UserLocation;
   _listeners: Map<number, (state: NavigationState) => void> = new Map();
+  _isMuted: boolean = false;
 
   constructor(
     navigationControllerConfig: NavigationControllerConfig,
@@ -342,7 +343,11 @@ export class FerrostarCore implements LocationUpdateListener {
     }
 
     this._queuedUtteranceIds.push(spokenInstruction.utteranceId);
-    this.speechEngine.speak(spokenInstruction.text);
+    this.speechEngine.speak(spokenInstruction.text, this._isMuted);
+  }
+
+  handleMuted(muted: boolean) {
+    this._isMuted = muted;
   }
 
   private async handleStateUpdate(newState: NavState, location: UserLocation) {

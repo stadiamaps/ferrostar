@@ -14,6 +14,7 @@ import { Stack } from 'expo-router';
 import * as Speech from 'expo-speech';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect, useMemo } from 'react';
+import { SpeechEngine } from '@stadiamaps/ferrostar-core-react-native/src/SpeechEngine';
 
 const endpointUrl = process.env.EXPO_PUBLIC_ENDPOINT_URL ?? '';
 
@@ -52,9 +53,10 @@ export default function RootLayout() {
     };
   }, [locationProvider]);
 
-  const speechEngine = useMemo(
+  const speechEngine: SpeechEngine = useMemo(
     () => ({
-      speak: (text: string) => Speech.speak(text),
+      speak: (text: string, isMuted: boolean) =>
+        Speech.speak(text, { volume: isMuted ? 0 : 1 }),
       stop: () => Speech.stop(),
     }),
     []

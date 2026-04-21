@@ -14,14 +14,22 @@ export function useNavigationState(
   isMuted?: boolean
 ): NavigationUiState {
   const [uiState, setUiState] = useState<NavigationUiState>(() =>
-    NavigationUiState.fromFerrostar(core._state, isMuted, core._lastLocation)
+    NavigationUiState.fromFerrostar(
+      core._state,
+      core._isMuted,
+      core._lastLocation
+    )
   );
 
   useEffect(() => {
     const listenerId = core.addStateListener((state) => {
       // Force a new NavigationUiState object so React knows to re-render
       setUiState(
-        NavigationUiState.fromFerrostar(state, isMuted, core._lastLocation)
+        NavigationUiState.fromFerrostar(
+          state,
+          core._isMuted,
+          core._lastLocation
+        )
       );
     });
 

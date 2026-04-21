@@ -6,14 +6,18 @@ import {
 } from '@stadiamaps/ferrostar-core-react-native';
 import { useCamera } from './hooks/useCamera';
 
-type MapControlsProps = {
-  onMutePress?: () => void;
-};
-
-export const MapControls = ({ onMutePress = () => {} }: MapControlsProps) => {
+export const MapControls = () => {
   const core = useFerrostar();
   const uiState = useNavigationState(core);
-  const { cameraMode, zoomIn, zoomOut, recenter, overview } = useCamera();
+  const {
+    cameraMode,
+    zoomIn,
+    zoomOut,
+    recenter,
+    overview,
+    muted,
+    toggleMuted,
+  } = useCamera();
 
   if (!uiState.isNavigating()) return null;
 
@@ -25,9 +29,9 @@ export const MapControls = ({ onMutePress = () => {} }: MapControlsProps) => {
             <Pressable style={[defaultStyle.routeButton]} onPress={overview}>
               <Text>{getIcon('route', 32, 32)}</Text>
             </Pressable>
-            <Pressable style={defaultStyle.muteButton} onPress={onMutePress}>
+            <Pressable style={defaultStyle.muteButton} onPress={toggleMuted}>
               <Text>
-                {uiState.isMuted
+                {muted
                   ? getIcon('volume_off', 32, 32)
                   : getIcon('volume_up', 32, 32)}
               </Text>
