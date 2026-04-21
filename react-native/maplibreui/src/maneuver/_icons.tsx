@@ -1518,19 +1518,19 @@ export function getIcon(
     case 'rotary_straight':
       return RotaryStraight({ width, height });
     case 'exitrotary_left':
-      return ExitRotaryLeft({ width, height });
+      return RotaryLeft({ width, height });
     case 'exitrotary_right':
-      return ExitRotaryRight({ width, height });
+      return RotaryRight({ width, height });
     case 'exitrotary_sharpleft':
-      return ExitRotarySharpLeft({ width, height });
+      return RotarySharpLeft({ width, height });
     case 'exitrotary_sharpright':
-      return ExitRotarySharpRight({ width, height });
+      return RotarySharpRight({ width, height });
     case 'exitrotary_slightleft':
-      return ExitRotarySlightLeft({ width, height });
+      return RotarySlightLeft({ width, height });
     case 'exitrotary_slightright':
-      return ExitRotarySlightRight({ width, height });
+      return RotarySlightRight({ width, height });
     case 'exitrotary_straight':
-      return ExitRotaryStraight({ width, height });
+      return RotaryStraight({ width, height });
     case 'rotary_left_drivingleft':
       return RotaryLeftDrivingLeft({ width, height });
     case 'rotary_right_drivingleft':
